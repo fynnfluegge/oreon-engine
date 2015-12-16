@@ -1,0 +1,47 @@
+
+newmtl Helmet
+Kd 0.1 0.81 0.1
+illum 2
+Ns 50
+map_Kd tex/helmet_dif.png
+map_Ks tex/helmet_showroom_spec.png
+#map_bump tex/helmet_dif_NRM.jpg
+
+newmtl Glass
+Kd 0.1 0.81 0.1
+illum 2
+Ns 10
+map_Kd tex/glass_dif.png
+#map_bump tex/glass_ddn.png
+
+newmtl Body
+Kd 0.1 0.81 0.1
+illum 3
+Ns 20
+map_Kd tex/body_dif.png
+map_Ks tex/body_showroom_spec.png
+#map_bump tex/body_dif_NRM.jpg
+
+newmtl Arm
+Kd 0.1 0.81 0.1
+illum 3
+Ns 20
+map_Kd tex/arm_dif.png
+map_Ks tex/arm_showroom_spec.png
+map_bump tex/arm_dif_NRM.jpg
+
+newmtl Hand
+Kd 0.1 0.81 0.1
+illum 2
+Ns 20
+map_Kd tex/hand_dif.png
+map_Ks tex/hand_showroom_spec.png
+map_bump tex/hand_dif_NRM.jpg
+
+newmtl Leg
+Kd 0.1 0.81 0.1
+illum 3
+Ns 20
+map_Kd tex/leg_dif.png
+map_Ks tex/leg_showroom_spec.png
+#map_bump tex/leg_dif_NRM.jpg
