@@ -1,6 +1,9 @@
 package simulations.objLoader;
 import org.lwjgl.input.Keyboard;
 
+import engine.buffers.MeshVAO;
+import engine.configs.AlphaBlending;
+import engine.configs.CullFaceDisable;
 import engine.core.Input;
 import engine.gameObject.GameObject;
 import engine.gameObject.components.MeshRenderer;
@@ -10,16 +13,13 @@ import engine.math.Vec3f;
 import engine.models.data.Material;
 import engine.models.obj.OBJLoader;
 import engine.renderer.glass.GlassRenderer;
-import engine.renderpipeline.configs.AlphaBlending;
-import engine.renderpipeline.configs.CullFaceDisable;
-import engine.renderpipeline.data.MeshVAO;
 
 public class OBJ extends GameObject{
 
 	public OBJ(){
 		
 		getTransform().setLocalRotation(0, 0, 0);
-		getTransform().setLocalScaling(20f,20f,20f);
+		getTransform().setLocalScaling(1f,1f,1f);
 		OBJLoader loader = new OBJLoader();
 		Model[] models = loader.load("nanosuit");
 		int size = 0;
@@ -38,13 +38,13 @@ public class OBJ extends GameObject{
 			}
 
 			if (model.getMaterial().getName().equals("glass"))
-				renderer = new MeshRenderer(meshBuffer, engine.renderpipeline.shaderPrograms.materials.Glass.getInstance(), new AlphaBlending(0));
+				renderer = new MeshRenderer(meshBuffer, engine.shaderprograms.phong.Glass.getInstance(), new AlphaBlending(0));
 			else if (model.getMaterial().getNormalmap() != null)
-				renderer = new MeshRenderer(meshBuffer, engine.renderpipeline.shaderPrograms.lighting.phong.Bumpy.getInstance(), new CullFaceDisable());
+				renderer = new MeshRenderer(meshBuffer, engine.shaderprograms.phong.Bumpy.getInstance(), new CullFaceDisable());
 			else if (model.getMaterial().getDiffusemap() != null)
-				renderer = new MeshRenderer(meshBuffer, engine.renderpipeline.shaderPrograms.lighting.phong.Textured.getInstance(), new CullFaceDisable());	
+				renderer = new MeshRenderer(meshBuffer, engine.shaderprograms.phong.Textured.getInstance(), new CullFaceDisable());	
 			else
-				renderer = new MeshRenderer(meshBuffer, engine.renderpipeline.shaderPrograms.lighting.phong.RGBA.getInstance(), new CullFaceDisable());	
+				renderer = new MeshRenderer(meshBuffer, engine.shaderprograms.phong.RGBA.getInstance(), new CullFaceDisable());	
 
 			object.addComponent("Model", model);
 			object.addComponent("Renderer", renderer);
@@ -59,19 +59,19 @@ public class OBJ extends GameObject{
 		if (Input.getHoldingKeys().contains(Keyboard.KEY_G))
 		{
 			for(GameObject gameobject : this.getChildren()){
-				((Renderer) gameobject.getComponent("Renderer")).setShader(engine.renderpipeline.shaderPrograms.basic.Grid.getInstance());
+				((Renderer) gameobject.getComponent("Renderer")).setShader(engine.shaderprograms.basic.Grid.getInstance());
 			}
 		}
 		else {
 			for(GameObject gameobject : this.getChildren()){
 				if (((Model) gameobject.getComponent("Model")).getMaterial().getName().equals("glass"))
-					((Renderer) gameobject.getComponent("Renderer")).setShader(engine.renderpipeline.shaderPrograms.materials.Glass.getInstance());	
+					((Renderer) gameobject.getComponent("Renderer")).setShader(engine.shaderprograms.phong.Glass.getInstance());	
 				else if (((Model) gameobject.getComponent("Model")).getMaterial().getNormalmap() != null)
-					((Renderer) gameobject.getComponent("Renderer")).setShader(engine.renderpipeline.shaderPrograms.lighting.phong.Bumpy.getInstance());
+					((Renderer) gameobject.getComponent("Renderer")).setShader(engine.shaderprograms.phong.Bumpy.getInstance());
 				else if (((Model) gameobject.getComponent("Model")).getMaterial().getDiffusemap() != null)
-					((Renderer) gameobject.getComponent("Renderer")).setShader(engine.renderpipeline.shaderPrograms.lighting.phong.Textured.getInstance());
+					((Renderer) gameobject.getComponent("Renderer")).setShader(engine.shaderprograms.phong.Textured.getInstance());
 				else
-					((Renderer) gameobject.getComponent("Renderer")).setShader(engine.renderpipeline.shaderPrograms.lighting.phong.RGBA.getInstance());			
+					((Renderer) gameobject.getComponent("Renderer")).setShader(engine.shaderprograms.phong.RGBA.getInstance());			
 			}
 		}
 		

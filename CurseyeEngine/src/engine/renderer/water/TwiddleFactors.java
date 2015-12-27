@@ -6,9 +6,9 @@ import static org.lwjgl.opengl.GL30.GL_RGBA32F;
 import static org.lwjgl.opengl.GL42.glBindImageTexture;
 import static org.lwjgl.opengl.GL42.glTexStorage2D;
 import static org.lwjgl.opengl.GL43.glDispatchCompute;
+import engine.buffers.SSBO;
 import engine.core.Texture;
-import engine.renderpipeline.data.SSBO;
-import engine.renderpipeline.shaderPrograms.ocean.TwiddleFactorsShader;
+import engine.shaderprograms.water.TwiddleFactorsShader;
 
 public class TwiddleFactors {
 

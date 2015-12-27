@@ -19,8 +19,8 @@ import engine.core.Camera;
 import engine.core.Input;
 import engine.core.Texture;
 import engine.core.Window;
-import engine.renderpipeline.shaderPrograms.MotionBlurShader;
-import engine.renderpipeline.shaderPrograms.PixelVelocityShader;
+import engine.shaderprograms.MotionBlurShader;
+import engine.shaderprograms.PixelVelocityShader;
 
 public class MotionBlur {
 	

@@ -10,9 +10,9 @@ import static org.lwjgl.opengl.GL43.glDispatchCompute;
 import static org.lwjgl.opengl.GL11.glFinish;
 import engine.core.Input;
 import engine.core.Texture;
-import engine.renderpipeline.shaderPrograms.NormalMapShader;
-import engine.renderpipeline.shaderPrograms.ocean.DisplacementMapShader;
-import engine.renderpipeline.shaderPrograms.ocean.FFTShader;
+import engine.shaderprograms.NormalMapShader;
+import engine.shaderprograms.water.DisplacementMapShader;
+import engine.shaderprograms.water.FFTShader;
 
 
 public class FastFourierTransform {

@@ -57,7 +57,7 @@ public class Camera {
 	
 	protected Camera()
 	{
-		this(new Vec3f(0,10,-10), new Vec3f(0,0,1), new Vec3f(0,1,0));
+		this(new Vec3f(511,580,400), new Vec3f(-0.7033576f,-0.54155827f,-0.46043774f), new Vec3f(-0.45388144f,0.8406624f,-0.29542908f));
 		this.setProjection(60, Window.getWidth(), Window.getHeight(), Constants.ZNEAR, Constants.ZFAR);
 		this.projectionMatrix = new Matrix4f().Projection(fovY, width, height, zNear, zFar);
 		this.setViewMatrix(new Matrix4f().View(this.getForward(), this.getUp()).mul(
@@ -187,6 +187,10 @@ public class Camera {
 		setViewMatrix(new Matrix4f().View(this.getForward(), this.getUp()).mul(
 				new Matrix4f().Translation(this.getPosition().mul(-1))));
 		setViewProjectionMatrix(projectionMatrix.mul(viewMatrix));
+		
+//		System.out.println(position);
+//		System.out.println(forward);
+//		System.out.println(up);
 	}
 	
 	public void move(Vec3f dir, float amount)

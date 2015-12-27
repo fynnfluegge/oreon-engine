@@ -1,5 +1,7 @@
 package simulations.objLoader;
 
+import engine.buffers.MeshVAO;
+import engine.configs.CCW;
 import engine.core.Geometrics;
 import engine.core.Texture;
 import engine.core.Util;
@@ -9,8 +11,6 @@ import engine.gameObject.components.MeshRenderer;
 import engine.gameObject.components.Model;
 import engine.math.Vec3f;
 import engine.models.data.Material;
-import engine.renderpipeline.configs.CCW;
-import engine.renderpipeline.data.MeshVAO;
 
 public class ActionBoxModel extends GameObject{
 	
@@ -34,7 +34,7 @@ public class ActionBoxModel extends GameObject{
 		material.getNormalmap().mipmap();
 		model.setMaterial(material);
 		MeshVAO meshBuffer = new MeshVAO();
-		MeshRenderer renderer = new MeshRenderer(meshBuffer,engine.renderpipeline.shaderPrograms.lighting.phong.Bumpy.getInstance(), new CCW());
+		MeshRenderer renderer = new MeshRenderer(meshBuffer,engine.shaderprograms.phong.Bumpy.getInstance(), new CCW());
 		meshBuffer.addData(model.getMesh());
 		addComponent("Model", model);
 		addComponent("Renderer", renderer);	

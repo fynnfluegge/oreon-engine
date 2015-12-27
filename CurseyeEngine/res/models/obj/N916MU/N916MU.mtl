@@ -1,0 +1,39 @@
+newmtl shader_7
+Kd 0.9 0.9 0.9
+illum 1
+Ns 20
+
+newmtl shader_9
+Kd 0.9 0.9 0.9
+illum 1
+Ns 20
+
+newmtl shader
+Kd 0.1 0.1 0.1
+illum 0.2
+Ns 2
+
+newmtl shader_1
+Kd 0.02 0.02 0.03
+illum 1
+Ns 10
+
+newmtl shader_6
+Kd 0.05 0.05 0.05
+illum 0.5
+Ns 20
+
+newmtl glass
+Kd 0.1 0.1 0.15
+illum 1 
+Ns 2
+
+newmtl Colors
+Kd 0.05 0.05 0.05
+illum 1
+Ns 10
+
+newmtl shader_3
+Kd 0.1 0.1 0.1
+illum 0
+Ns 0

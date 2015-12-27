@@ -4,6 +4,7 @@ package engine.main;
 import java.util.ArrayList;
 
 import simulations.templates.Simulation;
+import engine.configs.RenderingConfig;
 import engine.core.Camera;
 import engine.core.Constants;
 import engine.core.Input;
@@ -14,7 +15,6 @@ import engine.lighting.DirectionalLight;
 import engine.lighting.PointLight;
 import engine.math.Quaternion;
 import engine.renderer.motionBlur.MotionBlur;
-import engine.renderpipeline.RenderingConfig;
 
 public class RenderingEngine {
 

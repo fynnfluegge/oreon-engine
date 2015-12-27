@@ -13,7 +13,7 @@ import static org.lwjgl.opengl.GL42.glTexStorage2D;
 import static org.lwjgl.opengl.GL43.glDispatchCompute;
 import engine.core.Texture;
 import engine.math.Vec2f;
-import engine.renderpipeline.shaderPrograms.ocean.PhillipsSpectrumShader;
+import engine.shaderprograms.water.PhillipsSpectrumShader;
 
 public class PhillipsSpectrum {
 	
@@ -51,16 +51,16 @@ public class PhillipsSpectrum {
 		h0kminus.noFilter();
 		glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA32F, N, N);
 		
-		noise0 = new Texture("./res/textures/Noise0.jpg");
+		noise0 = new Texture("./res/textures/Noise/Noise0.jpg");
 		noise0.bind();
 		noise0.noFilter();
-		noise1 = new Texture("./res/textures/Noise1.jpg");
+		noise1 = new Texture("./res/textures/Noise/Noise1.jpg");
 		noise1.bind();
 		noise1.noFilter();
-		noise2 = new Texture("./res/textures/Noise2.jpg");
+		noise2 = new Texture("./res/textures/Noise/Noise2.jpg");
 		noise2.bind();
 		noise2.noFilter();
-		noise3 = new Texture("./res/textures/Noise3.jpg");
+		noise3 = new Texture("./res/textures/Noise/Noise3.jpg");
 		noise3.bind();
 		noise3.noFilter();
 	}

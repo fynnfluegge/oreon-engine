@@ -1,5 +1,5 @@
 <project name="CurseyeEngine" default="dist">
-  <property name="MyApp" value="application" />
+  <property name="MyApp" value="WorldEditor" />
   <path id="compile.classpath">
     <fileset dir="lib" />
   	

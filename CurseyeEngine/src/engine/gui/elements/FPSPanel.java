@@ -2,6 +2,7 @@ package engine.gui.elements;
 
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
+import engine.configs.AlphaBlending;
 import engine.core.Texture;
 import engine.core.Transform;
 import engine.core.Util;
@@ -12,8 +13,7 @@ import engine.gui.GUIVAO;
 import engine.main.CoreEngine;
 import engine.math.Matrix4f;
 import engine.math.Vec2f;
-import engine.renderpipeline.configs.AlphaBlending;
-import engine.renderpipeline.shaderPrograms.GuiShader;
+import engine.shaderprograms.GuiShader;
 
 
 public class FPSPanel extends GUIElement{

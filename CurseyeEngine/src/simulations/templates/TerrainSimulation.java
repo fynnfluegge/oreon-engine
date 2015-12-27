@@ -26,20 +26,20 @@ import static org.lwjgl.opengl.GL30.GL_RGBA32F;
 
 import java.nio.ByteBuffer;
 
+import engine.configs.RenderingConfig;
 import engine.core.Constants;
 import engine.core.Texture;
 import engine.core.Window;
 import engine.main.RenderingEngine;
 import engine.renderer.terrain.SkySphere;
-import engine.renderer.terrain.Terrain;
-import engine.renderer.water.Ocean;
-import engine.renderpipeline.RenderingConfig;
+import engine.renderer.terrain.TerrainObject;
+import engine.renderer.water.WaterSurface;
 
 public class TerrainSimulation extends Simulation{
 
 	private SkySphere skySphere;
-	private Terrain terrain;
-	private Ocean water;
+	private TerrainObject terrain;
+	private WaterSurface water;
 	
 	public void init()
 	{
@@ -96,51 +96,58 @@ public class TerrainSimulation extends Simulation{
 			getRoot().getTransform().setScaling(1,-1,1);
 			// prevent refelction distortion overlap
 			skySphere.getTransform().setScaling(1.1f,-1,1.1f);
-			skySphere.getTransform().getTranslation().setY(RenderingEngine.getClipplane().getW() - (skySphere.getTransform().getTranslation().getY() - RenderingEngine.getClipplane().getW()));
-			if (terrain != null){
-				terrain.setScaleY(getTerrain().getScaleY() * -1f);
-				terrain.getTransform().getLocalTranslation().setY(RenderingEngine.getClipplane().getW() - (getTerrain().getTransform().getLocalTranslation().getY() - RenderingEngine.getClipplane().getW()));
-			}
-			update();
+			skySphere.getTransform().getTranslation().setY(RenderingEngine.getClipplane().getW() - 
+					(skySphere.getTransform().getTranslation().getY() - RenderingEngine.getClipplane().getW()));
+			
+			synchronized(TerrainObject.getLock()){
+				if (terrain != null){
+					terrain.setScaleY(terrain.getScaleY() * -1f);
+					terrain.getTransform().getLocalTranslation().setY(RenderingEngine.getClipplane().getW() - 
+							(terrain.getTransform().getLocalTranslation().getY() - RenderingEngine.getClipplane().getW()));
+				}
+				update();
 			
 			
-			//render reflection to texture
+				//render reflection to texture
 
-			glViewport(0,0,Window.getWidth()/2, Window.getHeight()/2);
+				glViewport(0,0,Window.getWidth()/2, Window.getHeight()/2);
 			
-			water.getReflectionFBO().bind();
-			RenderingConfig.clearScreen();
-			glFrontFace(GL_CCW);
-			getRoot().render();
-			skySphere.render();
-			if (terrain != null){
-				terrain.render();
-			}
-			glFinish(); //important, prevent conflicts with following compute shaders
-			glFrontFace(GL_CW);
-			water.getReflectionFBO().unbind();
+				water.getReflectionFBO().bind();
+				RenderingConfig.clearScreen();
+				glFrontFace(GL_CCW);
+				getRoot().render();
+				skySphere.render();
+				if (terrain != null){
+					terrain.render();
+				}
+				glFinish(); //important, prevent conflicts with following compute shaders
+				glFrontFace(GL_CW);
+				water.getReflectionFBO().unbind();
 			
-			// antimirror scene to clipplane
+				// antimirror scene to clipplane
 		
-			getRoot().getTransform().setScaling(1,1,1);
-			skySphere.getTransform().setScaling(1,1,1);
-			skySphere.getTransform().getTranslation().setY(RenderingEngine.getClipplane().getW() + (RenderingEngine.getClipplane().getW() - skySphere.getTransform().getTranslation().getY()));
-			if (terrain != null){
-				terrain.setScaleY(getTerrain().getScaleY()/ -1f);
-				terrain.getTransform().getLocalTranslation().setY(RenderingEngine.getClipplane().getW() + (RenderingEngine.getClipplane().getW() - getTerrain().getTransform().getLocalTranslation().getY()));
-			}
-			update();
+				getRoot().getTransform().setScaling(1,1,1);
+				skySphere.getTransform().setScaling(1,1,1);
+				skySphere.getTransform().getTranslation().setY(RenderingEngine.getClipplane().getW() + 
+				(RenderingEngine.getClipplane().getW() - skySphere.getTransform().getTranslation().getY()));
+				if (terrain != null){
+					terrain.setScaleY(terrain.getScaleY()/ -1f);
+					terrain.getTransform().getLocalTranslation().setY(RenderingEngine.getClipplane().getW() + 
+							(RenderingEngine.getClipplane().getW() - terrain.getTransform().getLocalTranslation().getY()));
+				}
+				update();
 			
-			// render to refraction texture
+				// render to refraction texture
 			
-			water.getRefractionFBO().bind();
-			RenderingConfig.clearScreenDeepOceanRefraction();
-			getRoot().render();
-			if (terrain != null){
-				terrain.render();
+				water.getRefractionFBO().bind();
+				RenderingConfig.clearScreenDeepOceanRefraction();
+				getRoot().render();
+				if (terrain != null){
+					terrain.render();
+				}
+				glFinish(); //important, prevent conflicts with following compute shaders
+				water.getRefractionFBO().unbind();
 			}
-			glFinish(); //important, prevent conflicts with following compute shaders
-			water.getRefractionFBO().unbind();
 			
 			RenderingEngine.setClipplane(Constants.PLANE0);
 		}
@@ -148,9 +155,8 @@ public class TerrainSimulation extends Simulation{
 		glViewport(0,0,Window.getWidth(),Window.getHeight());
 		getSceneFBO().bind();
 		RenderingConfig.clearScreen();	
-		if (water != null){
+		if (water != null)
 			water.render();
-		}
 		if (terrain != null) 
 			terrain.render();
 		if (!RenderingEngine.isGrid())
@@ -160,19 +166,19 @@ public class TerrainSimulation extends Simulation{
 		getSceneFBO().unbind();
 	}
 
-	public Ocean getWater() {
+	public WaterSurface getWater() {
 		return water;
 	}
 
-	public void setWater(Ocean water) {
+	public void setWater(WaterSurface water) {
 		this.water = water;
 	}
 
-	public Terrain getTerrain() {
+	public TerrainObject getTerrain() {
 		return terrain;
 	}
 
-	public void setTerrain(Terrain terrain) {
+	public void setTerrain(TerrainObject terrain) {
 		this.terrain = terrain;
 	}
 

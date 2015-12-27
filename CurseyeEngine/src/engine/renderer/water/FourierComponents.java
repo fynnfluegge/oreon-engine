@@ -8,7 +8,7 @@ import static org.lwjgl.opengl.GL42.glBindImageTexture;
 import static org.lwjgl.opengl.GL42.glTexStorage2D;
 import static org.lwjgl.opengl.GL43.glDispatchCompute;
 import engine.core.Texture;
-import engine.renderpipeline.shaderPrograms.ocean.FourierComponentsShader;
+import engine.shaderprograms.water.FourierComponentsShader;
 
 public class FourierComponents {
 	

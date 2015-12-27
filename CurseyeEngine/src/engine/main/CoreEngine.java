@@ -9,10 +9,10 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 
 import simulations.templates.Simulation;
+import engine.configs.RenderingConfig;
 import engine.core.Constants;
 import engine.core.Window;
 import engine.gui.GUI;
-import engine.renderpipeline.RenderingConfig;
 
 
 public class CoreEngine{

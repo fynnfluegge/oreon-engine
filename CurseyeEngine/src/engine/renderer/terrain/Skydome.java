@@ -1,19 +1,16 @@
 package engine.renderer.terrain;
 
+import engine.buffers.MeshVAO;
+import engine.configs.CullFaceDisable;
 import engine.core.ProceduralTexturing;
 import engine.core.Texture;
 import engine.gameObject.GameObject;
 import engine.gameObject.components.MeshRenderer;
 import engine.gameObject.components.Model;
-import engine.gameObject.components.Renderer;
-import engine.main.RenderingEngine;
 import engine.math.Vec3f;
 import engine.models.data.Material;
 import engine.models.obj.OBJLoader;
-import engine.renderpipeline.configs.CullFaceDisable;
-import engine.renderpipeline.data.MeshVAO;
-import engine.renderpipeline.shaderPrograms.basic.Grid;
-import engine.renderpipeline.shaderPrograms.basic.Textured;
+import engine.shaderprograms.basic.Textured;
 
 public class Skydome extends GameObject{
 	
@@ -44,15 +41,5 @@ public class Skydome extends GameObject{
 		getTransform().setRotation(getTransform().getLocalRotation().add(getParent().getTransform().getRotation()));
 		getTransform().setTranslation(getTransform().getLocalTranslation().add(getParent().getTransform().getTranslation()));
 		getTransform().setScaling(getTransform().getLocalScaling().mul(getParent().getTransform().getScaling()));
-		
-		if (RenderingEngine.isGrid())
-		{
-			((Renderer) getComponents().get("Renderer")).setShader(Grid.getInstance());	
-		}
-		
-		else if (!RenderingEngine.isGrid())
-		{
-			((Renderer) getComponents().get("Renderer")).setShader(Textured.getInstance());
-		}
 	}	
 }

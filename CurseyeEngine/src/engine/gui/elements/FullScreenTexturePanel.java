@@ -2,6 +2,7 @@ package engine.gui.elements;
 
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
+import engine.configs.AlphaCullFaceDisable;
 import engine.core.Geometrics;
 import engine.core.Texture;
 import engine.core.Transform;
@@ -9,8 +10,7 @@ import engine.core.Window;
 import engine.gui.GUIElement;
 import engine.gui.GUIVAO;
 import engine.math.Matrix4f;
-import engine.renderpipeline.configs.AlphaCullFaceDisable;
-import engine.renderpipeline.shaderPrograms.GuiShader;
+import engine.shaderprograms.GuiShader;
 
 public class FullScreenTexturePanel extends GUIElement{
 	

@@ -1,0 +1,10 @@
+bump mapping:
+tangentspace independent from texture coord
+
+glassrenderer:
+transforms
+
+motion blur:
+framebuffer texture clear
+
+frustum culling peformance

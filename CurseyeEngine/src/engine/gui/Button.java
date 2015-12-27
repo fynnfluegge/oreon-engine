@@ -2,6 +2,7 @@ package engine.gui;
 
 import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
+import engine.configs.AlphaBlending;
 import engine.core.Input;
 import engine.core.Texture;
 import engine.core.Transform;
@@ -9,8 +10,7 @@ import engine.math.Matrix4f;
 import engine.math.Quaternion;
 import engine.math.Vec2f;
 import engine.models.data.Mesh;
-import engine.renderpipeline.configs.AlphaBlending;
-import engine.renderpipeline.shaderPrograms.GuiShader;
+import engine.shaderprograms.GuiShader;
 
 public abstract class Button extends GUIElement{
 

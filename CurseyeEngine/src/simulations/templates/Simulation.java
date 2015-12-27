@@ -1,9 +1,9 @@
 package simulations.templates;
 
 
+import engine.buffers.Framebuffer;
 import engine.core.Texture;
 import engine.gameObject.GameObject;
-import engine.renderpipeline.data.Framebuffer;
 
 public abstract class Simulation {
 

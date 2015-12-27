@@ -2,6 +2,8 @@ package simulations.objLoader;
 
 import org.lwjgl.input.Keyboard;
 
+import engine.buffers.PatchVAO;
+import engine.configs.AlphaBlending;
 import engine.core.Input;
 import engine.core.Texture;
 import engine.core.Vertex;
@@ -13,8 +15,6 @@ import engine.math.Vec2f;
 import engine.math.Vec3f;
 import engine.models.data.Material;
 import engine.models.data.Patch;
-import engine.renderpipeline.configs.AlphaBlending;
-import engine.renderpipeline.data.PatchVAO;
 
 public class Logo extends GameObject{
 	
@@ -27,7 +27,7 @@ public class Logo extends GameObject{
 		
 		PatchVAO meshBuffer = new PatchVAO();
 		Model model = new Model(new Patch(generatePatchs4x4()));
-		PatchRenderer renderer = new PatchRenderer(meshBuffer, engine.renderpipeline.shaderPrograms.tessellation.PhongBumpy.getInstance(), new AlphaBlending(0));
+		PatchRenderer renderer = new PatchRenderer(meshBuffer, engine.shaderprograms.phong.Tessellation.getInstance(), new AlphaBlending(0));
 		meshBuffer.addData(model.getPatch(),16);
 		
 		Material material = new Material();
