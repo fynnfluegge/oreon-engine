@@ -42,14 +42,14 @@ void calcTangent()
     t.y = f * (dV2 * e1.y - dV1 * e2.y);
     t.z = f * (dV2 * e1.z - dV1 * e2.z);
 	
-	tangent = normalize(t);
+	Tangent = normalize(t);
 }
 
 void main()
 {	
 	float dx,dy,dz;
-	//calcTangent();
-
+	calcTangent();
+		
 	dy = texture(Dy, texCoordG[0]).r * displacementScale;
 	dx = texture(Dx, texCoordG[0]).r * choppiness;
 	dz = texture(Dz, texCoordG[0]).r * choppiness;
