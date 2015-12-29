@@ -26,6 +26,6 @@ public static void main(String[] args) {
 		setWater(new Ocean());
 		SwingGUI.setSimulation(this);
 		SwingGUI.start();
-		RenderingEngine.setDirectionalLight(new DirectionalLight(new Vec3f(0,-1,0), new Vec3f(1.0f,1.0f,1.0f), new Vec3f(1.0f, 0.95f, 0.75f), 0.9f));
+		RenderingEngine.setDirectionalLight(new DirectionalLight(new Vec3f(0,-1,0), new Vec3f(0.2f,0.2f,0.2f), new Vec3f(1.0f, 0.95f, 0.87f), 0.9f));
 	}
 }

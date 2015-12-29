@@ -25,7 +25,7 @@ public class Terrain extends TerrainObject{
 	
 	public Terrain() {
 		
-		super(128);
+		super(64);
 
 		getTransform().setLocalScaling(getScaleXZ(), getScaleY(), getScaleXZ());
 		getTransform().setLocalTranslation(-(getScaleXZ()/2),0,-(getScaleXZ()/2));	

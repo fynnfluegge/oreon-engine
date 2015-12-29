@@ -13,7 +13,6 @@ struct DirectionalLight
 	vec3 color;
 };
 
-
 uniform mat4 modelViewProjectionMatrix;
 uniform DirectionalLight sunlight;
 uniform sampler2D waterReflection;
@@ -30,9 +29,8 @@ uniform int texDetail;
 uniform float emission;
 uniform float shininess;
 
-
-const vec4 refractionColor =vec4(0.02,0.03,0.06,1.0f);
-const vec4 reflectionColor =vec4(0.4,0.6,0.9,1.0f);
+const vec3 refractionColor = vec3(0.02,0.03,0.055);
+const vec3 reflectionColor = vec3(0.3294,0.4917,0.7270);
 const float zFar = 10000;
 const vec4 fogColor = vec4(0.1,0.15,0.25,0);
 
@@ -44,12 +42,12 @@ vec3 vertexToEye;
 
 float diffuse(vec3 normal)
 {
-	return clamp(dot(normal, -sunlight.direction) * sunlight.intensity,0.2,1);
+	return max(0, dot(normal, -sunlight.direction) * sunlight.intensity);
 }
 
 float specular(vec3 normal)
 {
-	normal.y *= 0.25;
+	normal.y *= 0.4;
 	normal = normalize(normal);
 	vec3 reflectionVector = normalize(reflect(sunlight.direction, normal));
 	
@@ -61,11 +59,11 @@ float specular(vec3 normal)
 
 float fresnelApproximated(vec3 normal)
 {
-    vec3 halfDirection = normalize(normal + vertexToEye );
+    vec3 halfDirection = normalize(normal + vertexToEye);
     
-    float cosine = dot( halfDirection, vertexToEye );
-    float product = max( cosine, 0.0 );
-    float factor = pow( product, 1.0 );
+    float cosine = dot(halfDirection, vertexToEye);
+    float product = max(cosine, 0.0);
+    float factor = pow(product, 1.0);
     
     return 1-factor;
 }
@@ -118,18 +116,20 @@ void main(void)
 	
 	// normal
 	vec3 normal = 2 * texture(normalmap, texCoordF).rbg - 1;
-	float wn = max(1,dist * 0.002);
-	
-	normal.y *= wn;
+
 	normal = normalize(normal);
+	vec3 bitangent = normalize(cross(tangent, normal));
+	SigmaSqX = 0.01;
+	SigmaSqY = 0.01;
+	
+	mat3 TBN = mat3(tangent,normal,bitangent);
+	vec3 bumpNormal = 2 * texture(normalmap, texCoordF*4).rbg - 1;
+	bumpNormal.y *= 1.4;
+	normal = normalize(TBN * bumpNormal);
 	
 	// BRDF lighting, high performance
-	// SigmaSqX = min(0.1,0.00005 * dist);
-	// SigmaSqY = min(0.1,0.00005 * dist);
-	// vec3 bitangent = normalize(cross(tangent, normal));
 	// float F = fresnel(normal, tangent, bitangent);
-	
-	// Fresnel Term
+	// Fresnel Term approximation
 	float F = fresnelApproximated(normal);
 	
 	// projCoord //
@@ -139,21 +139,22 @@ void main(void)
     // Reflection //
 	vec2 reflecCoords = projCoord.xy + dudvCoord.rb * kReflection;
 	reflecCoords = clamp(reflecCoords, kReflection, 1-kReflection);
-    vec4 reflectionColor = mix(texture(waterReflection, reflecCoords),reflectionColor,  0.2);
-    reflectionColor *= F;
+    vec3 reflection = mix(texture(waterReflection, reflecCoords).rgb, reflectionColor,  0.2);
+    reflection *= F;
  
     // Refraction //
 	vec2 refracCoords = projCoord.xy + dudvCoord.rb * kRefraction;
 	refracCoords = clamp(refracCoords, kRefraction, 1-kRefraction);
 	
-    vec4 refractionColor = mix(texture(waterRefraction, refracCoords), refractionColor, 0.2); 
-	refractionColor *= 1-F;
+    vec3 refraction = mix(texture(waterRefraction, refracCoords).rgb, refractionColor, 0.2); 
+	refraction *= 1-F;
 	
 	float diffuse = diffuse(normal);
 	float specular = specular(normal);
-	vec4 specularLight = vec4(sunlight.color * specular,0);
+	vec3 diffuseLight = sunlight.ambient + sunlight.color * diffuse;
+	vec3 specularLight = sunlight.color * specular;
 	
-	vec4 fragColor = (reflectionColor + refractionColor) * diffuse + specularLight; 
+	vec3 rgb = (reflection + refraction) * diffuseLight + specularLight;
 	
-	gl_FragColor = fragColor;
+	gl_FragColor = vec4(rgb,1);;
 }

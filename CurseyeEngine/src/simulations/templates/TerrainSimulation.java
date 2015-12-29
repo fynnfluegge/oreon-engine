@@ -85,11 +85,11 @@ public class TerrainSimulation extends Simulation{
 	
 	public void render()
 	{
-		if (getWater() != null)
+		if (water != null)
 		{
 			//water.renderFFT();
 	
-			RenderingEngine.setClipplane(getWater().getClipplane());
+			RenderingEngine.setClipplane(water.getClipplane());
 			
 			//mirror scene to clipplane
 			
@@ -113,10 +113,10 @@ public class TerrainSimulation extends Simulation{
 				glViewport(0,0,Window.getWidth()/2, Window.getHeight()/2);
 			
 				water.getReflectionFBO().bind();
-				RenderingConfig.clearScreen();
+				RenderingConfig.clearScreenDeepOceanReflection();
 				glFrontFace(GL_CCW);
 				getRoot().render();
-				skySphere.render();
+				//skySphere.render();
 				if (terrain != null){
 					terrain.render();
 				}

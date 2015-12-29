@@ -66,7 +66,7 @@ float shininess;
 
 float diffuse(vec3 direction, vec3 normal, float intensity)
 {
-	return max(0.05, dot(normal, -direction) * intensity);
+	return max(0.0, dot(normal, -direction) * intensity);
 }
 
 float specular(vec3 direction, vec3 normal, vec3 eyePosition, vec3 vertexPosition)
@@ -100,8 +100,8 @@ void main()
 	
 	if (highDetailF ==  1)
 	{
-		vec3 Bitangent = normalize(cross(tangent, normal));
-		mat3 TBN = mat3(tangent,normal,Bitangent);
+		vec3 bitangent = normalize(cross(tangent, normal));
+		mat3 TBN = mat3(tangent,normal,bitangent);
 		
 		vec3 sandNRM = normalize(2*(texture(sand.normalmap, texCoordF).rbg)-1);
 		vec3 rockNRM = normalize(2*(texture(rock.normalmap, texCoordF).rbg)-1);
@@ -150,19 +150,18 @@ void main()
 		specularLight += lights[light].color * specularFactor * attenuation;
 	}
 	
-	diffuseFactor = diffuse(sunlight.direction, normal, sunlight.intensity);
-	specularFactor = specular(sunlight.direction, normal, eyePosition, positionF);
-	
 	float ambientOcclusion = texture(occMap, mapCoords).r;
 	
 	vec3 sandTexel = texture(sand.diffusemap, texCoordF).xyz;
 	vec3 rockTexel = texture(rock.diffusemap, texCoordF).xyz;
 	vec3 snowTexel = texture(snow.diffusemap, texCoordF).xyz;
 	
-	diffuseLight  += vec3(sunlight.color) * diffuseFactor;
-	specularLight += vec3(sunlight.color) * specularFactor;
+	float diffuse = diffuse(sunlight.direction, normal, sunlight.intensity);
+	float specular = specular(sunlight.direction, normal, eyePosition, positionF);
+	diffuseLight = sunlight.ambient + sunlight.color * diffuse;
+	specularLight = sunlight.color * specular;
 	
-	vec3 fragColor = (min(vec3(1.0),sandTexel * sandBlending + rockTexel * rockBlending + snowTexel * snowBlending)  * diffuseLight + specularLight) * sunlight.ambient * ambientOcclusion;
+	vec3 fragColor = (min(vec3(1.0),sandTexel * sandBlending + rockTexel * rockBlending + snowTexel * snowBlending)  * diffuseLight * ambientOcclusion + specularLight);
 	
 	float fogFactor = -0.0005/sightRangeFactor*(dist-zFar/5*sightRangeFactor - 400*sightRangeFactor);
     fogFactor = clamp(fogFactor, 0.0, 1.0 );

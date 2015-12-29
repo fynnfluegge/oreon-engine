@@ -1,4 +1,4 @@
-package simulations.terrainLoader;
+package simulations.worldLoader;
 
 import engine.core.Constants;
 import engine.math.Quaternion;

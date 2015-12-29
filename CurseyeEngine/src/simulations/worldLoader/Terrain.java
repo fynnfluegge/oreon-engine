@@ -1,11 +1,11 @@
-package simulations.terrainLoader;
+package simulations.worldLoader;
 
 import engine.renderer.terrain.TerrainObject;
 
 public class Terrain extends TerrainObject{
 
 	public Terrain() {
-		super(128);
+		super(64);
 		
 		this.loadSettingsFile("./res/terrains/terrain0/terrainSettings.ter");
 		setSightRangeFactor(10);

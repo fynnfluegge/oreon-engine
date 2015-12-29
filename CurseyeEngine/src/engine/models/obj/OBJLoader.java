@@ -218,7 +218,7 @@ public class OBJLoader {
 					}
 				}
 			
-				System.out.println(System.currentTimeMillis() - time);
+				System.out.println("obj loading time : " + (System.currentTimeMillis() - time) + "ms");
 				
 				Model[] modelArray = new Model[models.size()];
 				
