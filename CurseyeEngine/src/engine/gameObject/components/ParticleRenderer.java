@@ -1,9 +1,8 @@
 package engine.gameObject.components;
 
-import engine.buffers.ParticleSystemVAO;
 import engine.configs.RenderingConfig;
 import engine.core.Camera;
-import engine.models.data.Material;
+import engine.gpubuffers.ParticleSystemVAO;
 import engine.models.data.Particle;
 import engine.shaderprograms.Shader;
 import engine.shaderprograms.particles.ParticleShader;
@@ -32,7 +31,7 @@ public class ParticleRenderer extends Renderer{
 	{
 		getShader().execute();
 		getShader().sendUniforms(getTransform().getWorldMatrix(), Camera.getInstance().getViewProjectionMatrix(), getTransform().getModelViewProjectionMatrix());
-		getShader().sendUniforms(((Model) getParent().getComponents().get("Model")).getMaterial());
+		getShader().sendUniforms((Material) getParent().getComponents().get("Material"));
 		getConfig().enable();
 		vao.draw();
 		getConfig().disable();

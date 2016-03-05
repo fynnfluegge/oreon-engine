@@ -14,7 +14,7 @@ public class Camera {
 	
 	private static Camera instance = null;
 
-	public static final Vec3f yAxis = new Vec3f(0,1,0);
+	private final Vec3f yAxis = new Vec3f(0,1,0);
 	
 	private Vec3f position;
 	private Vec3f forward;
@@ -44,7 +44,7 @@ public class Camera {
 	private float rotXamt;
 	private float rotXcounter;
 	private boolean rotXInitiated = false;
-	private float sensitivity = 0.3f;
+	private float mouseSensitivity = 0.2f;
 	   
 	public static Camera getInstance() 
 	{
@@ -57,8 +57,8 @@ public class Camera {
 	
 	protected Camera()
 	{
-		this(new Vec3f(675,450,610), new Vec3f(0.86965036f,-0.49272382f,-0.030521099f), new Vec3f(0.49242967f,0.87018573f,-0.017024077f));
-		this.setProjection(60, Window.getWidth(), Window.getHeight(), Constants.ZNEAR, Constants.ZFAR);
+		this(new Vec3f(0,200,-2500), new Vec3f(0,0,1), new Vec3f(0,1,0));
+		this.setProjection(54, Window.getWidth(), Window.getHeight(), Constants.ZNEAR, Constants.ZFAR);
 		this.projectionMatrix = new Matrix4f().Projection(fovY, width, height, zNear, zFar);
 		this.setViewMatrix(new Matrix4f().View(this.getForward(), this.getUp()).mul(
 				new Matrix4f().Translation(this.getPosition().mul(-1))));
@@ -79,10 +79,10 @@ public class Camera {
 	
 	public void input()
 	{
-		this.setScaleFactor(Math.max(1, scaleFactor + Mouse.getDWheel()/10));
+		this.setScaleFactor(Math.max(10, scaleFactor + Mouse.getDWheel()/12));
 		
-		float movAmt = scaleFactor * CoreEngine.getFrameTime();
-		float rotAmt = scaleFactor * 0.1f * CoreEngine.getFrameTime(); 
+		float movAmt = scaleFactor/4.0f *  CoreEngine.getFrameTime();
+		float rotAmt = scaleFactor* 0.1f * CoreEngine.getFrameTime(); 
 		
 		if(Input.getButtonDown(2))
 		{
@@ -124,6 +124,7 @@ public class Camera {
 			float dx = lockedMousePosition.getX() - currentMousePosition.getX();
 			
 			// y-axxis rotation
+			
 			if (dy != 0){
 				rotYstride = Math.abs(dy * CoreEngine.getFrameTime() * 10);
 				rotYamt = dy;
@@ -136,7 +137,7 @@ public class Camera {
 				// up-rotation
 				if (rotYamt < 0){
 					if (rotYcounter > rotYamt){
-						rotateX(-rotYstride * sensitivity);
+						rotateX(-rotYstride * mouseSensitivity);
 						rotYcounter -= rotYstride;
 					}
 					else rotYInitiated = false;
@@ -144,7 +145,7 @@ public class Camera {
 				// down-rotation
 				else if (rotYamt > 0){
 					if (rotYcounter < rotYamt){
-						rotateX(rotYstride * sensitivity);
+						rotateX(rotYstride * mouseSensitivity);
 						rotYcounter += rotYstride;
 					}
 					else rotYInitiated = false;
@@ -164,7 +165,7 @@ public class Camera {
 				// up-rotation
 				if (rotXamt < 0){
 					if (rotXcounter > rotXamt){
-						rotateY(rotXstride * sensitivity);
+						rotateY(rotXstride * mouseSensitivity);
 						rotXcounter -= rotXstride;
 					}
 					else rotXInitiated = false;
@@ -172,7 +173,7 @@ public class Camera {
 				// down-rotation
 				else if (rotXamt > 0){
 					if (rotXcounter < rotXamt){
-						rotateY(-rotXstride * sensitivity);
+						rotateY(-rotXstride * mouseSensitivity);
 						rotXcounter += rotXstride;
 					}
 					else rotXInitiated = false;
@@ -189,6 +190,7 @@ public class Camera {
 		setViewProjectionMatrix(projectionMatrix.mul(viewMatrix));
 		
 //		System.out.println(position);
+//		System.out.println(previousPosition);
 //		System.out.println(forward);
 //		System.out.println(up);
 	}
@@ -380,5 +382,4 @@ public class Camera {
 	public void setPreviousViewMatrix(Matrix4f previousViewMatrix) {
 		this.previousViewMatrix = previousViewMatrix;
 	}
-
 }

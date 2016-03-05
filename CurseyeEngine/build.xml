@@ -1,5 +1,5 @@
 <project name="CurseyeEngine" default="dist">
-  <property name="MyApp" value="waterRenderer" />
+  <property name="MyApp" value="FractalWorlds" />
   <path id="compile.classpath">
     <fileset dir="lib" />
   	

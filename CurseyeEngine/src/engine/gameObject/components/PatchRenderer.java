@@ -1,8 +1,8 @@
 package engine.gameObject.components;
 
-import engine.buffers.PatchVAO;
 import engine.configs.RenderingConfig;
 import engine.core.Camera;
+import engine.gpubuffers.PatchVAO;
 import engine.shaderprograms.Shader;
 
 public class PatchRenderer extends Renderer{
@@ -14,7 +14,6 @@ public class PatchRenderer extends Renderer{
 			super(config, shader);
 			vao = meshBuffer;
 		}
-		
 
 		public void render() {
 			
@@ -24,7 +23,7 @@ public class PatchRenderer extends Renderer{
 			
 			// TODO improvement: send rendering data strucure
 			getShader().sendUniforms(getParent());
-			getShader().sendUniforms(((Model) getParent().getComponents().get("Model")).getMaterial());
+
 			vao.draw();
 			getConfig().disable();	
 		}

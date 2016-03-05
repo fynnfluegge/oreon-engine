@@ -13,7 +13,7 @@ import engine.gui.GUIVAO;
 import engine.main.CoreEngine;
 import engine.math.Matrix4f;
 import engine.math.Vec2f;
-import engine.shaderprograms.GuiShader;
+import engine.shaderprograms.gui.GuiShader;
 
 
 public class FPSPanel extends GUIElement{

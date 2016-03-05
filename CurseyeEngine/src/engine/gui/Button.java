@@ -10,7 +10,7 @@ import engine.math.Matrix4f;
 import engine.math.Quaternion;
 import engine.math.Vec2f;
 import engine.models.data.Mesh;
-import engine.shaderprograms.GuiShader;
+import engine.shaderprograms.gui.GuiShader;
 
 public abstract class Button extends GUIElement{
 

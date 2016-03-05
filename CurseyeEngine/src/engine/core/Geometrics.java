@@ -18,9 +18,6 @@ public class Geometrics {
 		return quad;
 	}
 	
-	public static Mesh cube(){
-		return null;
-	}
 	
 	public static Mesh Cube()
 	{
@@ -59,44 +56,4 @@ public class Geometrics {
 		
 		return new Mesh(vertices, indices);
 	}
-	
-	public Vertex[] generatePatchs4x4(int amountx, int amounty)
-	{	
-		// 16 vertices for each patch
-		Vertex[] vertices = new Vertex[amountx * amounty * 16];
-		
-		int index = 0;
-		float dx = 1f/amountx;
-		float dy = 1f/amounty;
-		
-		for (float i=0; i<1; i+=dx)
-		{
-			for (float j=0; j<1; j+=dy)
-			{	
-				vertices[index++] = new Vertex(new Vec3f(i,0,j));
-				vertices[index++] = new Vertex(new Vec3f(i+dx*0.33f,0,j));
-				vertices[index++] = new Vertex(new Vec3f(i+dx*0.66f,0,j));
-				vertices[index++] = new Vertex(new Vec3f(i+dx,0,j));
-				
-				vertices[index++] = new Vertex(new Vec3f(i,0,j+dy*0.33f));
-				vertices[index++] = new Vertex(new Vec3f(i+dx*0.33f,0,j+dy*0.33f));
-				vertices[index++] = new Vertex(new Vec3f(i+dx*0.66f,0,j+dy*0.33f));
-				vertices[index++] = new Vertex(new Vec3f(i+dx,0,j+dy*0.33f));
-				
-				vertices[index++] = new Vertex(new Vec3f(i,0,j+dy*0.66f));
-				vertices[index++] = new Vertex(new Vec3f(i+dx*0.33f,0,j+dy*0.66f));
-				vertices[index++] = new Vertex(new Vec3f(i+dx*0.66f,0,j+dy*0.66f));
-				vertices[index++] = new Vertex(new Vec3f(i+dx,0,j+dy*0.66f));
-				
-				vertices[index++] = new Vertex(new Vec3f(i,0,j+dy));
-				vertices[index++] = new Vertex(new Vec3f(i+dx*0.33f,0,j+dy));
-				vertices[index++] = new Vertex(new Vec3f(i+dx*0.66f,0,j+dy));
-				vertices[index++] = new Vertex(new Vec3f(i+dx,0,j+dy));
-
-			}
-		}
-		
-		return vertices;
-	}
-
 }

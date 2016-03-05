@@ -14,7 +14,7 @@ import engine.gui.elements.FullScreenTexturePanel;
 import engine.lighting.DirectionalLight;
 import engine.lighting.PointLight;
 import engine.math.Quaternion;
-import engine.renderer.motionBlur.MotionBlur;
+import engine.vfx.motionBlur.MotionBlur;
 
 public class RenderingEngine {
 

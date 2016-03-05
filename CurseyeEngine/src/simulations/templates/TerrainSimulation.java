@@ -31,7 +31,7 @@ import engine.core.Constants;
 import engine.core.Texture;
 import engine.core.Window;
 import engine.main.RenderingEngine;
-import engine.renderer.terrain.SkySphere;
+import engine.renderer.atmosphere.SkySphere;
 import engine.renderer.terrain.TerrainObject;
 import engine.renderer.water.WaterSurface;
 
@@ -101,7 +101,7 @@ public class TerrainSimulation extends Simulation{
 			
 			synchronized(TerrainObject.getLock()){
 				if (terrain != null){
-					terrain.setScaleY(terrain.getScaleY() * -1f);
+					terrain.getTerrainConfiguration().setScaleY(terrain.getTerrainConfiguration().getScaleY() * -1f);
 					terrain.getTransform().getLocalTranslation().setY(RenderingEngine.getClipplane().getW() - 
 							(terrain.getTransform().getLocalTranslation().getY() - RenderingEngine.getClipplane().getW()));
 				}
@@ -131,7 +131,7 @@ public class TerrainSimulation extends Simulation{
 				skySphere.getTransform().getTranslation().setY(RenderingEngine.getClipplane().getW() + 
 				(RenderingEngine.getClipplane().getW() - skySphere.getTransform().getTranslation().getY()));
 				if (terrain != null){
-					terrain.setScaleY(terrain.getScaleY()/ -1f);
+					terrain.getTerrainConfiguration().setScaleY(terrain.getTerrainConfiguration().getScaleY()/ -1f);
 					terrain.getTransform().getLocalTranslation().setY(RenderingEngine.getClipplane().getW() + 
 							(RenderingEngine.getClipplane().getW() - terrain.getTransform().getLocalTranslation().getY()));
 				}
@@ -155,10 +155,12 @@ public class TerrainSimulation extends Simulation{
 		glViewport(0,0,Window.getWidth(),Window.getHeight());
 		getSceneFBO().bind();
 		RenderingConfig.clearScreen();	
-		if (water != null)
+		if (water != null){
 			water.render();
-		if (terrain != null) 
+		}
+		if (terrain != null) {
 			terrain.render();
+		}
 		if (!RenderingEngine.isGrid())
 			skySphere.render();
 		getRoot().render();

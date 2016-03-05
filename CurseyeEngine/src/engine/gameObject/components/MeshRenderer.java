@@ -1,8 +1,8 @@
 package engine.gameObject.components;
 
-import engine.buffers.MeshVAO;
 import engine.configs.RenderingConfig;
 import engine.core.Camera;
+import engine.gpubuffers.MeshVAO;
 import engine.shaderprograms.Shader;
 
 public class MeshRenderer extends Renderer{
@@ -14,7 +14,6 @@ public class MeshRenderer extends Renderer{
 		super(config, shader);
 		this.vao = meshBuffer;
 	}
-	
 
 	public void render() {
 		
@@ -22,11 +21,10 @@ public class MeshRenderer extends Renderer{
 		
 		getShader().execute();
 		getShader().sendUniforms(getTransform().getWorldMatrix(), Camera.getInstance().getViewProjectionMatrix(), getTransform().getModelViewProjectionMatrix());
-		getShader().sendUniforms(((Model) getParent().getComponents().get("Model")).getMaterial());
+		getShader().sendUniforms(((Material) getParent().getComponents().get("Material")));
 		
 		vao.draw();
 		
 		getConfig().disable();
-		
 	}
 }

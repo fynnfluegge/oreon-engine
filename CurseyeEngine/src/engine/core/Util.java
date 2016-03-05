@@ -59,7 +59,6 @@ public class Util {
 		return buffer;
 	}
 	
-	
 	public static FloatBuffer createFlippedBufferAOS(Vertex[] vertices)
 	{
 		FloatBuffer buffer = createFloatBuffer(vertices.length * Vertex.FLOATS);
@@ -140,7 +139,6 @@ public class Util {
 			buffer.put(vector[i].getX());
 			buffer.put(vector[i].getY());
 			buffer.put(vector[i].getZ());
-			System.out.println(vector.length);
 		}
 		
 		buffer.flip();

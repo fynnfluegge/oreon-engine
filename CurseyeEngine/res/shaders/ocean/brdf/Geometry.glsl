@@ -5,11 +5,13 @@ layout(triangles) in;
 layout(triangle_strip, max_vertices = 3) out;
 in vec2 texCoordG[];
 
-out vec3 positionF;
+out vec3 position;
 out vec2 texCoordF;
 flat out vec3 tangent;
 
+uniform int largeDetailRange;
 uniform mat4 projectionViewMatrix;
+uniform vec3 eyePosition;
 uniform vec4 frustumPlanes[6];
 uniform float distortion;
 uniform float displacementScale;
@@ -48,32 +50,39 @@ void calcTangent()
 void main()
 {	
 	float dx,dy,dz;
-	calcTangent();
-		
-	dy = texture(Dy, texCoordG[0]).r * displacementScale;
-	dx = texture(Dx, texCoordG[0]).r * choppiness;
-	dz = texture(Dz, texCoordG[0]).r * choppiness;
 	vec4 position0 = gl_in[0].gl_Position;
-	position0.y -= dy;
-	position0.x -= dx;
-	position0.z -= dz;
-	
-	dy = texture(Dy, texCoordG[1]).r * displacementScale;
-	dx = texture(Dx, texCoordG[1]).r * choppiness;
-	dz = texture(Dz, texCoordG[1]).r * choppiness;
 	vec4 position1 = gl_in[1].gl_Position;
-	position1.y -= dy;
-	position1.x -= dx;
-	position1.z -= dz;
-
-	dy = texture(Dy, texCoordG[2]).r * displacementScale;
-	dx = texture(Dx, texCoordG[2]).r * choppiness;
-	dz = texture(Dz, texCoordG[2]).r * choppiness;
 	vec4 position2 = gl_in[2].gl_Position;
-	position2.y -= dy;
-	position2.x -= dx;
-	position2.z -= dz;
+	
+	float dist = (distance(gl_in[0].gl_Position.xyz, eyePosition) + distance(gl_in[1].gl_Position.xyz, eyePosition) + distance(gl_in[0].gl_Position.xyz, eyePosition))/3;
+	// if (dist < largeDetailRange){
+		calcTangent();
+		
+		dy = texture(Dy, texCoordG[0]).r * displacementScale;
+		dx = texture(Dx, texCoordG[0]).r * choppiness;
+		dz = texture(Dz, texCoordG[0]).r * choppiness;
+	
+		position0.y -= dy;
+		position0.x -= dx;
+		position0.z -= dz;
+	
+		dy = texture(Dy, texCoordG[1]).r * displacementScale;
+		dx = texture(Dx, texCoordG[1]).r * choppiness;
+		dz = texture(Dz, texCoordG[1]).r * choppiness;
+	
+		position1.y -= dy;
+		position1.x -= dx;
+		position1.z -= dz;
 
+		dy = texture(Dy, texCoordG[2]).r * displacementScale;
+		dx = texture(Dx, texCoordG[2]).r * choppiness;
+		dz = texture(Dz, texCoordG[2]).r * choppiness;
+	
+		position2.y -= dy;
+		position2.x -= dx;
+		position2.z -= dz;
+		
+	// }
 	
     gl_Position = projectionViewMatrix * position0;
 	gl_ClipDistance[0] = dot(gl_Position ,frustumPlanes[0]);
@@ -83,7 +92,7 @@ void main()
 	gl_ClipDistance[4] = dot(gl_Position ,frustumPlanes[4]);
 	gl_ClipDistance[5] = dot(gl_Position ,frustumPlanes[5]);
 	texCoordF = texCoordG[0];
-	positionF = position0.xyz;
+	position = position0.xyz;
 	tangent = Tangent;
     EmitVertex();
 		
@@ -95,7 +104,7 @@ void main()
 	gl_ClipDistance[4] = dot(gl_Position ,frustumPlanes[4]);
 	gl_ClipDistance[5] = dot(gl_Position ,frustumPlanes[5]);
 	texCoordF = texCoordG[1];
-	positionF = position1.xyz;
+	position = position1.xyz;
 	tangent = Tangent;
     EmitVertex();
 
@@ -107,7 +116,7 @@ void main()
 	gl_ClipDistance[4] = dot(gl_Position ,frustumPlanes[4]);
 	gl_ClipDistance[5] = dot(gl_Position ,frustumPlanes[5]);
 	texCoordF = texCoordG[2];
-	positionF = position2.xyz;
+	position = position2.xyz;
 	tangent = Tangent;
     EmitVertex();
 	

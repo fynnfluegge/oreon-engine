@@ -5,6 +5,7 @@ layout(line_strip, max_vertices = 4) out;
 
 in vec2 texCoordG[];
 
+uniform int largeDetailRange;
 uniform mat4 projectionViewMatrix;
 uniform vec4 frustumPlanes[6];
 uniform float displacementScale;

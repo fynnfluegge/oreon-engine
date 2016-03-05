@@ -8,7 +8,6 @@ import engine.core.Camera;
 import engine.core.ResourceLoader;
 import engine.gameObject.GameObject;
 import engine.math.Matrix4f;
-import engine.models.data.Material;
 import engine.renderer.water.WaterSurface;
 import engine.shaderprograms.Shader;
 
@@ -80,19 +79,15 @@ private static OceanGrid instance = null;
 		setUniformf("tessSlope", ocean.getTessellationSlope());
 		setUniformf("tessShift", ocean.getTessellationShift());
 		
+		setUniform("color", ocean.getGridColor());
 		glActiveTexture(GL_TEXTURE0);
-		ocean.getFFT().getDy().bind();
+		ocean.getWaterMaps().getFFT().getDy().bind();
 		setUniformi("Dy", 0);
 		glActiveTexture(GL_TEXTURE1);
-		ocean.getFFT().getDx().bind();
+		ocean.getWaterMaps().getFFT().getDx().bind();
 		setUniformi("Dx", 1);
 		glActiveTexture(GL_TEXTURE2);
-		ocean.getFFT().getDz().bind();
+		ocean.getWaterMaps().getFFT().getDz().bind();
 		setUniformi("Dz", 2);
-	}
-	
-	public void sendUniforms(Material material)
-	{	
-		setUniform("color", material.getColor());
 	}
 }

@@ -14,7 +14,6 @@ import engine.core.Window;
 import engine.gameObject.GameObject;
 import engine.main.RenderingEngine;
 import engine.math.Matrix4f;
-import engine.models.data.Material;
 import engine.renderer.water.WaterSurface;
 import engine.shaderprograms.Shader;
 
@@ -117,6 +116,9 @@ private static OceanBRDF instance = null;
 		setUniformf("emission", ocean.getEmission());
 		setUniformf("shininess", ocean.getShininess());
 		
+		glActiveTexture(GL_TEXTURE0);
+		ocean.getDudv().bind();
+		setUniformi("dudv", 0);
 		glActiveTexture(GL_TEXTURE1);
 		ocean.getReflectionTexture().bind();
 		setUniformi("waterReflection", 1);
@@ -124,24 +126,17 @@ private static OceanBRDF instance = null;
 		ocean.getRefractionTexture().bind();
 		setUniformi("waterRefraction", 2);
 		glActiveTexture(GL_TEXTURE3);
-		ocean.getFFT().getNormalmap().bind();
+		ocean.getWaterMaps().getNormalmapRenderer().getNormalmap().bind();
 		setUniformi("normalmap",  3);
 		glActiveTexture(GL_TEXTURE4);
-		ocean.getFFT().getDy().bind();
+		ocean.getWaterMaps().getFFT().getDy().bind();
 		setUniformi("Dy", 4);
 		glActiveTexture(GL_TEXTURE5);
-		ocean.getFFT().getDx().bind();
+		ocean.getWaterMaps().getFFT().getDx().bind();
 		setUniformi("Dx", 5);
 		glActiveTexture(GL_TEXTURE6);
-		ocean.getFFT().getDz().bind();
+		ocean.getWaterMaps().getFFT().getDz().bind();
 		setUniformi("Dz", 6);
-	}
-	
-	public void sendUniforms(Material material)
-	{	
-		glActiveTexture(GL_TEXTURE0);
-		material.getDiffusemap().bind();
-		setUniformi("dudv", 0);
 	}
 
 	public float getDistortion() {

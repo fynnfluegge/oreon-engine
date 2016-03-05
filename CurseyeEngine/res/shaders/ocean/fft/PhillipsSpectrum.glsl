@@ -55,7 +55,7 @@ vec2 gaussRND1()
 
 void main(void)
 {
-	vec2 x = vec2(gl_GlobalInvocationID.xy);// - N/2.0;
+	vec2 x = vec2(gl_GlobalInvocationID.xy);
 	vec2 k = vec2(2.0 * M_PI * x.x/L, 2.0 * M_PI * x.y/L);
 	vec2 k_norm = normalize(k);
 	float mag = length(k);
@@ -63,10 +63,9 @@ void main(void)
 	float magSq = mag * mag;
 	float dir = dot(k_norm,w);
 	float dir_ = dot(-k_norm,w);
-	float h0 = clamp(sqrt((A/(magSq*magSq)) * pow(dir, 4.0) * exp(-(1.0/(magSq * l * l))) * exp(-magSq*pow(L/2000.0,2)))/ sqrt(2.0), 0, 10000);
-	float h0_ = clamp(sqrt((A/(magSq*magSq)) * pow(dir_, 4.0) * exp(-(1.0/(magSq * l * l))) * exp(-magSq*pow(L/2000.0,2)))/ sqrt(2.0), 0, 10000);
+	float h0 = clamp(sqrt((A/(magSq*magSq)) * pow(dir, 2.0) * exp(-(1.0/(magSq * l * l))) * exp(-magSq*pow(l/2000.0,2)))/ sqrt(2.0), 0, 1000000);
 	
 	imageStore(h0k, ivec2(gl_GlobalInvocationID.xy), vec4(gaussRND0() * h0, 0, 1));
 	
-	imageStore(h0kminus, ivec2(gl_GlobalInvocationID.xy), vec4(gaussRND1() * h0_, 0, 1));
+	imageStore(h0kminus, ivec2(gl_GlobalInvocationID.xy), vec4(gaussRND1() * h0, 0, 1));
 }

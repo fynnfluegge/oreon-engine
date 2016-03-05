@@ -1,7 +1,7 @@
 #version 430
 #define M_PI 3.1415926535897932384626433832795
 
-in vec3 positionF;
+in vec3 position;
 in vec2 texCoordF;
 flat in vec3 tangent;
 
@@ -13,6 +13,7 @@ struct DirectionalLight
 	vec3 color;
 };
 
+uniform int largeDetailedRange;
 uniform mat4 modelViewProjectionMatrix;
 uniform DirectionalLight sunlight;
 uniform sampler2D waterReflection;
@@ -111,21 +112,24 @@ float reflectedSunRadiance(vec3 normal, vec3 tx, vec3 ty)
  
 void main(void)
 {
-	vertexToEye = normalize(eyePosition - positionF);
-	float dist = length(eyePosition - positionF);
+	vertexToEye = normalize(eyePosition - position);
+	float dist = length(eyePosition - position);
 	
 	// normal
 	vec3 normal = 2 * texture(normalmap, texCoordF).rbg - 1;
 
 	normal = normalize(normal);
-	vec3 bitangent = normalize(cross(tangent, normal));
+
 	SigmaSqX = 0.01;
 	SigmaSqY = 0.01;
 	
-	mat3 TBN = mat3(tangent,normal,bitangent);
-	vec3 bumpNormal = 2 * texture(normalmap, texCoordF*4).rbg - 1;
-	bumpNormal.y *= 1.4;
-	normal = normalize(TBN * bumpNormal);
+	if (dist < largeDetailedRange-50){
+		vec3 bitangent = normalize(cross(tangent, normal));
+		mat3 TBN = mat3(tangent,normal,bitangent);
+		vec3 bumpNormal = 2 * texture(normalmap, texCoordF*4).rbg - 1;
+		bumpNormal.y *= 1.4;
+		normal = normalize(TBN * bumpNormal);
+	}
 	
 	// BRDF lighting, high performance
 	// float F = fresnel(normal, tangent, bitangent);

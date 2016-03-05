@@ -24,6 +24,6 @@ public class WorldLoader extends TerrainSimulation{
 		super.init();
 //		setTerrain(new Terrain());
 		setWater(new Ocean());
-		RenderingEngine.setDirectionalLight(new DirectionalLight(new Vec3f(-7,-2,0).normalize(), new Vec3f(0.2f,0.2f,0.2f), new Vec3f(1.0f, 0.95f, 0.87f), 1.8f));
+		RenderingEngine.setDirectionalLight(new DirectionalLight(new Vec3f(-4,-2,-1).normalize(), new Vec3f(0.02f,0.02f,0.02f), new Vec3f(1.0f, 0.95f, 0.87f), 2.0f));
 	}
 }

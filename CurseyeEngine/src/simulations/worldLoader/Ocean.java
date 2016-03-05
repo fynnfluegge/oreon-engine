@@ -10,7 +10,7 @@ public class Ocean extends WaterSurface{
 		super(128);
 		
 		getTransform().setScaling(Constants.ZFAR,1,Constants.ZFAR);
-		getTransform().setTranslation(-Constants.ZFAR/2,200,-Constants.ZFAR/2);
+		getTransform().setTranslation(-Constants.ZFAR/2,300,-Constants.ZFAR/2);
 		
 		setClipplane(new Quaternion(0,-1,0,getTransform().getTranslation().getY()));
 

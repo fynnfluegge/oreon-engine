@@ -1,14 +1,13 @@
 package simulations.worldLoader;
 
-import engine.renderer.terrain.TerrainObject;
+import engine.renderer.terrain.heightmapTerrain.HeightmapTerrain;
 
-public class Terrain extends TerrainObject{
+public class Terrain extends HeightmapTerrain{
 
 	public Terrain() {
-		super(64);
+		super("./res/terrains/terrain0/terrainSettings.ter");
 		
-		this.loadSettingsFile("./res/terrains/terrain0/terrainSettings.ter");
-		setSightRangeFactor(10);
+		this.getTerrainConfiguration().setSightRangeFactor(10);
 	}
 
 }

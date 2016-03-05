@@ -5,14 +5,16 @@ import static org.lwjgl.opengl.GL32.*;
 import static org.lwjgl.opengl.GL40.GL_TESS_CONTROL_SHADER;
 import static org.lwjgl.opengl.GL40.GL_TESS_EVALUATION_SHADER;
 import static org.lwjgl.opengl.GL43.GL_COMPUTE_SHADER;
+
 import java.util.HashMap;
+
 import engine.core.Util;
 import engine.gameObject.GameObject;
+import engine.gameObject.components.Material;
 import engine.math.Matrix4f;
 import engine.math.Quaternion;
 import engine.math.Vec2f;
 import engine.math.Vec3f;
-import engine.models.data.Material;
 
 public abstract class Shader {
 
@@ -49,6 +51,18 @@ public abstract class Shader {
 	public void sendUniforms(float value){};
 	
 	public void sendUniforms(GameObject object){};
+	
+	public void sendUniforms(int l, int n, float t){};
+	
+	public void sendUniforms(int l, int n, int t){};
+	
+	public void sendUniforms(int n, int l, float a, Vec2f w, float l2) {}
+	
+	public void sendUniforms(int n, int l, float a, Vec2f w, float v, float l2) {}
+	
+	public void sendUniforms(int i, int j, int k, int l) {}
+	
+	public void sendUniforms(int n, int pingpong) {}
 	
 	
 	public void addUniform(String uniform)
@@ -165,5 +179,4 @@ public abstract class Shader {
 	{
 		return this.program;
 	}
-	
 }

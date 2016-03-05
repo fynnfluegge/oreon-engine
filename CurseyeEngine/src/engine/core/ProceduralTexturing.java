@@ -33,11 +33,11 @@ public class ProceduralTexturing{
 		
 		public static void noiseTexture()
 		{
-			int resolution = 256;
+			int resolution = 512;
 			
 			BufferedImage image = new BufferedImage(resolution, resolution, BufferedImage.TYPE_BYTE_GRAY);
 			WritableRaster raster = image.getRaster();
-			File output = new File("./" + "Noise" + ".jpg");
+			File output = new File("./" + "Noise512_0" + ".jpg");
 			
 			Random rnd = new Random();
 			

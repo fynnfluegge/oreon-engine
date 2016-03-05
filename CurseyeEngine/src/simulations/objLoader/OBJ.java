@@ -1,16 +1,16 @@
 package simulations.objLoader;
 import org.lwjgl.input.Keyboard;
 
-import engine.buffers.MeshVAO;
 import engine.configs.AlphaBlending;
 import engine.configs.CullFaceDisable;
 import engine.core.Input;
 import engine.gameObject.GameObject;
+import engine.gameObject.components.Material;
 import engine.gameObject.components.MeshRenderer;
-import engine.gameObject.components.Model;
 import engine.gameObject.components.Renderer;
+import engine.gpubuffers.MeshVAO;
 import engine.math.Vec3f;
-import engine.models.data.Material;
+import engine.models.data.Model;
 import engine.models.obj.OBJLoader;
 import engine.renderer.glass.GlassRenderer;
 
@@ -19,7 +19,7 @@ public class OBJ extends GameObject{
 	public OBJ(){
 		
 		getTransform().setLocalRotation(0, 0, 0);
-		getTransform().setLocalScaling(1f,1f,1f);
+		getTransform().setLocalScaling(10f,10f,10f);
 		OBJLoader loader = new OBJLoader();
 		Model[] models = loader.load("nanosuit");
 		int size = 0;
@@ -46,7 +46,7 @@ public class OBJ extends GameObject{
 			else
 				renderer = new MeshRenderer(meshBuffer, engine.shaderprograms.phong.RGBA.getInstance(), new CullFaceDisable());	
 
-			object.addComponent("Model", model);
+			object.addComponent("Material", model.getMaterial());
 			object.addComponent("Renderer", renderer);
 			addChild(object);
 		}
@@ -64,19 +64,21 @@ public class OBJ extends GameObject{
 		}
 		else {
 			for(GameObject gameobject : this.getChildren()){
-				if (((Model) gameobject.getComponent("Model")).getMaterial().getName().equals("glass"))
-					((Renderer) gameobject.getComponent("Renderer")).setShader(engine.shaderprograms.phong.Glass.getInstance());	
-				else if (((Model) gameobject.getComponent("Model")).getMaterial().getNormalmap() != null)
-					((Renderer) gameobject.getComponent("Renderer")).setShader(engine.shaderprograms.phong.Bumpy.getInstance());
-				else if (((Model) gameobject.getComponent("Model")).getMaterial().getDiffusemap() != null)
-					((Renderer) gameobject.getComponent("Renderer")).setShader(engine.shaderprograms.phong.Textured.getInstance());
-				else
-					((Renderer) gameobject.getComponent("Renderer")).setShader(engine.shaderprograms.phong.RGBA.getInstance());			
+				if((Material) gameobject.getComponent("Material") != null){
+					if (((Material) gameobject.getComponent("Material")).getName().equals("glass"))
+						((Renderer) gameobject.getComponent("Renderer")).setShader(engine.shaderprograms.phong.Glass.getInstance());	
+					else if (((Material) gameobject.getComponent("Material")).getNormalmap() != null)
+						((Renderer) gameobject.getComponent("Renderer")).setShader(engine.shaderprograms.phong.Bumpy.getInstance());
+					else if (((Material) gameobject.getComponent("Material")).getDiffusemap() != null)
+						((Renderer) gameobject.getComponent("Renderer")).setShader(engine.shaderprograms.phong.Textured.getInstance());
+					else
+						((Renderer) gameobject.getComponent("Renderer")).setShader(engine.shaderprograms.phong.RGBA.getInstance());	
+				}
 			}
 		}
 		
 		for(GameObject child: getChildren()){
-			if (((Model) child.getComponent("Model")).getMaterial().getName().equals("glass")){
+			if (((Material) child.getComponent("Material")).getName().equals("glass")){
 				GlassRenderer.getInstance().addChild(child);
 			}
 		}
@@ -85,7 +87,7 @@ public class OBJ extends GameObject{
 	
 	public void render(){
 		for(GameObject child: getChildren()){
-			if (!((Model) child.getComponent("Model")).getMaterial().getName().equals("glass"))
+			if (!((Material) child.getComponent("Material")).getName().equals("glass"))
 				child.render();
 		}
 	}

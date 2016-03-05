@@ -3,12 +3,12 @@ package simulations.oceanSurface;
 import engine.gui.GUI;
 import engine.gui.GUIs.FPSDisplay;
 import engine.main.CoreEngine;
-import engine.renderer.water.FastFourierTransform;
+import engine.renderer.water.WaterMaps;
 import simulations.templates.BasicSimulation;
 
 public class DisplacementMap extends BasicSimulation{
 	
-	private FastFourierTransform fft;
+	private WaterMaps maps;
 
 public static void main(String[] args) {
 		
@@ -22,13 +22,12 @@ public static void main(String[] args) {
 	public void init()
 	{	
 		super.init();
-		fft = new FastFourierTransform();
-		fft.init();
+		maps = new WaterMaps(512);
 	}
 	
 	public void render()
 	{
-		fft.render();
-		setSceneTexture(fft.getDy());
+		maps.render();
+		setSceneTexture(maps.getFFT().getDy());
 	}
 }

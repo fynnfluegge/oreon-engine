@@ -5,24 +5,20 @@ import java.io.File;
 import java.io.FileReader;
 import java.nio.ByteBuffer;
 
-import engine.buffers.Framebuffer;
-import engine.buffers.PatchVAO;
 import engine.configs.Default;
 import engine.core.Input;
 import engine.core.Texture;
 import engine.core.Util;
-import engine.core.Vertex;
 import engine.core.Window;
 import engine.gameObject.GameObject;
-import engine.gameObject.components.Model;
 import engine.gameObject.components.PatchRenderer;
 import engine.gameObject.components.Renderer;
+import engine.gpubuffers.Framebuffer;
+import engine.gpubuffers.PatchVAO;
 import engine.main.RenderingEngine;
 import engine.math.Quaternion;
 import engine.math.Vec2f;
 import engine.math.Vec3f;
-import engine.models.data.Material;
-import engine.models.data.Patch;
 import engine.shaderprograms.water.OceanBRDF;
 import engine.shaderprograms.water.OceanGrid;
 import static org.lwjgl.opengl.GL11.glTexImage2D;
@@ -38,7 +34,7 @@ import static org.lwjgl.opengl.GL11.GL_LINEAR;
 public class WaterSurface extends GameObject{
 	
 	private Quaternion clipplane;
-	private float clip_offset;
+	private float clip_offset = 10;
 	private float distortionOffset;
 	private float motionOffset;
 	private float displacementScale;
@@ -46,6 +42,7 @@ public class WaterSurface extends GameObject{
 	private int tessellationFactor;
 	private float tessellationShift;
 	private float tessellationSlope;
+//	private int largeDetailRange;
 	private int texDetail;
 	private float shininess;
 	private float emission;
@@ -53,32 +50,29 @@ public class WaterSurface extends GameObject{
 	private float kRefraction;	
 	private float distortion;
 	private float motion;
+	private Vec3f gridColor;
+	private Texture dudv;
 	private Texture reflectionTexture;
 	private Texture refractionTexture;
 	private Framebuffer reflectionFBO;
 	private Framebuffer refractionFBO;
-	private FastFourierTransform fft;
+	private WaterMaps waterMaps;
 	
 	
 	public WaterSurface(int patches)
 	{
 		PatchVAO meshBuffer = new PatchVAO();
-		Model model = new Model(new Patch(generatePatchs4x4(patches)));
 		PatchRenderer renderer = new PatchRenderer(meshBuffer, OceanBRDF.getInstance(), new Default());
-		meshBuffer.addData(model.getPatch(),16);
+		meshBuffer.addData(generatePatch2D4x4(patches),16);
 		
-		Material material = new Material();
-		material.setDiffusemap(new Texture("./res/textures/water/dudv/water1.jpg"));
-		material.getDiffusemap().bind();
-		material.getDiffusemap().mipmap();
-		material.setColor(new Vec3f(0.1f,0.2f,0.6f));
-		model.setMaterial(material);
+		dudv = new Texture("./res/textures/water/dudv/water1.jpg");
+		dudv.bind();
+		dudv.mipmap();
+		gridColor = new Vec3f(0.1f,0.2f,0.6f);
 		
-		addComponent("Model", model);
 		addComponent("Renderer", renderer);
 
-		fft = new FastFourierTransform();
-		fft.init();
+		waterMaps = new WaterMaps(256);
 		
 		reflectionTexture = new Texture();
 		reflectionTexture.generate();
@@ -134,7 +128,7 @@ public class WaterSurface extends GameObject{
 						choppiness = Float.valueOf(tokens[1]);
 					}
 					if(tokens[0].equals("distortion")){
-						distortion = Float.valueOf(tokens[1]);
+						distortionOffset = Float.valueOf(tokens[1]);
 					}
 					if(tokens[0].equals("wavemotion")){
 						motionOffset = Float.valueOf(tokens[1]);
@@ -164,7 +158,7 @@ public class WaterSurface extends GameObject{
 						kRefraction = Float.valueOf(tokens[1]);
 					}
 					if(tokens[0].equals("normalStrength")){
-						getFFT().setNormalstrength(Float.valueOf(tokens[1]));
+						waterMaps.getNormalmapRenderer().setStrength(Float.valueOf(tokens[1]));
 					}
 					
 				}
@@ -176,49 +170,6 @@ public class WaterSurface extends GameObject{
 			e.printStackTrace();
 			System.exit(1);
 		}
-	}
-	
-	public Vertex[] generatePatchs4x4(int patches)
-	{
-		
-		int amountx = patches; 
-		int amounty = patches;
-		
-		// 16 vertices for each patch
-		Vertex[] vertices = new Vertex[amountx * amounty * 16];
-		
-		int index = 0;
-		float dx = 1f/amountx;
-		float dy = 1f/amounty;
-		
-		for (float i=0; i<1; i+=dx)
-		{
-			for (float j=0; j<1; j+=dy)
-			{	
-				vertices[index++] = new Vertex(new Vec3f(i,0,j), new Vec2f(i,1-j));
-				vertices[index++] = new Vertex(new Vec3f(i+dx*0.33f,0,j));
-				vertices[index++] = new Vertex(new Vec3f(i+dx*0.66f,0,j));
-				vertices[index++] = new Vertex(new Vec3f(i+dx,0,j), new Vec2f(i+dx,1-j));
-				
-				vertices[index++] = new Vertex(new Vec3f(i,0,j+dy*0.33f));
-				vertices[index++] = new Vertex(new Vec3f(i+dx*0.33f,0,j+dy*0.33f));
-				vertices[index++] = new Vertex(new Vec3f(i+dx*0.66f,0,j+dy*0.33f));
-				vertices[index++] = new Vertex(new Vec3f(i+dx,0,j+dy*0.33f));
-				
-				vertices[index++] = new Vertex(new Vec3f(i,0,j+dy*0.66f));
-				vertices[index++] = new Vertex(new Vec3f(i+dx*0.33f,0,j+dy*0.66f));
-				vertices[index++] = new Vertex(new Vec3f(i+dx*0.66f,0,j+dy*0.66f));
-				vertices[index++] = new Vertex(new Vec3f(i+dx,0,j+dy*0.66f));
-				
-				vertices[index++] = new Vertex(new Vec3f(i,0,j+dy),  new Vec2f(i,1-j-dy));
-				vertices[index++] = new Vertex(new Vec3f(i+dx*0.33f,0,j+dy));
-				vertices[index++] = new Vertex(new Vec3f(i+dx*0.66f,0,j+dy));
-				vertices[index++] = new Vertex(new Vec3f(i+dx,0,j+dy), new Vec2f(i+dx,1-j-dy));
-
-			}
-		}
-		
-		return vertices;
 	}
 	
 	public void update()
@@ -241,10 +192,52 @@ public class WaterSurface extends GameObject{
 		}
 	}
 	
+	public static Vec2f[] generatePatch2D4x4(int patches)
+	{
+		
+		int amountx = patches; 
+		int amounty = patches;
+		
+		// 16 vertices for each patch
+		Vec2f[] vertices = new Vec2f[amountx * amounty * 16];
+		
+		int index = 0;
+		float dx = 1f/amountx;
+		float dy = 1f/amounty;
+		
+		for (float i=0; i<1; i+=dx)
+		{
+			for (float j=0; j<1; j+=dy)
+			{	
+				vertices[index++] = new Vec2f(i,j);
+				vertices[index++] = new Vec2f(i+dx*0.33f,j);
+				vertices[index++] = new Vec2f(i+dx*0.66f,j);
+				vertices[index++] = new Vec2f(i+dx,j);
+				
+				vertices[index++] = new Vec2f(i,j+dy*0.33f);
+				vertices[index++] = new Vec2f(i+dx*0.33f,j+dy*0.33f);
+				vertices[index++] = new Vec2f(i+dx*0.66f,j+dy*0.33f);
+				vertices[index++] = new Vec2f(i+dx,j+dy*0.33f);
+				
+				vertices[index++] = new Vec2f(i,j+dy*0.66f);
+				vertices[index++] = new Vec2f(i+dx*0.33f,j+dy*0.66f);
+				vertices[index++] = new Vec2f(i+dx*0.66f,j+dy*0.66f);
+				vertices[index++] = new Vec2f(i+dx,j+dy*0.66f);
+				
+				vertices[index++] = new Vec2f(i,j+dy);
+				vertices[index++] = new Vec2f(i+dx*0.33f,j+dy);
+				vertices[index++] = new Vec2f(i+dx*0.66f,j+dy);
+				vertices[index++] = new Vec2f(i+dx,j+dy);
+			}
+		}
+		
+		return vertices;
+	}
+
+	
 	public void render()
 	{
-		fft.render();
-		fft.renderNormalmap();
+		waterMaps.render();
 		getComponents().get("Renderer").render();
 	}
 
@@ -254,10 +247,6 @@ public class WaterSurface extends GameObject{
 
 	public void setClipplane(Quaternion clipplane) {
 		this.clipplane = clipplane;
-	}
-
-	public FastFourierTransform getFFT() {
-		return fft;
 	}
 
 	public int getTessellationFactor() {
@@ -402,5 +391,25 @@ public class WaterSurface extends GameObject{
 
 	public void setTessellationShift(float tessellationShift) {
 		this.tessellationShift = tessellationShift;
+	}
+
+	public Texture getDudv() {
+		return dudv;
+	}
+
+	public void setDudv(Texture dudv) {
+		this.dudv = dudv;
+	}
+
+	public Vec3f getGridColor() {
+		return gridColor;
+	}
+
+	public void setGridColor(Vec3f gridColor) {
+		this.gridColor = gridColor;
+	}
+	
+	public WaterMaps getWaterMaps(){
+		return this.waterMaps;
 	}
 }

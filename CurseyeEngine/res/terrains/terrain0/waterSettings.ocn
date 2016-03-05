@@ -1,14 +1,14 @@
 
-displacementScale 4.6
-choppiness 12.1
+displacementScale 2.0
+choppiness 5.0
 distortion 1.0E-4
 wavemotion 0.007
-texDetail 20
-tessellationFactor 693
-tessellationSlope 1.2
-tessellationShift 0.0
+texDetail 40
+tessellationFactor 400
+tessellationSlope 1.1
+tessellationShift 0.05
 shininess 80.0
 emission 1.0
-kReflection 0.01
-kRefraction 0.005
-normalStrength 0.157
+kReflection 0.015
+kRefraction 0.015
+normalStrength 0.15

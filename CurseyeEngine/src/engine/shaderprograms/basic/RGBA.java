@@ -1,9 +1,9 @@
 package engine.shaderprograms.basic;
 
 import engine.core.ResourceLoader;
+import engine.gameObject.components.Material;
 import engine.main.RenderingEngine;
 import engine.math.Matrix4f;
-import engine.models.data.Material;
 import engine.shaderprograms.Shader;
 
 public class RGBA extends Shader{

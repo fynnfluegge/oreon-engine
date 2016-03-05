@@ -10,7 +10,7 @@ import engine.core.Window;
 import engine.gui.GUIElement;
 import engine.gui.GUIVAO;
 import engine.math.Matrix4f;
-import engine.shaderprograms.GuiShader;
+import engine.shaderprograms.gui.GuiShader;
 
 public class FullScreenTexturePanel extends GUIElement{
 	
