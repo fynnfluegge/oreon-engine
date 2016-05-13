@@ -23,8 +23,10 @@ public class OceanFFT extends FastFourierTransform{
 		public OceanFFT(int N)
 		{
 			super(N);
+			
 			t_delta = 0.1f;
 			int L = 1000;
+			
 			setFourierComponents(new Tilde_hkt(N,L));
 			setButterflyShader(ButterflyShader.getInstance());
 			setInversionShader(InversionShader.getInstance());
