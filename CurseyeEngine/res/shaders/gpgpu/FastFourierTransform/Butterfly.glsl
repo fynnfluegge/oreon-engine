@@ -3,7 +3,7 @@
 
 layout (local_size_x = 16, local_size_y = 16) in;
 
-layout (binding = 0, rgba32f) uniform image2D twiddlesIndices;
+layout (binding = 0, rgba32f) readonly uniform image2D twiddlesIndices;
 
 layout (binding = 1, rgba32f) uniform image2D pingpong0;
 
@@ -36,7 +36,7 @@ complex add(complex c0, complex c1)
 }
 
 
-void horizontalButterfly()
+void horizontalButterflies()
 {
 	complex H;
 	ivec2 x = ivec2(gl_GlobalInvocationID.xy);
@@ -52,6 +52,7 @@ void horizontalButterfly()
 		complex q = complex(q_.x,q_.y);
 		complex w = complex(w_.x,w_.y);
 		
+		//Butterfly operation
 		H = add(p,mul(w,q));
 		
 		imageStore(pingpong1, x, vec4(H.real, H.im, 0, 1));
@@ -67,13 +68,14 @@ void horizontalButterfly()
 		complex q = complex(q_.x,q_.y);
 		complex w = complex(w_.x,w_.y);
 		
+		//Butterfly operation
 		H = add(p,mul(w,q));
 		
 		imageStore(pingpong0, x, vec4(H.real, H.im, 0, 1));
 	}
 }
 
-void verticalButterfly()
+void verticalButterflies()
 {
 	complex H;
 	ivec2 x = ivec2(gl_GlobalInvocationID.xy);
@@ -89,6 +91,7 @@ void verticalButterfly()
 		complex q = complex(q_.x,q_.y);
 		complex w = complex(w_.x,w_.y);
 		
+		//Butterfly operation
 		H = add(p,mul(w,q));
 		
 		imageStore(pingpong1, x, vec4(H.real, H.im, 0, 1));
@@ -104,6 +107,7 @@ void verticalButterfly()
 		complex q = complex(q_.x,q_.y);
 		complex w = complex(w_.x,w_.y);
 		
+		//Butterfly operation
 		H = add(p,mul(w,q));
 		
 		imageStore(pingpong0, x, vec4(H.real, H.im, 0, 1));
@@ -113,7 +117,7 @@ void verticalButterfly()
 void main(void)
 {
 	if(direction == 0)
-		horizontalButterfly();
+		horizontalButterflies();
 	else if(direction == 1)
-		verticalButterfly();
+		verticalButterflies();
 }

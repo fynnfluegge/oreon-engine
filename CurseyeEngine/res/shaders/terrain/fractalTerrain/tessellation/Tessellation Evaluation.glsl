@@ -9,6 +9,8 @@ out vec2 texCoordG;
 struct Fractal
 {
 	sampler2D heightmap;
+	int scaling;
+	float strength;
 };
 
 uniform Fractal fractals[10];
@@ -77,13 +79,13 @@ void main()
 	(1 - u) * v * gl_in[15].gl_Position);
 	
 	float height =   (
-					  texture(fractals[0].heightmap, texCoord).r
-					+ texture(fractals[1].heightmap, texCoord*2).r *1.4
-					+ texture(fractals[2].heightmap, texCoord*4).r *0.4
-					+ texture(fractals[3].heightmap, texCoord*6).r *0.2
-					+ texture(fractals[4].heightmap, texCoord*10).r *0.08
-					+ texture(fractals[5].heightmap, texCoord*20).r *0.02
-					+ texture(fractals[6].heightmap, texCoord*22).r *0.02
+					  texture(fractals[0].heightmap, texCoord*fractals[0].scaling).r * fractals[0].strength
+					+ texture(fractals[1].heightmap, texCoord*fractals[1].scaling).r * fractals[1].strength
+					+ texture(fractals[2].heightmap, texCoord*fractals[2].scaling).r * fractals[2].strength
+					+ texture(fractals[3].heightmap, texCoord*fractals[3].scaling).r * fractals[3].strength
+					+ texture(fractals[4].heightmap, texCoord*fractals[4].scaling).r * fractals[4].strength
+					+ texture(fractals[5].heightmap, texCoord*fractals[5].scaling).r * fractals[5].strength
+					+ texture(fractals[6].heightmap, texCoord*fractals[6].scaling).r * fractals[6].strength
 					) * scaleY;
 					
 	position.y = height;

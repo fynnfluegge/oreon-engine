@@ -2,7 +2,7 @@ package engine.core;
 
 import engine.math.Vec2f;
 import engine.math.Vec3f;
-import engine.models.data.Mesh;
+import engine.modeling.Mesh;
 
 public class Geometrics {
 	

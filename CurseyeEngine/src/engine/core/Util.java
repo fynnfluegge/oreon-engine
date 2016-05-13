@@ -11,9 +11,9 @@ import engine.math.Matrix4f;
 import engine.math.Quaternion;
 import engine.math.Vec2f;
 import engine.math.Vec3f;
-import engine.models.data.Particle;
-import engine.models.obj.Face;
-import engine.models.obj.SmoothingGroup;
+import engine.modeling.Particle;
+import engine.modeling.obj.Face;
+import engine.modeling.obj.SmoothingGroup;
 
 public class Util {
 

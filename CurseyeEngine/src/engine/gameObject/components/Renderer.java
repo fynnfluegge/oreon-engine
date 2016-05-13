@@ -1,7 +1,7 @@
 package engine.gameObject.components;
 
 import engine.configs.RenderingConfig;
-import engine.shaderprograms.Shader;
+import engine.shaders.Shader;
 
 public abstract class Renderer extends Component{
 	

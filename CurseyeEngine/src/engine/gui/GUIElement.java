@@ -4,7 +4,7 @@ import engine.configs.RenderingConfig;
 import engine.core.Transform;
 import engine.math.Matrix4f;
 import engine.math.Vec2f;
-import engine.shaderprograms.Shader;
+import engine.shaders.Shader;
 
 public abstract class GUIElement {
 

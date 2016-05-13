@@ -23,8 +23,8 @@ void main()
 	dz = texture(Dz, texCoordG[0]).r * choppiness;
 	vec4 position0 = gl_in[0].gl_Position;
 	position0.y += dy;
-	position0.x += dx;
-	position0.z += dz;
+	position0.x -= dx;
+	position0.z -= dz;
     gl_Position = projectionViewMatrix * position0;
 	gl_ClipDistance[0] = dot(gl_Position ,frustumPlanes[0]);
 	gl_ClipDistance[1] = dot(gl_Position ,frustumPlanes[1]);
@@ -39,8 +39,8 @@ void main()
 	dz = texture(Dz, texCoordG[1]).r * choppiness;
 	vec4 position1 = gl_in[1].gl_Position;
 	position1.y += dy;
-	position1.x += dx;
-	position1.z += dz;
+	position1.x -= dx;
+	position1.z -= dz;
 	gl_Position = projectionViewMatrix * position1;
 	gl_ClipDistance[0] = dot(gl_Position ,frustumPlanes[0]);
 	gl_ClipDistance[1] = dot(gl_Position ,frustumPlanes[1]);
@@ -55,8 +55,8 @@ void main()
 	dz = texture(Dz, texCoordG[2]).r * choppiness;
 	vec4 position2 = gl_in[2].gl_Position;
 	position2.y += dy;
-	position2.x += dx;
-	position2.z += dz;
+	position2.x -= dx;
+	position2.z -= dz;
 	gl_Position = projectionViewMatrix * position2;
 	gl_ClipDistance[0] = dot(gl_Position ,frustumPlanes[0]);
 	gl_ClipDistance[1] = dot(gl_Position ,frustumPlanes[1]);

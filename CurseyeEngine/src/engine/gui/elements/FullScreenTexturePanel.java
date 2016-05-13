@@ -6,11 +6,11 @@ import engine.configs.AlphaCullFaceDisable;
 import engine.core.Geometrics;
 import engine.core.Texture;
 import engine.core.Transform;
-import engine.core.Window;
+import engine.core.OpenGLWindow;
 import engine.gui.GUIElement;
 import engine.gui.GUIVAO;
 import engine.math.Matrix4f;
-import engine.shaderprograms.gui.GuiShader;
+import engine.shaders.gui.GuiShader;
 
 public class FullScreenTexturePanel extends GUIElement{
 	
@@ -27,7 +27,7 @@ public class FullScreenTexturePanel extends GUIElement{
 		setOrthographicMatrix(new Matrix4f().Orthographic());
 		setOrthoTransform(new Transform());
 		getOrthoTransform().setTranslation(0, 0, 0);
-		getOrthoTransform().setScaling(Window.getWidth(), Window.getHeight(), 0);
+		getOrthoTransform().setScaling(OpenGLWindow.getWidth(), OpenGLWindow.getHeight(), 0);
 		setOrthographicMatrix(getOrthographicMatrix().mul(getOrthoTransform().getWorldMatrix()));
 		setVao(new GUIVAO());
 		getVao().addData(Geometrics.Quad());

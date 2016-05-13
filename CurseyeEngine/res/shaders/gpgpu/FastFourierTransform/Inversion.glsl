@@ -26,3 +26,4 @@ void main(void)
 		imageStore(displacement, x, vec4((h/float(N*N)), (h/float(N*N)), (h/float(N*N)), 1));
 	}
 }
+

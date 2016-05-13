@@ -1,0 +1,108 @@
+
+#terrain maps
+heightmap ./res/terrains/terrain0/height.jpg
+normalmap ./res/terrains/terrain0/normal.jpg
+ambientmap ./res/terrains/terrain0/occlusion.jpg
+splatmap ./res/terrains/terrain0/splat.jpg
+
+#textures
+material1_DIF ./res/textures/materials/grass/grass1/grass1_COLOR.jpg
+material1_NRM ./res/textures/materials/grass/grass1/grass1_NRM.jpg
+material1_DISP ./res/textures/materials/grass/grass1/grass1_DISP.jpg
+material1_displaceScale 2
+material1_emission 0.0
+material1_shininess 200.0
+material2_DIF ./res/textures/materials/grass/grass2/grass2.jpg
+material2_NRM ./res/textures/materials/grass/grass2/grass2_NRM.jpg
+material2_DISP ./res/textures/materials/grass/grass2/grass2_DISP.jpg
+material2_displaceScale 2
+material2_emission 0.0
+material2_shininess 200.0
+material3_DIF ./res/textures/materials/rock/rock1/rock1.jpg
+material3_NRM ./res/textures/materials/rock/rock1/rock1_NRM.jpg
+material3_DISP ./res/textures/materials/rock/rock1/rock1_DISP.jpg
+material3_displaceScale 2
+material3_emission 0.0
+material3_shininess 200.0
+
+#terrain mesh settings
+scaleXZ 6000.0
+scaleY 500.0
+texDetail 400.0
+tessellationFactor 4000
+tessellationSlope 2
+tessellationShift -0.14
+detailRange 400
+bezier 0
+
+#lod ranges
+lod1_range 2000
+lod2_range 1400
+lod3_range 800
+lod4_range 400
+lod5_range 100
+lod6_range 50
+lod7_range 0
+lod8_range 0
+
+#fractals settings
+
+fractal_stage0
+amp 2
+l 100
+scaling 1
+strength 1
+
+fractal_stage1
+amp 2
+l 100
+scaling 2
+strength 1.4
+
+fractal_stage2
+amp 4
+l 100
+scaling 4
+strength 0.4
+
+fractal_stage3
+amp 6
+l 100
+scaling 6
+strength 0.2
+
+fractal_stage4
+amp 10
+l 400
+scaling 10
+strength 0.08
+
+fractal_stage5
+amp 20
+l 1000
+scaling 20
+strength 0.02
+
+fractal_stage6
+amp 20
+l 1000
+scaling 22
+strength 0.02
+
+fractal_stage7
+amp 2
+l 1000
+scaling 400
+strength 0
+
+fractal_stage8
+amp 2
+l 1000
+scaling 410
+strength 0
+
+fractal_stage9
+amp 2
+l 1000
+scaling 420
+strength 0

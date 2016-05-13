@@ -1,5 +1,6 @@
 package engine.main;
 
+import java.awt.Canvas;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -11,7 +12,7 @@ import org.lwjgl.opengl.GL11;
 import simulations.templates.Simulation;
 import engine.configs.RenderingConfig;
 import engine.core.Constants;
-import engine.core.Window;
+import engine.core.OpenGLWindow;
 import engine.gui.GUI;
 
 
@@ -42,7 +43,13 @@ public class CoreEngine{
 	
 	public void createWindow()
 	{
-		Window.createWindow(this.width, this.height, this.title);
+		OpenGLWindow.create(this.width, this.height, this.title);
+		System.out.println("OpenGL version: " + GL11.glGetString(GL11.GL_VERSION));
+	}
+	
+	public void embedWindow(Canvas canvas)
+	{
+		OpenGLWindow.embed(this.width, this.height, canvas);
 		System.out.println("OpenGL version: " + GL11.glGetString(GL11.GL_VERSION));
 	}
 	
@@ -51,13 +58,12 @@ public class CoreEngine{
 		if(isRunning)
 			return;
 		
-		// init Graphics
 		RenderingConfig.init();
 		renderingEngine.init();
 		
 		run();
 	}
-	
+
 	public void run() {
 		
 		this.isRunning = true;
@@ -126,7 +132,7 @@ public class CoreEngine{
 				render = true;
 				unprocessedTime -= frameTime;
 				
-				if(Window.isCloseRequested())
+				if(OpenGLWindow.isCloseRequested())
 					stop();
 				
 				update();
@@ -179,7 +185,7 @@ public class CoreEngine{
 	public void cleanUp()
 	{
 		renderingEngine.shutdown();
-		Window.dispose();
+		OpenGLWindow.dispose();
 	}
 
 	public static float getFrameTime() {

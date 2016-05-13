@@ -1,20 +1,19 @@
 package engine.main;
 
-
 import java.util.ArrayList;
 
+import modules.lighting.DirectionalLight;
+import modules.lighting.PointLight;
+import modules.vfx.MotionBlur;
 import simulations.templates.Simulation;
 import engine.configs.RenderingConfig;
 import engine.core.Camera;
 import engine.core.Constants;
 import engine.core.Input;
-import engine.core.Window;
+import engine.core.OpenGLWindow;
 import engine.gui.GUI;
 import engine.gui.elements.FullScreenTexturePanel;
-import engine.lighting.DirectionalLight;
-import engine.lighting.PointLight;
 import engine.math.Quaternion;
-import engine.vfx.motionBlur.MotionBlur;
 
 public class RenderingEngine {
 
@@ -25,13 +24,15 @@ public class RenderingEngine {
 	private static DirectionalLight directionalLight;
 	private static Quaternion clipplane;
 	private static boolean grid;
-	private MotionBlur motionBlur;
+	
+	protected MotionBlur motionBlur;
 	
 	public RenderingEngine(Simulation simulation, GUI gui)
 	{
 		this.simulation = simulation;
 		this.gui = gui;
 		screenTexture = new FullScreenTexturePanel();
+		motionBlur = new MotionBlur();
 	}
 	
 	public void init()
@@ -39,7 +40,7 @@ public class RenderingEngine {
 		screenTexture.init();
 		gui.init();
 		simulation.init();
-		motionBlur = new MotionBlur();
+		motionBlur.init();
 	}
 	
 	public void render()
@@ -48,16 +49,17 @@ public class RenderingEngine {
 		RenderingConfig.clearScreen();
 		simulation.render();
 		gui.render();
+			
 		if (motionBlur.isEnabled()){
 			motionBlur.render(simulation.getSceneDepthmap(), simulation.getSceneTexture());
 			screenTexture.setTexture(motionBlur.getMotionBlurTexture());
-			screenTexture.render();
 		}
-		else {
-			screenTexture.setTexture(simulation.getSceneTexture());
-			screenTexture.render();
-		}	
-		Window.render();
+		else 
+			screenTexture.setTexture(simulation.getSceneTexture());	
+
+		screenTexture.render();
+		
+		OpenGLWindow.render();
 	}
 	
 	public void update()
@@ -66,7 +68,8 @@ public class RenderingEngine {
 		Camera.getInstance().input();
 		gui.update();
 		simulation.update();
-		motionBlur.update();
+		if (motionBlur.isEnabled())
+			motionBlur.update();
 	}
 	
 	public void shutdown()

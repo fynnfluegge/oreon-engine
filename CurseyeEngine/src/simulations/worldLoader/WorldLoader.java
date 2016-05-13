@@ -1,8 +1,8 @@
 package simulations.worldLoader;
 
+import modules.lighting.DirectionalLight;
 import engine.gui.GUI;
 import engine.gui.GUIs.EngineGUI;
-import engine.lighting.DirectionalLight;
 import engine.main.CoreEngine;
 import engine.main.RenderingEngine;
 import engine.math.Vec3f;
@@ -14,7 +14,7 @@ public class WorldLoader extends TerrainSimulation{
 	public static void main(String[] args) {
 		Simulation simulation = new WorldLoader();
 		GUI gui = new EngineGUI();
-		CoreEngine coreEngine = new CoreEngine(1080, 640, "TerrainLoader", simulation, gui);
+		CoreEngine coreEngine = new CoreEngine(1400, 900, "TerrainLoader", simulation, gui);
 		coreEngine.createWindow();
 		coreEngine.start();
 	}

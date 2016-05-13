@@ -26,14 +26,14 @@ import static org.lwjgl.opengl.GL30.GL_RGBA32F;
 
 import java.nio.ByteBuffer;
 
+import modules.sky.SkySphere;
+import modules.terrain.TerrainObject;
+import modules.water.WaterSurface;
 import engine.configs.RenderingConfig;
 import engine.core.Constants;
 import engine.core.Texture;
-import engine.core.Window;
+import engine.core.OpenGLWindow;
 import engine.main.RenderingEngine;
-import engine.renderer.atmosphere.SkySphere;
-import engine.renderer.terrain.TerrainObject;
-import engine.renderer.water.WaterSurface;
 
 public class TerrainSimulation extends Simulation{
 
@@ -48,13 +48,13 @@ public class TerrainSimulation extends Simulation{
 		setSceneTexture(new Texture());
 		getSceneTexture().generate();
 		getSceneTexture().bind();
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, Window.getWidth(), Window.getHeight(), 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, OpenGLWindow.getWidth(), OpenGLWindow.getHeight(), 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		setSceneDepthmap(new Texture());
 		getSceneDepthmap().generate();
 		getSceneDepthmap().bind();
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32F, Window.getWidth(), Window.getHeight(), 0, GL_DEPTH_COMPONENT, GL_FLOAT, (ByteBuffer) null);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32F, OpenGLWindow.getWidth(), OpenGLWindow.getHeight(), 0, GL_DEPTH_COMPONENT, GL_FLOAT, (ByteBuffer) null);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
@@ -64,7 +64,7 @@ public class TerrainSimulation extends Simulation{
 		getSceneFBO().bind();
 		getSceneFBO().setDrawBuffer(0);
 		getSceneFBO().colorTextureAttachment(getSceneTexture().getId(), 0);
-		getSceneFBO().depthbufferAttachment(Window.getWidth(), Window.getHeight());
+		getSceneFBO().depthbufferAttachment(OpenGLWindow.getWidth(), OpenGLWindow.getHeight());
 		getSceneFBO().depthTextureAttachment(getSceneDepthmap().getId());
 		getSceneFBO().checkStatus();
 		getSceneFBO().unbind();
@@ -110,7 +110,7 @@ public class TerrainSimulation extends Simulation{
 			
 				//render reflection to texture
 
-				glViewport(0,0,Window.getWidth()/2, Window.getHeight()/2);
+				glViewport(0,0,OpenGLWindow.getWidth()/2, OpenGLWindow.getHeight()/2);
 			
 				water.getReflectionFBO().bind();
 				RenderingConfig.clearScreenDeepOceanReflection();
@@ -149,10 +149,10 @@ public class TerrainSimulation extends Simulation{
 				water.getRefractionFBO().unbind();
 			}
 			
-			RenderingEngine.setClipplane(Constants.PLANE0);
+			RenderingEngine.setClipplane(Constants.PLANE0);	
 		}
 	
-		glViewport(0,0,Window.getWidth(),Window.getHeight());
+		glViewport(0,0,OpenGLWindow.getWidth(), OpenGLWindow.getHeight());
 		getSceneFBO().bind();
 		RenderingConfig.clearScreen();	
 		if (water != null){

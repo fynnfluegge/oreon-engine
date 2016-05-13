@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import engine.core.Util;
 import engine.core.Vertex;
 import engine.math.Vec3f;
-import engine.models.data.Mesh;
+import engine.modeling.Mesh;
 
 public class GUIObjectLoader {
 

@@ -57,8 +57,8 @@ public class Camera {
 	
 	protected Camera()
 	{
-		this(new Vec3f(0,200,-2500), new Vec3f(0,0,1), new Vec3f(0,1,0));
-		this.setProjection(54, Window.getWidth(), Window.getHeight(), Constants.ZNEAR, Constants.ZFAR);
+		this(new Vec3f(0,400,-2500), new Vec3f(0,0,1), new Vec3f(0,1,0));
+		this.setProjection(54, OpenGLWindow.getWidth(), OpenGLWindow.getHeight(), Constants.ZNEAR, Constants.ZFAR);
 		this.projectionMatrix = new Matrix4f().Projection(fovY, width, height, zNear, zFar);
 		this.setViewMatrix(new Matrix4f().View(this.getForward(), this.getUp()).mul(
 				new Matrix4f().Translation(this.getPosition().mul(-1))));

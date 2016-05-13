@@ -6,14 +6,18 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+
 import javax.swing.JFrame;
+
+import modules.terrain.TerrainObject;
+
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
+
 import simulations.templates.TerrainSimulation;
 import engine.main.CoreEngine;
 import engine.main.RenderingEngine;
 import engine.math.Vec3f;
-import engine.renderer.terrain.TerrainObject;
 
 public class SwingGUI extends JFrame{
 
@@ -298,7 +302,7 @@ public class SwingGUI extends JFrame{
         	simulation.getWater().setClip_offset(this.displaceScaleWSlider.getValue()/10 + 5f);
         	simulation.getWater().setkReflection(0.01f);
         	simulation.getWater().setkRefraction(0.005f);
-        	simulation.getWater().getFFT().setNormalstrength(this.normalStrengthWSlider.getValue()/1000f);
+        	//simulation.getWater().getFFT().setNormalstrength(this.normalStrengthWSlider.getValue()/1000f);
         }
 
         grassTex1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
@@ -1006,7 +1010,7 @@ public class SwingGUI extends JFrame{
         displace1txt.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         displace1txt.setText("displace");
 
-        displace1Spinner.setModel(new javax.swing.SpinnerNumberModel(0, 0, 10, 1));
+        displace1Spinner.setModel(new javax.swing.SpinnerNumberModel(0, 0, 50, 1));
         displace1Spinner.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 displace1SpinnerStateChanged(evt);
@@ -1106,7 +1110,7 @@ public class SwingGUI extends JFrame{
         displace2txt.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         displace2txt.setText("displace");
 
-        displace2Spinner.setModel(new javax.swing.SpinnerNumberModel(0, 0, 10, 1));
+        displace2Spinner.setModel(new javax.swing.SpinnerNumberModel(0, 0, 50, 1));
         displace2Spinner.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 displace2SpinnerStateChanged(evt);
@@ -1206,7 +1210,7 @@ public class SwingGUI extends JFrame{
         displace3txt.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         displace3txt.setText("displace");
 
-        displace3Spinner.setModel(new javax.swing.SpinnerNumberModel(0, 0, 10, 1));
+        displace3Spinner.setModel(new javax.swing.SpinnerNumberModel(0, 0, 50, 1));
         displace3Spinner.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 displace3SpinnerStateChanged(evt);
@@ -1965,18 +1969,18 @@ public class SwingGUI extends JFrame{
   
     	Display.makeCurrent();
     	
-        simulation.setTerrain(new Terrain());
-        simulation.getTerrain().setScaleXZ(this.scaleXZSlider.getValue());
-        simulation.getTerrain().setScaleY(this.scaleYSlider.getValue());
-        simulation.getTerrain().setBezíer(0);
-        simulation.getTerrain().setTessellationFactor(this.tessFactorTSlider.getValue());
-        simulation.getTerrain().setTessellationSlope(this.tessSlopeTSlider.getValue()/10f);
-        simulation.getTerrain().setTessellationShift(this.tessShiftTSlider.getValue()/100f);
-        simulation.getTerrain().setDetailRange(this.detailRangeSlider.getValue());
-        simulation.getTerrain().setTexDetail(this.texDetailTSlider.getValue());
-        this.shininess1Spinner.setValue(simulation.getTerrain().getMaterial1().getShininess());
-        this.shininess2Spinner.setValue(simulation.getTerrain().getMaterial2().getShininess());
-        this.shininess3Spinner.setValue(simulation.getTerrain().getMaterial3().getShininess());
+//        simulation.setTerrain(new Terrain());
+//        simulation.getTerrain().setScaleXZ(this.scaleXZSlider.getValue());
+//        simulation.getTerrain().setScaleY(this.scaleYSlider.getValue());
+//        simulation.getTerrain().setBezíer(0);
+//        simulation.getTerrain().setTessellationFactor(this.tessFactorTSlider.getValue());
+//        simulation.getTerrain().setTessellationSlope(this.tessSlopeTSlider.getValue()/10f);
+//        simulation.getTerrain().setTessellationShift(this.tessShiftTSlider.getValue()/100f);
+//        simulation.getTerrain().setDetailRange(this.detailRangeSlider.getValue());
+//        simulation.getTerrain().setTexDetail(this.texDetailTSlider.getValue());
+//        this.shininess1Spinner.setValue(simulation.getTerrain().getMaterial1().getShininess());
+//        this.shininess2Spinner.setValue(simulation.getTerrain().getMaterial2().getShininess());
+//        this.shininess3Spinner.setValue(simulation.getTerrain().getMaterial3().getShininess());
 
         
         CoreEngine.getGLContextLock().lock();
@@ -2019,28 +2023,28 @@ public class SwingGUI extends JFrame{
     
     private void scaleXZSliderStateChanged(javax.swing.event.ChangeEvent evt) {                                           
         this.scaleXZValue.setText(String.valueOf(scaleXZSlider.getValue()));
-        simulation.getTerrain().setScaleXZ(scaleXZSlider.getValue());
+//        simulation.getTerrain().setScaleXZ(scaleXZSlider.getValue());
     }                                          
    
     private void scaleYSliderStateChanged(javax.swing.event.ChangeEvent evt) {                                          
         this.scaleYValue.setText(String.valueOf(scaleYSlider.getValue()));
         synchronized(TerrainObject.getLock()){
-        	simulation.getTerrain().setScaleY(scaleYSlider.getValue());
+//        	simulation.getTerrain().setScaleY(scaleYSlider.getValue());
         }
     }     
     
     private void noneButtonActionPerformed(java.awt.event.ActionEvent evt) {                                           
-    	simulation.getTerrain().setBezíer(0);
+//    	simulation.getTerrain().setBezíer(0);
     } 
     
     private void bezierButtonActionPerformed(java.awt.event.ActionEvent evt) {                                             
-    	simulation.getTerrain().setBezíer(1);
+//    	simulation.getTerrain().setBezíer(1);
     }  
     
     
     private void detailRangeSliderStateChanged(javax.swing.event.ChangeEvent evt) {                                               
         this.detailRangeValue.setText(String.valueOf(this.detailRangeSlider.getValue()));
-        simulation.getTerrain().setDetailRange(this.detailRangeSlider.getValue());
+//        simulation.getTerrain().setDetailRange(this.detailRangeSlider.getValue());
     } 
 
     private void tex1ButtonActionPerformed(java.awt.event.ActionEvent evt) {
@@ -2065,63 +2069,63 @@ public class SwingGUI extends JFrame{
     }                                          
 
     private void displace1SpinnerStateChanged(javax.swing.event.ChangeEvent evt) {                                                     
-    	simulation.getTerrain().getMaterial1().setDisplaceScale((int) this.displace1Spinner.getModel().getValue()); 
+//    	simulation.getTerrain().getMaterial1().setDisplaceScale((int) this.displace1Spinner.getModel().getValue()); 
     }                                             
                                            
 
     private void emission1SpinnerStateChanged(javax.swing.event.ChangeEvent evt) {                                                      
-    	simulation.getTerrain().getMaterial1().setEmission((float) this.emission1Spinner.getModel().getValue());
+//    	simulation.getTerrain().getMaterial1().setEmission((float) this.emission1Spinner.getModel().getValue());
     }                                             
 
     private void shininess1SpinnerStateChanged(javax.swing.event.ChangeEvent evt) {        	
-    	simulation.getTerrain().getMaterial1().setShininess((float) this.shininess1Spinner.getModel().getValue());
+//    	simulation.getTerrain().getMaterial1().setShininess((float) this.shininess1Spinner.getModel().getValue());
     }                                              
 
     private void displace2SpinnerStateChanged(javax.swing.event.ChangeEvent evt) {                                             
-    	simulation.getTerrain().getMaterial2().setDisplaceScale((int) this.displace2Spinner.getModel().getValue()); 
+//    	simulation.getTerrain().getMaterial2().setDisplaceScale((int) this.displace2Spinner.getModel().getValue()); 
     }                                             
                                            
 
     private void emission2SpinnerStateChanged(javax.swing.event.ChangeEvent evt) {                                              
-    	simulation.getTerrain().getMaterial2().setEmission((float) this.emission2Spinner.getModel().getValue());
+//    	simulation.getTerrain().getMaterial2().setEmission((float) this.emission2Spinner.getModel().getValue());
     }                                             
 
     private void shininess2SpinnerStateChanged(javax.swing.event.ChangeEvent evt) {                                               
-    	simulation.getTerrain().getMaterial2().setShininess((float) this.shininess2Spinner.getModel().getValue());
+//    	simulation.getTerrain().getMaterial2().setShininess((float) this.shininess2Spinner.getModel().getValue());
     }                                              
 
     private void displace3SpinnerStateChanged(javax.swing.event.ChangeEvent evt) {                                              
-    	simulation.getTerrain().getMaterial3().setDisplaceScale((int) this.displace3Spinner.getModel().getValue()); 
+//    	simulation.getTerrain().getMaterial3().setDisplaceScale((int) this.displace3Spinner.getModel().getValue()); 
     }                                             
                                            
 
     private void emission3SpinnerStateChanged(javax.swing.event.ChangeEvent evt) {                                             
-    	simulation.getTerrain().getMaterial3().setEmission((float) this.emission3Spinner.getModel().getValue());
+//    	simulation.getTerrain().getMaterial3().setEmission((float) this.emission3Spinner.getModel().getValue());
     }                                             
 
     private void shininess3SpinnerStateChanged(javax.swing.event.ChangeEvent evt) {                                               
 
-    	simulation.getTerrain().getMaterial3().setShininess((float) this.shininess3Spinner.getModel().getValue());
+//    	simulation.getTerrain().getMaterial3().setShininess((float) this.shininess3Spinner.getModel().getValue());
     }                                                           
 
     private void tessSlopeTSliderStateChanged(javax.swing.event.ChangeEvent evt) {                                                 
     	this.tessSlopeTValue.setText(String.valueOf(this.tessSlopeTSlider.getValue()/10f));
-        simulation.getTerrain().setTessellationSlope(this.tessSlopeTSlider.getValue()/10f);
+//        simulation.getTerrain().setTessellationSlope(this.tessSlopeTSlider.getValue()/10f);
     }                                                                                       
 
     private void tessFactorTSliderStateChanged(javax.swing.event.ChangeEvent evt) {                                               
         this.tessFactorTValue.setText(String.valueOf(this.tessFactorTSlider.getValue()));
-        simulation.getTerrain().setTessellationFactor(this.tessFactorTSlider.getValue());
+//        simulation.getTerrain().setTessellationFactor(this.tessFactorTSlider.getValue());
     } 
     
     private void tessShiftTSliderStateChanged(javax.swing.event.ChangeEvent evt) {                                              
     	this.tessShiftTValue.setText(String.valueOf(this.tessShiftTSlider.getValue()/100f));
-        simulation.getTerrain().setTessellationShift(this.tessShiftTSlider.getValue()/100f);
+//        simulation.getTerrain().setTessellationShift(this.tessShiftTSlider.getValue()/100f);
     }
     
     private void texDetailTSliderStateChanged(javax.swing.event.ChangeEvent evt) {                                             
         this.texDetailTValue.setText(String.valueOf(texDetailTSlider.getValue()));
-        simulation.getTerrain().setTexDetail(texDetailTSlider.getValue());
+//        simulation.getTerrain().setTexDetail(texDetailTSlider.getValue());
     }  
 
 	private void grassTex4MouseClicked(java.awt.event.MouseEvent evt) {                                       
@@ -2530,7 +2534,7 @@ public class SwingGUI extends JFrame{
     
     private void normalStrengthWSliderStateChanged(javax.swing.event.ChangeEvent evt) {                                                   
         this.normalStrengthWValue.setText(String.valueOf(this.normalStrengthWSlider.getValue()/1000f));
-        simulation.getWater().getFFT().setNormalstrength(this.normalStrengthWSlider.getValue()/1000f);
+//        simulation.getWater().getFFT().setNormalstrength(this.normalStrengthWSlider.getValue()/1000f);
     }
     
     private void choppinessWSliderStateChanged(javax.swing.event.ChangeEvent evt) {                                               
@@ -2579,11 +2583,11 @@ public class SwingGUI extends JFrame{
     	   		writer.newLine();
     	   		writer.write("material1_DISP " + ((Terrain) simulation.getTerrain()).getMaterial1_DISP());
     	   		writer.newLine();
-    	   		writer.write("material1_displaceScale " + simulation.getTerrain().getMaterial1().getDisplaceScale());
-    	   		writer.newLine();
-    	   		writer.write("material1_emission " + simulation.getTerrain().getMaterial1().getEmission());
-    	   		writer.newLine();
-    	   		writer.write("material1_shininess " + simulation.getTerrain().getMaterial1().getShininess());
+//    	   		writer.write("material1_displaceScale " + simulation.getTerrain().getMaterial1().getDisplaceScale());
+//    	   		writer.newLine();
+//    	   		writer.write("material1_emission " + simulation.getTerrain().getMaterial1().getEmission());
+//    	   		writer.newLine();
+//    	   		writer.write("material1_shininess " + simulation.getTerrain().getMaterial1().getShininess());
     	   		writer.newLine();
     	   		writer.write("material2_DIF " + ((Terrain) simulation.getTerrain()).getMaterial2_DIF());
     	   		writer.newLine();
@@ -2591,11 +2595,11 @@ public class SwingGUI extends JFrame{
     	   		writer.newLine();
     	   		writer.write("material2_DISP " + ((Terrain) simulation.getTerrain()).getMaterial2_DISP());
     	   		writer.newLine();
-    	   		writer.write("material2_displaceScale " + simulation.getTerrain().getMaterial2().getDisplaceScale());
-    	   		writer.newLine();
-    	   		writer.write("material2_emission " + simulation.getTerrain().getMaterial2().getEmission());
-    	   		writer.newLine();
-    	   		writer.write("material2_shininess " + simulation.getTerrain().getMaterial2().getShininess());
+//    	   		writer.write("material2_displaceScale " + simulation.getTerrain().getMaterial2().getDisplaceScale());
+//    	   		writer.newLine();
+//    	   		writer.write("material2_emission " + simulation.getTerrain().getMaterial2().getEmission());
+//    	   		writer.newLine();
+//    	   		writer.write("material2_shininess " + simulation.getTerrain().getMaterial2().getShininess());
     	   		writer.newLine();
     	   		writer.write("material3_DIF " + ((Terrain) simulation.getTerrain()).getMaterial3_DIF());
     	   		writer.newLine();
@@ -2603,30 +2607,30 @@ public class SwingGUI extends JFrame{
     	   		writer.newLine();
     	   		writer.write("material3_DISP " + ((Terrain) simulation.getTerrain()).getMaterial3_DISP());
     	   		writer.newLine();
-    	   		writer.write("material3_displaceScale " + simulation.getTerrain().getMaterial3().getDisplaceScale());
-    	   		writer.newLine();
-    	   		writer.write("material3_emission " + simulation.getTerrain().getMaterial3().getEmission());
-    	   		writer.newLine();
-    	   		writer.write("material3_shininess " + simulation.getTerrain().getMaterial3().getShininess());
+//    	   		writer.write("material3_displaceScale " + simulation.getTerrain().getMaterial3().getDisplaceScale());
+//    	   		writer.newLine();
+//    	   		writer.write("material3_emission " + simulation.getTerrain().getMaterial3().getEmission());
+//    	   		writer.newLine();
+//    	   		writer.write("material3_shininess " + simulation.getTerrain().getMaterial3().getShininess());
     	   		writer.newLine();
     	   		writer.newLine();
     	   		writer.write("#terrain mesh settings");
     	   		writer.newLine();
-    	   		writer.write("scaleXZ " + Float.toString(simulation.getTerrain().getScaleXZ()));
+//    	   		writer.write("scaleXZ " + Float.toString(simulation.getTerrain().getScaleXZ()));
+//    	   		writer.newLine();
+//    	   		writer.write("scaleY " + Float.toString(simulation.getTerrain().getScaleY()));
+//    	   		writer.newLine();
+//    	   		writer.write("texDetail " + Float.toString(simulation.getTerrain().getTexDetail()));
     	   		writer.newLine();
-    	   		writer.write("scaleY " + Float.toString(simulation.getTerrain().getScaleY()));
-    	   		writer.newLine();
-    	   		writer.write("texDetail " + Float.toString(simulation.getTerrain().getTexDetail()));
-    	   		writer.newLine();
-    	   		writer.write("tessellationFactor " + Integer.toString(simulation.getTerrain().getTessellationFactor()));
-    	   		writer.newLine();
-    	   		writer.write("tessellationSlope " + Float.toString(simulation.getTerrain().getTessellationSlope()));
-    	   		writer.newLine();
-    	   		writer.write("tessellationShift " + Float.toString(simulation.getTerrain().getTessellationShift()));
-    	   		writer.newLine();
-    	   		writer.write("detailRange " + Integer.toString(simulation.getTerrain().getDetailRange()));
-    	   		writer.newLine();
-    	   		writer.write("bezíer " + Integer.toString(simulation.getTerrain().getBezíer()));
+//    	   		writer.write("tessellationFactor " + Integer.toString(simulation.getTerrain().getTessellationFactor()));
+//    	   		writer.newLine();
+//    	   		writer.write("tessellationSlope " + Float.toString(simulation.getTerrain().getTessellationSlope()));
+//    	   		writer.newLine();
+//    	   		writer.write("tessellationShift " + Float.toString(simulation.getTerrain().getTessellationShift()));
+//    	   		writer.newLine();
+//    	   		writer.write("detailRange " + Integer.toString(simulation.getTerrain().getDetailRange()));
+//    	   		writer.newLine();
+//    	   		writer.write("bezier " + Integer.toString(simulation.getTerrain().getBezíer()));
     	   		writer.close();  	   		
        } catch (UnsupportedEncodingException e1) {
     	   e1.printStackTrace();
@@ -2664,7 +2668,7 @@ public class SwingGUI extends JFrame{
     	   		writer.newLine();
     	   		writer.write("kRefraction " + simulation.getWater().getkRefraction());
     	   		writer.newLine();
-    	   		writer.write("normalStrength " + simulation.getWater().getFFT().getNormalstrength());
+//    	   		writer.write("normalStrength " + simulation.getWater().getFFT().getNormalstrength());
     	   		writer.newLine();
     	   
        } catch (UnsupportedEncodingException e1) {

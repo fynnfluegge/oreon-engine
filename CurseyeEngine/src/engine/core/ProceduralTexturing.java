@@ -9,7 +9,7 @@ import java.util.Random;
 import javax.imageio.ImageIO;
 
 import engine.math.Vec2f;
-import engine.models.data.Mesh;
+import engine.modeling.Mesh;
 
 public class ProceduralTexturing{
 

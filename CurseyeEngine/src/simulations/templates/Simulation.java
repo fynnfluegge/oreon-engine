@@ -1,9 +1,8 @@
 package simulations.templates;
 
-
+import engine.buffers.Framebuffer;
 import engine.core.Texture;
 import engine.gameObject.GameObject;
-import engine.gpubuffers.Framebuffer;
 
 public abstract class Simulation {
 
@@ -11,11 +10,11 @@ private GameObject rootObject;
 private Framebuffer sceneFBO;
 private Texture sceneTexture;
 private Texture sceneDepthmap;
+
 	
 	public void init() {
-		
-		setRoot(new GameObject());
-		setSceneFBO(new Framebuffer());
+		rootObject = new GameObject();
+		sceneFBO = new Framebuffer();
 	}
 	
 	public void render(){};

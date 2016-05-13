@@ -1,11 +1,11 @@
 package engine.gameObject.components;
 
+import engine.buffers.ParticleSystemVAO;
 import engine.configs.RenderingConfig;
 import engine.core.Camera;
-import engine.gpubuffers.ParticleSystemVAO;
-import engine.models.data.Particle;
-import engine.shaderprograms.Shader;
-import engine.shaderprograms.particles.ParticleShader;
+import engine.modeling.Particle;
+import engine.shaders.Shader;
+import engine.shaders.particles.ParticleShader;
 
 public class ParticleRenderer extends Renderer{
 

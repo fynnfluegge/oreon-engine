@@ -7,6 +7,8 @@ out vec2 texCoord1;
 struct Fractal
 {
 	sampler2D heightmap;
+	int scaling;
+	float strength;
 };
 
 uniform Fractal fractals[10];
@@ -18,13 +20,14 @@ uniform float gap;
 uniform vec2 location;
 uniform vec3 eyePosition;
 
-const int lod1_morph_area = 1700;
-const int lod2_morph_area = 1250;
-const int lod3_morph_area = 725;
-const int lod4_morph_area = 360;
-const int lod5_morph_area = 80;
-const int lod6_morph_area = 40;
-const int lod7_morph_area = 0;
+uniform int lod1_morph_area;
+uniform int lod2_morph_area;
+uniform int lod3_morph_area;
+uniform int lod4_morph_area;
+uniform int lod5_morph_area;
+uniform int lod6_morph_area;
+uniform int lod7_morph_area;
+uniform int lod8_morph_area;
 
 float morphLatitude(vec2 position)
 {
@@ -148,15 +151,18 @@ void main()
 	if (lod == 7){
 		vertex += morph(lod7_morph_area);
 	}
+	if (lod == 8){
+		vertex += morph(lod8_morph_area);
+	}
 	
 	texCoord1 = vertex;
-	float height =    texture(fractals[0].heightmap, texCoord1).r
-					+ texture(fractals[1].heightmap, texCoord1*2).r * 1.4
-					+ texture(fractals[2].heightmap, texCoord1*4).r * 0.4
-					+ texture(fractals[3].heightmap, texCoord1*6).r * 0.2
-					+ texture(fractals[4].heightmap, texCoord1*10).r *0.08
-					+ texture(fractals[5].heightmap, texCoord1*20).r *0.02
-					+ texture(fractals[6].heightmap, texCoord1*22).r *0.02;
+	float height =    texture(fractals[0].heightmap, texCoord1*fractals[0].scaling).r * fractals[0].strength
+					+ texture(fractals[1].heightmap, texCoord1*fractals[1].scaling).r * fractals[1].strength
+					+ texture(fractals[2].heightmap, texCoord1*fractals[2].scaling).r * fractals[2].strength
+					+ texture(fractals[3].heightmap, texCoord1*fractals[3].scaling).r * fractals[3].strength
+					+ texture(fractals[4].heightmap, texCoord1*fractals[4].scaling).r * fractals[4].strength
+					+ texture(fractals[5].heightmap, texCoord1*fractals[5].scaling).r * fractals[5].strength
+					+ texture(fractals[6].heightmap, texCoord1*fractals[6].scaling).r * fractals[6].strength;
 					
 	gl_Position = worldMatrix * vec4(vertex.x,height,vertex.y,1);
 }

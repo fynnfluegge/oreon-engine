@@ -1,9 +1,9 @@
 package simulations.objLoader;
 
-import engine.lighting.DirectionalLight;
+import modules.glass.GlassRenderer;
+import modules.lighting.DirectionalLight;
 import engine.main.RenderingEngine;
 import engine.math.Vec3f;
-import engine.renderer.glass.GlassRenderer;
 import simulations.templates.BasicSimulation;
 
 public class ActionBox extends BasicSimulation{

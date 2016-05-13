@@ -11,7 +11,7 @@ public class Start {
 		
 		Simulation simulation = new ActionBox();
 		GUI gui = new FPSDisplay();
-		CoreEngine coreEngine = new CoreEngine(1080, 640, "ActionBox", simulation, gui);
+		CoreEngine coreEngine = new CoreEngine(1400, 800, "ActionBox", simulation, gui);
 		coreEngine.createWindow();
 		coreEngine.start();
 

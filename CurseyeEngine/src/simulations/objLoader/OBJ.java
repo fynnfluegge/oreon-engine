@@ -1,6 +1,9 @@
 package simulations.objLoader;
+import modules.glass.GlassRenderer;
+
 import org.lwjgl.input.Keyboard;
 
+import engine.buffers.MeshVAO;
 import engine.configs.AlphaBlending;
 import engine.configs.CullFaceDisable;
 import engine.core.Input;
@@ -8,11 +11,9 @@ import engine.gameObject.GameObject;
 import engine.gameObject.components.Material;
 import engine.gameObject.components.MeshRenderer;
 import engine.gameObject.components.Renderer;
-import engine.gpubuffers.MeshVAO;
 import engine.math.Vec3f;
-import engine.models.data.Model;
-import engine.models.obj.OBJLoader;
-import engine.renderer.glass.GlassRenderer;
+import engine.modeling.obj.Model;
+import engine.modeling.obj.OBJLoader;
 
 public class OBJ extends GameObject{
 
@@ -21,7 +22,7 @@ public class OBJ extends GameObject{
 		getTransform().setLocalRotation(0, 0, 0);
 		getTransform().setLocalScaling(10f,10f,10f);
 		OBJLoader loader = new OBJLoader();
-		Model[] models = loader.load("nanosuit");
+		Model[] models = loader.load("M60");
 		int size = 0;
 		for (Model model : models){
 			size += model.getMesh().getVertices().length;
@@ -38,13 +39,13 @@ public class OBJ extends GameObject{
 			}
 
 			if (model.getMaterial().getName().equals("glass"))
-				renderer = new MeshRenderer(meshBuffer, engine.shaderprograms.phong.Glass.getInstance(), new AlphaBlending(0));
+				renderer = new MeshRenderer(meshBuffer, engine.shaders.phong.Glass.getInstance(), new AlphaBlending(0));
 			else if (model.getMaterial().getNormalmap() != null)
-				renderer = new MeshRenderer(meshBuffer, engine.shaderprograms.phong.Bumpy.getInstance(), new CullFaceDisable());
+				renderer = new MeshRenderer(meshBuffer, engine.shaders.phong.Bumpy.getInstance(), new CullFaceDisable());
 			else if (model.getMaterial().getDiffusemap() != null)
-				renderer = new MeshRenderer(meshBuffer, engine.shaderprograms.phong.Textured.getInstance(), new CullFaceDisable());	
+				renderer = new MeshRenderer(meshBuffer, engine.shaders.phong.Textured.getInstance(), new CullFaceDisable());	
 			else
-				renderer = new MeshRenderer(meshBuffer, engine.shaderprograms.phong.RGBA.getInstance(), new CullFaceDisable());	
+				renderer = new MeshRenderer(meshBuffer, engine.shaders.phong.RGBA.getInstance(), new CullFaceDisable());	
 
 			object.addComponent("Material", model.getMaterial());
 			object.addComponent("Renderer", renderer);
@@ -59,20 +60,20 @@ public class OBJ extends GameObject{
 		if (Input.getHoldingKeys().contains(Keyboard.KEY_G))
 		{
 			for(GameObject gameobject : this.getChildren()){
-				((Renderer) gameobject.getComponent("Renderer")).setShader(engine.shaderprograms.basic.Grid.getInstance());
+				((Renderer) gameobject.getComponent("Renderer")).setShader(engine.shaders.basic.Grid.getInstance());
 			}
 		}
 		else {
 			for(GameObject gameobject : this.getChildren()){
 				if((Material) gameobject.getComponent("Material") != null){
 					if (((Material) gameobject.getComponent("Material")).getName().equals("glass"))
-						((Renderer) gameobject.getComponent("Renderer")).setShader(engine.shaderprograms.phong.Glass.getInstance());	
+						((Renderer) gameobject.getComponent("Renderer")).setShader(engine.shaders.phong.Glass.getInstance());	
 					else if (((Material) gameobject.getComponent("Material")).getNormalmap() != null)
-						((Renderer) gameobject.getComponent("Renderer")).setShader(engine.shaderprograms.phong.Bumpy.getInstance());
+						((Renderer) gameobject.getComponent("Renderer")).setShader(engine.shaders.phong.Bumpy.getInstance());
 					else if (((Material) gameobject.getComponent("Material")).getDiffusemap() != null)
-						((Renderer) gameobject.getComponent("Renderer")).setShader(engine.shaderprograms.phong.Textured.getInstance());
+						((Renderer) gameobject.getComponent("Renderer")).setShader(engine.shaders.phong.Textured.getInstance());
 					else
-						((Renderer) gameobject.getComponent("Renderer")).setShader(engine.shaderprograms.phong.RGBA.getInstance());	
+						((Renderer) gameobject.getComponent("Renderer")).setShader(engine.shaders.phong.RGBA.getInstance());	
 				}
 			}
 		}

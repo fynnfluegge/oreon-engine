@@ -1,8 +1,8 @@
 package simulations.worldLoader;
 
+import modules.water.WaterSurface;
 import engine.core.Constants;
 import engine.math.Quaternion;
-import engine.renderer.water.WaterSurface;
 
 public class Ocean extends WaterSurface{
 

@@ -1,9 +1,9 @@
 package engine.gameObject.components;
 
+import engine.buffers.MeshVAO;
 import engine.configs.RenderingConfig;
 import engine.core.Camera;
-import engine.gpubuffers.MeshVAO;
-import engine.shaderprograms.Shader;
+import engine.shaders.Shader;
 
 public class MeshRenderer extends Renderer{
 

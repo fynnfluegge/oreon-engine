@@ -24,7 +24,7 @@ import java.nio.ByteBuffer;
 import engine.core.Camera;
 import engine.core.Input;
 import engine.core.Texture;
-import engine.core.Window;
+import engine.core.OpenGLWindow;
 
 public abstract class BasicSimulation extends Simulation{
 	
@@ -35,13 +35,13 @@ public abstract class BasicSimulation extends Simulation{
 		setSceneTexture(new Texture());
 		getSceneTexture().generate();
 		getSceneTexture().bind();
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, Window.getWidth(), Window.getHeight(), 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, OpenGLWindow.getWidth(), OpenGLWindow.getHeight(), 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		setSceneDepthmap(new Texture());
 		getSceneDepthmap().generate();
 		getSceneDepthmap().bind();
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32F, Window.getWidth(), Window.getHeight(), 0, GL_DEPTH_COMPONENT, GL_FLOAT, (ByteBuffer) null);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32F, OpenGLWindow.getWidth(), OpenGLWindow.getHeight(), 0, GL_DEPTH_COMPONENT, GL_FLOAT, (ByteBuffer) null);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
@@ -51,7 +51,7 @@ public abstract class BasicSimulation extends Simulation{
 		getSceneFBO().bind();
 		getSceneFBO().setDrawBuffer(0);
 		getSceneFBO().colorTextureAttachment(getSceneTexture().getId(), 0);
-		getSceneFBO().depthbufferAttachment(Window.getWidth(), Window.getHeight());
+		getSceneFBO().depthbufferAttachment(OpenGLWindow.getWidth(), OpenGLWindow.getHeight());
 		getSceneFBO().depthTextureAttachment(getSceneDepthmap().getId());
 		getSceneFBO().checkStatus();
 		getSceneFBO().unbind();

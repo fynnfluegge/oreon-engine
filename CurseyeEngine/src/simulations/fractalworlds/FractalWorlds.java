@@ -1,8 +1,8 @@
 package simulations.fractalworlds;
 
+import modules.lighting.DirectionalLight;
 import engine.gui.GUI;
 import engine.gui.GUIs.EngineGUI;
-import engine.lighting.DirectionalLight;
 import engine.main.CoreEngine;
 import engine.main.RenderingEngine;
 import engine.math.Vec3f;
@@ -14,7 +14,7 @@ public class FractalWorlds extends TerrainSimulation{
 	public static void main(String[] args) {
 		Simulation simulation = new FractalWorlds();
 		GUI gui = new EngineGUI();
-		CoreEngine coreEngine = new CoreEngine(1080, 600, "TerrainLoader", simulation, gui);
+		CoreEngine coreEngine = new CoreEngine(800, 600, "TerrainLoader", simulation, gui);
 		coreEngine.createWindow();
 		coreEngine.start();
 	}

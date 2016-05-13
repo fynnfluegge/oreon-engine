@@ -11,9 +11,8 @@
 
 - ocean brdf:
 	SigmaSq research
-
-- terrain,water chrackprevention displacement:
-	displacement related to tessellation level, smooth
+	geometry-shader: displacement attenuation
+	mapshift in wind direction
 
 - quadtree terrain renderer:
 	tiny point-seams between patches

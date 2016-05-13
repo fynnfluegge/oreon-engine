@@ -13,7 +13,7 @@ struct DirectionalLight
 	vec3 color;
 };
 
-uniform int largeDetailedRange;
+uniform int largeDetailRange;
 uniform mat4 modelViewProjectionMatrix;
 uniform DirectionalLight sunlight;
 uniform sampler2D waterReflection;
@@ -21,6 +21,7 @@ uniform sampler2D waterRefraction;
 uniform sampler2D dudv;
 uniform sampler2D normalmap;
 uniform float distortion;
+uniform float motion;
 uniform vec3 eyePosition;
 uniform float kReflection;
 uniform float kRefraction;
@@ -30,6 +31,7 @@ uniform int texDetail;
 uniform float emission;
 uniform float shininess;
 
+vec2 wind = vec2(1,0);
 const vec3 refractionColor = vec3(0.02,0.03,0.055);
 const vec3 reflectionColor = vec3(0.3294,0.4917,0.7270);
 const float zFar = 10000;
@@ -40,7 +42,6 @@ float SigmaSqX;
 float SigmaSqY;
 vec3 vertexToEye;
 
-
 float diffuse(vec3 normal)
 {
 	return max(0, dot(normal, -sunlight.direction) * sunlight.intensity);
@@ -48,7 +49,6 @@ float diffuse(vec3 normal)
 
 float specular(vec3 normal)
 {
-	normal.y *= 0.4;
 	normal = normalize(normal);
 	vec3 reflectionVector = normalize(reflect(sunlight.direction, normal));
 	
@@ -64,7 +64,7 @@ float fresnelApproximated(vec3 normal)
     
     float cosine = dot(halfDirection, vertexToEye);
     float product = max(cosine, 0.0);
-    float factor = pow(product, 1.0);
+    float factor = pow(product, 2.0);
     
     return 1-factor;
 }
@@ -116,23 +116,25 @@ void main(void)
 	float dist = length(eyePosition - position);
 	
 	// normal
-	vec3 normal = 2 * texture(normalmap, texCoordF).rbg - 1;
+	vec3 normal = 2 * texture(normalmap, texCoordF + (wind*motion)).rbg - 1;
 
 	normal = normalize(normal);
 
 	SigmaSqX = 0.01;
 	SigmaSqY = 0.01;
 	
-	if (dist < largeDetailedRange-50){
+	if (dist < largeDetailRange-20){
+		float attenuation = -dist/(largeDetailRange-20) + 1;
 		vec3 bitangent = normalize(cross(tangent, normal));
 		mat3 TBN = mat3(tangent,normal,bitangent);
-		vec3 bumpNormal = 2 * texture(normalmap, texCoordF*4).rbg - 1;
+		vec3 bumpNormal = 2 * texture(normalmap, texCoordF*8).rbg - 1;
 		bumpNormal.y *= 1.4;
+		bumpNormal.xz *= attenuation;
 		normal = normalize(TBN * bumpNormal);
 	}
 	
 	// BRDF lighting, high performance
-	// float F = fresnel(normal, tangent, bitangent);
+	//float F = fresnel(normal, tangent, bitangent);
 	// Fresnel Term approximation
 	float F = fresnelApproximated(normal);
 	

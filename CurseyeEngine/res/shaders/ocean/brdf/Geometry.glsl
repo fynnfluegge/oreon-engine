@@ -8,18 +8,18 @@ in vec2 texCoordG[];
 out vec3 position;
 out vec2 texCoordF;
 flat out vec3 tangent;
-
-uniform int largeDetailRange;
 uniform mat4 projectionViewMatrix;
 uniform vec3 eyePosition;
 uniform vec4 frustumPlanes[6];
-uniform float distortion;
+uniform float motion;
 uniform float displacementScale;
 uniform sampler2D Dy;
 uniform sampler2D Dx;
 uniform sampler2D Dz;
 uniform float choppiness;
 
+vec2 wind = vec2(1,0);
+int displacementRange = 2000;
 vec3 Tangent;
 
 void calcTangent()
@@ -55,35 +55,36 @@ void main()
 	vec4 position2 = gl_in[2].gl_Position;
 	
 	float dist = (distance(gl_in[0].gl_Position.xyz, eyePosition) + distance(gl_in[1].gl_Position.xyz, eyePosition) + distance(gl_in[0].gl_Position.xyz, eyePosition))/3;
-	// if (dist < largeDetailRange){
-		calcTangent();
+	if (dist < displacementRange+100)
+	{	
+	calcTangent();
 		
-		dy = texture(Dy, texCoordG[0]).r * displacementScale;
-		dx = texture(Dx, texCoordG[0]).r * choppiness;
-		dz = texture(Dz, texCoordG[0]).r * choppiness;
+		
+		dy = texture(Dy, texCoordG[0]+(wind*motion)).r * max(0,(- distance(gl_in[0].gl_Position.xyz, eyePosition)/displacementRange + 1)) * displacementScale;
+		dx = texture(Dx, texCoordG[0]+(wind*motion)).r * max(0,(- distance(gl_in[0].gl_Position.xyz, eyePosition)/displacementRange + 1)) * choppiness;
+		dz = texture(Dz, texCoordG[0]+(wind*motion)).r * max(0,(- distance(gl_in[0].gl_Position.xyz, eyePosition)/displacementRange + 1)) * choppiness;
 	
-		position0.y -= dy;
+		position0.y += dy;
 		position0.x -= dx;
 		position0.z -= dz;
 	
-		dy = texture(Dy, texCoordG[1]).r * displacementScale;
-		dx = texture(Dx, texCoordG[1]).r * choppiness;
-		dz = texture(Dz, texCoordG[1]).r * choppiness;
+		dy = texture(Dy, texCoordG[1]+(wind*motion)).r * max(0,(- distance(gl_in[1].gl_Position.xyz, eyePosition)/displacementRange + 1)) * displacementScale;
+		dx = texture(Dx, texCoordG[1]+(wind*motion)).r * max(0,(- distance(gl_in[1].gl_Position.xyz, eyePosition)/displacementRange + 1)) * choppiness;
+		dz = texture(Dz, texCoordG[1]+(wind*motion)).r * max(0,(- distance(gl_in[1].gl_Position.xyz, eyePosition)/displacementRange + 1)) * choppiness;
 	
-		position1.y -= dy;
+		position1.y += dy;
 		position1.x -= dx;
 		position1.z -= dz;
 
-		dy = texture(Dy, texCoordG[2]).r * displacementScale;
-		dx = texture(Dx, texCoordG[2]).r * choppiness;
-		dz = texture(Dz, texCoordG[2]).r * choppiness;
+		dy = texture(Dy, texCoordG[2]+(wind*motion)).r * max(0,(- distance(gl_in[2].gl_Position.xyz, eyePosition)/displacementRange + 1)) * displacementScale;
+		dx = texture(Dx, texCoordG[2]+(wind*motion)).r * max(0,(- distance(gl_in[2].gl_Position.xyz, eyePosition)/displacementRange + 1)) * choppiness;
+		dz = texture(Dz, texCoordG[2]+(wind*motion)).r * max(0,(- distance(gl_in[2].gl_Position.xyz, eyePosition)/displacementRange + 1)) * choppiness;
 	
-		position2.y -= dy;
+		position2.y += dy;
 		position2.x -= dx;
 		position2.z -= dz;
-		
-	// }
-	
+	}
+
     gl_Position = projectionViewMatrix * position0;
 	gl_ClipDistance[0] = dot(gl_Position ,frustumPlanes[0]);
 	gl_ClipDistance[1] = dot(gl_Position ,frustumPlanes[1]);

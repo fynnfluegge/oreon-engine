@@ -1,10 +1,10 @@
 package simulations.terrainFractals;
 
+import modules.terrain.fractals.FractalMaps;
 import simulations.templates.BasicSimulation;
 import engine.gui.GUI;
 import engine.gui.GUIs.FPSDisplay;
 import engine.main.CoreEngine;
-import engine.renderer.terrain.fractals.FractalMaps;
 
 public class DisplacementMap extends BasicSimulation{
 	
@@ -22,7 +22,7 @@ public static void main(String[] args) {
 	public void init()
 	{	
 		super.init();
-		maps = new FractalMaps(512,1f,400);
+		maps = new FractalMaps(512,1f,400,10,1000);
 	}
 	
 	public void render()

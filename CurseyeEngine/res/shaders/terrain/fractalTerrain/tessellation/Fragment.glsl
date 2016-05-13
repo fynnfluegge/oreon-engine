@@ -14,6 +14,7 @@ struct DirectionalLight
 struct Fractal
 {
 	sampler2D normalmap;
+	int scaling;
 };
 
 uniform Fractal fractals[10];
@@ -54,13 +55,13 @@ void main()
 	vec2 mapCoords = (position.xz + scaleXZ/2)/scaleXZ;
 
 	 vec3 normal = normalize(
-							 (2*(texture(fractals[0].normalmap, mapCoords).rbg)-1)
-							+(2*(texture(fractals[1].normalmap, mapCoords* 2).rbg)-1)
-							+(2*(texture(fractals[2].normalmap, mapCoords* 4).rbg)-1)
-							+(2*(texture(fractals[3].normalmap, mapCoords* 6).rbg)-1)
-							+(2*(texture(fractals[4].normalmap, mapCoords*10).rbg)-1)
-							+(2*(texture(fractals[5].normalmap, mapCoords*20).rbg)-1)
-							+(2*(texture(fractals[6].normalmap, mapCoords*22).rbg)-1)
+							 (2*(texture(fractals[0].normalmap, mapCoords*fractals[0].scaling).rbg)-1)
+							+(2*(texture(fractals[1].normalmap, mapCoords*fractals[1].scaling).rbg)-1)
+							+(2*(texture(fractals[2].normalmap, mapCoords*fractals[2].scaling).rbg)-1)
+							+(2*(texture(fractals[3].normalmap, mapCoords*fractals[3].scaling).rbg)-1)
+							+(2*(texture(fractals[4].normalmap, mapCoords*fractals[4].scaling).rbg)-1)
+							+(2*(texture(fractals[5].normalmap, mapCoords*fractals[5].scaling).rbg)-1)
+							+(2*(texture(fractals[6].normalmap, mapCoords*fractals[6].scaling).rbg)-1)
 							);
 	
 	if (dist < largeDetailedRange-20)
@@ -69,9 +70,9 @@ void main()
 		vec3 bitangent = normalize(cross(tangent, normal));
 		mat3 TBN = mat3(tangent,normal,bitangent);
 		
-		vec3 bumpNormal =    (2*(texture(fractals[7].normalmap, mapCoords*400).rbg)-1)
-							+(2*(texture(fractals[8].normalmap, mapCoords*410).rbg)-1)
-							+(2*(texture(fractals[9].normalmap, mapCoords*420).rbg)-1);
+		vec3 bumpNormal =    (2*(texture(fractals[7].normalmap, mapCoords*fractals[7].scaling).rbg)-1)
+							+(2*(texture(fractals[8].normalmap, mapCoords*fractals[8].scaling).rbg)-1)
+							+(2*(texture(fractals[9].normalmap, mapCoords*fractals[9].scaling).rbg)-1);
 		bumpNormal.xz *= attenuation;
 		
 		normal = normalize(TBN * normalize(bumpNormal));

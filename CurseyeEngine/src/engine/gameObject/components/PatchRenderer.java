@@ -1,9 +1,9 @@
 package engine.gameObject.components;
 
+import engine.buffers.PatchVAO;
 import engine.configs.RenderingConfig;
 import engine.core.Camera;
-import engine.gpubuffers.PatchVAO;
-import engine.shaderprograms.Shader;
+import engine.shaders.Shader;
 
 public class PatchRenderer extends Renderer{
 
