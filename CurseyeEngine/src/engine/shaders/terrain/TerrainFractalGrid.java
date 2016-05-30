@@ -7,10 +7,10 @@ import modules.terrain.TerrainConfiguration;
 import modules.terrain.TerrainPatch;
 import engine.core.Camera;
 import engine.core.ResourceLoader;
-import engine.gameObject.GameObject;
 import engine.main.RenderingEngine;
 import engine.math.Matrix4f;
 import engine.math.Vec2f;
+import engine.scenegraph.GameObject;
 import engine.shaders.Shader;
 
 public class TerrainFractalGrid extends Shader{
@@ -31,7 +31,7 @@ public class TerrainFractalGrid extends Shader{
 		super();
 
 		addVertexShader(ResourceLoader.loadShader("terrain/FractalTerrain/grid/Vertex.glsl"));
-		addTessellationControlShader(ResourceLoader.loadShader("terrain/FractalTerrain/grid/Tessellation COntrol.glsl"));
+		addTessellationControlShader(ResourceLoader.loadShader("terrain/FractalTerrain/grid/Tessellation Control.glsl"));
 		addTessellationEvaluationShader(ResourceLoader.loadShader("terrain/FractalTerrain/grid/Tessellation Evaluation.glsl"));
 		addGeometryShader(ResourceLoader.loadShader("terrain/FractalTerrain/grid/Geometry.glsl"));
 		addFragmentShader(ResourceLoader.loadShader("terrain/FractalTerrain/grid/Fragment.glsl"));

@@ -7,9 +7,9 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE3;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 import engine.core.Camera;
 import engine.core.ResourceLoader;
-import engine.gameObject.components.Material;
 import engine.main.RenderingEngine;
 import engine.math.Matrix4f;
+import engine.scenegraph.components.Material;
 import engine.shaders.Shader;
 
 public class Bumpy extends Shader{
@@ -41,13 +41,13 @@ public class Bumpy extends Shader{
 		addUniform("directionalLight.color");
 		addUniform("directionalLight.direction");
 		addUniform("directionalLight.ambient");
-		addUniform("material.diffusemap");
-		addUniform("material.emission");
-		addUniform("material.shininess");
-		addUniform("material.normalmap");
-		addUniform("material.specularmap");
-		addUniform("material.displacemap");
-		addUniform("material.displaceScale");
+		addUniform("material2.diffusemap");
+		addUniform("material2.emission");
+		addUniform("material2.shininess");
+		addUniform("material2.normalmap");
+		addUniform("material2.specularmap");
+		addUniform("material1.displacemap");
+		addUniform("material1.displaceScale");
 		addUniform("specularmap");
 		addUniform("displacement");
 		addUniform("diffusemap");
@@ -81,20 +81,20 @@ public class Bumpy extends Shader{
 			setUniformi("diffusemap", 1);
 			glActiveTexture(GL_TEXTURE0);
 			material.getDiffusemap().bind();
-			setUniformi("material.diffusemap", 0);
+			setUniformi("material2.diffusemap", 0);
 		}
 		else
 			setUniformi("diffusemap", 0);
 		
 		glActiveTexture(GL_TEXTURE1);
 		material.getNormalmap().bind();
-		setUniformi("material.normalmap", 1);
+		setUniformi("material2.normalmap", 1);
 		
 		if (material.getSpecularmap() != null){
 			setUniformi("specularmap", 1);
 			glActiveTexture(GL_TEXTURE2);
 			material.getSpecularmap().bind();
-			setUniformi("material.specularmap", 2);
+			setUniformi("material2.specularmap", 2);
 		}
 		else
 			setUniformi("specularmap", 0);
@@ -103,12 +103,12 @@ public class Bumpy extends Shader{
 			setUniformi("displacement", 1);
 			glActiveTexture(GL_TEXTURE3);
 			material.getDisplacemap().bind();
-			setUniformi("material.displacemap", 3);
+			setUniformi("material1.displacemap", 3);
 		}
 		else
 			setUniformi("displacement", 0);
 		
-		setUniformf("material.emission", material.getEmission());
-		setUniformf("material.shininess", material.getShininess());
+		setUniformf("material2.emission", material.getEmission());
+		setUniformf("material2.shininess", material.getShininess());
 	}
 }

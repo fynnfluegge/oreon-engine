@@ -17,7 +17,6 @@ import static org.lwjgl.opengl.GL40.GL_PATCH_VERTICES;
 import static org.lwjgl.opengl.GL40.glPatchParameteri;
 import static org.lwjgl.opengl.GL40.GL_PATCHES;
 import static org.lwjgl.opengl.GL11.glDrawArrays;
-import engine.core.Util;
 import engine.math.Vec2f;
 import engine.math.Vec3f;
 
@@ -41,7 +40,7 @@ public class PatchVAO {
 			glBindVertexArray(vaoId);
 			
 			glBindBuffer(GL_ARRAY_BUFFER, vbo);
-			glBufferData(GL_ARRAY_BUFFER, Util.createFlippedBuffer(vertices), GL_STATIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, BufferAllocation.createFlippedBuffer(vertices), GL_STATIC_DRAW);
 			
 			glVertexAttribPointer(0, 3, GL_FLOAT, false, Float.BYTES*3, 0);
 			glPatchParameteri(GL_PATCH_VERTICES, patchsize);
@@ -56,7 +55,7 @@ public class PatchVAO {
 			glBindVertexArray(vaoId);
 			
 			glBindBuffer(GL_ARRAY_BUFFER, vbo);
-			glBufferData(GL_ARRAY_BUFFER, Util.createFlippedBuffer(vertices), GL_STATIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, BufferAllocation.createFlippedBuffer(vertices), GL_STATIC_DRAW);
 			
 			glVertexAttribPointer(0, 2, GL_FLOAT, false, Float.BYTES*2, 0);
 			glPatchParameteri(GL_PATCH_VERTICES, patchsize);
@@ -79,7 +78,7 @@ public class PatchVAO {
 	{	
 			glBindVertexArray(vaoId);
 			glBindBuffer(GL_ARRAY_BUFFER, vbo);
-			glBufferData(GL_ARRAY_BUFFER, Util.createFlippedBuffer(vertices), GL_STATIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, BufferAllocation.createFlippedBuffer(vertices), GL_STATIC_DRAW);
 			glBindVertexArray(0);
 	}
 	

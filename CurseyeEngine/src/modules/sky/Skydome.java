@@ -4,11 +4,11 @@ import engine.buffers.MeshVAO;
 import engine.configs.CullFaceDisable;
 import engine.core.ProceduralTexturing;
 import engine.core.Texture;
-import engine.gameObject.GameObject;
-import engine.gameObject.components.Material;
-import engine.gameObject.components.MeshRenderer;
 import engine.modeling.Mesh;
 import engine.modeling.obj.OBJLoader;
+import engine.scenegraph.GameObject;
+import engine.scenegraph.components.Material;
+import engine.scenegraph.components.MeshRenderer;
 import engine.shaders.basic.Textured;
 
 public class Skydome extends GameObject{

@@ -28,7 +28,7 @@ import java.nio.ByteBuffer;
 
 import modules.sky.SkySphere;
 import modules.terrain.TerrainObject;
-import modules.water.WaterSurface;
+import modules.water.Water;
 import engine.configs.RenderingConfig;
 import engine.core.Constants;
 import engine.core.Texture;
@@ -39,7 +39,7 @@ public class TerrainSimulation extends Simulation{
 
 	private SkySphere skySphere;
 	private TerrainObject terrain;
-	private WaterSurface water;
+	private Water water;
 	
 	public void init()
 	{
@@ -168,11 +168,11 @@ public class TerrainSimulation extends Simulation{
 		getSceneFBO().unbind();
 	}
 
-	public WaterSurface getWater() {
+	public Water getWater() {
 		return water;
 	}
 
-	public void setWater(WaterSurface water) {
+	public void setWater(Water water) {
 		this.water = water;
 	}
 

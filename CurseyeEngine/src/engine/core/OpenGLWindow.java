@@ -25,7 +25,15 @@ public class OpenGLWindow {
 		
 		public static void embed(int width, int height, Canvas canvas)
 		{
-			// TODO	
+			try {
+				Display.setParent(canvas);
+				Display.setDisplayMode(new DisplayMode(width, height));
+				Display.create();
+				Keyboard.create();
+				Mouse.create();
+			} catch (LWJGLException e) {
+				e.printStackTrace();
+			}
 		}
 		
 		public static void render()

@@ -3,12 +3,13 @@
 layout(quads, fractional_odd_spacing, cw) in;
 
 in vec2 texCoord2[];
-flat in int tessellation;
+
 out vec2 texCoordG;
 
 struct Fractal
 {
 	sampler2D heightmap;
+	sampler2D normalmap;
 	int scaling;
 	float strength;
 };

@@ -13,7 +13,6 @@ import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import static org.lwjgl.opengl.GL30.glGenVertexArrays;
-import engine.core.Util;
 import engine.math.Vec2f;
 
 public class PointVAO2D {
@@ -36,7 +35,7 @@ public class PointVAO2D {
 			glBindVertexArray(vaoId);
 			
 			glBindBuffer(GL_ARRAY_BUFFER, vbo);
-			glBufferData(GL_ARRAY_BUFFER, Util.createFlippedBuffer(points), GL_STATIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, BufferAllocation.createFlippedBuffer(points), GL_STATIC_DRAW);
 			
 			glVertexAttribPointer(0, 2, GL_FLOAT, false, Float.BYTES*2, 0);
 			

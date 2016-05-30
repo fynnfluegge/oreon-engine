@@ -8,13 +8,13 @@ import static org.lwjgl.opengl.GL43.GL_COMPUTE_SHADER;
 
 import java.util.HashMap;
 
-import engine.core.Util;
-import engine.gameObject.GameObject;
-import engine.gameObject.components.Material;
+import engine.buffers.BufferAllocation;
 import engine.math.Matrix4f;
 import engine.math.Quaternion;
 import engine.math.Vec2f;
 import engine.math.Vec3f;
+import engine.scenegraph.GameObject;
+import engine.scenegraph.components.Material;
 
 public abstract class Shader {
 
@@ -172,7 +172,7 @@ public abstract class Shader {
 	}
 	public void setUniform(String uniformName, Matrix4f value)
 	{
-		glUniformMatrix4(uniforms.get(uniformName), true, Util.createFlippedBuffer(value));
+		glUniformMatrix4(uniforms.get(uniformName), true, BufferAllocation.createFlippedBuffer(value));
 	}
 	
 	public int getProgram()

@@ -17,7 +17,7 @@ struct Fractal
 	int scaling;
 };
 
-uniform Fractal fractals[10];
+uniform Fractal fractals1[10];
 uniform vec3 eyePosition;
 uniform int largeDetailedRange;
 uniform mat4 projectionViewMatrix;
@@ -78,17 +78,17 @@ void main() {
 							(- distance(gl_in[2].gl_Position.xyz, eyePosition)/largeDetailedRange + 1);
 		
 		displace0 = vec4(normalize((2*(texture(normalmap,mapCoords0).rbg)-1)
-							+	(2*(texture(fractals[0].normalmap,mapCoords0*fractals[0].scaling).rbg)-1)
-							+	(2*(texture(fractals[1].normalmap,mapCoords0*fractals[1].scaling).rbg)-1)
-							+	(2*(texture(fractals[2].normalmap,mapCoords0*fractals[2].scaling).rbg)-1)) * displacement0,0);
+							+	(2*(texture(fractals1[0].normalmap,mapCoords0*fractals1[0].scaling).rbg)-1)
+							+	(2*(texture(fractals1[1].normalmap,mapCoords0*fractals1[1].scaling).rbg)-1)
+							+	(2*(texture(fractals1[2].normalmap,mapCoords0*fractals1[2].scaling).rbg)-1)) * displacement0,0);
 		displace1 = vec4(normalize((2*(texture(normalmap,mapCoords1).rbg)-1)
-							+	(2*(texture(fractals[0].normalmap,mapCoords1*fractals[0].scaling).rbg)-1)
-							+	(2*(texture(fractals[1].normalmap,mapCoords1*fractals[1].scaling).rbg)-1)
-							+	(2*(texture(fractals[2].normalmap,mapCoords1*fractals[2].scaling).rbg)-1)) * displacement1,0);
+							+	(2*(texture(fractals1[0].normalmap,mapCoords1*fractals1[0].scaling).rbg)-1)
+							+	(2*(texture(fractals1[1].normalmap,mapCoords1*fractals1[1].scaling).rbg)-1)
+							+	(2*(texture(fractals1[2].normalmap,mapCoords1*fractals1[2].scaling).rbg)-1)) * displacement1,0);
 		displace2 = vec4(normalize((2*(texture(normalmap,mapCoords2).rbg)-1)
-							+	(2*(texture(fractals[0].normalmap,mapCoords2*fractals[0].scaling).rbg)-1)
-							+	(2*(texture(fractals[1].normalmap,mapCoords2*fractals[1].scaling).rbg)-1)
-							+	(2*(texture(fractals[2].normalmap,mapCoords2*fractals[2].scaling).rbg)-1)) * displacement2,0);
+							+	(2*(texture(fractals1[0].normalmap,mapCoords2*fractals1[0].scaling).rbg)-1)
+							+	(2*(texture(fractals1[1].normalmap,mapCoords2*fractals1[1].scaling).rbg)-1)
+							+	(2*(texture(fractals1[2].normalmap,mapCoords2*fractals1[2].scaling).rbg)-1)) * displacement2,0);
 	}
 	
 	vec4 position0 = gl_in[0].gl_Position + displace0;

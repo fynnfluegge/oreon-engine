@@ -5,6 +5,8 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import modules.gui.GUI;
+
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
@@ -13,7 +15,6 @@ import simulations.templates.Simulation;
 import engine.configs.RenderingConfig;
 import engine.core.Constants;
 import engine.core.OpenGLWindow;
-import engine.gui.GUI;
 
 
 public class CoreEngine{

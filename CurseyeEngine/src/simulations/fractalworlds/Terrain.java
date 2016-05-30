@@ -11,6 +11,6 @@ public class Terrain extends TerrainObject{
 		super("./res/terrains/terrain0/terrainSettings.ter", TerrainFractalGrid.getInstance(),
 				TerrainFractalTessellation.getInstance());
 		
-		getTerrainConfiguration().setSightRangeFactor(3);
+		getTerrainConfiguration().setSightRangeFactor(2f);
 	}
 }

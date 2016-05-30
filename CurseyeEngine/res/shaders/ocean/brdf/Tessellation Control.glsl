@@ -5,7 +5,6 @@ layout(vertices = 16) out;
 in vec2 texCoord1[];
 
 out vec2 texCoordTE[];
-smooth out int displaceReduceFactor;
 
 uniform vec3 eyePosition;
 uniform int tessFactor;

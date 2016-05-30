@@ -11,7 +11,7 @@ struct Fractal
 	float strength;
 };
 
-uniform Fractal fractals[10];
+uniform Fractal fractals0[10];
 uniform float scaleY;
 uniform int lod;
 uniform vec2 index;
@@ -157,13 +157,13 @@ void main()
 	}
 	
 	texCoord1 = vertex;
-	float height = 	  texture(fractals[0].heightmap, texCoord1*fractals[0].scaling).r * fractals[0].strength
-					+ texture(fractals[1].heightmap, texCoord1*fractals[1].scaling).r * fractals[1].strength
-					+ texture(fractals[2].heightmap, texCoord1*fractals[2].scaling).r * fractals[2].strength
-					+ texture(fractals[3].heightmap, texCoord1*fractals[3].scaling).r * fractals[3].strength
-					+ texture(fractals[4].heightmap, texCoord1*fractals[4].scaling).r * fractals[4].strength
-					+ texture(fractals[5].heightmap, texCoord1*fractals[5].scaling).r * fractals[5].strength
-					+ texture(fractals[6].heightmap, texCoord1*fractals[6].scaling).r * fractals[6].strength;
+	float height = 	  texture(fractals0[0].heightmap, texCoord1*fractals0[0].scaling).r * fractals0[0].strength
+					+ texture(fractals0[1].heightmap, texCoord1*fractals0[1].scaling).r * fractals0[1].strength
+					+ texture(fractals0[2].heightmap, texCoord1*fractals0[2].scaling).r * fractals0[2].strength
+					+ texture(fractals0[3].heightmap, texCoord1*fractals0[3].scaling).r * fractals0[3].strength
+					+ texture(fractals0[4].heightmap, texCoord1*fractals0[4].scaling).r * fractals0[4].strength
+					+ texture(fractals0[5].heightmap, texCoord1*fractals0[5].scaling).r * fractals0[5].strength
+					+ texture(fractals0[6].heightmap, texCoord1*fractals0[6].scaling).r * fractals0[6].strength;
 					
 	gl_Position = worldMatrix * vec4(vertex.x,height,vertex.y,1);
 }

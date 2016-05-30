@@ -11,12 +11,12 @@ flat out vec3 tangent;
 
 struct Fractal
 {
-	sampler2D normalmap;
 	sampler2D heightmap;
+	sampler2D normalmap;
 	int scaling;
 };
 
-uniform Fractal fractals[10];
+uniform Fractal fractals1[10];
 uniform int largeDetailedRange;
 uniform mat4 projectionViewMatrix;
 uniform vec3 eyePosition;
@@ -70,17 +70,17 @@ void main()
 		mapCoords1 = (gl_in[1].gl_Position.xz + scaleXZ/2)/scaleXZ;
 		mapCoords2 = (gl_in[2].gl_Position.xz + scaleXZ/2)/scaleXZ;
 		
-		float displace00 = texture(fractals[7].heightmap, mapCoords0*400).r;
-		float displace01 = texture(fractals[8].heightmap, mapCoords0*410).r;
-		float displace02 = texture(fractals[9].heightmap, mapCoords0*420).r;
+		float displace00 = texture(fractals1[7].heightmap, mapCoords0*400).r;
+		float displace01 = texture(fractals1[8].heightmap, mapCoords0*410).r;
+		float displace02 = texture(fractals1[9].heightmap, mapCoords0*420).r;
 		
-		float displace10 = texture(fractals[7].heightmap, mapCoords1*400).r;
-		float displace11 = texture(fractals[8].heightmap, mapCoords1*410).r;
-		float displace12 = texture(fractals[9].heightmap, mapCoords1*420).r;
+		float displace10 = texture(fractals1[7].heightmap, mapCoords1*400).r;
+		float displace11 = texture(fractals1[8].heightmap, mapCoords1*410).r;
+		float displace12 = texture(fractals1[9].heightmap, mapCoords1*420).r;
 		
-		float displace20 = texture(fractals[7].heightmap, mapCoords2*400).r;
-		float displace21 = texture(fractals[8].heightmap, mapCoords2*410).r;
-		float displace22 = texture(fractals[9].heightmap, mapCoords2*420).r;
+		float displace20 = texture(fractals1[7].heightmap, mapCoords2*400).r;
+		float displace21 = texture(fractals1[8].heightmap, mapCoords2*410).r;
+		float displace22 = texture(fractals1[9].heightmap, mapCoords2*420).r;
 	
 		displacement0 = ((displace00 + displace01 + displace02) *4)*
 							(- distance(gl_in[0].gl_Position.xyz, eyePosition)/largeDetailedRange + 1);
@@ -89,18 +89,18 @@ void main()
 		displacement2 = ((displace20 + displace21 + displace22) *4)*
 							(- distance(gl_in[2].gl_Position.xyz, eyePosition)/largeDetailedRange + 1);
 		
-		displace0 = vec4(normalize((2*(texture(fractals[1].normalmap,mapCoords0*fractals[1].scaling).rbg)-1)
-								 + (2*(texture(fractals[2].normalmap,mapCoords0*fractals[2].scaling).rbg)-1)),0);
+		displace0 = vec4(normalize((2*(texture(fractals1[1].normalmap,mapCoords0*fractals1[1].scaling).rbg)-1)
+								 + (2*(texture(fractals1[2].normalmap,mapCoords0*fractals1[2].scaling).rbg)-1)),0);
 		displace0.y /= 2;
 		displace0 *= displacement0;
 		
-		displace1 = vec4(normalize((2*(texture(fractals[1].normalmap,mapCoords1*fractals[1].scaling).rbg)-1)
-								 + (2*(texture(fractals[2].normalmap,mapCoords1*fractals[2].scaling).rbg)-1)),0);
+		displace1 = vec4(normalize((2*(texture(fractals1[1].normalmap,mapCoords1*fractals1[1].scaling).rbg)-1)
+								 + (2*(texture(fractals1[2].normalmap,mapCoords1*fractals1[2].scaling).rbg)-1)),0);
 		displace1.y /= 2;
 		displace1 *= displacement1;
 		
-		displace2 = vec4(normalize((2*(texture(fractals[1].normalmap,mapCoords2*fractals[1].scaling).rbg)-1)
-								 + (2*(texture(fractals[2].normalmap,mapCoords2*fractals[2].scaling).rbg)-1)),0);
+		displace2 = vec4(normalize((2*(texture(fractals1[1].normalmap,mapCoords2*fractals1[1].scaling).rbg)-1)
+								 + (2*(texture(fractals1[2].normalmap,mapCoords2*fractals1[2].scaling).rbg)-1)),0);
 		displace2.y /= 2;
 		displace2 *= displacement2;
 	}

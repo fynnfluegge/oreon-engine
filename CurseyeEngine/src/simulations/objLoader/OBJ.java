@@ -6,29 +6,33 @@ import org.lwjgl.input.Keyboard;
 import engine.buffers.MeshVAO;
 import engine.configs.AlphaBlending;
 import engine.configs.CullFaceDisable;
+import engine.configs.Default;
 import engine.core.Input;
-import engine.gameObject.GameObject;
-import engine.gameObject.components.Material;
-import engine.gameObject.components.MeshRenderer;
-import engine.gameObject.components.Renderer;
+import engine.core.Util;
 import engine.math.Vec3f;
 import engine.modeling.obj.Model;
 import engine.modeling.obj.OBJLoader;
+import engine.scenegraph.GameObject;
+import engine.scenegraph.components.Material;
+import engine.scenegraph.components.MeshRenderer;
+import engine.scenegraph.components.Renderer;
 
 public class OBJ extends GameObject{
 
 	public OBJ(){
 		
 		getTransform().setLocalRotation(0, 0, 0);
-		getTransform().setLocalScaling(10f,10f,10f);
+		getTransform().setLocalScaling(100f,100f,100f);
 		OBJLoader loader = new OBJLoader();
-		Model[] models = loader.load("M60");
+		Model[] models = loader.load("nanosuit");
 		int size = 0;
 		for (Model model : models){
 			size += model.getMesh().getVertices().length;
 			GameObject object = new GameObject();
 			MeshVAO meshBuffer = new MeshVAO();
 			//Util.generateNormalsCW(model.getMesh().getVertices(), model.getMesh().getIndices());
+			Util.generateTangentsBitangents(model.getMesh());
+			model.getMesh().setTangentSpace(true);
 			meshBuffer.addData(model.getMesh());
 			MeshRenderer renderer = null;
 			if(model.getMaterial() == null){
@@ -41,9 +45,9 @@ public class OBJ extends GameObject{
 			if (model.getMaterial().getName().equals("glass"))
 				renderer = new MeshRenderer(meshBuffer, engine.shaders.phong.Glass.getInstance(), new AlphaBlending(0));
 			else if (model.getMaterial().getNormalmap() != null)
-				renderer = new MeshRenderer(meshBuffer, engine.shaders.phong.Bumpy.getInstance(), new CullFaceDisable());
+				renderer = new MeshRenderer(meshBuffer, engine.shaders.phong.Bumpy.getInstance(), new Default());
 			else if (model.getMaterial().getDiffusemap() != null)
-				renderer = new MeshRenderer(meshBuffer, engine.shaders.phong.Textured.getInstance(), new CullFaceDisable());	
+				renderer = new MeshRenderer(meshBuffer, engine.shaders.phong.Textured.getInstance(), new Default());	
 			else
 				renderer = new MeshRenderer(meshBuffer, engine.shaders.phong.RGBA.getInstance(), new CullFaceDisable());	
 

@@ -1,6 +1,6 @@
 package modules.glass;
 
-import engine.gameObject.GameObject;
+import engine.scenegraph.GameObject;
 
 public class GlassRenderer extends GameObject{
 	

@@ -7,9 +7,10 @@ in vec2 texCoordG[];
 
 struct Fractal
 {
-	sampler2D normalmap;
 	sampler2D heightmap;
+	sampler2D normalmap;
 	int scaling;
+	float strength;
 };
 
 uniform Fractal fractals[10];

@@ -3,9 +3,9 @@ package engine.shaders.basic;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 import engine.core.ResourceLoader;
-import engine.gameObject.components.Material;
 import engine.main.RenderingEngine;
 import engine.math.Matrix4f;
+import engine.scenegraph.components.Material;
 import engine.shaders.Shader;
 
 public class Textured extends Shader{

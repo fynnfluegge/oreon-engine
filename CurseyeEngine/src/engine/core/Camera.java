@@ -57,7 +57,7 @@ public class Camera {
 	
 	protected Camera()
 	{
-		this(new Vec3f(0,400,-2500), new Vec3f(0,0,1), new Vec3f(0,1,0));
+		this(new Vec3f(0,800,1500), new Vec3f(0,0,-1), new Vec3f(0,1,0));
 		this.setProjection(54, OpenGLWindow.getWidth(), OpenGLWindow.getHeight(), Constants.ZNEAR, Constants.ZFAR);
 		this.projectionMatrix = new Matrix4f().Projection(fovY, width, height, zNear, zFar);
 		this.setViewMatrix(new Matrix4f().View(this.getForward(), this.getUp()).mul(
@@ -81,8 +81,8 @@ public class Camera {
 	{
 		this.setScaleFactor(Math.max(10, scaleFactor + Mouse.getDWheel()/12));
 		
-		float movAmt = scaleFactor/4.0f *  CoreEngine.getFrameTime();
-		float rotAmt = scaleFactor* 0.1f * CoreEngine.getFrameTime(); 
+		float movAmt = scaleFactor *  CoreEngine.getFrameTime();
+		float rotAmt = scaleFactor * CoreEngine.getFrameTime(); 
 		
 		if(Input.getButtonDown(2))
 		{

@@ -1,7 +1,7 @@
 package engine.modeling.obj;
 
-import engine.gameObject.components.Material;
 import engine.modeling.Mesh;
+import engine.scenegraph.components.Material;
 
 public class Model {
 

@@ -2,6 +2,8 @@ package engine.main;
 
 import java.util.ArrayList;
 
+import modules.gui.GUI;
+import modules.gui.elements.FullScreenTexturePanel;
 import modules.lighting.DirectionalLight;
 import modules.lighting.PointLight;
 import modules.vfx.MotionBlur;
@@ -11,8 +13,6 @@ import engine.core.Camera;
 import engine.core.Constants;
 import engine.core.Input;
 import engine.core.OpenGLWindow;
-import engine.gui.GUI;
-import engine.gui.elements.FullScreenTexturePanel;
 import engine.math.Quaternion;
 
 public class RenderingEngine {

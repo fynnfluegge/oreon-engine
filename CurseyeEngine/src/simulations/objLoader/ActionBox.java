@@ -10,10 +10,10 @@ public class ActionBox extends BasicSimulation{
 
 	public void init(){
 		super.init();
-		getRoot().addChild(new ActionBoxModel());
+//		getRoot().addChild(new ActionBoxModel());
 		getRoot().addChild(new OBJ());
 //		getRoot().addChild(new Logo());
-		RenderingEngine.setDirectionalLight(new DirectionalLight(new Vec3f(1,-1,0), new Vec3f(0.1f,0.1f,0.1f), new Vec3f(1.0f, 1.0f, 1.0f), 1f));
+		RenderingEngine.setDirectionalLight(new DirectionalLight(new Vec3f(1,-6,-2).normalize(), new Vec3f(0.02f,0.02f,0.02f), new Vec3f(1.0f, 1.0f, 0.95f), 1f));
 	}
 	
 	public void render(){

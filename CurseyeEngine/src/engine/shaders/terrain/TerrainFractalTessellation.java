@@ -7,10 +7,10 @@ import modules.terrain.TerrainConfiguration;
 import modules.terrain.TerrainPatch;
 import engine.core.Camera;
 import engine.core.ResourceLoader;
-import engine.gameObject.GameObject;
 import engine.main.RenderingEngine;
 import engine.math.Matrix4f;
 import engine.math.Vec2f;
+import engine.scenegraph.GameObject;
 import engine.shaders.Shader;
 
 public class TerrainFractalTessellation extends Shader{
@@ -57,10 +57,16 @@ public class TerrainFractalTessellation extends Shader{
 		
 		for (int i=0; i<10; i++)
 		{
-			addUniform("fractals[" + i + "].heightmap");
-			addUniform("fractals[" + i + "].normalmap");
-			addUniform("fractals[" + i + "].scaling");
-			addUniform("fractals[" + i + "].strength");
+			addUniform("fractals0[" + i + "].heightmap");
+			addUniform("fractals0[" + i + "].scaling");
+			addUniform("fractals0[" + i + "].strength");
+			
+			addUniform("fractals1[" + i + "].heightmap");
+			addUniform("fractals1[" + i + "].normalmap");
+			addUniform("fractals1[" + i + "].scaling");
+			
+			addUniform("fractals2[" + i + "].normalmap");
+			addUniform("fractals2[" + i + "].scaling");
 		}
 		
 		addUniform("lod1_morph_area");
@@ -117,14 +123,19 @@ public class TerrainFractalTessellation extends Shader{
 		{
 			glActiveTexture(GL_TEXTURE15 + i*2);
 			terrConfig.getFractals().get(i).getHeightmap().bind();
-			setUniformi("fractals[" + i +"].heightmap", 15+i*2);
+			setUniformi("fractals0[" + i +"].heightmap", 15+i*2);
+			setUniformi("fractals1[" + i +"].heightmap", 15+i*2);
 			
 			glActiveTexture(GL_TEXTURE16 + i*2);
 			terrConfig.getFractals().get(i).getNormalmap().bind();
-			setUniformi("fractals[" + i + "].normalmap", 16+i*2);
+			setUniformi("fractals1[" + i + "].normalmap", 16+i*2);
+			setUniformi("fractals2[" + i + "].normalmap", 16+i*2);
 			
-			setUniformi("fractals[" + i +"].scaling", terrConfig.getFractals().get(i).getScaling());
-			setUniformf("fractals[" + i +"].strength", terrConfig.getFractals().get(i).getStrength());
+			setUniformi("fractals0[" + i +"].scaling", terrConfig.getFractals().get(i).getScaling());
+			setUniformi("fractals1[" + i +"].scaling", terrConfig.getFractals().get(i).getScaling());
+			setUniformi("fractals2[" + i +"].scaling", terrConfig.getFractals().get(i).getScaling());
+			
+			setUniformf("fractals0[" + i +"].strength", terrConfig.getFractals().get(i).getStrength());
 		}
 		
 		setUniformf("scaleY", terrConfig.getScaleY());

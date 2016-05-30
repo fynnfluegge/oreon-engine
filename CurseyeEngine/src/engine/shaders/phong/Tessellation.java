@@ -7,9 +7,9 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE3;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 import engine.core.Camera;
 import engine.core.ResourceLoader;
-import engine.gameObject.components.Material;
 import engine.main.RenderingEngine;
 import engine.math.Matrix4f;
+import engine.scenegraph.components.Material;
 import engine.shaders.Shader;
 
 
@@ -93,8 +93,8 @@ public class Tessellation extends Shader{
 	
 	public void sendUniforms(Material material)
 	{	
-		setUniformi("tessFactor", 400);
-		setUniformf("tessSlope", 0.7f);
+		setUniformi("tessFactor", 100);
+		setUniformf("tessSlope", 0.2f);
 		setUniformf("tessShift", 1);
 		
 		if (material.getDiffusemap() != null){
@@ -105,7 +105,6 @@ public class Tessellation extends Shader{
 		}
 		else
 			setUniformi("diffusemap", 0);
-		
 		if (material.getNormalmap() != null){
 			setUniformi("normalmap", 1);
 			glActiveTexture(GL_TEXTURE1);

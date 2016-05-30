@@ -2,6 +2,7 @@ package cdk.main;
 
 import javax.swing.JFrame;
 
+import cdk.tools.terrainEditor.OpenGLEngine;
 import cdk.tools.terrainEditor.TerrainEditorInterface;
 import simulations.templates.Simulation;
 
@@ -89,7 +90,9 @@ public class MainInterface extends JFrame{
 	        
 	        terrainEditor = new TerrainEditorInterface();
 	       
+	        Thread OpenGL = new Thread(new OpenGLEngine(OpenGLCanvas));
 	        
+	        OpenGL.start();
 	        
 	        
 	    }// </editor-fold>                        

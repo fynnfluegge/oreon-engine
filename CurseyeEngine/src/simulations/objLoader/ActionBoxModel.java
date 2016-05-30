@@ -6,11 +6,11 @@ import engine.core.Geometrics;
 import engine.core.Texture;
 import engine.core.Util;
 import engine.core.Vertex;
-import engine.gameObject.GameObject;
-import engine.gameObject.components.Material;
-import engine.gameObject.components.MeshRenderer;
 import engine.math.Vec3f;
 import engine.modeling.Mesh;
+import engine.scenegraph.GameObject;
+import engine.scenegraph.components.Material;
+import engine.scenegraph.components.MeshRenderer;
 
 public class ActionBoxModel extends GameObject{
 	

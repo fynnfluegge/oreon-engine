@@ -2,9 +2,9 @@ package cdk.tools.terrainEditor;
 
 import java.awt.Canvas;
 
+import modules.gui.GUI;
+import modules.gui.GUIs.EngineGUI;
 import modules.lighting.DirectionalLight;
-import engine.gui.GUI;
-import engine.gui.GUIs.EngineGUI;
 import engine.main.CoreEngine;
 import engine.main.RenderingEngine;
 import engine.math.Vec3f;

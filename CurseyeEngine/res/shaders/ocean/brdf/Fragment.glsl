@@ -49,6 +49,7 @@ float diffuse(vec3 normal)
 
 float specular(vec3 normal)
 {
+	normal.y *= 0.4;
 	normal = normalize(normal);
 	vec3 reflectionVector = normalize(reflect(sunlight.direction, normal));
 	
@@ -122,12 +123,13 @@ void main(void)
 
 	SigmaSqX = 0.01;
 	SigmaSqY = 0.01;
+	vec3 bitangent = normalize(cross(tangent, normal));
 	
 	if (dist < largeDetailRange-20){
 		float attenuation = -dist/(largeDetailRange-20) + 1;
-		vec3 bitangent = normalize(cross(tangent, normal));
+		//vec3 bitangent = normalize(cross(tangent, normal));
 		mat3 TBN = mat3(tangent,normal,bitangent);
-		vec3 bumpNormal = 2 * texture(normalmap, texCoordF*8).rbg - 1;
+		vec3 bumpNormal = 2 * texture(normalmap, texCoordF*4).rbg - 1;
 		bumpNormal.y *= 1.4;
 		bumpNormal.xz *= attenuation;
 		normal = normalize(TBN * bumpNormal);

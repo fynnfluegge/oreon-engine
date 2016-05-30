@@ -2,9 +2,9 @@ package engine.shaders.phong;
 
 import engine.core.Camera;
 import engine.core.ResourceLoader;
-import engine.gameObject.components.Material;
 import engine.main.RenderingEngine;
 import engine.math.Matrix4f;
+import engine.scenegraph.components.Material;
 import engine.shaders.Shader;
 
 public class Glass extends Shader{

@@ -22,7 +22,7 @@ struct Fractal
 	int scaling;
 };
 
-uniform Fractal fractals[10];
+uniform Fractal fractals1[10];
 uniform int largeDetailedRange;
 uniform mat4 projectionViewMatrix;
 uniform vec3 eyePosition;
@@ -30,9 +30,9 @@ uniform float scaleY;
 uniform float scaleXZ;
 uniform sampler2D normalmap;
 uniform sampler2D splatmap;
-uniform Material sand;
-uniform Material rock;
-uniform Material snow;
+uniform Material sand0;
+uniform Material rock0;
+uniform Material snow0;
 uniform vec4 clipplane;
 uniform vec4 frustumPlanes[6];
 
@@ -91,17 +91,17 @@ void main()
 		
 		float displaceScale = scaleY*0.002;
 		
-		float displaceSand0 = texture(sand.displacemap, texCoordG[0]).r * (sand.displaceScale * displaceScale);
-		float displaceRock0 = texture(rock.displacemap, texCoordG[0]).r * (rock.displaceScale * displaceScale);
-		float displaceSnow0 = texture(snow.displacemap, texCoordG[0]).r * (snow.displaceScale * displaceScale);
+		float displaceSand0 = texture(sand0.displacemap, texCoordG[0]).r * (sand0.displaceScale * displaceScale);
+		float displaceRock0 = texture(rock0.displacemap, texCoordG[0]).r * (rock0.displaceScale * displaceScale);
+		float displaceSnow0 = texture(snow0.displacemap, texCoordG[0]).r * (snow0.displaceScale * displaceScale);
 		
-		float displaceSand1 = texture(sand.displacemap, texCoordG[1]).r * (sand.displaceScale * displaceScale);
-		float displaceRock1 = texture(rock.displacemap, texCoordG[1]).r * (rock.displaceScale * displaceScale);
-		float displaceSnow1 = texture(snow.displacemap, texCoordG[1]).r * (snow.displaceScale * displaceScale);
+		float displaceSand1 = texture(sand0.displacemap, texCoordG[1]).r * (sand0.displaceScale * displaceScale);
+		float displaceRock1 = texture(rock0.displacemap, texCoordG[1]).r * (rock0.displaceScale * displaceScale);
+		float displaceSnow1 = texture(snow0.displacemap, texCoordG[1]).r * (snow0.displaceScale * displaceScale);
 		
-		float displaceSand2 = texture(sand.displacemap, texCoordG[2]).r * (sand.displaceScale * displaceScale);
-		float displaceRock2 = texture(rock.displacemap, texCoordG[2]).r * (rock.displaceScale * displaceScale);
-		float displaceSnow2 = texture(snow.displacemap, texCoordG[2]).r * (snow.displaceScale * displaceScale);
+		float displaceSand2 = texture(sand0.displacemap, texCoordG[2]).r * (sand0.displaceScale * displaceScale);
+		float displaceRock2 = texture(rock0.displacemap, texCoordG[2]).r * (rock0.displaceScale * displaceScale);
+		float displaceSnow2 = texture(snow0.displacemap, texCoordG[2]).r * (snow0.displaceScale * displaceScale);
 	
 		displacement0 = (sandBlending0 * displaceSand0 + rockBlending0 * displaceRock0 + snowBlending0 * displaceSnow0)*
 							(- distance(gl_in[0].gl_Position.xyz, eyePosition)/largeDetailedRange + 1);
@@ -111,17 +111,17 @@ void main()
 							(- distance(gl_in[2].gl_Position.xyz, eyePosition)/largeDetailedRange + 1);
 	
 		displace0 = vec4(normalize((2*(texture(normalmap,mapCoords0).rbg)-1)
-							+	(2*(texture(fractals[0].normalmap,mapCoords0*fractals[0].scaling).rbg)-1)
-							+	(2*(texture(fractals[1].normalmap,mapCoords0*fractals[1].scaling).rbg)-1)
-							+	(2*(texture(fractals[2].normalmap,mapCoords0*fractals[2].scaling).rbg)-1)) * displacement0,0);
+							+	(2*(texture(fractals1[0].normalmap,mapCoords0*fractals1[0].scaling).rbg)-1)
+							+	(2*(texture(fractals1[1].normalmap,mapCoords0*fractals1[1].scaling).rbg)-1)
+							+	(2*(texture(fractals1[2].normalmap,mapCoords0*fractals1[2].scaling).rbg)-1)) * displacement0,0);
 		displace1 = vec4(normalize((2*(texture(normalmap,mapCoords1).rbg)-1)
-							+	(2*(texture(fractals[0].normalmap,mapCoords1*fractals[0].scaling).rbg)-1)
-							+	(2*(texture(fractals[1].normalmap,mapCoords1*fractals[1].scaling).rbg)-1)
-							+	(2*(texture(fractals[2].normalmap,mapCoords1*fractals[2].scaling).rbg)-1)) * displacement1,0);
+							+	(2*(texture(fractals1[0].normalmap,mapCoords1*fractals1[0].scaling).rbg)-1)
+							+	(2*(texture(fractals1[1].normalmap,mapCoords1*fractals1[1].scaling).rbg)-1)
+							+	(2*(texture(fractals1[2].normalmap,mapCoords1*fractals1[2].scaling).rbg)-1)) * displacement1,0);
 		displace2 = vec4(normalize((2*(texture(normalmap,mapCoords2).rbg)-1)
-							+	(2*(texture(fractals[0].normalmap,mapCoords2*fractals[0].scaling).rbg)-1)
-							+	(2*(texture(fractals[1].normalmap,mapCoords2*fractals[1].scaling).rbg)-1)
-							+	(2*(texture(fractals[2].normalmap,mapCoords2*fractals[2].scaling).rbg)-1)) * displacement2,0);
+							+	(2*(texture(fractals1[0].normalmap,mapCoords2*fractals1[0].scaling).rbg)-1)
+							+	(2*(texture(fractals1[1].normalmap,mapCoords2*fractals1[1].scaling).rbg)-1)
+							+	(2*(texture(fractals1[2].normalmap,mapCoords2*fractals1[2].scaling).rbg)-1)) * displacement2,0);
 	}
 	
 	vec4 position0 = gl_in[0].gl_Position + displace0;

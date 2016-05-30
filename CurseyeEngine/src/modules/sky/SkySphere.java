@@ -1,7 +1,7 @@
 package modules.sky;
 
 import engine.core.Camera;
-import engine.gameObject.GameObject;
+import engine.scenegraph.GameObject;
 
 public class SkySphere extends GameObject{
 

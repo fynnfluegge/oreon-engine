@@ -8,13 +8,13 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE4;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE5;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE6;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
-import modules.water.WaterSurface;
+import modules.water.Water;
 import engine.core.Camera;
 import engine.core.ResourceLoader;
 import engine.core.OpenGLWindow;
-import engine.gameObject.GameObject;
 import engine.main.RenderingEngine;
 import engine.math.Matrix4f;
+import engine.scenegraph.GameObject;
 import engine.shaders.Shader;
 
 public class OceanBRDF extends Shader{
@@ -104,7 +104,7 @@ private static OceanBRDF instance = null;
 	{
 		
 		
-		WaterSurface ocean = (WaterSurface) object;
+		Water ocean = (Water) object;
 		
 		setUniformf("displacementScale", ocean.getDisplacementScale());
 		setUniformf("choppiness", ocean.getChoppiness());
@@ -130,16 +130,16 @@ private static OceanBRDF instance = null;
 		ocean.getRefractionTexture().bind();
 		setUniformi("waterRefraction", 2);
 		glActiveTexture(GL_TEXTURE3);
-		ocean.getWaterMaps().getNormalmapRenderer().getNormalmap().bind();
+		ocean.getNormalmapRenderer().getNormalmap().bind();
 		setUniformi("normalmap",  3);
 		glActiveTexture(GL_TEXTURE4);
-		ocean.getWaterMaps().getFFT().getDy().bind();
+		ocean.getFft().getDy().bind();
 		setUniformi("Dy", 4);
 		glActiveTexture(GL_TEXTURE5);
-		ocean.getWaterMaps().getFFT().getDx().bind();
+		ocean.getFft().getDx().bind();
 		setUniformi("Dx", 5);
 		glActiveTexture(GL_TEXTURE6);
-		ocean.getWaterMaps().getFFT().getDz().bind();
+		ocean.getFft().getDz().bind();
 		setUniformi("Dz", 6);
 	}
 }

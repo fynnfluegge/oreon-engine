@@ -12,7 +12,7 @@ import javax.imageio.ImageIO;
 import modules.terrain.fractals.FractalMaps;
 import engine.core.Texture;
 import engine.core.Util;
-import engine.gameObject.components.Material;
+import engine.scenegraph.components.Material;
 import engine.shaders.Shader;
 
 public class TerrainConfiguration {

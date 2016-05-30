@@ -1,8 +1,8 @@
 package modules.lighting;
 
 import engine.core.Transform;
-import engine.gameObject.components.Component;
 import engine.math.Vec3f;
+import engine.scenegraph.components.Component;
 
 public abstract class Light extends Component{
 	

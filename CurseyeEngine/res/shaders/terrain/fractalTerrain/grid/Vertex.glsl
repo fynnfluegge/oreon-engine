@@ -7,6 +7,7 @@ out vec2 texCoord1;
 struct Fractal
 {
 	sampler2D heightmap;
+	sampler2D normalmap;
 	int scaling;
 	float strength;
 };

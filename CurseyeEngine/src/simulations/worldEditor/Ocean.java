@@ -1,10 +1,10 @@
 package simulations.worldEditor;
 
-import modules.water.WaterSurface;
+import modules.water.Water;
 import engine.core.Constants;
 import engine.math.Quaternion;
 
-public class Ocean extends WaterSurface{
+public class Ocean extends Water{
 
 	public Ocean() {
 		super(128);

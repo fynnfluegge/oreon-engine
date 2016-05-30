@@ -4,11 +4,11 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE2;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
-import modules.water.WaterSurface;
+import modules.water.Water;
 import engine.core.Camera;
 import engine.core.ResourceLoader;
-import engine.gameObject.GameObject;
 import engine.math.Matrix4f;
+import engine.scenegraph.GameObject;
 import engine.shaders.Shader;
 
 public class OceanGrid extends Shader{
@@ -70,7 +70,7 @@ private static OceanGrid instance = null;
 	
 	public void sendUniforms(GameObject object)
 	{
-		WaterSurface ocean = (WaterSurface) object;
+		Water ocean = (Water) object;
 		setUniformf("displacementScale", ocean.getDisplacementScale());
 		setUniformf("choppiness", ocean.getChoppiness());
 		setUniformi("texDetail", ocean.getTexDetail());
@@ -79,13 +79,13 @@ private static OceanGrid instance = null;
 		setUniformf("tessShift", ocean.getTessellationShift());
 		
 		glActiveTexture(GL_TEXTURE0);
-		ocean.getWaterMaps().getFFT().getDy().bind();
+		ocean.getFft().getDy().bind();
 		setUniformi("Dy", 0);
 		glActiveTexture(GL_TEXTURE1);
-		ocean.getWaterMaps().getFFT().getDx().bind();
+		ocean.getFft().getDx().bind();
 		setUniformi("Dx", 1);
 		glActiveTexture(GL_TEXTURE2);
-		ocean.getWaterMaps().getFFT().getDz().bind();
+		ocean.getFft().getDz().bind();
 		setUniformi("Dz", 2);
 	}
 }

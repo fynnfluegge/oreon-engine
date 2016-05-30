@@ -1,9 +1,9 @@
 package simulations.terrainFractals;
 
+import modules.gui.GUI;
+import modules.gui.GUIs.FPSDisplay;
 import modules.terrain.fractals.FractalMaps;
 import simulations.templates.BasicSimulation;
-import engine.gui.GUI;
-import engine.gui.GUIs.FPSDisplay;
 import engine.main.CoreEngine;
 
 public class DisplacementMap extends BasicSimulation{

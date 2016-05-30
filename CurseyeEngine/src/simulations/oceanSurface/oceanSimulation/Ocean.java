@@ -1,6 +1,6 @@
 package simulations.oceanSurface.oceanSimulation;
 
-import modules.water.WaterSurface;
+import modules.water.Water;
 
 import org.lwjgl.input.Keyboard;
 
@@ -9,7 +9,7 @@ import engine.core.Input;
 import engine.main.RenderingEngine;
 import engine.math.Quaternion;
 
-public class Ocean extends WaterSurface{
+public class Ocean extends Water{
 	
 	TexturePanel texture;
 
@@ -26,13 +26,14 @@ public class Ocean extends WaterSurface{
 	
 	public void render(){
 		super.render();
-		TexturePanel.texture = getWaterMaps().getFFT().getDy();
+		TexturePanel.texture = getFft().getDy();
 	}
 	
 	public void update(){
 		super.update();
 		if (Input.getKeyDown(Keyboard.KEY_G))
 		{
+			System.out.println("sf");
 			RenderingEngine.setGrid(!RenderingEngine.isGrid());
 		}
 	}

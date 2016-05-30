@@ -1,9 +1,9 @@
 package modules.terrain;
 
 import engine.core.Camera;
-import engine.gameObject.GameObject;
 import engine.math.Vec2f;
 import engine.math.Vec3f;
+import engine.scenegraph.GameObject;
 
 public class TerrainQuadtree extends GameObject{
 	

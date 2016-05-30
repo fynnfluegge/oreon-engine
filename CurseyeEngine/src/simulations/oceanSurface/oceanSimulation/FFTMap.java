@@ -1,8 +1,8 @@
 package simulations.oceanSurface.oceanSimulation;
 
-import engine.gui.GUI;
-import engine.gui.GUIElement;
-import engine.gui.Screen;
+import modules.gui.GUI;
+import modules.gui.GUIElement;
+import modules.gui.Screen;
 
 public class FFTMap extends GUI{
 

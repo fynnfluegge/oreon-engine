@@ -1,6 +1,6 @@
 package modules.terrain;
 
-import engine.gameObject.GameObject;
+import engine.scenegraph.GameObject;
 import engine.shaders.Shader;
 
 

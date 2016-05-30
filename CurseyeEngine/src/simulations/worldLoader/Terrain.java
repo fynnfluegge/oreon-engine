@@ -13,7 +13,7 @@ public class Terrain extends TerrainObject{
 		super("./res/terrains/terrain1/terrainSettings.ter", TerrainGrid.getInstance(),
 				TerrainTessellation.getInstance());
 		
-		this.getTerrainConfiguration().setSightRangeFactor(3);
+		this.getTerrainConfiguration().setSightRangeFactor(1.4f);
 	}
 
 }

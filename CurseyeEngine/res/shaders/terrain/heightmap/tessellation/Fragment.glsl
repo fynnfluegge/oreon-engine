@@ -43,7 +43,7 @@ struct Fractal
 };
 
 const int maxLights = 10;
-uniform Fractal fractals[10];
+uniform Fractal fractals1[10];
 uniform sampler2D normalmap;
 uniform sampler2D occMap;
 uniform sampler2D splatmap;
@@ -53,9 +53,9 @@ uniform vec3 eyePosition;
 uniform DirectionalLight sunlight;
 uniform float scaleY;
 uniform float scaleXZ;
-uniform Material sand;
-uniform Material rock;
-uniform Material snow;
+uniform Material sand1;
+uniform Material rock1;
+uniform Material snow1;
 uniform float sightRangeFactor;
 uniform int largeDetailedRange;
 
@@ -93,13 +93,13 @@ void main()
 	
 
 	 vec3 normal = normalize( (2*(texture(normalmap,mapCoords).rbg)-1)*0
-							+(2*(texture(fractals[0].normalmap, mapCoords*fractals[0].scaling).rbg)-1)
-							+(2*(texture(fractals[1].normalmap, mapCoords*fractals[1].scaling).rbg)-1)
-							+(2*(texture(fractals[2].normalmap, mapCoords*fractals[2].scaling).rbg)-1)
-							+(2*(texture(fractals[3].normalmap, mapCoords*fractals[3].scaling).rbg)-1)
-							+(2*(texture(fractals[4].normalmap, mapCoords*fractals[4].scaling).rbg)-1)
-							+(2*(texture(fractals[5].normalmap, mapCoords*fractals[5].scaling).rbg)-1)
-							+(2*(texture(fractals[6].normalmap, mapCoords*fractals[6].scaling).rbg)-1)
+							+(2*(texture(fractals1[0].normalmap, mapCoords*fractals1[0].scaling).rbg)-1)
+							+(2*(texture(fractals1[1].normalmap, mapCoords*fractals1[1].scaling).rbg)-1)
+							+(2*(texture(fractals1[2].normalmap, mapCoords*fractals1[2].scaling).rbg)-1)
+							+(2*(texture(fractals1[3].normalmap, mapCoords*fractals1[3].scaling).rbg)-1)
+							+(2*(texture(fractals1[4].normalmap, mapCoords*fractals1[4].scaling).rbg)-1)
+							+(2*(texture(fractals1[5].normalmap, mapCoords*fractals1[5].scaling).rbg)-1)
+							+(2*(texture(fractals1[6].normalmap, mapCoords*fractals1[6].scaling).rbg)-1)
 							);
 	
 	if (dist < largeDetailedRange-20)
@@ -108,9 +108,9 @@ void main()
 		vec3 bitangent = normalize(cross(tangent, normal));
 		mat3 TBN = mat3(tangent,normal,bitangent);
 		
-		vec3 sandNRM = normalize(2*(texture(sand.normalmap, texCoordF).rbg)-1);
-		vec3 rockNRM = normalize(2*(texture(rock.normalmap, texCoordF).rbg)-1);
-		vec3 snowNRM = normalize(2*(texture(snow.normalmap, texCoordF).rbg)-1);
+		vec3 sandNRM = normalize(2*(texture(sand1.normalmap, texCoordF).rbg)-1);
+		vec3 rockNRM = normalize(2*(texture(rock1.normalmap, texCoordF).rbg)-1);
+		vec3 snowNRM = normalize(2*(texture(snow1.normalmap, texCoordF).rbg)-1);
 		
 		vec3 bumpNormal = normalize(sandBlending * sandNRM + rockBlending * rockNRM + snowBlending * snowNRM);
 		bumpNormal.xz *= attenuation;
@@ -124,8 +124,8 @@ void main()
 	float diffuseFactor = 0.0;
 	float specularFactor = 0.0;
 	
-	emission = sandBlending * sand.emission + rockBlending * rock.emission + snowBlending * snow.emission;
-	shininess =sandBlending * sand.shininess + rockBlending * rock.shininess + snowBlending * snow.shininess;
+	emission = sandBlending * sand1.emission + rockBlending * rock1.emission + snowBlending * snow1.emission;
+	shininess =sandBlending * sand1.shininess + rockBlending * rock1.shininess + snowBlending * snow1.shininess;
 	
 	for (int light = 0; light < numLights; ++light) {
 		if (lights[light].isEnabled == 0)
@@ -157,9 +157,9 @@ void main()
 	
 	float ambientOcclusion = texture(occMap, mapCoords).r;
 	
-	vec3 sandTexel = texture(sand.diffusemap,texCoordF).xyz;
-	vec3 rockTexel = texture(rock.diffusemap,texCoordF).xyz;
-	vec3 snowTexel = texture(snow.diffusemap,texCoordF).xyz;
+	vec3 sandTexel = texture(sand1.diffusemap,texCoordF).xyz;
+	vec3 rockTexel = texture(rock1.diffusemap,texCoordF).xyz;
+	vec3 snowTexel = texture(snow1.diffusemap,texCoordF).xyz;
 	
 	float diffuse = diffuse(sunlight.direction, normal, sunlight.intensity);
 	float specular = specular(sunlight.direction, normal, eyePosition, positionF);

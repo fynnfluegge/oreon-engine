@@ -27,7 +27,6 @@ import static org.lwjgl.opengl.GL40.glGenTransformFeedbacks;
 import static org.lwjgl.opengl.GL40.glDeleteTransformFeedbacks;
 import static org.lwjgl.opengl.GL30.glDeleteVertexArrays;
 import static org.lwjgl.opengl.GL15.glDeleteBuffers;
-import engine.core.Util;
 import engine.modeling.Particle;
 
 public class ParticleSystemVAO {
@@ -54,7 +53,7 @@ public class ParticleSystemVAO {
 		
 		glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, tfb);
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glBufferData(GL_ARRAY_BUFFER, Util.createFlippedBufferAOS(particles), GL_DYNAMIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, BufferAllocation.createFlippedBufferAOS(particles), GL_DYNAMIC_DRAW);
         glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, vbo);
         
         

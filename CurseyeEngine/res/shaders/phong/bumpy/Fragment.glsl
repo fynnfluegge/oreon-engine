@@ -3,7 +3,8 @@
 in vec2 texCoord2;
 in vec3 position2;
 in vec3 normal2;
-flat in vec3 tangent;
+in vec3 tangent2;
+in vec3 bitangent2;
 
 struct DirectionalLight
 {
@@ -23,9 +24,9 @@ struct Material
 	float emission;
 };
 
+uniform Material material2;
 uniform vec3 eyePosition;
 uniform DirectionalLight directionalLight;
-uniform Material material;
 uniform int specularmap;
 uniform int diffusemap;
 
@@ -43,9 +44,9 @@ float specular(vec3 direction, vec3 normal, vec3 eyePosition, vec3 vertexPositio
 	float reflection = dot(vertexToEye, reflectionVector);
 	
 	if(specularmap == 1)
-		return pow(reflection, material.shininess) * (material.emission) * texture(material.specularmap, texCoord2).r;
+		return pow(reflection, material2.shininess) * (material2.emission) * texture(material2.specularmap, texCoord2).r;
 	else
-		return pow(reflection, material.shininess) * (material.emission); 
+		return pow(reflection, material2.shininess) * (material2.emission); 
 }
 
 void main()
@@ -54,20 +55,20 @@ void main()
 	vec3 specularLight;
 	float diffuse;
 	float specular;
+
+	mat3 TBN = transpose(mat3(bitangent2, normal2, tangent2));
 	
-	vec3 Bitangent = normalize(cross(tangent, normal2));
-	mat3 TBN = mat3(tangent,normal2,Bitangent);
+	vec3 normal = normalize(2*(texture(material2.normalmap, texCoord2).rbg)-1);
 	
-	vec3 bumpNormal = normalize(2*(texture(material.normalmap, texCoord2).rbg)-1);
-		
-	vec3 normal = normalize(TBN * bumpNormal);
+	vec3 lightdirection_tangentspace = TBN * directionalLight.direction;
+	vec3 eye_tangentspace = TBN * eyePosition;
 	
-	diffuse = diffuse(directionalLight.direction, normal, directionalLight.intensity);
+	diffuse = diffuse(lightdirection_tangentspace, normal, directionalLight.intensity);
 	
 	if (diffuse == 0.0)
 		specular = 0.0;
 	else
-		specular = specular(directionalLight.direction, normal, eyePosition, position2);
+		specular = specular(lightdirection_tangentspace, normal, eye_tangentspace, position2);
 	
 	diffuseLight = directionalLight.ambient + directionalLight.color * diffuse;
 	specularLight = directionalLight.color * specular;
@@ -75,9 +76,9 @@ void main()
 	vec3 diffuseColor;
 	
 	if (diffusemap == 1)
-		diffuseColor = texture(material.diffusemap, texCoord2).rgb;
+		diffuseColor = texture(material2.diffusemap, texCoord2).rgb;
 	else
-		diffuseColor = material.color;
+		diffuseColor = material2.color + 1;
 		
 	vec3 rgb = diffuseColor * diffuseLight + specularLight;
 	

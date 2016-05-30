@@ -1,14 +1,14 @@
 package simulations.oceanSurface;
 
-import modules.water.WaterMaps;
-import engine.gui.GUI;
-import engine.gui.GUIs.VoidGUI;
+import modules.gui.GUI;
+import modules.gui.GUIs.VoidGUI;
+import modules.water.fft.OceanFFT;
 import engine.main.CoreEngine;
 import simulations.templates.BasicSimulation;
 
 public class DisplacementMap extends BasicSimulation{
 	
-	private WaterMaps maps;
+	private OceanFFT fft;
 
 public static void main(String[] args) {
 		
@@ -22,12 +22,14 @@ public static void main(String[] args) {
 	public void init()
 	{	
 		super.init();
-		maps = new WaterMaps(256);
+		
+		fft = new OceanFFT(256);
+		fft.init();
 	}
 	
 	public void render()
 	{
-		maps.render();
-		setSceneTexture(maps.getFFT().getDy());
+		fft.render();
+		setSceneTexture(fft.getDy());
 	}
 }

@@ -3,12 +3,12 @@ package modules.terrain;
 import engine.buffers.PatchVAO;
 import engine.configs.AlphaBlending;
 import engine.core.Camera;
-import engine.gameObject.GameObject;
-import engine.gameObject.components.PatchRenderer;
-import engine.gameObject.components.Renderer;
 import engine.main.RenderingEngine;
 import engine.math.Vec2f;
 import engine.math.Vec3f;
+import engine.scenegraph.GameObject;
+import engine.scenegraph.components.PatchRenderer;
+import engine.scenegraph.components.Renderer;
 
 public class TerrainPatch extends GameObject{
 	

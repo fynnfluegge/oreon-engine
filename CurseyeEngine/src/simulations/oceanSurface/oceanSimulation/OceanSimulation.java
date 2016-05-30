@@ -1,8 +1,8 @@
 package simulations.oceanSurface.oceanSimulation;
 
+import modules.gui.GUI;
+import modules.gui.GUIs.VoidGUI;
 import modules.lighting.DirectionalLight;
-import engine.gui.GUI;
-import engine.gui.GUIs.VoidGUI;
 import engine.main.CoreEngine;
 import engine.main.RenderingEngine;
 import engine.math.Vec3f;
@@ -14,7 +14,7 @@ public class OceanSimulation extends TerrainSimulation{
 	public static void main(String[] args) {
 		Simulation simulation = new OceanSimulation();
 		GUI gui = new VoidGUI();
-		CoreEngine coreEngine = new CoreEngine(1600, 900, "Ocean Simulation", simulation, gui);
+		CoreEngine coreEngine = new CoreEngine(1400, 600, "Ocean Simulation", simulation, gui);
 		coreEngine.createWindow();
 		coreEngine.start();
 	}

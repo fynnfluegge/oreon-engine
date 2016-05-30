@@ -3,11 +3,11 @@
 
 layout (local_size_x = 1, local_size_y = 16) in;
 
-layout (binding = 0, rgba32f)writeonly uniform image2D twiddleIndices;
+layout (binding = 0, rgba32f) writeonly uniform image2D twiddleIndices;
 
 layout (std430, binding = 0) buffer indices {
 	int j[];
-};
+} bit_reversed;
 
 struct complex
 {	
@@ -35,10 +35,10 @@ void main(void)
 	if (x.x == 0) {
 		// top butterfly wing
 		if (butterflywing == 1)
-			imageStore(twiddleIndices, ivec2(x), vec4(twiddle.real, twiddle.im, indices.j[int(x.y)], indices.j[int(x.y + 1)]));
+			imageStore(twiddleIndices, ivec2(x), vec4(twiddle.real, twiddle.im, bit_reversed.j[int(x.y)], bit_reversed.j[int(x.y + 1)]));
 		// bot butterfly wing
 		else	
-			imageStore(twiddleIndices, ivec2(x), vec4(twiddle.real, twiddle.im, indices.j[int(x.y - 1)], indices.j[int(x.y)]));
+			imageStore(twiddleIndices, ivec2(x), vec4(twiddle.real, twiddle.im, bit_reversed.j[int(x.y - 1)], bit_reversed.j[int(x.y)]));
 	}
 	// second to log2(N) stage
 	else {

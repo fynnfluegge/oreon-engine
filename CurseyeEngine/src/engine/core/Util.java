@@ -1,179 +1,15 @@
 package engine.core;
 
-import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
 import java.util.ArrayList;
-
-import org.lwjgl.BufferUtils;
-
-import engine.math.Matrix4f;
 import engine.math.Quaternion;
 import engine.math.Vec2f;
 import engine.math.Vec3f;
-import engine.modeling.Particle;
+import engine.modeling.Mesh;
 import engine.modeling.obj.Face;
 import engine.modeling.obj.SmoothingGroup;
 
 public class Util {
-
-	public static FloatBuffer createFloatBuffer(int size)
-	{
-		return BufferUtils.createFloatBuffer(size);
-	}
-	
-	public static IntBuffer createIntBuffer(int size)
-	{
-		return BufferUtils.createIntBuffer(size);
-	}
-	
-	public static DoubleBuffer createDoubleBuffer(int size)
-	{
-		return BufferUtils.createDoubleBuffer(size);
-	}
-	
-	public static IntBuffer createFlippedBuffer(int... values)
-	{
-		IntBuffer buffer = createIntBuffer(values.length);
-		buffer.put(values);
-		buffer.flip();
-		
-		return buffer;
-	}
-	
-	public static FloatBuffer createFlippedBuffer(float... values)
-	{
-		FloatBuffer buffer = createFloatBuffer(values.length);
-		buffer.put(values);
-		buffer.flip();
-		
-		return buffer;
-	}
-	
-	public static DoubleBuffer createFlippedBuffer(double... values)
-	{
-		DoubleBuffer buffer = createDoubleBuffer(values.length);
-		buffer.put(values);
-		buffer.flip();
-		
-		return buffer;
-	}
-	
-	public static FloatBuffer createFlippedBufferAOS(Vertex[] vertices)
-	{
-		FloatBuffer buffer = createFloatBuffer(vertices.length * Vertex.FLOATS);
-		
-		for(int i = 0; i < vertices.length; i++)
-		{
-			buffer.put(vertices[i].getPos().getX());
-			buffer.put(vertices[i].getPos().getY());
-			buffer.put(vertices[i].getPos().getZ());
-			buffer.put(vertices[i].getNormal().getX());
-			buffer.put(vertices[i].getNormal().getY());
-			buffer.put(vertices[i].getNormal().getZ());
-			buffer.put(vertices[i].getTextureCoord().getX());
-			buffer.put(vertices[i].getTextureCoord().getY());	
-		}
-		
-		buffer.flip();
-		
-		return buffer;
-	}
-	
-	public static FloatBuffer createFlippedBufferSOA(Vertex[] vertices)
-	{
-		FloatBuffer buffer = createFloatBuffer(vertices.length * Vertex.FLOATS);
-		
-		for(int i = 0; i < vertices.length; i++)
-		{
-			buffer.put(vertices[i].getPos().getX());
-			buffer.put(vertices[i].getPos().getY());
-			buffer.put(vertices[i].getPos().getZ());
-		}
-		
-		for(int i = 0; i < vertices.length; i++)
-		{
-			buffer.put(vertices[i].getNormal().getX());
-			buffer.put(vertices[i].getNormal().getY());
-			buffer.put(vertices[i].getNormal().getZ());
-		}
-			
-		for(int i = 0; i < vertices.length; i++)
-		{
-			buffer.put(vertices[i].getTextureCoord().getX());
-			buffer.put(vertices[i].getTextureCoord().getY());
-		}	
-		
-		buffer.flip();
-		
-		return buffer;
-	}
-	
-	public static FloatBuffer createFlippedBufferAOS(Particle[] particles)
-	{
-		FloatBuffer buffer = createFloatBuffer(particles.length * Particle.FLOATS);
-		
-		for(int i = 0; i < particles.length; i++)
-		{
-			buffer.put(particles[i].getPosition().getX());
-			buffer.put(particles[i].getPosition().getY());
-			buffer.put(particles[i].getPosition().getZ());
-			buffer.put(particles[i].getVelocity().getX());
-			buffer.put(particles[i].getVelocity().getY());
-			buffer.put(particles[i].getVelocity().getZ());
-			buffer.put(particles[i].getAlive());
-			buffer.put(particles[i].getSize());
-		}
-		
-		buffer.flip();
-		
-		return buffer;
-	}
-	
-	public static FloatBuffer createFlippedBuffer(Vec3f[] vector)
-	{
-		FloatBuffer buffer = createFloatBuffer(vector.length * Float.BYTES * 3);
-		
-		for (int i = 0; i < vector.length; i++)
-		{
-			buffer.put(vector[i].getX());
-			buffer.put(vector[i].getY());
-			buffer.put(vector[i].getZ());
-		}
-		
-		buffer.flip();
-		
-		return buffer;
-	}
-	
-	public static FloatBuffer createFlippedBuffer(Vec2f[] vector)
-	{
-		FloatBuffer buffer = createFloatBuffer(vector.length * Float.BYTES * 2);
-		
-		for (int i = 0; i < vector.length; i++)
-		{
-			buffer.put(vector[i].getX());
-			buffer.put(vector[i].getY());	
-		}
-		
-		buffer.flip();
-		
-		return buffer;
-	}
-	
-	public static FloatBuffer createFlippedBuffer(Matrix4f value)
-	{
-		FloatBuffer buffer = createFloatBuffer(4 * 4);
-		
-		for (int i = 0; i < 4; i++)
-			for (int j = 0; j < 4; j++)
-				buffer.put(value.get(i, j));
-		
-		buffer.flip();
-		
-		return buffer;
-	}
-
 	
 	public static String [] removeEmptyStrings(String[] data)
 	{
@@ -360,6 +196,51 @@ public class Util {
 		    	vertex.setNormal(vertex.getNormal().normalize());
 		    }     
 	}
+	
+	public static void generateTangentsBitangents(Mesh mesh)
+	{
+		 for ( int i = 0; i < mesh.getIndices().length; i += 3 )
+		    {
+		    	Vec3f v0 = mesh.getVertices()[mesh.getIndices()[i]].getPos();
+		    	Vec3f v1 = mesh.getVertices()[mesh.getIndices()[i+1]].getPos();
+		    	Vec3f v2 = mesh.getVertices()[mesh.getIndices()[i+2]].getPos();
+		        
+		    	Vec2f uv0 = mesh.getVertices()[mesh.getIndices()[i]].getTextureCoord();
+		    	Vec2f uv1 = mesh.getVertices()[mesh.getIndices()[i+1]].getTextureCoord();
+		    	Vec2f uv2 = mesh.getVertices()[mesh.getIndices()[i+2]].getTextureCoord();
+		    	
+		    	Vec3f e1 = v1.sub(v0);
+		    	Vec3f e2 = v2.sub(v0);
+		    	
+		    	Vec2f deltaUV1 = uv1.sub(uv0);
+		    	Vec2f deltaUV2 = uv2.sub(uv0);
+		    	
+		    	float r = (float) (1.0 / (deltaUV1.getX() * deltaUV2.getY() - deltaUV1.getY() * deltaUV2.getX()));
+		    	Vec3f tangent = (e1.mul(deltaUV2.getY()).sub(e2.mul(deltaUV1.getY()))).mul(r);
+		    	Vec3f bitangent = (e2.mul(deltaUV1.getX()).sub(e1.mul(deltaUV2.getX()))).mul(r);
+		    	
+		    	if (mesh.getVertices()[mesh.getIndices()[i]].getTangent() == null) 
+		    		mesh.getVertices()[mesh.getIndices()[i]].setTangent(new Vec3f(0,0,0));
+		    	if (mesh.getVertices()[mesh.getIndices()[i]].getBitangent() == null) 
+		    		mesh.getVertices()[mesh.getIndices()[i]].setBitangent(new Vec3f(0,0,0));
+		    	if (mesh.getVertices()[mesh.getIndices()[i+1]].getTangent() == null) 
+		    		mesh.getVertices()[mesh.getIndices()[i+1]].setTangent(new Vec3f(0,0,0));
+		    	if (mesh.getVertices()[mesh.getIndices()[i+1]].getBitangent() == null) 
+		    		mesh.getVertices()[mesh.getIndices()[i+1]].setBitangent(new Vec3f(0,0,0));
+		    	if (mesh.getVertices()[mesh.getIndices()[i+2]].getTangent() == null) 
+		    		mesh.getVertices()[mesh.getIndices()[i+2]].setTangent(new Vec3f(0,0,0));
+		    	if (mesh.getVertices()[mesh.getIndices()[i+2]].getBitangent() == null) 
+		    		mesh.getVertices()[mesh.getIndices()[i+2]].setBitangent(new Vec3f(0,0,0));
+		    	
+		    	mesh.getVertices()[mesh.getIndices()[i]].getTangent().add(tangent);
+		    	mesh.getVertices()[mesh.getIndices()[i]].getBitangent().add(bitangent);
+		    	mesh.getVertices()[mesh.getIndices()[i+1]].getTangent().add(tangent);
+		    	mesh.getVertices()[mesh.getIndices()[i+1]].getBitangent().add(bitangent);
+		    	mesh.getVertices()[mesh.getIndices()[i+2]].getTangent().add(tangent);
+		    	mesh.getVertices()[mesh.getIndices()[i+2]].getBitangent().add(bitangent);
+		    }
+	}
+	
 	
 	public static Quaternion normalizePlane(Quaternion plane)
 	{

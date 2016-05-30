@@ -2,7 +2,7 @@ package simulations.templates;
 
 import engine.buffers.Framebuffer;
 import engine.core.Texture;
-import engine.gameObject.GameObject;
+import engine.scenegraph.GameObject;
 
 public abstract class Simulation {
 

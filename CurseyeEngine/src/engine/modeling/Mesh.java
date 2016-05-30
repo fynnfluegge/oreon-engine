@@ -6,6 +6,7 @@ public class Mesh{
 
 	private Vertex[] vertices;
 	private int[] indices;
+	private boolean tangentSpace;
 	private int GL_PRIMITIVE;
 	
 	public Mesh(Vertex[] vertices, int[] indices)
@@ -36,5 +37,13 @@ public class Mesh{
 
 	public void setGL_PRIMITIVE(int gL_PRIMITIVE) {
 		GL_PRIMITIVE = gL_PRIMITIVE;
+	}
+
+	public boolean isTangentSpace() {
+		return tangentSpace;
+	}
+
+	public void setTangentSpace(boolean tangentSpace) {
+		this.tangentSpace = tangentSpace;
 	}
 }

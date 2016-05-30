@@ -11,10 +11,10 @@ import java.util.HashMap;
 import engine.core.Texture;
 import engine.core.Util;
 import engine.core.Vertex;
-import engine.gameObject.components.Material;
 import engine.math.Vec2f;
 import engine.math.Vec3f;
 import engine.modeling.Mesh;
+import engine.scenegraph.components.Material;
 
 public class OBJLoader {
 

@@ -4,7 +4,6 @@ layout(vertices = 16) out;
 
 in vec2 texCoord1[];
 
-flat out int tessellation;
 out vec2 texCoord2[];
 
 uniform vec3 eyePosition;
@@ -23,9 +22,7 @@ const int DA = 1;
 float LODfactor(float distance){
 	
 	float tessLevel = max(0.0,tessFactor/(pow(distance, tessSlope)) - tessShift);
-	if (tessLevel > 0){
-		tessellation = 1;
-	}
+
 	return tessLevel;
 }
 

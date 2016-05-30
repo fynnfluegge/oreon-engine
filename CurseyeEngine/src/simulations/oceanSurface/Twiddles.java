@@ -1,8 +1,8 @@
 package simulations.oceanSurface;
 
+import modules.gui.GUI;
+import modules.gui.GUIs.VoidGUI;
 import engine.gpcgpu.fastFourierTransform.TwiddleFactors;
-import engine.gui.GUI;
-import engine.gui.GUIs.VoidGUI;
 import engine.main.CoreEngine;
 import simulations.templates.BasicSimulation;
 
