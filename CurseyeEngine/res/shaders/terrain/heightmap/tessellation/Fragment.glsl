@@ -2,7 +2,7 @@
 
 in vec2 texCoordF;
 in vec3 positionF;
-flat in vec3 tangent;
+in vec3 tangent;
 
 struct DirectionalLight
 {
@@ -105,6 +105,7 @@ void main()
 	if (dist < largeDetailedRange-20)
 	{
 		float attenuation = -dist/(largeDetailedRange-20) + 1;
+		
 		vec3 bitangent = normalize(cross(tangent, normal));
 		mat3 TBN = mat3(tangent,normal,bitangent);
 		
@@ -113,6 +114,7 @@ void main()
 		vec3 snowNRM = normalize(2*(texture(snow1.normalmap, texCoordF).rbg)-1);
 		
 		vec3 bumpNormal = normalize(sandBlending * sandNRM + rockBlending * rockNRM + snowBlending * snowNRM);
+		
 		bumpNormal.xz *= attenuation;
 		
 		normal = normalize(TBN * bumpNormal);
@@ -126,6 +128,7 @@ void main()
 	
 	emission = sandBlending * sand1.emission + rockBlending * rock1.emission + snowBlending * snow1.emission;
 	shininess =sandBlending * sand1.shininess + rockBlending * rock1.shininess + snowBlending * snow1.shininess;
+	
 	
 	for (int light = 0; light < numLights; ++light) {
 		if (lights[light].isEnabled == 0)

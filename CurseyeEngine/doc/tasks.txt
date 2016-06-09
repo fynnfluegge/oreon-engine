@@ -1,6 +1,3 @@
-- bump mapping:
-	tangentspace independent from texture coord
-
 - glassrenderer:
 	transforms
 
@@ -15,5 +12,5 @@
 	mapshift in wind direction
 
 - quadtree terrain renderer:
-	tiny point-seams between patches
+	tiny point-seams between patches, maybe numeric issue
 	

@@ -26,11 +26,31 @@ public class TerrainPatch extends GameObject{
 		this.lod = lod;
 		this.location = location;
 		this.terrConfig = terrConfig;
-		this.gap = 1f/(10f * (float)(Math.pow(2, lod)));
+		this.gap = 1f/(TerrainQuadtree.getRootPatches() * (float)(Math.pow(2, lod)));
 		PatchVAO meshBuffer = new PatchVAO();
 		meshBuffer.addData(generatePatch(),16);
 		PatchRenderer renderer = new PatchRenderer(meshBuffer, terrConfig.getTessellationShader(), new engine.configs.Default());
 		addComponent("Renderer", renderer);
+		
+		terrConfig.setMegabytes(terrConfig.getMegabytes() + (Float.BYTES * 16 /1000000f));
+		
+		if (this.lod == 1)
+			terrConfig.setLod1Patches(terrConfig.getLod1Patches() + 1);
+		if (this.lod == 2)
+			terrConfig.setLod2Patches(terrConfig.getLod2Patches() + 1);
+		if (this.lod == 3)
+			terrConfig.setLod3Patches(terrConfig.getLod3Patches() + 1);
+		if (this.lod == 4)
+			terrConfig.setLod4Patches(terrConfig.getLod4Patches() + 1);
+		if (this.lod == 5)
+			terrConfig.setLod5Patches(terrConfig.getLod5Patches() + 1);
+		if (this.lod == 6)
+			terrConfig.setLod6Patches(terrConfig.getLod6Patches() + 1);
+		if (this.lod == 7)
+			terrConfig.setLod7Patches(terrConfig.getLod7Patches() + 1);
+		if (this.lod == 8)
+			terrConfig.setLod8Patches(terrConfig.getLod8Patches() + 1);
+		
 		computeWorldPos();
 		updateQuadtree();
 	}
@@ -55,9 +75,7 @@ public class TerrainPatch extends GameObject{
 				((Renderer) getComponents().get("Renderer")).setShader(terrConfig.getTessellationShader());
 			}
 			
-			if(TerrainQuadtree.isCameraMoved()){
-				updateQuadtree();
-			}
+			updateQuadtree();
 			
 			for(GameObject child: getChildren())
 				child.update();
@@ -145,6 +163,25 @@ public class TerrainPatch extends GameObject{
 		if (getComponents().containsKey("Renderer")){
 			((PatchRenderer) getComponent("Renderer")).getVao().delete();
 			getComponents().remove("Renderer");
+			
+			terrConfig.setMegabytes(terrConfig.getMegabytes() - (Float.BYTES * 16 /1000000f));
+			
+			if (this.lod == 1)
+				terrConfig.setLod1Patches(terrConfig.getLod1Patches() - 1);
+			if (this.lod == 2)
+				terrConfig.setLod2Patches(terrConfig.getLod2Patches() - 1);
+			if (this.lod == 3)
+				terrConfig.setLod3Patches(terrConfig.getLod3Patches() - 1);
+			if (this.lod == 4)
+				terrConfig.setLod4Patches(terrConfig.getLod4Patches() - 1);
+			if (this.lod == 5)
+				terrConfig.setLod5Patches(terrConfig.getLod5Patches() - 1);
+			if (this.lod == 6)
+				terrConfig.setLod6Patches(terrConfig.getLod6Patches() - 1);
+			if (this.lod == 7)
+				terrConfig.setLod7Patches(terrConfig.getLod7Patches() - 1);
+			if (this.lod == 8)
+				terrConfig.setLod8Patches(terrConfig.getLod8Patches() - 1);
 		}
 		if(getChildren().size() == 0){
 			for (int i=0; i<2; i++){
@@ -165,13 +202,48 @@ public class TerrainPatch extends GameObject{
 				renderer = new PatchRenderer(meshBuffer, terrConfig.getGridShader(), new AlphaBlending(0.0f));
 			else
 				renderer = new PatchRenderer(meshBuffer, terrConfig.getTessellationShader(), new AlphaBlending(0.0f));
-
 			addComponent("Renderer", renderer);
+			terrConfig.setMegabytes(terrConfig.getMegabytes() + (Float.BYTES * 16 /1000000f));
+			
+			if (this.lod == 1)
+				terrConfig.setLod1Patches(terrConfig.getLod1Patches() + 1);
+			if (this.lod == 2)
+				terrConfig.setLod2Patches(terrConfig.getLod2Patches() + 1);
+			if (this.lod == 3)
+				terrConfig.setLod3Patches(terrConfig.getLod3Patches() + 1);
+			if (this.lod == 4)
+				terrConfig.setLod4Patches(terrConfig.getLod4Patches() + 1);
+			if (this.lod == 5)
+				terrConfig.setLod5Patches(terrConfig.getLod5Patches() + 1);
+			if (this.lod == 6)
+				terrConfig.setLod6Patches(terrConfig.getLod6Patches() + 1);
+			if (this.lod == 7)
+				terrConfig.setLod7Patches(terrConfig.getLod7Patches() + 1);
+			if (this.lod == 8)
+				terrConfig.setLod8Patches(terrConfig.getLod8Patches() + 1);
 		}
 		if(getChildren().size() != 0){
 			
 			for(GameObject child: getChildren()){
 				((PatchRenderer) child.getComponent("Renderer")).getVao().delete();
+				terrConfig.setMegabytes(terrConfig.getMegabytes() - (Float.BYTES * 16 /1000000f));
+				
+				if (this.lod == 0)
+					terrConfig.setLod1Patches(terrConfig.getLod1Patches() - 1);
+				if (this.lod == 1)
+					terrConfig.setLod2Patches(terrConfig.getLod2Patches() - 1);
+				if (this.lod == 2)
+					terrConfig.setLod3Patches(terrConfig.getLod3Patches() - 1);
+				if (this.lod == 3)
+					terrConfig.setLod4Patches(terrConfig.getLod4Patches() - 1);
+				if (this.lod == 4)
+					terrConfig.setLod5Patches(terrConfig.getLod5Patches() - 1);
+				if (this.lod == 5)
+					terrConfig.setLod6Patches(terrConfig.getLod6Patches() - 1);
+				if (this.lod == 6)
+					terrConfig.setLod7Patches(terrConfig.getLod7Patches() - 1);
+				if (this.lod == 7)
+					terrConfig.setLod8Patches(terrConfig.getLod8Patches() - 1);
 			}	
 			getChildren().clear();
 		}
@@ -191,19 +263,19 @@ public class TerrainPatch extends GameObject{
 		int index = 0;
 		
 		vertices[index++] = new Vec2f(location.getX(),location.getY());
-		vertices[index++] = new Vec2f(location.getX()+gap*0.3333f,location.getY());
-		vertices[index++] = new Vec2f(location.getX()+gap*0.6666f,location.getY());
+		vertices[index++] = new Vec2f(location.getX()+gap*0.3333333f,location.getY());
+		vertices[index++] = new Vec2f(location.getX()+gap*0.6666666f,location.getY());
 		vertices[index++] = new Vec2f(location.getX()+gap,location.getY());
 		
-		vertices[index++] = new Vec2f(location.getX(),location.getY()+gap*0.3333f);
-		vertices[index++] = new Vec2f(location.getX()+gap*0.3333f,location.getY()+gap*0.3333f);
-		vertices[index++] = new Vec2f(location.getX()+gap*0.6666f,location.getY()+gap*0.3333f);
-		vertices[index++] = new Vec2f(location.getX()+gap,location.getY()+gap*0.3333f);
+		vertices[index++] = new Vec2f(location.getX(),location.getY()+gap*0.3333333f);
+		vertices[index++] = new Vec2f(location.getX()+gap*0.3333333f,location.getY()+gap*0.3333333f);
+		vertices[index++] = new Vec2f(location.getX()+gap*0.6666666f,location.getY()+gap*0.3333333f);
+		vertices[index++] = new Vec2f(location.getX()+gap,location.getY()+gap*0.3333333f);
 		
-		vertices[index++] = new Vec2f(location.getX(),location.getY()+gap*0.6666f);
-		vertices[index++] = new Vec2f(location.getX()+gap*0.3333f,location.getY()+gap*0.6666f);
-		vertices[index++] = new Vec2f(location.getX()+gap*0.6666f,location.getY()+gap*0.6666f);
-		vertices[index++] = new Vec2f(location.getX()+gap,location.getY()+gap*0.6666f);
+		vertices[index++] = new Vec2f(location.getX(),location.getY()+gap*0.6666666f);
+		vertices[index++] = new Vec2f(location.getX()+gap*0.3333333f,location.getY()+gap*0.6666666f);
+		vertices[index++] = new Vec2f(location.getX()+gap*0.6666666f,location.getY()+gap*0.6666666f);
+		vertices[index++] = new Vec2f(location.getX()+gap,location.getY()+gap*0.6666666f);
 	
 		vertices[index++] = new Vec2f(location.getX(),location.getY()+gap);
 		vertices[index++] = new Vec2f(location.getX()+gap*0.3333f,location.getY()+gap);

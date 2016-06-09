@@ -70,14 +70,20 @@ public class OBJLoader {
 						if(tokens[0].equals("map_Kd")){
 							if (tokens.length > 1)
 							materials.get(currentMtl).setDiffusemap(new Texture("./res/models/obj/" + fileName + "/" + tokens[1]));
+							materials.get(currentMtl).getDiffusemap().bind();
+							materials.get(currentMtl).getDiffusemap().mipmap();
 						}
 						if(tokens[0].equals("map_Ks")){
 							if (tokens.length > 1)
 								materials.get(currentMtl).setSpecularmap(new Texture("./res/models/obj/" + fileName + "/" + tokens[1]));
+							materials.get(currentMtl).getSpecularmap().bind();
+							materials.get(currentMtl).getSpecularmap().mipmap();
 						}
 						if(tokens[0].equals("map_bump")){
 							if (tokens.length > 1)
 								materials.get(currentMtl).setNormalmap(new Texture("./res/models/obj/" + fileName + "/" + tokens[1]));
+								materials.get(currentMtl).getNormalmap().bind();
+								materials.get(currentMtl).getNormalmap().mipmap();
 						}
 						if(tokens[0].equals("illum")){
 							if (tokens.length > 1)

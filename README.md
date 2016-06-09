@@ -1,4 +1,4 @@
 # CurseyeEngine
 
-Engine for realtime 3D-simulations. Implemented in Java and the the OpenGL API.
+OpenGL/Java 3D Engine for realtime simulations.
 

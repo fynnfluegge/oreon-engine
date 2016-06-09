@@ -1,15 +1,12 @@
 package modules.terrain;
 
-import engine.core.Camera;
+import cdk.tools.terrainEditor.TerrainEditorInterface;
 import engine.math.Vec2f;
-import engine.math.Vec3f;
 import engine.scenegraph.GameObject;
 
 public class TerrainQuadtree extends GameObject{
 	
-	private static boolean cameraMoved = false;
 	private static int rootPatches = 10;
-	private Vec3f preCamPos;
 		
 	public TerrainQuadtree(TerrainConfiguration terrConfig){
 		init(terrConfig);
@@ -27,16 +24,9 @@ public class TerrainQuadtree extends GameObject{
 	
 	public void update()
 	{
-		if (preCamPos != Camera.getInstance().getPosition())
-			cameraMoved = true;
-		super.update();
+		TerrainEditorInterface.updateLoDPatchesChart();
 		
-		preCamPos = Camera.getInstance().getPosition();
-		cameraMoved = false;
-	}
-
-	public static boolean isCameraMoved() {
-		return cameraMoved;
+		super.update();
 	}
 
 	public static int getRootPatches() {

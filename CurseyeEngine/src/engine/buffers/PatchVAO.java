@@ -84,8 +84,8 @@ public class PatchVAO {
 	
 	public void delete()
 	{	
-		glDeleteBuffers(vbo);
-		glDeleteVertexArrays(vaoId);
+			glDeleteBuffers(vbo);
+			glDeleteVertexArrays(vaoId);
 	}
 }
 

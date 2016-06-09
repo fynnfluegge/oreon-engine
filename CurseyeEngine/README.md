@@ -18,5 +18,5 @@
 * GUI grid button to switch to 3D-mesh rendering
 
 #### Notes
-* set engine.vfx.MotionBlur enabled = true to enable Motion Blur
+* set modules.vfx.MotionBlur enabled = true to enable Motion Blur Effect
 

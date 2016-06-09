@@ -1,10 +1,9 @@
 package simulations.worldLoader;
 
-import modules.terrain.TerrainObject;
 import engine.shaders.terrain.TerrainGrid;
 import engine.shaders.terrain.TerrainTessellation;
 
-public class Terrain extends TerrainObject{
+public class Terrain extends modules.terrain.Terrain{
 
 	public Terrain() {
 		

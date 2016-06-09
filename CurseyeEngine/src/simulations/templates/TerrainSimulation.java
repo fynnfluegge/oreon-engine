@@ -27,7 +27,7 @@ import static org.lwjgl.opengl.GL30.GL_RGBA32F;
 import java.nio.ByteBuffer;
 
 import modules.sky.SkySphere;
-import modules.terrain.TerrainObject;
+import modules.terrain.Terrain;
 import modules.water.Water;
 import engine.configs.RenderingConfig;
 import engine.core.Constants;
@@ -38,7 +38,7 @@ import engine.main.RenderingEngine;
 public class TerrainSimulation extends Simulation{
 
 	private SkySphere skySphere;
-	private TerrainObject terrain;
+	private Terrain terrain;
 	private Water water;
 	
 	public void init()
@@ -99,7 +99,7 @@ public class TerrainSimulation extends Simulation{
 			skySphere.getTransform().getTranslation().setY(RenderingEngine.getClipplane().getW() - 
 					(skySphere.getTransform().getTranslation().getY() - RenderingEngine.getClipplane().getW()));
 			
-			synchronized(TerrainObject.getLock()){
+			synchronized(Terrain.getLock()){
 				if (terrain != null){
 					terrain.getTerrainConfiguration().setScaleY(terrain.getTerrainConfiguration().getScaleY() * -1f);
 					terrain.getTransform().getLocalTranslation().setY(RenderingEngine.getClipplane().getW() - 
@@ -176,11 +176,11 @@ public class TerrainSimulation extends Simulation{
 		this.water = water;
 	}
 
-	public TerrainObject getTerrain() {
+	public Terrain getTerrain() {
 		return terrain;
 	}
 
-	public void setTerrain(TerrainObject terrain) {
+	public void setTerrain(Terrain terrain) {
 		this.terrain = terrain;
 	}
 

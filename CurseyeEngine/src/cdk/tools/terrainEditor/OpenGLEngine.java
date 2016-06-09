@@ -8,7 +8,6 @@ import modules.lighting.DirectionalLight;
 import engine.main.CoreEngine;
 import engine.main.RenderingEngine;
 import engine.math.Vec3f;
-import simulations.fractalworlds.Terrain;
 import simulations.templates.TerrainSimulation;
 
 public class OpenGLEngine extends TerrainSimulation implements Runnable{
@@ -30,7 +29,7 @@ public class OpenGLEngine extends TerrainSimulation implements Runnable{
 	public void run() {
 		
 		GUI gui = new EngineGUI();
-		CoreEngine coreEngine = new CoreEngine(680, 375, "TerrainLoader", this, gui);
+		CoreEngine coreEngine = new CoreEngine(500, 550, "TerrainLoader", this, gui);
 		coreEngine.embedWindow(OpenGLCanvas);
 		coreEngine.start();
 	}

@@ -1,16 +1,18 @@
 package cdk.tools.terrainEditor;
 
-import modules.terrain.TerrainObject;
-import engine.shaders.terrain.TerrainFractalGrid;
-import engine.shaders.terrain.TerrainFractalTessellation;
+import cdk.database.DataBase;
+import engine.shaders.terrain.TerrainGrid;
+import engine.shaders.terrain.TerrainTessellation;
 
-public class Terrain extends TerrainObject{
+public class Terrain extends modules.terrain.Terrain{
 
 	public Terrain() {
 		
-		super("./res/terrains/terrain0/terrainSettings.ter", TerrainFractalGrid.getInstance(),
-				TerrainFractalTessellation.getInstance());
+		super("./res/terrains/terrain0/terrainSettings.ter", TerrainGrid.getInstance(),
+				TerrainTessellation.getInstance());
 		
-		getTerrainConfiguration().setSightRangeFactor(1.4f);
+		getTerrainConfiguration().setSightRangeFactor(2f);
+		
+		DataBase.setTerrainConfiguration(getTerrainConfiguration());
 	}
 }

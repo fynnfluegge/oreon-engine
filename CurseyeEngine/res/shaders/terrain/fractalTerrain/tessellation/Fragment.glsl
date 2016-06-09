@@ -1,7 +1,7 @@
 #version 430
 
 in vec3 position;
-flat in vec3 tangent;
+in vec3 tangent;
 
 struct DirectionalLight
 {
@@ -70,12 +70,15 @@ void main()
 		vec3 bitangent = normalize(cross(tangent, normal));
 		mat3 TBN = mat3(tangent,normal,bitangent);
 		
-		vec3 bumpNormal =    (2*(texture(fractals2[7].normalmap, mapCoords*fractals2[7].scaling).rbg)-1)
+		vec3 bumpNormal =   normalize(
+							 (2*(texture(fractals2[7].normalmap, mapCoords*fractals2[7].scaling).rbg)-1)
 							+(2*(texture(fractals2[8].normalmap, mapCoords*fractals2[8].scaling).rbg)-1)
-							+(2*(texture(fractals2[9].normalmap, mapCoords*fractals2[9].scaling).rbg)-1);
+							+(2*(texture(fractals2[9].normalmap, mapCoords*fractals2[9].scaling).rbg)-1)
+							);
+
 		bumpNormal.xz *= attenuation;
 		
-		normal = normalize(TBN * normalize(bumpNormal));
+		normal = normalize(TBN * bumpNormal);
 	}
 	
 	vec3 diffuseLight = vec3(0.0);

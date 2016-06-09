@@ -8,7 +8,7 @@ in vec2 texCoordG[];
 
 out vec2 texCoordF;
 out vec3 positionF;
-flat out vec3 tangent;
+out vec3 tangent;
 
 struct Material
 {
@@ -48,23 +48,20 @@ void calcTangent()
 	vec3 v1 = gl_in[1].gl_Position.xyz;
 	vec3 v2 = gl_in[2].gl_Position.xyz;
 
+	// edges of the face/triangle
     vec3 e1 = v1 - v0;
     vec3 e2 = v2 - v0;
-
-    float dU1 = texCoordG[1].x - texCoordG[0].x;
-    float dV1 = texCoordG[1].y - texCoordG[0].y;
-    float dU2 = texCoordG[2].x - texCoordG[0].x;
-    float dV2 = texCoordG[2].y - texCoordG[0].y;
-
-    float f = 1.0 / (dU1 * dV2 - dU2 * dV1);
-
-    vec3 t;
-
-    t.x = f * (dV2 * e1.x - dV1 * e2.x);
-    t.y = f * (dV2 * e1.y - dV1 * e2.y);
-    t.z = f * (dV2 * e1.z - dV1 * e2.z);
 	
-	Tangent = normalize(t);
+	vec2 uv0 = texCoordG[0];
+	vec2 uv1 = texCoordG[1];
+	vec2 uv2 = texCoordG[2];
+
+    vec2 deltaUV1 = uv1 - uv0;
+	vec2 deltaUV2 = uv2 - uv0;
+	
+	float r = 1.0 / (deltaUV1.x * deltaUV2.y - deltaUV1.y * deltaUV2.x);
+	
+	Tangent = normalize((e1 * deltaUV2.y - e2 * deltaUV1.y)*r);
 }
 
 void main()

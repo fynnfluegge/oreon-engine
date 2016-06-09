@@ -9,8 +9,6 @@ import java.io.UnsupportedEncodingException;
 
 import javax.swing.JFrame;
 
-import modules.terrain.TerrainObject;
-
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 
@@ -2028,7 +2026,7 @@ public class SwingGUI extends JFrame{
    
     private void scaleYSliderStateChanged(javax.swing.event.ChangeEvent evt) {                                          
         this.scaleYValue.setText(String.valueOf(scaleYSlider.getValue()));
-        synchronized(TerrainObject.getLock()){
+        synchronized(Terrain.getLock()){
 //        	simulation.getTerrain().setScaleY(scaleYSlider.getValue());
         }
     }     

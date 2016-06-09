@@ -4,12 +4,12 @@ import engine.scenegraph.GameObject;
 import engine.shaders.Shader;
 
 
-public class TerrainObject extends GameObject{
+public class Terrain extends GameObject{
 	
 	private TerrainConfiguration terrainConfiguration;
 	private static final Object lock = new Object();
 		
-	public TerrainObject(String file, Shader grid, Shader tessellation)
+	public Terrain(String file, Shader grid, Shader tessellation)
 	{
 		terrainConfiguration = new TerrainConfiguration();
 		terrainConfiguration.loadFile(file);

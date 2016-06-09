@@ -1,9 +1,8 @@
 package simulations.worldEditor;
 
-import modules.terrain.TerrainObject;
 import engine.shaders.Shader;
 
-public class Terrain extends TerrainObject{
+public class Terrain extends modules.terrain.Terrain{
 	
 
 	private String heightPath = "./res/terrains/terrain2/GTAV.jpg";

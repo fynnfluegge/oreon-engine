@@ -44,7 +44,7 @@ float specular(vec3 direction, vec3 normal, vec3 eyePosition, vec3 vertexPositio
 	float reflection = dot(vertexToEye, reflectionVector);
 	
 	if(specularmap == 1)
-		return pow(reflection, material2.shininess) * (material2.emission) * texture(material2.specularmap, texCoord2).r;
+		return pow(reflection, material2.shininess) * (material2.emission);
 	else
 		return pow(reflection, material2.shininess) * (material2.emission); 
 }
@@ -56,7 +56,7 @@ void main()
 	float diffuse;
 	float specular;
 
-	mat3 TBN = transpose(mat3(bitangent2, normal2, tangent2));
+	mat3 TBN = transpose(mat3(tangent2, normal2, bitangent2));
 	
 	vec3 normal = normalize(2*(texture(material2.normalmap, texCoord2).rbg)-1);
 	
@@ -76,8 +76,13 @@ void main()
 	vec3 diffuseColor;
 	
 	if (diffusemap == 1)
+	{
 		diffuseColor = texture(material2.diffusemap, texCoord2).rgb;
-	else
+		
+		if (specularmap == 1)
+			diffuseColor += texture(material2.specularmap, texCoord2).rgb;
+	}
+	//else
 		diffuseColor = material2.color + 1;
 		
 	vec3 rgb = diffuseColor * diffuseLight + specularLight;

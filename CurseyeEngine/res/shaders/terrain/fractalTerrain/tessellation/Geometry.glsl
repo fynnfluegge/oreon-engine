@@ -7,7 +7,7 @@ layout(triangle_strip, max_vertices = 3) out;
 in vec2 texCoordG[];
 
 out vec3 position;
-flat out vec3 tangent;
+out vec3 tangent;
 
 struct Fractal
 {
