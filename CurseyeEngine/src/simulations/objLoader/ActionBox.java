@@ -1,23 +1,27 @@
 package simulations.objLoader;
 
-import modules.glass.GlassRenderer;
-import modules.lighting.DirectionalLight;
-import engine.main.RenderingEngine;
-import engine.math.Vec3f;
-import simulations.templates.BasicSimulation;
+import modules.gui.GUI;
+import modules.gui.GUIs.VoidGUI;
+import engine.main.CoreEngine;
+import engine.main.Simulation;
 
-public class ActionBox extends BasicSimulation{
+public class ActionBox extends Simulation{
 
-	public void init(){
-		super.init();
-//		getRoot().addChild(new ActionBoxModel());
-		getRoot().addChild(new OBJ());
-//		getRoot().addChild(new Logo());
-		RenderingEngine.setDirectionalLight(new DirectionalLight(new Vec3f(1,-6,-2).normalize(), new Vec3f(0.02f,0.02f,0.02f), new Vec3f(1.0f, 1.0f, 0.95f), 1f));
+public static void main(String[] args) {
+		
+		Simulation simulation = new ActionBox();
+		GUI gui = new VoidGUI();
+		CoreEngine coreEngine = new CoreEngine(800, 800, "ActionBox");
+		coreEngine.createWindow();
+		coreEngine.init(simulation, gui);
+		coreEngine.start();
 	}
 	
-	public void render(){
-		super.render();
-		GlassRenderer.getInstance().render();
+	public void init(){
+		super.init();
+		scenegraph.addObject(new ActionBoxModel());
+		scenegraph.addObject(new OBJ());
+//		scenegraph.addObject(new Logo());
+//		scenegraph.addObject(GlassRenderer.getInstance());
 	}
 }

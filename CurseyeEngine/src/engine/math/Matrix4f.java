@@ -1,6 +1,6 @@
 package engine.math;
 
-import engine.core.OpenGLWindow;
+import engine.main.OpenGLDisplay;
 
 
 public class Matrix4f {
@@ -32,7 +32,7 @@ public class Matrix4f {
 		return this;
 	}
 	
-	public Matrix4f Orthographic(int width, int height)
+	public Matrix4f Orthographic2D(int width, int height)
 	{
 		m[0][0] = 2f/(float)width; 	m[0][1] = 0; 			    m[0][2] = 0; m[0][3] = -1;
 		m[1][0] = 0;		 		m[1][1] = 2f/(float)height; m[1][2] = 0; m[1][3] = -1;
@@ -42,12 +42,14 @@ public class Matrix4f {
 		return this;
 	}
 	
-	public Matrix4f Orthographic()
+	public Matrix4f Orthographic2D()
 	{
-		m[0][0] = 2f/(float)OpenGLWindow.getWidth();m[0][1] = 0; 								 m[0][2] = 0; m[0][3] = -1;
-		m[1][0] = 0;		 						m[1][1] = 2f/(float)OpenGLWindow.getHeight();m[1][2] = 0; m[1][3] = -1;
-		m[2][0] = 0; 								m[2][1] = 0; 								 m[2][2] = 1; m[2][3] =  0;
-		m[3][0] = 0; 								m[3][1] = 0; 								 m[3][2] = 0; m[3][3] =  1;
+		//Z-Value 1: depth of orthographic OOB between 0 and -1
+		
+		m[0][0] = 2f/(float)OpenGLDisplay.getInstance().getLwjglWindow().getWidth();m[0][1] = 0; 								 								 m[0][2] = 0; m[0][3] = -1;
+		m[1][0] = 0;		 														m[1][1] = 2f/(float)OpenGLDisplay.getInstance().getLwjglWindow().getHeight();m[1][2] = 0; m[1][3] = -1;
+		m[2][0] = 0; 																m[2][1] = 0; 								 								 m[2][2] = 1; m[2][3] =  0;
+		m[3][0] = 0; 																m[3][1] = 0; 								 								 m[3][2] = 0; m[3][3] =  1;
 		
 		return this;
 	}
@@ -102,34 +104,39 @@ public class Matrix4f {
 		return this;
 	}
 	
-	public Matrix4f Projection(float fovY, float width, float height, float zNear, float zFar)
+	public Matrix4f OrthographicProjection(float l, float r, float b, float t, float n, float f){
+		
+		m[0][0] = 2.0f/(r-l); 	m[0][1] = 0; 			m[0][2] = 0; 			m[0][3] = -(r+l)/(r-l);
+		m[1][0] = 0;			m[1][1] = 2.0f/(t-b); 	m[1][2] = 0; 			m[1][3] = -(t+b)/(t-b);
+		m[2][0] = 0; 			m[2][1] = 0; 			m[2][2] = 2.0f/(f-n); 	m[2][3] = -(f+n)/(f-n);
+		m[3][0] = 0; 			m[3][1] = 0; 			m[3][2] = 0; 			m[3][3] = 1;
+	
+		return this;
+	}
+	
+	public Matrix4f PerspectiveProjection(float fovY, float width, float height, float zNear, float zFar)
 	{
 		float tanFOV = (float) Math.tan(Math.toRadians(fovY/2));
-		float aspect = width/height;
+		float aspectRatio = width/height;
 		
-		m[0][0] = 1/(tanFOV*aspect); m[0][1] = 0; 		 m[0][2] = 0; 							m[0][3] = 0;
-		m[1][0] = 0; 				 m[1][1] = 1/tanFOV; m[1][2] = 0; 							m[1][3] = 0;
-		m[2][0] = 0; 				 m[2][1] = 0; 		 m[2][2] = (-zNear-zFar)/(zNear-zFar);	m[2][3] = 2*zFar*zNear / (zNear-zFar);
-		m[3][0] = 0; 				 m[3][1] = 0; 		 m[3][2] = 1; 							m[3][3] = 1;
+		m[0][0] = 1/(tanFOV*aspectRatio); m[0][1] = 0; 		 	   m[0][2] = 0; 							m[0][3] = 0;
+		m[1][0] = 0; 					  m[1][1] = 1/tanFOV; m[1][2] = 0; 									m[1][3] = 0;
+		m[2][0] = 0; 				 	  m[2][1] = 0; 		 	   m[2][2] = (-zNear-zFar)/(zNear-zFar);	m[2][3] = 2*zFar*zNear / (zNear-zFar);
+		m[3][0] = 0; 				 	  m[3][1] = 0; 		 	   m[3][2] = 1; 							m[3][3] = 1;
 	
 		return this;
 	}
 	
 	public Matrix4f View(Vec3f forward, Vec3f up)
 	{
-		Vec3f f = forward.normalize();
-		Vec3f r = up.normalize().cross(f);
-		Vec3f u = f.cross(r);
+		Vec3f f = forward;
+		Vec3f u = up;
+		Vec3f r = u.cross(f);
 		
 		m[0][0] = r.getX(); m[0][1] = r.getY(); m[0][2] = r.getZ(); m[0][3] = 0;
 		m[1][0] = u.getX(); m[1][1] = u.getY(); m[1][2] = u.getZ(); m[1][3] = 0;
 		m[2][0] = f.getX();	m[2][1] = f.getY(); m[2][2] = f.getZ(); m[2][3] = 0;
 		m[3][0] = 0; 		m[3][1] = 0; 		m[3][2] = 0; 		m[3][3] = 1;
-		
-//		m[0][0] = r.getX(); m[0][1] = u.getX(); m[0][2] = f.getX(); m[0][3] = 0;
-//		m[1][0] = r.getY(); m[1][1] = u.getY(); m[1][2] = f.getY(); m[1][3] = 0;
-//		m[2][0] = r.getZ();	m[2][1] = u.getZ(); m[2][2] = f.getZ(); m[2][3] = 0;
-//		m[3][0] = 0; 		m[3][1] = 0; 		m[3][2] = 0; 		m[3][3] = 1;
 	
 		return this;
 	}

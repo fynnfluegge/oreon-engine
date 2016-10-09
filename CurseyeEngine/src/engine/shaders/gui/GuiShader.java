@@ -14,27 +14,27 @@ private static GuiShader instance = null;
 	    {
 	    	instance = new GuiShader();
 	    }
-	      return instance;
+	    return instance;
 	}
 	
 	protected GuiShader()
 	{
 		super();
 
-		addVertexShader(ResourceLoader.loadShader("gui/Vertex.glsl"));
-		addFragmentShader(ResourceLoader.loadShader("gui/Fragment.glsl"));
+		addVertexShader(ResourceLoader.loadShader("shaders/gui/Vertex.glsl"));
+		addFragmentShader(ResourceLoader.loadShader("shaders/gui/Fragment.glsl"));
 		compileShader();
 		
 		addUniform("orthographicMatrix");
 		addUniform("texture");
 	}
 	
-	public void sendUniforms(Matrix4f orthographicMatrix)
+	public void updateUniforms(Matrix4f orthographicMatrix)
 	{
 		setUniform("orthographicMatrix", orthographicMatrix);
 	}
 	
-	public void sendUniforms(int texture)
+	public void updateUniforms(int texture)
 	{
 		setUniformi("texture", texture);
 	}

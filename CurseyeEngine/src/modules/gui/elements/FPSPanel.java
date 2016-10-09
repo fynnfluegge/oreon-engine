@@ -6,14 +6,14 @@ import modules.gui.GUIElement;
 import modules.gui.GUIObjectLoader;
 import modules.gui.GUIVAO;
 import engine.configs.AlphaBlending;
-import engine.core.Texture;
 import engine.core.Transform;
 import engine.core.Util;
-import engine.core.OpenGLWindow;
 import engine.main.CoreEngine;
+import engine.main.OpenGLDisplay;
 import engine.math.Matrix4f;
 import engine.math.Vec2f;
 import engine.shaders.gui.GuiShader;
+import engine.textures.Texture;
 
 
 public class FPSPanel extends GUIElement{
@@ -35,8 +35,8 @@ public class FPSPanel extends GUIElement{
 		getVao().addData(GUIObjectLoader.load("fpsPanel.gui"));
 		int size = 20;
 		setOrthoTransform(new Transform());
-		setOrthographicMatrix(new Matrix4f().Orthographic());
-		getOrthoTransform().setTranslation(5, OpenGLWindow.getHeight()-size, 0);
+		setOrthographicMatrix(new Matrix4f().Orthographic2D());
+		getOrthoTransform().setTranslation(5, OpenGLDisplay.getInstance().getLwjglWindow().getHeight()-size, 0);
 		getOrthoTransform().setScaling(size, size, 0);
 		setOrthographicMatrix(getOrthographicMatrix().mul(getOrthoTransform().getWorldMatrix()));
 		Vec2f[] texCoords = new Vec2f[4];
@@ -62,11 +62,11 @@ public class FPSPanel extends GUIElement{
 	public void render()
 	{
 		getConfig().enable();
-		getShader().execute();
-		getShader().sendUniforms(getOrthographicMatrix());
+		getShader().bind();
+		getShader().updateUniforms(getOrthographicMatrix());
 		glActiveTexture(GL_TEXTURE0);
 		texture.bind();
-		getShader().sendUniforms(0);
+		getShader().updateUniforms(0);
 		getVao().draw();
 		getConfig().disable();
 	}

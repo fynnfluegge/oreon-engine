@@ -5,14 +5,14 @@ import org.lwjgl.input.Keyboard;
 import engine.buffers.PatchVAO;
 import engine.configs.AlphaBlending;
 import engine.core.Input;
-import engine.core.Texture;
 import engine.math.Vec2f;
 import engine.scenegraph.GameObject;
 import engine.scenegraph.components.Material;
-import engine.scenegraph.components.PatchRenderer;
+import engine.scenegraph.components.RenderInfo;
 import engine.scenegraph.components.Renderer;
 import engine.shaders.basic.TessellationGrid;
 import engine.shaders.phong.Tessellation;
+import engine.textures.Texture;
 
 public class Logo extends GameObject{
 
@@ -22,7 +22,8 @@ public class Logo extends GameObject{
 		
 		PatchVAO meshBuffer = new PatchVAO();
 		meshBuffer.addData(generatePatch2D4x4(),16);
-		PatchRenderer renderer = new PatchRenderer(meshBuffer, Tessellation.getInstance(), new AlphaBlending(0.0f));
+		setRenderInfo(new RenderInfo(new AlphaBlending(0.0f), Tessellation.getInstance()));
+		Renderer renderer = new Renderer(Tessellation.getInstance(), meshBuffer);
 		
 		Material material = new Material();
 		material.setDiffusemap(new Texture("./res/textures/logo/eye.png"));

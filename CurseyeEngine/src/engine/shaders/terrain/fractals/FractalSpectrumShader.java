@@ -22,7 +22,7 @@ private static FractalSpectrumShader instance = null;
 	{
 		super();
 		
-		addComputeShader(ResourceLoader.loadShader("terrain/FractalTerrain/fractals/FractalSpectrum.glsl"));
+		addComputeShader(ResourceLoader.loadShader("shaders/terrain/fractals/FractalSpectrum.glsl"));
 		compileShader();
 		
 		addUniform("N");
@@ -37,7 +37,7 @@ private static FractalSpectrumShader instance = null;
 		addUniform("noise_i1");
 	}
 	
-	public void sendUniforms(int N, int L, float A, Vec2f w, float v, float l)
+	public void updateUniforms(int N, int L, float A, Vec2f w, float v, float l)
 	{
 		setUniformi("N", N);
 		setUniformi("L", L);
@@ -47,7 +47,7 @@ private static FractalSpectrumShader instance = null;
 		setUniformf("V", v);
 	}
 	
-	public void sendUniforms(int texture0, int texture1, int texture2, int texture3)
+	public void updateUniforms(int texture0, int texture1, int texture2, int texture3)
 	{
 		setUniformi("noise_r0", texture0);
 		setUniformi("noise_i0", texture1);

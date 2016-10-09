@@ -7,7 +7,6 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 import modules.water.Water;
 import engine.core.Camera;
 import engine.core.ResourceLoader;
-import engine.math.Matrix4f;
 import engine.scenegraph.GameObject;
 import engine.shaders.Shader;
 
@@ -29,11 +28,11 @@ private static OceanGrid instance = null;
 	{
 		super();
 		
-		addVertexShader(ResourceLoader.loadShader("ocean/grid/Vertex.glsl"));
-		addTessellationControlShader(ResourceLoader.loadShader("ocean/grid/Tessellation Control.glsl"));
-		addTessellationEvaluationShader(ResourceLoader.loadShader("ocean/grid/Tessellation Evaluation.glsl"));
-		addGeometryShader(ResourceLoader.loadShader("ocean/grid/Geometry.glsl"));
-		addFragmentShader(ResourceLoader.loadShader("ocean/grid/Fragment.glsl"));
+		addVertexShader(ResourceLoader.loadShader("shaders/ocean/Ocean_VS.glsl"));
+		addTessellationControlShader(ResourceLoader.loadShader("shaders/ocean/Ocean_TC.glsl"));
+		addTessellationEvaluationShader(ResourceLoader.loadShader("shaders/ocean/Ocean_TE.glsl"));
+		addGeometryShader(ResourceLoader.loadShader("shaders/ocean/OceanGrid_GS.glsl"));
+		addFragmentShader(ResourceLoader.loadShader("shaders/ocean/OceanGrid_FS.glsl"));
 		compileShader();
 		
 		addUniform("projectionViewMatrix");
@@ -56,20 +55,17 @@ private static OceanGrid instance = null;
 		}
 	}
 	
-	public void sendUniforms(Matrix4f worldMatrix, Matrix4f projectionMatrix, Matrix4f modelViewProjectionMatrix)
+	public void updateUniforms(GameObject object)
 	{
-		setUniform("projectionViewMatrix", projectionMatrix);
-		setUniform("worldMatrix", worldMatrix);
+		setUniform("viewProjectionMatrix", Camera.getInstance().getViewProjectionMatrix());
+		setUniform("worldMatrix", object.getTransform().getWorldMatrix());
 		setUniform("eyePosition", Camera.getInstance().getPosition());
 		
 		for (int i=0; i<6; i++)
 		{
 			setUniform("frustumPlanes[" + i +"]", Camera.getInstance().getFrustumPlanes()[i]);
 		}
-	}
-	
-	public void sendUniforms(GameObject object)
-	{
+		
 		Water ocean = (Water) object;
 		setUniformf("displacementScale", ocean.getDisplacementScale());
 		setUniformf("choppiness", ocean.getChoppiness());

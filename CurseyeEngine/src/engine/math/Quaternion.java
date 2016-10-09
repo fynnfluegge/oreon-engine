@@ -91,6 +91,19 @@ public class Quaternion {
 		return new Quaternion(x_, y_, z_, w_);
 	}
 	
+	public Quaternion add(Quaternion r)
+	{
+		float w_ = w + r.getW();
+		float x_ = x + r.getX();
+		float y_ = y + r.getY();
+		float z_ = z + r.getZ();
+		return new Quaternion(x_, y_, z_, w_);
+	}
+	
+	public Vec3f xyz(){
+		return new Vec3f(x,y,z);
+	}
+	
 	public String toString()
 	{
 		return "[" + this.x + "," + this.y + "," + this.z + "," + this.w + "]";

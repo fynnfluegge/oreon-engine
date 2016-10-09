@@ -3,10 +3,10 @@ package engine.shaders.phong;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
+import modules.lighting.DirectionalLight;
 import engine.core.Camera;
 import engine.core.ResourceLoader;
-import engine.main.RenderingEngine;
-import engine.math.Matrix4f;
+import engine.scenegraph.GameObject;
 import engine.scenegraph.components.Material;
 import engine.shaders.Shader;
 
@@ -27,8 +27,8 @@ private static Textured instance = null;
 	{
 		super();
 
-		addVertexShader(ResourceLoader.loadShader("phong/texture/Vertex.glsl"));
-		addFragmentShader(ResourceLoader.loadShader("phong/texture/Fragment.glsl"));
+		addVertexShader(ResourceLoader.loadShader("shaders/phong/texture/Vertex.glsl"));
+		addFragmentShader(ResourceLoader.loadShader("shaders/phong/texture/Fragment.glsl"));
 		compileShader();
 		
 		addUniform("modelViewProjectionMatrix");
@@ -45,19 +45,18 @@ private static Textured instance = null;
 		addUniform("specularmap");
 	}
 	
-	public void sendUniforms(Matrix4f worldMatrix, Matrix4f projectionMatrix, Matrix4f modelViewProjectionMatrix)
+	public void updateUniforms(GameObject object)
 	{
-		setUniform("modelViewProjectionMatrix", modelViewProjectionMatrix);
-		setUniform("worldMatrix", worldMatrix);
+		setUniform("modelViewProjectionMatrix", object.getTransform().getModelViewProjectionMatrix());
+		setUniform("worldMatrix", object.getTransform().getWorldMatrix());
 		setUniform("eyePosition", Camera.getInstance().getPosition());
-		setUniform("directionalLight.ambient", RenderingEngine.getDirectionalLight().getAmbient());
-		setUniformf("directionalLight.intensity", RenderingEngine.getDirectionalLight().getIntensity());
-		setUniform("directionalLight.color", RenderingEngine.getDirectionalLight().getColor());
-		setUniform("directionalLight.direction", RenderingEngine.getDirectionalLight().getDirection());
-	}
-	
-	public void sendUniforms(Material material)
-	{
+		setUniform("directionalLight.ambient", DirectionalLight.getInstance().getAmbient());
+		setUniformf("directionalLight.intensity", DirectionalLight.getInstance().getIntensity());
+		setUniform("directionalLight.color", DirectionalLight.getInstance().getColor());
+		setUniform("directionalLight.direction", DirectionalLight.getInstance().getDirection());
+		
+		Material material = (Material) object.getComponent("Material");
+
 		glActiveTexture(GL_TEXTURE0);
 		material.getDiffusemap().bind();
 		setUniformi("material.diffusemap", 0);

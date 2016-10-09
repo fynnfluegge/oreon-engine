@@ -4,18 +4,20 @@ import modules.gui.GUI;
 import modules.gui.GUIs.VoidGUI;
 import modules.water.fft.OceanFFT;
 import engine.main.CoreEngine;
-import simulations.templates.BasicSimulation;
+import engine.main.OpenGLDisplay;
+import engine.main.Simulation;
 
-public class DisplacementMap extends BasicSimulation{
+public class DisplacementMap extends Simulation{
 	
 	private OceanFFT fft;
 
 public static void main(String[] args) {
 		
-		BasicSimulation simulation = new DisplacementMap();
+		DisplacementMap simulation = new DisplacementMap();
 		GUI fps = new VoidGUI();
-		CoreEngine coreEngine = new CoreEngine(512, 512, "fast fourier transform", simulation, fps);
+		CoreEngine coreEngine = new CoreEngine(512, 512, "fast fourier transform");
 		coreEngine.createWindow();
+		coreEngine.init(simulation, fps);
 		coreEngine.start();
 	}
 
@@ -30,6 +32,6 @@ public static void main(String[] args) {
 	public void render()
 	{
 		fft.render();
-		setSceneTexture(fft.getDy());
+		OpenGLDisplay.getInstance().setSceneTexture(fft.getDy());
 	}
 }

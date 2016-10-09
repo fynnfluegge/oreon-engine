@@ -10,10 +10,10 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 
 import modules.terrain.fractals.FractalMaps;
-import engine.core.Texture;
 import engine.core.Util;
 import engine.scenegraph.components.Material;
 import engine.shaders.Shader;
+import engine.textures.Texture;
 
 public class TerrainConfiguration {
 
@@ -36,37 +36,15 @@ public class TerrainConfiguration {
 	private Material material3;
 	private ArrayList<FractalMaps> fractals = new ArrayList<FractalMaps>();
 	
-	private int lod1_range;
-	private int lod2_range;
-	private int lod3_range;
-	private int lod4_range;
-	private int lod5_range;
-	private int lod6_range;
-	private int lod7_range;
-	private int lod8_range;
-	
-	private int lod1_morphing_area;
-	private int lod2_morphing_area;
-	private int lod3_morphing_area;
-	private int lod4_morphing_area;
-	private int lod5_morphing_area;
-	private int lod6_morphing_area;
-	private int lod7_morphing_area;
-	private int lod8_morphing_area;
-	
+	private int[] lod_range = new int[8];
+	private int[] lod_morphing_area = new int[8];
+	private int[] lodPatches = new int[8];
+
 	private float megabytes;
-	private int lod0Patches;
-	private int lod1Patches;
-	private int lod2Patches;
-	private int lod3Patches;
-	private int lod4Patches;
-	private int lod5Patches;
-	private int lod6Patches;
-	private int lod7Patches;
-	private int lod8Patches;
 	
+	private Shader shader;
 	private Shader gridShader;
-	private Shader tessellationShader;
+	private Shader shadowShader;
 	
 	public void loadFile(String file)
 	{
@@ -434,117 +412,54 @@ public class TerrainConfiguration {
 		this.gridShader = gridShader;
 	}
 
-	public Shader getTessellationShader() {
-		return tessellationShader;
-	}
-
-	public void setTessellationShader(Shader tessellationShader) {
-		this.tessellationShader = tessellationShader;
-	}
-
-	public int getLod1_range() {
-		return lod1_range;
-	}
-
 	public void setLod1_range(int lod1_range) {
-		this.lod1_range = lod1_range;
-		lod1_morphing_area = lod1_range-updateMorphingArea(1);
-	}
-
-	public int getLod2_range() {
-		return lod2_range;
+		this.lod_range[0] = lod1_range;
+		lod_morphing_area[0] = lod1_range-updateMorphingArea(1);
 	}
 
 	public void setLod2_range(int lod2_range) {
-		this.lod2_range = lod2_range;
-		lod2_morphing_area = lod2_range-updateMorphingArea(2);
-	}
-
-	public int getLod3_range() {
-		return lod3_range;
+		this.lod_range[1] = lod2_range;
+		lod_morphing_area[1] = lod2_range-updateMorphingArea(2);
 	}
 
 	public void setLod3_range(int lod3_range) {
-		this.lod3_range = lod3_range;
-		lod3_morphing_area = lod3_range-updateMorphingArea(3);
-	}
-
-	public int getLod4_range() {
-		return lod4_range;
+		this.lod_range[2] = lod3_range;
+		lod_morphing_area[2] = lod3_range-updateMorphingArea(3);
 	}
 
 	public void setLod4_range(int lod4_range) {
-		this.lod4_range = lod4_range;
-		lod4_morphing_area = lod4_range-updateMorphingArea(4);
-	}
-
-	public int getLod5_range() {
-		return lod5_range;
+		this.lod_range[3] = lod4_range;
+		lod_morphing_area[3] = lod4_range-updateMorphingArea(4);
 	}
 
 	public void setLod5_range(int lod5_range) {
-		this.lod5_range = lod5_range;
-		lod5_morphing_area = lod5_range-updateMorphingArea(5);
-	}
-
-	public int getLod6_range() {
-		return lod6_range;
+		this.lod_range[4] = lod5_range;
+		lod_morphing_area[4] = lod5_range-updateMorphingArea(5);
 	}
 
 	public void setLod6_range(int lod6_range) {
-		this.lod6_range = lod6_range;
-		lod6_morphing_area = lod6_range-updateMorphingArea(6);
-	}
-
-	public int getLod7_range() {
-		return lod7_range;
+		this.lod_range[5] = lod6_range;
+		lod_morphing_area[5] = lod6_range-updateMorphingArea(6);
 	}
 
 	public void setLod7_range(int lod7_range) {
-		this.lod7_range = lod7_range;
-		lod7_morphing_area = lod7_range-updateMorphingArea(7);
-	}
-
-	public int getLod8_range() {
-		return lod8_range;
+		this.lod_range[6] = lod7_range;
+		lod_morphing_area[6] = lod7_range-updateMorphingArea(7);
 	}
 
 	public void setLod8_range(int lod8_range) {
-		this.lod8_range = lod8_range;
-		lod8_morphing_area = lod8_range-updateMorphingArea(8);
+		this.lod_range[7] = lod8_range;
+		lod_morphing_area[7] = lod8_range-updateMorphingArea(8);
+	}
+	
+	public int[] getLod_morphing_area() {
+		return lod_morphing_area;
+	}
+	
+	public int[] getLodPatches() {
+		return lodPatches;
 	}
 
-	public int getLod1_morphing_area() {
-		return lod1_morphing_area;
-	}
-
-	public int getLod2_morphing_area() {
-		return lod2_morphing_area;
-	}
-
-	public int getLod3_morphing_area() {
-		return lod3_morphing_area;
-	}
-
-	public int getLod4_morphing_area() {
-		return lod4_morphing_area;
-	}
-
-	public int getLod5_morphing_area() {
-		return lod5_morphing_area;
-	}
-
-	public int getLod6_morphing_area() {
-		return lod6_morphing_area;
-	}
-
-	public int getLod7_morphing_area() {
-		return lod7_morphing_area;
-	}
-
-	public int getLod8_morphing_area() {
-		return lod8_morphing_area;
-	}
 
 	public float getMegabytes() {
 		return megabytes;
@@ -554,75 +469,23 @@ public class TerrainConfiguration {
 		this.megabytes = megabytes;
 	}
 
-	public int getLod0Patches() {
-		return lod0Patches;
+	public Shader getShadowShader() {
+		return shadowShader;
 	}
 
-	public void setLod0Patches(int lod0Patches) {
-		this.lod0Patches = lod0Patches;
+	public void setShadowShader(Shader shadowShader) {
+		this.shadowShader = shadowShader;
 	}
 
-	public int getLod1Patches() {
-		return lod1Patches;
+	public Shader getShader() {
+		return shader;
 	}
 
-	public void setLod1Patches(int lod1Patches) {
-		this.lod1Patches = lod1Patches;
+	public void setShader(Shader shader) {
+		this.shader = shader;
 	}
 
-	public int getLod2Patches() {
-		return lod2Patches;
-	}
-
-	public void setLod2Patches(int lod2Patches) {
-		this.lod2Patches = lod2Patches;
-	}
-
-	public int getLod3Patches() {
-		return lod3Patches;
-	}
-
-	public void setLod3Patches(int lod3Patches) {
-		this.lod3Patches = lod3Patches;
-	}
-
-	public int getLod4Patches() {
-		return lod4Patches;
-	}
-
-	public void setLod4Patches(int lod4Patches) {
-		this.lod4Patches = lod4Patches;
-	}
-
-	public int getLod5Patches() {
-		return lod5Patches;
-	}
-
-	public void setLod5Patches(int lod5Patches) {
-		this.lod5Patches = lod5Patches;
-	}
-
-	public int getLod6Patches() {
-		return lod6Patches;
-	}
-
-	public void setLod6Patches(int lod6Patches) {
-		this.lod6Patches = lod6Patches;
-	}
-
-	public int getLod7Patches() {
-		return lod7Patches;
-	}
-
-	public void setLod7Patches(int lod7Patches) {
-		this.lod7Patches = lod7Patches;
-	}
-
-	public int getLod8Patches() {
-		return lod8Patches;
-	}
-
-	public void setLod8Patches(int lod8Patches) {
-		this.lod8Patches = lod8Patches;
+	public int[] getLod_range() {
+		return lod_range;
 	}
 }

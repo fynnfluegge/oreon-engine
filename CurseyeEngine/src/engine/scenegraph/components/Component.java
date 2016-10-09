@@ -2,6 +2,7 @@ package engine.scenegraph.components;
 
 import engine.core.Transform;
 import engine.scenegraph.GameObject;
+import engine.shaders.Shader;
 
 public abstract class Component{
 	
@@ -12,6 +13,8 @@ public abstract class Component{
 	public void input(){};
 	
 	public void render(){};
+	
+	public void setShader(Shader shader){};
 
 	public GameObject getParent() {
 		return parent;

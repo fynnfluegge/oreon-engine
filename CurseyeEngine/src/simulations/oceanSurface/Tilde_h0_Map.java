@@ -4,9 +4,10 @@ import modules.gui.GUI;
 import modules.gui.GUIs.VoidGUI;
 import modules.water.fft.Tilde_h0;
 import engine.main.CoreEngine;
-import simulations.templates.BasicSimulation;
+import engine.main.OpenGLDisplay;
+import engine.main.Simulation;
 
-public class Tilde_h0_Map extends BasicSimulation{
+public class Tilde_h0_Map extends Simulation{
 
 	private Tilde_h0 phillipsComponents;
 	private int N = 256;
@@ -14,10 +15,11 @@ public class Tilde_h0_Map extends BasicSimulation{
 	
 	public static void main(String[] args) {
 
-		BasicSimulation simulation = new Tilde_h0_Map();
+		Simulation simulation = new Tilde_h0_Map();
 		GUI fps = new VoidGUI();
-		CoreEngine coreEngine = new CoreEngine(512, 512, "~h0(k)", simulation, fps);
+		CoreEngine coreEngine = new CoreEngine(512, 512, "~h0(k)");
 		coreEngine.createWindow();
+		coreEngine.init(simulation, fps);
 		coreEngine.start();
 	}
 	
@@ -32,7 +34,7 @@ public class Tilde_h0_Map extends BasicSimulation{
 	
 	public void render()
 	{
-		setSceneTexture(phillipsComponents.geth0kminus());
+		OpenGLDisplay.getInstance().setSceneTexture(phillipsComponents.geth0kminus());
 	}
 
 }

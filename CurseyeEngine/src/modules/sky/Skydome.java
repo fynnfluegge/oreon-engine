@@ -2,14 +2,16 @@ package modules.sky;
 
 import engine.buffers.MeshVAO;
 import engine.configs.CullFaceDisable;
-import engine.core.ProceduralTexturing;
-import engine.core.Texture;
-import engine.modeling.Mesh;
-import engine.modeling.obj.OBJLoader;
+import engine.geometrics.Mesh;
+import engine.geometrics.obj.OBJLoader;
+import engine.main.RenderingEngine;
 import engine.scenegraph.GameObject;
 import engine.scenegraph.components.Material;
-import engine.scenegraph.components.MeshRenderer;
+import engine.scenegraph.components.RenderInfo;
+import engine.scenegraph.components.Renderer;
 import engine.shaders.basic.Textured;
+import engine.textures.ProceduralTexturing;
+import engine.textures.Texture;
 
 public class Skydome extends GameObject{
 	
@@ -23,7 +25,8 @@ public class Skydome extends GameObject{
 		material.getDiffusemap().mipmap();
 		MeshVAO meshBuffer = new MeshVAO();
 		meshBuffer.addData(mesh);
-		MeshRenderer renderer = new MeshRenderer(meshBuffer, Textured.getInstance(), new CullFaceDisable());
+		setRenderInfo(new RenderInfo(new CullFaceDisable(),Textured.getInstance()));
+		Renderer renderer = new Renderer(Textured.getInstance(), meshBuffer);
 		addComponent("Material", material);
 		addComponent("Renderer", renderer);
 	}
@@ -33,5 +36,10 @@ public class Skydome extends GameObject{
 		getTransform().setRotation(getTransform().getLocalRotation().add(getParent().getTransform().getRotation()));
 		getTransform().setTranslation(getTransform().getLocalTranslation().add(getParent().getTransform().getTranslation()));
 		getTransform().setScaling(getTransform().getLocalScaling().mul(getParent().getTransform().getScaling()));
-	}	
+	}
+	
+	public void render(){
+		if (!RenderingEngine.isGrid())
+			super.render();
+	}
 }

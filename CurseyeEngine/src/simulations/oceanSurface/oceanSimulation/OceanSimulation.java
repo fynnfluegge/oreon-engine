@@ -1,28 +1,25 @@
 package simulations.oceanSurface.oceanSimulation;
 
 import modules.gui.GUI;
-import modules.gui.GUIs.VoidGUI;
-import modules.lighting.DirectionalLight;
+import modules.sky.SkySphere;
 import engine.main.CoreEngine;
-import engine.main.RenderingEngine;
-import engine.math.Vec3f;
-import simulations.templates.Simulation;
-import simulations.templates.TerrainSimulation;
+import engine.main.Simulation;
 
-public class OceanSimulation extends TerrainSimulation{
+public class OceanSimulation extends Simulation{
 
 	public static void main(String[] args) {
 		Simulation simulation = new OceanSimulation();
-		GUI gui = new VoidGUI();
-		CoreEngine coreEngine = new CoreEngine(1400, 600, "Ocean Simulation", simulation, gui);
+		GUI gui = new FFTMapGUI();
+		CoreEngine coreEngine = new CoreEngine(1000, 600, "Ocean Simulation");
 		coreEngine.createWindow();
+		coreEngine.init(simulation, gui);
 		coreEngine.start();
 	}
 
 	public void init()
 	{	
 		super.init();
-		setWater(new Ocean());
-		RenderingEngine.setDirectionalLight(new DirectionalLight(new Vec3f(-4,-2,-1).normalize(), new Vec3f(0.02f,0.02f,0.02f), new Vec3f(1.0f, 0.95f, 0.87f), 2.0f));
+		scenegraph.addObject(new SkySphere());
+		scenegraph.setWater(new Ocean());
 	}
 }

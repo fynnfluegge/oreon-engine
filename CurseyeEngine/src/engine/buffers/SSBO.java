@@ -9,6 +9,13 @@ import static org.lwjgl.opengl.GL43.GL_SHADER_STORAGE_BUFFER;
 import engine.math.Vec2f;
 
 
+/**
+ * Shader Storage Buffer Object
+ * 
+ * @author Fynn
+ *
+ */
+
 public class SSBO {
 	
 	private int ssbo;
@@ -18,19 +25,19 @@ public class SSBO {
 		ssbo = glGenBuffers();
 	}
 	
-	public void addData(Vec2f[] buffer)
+	public void addData(Vec2f[] data)
 	{
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
-		glBufferData(GL_SHADER_STORAGE_BUFFER, BufferAllocation.createFlippedBuffer(buffer), GL_STATIC_READ);
+		glBufferData(GL_SHADER_STORAGE_BUFFER, BufferAllocation.createFlippedBuffer(data), GL_STATIC_READ);
 	}
 	
-	public void addData(int[] buffer)
+	public void addData(int[] data)
 	{
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
-		glBufferData(GL_SHADER_STORAGE_BUFFER, BufferAllocation.createFlippedBuffer(buffer), GL_STATIC_READ);
+		glBufferData(GL_SHADER_STORAGE_BUFFER, BufferAllocation.createFlippedBuffer(data), GL_STATIC_READ);
 	}
 	
-	public void bind(int index)
+	public void bindBufferBase(int index)
 	{
 		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, index, ssbo);
 	}

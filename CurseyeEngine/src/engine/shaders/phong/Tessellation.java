@@ -5,10 +5,11 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE2;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE3;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
+import modules.lighting.DirectionalLight;
 import engine.core.Camera;
 import engine.core.ResourceLoader;
 import engine.main.RenderingEngine;
-import engine.math.Matrix4f;
+import engine.scenegraph.GameObject;
 import engine.scenegraph.components.Material;
 import engine.shaders.Shader;
 
@@ -30,11 +31,11 @@ public class Tessellation extends Shader{
 	{
 		super();
 
-		addVertexShader(ResourceLoader.loadShader("phong/tessellation/Vertex.glsl"));
-		addTessellationControlShader(ResourceLoader.loadShader("phong/tessellation/Tessellation Control.glsl"));
-		addTessellationEvaluationShader(ResourceLoader.loadShader("phong/tessellation/Tessellation Evaluation.glsl"));
-		addGeometryShader(ResourceLoader.loadShader("phong/tessellation/Geometry.glsl"));
-		addFragmentShader(ResourceLoader.loadShader("phong/tessellation/Fragment.glsl"));
+		addVertexShader(ResourceLoader.loadShader("shaders/phong/tessellation/Vertex.glsl"));
+		addTessellationControlShader(ResourceLoader.loadShader("shaders/phong/tessellation/Tessellation Control.glsl"));
+		addTessellationEvaluationShader(ResourceLoader.loadShader("shaders/phong/tessellation/Tessellation Evaluation.glsl"));
+		addGeometryShader(ResourceLoader.loadShader("shaders/phong/tessellation/Geometry.glsl"));
+		addFragmentShader(ResourceLoader.loadShader("shaders/phong/tessellation/Fragment.glsl"));
 		compileShader();
 		
 		
@@ -71,17 +72,17 @@ public class Tessellation extends Shader{
 		}
 	}
 	
-	public void sendUniforms(Matrix4f worldMatrix, Matrix4f viewProjectionMatrix, Matrix4f modelViewProjectionMatrix)
+	public void updateUniforms(GameObject object)
 	{
 		
-		setUniform("viewProjectionMatrix", viewProjectionMatrix);
-		setUniform("worldMatrix", worldMatrix);
+		setUniform("viewProjectionMatrix", Camera.getInstance().getViewProjectionMatrix());
+		setUniform("worldMatrix", object.getTransform().getWorldMatrix());
 		setUniform("eyePosition", Camera.getInstance().getPosition());
 		
-		setUniform("directionalLight.ambient", RenderingEngine.getDirectionalLight().getAmbient());
-		setUniformf("directionalLight.intensity", RenderingEngine.getDirectionalLight().getIntensity());
-		setUniform("directionalLight.color", RenderingEngine.getDirectionalLight().getColor());
-		setUniform("directionalLight.direction", RenderingEngine.getDirectionalLight().getDirection());	
+		setUniform("directionalLight.ambient", DirectionalLight.getInstance().getAmbient());
+		setUniformf("directionalLight.intensity", DirectionalLight.getInstance().getIntensity());
+		setUniform("directionalLight.color", DirectionalLight.getInstance().getColor());
+		setUniform("directionalLight.direction", DirectionalLight.getInstance().getDirection());	
 		
 		setUniform("clipplane", RenderingEngine.getClipplane());
 		
@@ -89,10 +90,9 @@ public class Tessellation extends Shader{
 		{
 			setUniform("frustumPlanes[" + i +"]", Camera.getInstance().getFrustumPlanes()[i]);
 		}
-	}
-	
-	public void sendUniforms(Material material)
-	{	
+		
+		Material material = (Material) object.getComponent("Material");
+		
 		setUniformi("tessFactor", 100);
 		setUniformf("tessSlope", 0.2f);
 		setUniformf("tessShift", 1);

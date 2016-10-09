@@ -2,6 +2,8 @@ package engine.shaders;
 
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL32.*;
+import static org.lwjgl.opengl.GL31.glGetUniformBlockIndex;
+import static org.lwjgl.opengl.GL31.glUniformBlockBinding;
 import static org.lwjgl.opengl.GL40.GL_TESS_CONTROL_SHADER;
 import static org.lwjgl.opengl.GL40.GL_TESS_EVALUATION_SHADER;
 import static org.lwjgl.opengl.GL43.GL_COMPUTE_SHADER;
@@ -14,7 +16,7 @@ import engine.math.Quaternion;
 import engine.math.Vec2f;
 import engine.math.Vec3f;
 import engine.scenegraph.GameObject;
-import engine.scenegraph.components.Material;
+import engine.textures.Texture;
 
 public abstract class Shader {
 
@@ -33,42 +35,57 @@ public abstract class Shader {
 		}	
 	}
 	
-	public void execute()
+	public void bind()
 	{
 		glUseProgram(program);
 	}
 	
-	public void sendUniforms(Matrix4f matrix0, Matrix4f matrix1, Matrix4f matrix2){};
+	public void updateUniforms(Matrix4f matrix0, Matrix4f matrix1, Matrix4f matrix2){};
 	
-	public void sendUniforms(Matrix4f matrix0, Matrix4f matrix1){};
+	public void updateUniforms(Texture texture, int i, float j){};
 	
-	public void sendUniforms(Matrix4f matrix){};
+	public void updateUniforms(Matrix4f matrix0, Matrix4f matrix1){};
 	
-	public void sendUniforms(Material material){};
+	public void updateUniforms(Matrix4f matrix){};
 	
-	public void sendUniforms(int value){};
+	public void updateUniforms(int value){};
 	
-	public void sendUniforms(float value){};
+	public void updateUniforms(float value){};
 	
-	public void sendUniforms(GameObject object){};
+	public void updateUniforms(GameObject object){};
 	
-	public void sendUniforms(int l, int n, float t){};
+	public void updateUniforms(int l, int n, float t){};
 	
-	public void sendUniforms(int l, int n, int t){};
+	public void updateUniforms(int l, int n, int t){};
 	
-	public void sendUniforms(int n, int l, float a, Vec2f w, float l2) {}
+	public void updateUniforms(int n, int l, float a, Vec2f w, float l2) {}
 	
-	public void sendUniforms(int n, int l, float a, Vec2f w, float v, float l2) {}
+	public void updateUniforms(int n, int l, float a, Vec2f w, float v, float l2) {}
 	
-	public void sendUniforms(int i, int j, int k, int l) {}
+	public void updateUniforms(int i, int j, int k, int l) {}
 	
-	public void sendUniforms(int n, int pingpong) {}
+	public void updateUniforms(int n, int pingpong) {}
+	
+	public void updateUniforms(int i, float j) {}
 	
 	
 	public void addUniform(String uniform)
 	{
 		int uniformLocation = glGetUniformLocation(program, uniform);
 		
+		if (uniformLocation == 0xFFFFFFFF)
+		{
+			System.err.println("Error: Could not find uniform: " + uniform);
+			new Exception().printStackTrace();
+			System.exit(1);
+		}
+		
+		uniforms.put(uniform, uniformLocation);
+	}
+	
+	public void addUniformBlock(String uniform)
+	{
+		int uniformLocation =  glGetUniformBlockIndex(program, uniform);		
 		if (uniformLocation == 0xFFFFFFFF)
 		{
 			System.err.println("Error: Could not find uniform: " + uniform);
@@ -173,6 +190,11 @@ public abstract class Shader {
 	public void setUniform(String uniformName, Matrix4f value)
 	{
 		glUniformMatrix4(uniforms.get(uniformName), true, BufferAllocation.createFlippedBuffer(value));
+	}
+	
+	public void bindUniformBlock(String uniformBlockName, int uniformBlockBinding )
+	{
+		glUniformBlockBinding(program, uniforms.get(uniformBlockName), uniformBlockBinding);
 	}
 	
 	public int getProgram()

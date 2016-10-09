@@ -5,7 +5,7 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 import engine.core.Camera;
 import engine.core.ResourceLoader;
 import engine.main.RenderingEngine;
-import engine.math.Matrix4f;
+import engine.scenegraph.GameObject;
 import engine.scenegraph.components.Material;
 import engine.shaders.Shader;
 
@@ -26,11 +26,11 @@ private static TessellationGrid instance = null;
 	{
 		super();
 
-		addVertexShader(ResourceLoader.loadShader("basic/tessellation grid/Vertex.glsl"));
-		addTessellationControlShader(ResourceLoader.loadShader("basic/tessellation grid/Tessellation Control.glsl"));
-		addTessellationEvaluationShader(ResourceLoader.loadShader("basic/tessellation grid/Tessellation Evaluation.glsl"));
-		addGeometryShader(ResourceLoader.loadShader("basic/tessellation grid/Geometry.glsl"));
-		addFragmentShader(ResourceLoader.loadShader("basic/tessellation grid/Fragment.glsl"));
+		addVertexShader(ResourceLoader.loadShader("shaders/basic/tessellation grid/Vertex.glsl"));
+		addTessellationControlShader(ResourceLoader.loadShader("shaders/basic/tessellation grid/Tessellation Control.glsl"));
+		addTessellationEvaluationShader(ResourceLoader.loadShader("shaders/basic/tessellation grid/Tessellation Evaluation.glsl"));
+		addGeometryShader(ResourceLoader.loadShader("shaders/basic/tessellation grid/Geometry.glsl"));
+		addFragmentShader(ResourceLoader.loadShader("shaders/basic/tessellation grid/Fragment.glsl"));
 		compileShader();
 		
 		
@@ -55,11 +55,11 @@ private static TessellationGrid instance = null;
 		}
 	}
 	
-	public void sendUniforms(Matrix4f worldMatrix, Matrix4f viewProjectionMatrix, Matrix4f modelViewProjectionMatrix)
+	public void updateUniforms(GameObject object)
 	{
 		
-		setUniform("viewProjectionMatrix", viewProjectionMatrix);
-		setUniform("worldMatrix", worldMatrix);
+		setUniform("viewProjectionMatrix", Camera.getInstance().getViewProjectionMatrix());
+		setUniform("worldMatrix", object.getTransform().getWorldMatrix());
 		setUniform("eyePosition", Camera.getInstance().getPosition());
 		
 		setUniform("clipplane", RenderingEngine.getClipplane());
@@ -68,10 +68,9 @@ private static TessellationGrid instance = null;
 		{
 			setUniform("frustumPlanes[" + i +"]", Camera.getInstance().getFrustumPlanes()[i]);
 		}
-	}
-	
-	public void sendUniforms(Material material)
-	{	
+		
+		Material material = (Material) object.getComponents().get("Material");
+		
 		setUniformi("tessFactor", 10000);
 		setUniformf("tessSlope", 1.4f);
 		setUniformf("tessShift", 1.0f);
@@ -85,7 +84,5 @@ private static TessellationGrid instance = null;
 		}
 		else
 			setUniformi("displacement", 0);
-
 	}
-
 }

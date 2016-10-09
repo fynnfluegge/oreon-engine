@@ -2,15 +2,15 @@ package simulations.objLoader;
 
 import engine.buffers.MeshVAO;
 import engine.configs.CCW;
-import engine.core.Geometrics;
-import engine.core.Texture;
 import engine.core.Util;
-import engine.core.Vertex;
+import engine.geometrics.Geometrics;
+import engine.geometrics.Mesh;
 import engine.math.Vec3f;
-import engine.modeling.Mesh;
 import engine.scenegraph.GameObject;
 import engine.scenegraph.components.Material;
-import engine.scenegraph.components.MeshRenderer;
+import engine.scenegraph.components.RenderInfo;
+import engine.scenegraph.components.Renderer;
+import engine.textures.Texture;
 
 public class ActionBoxModel extends GameObject{
 	
@@ -18,9 +18,6 @@ public class ActionBoxModel extends GameObject{
 		
 		getTransform().setLocalScaling(5000, 5000, 5000);
 		Mesh mesh = Geometrics.Cube();
-		for(Vertex vertex : mesh.getVertices()){
-			vertex.setTextureCoord(vertex.getTextureCoord().mul(1));
-		}
 		Util.generateNormalsCCW(mesh.getVertices(), mesh.getIndices());
 		Material material = new Material();
 		material.setColor(new Vec3f(1,1,1));
@@ -34,7 +31,8 @@ public class ActionBoxModel extends GameObject{
 		material.getNormalmap().mipmap();
 		MeshVAO meshBuffer = new MeshVAO();
 		meshBuffer.addData(mesh);
-		MeshRenderer renderer = new MeshRenderer(meshBuffer,engine.shaders.phong.Bumpy.getInstance(), new CCW());
+		setRenderInfo(new RenderInfo(new CCW(), engine.shaders.phong.Bumpy.getInstance()));
+		Renderer renderer = new Renderer(engine.shaders.phong.Bumpy.getInstance(), meshBuffer);
 		addComponent("Material", material);
 		addComponent("Renderer", renderer);	
 	}

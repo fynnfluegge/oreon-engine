@@ -21,7 +21,7 @@ public class Tilde_h0Shader extends Shader{
 	{
 		super();
 		
-		addComputeShader(ResourceLoader.loadShader("ocean/fft/~h0.glsl"));
+		addComputeShader(ResourceLoader.loadShader("shaders/ocean/fft/~h0.glsl"));
 		compileShader();
 		
 		addUniform("N");
@@ -35,7 +35,7 @@ public class Tilde_h0Shader extends Shader{
 		addUniform("noise_i1");
 	}
 	
-	public void sendUniforms(int N, int L, float A, Vec2f w, float windspeed)
+	public void updateUniforms(int N, int L, float A, Vec2f w, float windspeed)
 	{
 		setUniformi("N", N);
 		setUniformi("L", L);
@@ -44,7 +44,7 @@ public class Tilde_h0Shader extends Shader{
 		setUniform("w", w);
 	}
 	
-	public void sendUniforms(int texture0, int texture1, int texture2, int texture3)
+	public void updateUniforms(int texture0, int texture1, int texture2, int texture3)
 	{
 		setUniformi("noise_r0", texture0);
 		setUniformi("noise_i0", texture1);

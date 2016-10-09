@@ -1,30 +1,24 @@
 package engine.scenegraph.components;
 
-import engine.configs.RenderingConfig;
+import engine.buffers.VAO;
 import engine.shaders.Shader;
 
-public abstract class Renderer extends Component{
+public class Renderer extends Component{
 	
-	private RenderingConfig config;
 	private Shader shader;
+	private VAO vao;
 	
-	public Renderer(RenderingConfig config, Shader shader)
+	public Renderer(Shader shader, VAO vao)
 	{
-		this.config = config;
 		this.shader = shader;
+		this.vao = vao;
 	}
 	
-	public void render(){};
-	public void update(){};
-	public void input(){};
-	
-	public RenderingConfig getConfig() {
-		return config;
-	}
-
-	public void setConfig(RenderingConfig config) {
-		this.config = config;
-	}
+	public void render(){
+		getShader().bind();			
+		getShader().updateUniforms(getParent());
+		vao.draw();
+	};
 
 	public Shader getShader() {
 		return shader;
@@ -32,5 +26,13 @@ public abstract class Renderer extends Component{
 
 	public void setShader(Shader shader) {
 		this.shader = shader;
+	}
+
+	public VAO getVao() {
+		return vao;
+	}
+
+	public void setVao(VAO vao) {
+		this.vao = vao;
 	}
 }

@@ -18,8 +18,8 @@ import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 import engine.buffers.BufferAllocation;
+import engine.geometrics.Mesh;
 import engine.math.Vec2f;
-import engine.modeling.Mesh;
 
 public class GUIVAO {
 

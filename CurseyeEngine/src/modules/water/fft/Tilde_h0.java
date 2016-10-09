@@ -11,10 +11,10 @@ import static org.lwjgl.opengl.GL30.GL_RGBA32F;
 import static org.lwjgl.opengl.GL42.glBindImageTexture;
 import static org.lwjgl.opengl.GL42.glTexStorage2D;
 import static org.lwjgl.opengl.GL43.glDispatchCompute;
-import engine.core.Texture;
-import engine.gpcgpu.fastFourierTransform.FourierSpectrum;
+import modules.fastFourierTransform.FourierSpectrum;
 import engine.math.Vec2f;
 import engine.shaders.water.Tilde_h0Shader;
+import engine.textures.Texture;
 
 public class Tilde_h0 extends FourierSpectrum{
 	
@@ -63,8 +63,8 @@ public class Tilde_h0 extends FourierSpectrum{
 	@Override
 	public void render() {
 		
-		getShader().execute();
-		getShader().sendUniforms(getN(), L, A, wind, windspeed);
+		getShader().bind();
+		getShader().updateUniforms(getN(), L, A, wind, windspeed);
 		
 		glActiveTexture(GL_TEXTURE0);
 		noise0.bind();
@@ -78,7 +78,7 @@ public class Tilde_h0 extends FourierSpectrum{
 		glActiveTexture(GL_TEXTURE3);
 		noise3.bind();
 		
-		getShader().sendUniforms(0, 1, 2, 3);
+		getShader().updateUniforms(0, 1, 2, 3);
 		
 		glBindImageTexture(0, h0k.getId(), 0, false, 0, GL_READ_WRITE, GL_RGBA32F);
 		

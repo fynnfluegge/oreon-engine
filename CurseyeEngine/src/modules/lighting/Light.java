@@ -1,19 +1,15 @@
 package modules.lighting;
 
-import engine.core.Transform;
 import engine.math.Vec3f;
-import engine.scenegraph.components.Component;
+import engine.scenegraph.Node;
 
-public abstract class Light extends Component{
+public abstract class Light extends Node{
 	
-	private Vec3f ambient;
-	private Vec3f color;
-	private float intensity;
-	private Transform transform = new Transform();
+	protected Vec3f color;
+	protected float intensity;
 	
-	public Light(Vec3f ambient, Vec3f color, float intensity)
+	public Light(Vec3f color, float intensity)
 	{
-		this.ambient = ambient;
 		this.color = color;
 		this.intensity = intensity;
 	}
@@ -30,21 +26,5 @@ public abstract class Light extends Component{
 	}
 	public void setIntensity(float intensity) {
 		this.intensity = intensity;
-	}
-
-	public Transform getLocalTransform() {
-		return transform;
-	}
-
-	public void setLocalTransform(Transform transform) {
-		this.transform = transform;
-	}
-
-	public Vec3f getAmbient() {
-		return ambient;
-	}
-
-	public void setAmbient(Vec3f ambient) {
-		this.ambient = ambient;
 	}
 }

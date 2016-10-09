@@ -8,12 +8,11 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE4;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE5;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE6;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
+import modules.lighting.DirectionalLight;
 import modules.water.Water;
 import engine.core.Camera;
 import engine.core.ResourceLoader;
-import engine.core.OpenGLWindow;
-import engine.main.RenderingEngine;
-import engine.math.Matrix4f;
+import engine.main.OpenGLDisplay;
 import engine.scenegraph.GameObject;
 import engine.shaders.Shader;
 
@@ -34,11 +33,11 @@ private static OceanBRDF instance = null;
 	{
 		super();
 		
-		addVertexShader(ResourceLoader.loadShader("ocean/brdf/Vertex.glsl"));
-		addTessellationControlShader(ResourceLoader.loadShader("ocean/brdf/Tessellation Control.glsl"));
-		addTessellationEvaluationShader(ResourceLoader.loadShader("ocean/brdf/Tessellation Evaluation.glsl"));
-		addGeometryShader(ResourceLoader.loadShader("ocean/brdf/Geometry.glsl"));
-		addFragmentShader(ResourceLoader.loadShader("ocean/brdf/Fragment.glsl"));
+		addVertexShader(ResourceLoader.loadShader("shaders/ocean/Ocean_VS.glsl"));
+		addTessellationControlShader(ResourceLoader.loadShader("shaders/ocean/Ocean_TC.glsl"));
+		addTessellationEvaluationShader(ResourceLoader.loadShader("shaders/ocean/Ocean_TE.glsl"));
+		addGeometryShader(ResourceLoader.loadShader("shaders/ocean/Ocean_GS.glsl"));
+		addFragmentShader(ResourceLoader.loadShader("shaders/ocean/Ocean_FS.glsl"));
 		compileShader();
 		
 		addUniform("projectionViewMatrix");
@@ -81,28 +80,23 @@ private static OceanBRDF instance = null;
 		}
 	}
 	
-	public void sendUniforms(Matrix4f worldMatrix, Matrix4f projectionMatrix, Matrix4f modelViewProjectionMatrix)
+	public void updateUniforms(GameObject object)
 	{
-		setUniform("projectionViewMatrix", projectionMatrix);
-		setUniform("worldMatrix", worldMatrix);
+		setUniform("projectionViewMatrix", Camera.getInstance().getViewProjectionMatrix());
+		setUniform("worldMatrix", object.getTransform().getWorldMatrix());
 		setUniform("eyePosition", Camera.getInstance().getPosition());
-		setUniformi("windowWidth", OpenGLWindow.getWidth());
-		setUniformi("windowHeight", OpenGLWindow.getHeight());
+		setUniformi("windowWidth", OpenGLDisplay.getInstance().getLwjglWindow().getWidth());
+		setUniformi("windowHeight", OpenGLDisplay.getInstance().getLwjglWindow().getHeight());
 		
-		setUniform("sunlight.ambient", RenderingEngine.getDirectionalLight().getAmbient());
-		setUniformf("sunlight.intensity", RenderingEngine.getDirectionalLight().getIntensity());
-		setUniform("sunlight.color", RenderingEngine.getDirectionalLight().getColor());
-		setUniform("sunlight.direction", RenderingEngine.getDirectionalLight().getDirection());	
+		setUniform("sunlight.ambient", DirectionalLight.getInstance().getAmbient());
+		setUniformf("sunlight.intensity", DirectionalLight.getInstance().getIntensity());
+		setUniform("sunlight.color", DirectionalLight.getInstance().getColor());
+		setUniform("sunlight.direction", DirectionalLight.getInstance().getDirection());	
 		
 		for (int i=0; i<6; i++)
 		{
 			setUniform("frustumPlanes[" + i +"]", Camera.getInstance().getFrustumPlanes()[i]);
 		}
-	}
-	
-	public void sendUniforms(GameObject object)
-	{
-		
 		
 		Water ocean = (Water) object;
 		

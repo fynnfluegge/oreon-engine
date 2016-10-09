@@ -82,8 +82,8 @@ void main()
 		if (specularmap == 1)
 			diffuseColor += texture(material2.specularmap, texCoord2).rgb;
 	}
-	//else
-		diffuseColor = material2.color + 1;
+	else
+		diffuseColor = material2.color;
 		
 	vec3 rgb = diffuseColor * diffuseLight + specularLight;
 	

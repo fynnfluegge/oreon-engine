@@ -10,7 +10,7 @@ import static org.lwjgl.opengl.GL11.glBlendFunc;
 import static org.lwjgl.opengl.GL11.glDisable;
 import static org.lwjgl.opengl.GL11.glEnable;
 
-public class AlphaBlending implements RenderingConfig{
+public class AlphaBlending implements RenderConfig{
 	
 	private float alpha;
 	

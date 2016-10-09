@@ -11,10 +11,8 @@ import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 
-import simulations.templates.Simulation;
-import engine.configs.RenderingConfig;
+import engine.configs.RenderConfig;
 import engine.core.Constants;
-import engine.core.OpenGLWindow;
 
 
 public class CoreEngine{
@@ -26,41 +24,48 @@ public class CoreEngine{
 	private static float framerate = 100;
 	private static float frameTime = 1.0f/framerate;
 	private boolean isRunning;
-	private RenderingEngine renderingEngine;
 	
 	private static boolean shareGLContext = false;
 	private static boolean glContextfree = false;
 	private static Lock glContextLock = new ReentrantLock();
 	private static Condition holdGLContext = glContextLock.newCondition();
+	
+	private Simulation simulation;
+	private RenderingEngine renderingEngine;
 
-	public CoreEngine(int width, int height, String title, Simulation simulation, GUI gui)
+	public CoreEngine(int width, int height, String title)
 	{
 		this.width = width;
 		this.height = height;
 		this.title = title;
 		isRunning = false;
-		renderingEngine = new RenderingEngine(simulation,gui);
 	}
 	
 	public void createWindow()
 	{
-		OpenGLWindow.create(this.width, this.height, this.title);
+		OpenGLDisplay.getInstance().getLwjglWindow().create(this.width, this.height, this.title);
 		System.out.println("OpenGL version: " + GL11.glGetString(GL11.GL_VERSION));
 	}
 	
 	public void embedWindow(Canvas canvas)
 	{
-		OpenGLWindow.embed(this.width, this.height, canvas);
+		OpenGLDisplay.getInstance().getLwjglWindow().embed(this.width, this.height, canvas);
 		System.out.println("OpenGL version: " + GL11.glGetString(GL11.GL_VERSION));
+	}
+	
+	public void init(Simulation simulation, GUI gui)
+	{
+		this.simulation = simulation;
+		RenderConfig.init();
+		this.simulation.init();
+		renderingEngine = new RenderingEngine(this.simulation.getScenegraph(), gui);
+		renderingEngine.init();
 	}
 	
 	public void start()
 	{
 		if(isRunning)
 			return;
-		
-		RenderingConfig.init();
-		renderingEngine.init();
 		
 		run();
 	}
@@ -133,7 +138,7 @@ public class CoreEngine{
 				render = true;
 				unprocessedTime -= frameTime;
 				
-				if(OpenGLWindow.isCloseRequested())
+				if(OpenGLDisplay.getInstance().getLwjglWindow().isCloseRequested())
 					stop();
 				
 				update();
@@ -157,12 +162,10 @@ public class CoreEngine{
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-			}
-				
+			}		
 		}
 		
-		cleanUp();
-		
+		cleanUp();	
 	}
 
 	public void stop()
@@ -176,6 +179,7 @@ public class CoreEngine{
 	public void render()
 	{
 		renderingEngine.render();
+		simulation.render();
 	}
 	
 	public void update()
@@ -186,7 +190,7 @@ public class CoreEngine{
 	public void cleanUp()
 	{
 		renderingEngine.shutdown();
-		OpenGLWindow.dispose();
+		OpenGLDisplay.getInstance().getLwjglWindow().dispose();
 	}
 
 	public static float getFrameTime() {

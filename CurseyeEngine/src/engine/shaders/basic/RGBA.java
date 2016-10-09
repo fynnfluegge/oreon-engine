@@ -2,7 +2,7 @@ package engine.shaders.basic;
 
 import engine.core.ResourceLoader;
 import engine.main.RenderingEngine;
-import engine.math.Matrix4f;
+import engine.scenegraph.GameObject;
 import engine.scenegraph.components.Material;
 import engine.shaders.Shader;
 
@@ -23,8 +23,8 @@ public class RGBA extends Shader{
 	{
 		super();
 
-		addVertexShader(ResourceLoader.loadShader("basic/rgba/Vertex.glsl"));
-		addFragmentShader(ResourceLoader.loadShader("basic/rgba/Fragment.glsl"));
+		addVertexShader(ResourceLoader.loadShader("shaders/basic/rgba/Vertex.glsl"));
+		addFragmentShader(ResourceLoader.loadShader("shaders/basic/rgba/Fragment.glsl"));
 		compileShader();
 			
 		addUniform("modelViewProjectionMatrix");
@@ -33,15 +33,11 @@ public class RGBA extends Shader{
 		addUniform("clipplane");
 	}
 		
-	public void sendUniforms(Matrix4f worldMatrix, Matrix4f projectionMatrix, Matrix4f modelViewProjectionMatrix)
+	public void updateUniforms(GameObject object)
 	{
-		setUniform("modelViewProjectionMatrix", modelViewProjectionMatrix);
-		setUniform("worldMatrix", worldMatrix);
+		setUniform("modelViewProjectionMatrix", object.getTransform().getModelViewProjectionMatrix());
+		setUniform("worldMatrix", object.getTransform().getWorldMatrix());
 		setUniform("clipplane", RenderingEngine.getClipplane());
-	}
-		
-	public void sendUniforms(Material material)
-	{
-		setUniform("color", material.getColor());
+		setUniform("color", ((Material) object.getComponent("Material")).getColor());
 	}
 }

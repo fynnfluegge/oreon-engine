@@ -20,7 +20,7 @@ import static org.lwjgl.opengl.GL11.glDrawArrays;
 import engine.math.Vec2f;
 import engine.math.Vec3f;
 
-public class PatchVAO {
+public class PatchVAO implements VAO{
 
 	private int vbo;
 	private int vaoId;
@@ -87,5 +87,6 @@ public class PatchVAO {
 			glDeleteBuffers(vbo);
 			glDeleteVertexArrays(vaoId);
 	}
+
 }
 

@@ -1,101 +1,96 @@
 package engine.main;
 
-import java.util.ArrayList;
+import static org.lwjgl.opengl.GL11.glFinish;
 
 import modules.gui.GUI;
 import modules.gui.elements.FullScreenTexturePanel;
 import modules.lighting.DirectionalLight;
-import modules.lighting.PointLight;
+import modules.shadowmapping.ShadowMaps;
 import modules.vfx.MotionBlur;
-import simulations.templates.Simulation;
-import engine.configs.RenderingConfig;
+import engine.configs.RenderConfig;
 import engine.core.Camera;
 import engine.core.Constants;
 import engine.core.Input;
-import engine.core.OpenGLWindow;
 import engine.math.Quaternion;
+import engine.scenegraph.Scenegraph;
 
 public class RenderingEngine {
 
-	private Simulation simulation;
-	private GUI gui;
+	private OpenGLDisplay display;
 	private FullScreenTexturePanel screenTexture;
-	private static ArrayList<PointLight> lights = new ArrayList<PointLight>();
-	private static DirectionalLight directionalLight;
+	
 	private static Quaternion clipplane;
 	private static boolean grid;
 	
-	protected MotionBlur motionBlur;
+	private Scenegraph scenegraph;
+	private static ShadowMaps shadowMaps;
+	private GUI gui;
+	private MotionBlur motionBlur;
 	
-	public RenderingEngine(Simulation simulation, GUI gui)
+	public RenderingEngine(Scenegraph scenegraph, GUI gui)
 	{
-		this.simulation = simulation;
+		display = OpenGLDisplay.getInstance();
+		this.scenegraph = scenegraph;
 		this.gui = gui;
-		screenTexture = new FullScreenTexturePanel();
-		motionBlur = new MotionBlur();
 	}
 	
 	public void init()
 	{
-		screenTexture.init();
+		display.init();
+		scenegraph.init();
 		gui.init();
-		simulation.init();
-		motionBlur.init();
+		
+		shadowMaps = new ShadowMaps();
+		screenTexture = new FullScreenTexturePanel();
+		motionBlur = new MotionBlur();
 	}
 	
 	public void render()
 	{		
 		setClipplane(Constants.PLANE0);
-		RenderingConfig.clearScreen();
-		simulation.render();
+		RenderConfig.clearScreen();
+
+		// render shadow maps
+		shadowMaps.bind();
+		RenderConfig.clearScreen();
+		scenegraph.renderShadows();
+		shadowMaps.unbind();
+		
+		// render scene/deferred maps
+		OpenGLDisplay.getInstance().getFBO().bind();
+		RenderConfig.clearScreen();
+		scenegraph.render();	
+		glFinish();
+		OpenGLDisplay.getInstance().getFBO().unbind();
+		
 		gui.render();
-			
+		
 		if (motionBlur.isEnabled()){
-			motionBlur.render(simulation.getSceneDepthmap(), simulation.getSceneTexture());
+			motionBlur.render(display.getSceneDepthmap(), display.getSceneTexture());
 			screenTexture.setTexture(motionBlur.getMotionBlurTexture());
 		}
 		else 
-			screenTexture.setTexture(simulation.getSceneTexture());	
+			screenTexture.setTexture(display.getSceneTexture());	
 
 		screenTexture.render();
 		
-		OpenGLWindow.render();
+		display.getLwjglWindow().render();
 	}
 	
 	public void update()
 	{
 		Input.update();
-		Camera.getInstance().input();
+		scenegraph.input();
+		Camera.getInstance().update();
 		gui.update();
-		simulation.update();
-		if (motionBlur.isEnabled())
-			motionBlur.update();
+		scenegraph.update();
+		DirectionalLight.getInstance().update();
+		motionBlur.update();
 	}
 	
 	public void shutdown()
 	{
-		simulation.shutdown();
-	}
-	
-	public static void addLight(PointLight light)
-	{
-		RenderingEngine.lights.add(light);
-	}
-
-	public static DirectionalLight getDirectionalLight() {
-		return directionalLight;
-	}
-
-	public static void setDirectionalLight(DirectionalLight directionalLight) {
-		RenderingEngine.directionalLight = directionalLight;
-	}
-
-	public static ArrayList<PointLight> getLights() {
-		return lights;
-	}
-
-	public static void setLights(ArrayList<PointLight> lights) {
-		RenderingEngine.lights = lights;
+		scenegraph.shutdown();
 	}
 
 	public static Quaternion getClipplane() {
@@ -112,5 +107,21 @@ public class RenderingEngine {
 
 	public static void setGrid(boolean grid) {
 		RenderingEngine.grid = grid;
+	}
+
+	public Scenegraph getScengraph() {
+		return scenegraph;
+	}
+
+	public void setScengraph(Scenegraph scengraph) {
+		this.scenegraph = scengraph;
+	}
+	
+	public static ShadowMaps getShadowMaps() {
+		return shadowMaps;
+	}
+
+	public static void setShadowMaps(ShadowMaps shadowMaps) {
+		RenderingEngine.shadowMaps = shadowMaps;
 	}
 }

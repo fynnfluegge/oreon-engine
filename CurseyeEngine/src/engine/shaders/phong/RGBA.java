@@ -1,9 +1,9 @@
 package engine.shaders.phong;
 
+import modules.lighting.DirectionalLight;
 import engine.core.Camera;
 import engine.core.ResourceLoader;
-import engine.main.RenderingEngine;
-import engine.math.Matrix4f;
+import engine.scenegraph.GameObject;
 import engine.scenegraph.components.Material;
 import engine.shaders.Shader;
 
@@ -24,8 +24,8 @@ public class RGBA extends Shader{
 	{
 		super();
 
-		addVertexShader(ResourceLoader.loadShader("phong/rgba/Vertex.glsl"));
-		addFragmentShader(ResourceLoader.loadShader("phong/rgba/Fragment.glsl"));
+		addVertexShader(ResourceLoader.loadShader("shaders/phong/rgba/Vertex.glsl"));
+		addFragmentShader(ResourceLoader.loadShader("shaders/phong/rgba/Fragment.glsl"));
 		compileShader();
 		
 		addUniform("modelViewProjectionMatrix");
@@ -40,22 +40,18 @@ public class RGBA extends Shader{
 		addUniform("material.shininess");
 	}
 	
-	public void sendUniforms(Matrix4f worldMatrix, Matrix4f projectionMatrix, Matrix4f modelViewProjectionMatrix)
+	public void updateUniforms(GameObject object)
 	{
-		setUniform("modelViewProjectionMatrix", modelViewProjectionMatrix);
-		setUniform("worldMatrix", worldMatrix);
+		setUniform("modelViewProjectionMatrix", object.getTransform().getModelViewProjectionMatrix());
+		setUniform("worldMatrix", object.getTransform().getWorldMatrix());
 		setUniform("eyePosition", Camera.getInstance().getPosition());
-		setUniform("directionalLight.ambient", RenderingEngine.getDirectionalLight().getAmbient());
-		setUniformf("directionalLight.intensity", RenderingEngine.getDirectionalLight().getIntensity());
-		setUniform("directionalLight.color", RenderingEngine.getDirectionalLight().getColor());
-		setUniform("directionalLight.direction", RenderingEngine.getDirectionalLight().getDirection());
-	}
-	
-	public void sendUniforms(Material material)
-	{
+		setUniform("directionalLight.ambient", DirectionalLight.getInstance().getAmbient());
+		setUniformf("directionalLight.intensity", DirectionalLight.getInstance().getIntensity());
+		setUniform("directionalLight.color", DirectionalLight.getInstance().getColor());
+		setUniform("directionalLight.direction", DirectionalLight.getInstance().getDirection());
+		Material material = (Material) object.getComponent("Material");
 		setUniform("material.color", material.getColor());
 		setUniformf("material.emission", material.getEmission());
 		setUniformf("material.shininess", material.getShininess());
 	}
-
 }

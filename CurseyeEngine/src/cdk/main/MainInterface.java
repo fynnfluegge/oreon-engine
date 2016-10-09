@@ -35,7 +35,7 @@ public class MainInterface extends JFrame{
 	        TerrainEditorTool = new javax.swing.JMenuItem();
 
 	        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-	        setPreferredSize(new java.awt.Dimension(900, 700));
+	        setPreferredSize(new java.awt.Dimension(1280, 720));
 
 	        jPanel1.setBackground(new java.awt.Color(30, 30, 30));
 	        jPanel1.setForeground(new java.awt.Color(255, 255, 255));
@@ -59,37 +59,43 @@ public class MainInterface extends JFrame{
 	        jPanel1.setLayout(jPanel1Layout);
 	        jPanel1Layout.setHorizontalGroup(
 	            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-	            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-	                .addGap(39, 39, 39)
-	                .addComponent(OpenGLCanvas, javax.swing.GroupLayout.PREFERRED_SIZE, 500, javax.swing.GroupLayout.PREFERRED_SIZE)
-	                .addGap(39, 39, 39)
-	                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+	            .addGroup(jPanel1Layout.createSequentialGroup()
+	                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 	                    .addGroup(jPanel1Layout.createSequentialGroup()
-	                        .addComponent(dataVolumetxt)
-	                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-	                        .addComponent(dataVolumeValue, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-	                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-	                        .addComponent(mbtxt))
-	                    .addComponent(tessellationFunctionPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
-	                    .addComponent(LoDChartPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE))
-	                .addGap(42, 42, 42))
+	                        .addGap(128, 128, 128)
+	                        .addComponent(LoDChartPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE)
+	                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+	                            .addGroup(jPanel1Layout.createSequentialGroup()
+	                                .addGap(164, 164, 164)
+	                                .addComponent(tessellationFunctionPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 410, javax.swing.GroupLayout.PREFERRED_SIZE))
+	                            .addGroup(jPanel1Layout.createSequentialGroup()
+	                                .addGap(272, 272, 272)
+	                                .addComponent(dataVolumetxt)
+	                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+	                                .addComponent(dataVolumeValue, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
+	                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+	                                .addComponent(mbtxt))))
+	                    .addGroup(jPanel1Layout.createSequentialGroup()
+	                        .addGap(38, 38, 38)
+	                        .addComponent(OpenGLCanvas, javax.swing.GroupLayout.PREFERRED_SIZE, 1200, javax.swing.GroupLayout.PREFERRED_SIZE)))
+	                .addContainerGap(42, Short.MAX_VALUE))
 	        );
 	        jPanel1Layout.setVerticalGroup(
 	            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 	            .addGroup(jPanel1Layout.createSequentialGroup()
 	                .addGap(41, 41, 41)
-	                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-	                    .addComponent(OpenGLCanvas, javax.swing.GroupLayout.PREFERRED_SIZE, 520, javax.swing.GroupLayout.PREFERRED_SIZE)
+	                .addComponent(OpenGLCanvas, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE)
+	                .addGap(28, 28, 28)
+	                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 	                    .addGroup(jPanel1Layout.createSequentialGroup()
-	                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-	                            .addComponent(dataVolumeValue, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-	                            .addComponent(dataVolumetxt, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-	                            .addComponent(mbtxt, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-	                        .addGap(40, 40, 40)
-	                        .addComponent(LoDChartPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
-	                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-	                        .addComponent(tessellationFunctionPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)))
-	                .addContainerGap(90, Short.MAX_VALUE))
+	                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+	                            .addComponent(dataVolumetxt)
+	                            .addComponent(dataVolumeValue, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
+	                            .addComponent(mbtxt))
+	                        .addGap(33, 33, 33)
+	                        .addComponent(tessellationFunctionPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+	                    .addComponent(LoDChartPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+	                .addGap(32, 32, 32))
 	        );
 
 	        FileMenu.setText("File");
@@ -120,14 +126,12 @@ public class MainInterface extends JFrame{
 	        );
 	        layout.setVerticalGroup(
 	            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-	            .addGroup(layout.createSequentialGroup()
-	                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-	                .addGap(0, 49, Short.MAX_VALUE))
+	            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 	        );
 
 	        pack();
 	        
-	        this.setLocation(200, 300);
+	        this.setLocation(100, 50);
 	        
 	        terrainEditor = new TerrainEditorInterface();
 	        
@@ -142,7 +146,7 @@ public class MainInterface extends JFrame{
 	        
 	    	terrainEditor.update(LoDChartPanel, tessellationFunctionPanel, dataVolumeValue);
 	    	
-	    	terrainEditor.setLocation(1100, 200);
+	    	terrainEditor.setLocation(1000, 50);
 	    	terrainEditor.setVisible(true);
 	    }                                                 
 

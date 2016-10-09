@@ -4,9 +4,10 @@ import modules.gui.GUI;
 import modules.gui.GUIs.VoidGUI;
 import modules.water.fft.Tilde_hkt;
 import engine.main.CoreEngine;
-import simulations.templates.BasicSimulation;
+import engine.main.OpenGLDisplay;
+import engine.main.Simulation;
 
-public class Tilde_hkt_Map extends BasicSimulation{
+public class Tilde_hkt_Map extends Simulation{
 
 	private Tilde_hkt fourierComponents;
 	private float t;
@@ -15,10 +16,11 @@ public class Tilde_hkt_Map extends BasicSimulation{
 	
 public static void main(String[] args) {
 		
-		BasicSimulation simulation = new Tilde_hkt_Map();
+		Simulation simulation = new Tilde_hkt_Map();
 		GUI fps = new VoidGUI();
-		CoreEngine coreEngine = new CoreEngine(512, 512, "~h(k,t)", simulation, fps);
+		CoreEngine coreEngine = new CoreEngine(512, 512, "~h(k,t)");
 		coreEngine.createWindow();
+		coreEngine.init(simulation, fps);
 		coreEngine.start();
 	}
 
@@ -33,6 +35,6 @@ public static void main(String[] args) {
 	{
 		t += 0.005;
 		fourierComponents.update(t);
-		setSceneTexture(fourierComponents.getDyComponents());
+		OpenGLDisplay.getInstance().setSceneTexture(fourierComponents.getDyComponents());
 	}
 }

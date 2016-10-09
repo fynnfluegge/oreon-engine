@@ -5,42 +5,40 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 import modules.gui.GUIElement;
 import modules.gui.GUIVAO;
 import engine.configs.AlphaCullFaceDisable;
-import engine.core.Geometrics;
-import engine.core.Texture;
 import engine.core.Transform;
-import engine.core.OpenGLWindow;
+import engine.geometrics.Geometrics;
+import engine.main.OpenGLDisplay;
 import engine.math.Matrix4f;
 import engine.shaders.gui.GuiShader;
+import engine.textures.Texture;
 
 public class FullScreenTexturePanel extends GUIElement{
 	
 	private Texture texture;
 	
-	public FullScreenTexturePanel(){	
-	}
-	
-	public void init(){
+	public FullScreenTexturePanel(){
 		
 		texture = new Texture();
 		setShader(GuiShader.getInstance());
 		setConfig(new AlphaCullFaceDisable(0.0f));
-		setOrthographicMatrix(new Matrix4f().Orthographic());
+		setOrthographicMatrix(new Matrix4f().Orthographic2D());
 		setOrthoTransform(new Transform());
 		getOrthoTransform().setTranslation(0, 0, 0);
-		getOrthoTransform().setScaling(OpenGLWindow.getWidth(), OpenGLWindow.getHeight(), 0);
+		getOrthoTransform().setScaling(OpenGLDisplay.getInstance().getLwjglWindow().getWidth(), OpenGLDisplay.getInstance().getLwjglWindow().getHeight(), 0);
 		setOrthographicMatrix(getOrthographicMatrix().mul(getOrthoTransform().getWorldMatrix()));
 		setVao(new GUIVAO());
-		getVao().addData(Geometrics.Quad());
+		getVao().addData(Geometrics.Quad2D());
 	}
+	
 	
 	public void render()
 	{
 		getConfig().enable();
-		getShader().execute();
-		getShader().sendUniforms(getOrthographicMatrix());
+		getShader().bind();
+		getShader().updateUniforms(getOrthographicMatrix());
 		glActiveTexture(GL_TEXTURE0);
 		texture.bind();
-		getShader().sendUniforms(0);
+		getShader().updateUniforms(0);
 		getVao().draw();
 		getConfig().disable();
 	}	
@@ -51,5 +49,10 @@ public class FullScreenTexturePanel extends GUIElement{
 
 	public void setTexture(Texture texture) {
 		this.texture = texture;
-	}	
+	}
+
+
+	@Override
+	public void init() {	
+	}
 }

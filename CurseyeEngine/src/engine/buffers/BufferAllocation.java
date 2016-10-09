@@ -3,12 +3,15 @@ package engine.buffers;
 import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+
 import org.lwjgl.BufferUtils;
-import engine.core.Vertex;
+
+import engine.geometrics.Particle;
+import engine.geometrics.Vertex;
 import engine.math.Matrix4f;
+import engine.math.Quaternion;
 import engine.math.Vec2f;
 import engine.math.Vec3f;
-import engine.modeling.Particle;
 
 public class BufferAllocation {
 
@@ -150,6 +153,50 @@ public class BufferAllocation {
 		return buffer;
 	}
 	
+	public static FloatBuffer createFlippedBuffer(Quaternion[] vector)
+	{
+		FloatBuffer buffer = createFloatBuffer(vector.length * Float.BYTES * 4);
+		
+		for (int i = 0; i < vector.length; i++)
+		{
+			buffer.put(vector[i].getX());
+			buffer.put(vector[i].getY());
+			buffer.put(vector[i].getZ());
+			buffer.put(vector[i].getW());
+		}
+		
+		buffer.flip();
+		
+		return buffer;
+	}
+	
+	public static FloatBuffer createFlippedBuffer(Vec3f vector)
+	{
+		FloatBuffer buffer = createFloatBuffer(Float.BYTES * 3);
+		
+		buffer.put(vector.getX());
+		buffer.put(vector.getY());
+		buffer.put(vector.getZ());
+		
+		buffer.flip();
+		
+		return buffer;
+	}
+	
+	public static FloatBuffer createFlippedBuffer(Quaternion vector)
+	{
+		FloatBuffer buffer = createFloatBuffer(Float.BYTES * 4);
+		
+		buffer.put(vector.getX());
+		buffer.put(vector.getY());
+		buffer.put(vector.getZ());
+		buffer.put(vector.getW());
+		
+		buffer.flip();
+		
+		return buffer;
+	}
+	
 	public static FloatBuffer createFlippedBuffer(Vec2f[] vector)
 	{
 		FloatBuffer buffer = createFloatBuffer(vector.length * Float.BYTES * 2);
@@ -165,18 +212,32 @@ public class BufferAllocation {
 		return buffer;
 	}
 	
-	public static FloatBuffer createFlippedBuffer(Matrix4f value)
+	public static FloatBuffer createFlippedBuffer(Matrix4f matrix)
 	{
 		FloatBuffer buffer = createFloatBuffer(4 * 4);
 		
 		for (int i = 0; i < 4; i++)
 			for (int j = 0; j < 4; j++)
-				buffer.put(value.get(i, j));
+				buffer.put(matrix.get(i, j));
 		
 		buffer.flip();
 		
 		return buffer;
 	}
-
+	
+	public static FloatBuffer createFlippedBuffer(Matrix4f[] matrices)
+	{
+		FloatBuffer buffer = createFloatBuffer(4 * 4 * matrices.length);
+		
+		for (Matrix4f matrix : matrices){
+			for (int i = 0; i < 4; i++)
+				for (int j = 0; j < 4; j++)
+					buffer.put(matrix.get(i, j));
+		}
+		
+		buffer.flip();
+		
+		return buffer;
+	}
 
 }

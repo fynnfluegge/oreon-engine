@@ -1,7 +1,7 @@
 package engine.configs;
 
 
-public class Default implements RenderingConfig{
+public class Default implements RenderConfig{
 
 	@Override
 	public void enable() {

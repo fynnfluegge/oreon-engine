@@ -7,9 +7,9 @@ import static org.lwjgl.opengl.GL11.glFinish;
 import static org.lwjgl.opengl.GL15.GL_READ_WRITE;
 import static org.lwjgl.opengl.GL42.glBindImageTexture;
 import static org.lwjgl.opengl.GL43.glDispatchCompute;
-import engine.core.Texture;
-import engine.gpcgpu.fastFourierTransform.FourierComponents;
+import modules.fastFourierTransform.FourierComponents;
 import engine.shaders.water.Tilde_hktShader;
+import engine.textures.Texture;
 
 public class Tilde_hkt extends FourierComponents{
 	
@@ -45,8 +45,8 @@ public class Tilde_hkt extends FourierComponents{
 	@Override
 	public void update(float t) {
 		
-		getShader().execute();
-		getShader().sendUniforms(L,getN(),t);
+		getShader().bind();
+		getShader().updateUniforms(L,getN(),t);
 		glBindImageTexture(0, dyComponents.getId(), 0, false, 0, GL_READ_WRITE, GL_RGBA32F);
 		glBindImageTexture(1, dxComponents.getId(), 0, false, 0, GL_READ_WRITE, GL_RGBA32F);
 		glBindImageTexture(2, dzComponents.getId(), 0, false, 0, GL_READ_WRITE, GL_RGBA32F);

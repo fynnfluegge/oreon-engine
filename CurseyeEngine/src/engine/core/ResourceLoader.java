@@ -45,7 +45,7 @@ public class ResourceLoader {
 		
 		try
 		{
-			shaderReader = new BufferedReader(new FileReader("./res/shaders/" + fileName));
+			shaderReader = new BufferedReader(new FileReader("./res/" + fileName));
 			String line;
 			while((line = shaderReader.readLine()) != null)
 			{

@@ -1,6 +1,6 @@
 package modules.gui;
 
-import engine.configs.RenderingConfig;
+import engine.configs.RenderConfig;
 import engine.core.Transform;
 import engine.math.Matrix4f;
 import engine.math.Vec2f;
@@ -12,7 +12,7 @@ public abstract class GUIElement {
 	private Matrix4f orthographicMatrix;
 	private Shader shader;
 	private GUIVAO vao;
-	private RenderingConfig config;
+	private RenderConfig config;
 	protected Vec2f[] texCoords;
 	
 	public abstract void init();
@@ -61,11 +61,11 @@ public abstract class GUIElement {
 		this.texCoords = texCoords;
 	}
 
-	public RenderingConfig getConfig() {
+	public RenderConfig getConfig() {
 		return config;
 	}
 
-	public void setConfig(RenderingConfig config) {
+	public void setConfig(RenderConfig config) {
 		this.config = config;
 	}
 }

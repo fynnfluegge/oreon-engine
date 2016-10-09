@@ -2,12 +2,14 @@ package engine.core;
 
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
+
+import engine.geometrics.Mesh;
+import engine.geometrics.Vertex;
+import engine.geometrics.obj.Face;
+import engine.geometrics.obj.SmoothingGroup;
 import engine.math.Quaternion;
 import engine.math.Vec2f;
 import engine.math.Vec3f;
-import engine.modeling.Mesh;
-import engine.modeling.obj.Face;
-import engine.modeling.obj.SmoothingGroup;
 
 public class Util {
 	
@@ -242,21 +244,6 @@ public class Util {
 		    	mesh.getVertices()[mesh.getIndices()[i+2]].getBitangent().add(bitangent);
 		    }
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	public static Quaternion normalizePlane(Quaternion plane)
 	{

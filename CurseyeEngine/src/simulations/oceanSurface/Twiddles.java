@@ -1,22 +1,24 @@
 package simulations.oceanSurface;
 
+import modules.fastFourierTransform.TwiddleFactors;
 import modules.gui.GUI;
 import modules.gui.GUIs.VoidGUI;
-import engine.gpcgpu.fastFourierTransform.TwiddleFactors;
 import engine.main.CoreEngine;
-import simulations.templates.BasicSimulation;
+import engine.main.OpenGLDisplay;
+import engine.main.Simulation;
 
-public class Twiddles extends BasicSimulation{
+public class Twiddles extends Simulation{
 	
 	private TwiddleFactors twiddles;
 	private int N = 256;
 	
 	public static void main(String[] args) {
 
-		BasicSimulation simulation = new Twiddles();
+		Simulation simulation = new Twiddles();
 		GUI fps = new VoidGUI();
-		CoreEngine coreEngine = new CoreEngine(512, 512, "phillips spectrum", simulation, fps);
+		CoreEngine coreEngine = new CoreEngine(512, 512, "phillips spectrum");
 		coreEngine.createWindow();
+		coreEngine.init(simulation, fps);
 		coreEngine.start();
 	}
 	
@@ -29,7 +31,7 @@ public class Twiddles extends BasicSimulation{
 	
 	public void render()
 	{
-		setSceneTexture(twiddles.getTexture());
+		OpenGLDisplay.getInstance().setSceneTexture(twiddles.getTexture());
 	}
 
 }

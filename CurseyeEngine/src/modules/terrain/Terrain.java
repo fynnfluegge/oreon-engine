@@ -1,20 +1,21 @@
 package modules.terrain;
 
-import engine.scenegraph.GameObject;
+import engine.scenegraph.Node;
 import engine.shaders.Shader;
 
 
-public class Terrain extends GameObject{
+public class Terrain extends Node{
 	
 	private TerrainConfiguration terrainConfiguration;
 	private static final Object lock = new Object();
 		
-	public Terrain(String file, Shader grid, Shader tessellation)
+	public Terrain(String file, Shader shader, Shader grid, Shader shadow)
 	{
 		terrainConfiguration = new TerrainConfiguration();
 		terrainConfiguration.loadFile(file);
 		terrainConfiguration.setGridShader(grid);
-		terrainConfiguration.setTessellationShader(tessellation);
+		terrainConfiguration.setShader(shader);
+		terrainConfiguration.setShadowShader(shadow);
 		addChild(new TerrainQuadtree(terrainConfiguration));
 	}
 	

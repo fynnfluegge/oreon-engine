@@ -1,7 +1,7 @@
 package engine.scenegraph.components;
 
-import engine.core.Texture;
 import engine.math.Vec3f;
+import engine.textures.Texture;
 
 
 public class Material extends Component{

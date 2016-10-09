@@ -3,10 +3,10 @@ package engine.shaders.motionblur;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 import engine.core.ResourceLoader;
-import engine.core.Texture;
-import engine.core.OpenGLWindow;
+import engine.main.OpenGLDisplay;
 import engine.math.Matrix4f;
 import engine.shaders.Shader;
+import engine.textures.Texture;
 
 public class PixelVelocityShader extends Shader{
 	
@@ -25,7 +25,7 @@ public class PixelVelocityShader extends Shader{
 	{
 		super();
 		
-		addComputeShader(ResourceLoader.loadShader("gpgpu/Motion Blur/PixelVelocity.glsl"));
+		addComputeShader(ResourceLoader.loadShader("shaders/computing/motionBlur/PixelVelocity.glsl"));
 		
 		compileShader();
 		
@@ -42,8 +42,8 @@ public class PixelVelocityShader extends Shader{
 		glActiveTexture(GL_TEXTURE0);
 		depthmap.bind();
 		setUniformi("depthmap", 0);
-		setUniformf("windowWidth", OpenGLWindow.getWidth());
-		setUniformf("windowHeight", OpenGLWindow.getHeight());
+		setUniformf("windowWidth", OpenGLDisplay.getInstance().getLwjglWindow().getWidth());
+		setUniformf("windowHeight", OpenGLDisplay.getInstance().getLwjglWindow().getHeight());
 		setUniform("projectionMatrix", projectionMatrix);
 		setUniform("inverseViewProjectionMatrix", inverseViewProjectionMatrix);
 		setUniform("previousViewProjectionMatrix", previousViewProjectionMatrix);

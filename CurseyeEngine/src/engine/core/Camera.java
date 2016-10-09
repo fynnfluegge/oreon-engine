@@ -1,10 +1,15 @@
 package engine.core;
 
+import java.nio.FloatBuffer;
+
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 
+import engine.buffers.BufferAllocation;
+import engine.buffers.UBO;
 import engine.main.CoreEngine;
+import engine.main.OpenGLDisplay;
 import engine.math.Matrix4f;
 import engine.math.Quaternion;
 import engine.math.Vec2f;
@@ -26,6 +31,10 @@ public class Camera {
 	private Matrix4f previousViewMatrix;
 	private Matrix4f previousViewProjectionMatrix;
 	
+	private UBO ubo;
+	private FloatBuffer floatBuffer;
+	private final int bufferSize = Float.BYTES * (4+16+(6*4));
+	
 	private float zNear;
 	private float zFar;
 	private float width;
@@ -33,7 +42,6 @@ public class Camera {
 	private float fovY;
 	
 	private boolean mouselocked;
-	private Quaternion[] frustumPlanes = new Quaternion[6];
 	private Vec2f lockedMousePosition;
 	private Vec2f currentMousePosition;
 	private float rotYstride;
@@ -45,6 +53,10 @@ public class Camera {
 	private float rotXcounter;
 	private boolean rotXInitiated = false;
 	private float mouseSensitivity = 0.2f;
+	
+	private Quaternion[] frustumPlanes = new Quaternion[6];
+	private Vec3f[] frustumCorners = new Vec3f[8];
+	
 	   
 	public static Camera getInstance() 
 	{
@@ -57,14 +69,19 @@ public class Camera {
 	
 	protected Camera()
 	{
-		this(new Vec3f(0,1000,2000), new Vec3f(0,0,-1), new Vec3f(0,1,0));
-		this.setProjection(54, OpenGLWindow.getWidth(), OpenGLWindow.getHeight(), Constants.ZNEAR, Constants.ZFAR);
-		this.projectionMatrix = new Matrix4f().Projection(fovY, width, height, zNear, zFar);
+		this(new Vec3f(0,100,0), new Vec3f(0,0,1), new Vec3f(0,1,0));
+		this.setProjection(70, OpenGLDisplay.getInstance().getLwjglWindow().getWidth(), OpenGLDisplay.getInstance().getLwjglWindow().getHeight(), Constants.ZNEAR, Constants.ZFAR);
+		this.projectionMatrix = new Matrix4f().PerspectiveProjection(fovY, width, height, zNear, zFar);
 		this.setViewMatrix(new Matrix4f().View(this.getForward(), this.getUp()).mul(
 				new Matrix4f().Translation(this.getPosition().mul(-1))));
 		this.initfrustumPlanes();
 		this.viewProjectionMatrix = new Matrix4f().Zero();
 		this.previousViewProjectionMatrix = new Matrix4f().Zero();
+		this.ubo = new UBO();
+		ubo.setBinding_point_index(Constants.CameraUniformBlockBinding);
+		ubo.bindBufferBase();
+		ubo.allocate(bufferSize);
+		floatBuffer = BufferAllocation.createFloatBuffer(bufferSize);
 	}
 	
 	private Camera(Vec3f position, Vec3f forward, Vec3f up)
@@ -77,9 +94,9 @@ public class Camera {
 		forward.normalize();
 	}
 	
-	public void input()
+	public void update()
 	{
-		this.setScaleFactor(Math.max(10, scaleFactor + Mouse.getDWheel()/12));
+		this.setScaleFactor(Math.max(1, scaleFactor + Mouse.getDWheel()/10));
 		
 		float movAmt = scaleFactor *  CoreEngine.getFrameTime();
 		float rotAmt = scaleFactor * CoreEngine.getFrameTime(); 
@@ -189,16 +206,22 @@ public class Camera {
 				new Matrix4f().Translation(this.getPosition().mul(-1))));
 		setViewProjectionMatrix(projectionMatrix.mul(viewMatrix));
 		
-//		System.out.println(position);
-//		System.out.println(previousPosition);
-//		System.out.println(forward);
-//		System.out.println(up);
+		updateUBO();
 	}
 	
 	public void move(Vec3f dir, float amount)
 	{
 		Vec3f newPos = position.add(dir.mul(amount));	
 		setPosition(newPos);
+	}
+	
+	private void updateUBO(){
+		floatBuffer.clear();
+		floatBuffer.put(BufferAllocation.createFlippedBuffer(this.position));
+		floatBuffer.put(0);
+		floatBuffer.put(BufferAllocation.createFlippedBuffer(viewProjectionMatrix));
+		floatBuffer.put(BufferAllocation.createFlippedBuffer(frustumPlanes));
+		ubo.updateData(floatBuffer, bufferSize);
 	}
 	
 	private void initfrustumPlanes()
@@ -353,11 +376,18 @@ public class Camera {
 		return frustumPlanes;
 	}
 	
-	public float getZFar()
-	{
-		return this.zFar;
+	public float getFovY(){
+		return this.fovY;
+	}
+	
+	public float getWidth(){
+		return this.width;
 	}
 
+	public float getHeight(){
+		return this.height;
+	}
+	
 	public void setViewProjectionMatrix(Matrix4f viewProjectionMatrix) {
 		this.viewProjectionMatrix = viewProjectionMatrix;
 	}
@@ -381,5 +411,9 @@ public class Camera {
 
 	public void setPreviousViewMatrix(Matrix4f previousViewMatrix) {
 		this.previousViewMatrix = previousViewMatrix;
+	}
+
+	public Vec3f[] getFrustumCorners() {
+		return frustumCorners;
 	}
 }

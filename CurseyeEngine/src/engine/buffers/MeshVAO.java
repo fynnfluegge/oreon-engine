@@ -15,10 +15,10 @@ import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import static org.lwjgl.opengl.GL30.glGenVertexArrays;
-import engine.core.Vertex;
-import engine.modeling.Mesh;
+import engine.geometrics.Mesh;
+import engine.geometrics.Vertex;
 
-public class MeshVAO {
+public class MeshVAO implements VAO{
 
 	private int vbo;
 	private int ibo;
@@ -77,5 +77,10 @@ public class MeshVAO {
 			glDisableVertexAttribArray(2);
 			
 			glBindVertexArray(0);
+	}
+
+	@Override
+	public void delete() {
+		
 	}
 }

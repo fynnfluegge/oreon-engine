@@ -7,10 +7,10 @@ import static org.lwjgl.opengl.GL30.GL_RGBA32F;
 import static org.lwjgl.opengl.GL42.glBindImageTexture;
 import static org.lwjgl.opengl.GL42.glTexStorage2D;
 import static org.lwjgl.opengl.GL43.glDispatchCompute;
-import engine.core.Texture;
-import engine.gpcgpu.fastFourierTransform.FourierComponents;
+import modules.fastFourierTransform.FourierComponents;
 import engine.math.Vec2f;
 import engine.shaders.terrain.fractals.FractalFourierComponentsShader;
+import engine.textures.Texture;
 
 public class FractalFourierComponents extends FourierComponents{
 
@@ -33,8 +33,8 @@ public class FractalFourierComponents extends FourierComponents{
 	@Override
 	public void update(float t) {
 		
-		getShader().execute();
-		getShader().sendUniforms(L,N,t);
+		getShader().bind();
+		getShader().updateUniforms(L,N,t);
 		glBindImageTexture(0, fourierComponents.getId(), 0, false, 0, GL_READ_WRITE, GL_RGBA32F);
 		glBindImageTexture(3, ((FractalSpectrum)getSpectrum()).geth0k().getId(), 0, false, 0, GL_READ_WRITE, GL_RGBA32F);
 		glBindImageTexture(4,  ((FractalSpectrum)getSpectrum()).geth0kminus().getId(), 0, false, 0, GL_READ_WRITE, GL_RGBA32F);

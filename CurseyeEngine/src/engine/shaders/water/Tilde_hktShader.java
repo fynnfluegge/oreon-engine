@@ -20,14 +20,14 @@ public class Tilde_hktShader extends Shader{
 	{
 		super();
 		
-		addComputeShader(ResourceLoader.loadShader("ocean/fft/~h(k,t).glsl"));
+		addComputeShader(ResourceLoader.loadShader("shaders/ocean/fft/~h(k,t).glsl"));
 		compileShader();
 		
 		addUniform("L");
 		addUniform("t");
 	}
 	
-	public void sendUniforms(int L, int N, float t)
+	public void updateUniforms(int L, int N, float t)
 	{
 		setUniformi("L", L);
 		setUniformf("t", t);

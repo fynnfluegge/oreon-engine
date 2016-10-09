@@ -17,10 +17,10 @@ import org.lwjgl.input.Keyboard;
 
 import engine.core.Camera;
 import engine.core.Input;
-import engine.core.Texture;
-import engine.core.OpenGLWindow;
+import engine.main.OpenGLDisplay;
 import engine.shaders.motionblur.MotionBlurShader;
 import engine.shaders.motionblur.PixelVelocityShader;
+import engine.textures.Texture;
 
 public class MotionBlur {
 	
@@ -31,22 +31,18 @@ public class MotionBlur {
 	private boolean enabled = false;
 	
 	public MotionBlur() {
-	}
-	
-	public void init(){
-		
 		pixelVelocityMap = new Texture();
 		pixelVelocityMap.generate();
 		pixelVelocityMap.bind();
 		pixelVelocityMap.noFilter();
-		glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA32F, OpenGLWindow.getWidth(), OpenGLWindow.getHeight());
+		glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA32F, OpenGLDisplay.getInstance().getLwjglWindow().getWidth(), OpenGLDisplay.getInstance().getLwjglWindow().getHeight());
 		
 		motionBlurTexture = new Texture();
 		motionBlurTexture.generate();
 		motionBlurTexture.bind();
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA32F, OpenGLWindow.getWidth(), OpenGLWindow.getHeight());
+		glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA32F, OpenGLDisplay.getInstance().getLwjglWindow().getWidth(), OpenGLDisplay.getInstance().getLwjglWindow().getHeight());
 		
 		pixelVelocityShader = PixelVelocityShader.getInstance();
 		motionBlurShader = MotionBlurShader.getInstance();
@@ -54,20 +50,20 @@ public class MotionBlur {
 	
 	public void render(Texture depthmap, Texture sceneSampler) {
 		
-		pixelVelocityShader.execute();
+		pixelVelocityShader.bind();
 		glBindImageTexture(0, pixelVelocityMap.getId(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA32F);
 		pixelVelocityShader.sendUniforms(Camera.getInstance().getProjectionMatrix(), Camera.getInstance().getViewProjectionMatrix().invert(), Camera.getInstance().getPreviousViewProjectionMatrix(), depthmap);
-		glDispatchCompute(OpenGLWindow.getWidth()/8, OpenGLWindow.getHeight()/8, 1);	
+		glDispatchCompute(OpenGLDisplay.getInstance().getLwjglWindow().getWidth()/8, OpenGLDisplay.getInstance().getLwjglWindow().getHeight()/8, 1);	
 		glFinish();
 		
 		motionBlurTexture.bind();
 		
-		motionBlurShader.execute();
+		motionBlurShader.bind();
 		glBindImageTexture(0, motionBlurTexture.getId(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA32F);
 		glBindImageTexture(1, sceneSampler.getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA32F);
 		glBindImageTexture(2, pixelVelocityMap.getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA32F);
-		motionBlurShader.sendUniforms(OpenGLWindow.getWidth(), OpenGLWindow.getHeight());
-		glDispatchCompute(OpenGLWindow.getWidth()/8, OpenGLWindow.getHeight()/8, 1);	
+		motionBlurShader.updateUniforms(OpenGLDisplay.getInstance().getLwjglWindow().getWidth(), OpenGLDisplay.getInstance().getLwjglWindow().getHeight());
+		glDispatchCompute(OpenGLDisplay.getInstance().getLwjglWindow().getWidth()/8, OpenGLDisplay.getInstance().getLwjglWindow().getHeight()/8, 1);	
 		glFinish();
 	}
 	

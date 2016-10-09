@@ -5,9 +5,9 @@ import java.io.FileReader;
 import java.util.ArrayList;
 
 import engine.core.Util;
-import engine.core.Vertex;
+import engine.geometrics.Mesh;
+import engine.geometrics.Vertex;
 import engine.math.Vec3f;
-import engine.modeling.Mesh;
 
 public class GUIObjectLoader {
 

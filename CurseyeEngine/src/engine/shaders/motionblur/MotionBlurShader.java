@@ -20,7 +20,7 @@ public class MotionBlurShader extends Shader{
 	{
 		super();
 		
-		addComputeShader(ResourceLoader.loadShader("gpgpu/Motion Blur/MotionBlur.glsl"));
+		addComputeShader(ResourceLoader.loadShader("shaders/computing/motionBlur/MotionBlur.glsl"));
 		
 		compileShader();
 		
@@ -28,7 +28,7 @@ public class MotionBlurShader extends Shader{
 		addUniform("windowHeight");
 	}
 	
-	public void sendUniforms(int width, int height)
+	public void updateUniforms(int width, int height)
 	{		
 		setUniformf("windowWidth", width);
 		setUniformf("windowHeight", height);

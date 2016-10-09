@@ -10,11 +10,11 @@ import static org.lwjgl.opengl.GL43.glDispatchCompute;
 
 import java.util.Random;
 
-import engine.core.Texture;
-import engine.gpcgpu.fastFourierTransform.FastFourierTransform;
+import modules.fastFourierTransform.FastFourierTransform;
 import engine.math.Vec2f;
-import engine.shaders.gpcgpu.fft.ButterflyShader;
-import engine.shaders.gpcgpu.fft.InversionShader;
+import engine.shaders.computing.FFTButterflyShader;
+import engine.shaders.computing.FFTInversionShader;
+import engine.textures.Texture;
 
 public class FractalFFT extends FastFourierTransform{
 
@@ -26,8 +26,8 @@ public class FractalFFT extends FastFourierTransform{
 		t = new Random().nextInt(1000);
 		FractalFourierComponents components = new FractalFourierComponents(N, L, A, v, w, l);
 		setFourierComponents(components);
-		setButterflyShader(ButterflyShader.getInstance());
-		setInversionShader(InversionShader.getInstance());
+		setButterflyShader(FFTButterflyShader.getInstance());
+		setInversionShader(FFTInversionShader.getInstance());
 		
 		heightmap = new Texture();
 		heightmap.generate();
@@ -48,7 +48,7 @@ public class FractalFFT extends FastFourierTransform{
 		
 		pingpong = 0;
 		
-		getButterflyShader().execute();
+		getButterflyShader().bind();
 		
 		glBindImageTexture(0, getTwiddles().getTexture().getId(), 0, false, 0, GL_READ_WRITE, GL_RGBA32F);
 		glBindImageTexture(1, ((FractalFourierComponents) getFourierComponents()).getFourierComponents().getId(), 0, false, 0, GL_READ_WRITE, GL_RGBA32F);
@@ -57,7 +57,7 @@ public class FractalFFT extends FastFourierTransform{
 		// 1D FFT horizontal 
 		for (int i=0; i<log_2_N; i++)
 		{	
-			getButterflyShader().sendUniforms(pingpong, 0, i);
+			getButterflyShader().updateUniforms(pingpong, 0, i);
 			glDispatchCompute(N/16,N/16,1);	
 			glFinish();
 			pingpong++;
@@ -67,15 +67,15 @@ public class FractalFFT extends FastFourierTransform{
 		 //1D FFT vertical 
 		for (int j=0; j<log_2_N; j++)
 		{
-			getButterflyShader().sendUniforms(pingpong, 1, j);
+			getButterflyShader().updateUniforms(pingpong, 1, j);
 			glDispatchCompute(N/16,N/16,1);
 			glFinish();
 			pingpong++;
 			pingpong %= 2;
 		}
 		
-		getInversionShader().execute();
-		getInversionShader().sendUniforms(N,pingpong);
+		getInversionShader().bind();
+		getInversionShader().updateUniforms(N,pingpong);
 		glBindImageTexture(0, heightmap.getId(), 0, false, 0, GL_READ_WRITE, GL_RGBA32F);
 		glDispatchCompute(N/16,N/16,1);
 		glFinish();

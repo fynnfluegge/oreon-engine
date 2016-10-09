@@ -27,7 +27,7 @@ import static org.lwjgl.opengl.GL40.glGenTransformFeedbacks;
 import static org.lwjgl.opengl.GL40.glDeleteTransformFeedbacks;
 import static org.lwjgl.opengl.GL30.glDeleteVertexArrays;
 import static org.lwjgl.opengl.GL15.glDeleteBuffers;
-import engine.modeling.Particle;
+import engine.geometrics.Particle;
 
 public class ParticleSystemVAO {
 

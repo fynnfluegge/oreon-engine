@@ -2,7 +2,8 @@ package engine.shaders.basic;
 
 import engine.core.ResourceLoader;
 import engine.main.RenderingEngine;
-import engine.math.Matrix4f;
+import engine.scenegraph.GameObject;
+import engine.scenegraph.components.Material;
 import engine.shaders.Shader;
 
 public class Grid extends Shader{
@@ -22,20 +23,22 @@ public class Grid extends Shader{
 	{
 		super();
 
-		addVertexShader(ResourceLoader.loadShader("basic/grid/Vertex.glsl"));
-		addGeometryShader(ResourceLoader.loadShader("basic/grid/Geometry.glsl"));
-		addFragmentShader(ResourceLoader.loadShader("basic/grid/Fragment.glsl"));
+		addVertexShader(ResourceLoader.loadShader("shaders/basic/grid/Vertex.glsl"));
+		addGeometryShader(ResourceLoader.loadShader("shaders/basic/grid/Geometry.glsl"));
+		addFragmentShader(ResourceLoader.loadShader("shaders/basic/grid/Fragment.glsl"));
 		compileShader();
 			
 		addUniform("modelViewProjectionMatrix");
 		addUniform("worldMatrix");
 		addUniform("clipplane");
+		addUniform("color");
 	}
 		
-	public void sendUniforms(Matrix4f worldMatrix, Matrix4f projectionMatrix, Matrix4f modelViewProjectionMatrix)
+	public void updateUniforms(GameObject object)
 	{
-		setUniform("modelViewProjectionMatrix", modelViewProjectionMatrix);
-		setUniform("worldMatrix", worldMatrix);
+		setUniform("modelViewProjectionMatrix", object.getTransform().getModelViewProjectionMatrix());
+		setUniform("worldMatrix", object.getTransform().getWorldMatrix());
 		setUniform("clipplane", RenderingEngine.getClipplane());
+		setUniform("color", ((Material) object.getComponent("Material")).getColor());
 	}
 }

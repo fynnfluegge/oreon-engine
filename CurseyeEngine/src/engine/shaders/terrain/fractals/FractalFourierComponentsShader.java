@@ -20,7 +20,7 @@ private static FractalFourierComponentsShader instance = null;
 	{
 		super();
 		
-		addComputeShader(ResourceLoader.loadShader("terrain/FractalTerrain/fractals/FractalFourierComponents.glsl"));
+		addComputeShader(ResourceLoader.loadShader("shaders/terrain/fractals/FractalFourierComponents.glsl"));
 		compileShader();
 		
 		addUniform("L");
@@ -28,7 +28,7 @@ private static FractalFourierComponentsShader instance = null;
 		addUniform("t");
 	}
 	
-	public void sendUniforms(int L, int N, float t)
+	public void updateUniforms(int L, int N, float t)
 	{
 		setUniformi("L", L);
 		setUniformi("N", N);

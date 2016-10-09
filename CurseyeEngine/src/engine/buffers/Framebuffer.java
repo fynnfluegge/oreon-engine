@@ -4,12 +4,12 @@ import static org.lwjgl.opengl.GL30.GL_RGBA32F;
 import static org.lwjgl.opengl.GL30.GL_DEPTH_COMPONENT32F;
 import static org.lwjgl.opengl.GL30.GL_RENDERBUFFER;
 import static org.lwjgl.opengl.GL30.glBindRenderbuffer;
+import static org.lwjgl.opengl.GL30.glGenRenderbuffers;
 import static org.lwjgl.opengl.GL30.glFramebufferTexture2D;
 import static org.lwjgl.opengl.GL32.glFramebufferTexture;
 import static org.lwjgl.opengl.GL30.glGenFramebuffers;
 import static org.lwjgl.opengl.GL30.glBindFramebuffer;
 import static org.lwjgl.opengl.GL30.GL_FRAMEBUFFER;
-import static org.lwjgl.opengl.GL30.glGenRenderbuffers;
 import static org.lwjgl.opengl.GL30.glRenderbufferStorage;
 import static org.lwjgl.opengl.GL30.glFramebufferRenderbuffer;
 import static org.lwjgl.opengl.GL30.GL_DRAW_FRAMEBUFFER;
@@ -24,8 +24,6 @@ import static org.lwjgl.opengl.GL11.glDrawBuffer;
 public class Framebuffer {
 	
 	private int id;
-	private int colorbuffer;
-	private int depthbuffer;
 	
 	public Framebuffer(){
 		
@@ -47,9 +45,8 @@ public class Framebuffer {
 		glDrawBuffer(GL_COLOR_ATTACHMENT0 + i);
 	}
 	
-	public void colorBufferAttachment(int x, int y, int i)
+	public void colorBufferAttachment(int colorbuffer, int x, int y, int i)
 	{
-		colorbuffer = glGenRenderbuffers();
 		glBindRenderbuffer(GL_RENDERBUFFER, colorbuffer);
 		glRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA32F, x, y);
 		glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_RENDERBUFFER, colorbuffer);
@@ -61,9 +58,8 @@ public class Framebuffer {
 		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, texture, 0);
 	}
 	
-	public void depthbufferAttachment(int x, int y)
+	public void depthbufferAttachment(int depthbuffer, int x, int y)
 	{
-		depthbuffer = glGenRenderbuffers();
 		glBindRenderbuffer(GL_RENDERBUFFER, depthbuffer);
 		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT32F, x, y);
 		glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthbuffer);
@@ -82,25 +78,14 @@ public class Framebuffer {
 			System.exit(1);
 		}
 	}
+
+	public int genRenderbuffer(){
+		
+		return glGenRenderbuffers();
+	}
 	
 	public int getId()
 	{
 		return id;
-	}
-
-	public int getColorbuffer() {
-		return colorbuffer;
-	}
-
-	public void setColorbuffer(int colorbuffer) {
-		this.colorbuffer = colorbuffer;
-	}
-
-	public int getDepthbuffer() {
-		return depthbuffer;
-	}
-
-	public void setDepthbuffer(int depthbuffer) {
-		this.depthbuffer = depthbuffer;
 	}
 }

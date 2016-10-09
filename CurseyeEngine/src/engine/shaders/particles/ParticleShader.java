@@ -42,7 +42,7 @@ public class ParticleShader extends Shader {
 	    compileShader();
 	}
 	
-	public void sendUniforms(int clear)
+	public void updateUniforms(int clear)
 	{
 		setUniformi("clear", clear);
 	}

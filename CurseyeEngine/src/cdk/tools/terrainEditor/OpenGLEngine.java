@@ -2,15 +2,14 @@ package cdk.tools.terrainEditor;
 
 import java.awt.Canvas;
 
+import cdk.terrain.Terrain;
 import modules.gui.GUI;
 import modules.gui.GUIs.EngineGUI;
-import modules.lighting.DirectionalLight;
+import modules.sky.SkySphere;
 import engine.main.CoreEngine;
-import engine.main.RenderingEngine;
-import engine.math.Vec3f;
-import simulations.templates.TerrainSimulation;
+import engine.main.Simulation;
 
-public class OpenGLEngine extends TerrainSimulation implements Runnable{
+public class OpenGLEngine extends Simulation implements Runnable{
 	
 	Canvas OpenGLCanvas;
 	
@@ -21,16 +20,17 @@ public class OpenGLEngine extends TerrainSimulation implements Runnable{
 	public void init()
 	{	
 		super.init();
-		setTerrain(new Terrain());
-		RenderingEngine.setDirectionalLight(new DirectionalLight(new Vec3f(-4,-2,-1).normalize(), new Vec3f(0.04f,0.04f,0.04f), new Vec3f(1.0f, 0.95f, 0.87f), 1.5f));
+		scenegraph.setTerrain(new Terrain());
+		scenegraph.addObject(new SkySphere());		
 	}
 
 	@Override
 	public void run() {
 		
 		GUI gui = new EngineGUI();
-		CoreEngine coreEngine = new CoreEngine(500, 550, "TerrainLoader", this, gui);
+		CoreEngine coreEngine = new CoreEngine(1200, 350, "TerrainLoader");
 		coreEngine.embedWindow(OpenGLCanvas);
+		coreEngine.init(this, gui);
 		coreEngine.start();
 	}
 }

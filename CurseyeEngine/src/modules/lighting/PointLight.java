@@ -1,6 +1,5 @@
 package modules.lighting;
 
-import engine.main.RenderingEngine;
 import engine.math.Vec3f;
 
 public class PointLight extends Light{
@@ -15,16 +14,9 @@ public class PointLight extends Light{
 	private float SpotCosCutoff;
 	private float SpotExponent;
 	
-	public PointLight(Vec3f position, Vec3f ambient, Vec3f color, float intensity) {
-		super(ambient, color, intensity);
+	public PointLight(Vec3f position, Vec3f color, float intensity) {
+		super(color, intensity);
 		this.position = position;
-		getLocalTransform().setTranslation(new Vec3f(position.getX(), position.getY(), position.getZ()));
-		RenderingEngine.addLight(this);
-	}
-	
-	public void update()
-	{
-		setPosition(getLocalTransform().getTranslation().add(getTransform().getTranslation()));
 	}
 
 	public Vec3f getPosition() {

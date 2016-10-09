@@ -4,13 +4,13 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 import engine.configs.AlphaBlending;
 import engine.core.Input;
-import engine.core.Texture;
 import engine.core.Transform;
+import engine.geometrics.Mesh;
 import engine.math.Matrix4f;
 import engine.math.Quaternion;
 import engine.math.Vec2f;
-import engine.modeling.Mesh;
 import engine.shaders.gui.GuiShader;
+import engine.textures.Texture;
 
 public abstract class Button extends GUIElement{
 
@@ -32,7 +32,7 @@ public abstract class Button extends GUIElement{
 		Mesh buttonMesh = GUIObjectLoader.load("button.gui");
 		getVao().addData(buttonMesh);
 		getVao().update(texCoords);
-		setOrthographicMatrix(new Matrix4f().Orthographic());
+		setOrthographicMatrix(new Matrix4f().Orthographic2D());
 		setOrthographicMatrix(getOrthographicMatrix().mul(getOrthoTransform().getWorldMatrix()));
 		Quaternion q0 = new Quaternion(0,0,0,0);
 		Quaternion q1 = new Quaternion(0,0,0,0);
@@ -51,14 +51,14 @@ public abstract class Button extends GUIElement{
 	public void render()
 	{
 		getConfig().enable();
-		getShader().execute();
-		getShader().sendUniforms(getOrthographicMatrix());
+		getShader().bind();
+		getShader().updateUniforms(getOrthographicMatrix());
 		glActiveTexture(GL_TEXTURE1);
 		if (onClick)
 			buttonClickMap.bind();
 		else
 			buttonMap.bind();
-		getShader().sendUniforms(1);
+		getShader().updateUniforms(1);
 		getVao().draw();
 		getConfig().disable();
 	}
