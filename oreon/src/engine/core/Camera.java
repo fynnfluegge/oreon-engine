@@ -56,8 +56,7 @@ public class Camera {
 	
 	private Quaternion[] frustumPlanes = new Quaternion[6];
 	private Vec3f[] frustumCorners = new Vec3f[8];
-	
-	   
+	  
 	public static Camera getInstance() 
 	{
 	    if(instance == null) 
