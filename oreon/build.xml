@@ -1,4 +1,4 @@
-<project name="CurseyeEngine" default="dist">
+<project name="Oreon Engine" default="dist">
   <property name="MyApp" value="MyApp" />
   <path id="compile.classpath">
     <fileset dir="lib" />
