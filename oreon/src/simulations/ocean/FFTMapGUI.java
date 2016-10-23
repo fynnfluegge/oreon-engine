@@ -1,4 +1,4 @@
-package simulations.oceanSurface.oceanSimulation;
+package simulations.ocean;
 
 import modules.gui.GUI;
 import modules.gui.GUIElement;

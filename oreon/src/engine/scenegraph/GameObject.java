@@ -30,7 +30,6 @@ public class GameObject extends Node{
 		for (String key : components.keySet()) {
 			components.get(key).update();
 		}
-		
 		super.update();
 	}
 	

@@ -1,6 +1,6 @@
 package modules.terrain;
 
-import cdk.tools.terrainEditor.TerrainEditorInterface;
+import editor.tools.terrainEditor.TerrainEditorInterface;
 import engine.math.Vec2f;
 import engine.scenegraph.Node;
 

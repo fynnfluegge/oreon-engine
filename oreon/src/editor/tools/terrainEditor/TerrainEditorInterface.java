@@ -1,4 +1,4 @@
-package cdk.tools.terrainEditor;
+package editor.tools.terrainEditor;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -18,7 +18,7 @@ import org.jfree.data.xy.XYBarDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
-import cdk.database.DataBase;
+import editor.db.DB;
 
 
 public class TerrainEditorInterface extends JFrame{
@@ -893,194 +893,194 @@ public class TerrainEditorInterface extends JFrame{
     }// </editor-fold>                        
 
     private void TessellationFactor_Slider1StateChanged(javax.swing.event.ChangeEvent evt) {     
-        DataBase.getTerrainConfiguration().setTessellationFactor(this.TessellationFactor_Slider1.getValue());
+        DB.getTerrainConfiguration().setTessellationFactor(this.TessellationFactor_Slider1.getValue());
         this.TessellationFactor_Value1.setText(String.valueOf(this.TessellationFactor_Slider1.getValue()));
         
         plotTessellationFunction();
     }                                                       
 
     private void TessellationSlope_Slider1StateChanged(javax.swing.event.ChangeEvent evt) {                                                       
-        DataBase.getTerrainConfiguration().setTessellationSlope(this.TessellationSlope_Slider1.getValue()/100f);
+        DB.getTerrainConfiguration().setTessellationSlope(this.TessellationSlope_Slider1.getValue()/100f);
         this.TessellationSlope_Value1.setText(String.valueOf(this.TessellationSlope_Slider1.getValue()/100f));
         
         plotTessellationFunction();
     }                                                      
 
     private void TessellationShift_Slider1StateChanged(javax.swing.event.ChangeEvent evt) {    
-    	 DataBase.getTerrainConfiguration().setTessellationShift(this.TessellationShift_Slider1.getValue()/1000f);
+    	 DB.getTerrainConfiguration().setTessellationShift(this.TessellationShift_Slider1.getValue()/1000f);
         this.TessellationShift_Value1.setText(String.valueOf(this.TessellationShift_Slider1.getValue()/1000f));
         
         plotTessellationFunction();
     }                                                      
 
     private void DetailRange_Slider1StateChanged(javax.swing.event.ChangeEvent evt) {   
-    	DataBase.getTerrainConfiguration().setDetailRange(this.DetailRange_Slider1.getValue());
+    	DB.getTerrainConfiguration().setDetailRange(this.DetailRange_Slider1.getValue());
         this.DetailRange_Value1.setText(Integer.toString(this.DetailRange_Slider1.getValue()));
     }                                                
 
     private void LoD1Range_Slider1StateChanged(javax.swing.event.ChangeEvent evt) {   
-    	DataBase.getTerrainConfiguration().setLod1_range(this.LoD1Range_Slider1.getValue());
+    	DB.getTerrainConfiguration().setLod1_range(this.LoD1Range_Slider1.getValue());
         this.LoD1Range_Value1.setText(Integer.toString(this.LoD1Range_Slider1.getValue()));
         
         if (init){
         	
-        	if (this.LoD1Range_Slider1.getValue() > 2*(DataBase.getTerrainConfiguration().getLod_range()[0] - DataBase.getTerrainConfiguration().getLod_morphing_area()[0])){
+        	if (this.LoD1Range_Slider1.getValue() > 2*(DB.getTerrainConfiguration().getLod_range()[0] - DB.getTerrainConfiguration().getLod_morphing_area()[0])){
         		this.LoD2Range_Slider1.setMaximum(this.LoD1Range_Slider1.getValue() - 
-        				2 * (this.LoD1Range_Slider1.getValue() - DataBase.getTerrainConfiguration().getLod_morphing_area()[0]));
+        				2 * (this.LoD1Range_Slider1.getValue() - DB.getTerrainConfiguration().getLod_morphing_area()[0]));
         	}
         }
         
-        LoDPtachesSeriesData.update(1.0, DataBase.getTerrainConfiguration().getLodPatches()[0]);
-        TerrainEditorInterface.megabytes.setText(Float.toString(DataBase.getTerrainConfiguration().getMegabytes()));
+        LoDPtachesSeriesData.update(1.0, DB.getTerrainConfiguration().getLodPatches()[0]);
+        TerrainEditorInterface.megabytes.setText(Float.toString(DB.getTerrainConfiguration().getMegabytes()));
     }                                              
 
     private void LoD2Range_Slider1StateChanged(javax.swing.event.ChangeEvent evt) {  
-    	DataBase.getTerrainConfiguration().setLod2_range(this.LoD2Range_Slider1.getValue());
+    	DB.getTerrainConfiguration().setLod2_range(this.LoD2Range_Slider1.getValue());
         this.LoD2Range_Value1.setText(Integer.toString(this.LoD2Range_Slider1.getValue()));
         
         if (init){
         	if(this.LoD2Range_Slider1.getValue() > 0){
         		this.LoD1Range_Slider1.setMinimum(this.LoD2Range_Slider1.getValue() + 
-        				2 * (DataBase.getTerrainConfiguration().getLod_range()[0] - DataBase.getTerrainConfiguration().getLod_morphing_area()[0]));
+        				2 * (DB.getTerrainConfiguration().getLod_range()[0] - DB.getTerrainConfiguration().getLod_morphing_area()[0]));
         	}
         	if(this.LoD2Range_Slider1.getValue() == 0)
         		this.LoD1Range_Slider1.setMinimum(0);
         	
-        	if (this.LoD2Range_Slider1.getValue() > 2*(DataBase.getTerrainConfiguration().getLod_range()[1] - DataBase.getTerrainConfiguration().getLod_morphing_area()[1])){
+        	if (this.LoD2Range_Slider1.getValue() > 2*(DB.getTerrainConfiguration().getLod_range()[1] - DB.getTerrainConfiguration().getLod_morphing_area()[1])){
         		this.LoD3Range_Slider1.setMaximum(this.LoD2Range_Slider1.getValue() - 
-        				2 * (this.LoD2Range_Slider1.getValue() - DataBase.getTerrainConfiguration().getLod_morphing_area()[1]));
+        				2 * (this.LoD2Range_Slider1.getValue() - DB.getTerrainConfiguration().getLod_morphing_area()[1]));
         	}
         	
-        	LoDPtachesSeriesData.update(2.0, DataBase.getTerrainConfiguration().getLodPatches()[1]);
-        	TerrainEditorInterface.megabytes.setText(Float.toString(DataBase.getTerrainConfiguration().getMegabytes()));
+        	LoDPtachesSeriesData.update(2.0, DB.getTerrainConfiguration().getLodPatches()[1]);
+        	TerrainEditorInterface.megabytes.setText(Float.toString(DB.getTerrainConfiguration().getMegabytes()));
         }    
     }                                              
 
     private void LoD3Range_Slider1StateChanged(javax.swing.event.ChangeEvent evt) {   
-    	DataBase.getTerrainConfiguration().setLod3_range(this.LoD3Range_Slider1.getValue());
+    	DB.getTerrainConfiguration().setLod3_range(this.LoD3Range_Slider1.getValue());
     	this.LoD3Range_Value1.setText(Integer.toString(this.LoD3Range_Slider1.getValue()));
     	
     	if (init){
     		if (this.LoD3Range_Slider1.getValue() > 0){
     			this.LoD2Range_Slider1.setMinimum(this.LoD3Range_Slider1.getValue() + 
-    					2 * (DataBase.getTerrainConfiguration().getLod_range()[1] - DataBase.getTerrainConfiguration().getLod_morphing_area()[1]));
+    					2 * (DB.getTerrainConfiguration().getLod_range()[1] - DB.getTerrainConfiguration().getLod_morphing_area()[1]));
     		}
     		if(this.LoD3Range_Slider1.getValue() == 0)
         		this.LoD2Range_Slider1.setMinimum(0);
     		
-    		if (this.LoD3Range_Slider1.getValue() > 2*(DataBase.getTerrainConfiguration().getLod_range()[2] - DataBase.getTerrainConfiguration().getLod_morphing_area()[2])){
+    		if (this.LoD3Range_Slider1.getValue() > 2*(DB.getTerrainConfiguration().getLod_range()[2] - DB.getTerrainConfiguration().getLod_morphing_area()[2])){
     			this.LoD4Range_Slider1.setMaximum(this.LoD3Range_Slider1.getValue() - 
-    					2 * (this.LoD3Range_Slider1.getValue() - DataBase.getTerrainConfiguration().getLod_morphing_area()[2]));
+    					2 * (this.LoD3Range_Slider1.getValue() - DB.getTerrainConfiguration().getLod_morphing_area()[2]));
     		}
     		
-    		LoDPtachesSeriesData.update(3.0, DataBase.getTerrainConfiguration().getLodPatches()[2]);
-    		TerrainEditorInterface.megabytes.setText(Float.toString(DataBase.getTerrainConfiguration().getMegabytes()));
+    		LoDPtachesSeriesData.update(3.0, DB.getTerrainConfiguration().getLodPatches()[2]);
+    		TerrainEditorInterface.megabytes.setText(Float.toString(DB.getTerrainConfiguration().getMegabytes()));
         }    
     }                                              
 
     private void LoD4Range_Slider1StateChanged(javax.swing.event.ChangeEvent evt) {    
-    	DataBase.getTerrainConfiguration().setLod4_range(this.LoD4Range_Slider1.getValue());
+    	DB.getTerrainConfiguration().setLod4_range(this.LoD4Range_Slider1.getValue());
     	this.LoD4Range_Value1.setText(Integer.toString(this.LoD4Range_Slider1.getValue()));
     	
     	if (init){
     		if (this.LoD4Range_Slider1.getValue() > 0){
     			this.LoD3Range_Slider1.setMinimum(this.LoD4Range_Slider1.getValue() + 
-    					2 * (DataBase.getTerrainConfiguration().getLod_range()[2] - DataBase.getTerrainConfiguration().getLod_morphing_area()[2]));
+    					2 * (DB.getTerrainConfiguration().getLod_range()[2] - DB.getTerrainConfiguration().getLod_morphing_area()[2]));
     		}
     		if(this.LoD4Range_Slider1.getValue() == 0)
         		this.LoD3Range_Slider1.setMinimum(0);
     		
-    		if (this.LoD4Range_Slider1.getValue() > 2*(DataBase.getTerrainConfiguration().getLod_range()[3] - DataBase.getTerrainConfiguration().getLod_morphing_area()[3])){
+    		if (this.LoD4Range_Slider1.getValue() > 2*(DB.getTerrainConfiguration().getLod_range()[3] - DB.getTerrainConfiguration().getLod_morphing_area()[3])){
     			this.LoD5Range_Slider1.setMaximum(this.LoD4Range_Slider1.getValue() - 
-    					2 * (this.LoD4Range_Slider1.getValue() - DataBase.getTerrainConfiguration().getLod_morphing_area()[3]));
+    					2 * (this.LoD4Range_Slider1.getValue() - DB.getTerrainConfiguration().getLod_morphing_area()[3]));
     		}
     		
-    		LoDPtachesSeriesData.update(4.0, DataBase.getTerrainConfiguration().getLodPatches()[3]);
-    		TerrainEditorInterface.megabytes.setText(Float.toString(DataBase.getTerrainConfiguration().getMegabytes()));
+    		LoDPtachesSeriesData.update(4.0, DB.getTerrainConfiguration().getLodPatches()[3]);
+    		TerrainEditorInterface.megabytes.setText(Float.toString(DB.getTerrainConfiguration().getMegabytes()));
         }    
     }                                              
 
     private void LoD5Range_Slider1StateChanged(javax.swing.event.ChangeEvent evt) {   
-    	DataBase.getTerrainConfiguration().setLod5_range(this.LoD5Range_Slider1.getValue());
+    	DB.getTerrainConfiguration().setLod5_range(this.LoD5Range_Slider1.getValue());
     	this.LoD5Range_Value1.setText(Integer.toString(this.LoD5Range_Slider1.getValue()));
     	
     	if (init){
-    		if (DataBase.getTerrainConfiguration().getLod_range()[4] > 0){
+    		if (DB.getTerrainConfiguration().getLod_range()[4] > 0){
     			this.LoD4Range_Slider1.setMinimum(this.LoD5Range_Slider1.getValue() + 
-        			2 * (DataBase.getTerrainConfiguration().getLod_range()[3] - DataBase.getTerrainConfiguration().getLod_morphing_area()[3]));
+        			2 * (DB.getTerrainConfiguration().getLod_range()[3] - DB.getTerrainConfiguration().getLod_morphing_area()[3]));
     		}
     		if(this.LoD5Range_Slider1.getValue() == 0)
         		this.LoD4Range_Slider1.setMinimum(0);
     		
-    		if (this.LoD5Range_Slider1.getValue() > 2*(DataBase.getTerrainConfiguration().getLod_range()[4] - DataBase.getTerrainConfiguration().getLod_morphing_area()[4])){
+    		if (this.LoD5Range_Slider1.getValue() > 2*(DB.getTerrainConfiguration().getLod_range()[4] - DB.getTerrainConfiguration().getLod_morphing_area()[4])){
         	this.LoD6Range_Slider1.setMaximum(this.LoD5Range_Slider1.getValue() - 
-    			2 * (this.LoD5Range_Slider1.getValue() - DataBase.getTerrainConfiguration().getLod_morphing_area()[4]));
+    			2 * (this.LoD5Range_Slider1.getValue() - DB.getTerrainConfiguration().getLod_morphing_area()[4]));
     		}
     		
-    		LoDPtachesSeriesData.update(5.0, DataBase.getTerrainConfiguration().getLodPatches()[4]);
-    		TerrainEditorInterface.megabytes.setText(Float.toString(DataBase.getTerrainConfiguration().getMegabytes()));
+    		LoDPtachesSeriesData.update(5.0, DB.getTerrainConfiguration().getLodPatches()[4]);
+    		TerrainEditorInterface.megabytes.setText(Float.toString(DB.getTerrainConfiguration().getMegabytes()));
         } 
     }                                              
 
     private void LoD6Range_Slider1StateChanged(javax.swing.event.ChangeEvent evt) {  
-    	DataBase.getTerrainConfiguration().setLod6_range(this.LoD6Range_Slider1.getValue());
+    	DB.getTerrainConfiguration().setLod6_range(this.LoD6Range_Slider1.getValue());
     	this.LoD6Range_Value1.setText(Integer.toString(this.LoD6Range_Slider1.getValue()));
     	
     	if (init){
-    		if (DataBase.getTerrainConfiguration().getLod_range()[5] > 0){
+    		if (DB.getTerrainConfiguration().getLod_range()[5] > 0){
     			this.LoD5Range_Slider1.setMinimum(this.LoD6Range_Slider1.getValue() + 
-        			2 * (DataBase.getTerrainConfiguration().getLod_range()[4] - DataBase.getTerrainConfiguration().getLod_morphing_area()[4]));
+        			2 * (DB.getTerrainConfiguration().getLod_range()[4] - DB.getTerrainConfiguration().getLod_morphing_area()[4]));
     		}
     		if(this.LoD6Range_Slider1.getValue() == 0)
         		this.LoD5Range_Slider1.setMinimum(0);
     		
-    		if (this.LoD6Range_Slider1.getValue() > 2*(DataBase.getTerrainConfiguration().getLod_range()[5] - DataBase.getTerrainConfiguration().getLod_morphing_area()[5])){
+    		if (this.LoD6Range_Slider1.getValue() > 2*(DB.getTerrainConfiguration().getLod_range()[5] - DB.getTerrainConfiguration().getLod_morphing_area()[5])){
         	this.LoD7Range_Slider1.setMaximum(this.LoD6Range_Slider1.getValue() - 
-    			2 * (this.LoD6Range_Slider1.getValue() - DataBase.getTerrainConfiguration().getLod_morphing_area()[5]));
+    			2 * (this.LoD6Range_Slider1.getValue() - DB.getTerrainConfiguration().getLod_morphing_area()[5]));
     		}
     		
-    		LoDPtachesSeriesData.update(6.0, DataBase.getTerrainConfiguration().getLodPatches()[5]);
-    		TerrainEditorInterface.megabytes.setText(Float.toString(DataBase.getTerrainConfiguration().getMegabytes()));
+    		LoDPtachesSeriesData.update(6.0, DB.getTerrainConfiguration().getLodPatches()[5]);
+    		TerrainEditorInterface.megabytes.setText(Float.toString(DB.getTerrainConfiguration().getMegabytes()));
         } 
     }                                              
 
     private void LoD7Range_Slider1StateChanged(javax.swing.event.ChangeEvent evt) { 
 
-    	DataBase.getTerrainConfiguration().setLod7_range(this.LoD7Range_Slider1.getValue());
+    	DB.getTerrainConfiguration().setLod7_range(this.LoD7Range_Slider1.getValue());
     	this.LoD7Range_Value1.setText(Integer.toString(this.LoD7Range_Slider1.getValue()));
     	
     	if (init){
-    		if (DataBase.getTerrainConfiguration().getLod_range()[6] > 0){
+    		if (DB.getTerrainConfiguration().getLod_range()[6] > 0){
     			this.LoD6Range_Slider1.setMinimum(this.LoD7Range_Slider1.getValue() + 
-        			2 * (DataBase.getTerrainConfiguration().getLod_range()[5] - DataBase.getTerrainConfiguration().getLod_morphing_area()[5]));
+        			2 * (DB.getTerrainConfiguration().getLod_range()[5] - DB.getTerrainConfiguration().getLod_morphing_area()[5]));
     		}
     		if(this.LoD7Range_Slider1.getValue() == 0)
         		this.LoD6Range_Slider1.setMinimum(0);
     		
-    		if (this.LoD7Range_Slider1.getValue() > 2*(DataBase.getTerrainConfiguration().getLod_range()[6] - DataBase.getTerrainConfiguration().getLod_morphing_area()[6])){
+    		if (this.LoD7Range_Slider1.getValue() > 2*(DB.getTerrainConfiguration().getLod_range()[6] - DB.getTerrainConfiguration().getLod_morphing_area()[6])){
         	this.LoD8Range_Slider1.setMaximum(this.LoD7Range_Slider1.getValue() - 
-    			2 * (this.LoD7Range_Slider1.getValue() - DataBase.getTerrainConfiguration().getLod_morphing_area()[6]));
+    			2 * (this.LoD7Range_Slider1.getValue() - DB.getTerrainConfiguration().getLod_morphing_area()[6]));
     		}
     		
-    		LoDPtachesSeriesData.update(7.0, DataBase.getTerrainConfiguration().getLodPatches()[6]);
-    		TerrainEditorInterface.megabytes.setText(Float.toString(DataBase.getTerrainConfiguration().getMegabytes()));
+    		LoDPtachesSeriesData.update(7.0, DB.getTerrainConfiguration().getLodPatches()[6]);
+    		TerrainEditorInterface.megabytes.setText(Float.toString(DB.getTerrainConfiguration().getMegabytes()));
     	}
     }                                              
 
     private void LoD8Range_Slider1StateChanged(javax.swing.event.ChangeEvent evt) {  
-    	DataBase.getTerrainConfiguration().setLod8_range(this.LoD8Range_Slider1.getValue());
+    	DB.getTerrainConfiguration().setLod8_range(this.LoD8Range_Slider1.getValue());
     	this.LoD8Range_Value1.setText(Integer.toString(this.LoD8Range_Slider1.getValue()));
     	
     	if (init){
-    		if (DataBase.getTerrainConfiguration().getLod_range()[7] > 0){
+    		if (DB.getTerrainConfiguration().getLod_range()[7] > 0){
     		this.LoD7Range_Slider1.setMinimum(this.LoD8Range_Slider1.getValue() + 
-        			2 * (DataBase.getTerrainConfiguration().getLod_range()[6] - DataBase.getTerrainConfiguration().getLod_morphing_area()[6]));
+        			2 * (DB.getTerrainConfiguration().getLod_range()[6] - DB.getTerrainConfiguration().getLod_morphing_area()[6]));
     		}
     		if(this.LoD8Range_Slider1.getValue() == 0)
         		this.LoD7Range_Slider1.setMinimum(0);
     		
-    		LoDPtachesSeriesData.update(8.0, DataBase.getTerrainConfiguration().getLodPatches()[7]);
-    		TerrainEditorInterface.megabytes.setText(Float.toString(DataBase.getTerrainConfiguration().getMegabytes()));
+    		LoDPtachesSeriesData.update(8.0, DB.getTerrainConfiguration().getLodPatches()[7]);
+    		TerrainEditorInterface.megabytes.setText(Float.toString(DB.getTerrainConfiguration().getMegabytes()));
     	}
     }                                              
 
@@ -1146,17 +1146,17 @@ public class TerrainEditorInterface extends JFrame{
     	this.tessellationFunctionPanel = tessellationFunctionPanel;
     	TerrainEditorInterface.megabytes =  dataVolumeValue;
     	
-    	TerrainEditorInterface.megabytes.setText(Float.toString(DataBase.getTerrainConfiguration().getMegabytes()));
+    	TerrainEditorInterface.megabytes.setText(Float.toString(DB.getTerrainConfiguration().getMegabytes()));
     	
     	LoDPtachesSeriesData = new XYSeries("LoD bars");
-    	LoDPtachesSeriesData.add(1.0, DataBase.getTerrainConfiguration().getLodPatches()[0]);
-		LoDPtachesSeriesData.add(2.0, DataBase.getTerrainConfiguration().getLodPatches()[1]);
-		LoDPtachesSeriesData.add(3.0, DataBase.getTerrainConfiguration().getLodPatches()[2]);
-		LoDPtachesSeriesData.add(4.0, DataBase.getTerrainConfiguration().getLodPatches()[3]);
-		LoDPtachesSeriesData.add(5.0, DataBase.getTerrainConfiguration().getLodPatches()[4]);
-		LoDPtachesSeriesData.add(6.0, DataBase.getTerrainConfiguration().getLodPatches()[5]);
-		LoDPtachesSeriesData.add(7.0, DataBase.getTerrainConfiguration().getLodPatches()[6]);
-		LoDPtachesSeriesData.add(8.0, DataBase.getTerrainConfiguration().getLodPatches()[7]);
+    	LoDPtachesSeriesData.add(1.0, DB.getTerrainConfiguration().getLodPatches()[0]);
+		LoDPtachesSeriesData.add(2.0, DB.getTerrainConfiguration().getLodPatches()[1]);
+		LoDPtachesSeriesData.add(3.0, DB.getTerrainConfiguration().getLodPatches()[2]);
+		LoDPtachesSeriesData.add(4.0, DB.getTerrainConfiguration().getLodPatches()[3]);
+		LoDPtachesSeriesData.add(5.0, DB.getTerrainConfiguration().getLodPatches()[4]);
+		LoDPtachesSeriesData.add(6.0, DB.getTerrainConfiguration().getLodPatches()[5]);
+		LoDPtachesSeriesData.add(7.0, DB.getTerrainConfiguration().getLodPatches()[6]);
+		LoDPtachesSeriesData.add(8.0, DB.getTerrainConfiguration().getLodPatches()[7]);
     	IntervalXYDataset dataset = new XYBarDataset(new XYSeriesCollection(
     			LoDPtachesSeriesData), 0.5);
 
@@ -1171,102 +1171,102 @@ public class TerrainEditorInterface extends JFrame{
 	    this.LoDChartPanel.validate();
 	    
     	
-    	this.TessellationFactor_Slider1.setValue(DataBase.getTerrainConfiguration().getTessellationFactor());
+    	this.TessellationFactor_Slider1.setValue(DB.getTerrainConfiguration().getTessellationFactor());
     	this.TessellationFactor_Value1.setText(Integer.toString(TessellationFactor_Slider1.getValue()));
     	
-    	this.TessellationShift_Slider1.setValue((int) (DataBase.getTerrainConfiguration().getTessellationShift()*1000f));
+    	this.TessellationShift_Slider1.setValue((int) (DB.getTerrainConfiguration().getTessellationShift()*1000f));
     	this.TessellationShift_Value1.setText(String.valueOf(this.TessellationShift_Slider1.getValue()/1000f));
     	
-    	this.TessellationSlope_Slider1.setValue((int) (DataBase.getTerrainConfiguration().getTessellationSlope()*100f)); 
+    	this.TessellationSlope_Slider1.setValue((int) (DB.getTerrainConfiguration().getTessellationSlope()*100f)); 
     	this.TessellationSlope_Value1.setText(String.valueOf(this.TessellationSlope_Slider1.getValue()/100f));
     	
-    	this.DetailRange_Slider1.setValue(DataBase.getTerrainConfiguration().getDetailRange());
+    	this.DetailRange_Slider1.setValue(DB.getTerrainConfiguration().getDetailRange());
     	this.DetailRange_Value1.setText(Integer.toString(DetailRange_Slider1.getValue()));
     	
-    	this.LoD1Range_Slider1.setValue(DataBase.getTerrainConfiguration().getLod_range()[0]);
+    	this.LoD1Range_Slider1.setValue(DB.getTerrainConfiguration().getLod_range()[0]);
     	this.LoD1Range_Value1.setText(Integer.toString(LoD1Range_Slider1.getValue()));
-    	if (DataBase.getTerrainConfiguration().getLod_range()[1] != 0){
-    		this.LoD1Range_Slider1.setMinimum(DataBase.getTerrainConfiguration().getLod_range()[1] + 
-    			2 * (DataBase.getTerrainConfiguration().getLod_range()[0] - DataBase.getTerrainConfiguration().getLod_morphing_area()[0]));
+    	if (DB.getTerrainConfiguration().getLod_range()[1] != 0){
+    		this.LoD1Range_Slider1.setMinimum(DB.getTerrainConfiguration().getLod_range()[1] + 
+    			2 * (DB.getTerrainConfiguration().getLod_range()[0] - DB.getTerrainConfiguration().getLod_morphing_area()[0]));
     	}
     	
-    	this.LoD2Range_Slider1.setValue(DataBase.getTerrainConfiguration().getLod_range()[1]);
+    	this.LoD2Range_Slider1.setValue(DB.getTerrainConfiguration().getLod_range()[1]);
     	this.LoD2Range_Value1.setText(Integer.toString(LoD2Range_Slider1.getValue()));
-    	if (DataBase.getTerrainConfiguration().getLod_range()[0] != 0){
-    		this.LoD2Range_Slider1.setMaximum(DataBase.getTerrainConfiguration().getLod_range()[0] - 
-    			2 * (DataBase.getTerrainConfiguration().getLod_range()[0] - DataBase.getTerrainConfiguration().getLod_morphing_area()[0]));
+    	if (DB.getTerrainConfiguration().getLod_range()[0] != 0){
+    		this.LoD2Range_Slider1.setMaximum(DB.getTerrainConfiguration().getLod_range()[0] - 
+    			2 * (DB.getTerrainConfiguration().getLod_range()[0] - DB.getTerrainConfiguration().getLod_morphing_area()[0]));
     	}
     	else this.LoD2Range_Slider1.setMaximum(0);
-    	if (DataBase.getTerrainConfiguration().getLod_range()[2] != 0){
-    		this.LoD2Range_Slider1.setMinimum(DataBase.getTerrainConfiguration().getLod_range()[2] + 
-    			2 * (DataBase.getTerrainConfiguration().getLod_range()[1] - DataBase.getTerrainConfiguration().getLod_morphing_area()[1]));
+    	if (DB.getTerrainConfiguration().getLod_range()[2] != 0){
+    		this.LoD2Range_Slider1.setMinimum(DB.getTerrainConfiguration().getLod_range()[2] + 
+    			2 * (DB.getTerrainConfiguration().getLod_range()[1] - DB.getTerrainConfiguration().getLod_morphing_area()[1]));
     	}
     	
-    	this.LoD3Range_Slider1.setValue(DataBase.getTerrainConfiguration().getLod_range()[2]);
+    	this.LoD3Range_Slider1.setValue(DB.getTerrainConfiguration().getLod_range()[2]);
     	this.LoD3Range_Value1.setText(Integer.toString(LoD3Range_Slider1.getValue()));
-    	if (DataBase.getTerrainConfiguration().getLod_range()[1] != 0){
-    		this.LoD3Range_Slider1.setMaximum(DataBase.getTerrainConfiguration().getLod_range()[1] - 
-    			2 * (DataBase.getTerrainConfiguration().getLod_range()[1] - DataBase.getTerrainConfiguration().getLod_morphing_area()[1]));
+    	if (DB.getTerrainConfiguration().getLod_range()[1] != 0){
+    		this.LoD3Range_Slider1.setMaximum(DB.getTerrainConfiguration().getLod_range()[1] - 
+    			2 * (DB.getTerrainConfiguration().getLod_range()[1] - DB.getTerrainConfiguration().getLod_morphing_area()[1]));
     	}
     	else this.LoD3Range_Slider1.setMaximum(0);
-    	if (DataBase.getTerrainConfiguration().getLod_range()[3] != 0){
-    		this.LoD3Range_Slider1.setMinimum(DataBase.getTerrainConfiguration().getLod_range()[3] + 
-    			2 * (DataBase.getTerrainConfiguration().getLod_range()[2] - DataBase.getTerrainConfiguration().getLod_morphing_area()[2]));
+    	if (DB.getTerrainConfiguration().getLod_range()[3] != 0){
+    		this.LoD3Range_Slider1.setMinimum(DB.getTerrainConfiguration().getLod_range()[3] + 
+    			2 * (DB.getTerrainConfiguration().getLod_range()[2] - DB.getTerrainConfiguration().getLod_morphing_area()[2]));
     	}
     	
-    	this.LoD4Range_Slider1.setValue(DataBase.getTerrainConfiguration().getLod_range()[3]);
+    	this.LoD4Range_Slider1.setValue(DB.getTerrainConfiguration().getLod_range()[3]);
     	this.LoD4Range_Value1.setText(Integer.toString(LoD4Range_Slider1.getValue()));
-    	if (DataBase.getTerrainConfiguration().getLod_range()[2] != 0){
-    		this.LoD4Range_Slider1.setMaximum(DataBase.getTerrainConfiguration().getLod_range()[2] - 
-    			2 * (DataBase.getTerrainConfiguration().getLod_range()[2] - DataBase.getTerrainConfiguration().getLod_morphing_area()[2]));
+    	if (DB.getTerrainConfiguration().getLod_range()[2] != 0){
+    		this.LoD4Range_Slider1.setMaximum(DB.getTerrainConfiguration().getLod_range()[2] - 
+    			2 * (DB.getTerrainConfiguration().getLod_range()[2] - DB.getTerrainConfiguration().getLod_morphing_area()[2]));
     	}
     	else this.LoD4Range_Slider1.setMaximum(0);
-    	if (DataBase.getTerrainConfiguration().getLod_range()[4] != 0){
-    		this.LoD4Range_Slider1.setMinimum(DataBase.getTerrainConfiguration().getLod_range()[4] + 
-    			2 * (DataBase.getTerrainConfiguration().getLod_range()[3] - DataBase.getTerrainConfiguration().getLod_morphing_area()[3]));
+    	if (DB.getTerrainConfiguration().getLod_range()[4] != 0){
+    		this.LoD4Range_Slider1.setMinimum(DB.getTerrainConfiguration().getLod_range()[4] + 
+    			2 * (DB.getTerrainConfiguration().getLod_range()[3] - DB.getTerrainConfiguration().getLod_morphing_area()[3]));
     	}
     	
-    	this.LoD5Range_Slider1.setValue(DataBase.getTerrainConfiguration().getLod_range()[4]);
+    	this.LoD5Range_Slider1.setValue(DB.getTerrainConfiguration().getLod_range()[4]);
     	this.LoD5Range_Value1.setText(Integer.toString(LoD5Range_Slider1.getValue()));
-    	if (DataBase.getTerrainConfiguration().getLod_range()[3] != 0){
-    		this.LoD5Range_Slider1.setMaximum(DataBase.getTerrainConfiguration().getLod_range()[3] - 
-    			2 * (DataBase.getTerrainConfiguration().getLod_range()[3] - DataBase.getTerrainConfiguration().getLod_morphing_area()[3]));
+    	if (DB.getTerrainConfiguration().getLod_range()[3] != 0){
+    		this.LoD5Range_Slider1.setMaximum(DB.getTerrainConfiguration().getLod_range()[3] - 
+    			2 * (DB.getTerrainConfiguration().getLod_range()[3] - DB.getTerrainConfiguration().getLod_morphing_area()[3]));
     	}
     	else this.LoD5Range_Slider1.setMaximum(0);
-    	if (DataBase.getTerrainConfiguration().getLod_range()[5] != 0){
-    		this.LoD5Range_Slider1.setMinimum(DataBase.getTerrainConfiguration().getLod_range()[5] + 
-    			2 * (DataBase.getTerrainConfiguration().getLod_range()[4] - DataBase.getTerrainConfiguration().getLod_morphing_area()[4]));
+    	if (DB.getTerrainConfiguration().getLod_range()[5] != 0){
+    		this.LoD5Range_Slider1.setMinimum(DB.getTerrainConfiguration().getLod_range()[5] + 
+    			2 * (DB.getTerrainConfiguration().getLod_range()[4] - DB.getTerrainConfiguration().getLod_morphing_area()[4]));
     	}
     	
-    	this.LoD6Range_Slider1.setValue(DataBase.getTerrainConfiguration().getLod_range()[5]);
+    	this.LoD6Range_Slider1.setValue(DB.getTerrainConfiguration().getLod_range()[5]);
     	this.LoD6Range_Value1.setText(Integer.toString(LoD6Range_Slider1.getValue()));
-    	if (DataBase.getTerrainConfiguration().getLod_range()[4] != 0){
-    		this.LoD6Range_Slider1.setMaximum(DataBase.getTerrainConfiguration().getLod_range()[4] - 
-    			2 * (DataBase.getTerrainConfiguration().getLod_range()[4] - DataBase.getTerrainConfiguration().getLod_morphing_area()[4]));
+    	if (DB.getTerrainConfiguration().getLod_range()[4] != 0){
+    		this.LoD6Range_Slider1.setMaximum(DB.getTerrainConfiguration().getLod_range()[4] - 
+    			2 * (DB.getTerrainConfiguration().getLod_range()[4] - DB.getTerrainConfiguration().getLod_morphing_area()[4]));
     	}
     	else this.LoD6Range_Slider1.setMaximum(0);
-    	if (DataBase.getTerrainConfiguration().getLod_range()[6] != 0){
-    		this.LoD6Range_Slider1.setMinimum(DataBase.getTerrainConfiguration().getLod_range()[6] + 
-    			2 * (DataBase.getTerrainConfiguration().getLod_range()[5] - DataBase.getTerrainConfiguration().getLod_morphing_area()[5]));
+    	if (DB.getTerrainConfiguration().getLod_range()[6] != 0){
+    		this.LoD6Range_Slider1.setMinimum(DB.getTerrainConfiguration().getLod_range()[6] + 
+    			2 * (DB.getTerrainConfiguration().getLod_range()[5] - DB.getTerrainConfiguration().getLod_morphing_area()[5]));
     	}
     	
-    	this.LoD7Range_Slider1.setValue(DataBase.getTerrainConfiguration().getLod_range()[6]);
+    	this.LoD7Range_Slider1.setValue(DB.getTerrainConfiguration().getLod_range()[6]);
     	this.LoD7Range_Value1.setText(Integer.toString(LoD7Range_Slider1.getValue()));
-    	if (DataBase.getTerrainConfiguration().getLod_range()[5] != 0){
-    		this.LoD7Range_Slider1.setMaximum(DataBase.getTerrainConfiguration().getLod_range()[5] - 
-    			2 * (DataBase.getTerrainConfiguration().getLod_range()[5] - DataBase.getTerrainConfiguration().getLod_morphing_area()[5]));
+    	if (DB.getTerrainConfiguration().getLod_range()[5] != 0){
+    		this.LoD7Range_Slider1.setMaximum(DB.getTerrainConfiguration().getLod_range()[5] - 
+    			2 * (DB.getTerrainConfiguration().getLod_range()[5] - DB.getTerrainConfiguration().getLod_morphing_area()[5]));
     	}
     	else this.LoD7Range_Slider1.setMaximum(0);
-    	if (DataBase.getTerrainConfiguration().getLod_range()[7] != 0){
-    		this.LoD7Range_Slider1.setMinimum(DataBase.getTerrainConfiguration().getLod_range()[7] + 
-    			2 * (DataBase.getTerrainConfiguration().getLod_range()[6] - DataBase.getTerrainConfiguration().getLod_morphing_area()[6]));
+    	if (DB.getTerrainConfiguration().getLod_range()[7] != 0){
+    		this.LoD7Range_Slider1.setMinimum(DB.getTerrainConfiguration().getLod_range()[7] + 
+    			2 * (DB.getTerrainConfiguration().getLod_range()[6] - DB.getTerrainConfiguration().getLod_morphing_area()[6]));
     	}
     	
-    	this.LoD8Range_Slider1.setValue(DataBase.getTerrainConfiguration().getLod_range()[7]);
+    	this.LoD8Range_Slider1.setValue(DB.getTerrainConfiguration().getLod_range()[7]);
     	this.LoD8Range_Value1.setText(Integer.toString(LoD8Range_Slider1.getValue()));
-    	if (DataBase.getTerrainConfiguration().getLod_range()[6] != 0){
-    		this.LoD8Range_Slider1.setMaximum(DataBase.getTerrainConfiguration().getLod_range()[6] - 
-    			2 * (DataBase.getTerrainConfiguration().getLod_range()[6] - DataBase.getTerrainConfiguration().getLod_morphing_area()[6]));
+    	if (DB.getTerrainConfiguration().getLod_range()[6] != 0){
+    		this.LoD8Range_Slider1.setMaximum(DB.getTerrainConfiguration().getLod_range()[6] - 
+    			2 * (DB.getTerrainConfiguration().getLod_range()[6] - DB.getTerrainConfiguration().getLod_morphing_area()[6]));
     	}
     	else this.LoD8Range_Slider1.setMaximum(0);
     	
@@ -1279,9 +1279,9 @@ public class TerrainEditorInterface extends JFrame{
 
     	for (int i=1; i<1000; i+=10){
     		float tessellationLevel = Math.max(0.0f, Math.min(1.0f, 
-    				(float) ((float) DataBase.getTerrainConfiguration().getTessellationFactor()/ 
-    						(Math.pow(i, DataBase.getTerrainConfiguration().getTessellationSlope())) - 
-    								DataBase.getTerrainConfiguration().getTessellationShift())));
+    				(float) ((float) DB.getTerrainConfiguration().getTessellationFactor()/ 
+    						(Math.pow(i, DB.getTerrainConfiguration().getTessellationSlope())) - 
+    								DB.getTerrainConfiguration().getTessellationShift())));
     		dataset.addValue( tessellationLevel , "tessellation level" , Integer.toString(i) );
     	}
     	JFreeChart lineChart = ChartFactory.createLineChart( "tessellation function", "Distance","tessellation level", dataset, PlotOrientation.VERTICAL, false,false,false );
@@ -1299,15 +1299,15 @@ public class TerrainEditorInterface extends JFrame{
     public static void updateLoDPatchesChart(){
 
     	if (init){
-    	LoDPtachesSeriesData.update(1.0, DataBase.getTerrainConfiguration().getLodPatches()[0]);
-		LoDPtachesSeriesData.update(2.0, DataBase.getTerrainConfiguration().getLodPatches()[1]);
-		LoDPtachesSeriesData.update(3.0, DataBase.getTerrainConfiguration().getLodPatches()[2]);
-		LoDPtachesSeriesData.update(4.0, DataBase.getTerrainConfiguration().getLodPatches()[3]);
-		LoDPtachesSeriesData.update(5.0, DataBase.getTerrainConfiguration().getLodPatches()[4]);
-		LoDPtachesSeriesData.update(6.0, DataBase.getTerrainConfiguration().getLodPatches()[5]);
-		LoDPtachesSeriesData.update(7.0, DataBase.getTerrainConfiguration().getLodPatches()[6]);
-		LoDPtachesSeriesData.update(8.0, DataBase.getTerrainConfiguration().getLodPatches()[7]);
-		megabytes.setText(Float.toString(DataBase.getTerrainConfiguration().getMegabytes()));
+    	LoDPtachesSeriesData.update(1.0, DB.getTerrainConfiguration().getLodPatches()[0]);
+		LoDPtachesSeriesData.update(2.0, DB.getTerrainConfiguration().getLodPatches()[1]);
+		LoDPtachesSeriesData.update(3.0, DB.getTerrainConfiguration().getLodPatches()[2]);
+		LoDPtachesSeriesData.update(4.0, DB.getTerrainConfiguration().getLodPatches()[3]);
+		LoDPtachesSeriesData.update(5.0, DB.getTerrainConfiguration().getLodPatches()[4]);
+		LoDPtachesSeriesData.update(6.0, DB.getTerrainConfiguration().getLodPatches()[5]);
+		LoDPtachesSeriesData.update(7.0, DB.getTerrainConfiguration().getLodPatches()[6]);
+		LoDPtachesSeriesData.update(8.0, DB.getTerrainConfiguration().getLodPatches()[7]);
+		megabytes.setText(Float.toString(DB.getTerrainConfiguration().getMegabytes()));
     	}
     }
 

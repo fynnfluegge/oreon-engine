@@ -23,12 +23,6 @@ public class Node {
 		children.add(child);
 	}
 	
-	public void init()
-	{
-		for(Node child: children)
-			child.init();
-	}
-	
 	public void updateAll()
 	{
 		

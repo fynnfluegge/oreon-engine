@@ -37,7 +37,6 @@ public class RenderingEngine {
 	public void init()
 	{
 		display.init();
-		scenegraph.init();
 		gui.init();
 		
 		shadowMaps = new ShadowMaps();

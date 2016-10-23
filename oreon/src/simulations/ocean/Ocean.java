@@ -1,4 +1,4 @@
-package simulations.oceanSurface.oceanSimulation;
+package simulations.ocean;
 
 import modules.water.Water;
 

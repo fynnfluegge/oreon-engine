@@ -1,4 +1,4 @@
-package simulations.oceanSurface.oceanSimulation;
+package simulations.ocean;
 
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;

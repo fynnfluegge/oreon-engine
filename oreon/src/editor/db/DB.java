@@ -1,12 +1,12 @@
-package cdk.database;
+package editor.db;
 
 import modules.terrain.TerrainConfiguration;
 
-public class DataBase {
+public class DB {
 	
 	private static TerrainConfiguration terrainConfiguration;
 	
-	public DataBase(){
+	public DB(){
 		
 	}
 
@@ -15,7 +15,7 @@ public class DataBase {
 	}
 
 	public static void setTerrainConfiguration(TerrainConfiguration terrainConfiguration) {
-		DataBase.terrainConfiguration = terrainConfiguration;
+		DB.terrainConfiguration = terrainConfiguration;
 	}
 
 }

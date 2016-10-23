@@ -1,6 +1,6 @@
-package cdk.terrain;
+package editor.terrain;
 
-import cdk.database.DataBase;
+import editor.db.DB;
 
 public class Terrain extends modules.terrain.Terrain{
 
@@ -11,6 +11,6 @@ public class Terrain extends modules.terrain.Terrain{
 		
 		getTerrainConfiguration().setSightRangeFactor(2f);
 		
-		DataBase.setTerrainConfiguration(getTerrainConfiguration());
+		DB.setTerrainConfiguration(getTerrainConfiguration());
 	}
 }

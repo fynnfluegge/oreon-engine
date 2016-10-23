@@ -1,16 +1,16 @@
-package cdk.main;
+package editor.main;
 
 import javax.swing.JFrame;
 
-import cdk.database.DataBase;
-import cdk.tools.terrainEditor.OpenGLEngine;
-import cdk.tools.terrainEditor.TerrainEditorInterface;
+import editor.db.DB;
+import editor.tools.terrainEditor.OpenGLEngine;
+import editor.tools.terrainEditor.TerrainEditorInterface;
 
 public class MainInterface extends JFrame{
 
 	private static final long serialVersionUID = 1L;
 	
-	DataBase database;
+	DB database;
 	
 	private TerrainEditorInterface terrainEditor;
 	

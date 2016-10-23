@@ -4,3 +4,4 @@ bin/modules/
 bin/simulations/
 .project
 .classpath
+/bin/

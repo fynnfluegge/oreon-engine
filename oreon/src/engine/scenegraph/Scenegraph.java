@@ -19,13 +19,6 @@ public class Scenegraph extends Node{
 		terrain.setParent(this);
 		water.setParent(this);
 	}
-
-	public void init() {
-		
-		rootObject.init();
-		terrain.init();
-		water.init();
-	}
 	
 	public void render(){
 		rootObject.render();

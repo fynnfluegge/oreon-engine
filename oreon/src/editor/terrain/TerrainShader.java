@@ -1,4 +1,4 @@
-package cdk.terrain;
+package editor.terrain;
 
 import static org.lwjgl.opengl.GL13.GL_TEXTURE10;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE12;

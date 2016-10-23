@@ -11,12 +11,9 @@ public class FractalWorlds {
 		Game game = new Game(800, 600, "Fractalworlds");
 		game.setGui(new VoidGUI());
 		game.getEngine().createWindow();
-		
+		game.init();
 		game.getScenegraph().setTerrain(new Terrain());
 		game.getScenegraph().addObject(new SkySphere());
-		
-		game.init();
-		
 		game.launch();
 	}
 }
