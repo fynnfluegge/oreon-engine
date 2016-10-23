@@ -11,11 +11,15 @@ public class Terrain extends Node{
 		
 	public Terrain(String file, Shader shader, Shader grid, Shader shadow)
 	{
+		
 		terrainConfiguration = new TerrainConfiguration();
+		
 		terrainConfiguration.loadFile(file);
+		System.out.print("a");
 		terrainConfiguration.setGridShader(grid);
 		terrainConfiguration.setShader(shader);
 		terrainConfiguration.setShadowShader(shadow);
+		
 		addChild(new TerrainQuadtree(terrainConfiguration));
 	}
 	

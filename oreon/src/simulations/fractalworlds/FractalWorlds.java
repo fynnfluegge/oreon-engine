@@ -1,24 +1,22 @@
 package simulations.fractalworlds;
 
+import modules.gui.GUIs.VoidGUI;
 import modules.sky.SkySphere;
-import engine.main.CoreEngine;
-import engine.main.Simulation;
+import engine.main.Game;
 
-public class FractalWorlds extends Simulation{
+public class FractalWorlds {
 	
 	public static void main(String[] args) {
-		Simulation simulation = new FractalWorlds();
-		GUI gui = new GUI();
-		CoreEngine coreEngine = new CoreEngine(800, 600, "FractalWorlds");
-		coreEngine.createWindow();
-		coreEngine.init(simulation, gui);
-		coreEngine.start();
-	}
-
-	public void init()
-	{	
-		super.init();
-		scenegraph.setTerrain(new Terrain());
-		scenegraph.addObject(new SkySphere());
+		
+		Game game = new Game(800, 600, "Fractalworlds");
+		game.setGui(new VoidGUI());
+		game.getEngine().createWindow();
+		
+		game.getScenegraph().setTerrain(new Terrain());
+		game.getScenegraph().addObject(new SkySphere());
+		
+		game.init();
+		
+		game.launch();
 	}
 }
