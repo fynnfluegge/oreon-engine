@@ -13,7 +13,6 @@ import org.lwjgl.opengl.GL11;
 
 import engine.configs.RenderConfig;
 import engine.core.Constants;
-import engine.scenegraph.Scenegraph;
 
 
 public class CoreEngine{
@@ -31,6 +30,7 @@ public class CoreEngine{
 	private static Lock glContextLock = new ReentrantLock();
 	private static Condition holdGLContext = glContextLock.newCondition();
 	
+	private Simulation simulation;
 	private RenderingEngine renderingEngine;
 
 	public CoreEngine(int width, int height, String title)
@@ -53,10 +53,12 @@ public class CoreEngine{
 		System.out.println("OpenGL version: " + GL11.glGetString(GL11.GL_VERSION));
 	}
 	
-	public void init(Scenegraph scenegraph, GUI gui)
+	public void init(Simulation simulation, GUI gui)
 	{
+		this.simulation = simulation;
 		RenderConfig.init();
-		renderingEngine = new RenderingEngine(scenegraph, gui);
+		this.simulation.init();
+		renderingEngine = new RenderingEngine(this.simulation.getScenegraph(), gui);
 		renderingEngine.init();
 	}
 	
@@ -177,6 +179,7 @@ public class CoreEngine{
 	public void render()
 	{
 		renderingEngine.render();
+		simulation.render();
 	}
 	
 	public void update()
