@@ -26,10 +26,10 @@ vec4 gaussRND()
 {	
 	vec2 texCoord = vec2(gl_GlobalInvocationID.xy)/float(N);
 	
-	float noise00 = clamp(texture(noise_r0, texCoord).r + 0.00001, 0, 1);
-	float noise01 = clamp(texture(noise_i0, texCoord).r + 0.00001, 0, 1);
-	float noise02 = clamp(texture(noise_r1, texCoord).r + 0.00001, 0, 1);
-	float noise03 = clamp(texture(noise_i1, texCoord).r + 0.00001, 0, 1);
+	float noise00 = clamp(texture2D(noise_r0, texCoord).r, 0.001, 1.0);
+	float noise01 = clamp(texture2D(noise_i0, texCoord).r, 0.001, 1.0);
+	float noise02 = clamp(texture2D(noise_r1, texCoord).r, 0.001, 1.0);
+	float noise03 = clamp(texture2D(noise_i1, texCoord).r, 0.001, 1.0);
 	
 	float u0 = 2.0*M_PI*noise00;
 	float v0 = sqrt(-2.0 * log(noise01));
@@ -50,14 +50,14 @@ void main(void)
 
 	float L_ = (windspeed * windspeed)/g;
 	float mag = length(k);
-	if (mag < 0.0001) mag = 0.0001;
+	if (mag < 0.00001) mag = 0.00001;
 	float magSq = mag * mag;
 	
 	//sqrt(Ph(k))/sqrt(2)
-	float h0k = clamp(sqrt((A/(magSq*magSq)) * pow(dot(normalize(k), normalize(w)), 4.0) * exp(-(1.0/(magSq * L_ * L_))) * exp(-magSq*pow(L/2000.0,2)))/ sqrt(2.0), 0, 1000000);
+	double h0k = clamp(sqrt((A/(magSq*magSq)) * pow(dot(normalize(k), normalize(w)), 2.0) * exp(-(1.0/(magSq * L_ * L_))) * exp(-magSq*pow(L/2000.0,2.0)))/ sqrt(2.0), 0.0, float(L));
 	
 	//sqrt(Ph(-k))/sqrt(2)
-	float h0minusk = clamp(sqrt((A/(magSq*magSq)) * pow(dot(normalize(-k), normalize(w)), 4.0) * exp(-(1.0/(magSq * L_ * L_))) * exp(-magSq*pow(L/2000.0,2)))/ sqrt(2.0), 0, 1000000);
+	double h0minusk = clamp(sqrt((A/(magSq*magSq)) * pow(dot(normalize(-k), normalize(w)), 2.0) * exp(-(1.0/(magSq * L_ * L_))) * exp(-magSq*pow(L/2000.0,2.0)))/ sqrt(2.0), 0.0, float(L));
 	
 	vec4 gauss_random = gaussRND();
 	

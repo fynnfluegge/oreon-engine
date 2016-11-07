@@ -17,7 +17,7 @@ layout (std140, row_major) uniform Camera{
 	vec4 frustumPlanes[6];
 };
 
-uniform Fractal fractals0[10];
+uniform Fractal fractals0[7];
 uniform float scaleY;
 uniform int lod;
 uniform vec2 index;
@@ -83,7 +83,7 @@ float morphLongitude(vec2 position)
 
 vec2 morph(int morph_area){
 
-	vec2 morphing;
+	vec2 morphing = vec2(0,0);
 	
 	vec2 fixPointLatitude;
 	vec2 fixPointLongitude;float distLatitude;
@@ -140,7 +140,7 @@ void main()
 	}
 	
 	texCoord1 = vertex;
-	float height;
+	float height = 0;
 	for (int i=0; i<7; i++){
 		height += texture(fractals0[i].heightmap, texCoord1*fractals0[i].scaling).r * fractals0[i].strength;
 	}

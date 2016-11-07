@@ -6,7 +6,7 @@ layout(line_strip, max_vertices = 4) out;
 in vec2 texCoordG[];
 
 uniform int largeDetailRange;
-uniform mat4 projectionViewMatrix;
+uniform mat4 viewProjectionMatrix;
 uniform vec4 frustumPlanes[6];
 uniform float displacementScale;
 uniform sampler2D Dy;
@@ -25,7 +25,7 @@ void main()
 	position0.y += dy;
 	position0.x -= dx;
 	position0.z -= dz;
-    gl_Position = projectionViewMatrix * position0;
+    gl_Position = viewProjectionMatrix * position0;
 	gl_ClipDistance[0] = dot(gl_Position ,frustumPlanes[0]);
 	gl_ClipDistance[1] = dot(gl_Position ,frustumPlanes[1]);
 	gl_ClipDistance[2] = dot(gl_Position ,frustumPlanes[2]);
@@ -41,7 +41,7 @@ void main()
 	position1.y += dy;
 	position1.x -= dx;
 	position1.z -= dz;
-	gl_Position = projectionViewMatrix * position1;
+	gl_Position = viewProjectionMatrix * position1;
 	gl_ClipDistance[0] = dot(gl_Position ,frustumPlanes[0]);
 	gl_ClipDistance[1] = dot(gl_Position ,frustumPlanes[1]);
 	gl_ClipDistance[2] = dot(gl_Position ,frustumPlanes[2]);
@@ -57,7 +57,7 @@ void main()
 	position2.y += dy;
 	position2.x -= dx;
 	position2.z -= dz;
-	gl_Position = projectionViewMatrix * position2;
+	gl_Position = viewProjectionMatrix * position2;
 	gl_ClipDistance[0] = dot(gl_Position ,frustumPlanes[0]);
 	gl_ClipDistance[1] = dot(gl_Position ,frustumPlanes[1]);
 	gl_ClipDistance[2] = dot(gl_Position ,frustumPlanes[2]);
@@ -66,7 +66,7 @@ void main()
 	gl_ClipDistance[5] = dot(gl_Position ,frustumPlanes[5]);
     EmitVertex();
 	
-    gl_Position = projectionViewMatrix * position0;
+    gl_Position = viewProjectionMatrix * position0;
 	gl_ClipDistance[0] = dot(gl_Position ,frustumPlanes[0]);
 	gl_ClipDistance[1] = dot(gl_Position ,frustumPlanes[1]);
 	gl_ClipDistance[2] = dot(gl_Position ,frustumPlanes[2]);

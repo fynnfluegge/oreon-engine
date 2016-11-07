@@ -1,7 +1,10 @@
 package modules.terrain;
 
+import static org.lwjgl.opengl.GL11.glViewport;
+
 import engine.buffers.PatchVAO;
 import engine.core.Camera;
+import engine.main.OpenGLDisplay;
 import engine.main.RenderingEngine;
 import engine.math.Vec2f;
 import engine.math.Vec3f;
@@ -22,7 +25,7 @@ public class TerrainNode extends GameObject{
 	
 	
 	public TerrainNode(TerrainConfiguration terrConfig, Vec2f location, int lod, Vec2f index){
-		
+
 		this.isleaf = true;
 		this.index = index;
 		this.lod = lod;
@@ -35,25 +38,11 @@ public class TerrainNode extends GameObject{
 		Renderer renderer = new Renderer(terrConfig.getShader(), meshBuffer);
 		addComponent("Renderer", renderer);
 		
-		terrConfig.setMegabytes(terrConfig.getMegabytes() + (Float.BYTES * 16 /1000000f));
-		
-		switch (lod){
-			case 1: terrConfig.getLodPatches()[0] = (terrConfig.getLodPatches()[0] + 1);break;
-			case 2: terrConfig.getLodPatches()[1] = (terrConfig.getLodPatches()[1] + 1);break;
-			case 3: terrConfig.getLodPatches()[2] = (terrConfig.getLodPatches()[2] + 1);break;
-			case 4: terrConfig.getLodPatches()[3] = (terrConfig.getLodPatches()[3] + 1);break;
-			case 5: terrConfig.getLodPatches()[4] = (terrConfig.getLodPatches()[4] + 1);break;
-			case 6: terrConfig.getLodPatches()[5] = (terrConfig.getLodPatches()[5] + 1);break;
-			case 7: terrConfig.getLodPatches()[6] = (terrConfig.getLodPatches()[6] + 1);break;
-			case 8: terrConfig.getLodPatches()[7] = (terrConfig.getLodPatches()[7] + 1);break;
-		}
-		
 		computeWorldPos();
-		updateQuadtree();
 	}
 	
 	public void update()
-	{	
+	{
 			if (RenderingEngine.isGrid())
 				getRenderInfo().setShader(terrConfig.getGridShader());
 			else if (!RenderingEngine.isGrid())
@@ -65,14 +54,43 @@ public class TerrainNode extends GameObject{
 			
 			getTransform().setScaling(getTransform().getLocalScaling());
 			getTransform().setTranslation(getTransform().getLocalTranslation());
-				
+			
 			updateQuadtree();
 			
 			for(Node child: getChildren())
-				child.update();
+				child.update();		
 	}
 	
-	public void updateQuadtree(){
+	public void render()
+	{
+		if (isleaf)
+		{	
+			getRenderInfo().getConfig().enable();
+			getComponents().get("Renderer").render();
+			getRenderInfo().getConfig().disable();
+		}
+		for(Node child: getChildren())
+			child.render();
+	}
+	
+	public void renderShadows()
+	{
+		if (getRenderInfo().isShadowCaster() && isleaf){
+			getComponents().get("Renderer").setShader(getRenderInfo().getShadowShader());
+			getRenderInfo().getConfig().enable();
+			glViewport(0,0,1024,1024);
+			
+			getComponents().get("Renderer").render();
+			
+			glViewport(0,0,OpenGLDisplay.getInstance().getLwjglWindow().getWidth(), OpenGLDisplay.getInstance().getLwjglWindow().getHeight());
+			getRenderInfo().getConfig().disable();
+			getComponents().get("Renderer").setShader(getRenderInfo().getShader());
+		}
+		for(Node child: getChildren())
+			child.renderShadows();
+	}
+	
+public void updateQuadtree(){
 		
 		float distance;
 		
@@ -125,18 +143,21 @@ public class TerrainNode extends GameObject{
 				else if(distance >= terrConfig.getLod_range()[5]){
 					removeChildNodes();
 				}
+				break;
 		case 6: if (distance < terrConfig.getLod_range()[6]){
 					add4ChildNodes(lod+1);
 				}
 				else if(distance >= terrConfig.getLod_range()[6]){
 					removeChildNodes();
 				}
+				break;
 		case 7: if (distance < terrConfig.getLod_range()[7]){
 					add4ChildNodes(lod+1);
 				}
 				else if(distance >= terrConfig.getLod_range()[7]){
 					removeChildNodes();
 				}
+				break;
 		}
 	}
 	
@@ -145,19 +166,6 @@ public class TerrainNode extends GameObject{
 		if (isleaf){
 			isleaf = false;
 			((Renderer) getComponent("Renderer")).getVao().delete();
-			
-			terrConfig.setMegabytes(terrConfig.getMegabytes() - (Float.BYTES * 16 /1000000f));
-			
-			switch (lod){
-				case 1: terrConfig.getLodPatches()[0] = terrConfig.getLodPatches()[0] - 1;break;
-				case 2: terrConfig.getLodPatches()[1] = terrConfig.getLodPatches()[1] - 1;break;
-				case 3: terrConfig.getLodPatches()[2] = terrConfig.getLodPatches()[2] - 1;break;
-				case 4: terrConfig.getLodPatches()[3] = terrConfig.getLodPatches()[3] - 1;break;
-				case 5: terrConfig.getLodPatches()[4] = terrConfig.getLodPatches()[4] - 1;break;
-				case 6: terrConfig.getLodPatches()[5] = terrConfig.getLodPatches()[5] - 1;break;
-				case 7: terrConfig.getLodPatches()[6] = terrConfig.getLodPatches()[6] - 1;break;
-				case 8: terrConfig.getLodPatches()[7] = terrConfig.getLodPatches()[7] - 1;break;
-			}
 		}
 		if(getChildren().size() == 0){
 			for (int i=0; i<2; i++){
@@ -180,39 +188,15 @@ public class TerrainNode extends GameObject{
 			else
 				renderer = new Renderer(terrConfig.getShader(), meshBuffer);
 			addComponent("Renderer", renderer);
-			terrConfig.setMegabytes(terrConfig.getMegabytes() + (Float.BYTES * 16 /1000000f));
-			
-			switch (lod){
-				case 1: terrConfig.getLodPatches()[0] = (terrConfig.getLodPatches()[0] + 1);break;
-				case 2: terrConfig.getLodPatches()[1] = (terrConfig.getLodPatches()[1] + 1);break;
-				case 3: terrConfig.getLodPatches()[2] = (terrConfig.getLodPatches()[2] + 1);break;
-				case 4: terrConfig.getLodPatches()[3] = (terrConfig.getLodPatches()[3] + 1);break;
-				case 5: terrConfig.getLodPatches()[4] = (terrConfig.getLodPatches()[4] + 1);break;
-				case 6: terrConfig.getLodPatches()[5] = (terrConfig.getLodPatches()[5] + 1);break;
-				case 7: terrConfig.getLodPatches()[6] = (terrConfig.getLodPatches()[6] + 1);break;
-				case 8: terrConfig.getLodPatches()[7] = (terrConfig.getLodPatches()[7] + 1);break;
-			}
 		}
 		if(getChildren().size() != 0){
 			
 			for(Node child: getChildren()){
 				((Renderer) ((GameObject) child).getComponent("Renderer")).getVao().delete();
-				terrConfig.setMegabytes(terrConfig.getMegabytes() - (Float.BYTES * 16 /1000000f));
-				
-				switch (lod){
-					case 1: terrConfig.getLodPatches()[0] = terrConfig.getLodPatches()[0] - 1;break;
-					case 2: terrConfig.getLodPatches()[1] = terrConfig.getLodPatches()[1] - 1;break;
-					case 3: terrConfig.getLodPatches()[2] = terrConfig.getLodPatches()[2] - 1;break;
-					case 4: terrConfig.getLodPatches()[3] = terrConfig.getLodPatches()[3] - 1;break;
-					case 5: terrConfig.getLodPatches()[4] = terrConfig.getLodPatches()[4] - 1;break;
-					case 6: terrConfig.getLodPatches()[5] = terrConfig.getLodPatches()[5] - 1;break;
-					case 7: terrConfig.getLodPatches()[6] = terrConfig.getLodPatches()[6] - 1;break;
-					case 8: terrConfig.getLodPatches()[7] = terrConfig.getLodPatches()[7] - 1;break;
-				}
 			}	
 			getChildren().clear();
 		}
-	}
+}
 	
 	public void computeWorldPos(){
 		
@@ -228,23 +212,23 @@ public class TerrainNode extends GameObject{
 		int index = 0;
 		
 		vertices[index++] = new Vec2f(location.getX(),location.getY());
-		vertices[index++] = new Vec2f(location.getX()+gap*0.3333333f,location.getY());
-		vertices[index++] = new Vec2f(location.getX()+gap*0.6666666f,location.getY());
+		vertices[index++] = new Vec2f(location.getX()+gap*0.333f,location.getY());
+		vertices[index++] = new Vec2f(location.getX()+gap*0.666f,location.getY());
 		vertices[index++] = new Vec2f(location.getX()+gap,location.getY());
 		
-		vertices[index++] = new Vec2f(location.getX(),location.getY()+gap*0.3333333f);
-		vertices[index++] = new Vec2f(location.getX()+gap*0.3333333f,location.getY()+gap*0.3333333f);
-		vertices[index++] = new Vec2f(location.getX()+gap*0.6666666f,location.getY()+gap*0.3333333f);
-		vertices[index++] = new Vec2f(location.getX()+gap,location.getY()+gap*0.3333333f);
+		vertices[index++] = new Vec2f(location.getX(),location.getY()+gap*0.333f);
+		vertices[index++] = new Vec2f(location.getX()+gap*0.333f,location.getY()+gap*0.333f);
+		vertices[index++] = new Vec2f(location.getX()+gap*0.666f,location.getY()+gap*0.333f);
+		vertices[index++] = new Vec2f(location.getX()+gap,location.getY()+gap*0.333f);
 		
-		vertices[index++] = new Vec2f(location.getX(),location.getY()+gap*0.6666666f);
-		vertices[index++] = new Vec2f(location.getX()+gap*0.3333333f,location.getY()+gap*0.6666666f);
-		vertices[index++] = new Vec2f(location.getX()+gap*0.6666666f,location.getY()+gap*0.6666666f);
-		vertices[index++] = new Vec2f(location.getX()+gap,location.getY()+gap*0.6666666f);
+		vertices[index++] = new Vec2f(location.getX(),location.getY()+gap*0.666f);
+		vertices[index++] = new Vec2f(location.getX()+gap*0.333f,location.getY()+gap*0.666f);
+		vertices[index++] = new Vec2f(location.getX()+gap*0.666f,location.getY()+gap*0.666f);
+		vertices[index++] = new Vec2f(location.getX()+gap,location.getY()+gap*0.666f);
 	
 		vertices[index++] = new Vec2f(location.getX(),location.getY()+gap);
-		vertices[index++] = new Vec2f(location.getX()+gap*0.3333f,location.getY()+gap);
-		vertices[index++] = new Vec2f(location.getX()+gap*0.6666f,location.getY()+gap);
+		vertices[index++] = new Vec2f(location.getX()+gap*0.333f,location.getY()+gap);
+		vertices[index++] = new Vec2f(location.getX()+gap*0.666f,location.getY()+gap);
 		vertices[index++] = new Vec2f(location.getX()+gap,location.getY()+gap);
 		
 		return vertices;
@@ -292,5 +276,9 @@ public class TerrainNode extends GameObject{
 	
 	public float getGap(){
 		return this.gap;
+	}
+	
+	public TerrainNode getQuadtreeParent() {
+		return (TerrainNode) getParent();
 	}
 }

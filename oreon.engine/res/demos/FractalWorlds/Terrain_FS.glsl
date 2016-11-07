@@ -5,9 +5,9 @@ in vec3 tangent;
 
 struct Fractal
 {
+	sampler2D heightmap;
 	sampler2D normalmap;
 	int scaling;
-	float strength;
 };
 
 layout (std140, row_major) uniform Camera{
@@ -23,7 +23,7 @@ layout (std140) uniform DirectionalLight{
 	vec3 color;
 } directional_light;
 
-uniform Fractal fractals2[10];
+uniform Fractal fractals1[10];
 uniform float scaleY;
 uniform float scaleXZ;
 uniform float sightRangeFactor;
@@ -58,17 +58,15 @@ void main()
 	// normalmap/occlusionmap/splatmap coords
 	vec2 mapCoords = (position.xz + scaleXZ/2)/scaleXZ;  
 	
-	vec3 normal;
-	// for (int k=0; k<7; k++){
-		// normal += (2*(texture(fractals2[k].normalmap, mapCoords*fractals2[k].scaling).rbg)-1);
-	// }
-	normal += (2*(texture(fractals2[0].normalmap, mapCoords*fractals2[0].scaling).rbg)-1);
-	normal += (2*(texture(fractals2[1].normalmap, mapCoords*fractals2[1].scaling).rbg)-1);
-	normal += (2*(texture(fractals2[2].normalmap, mapCoords*fractals2[2].scaling).rbg)-1);
-	normal += (2*(texture(fractals2[3].normalmap, mapCoords*fractals2[3].scaling).rbg)-1);
-	normal += (2*(texture(fractals2[4].normalmap, mapCoords*fractals2[4].scaling).rbg)-1);
-	normal += (2*(texture(fractals2[5].normalmap, mapCoords*fractals2[5].scaling).rbg)-1);
-	normal += (2*(texture(fractals2[6].normalmap, mapCoords*fractals2[6].scaling).rbg)-1);
+	vec3 normal = vec3(0,0,0);
+	
+	normal += (2*(texture(fractals1[0].normalmap, mapCoords*fractals1[0].scaling).rbg)-1);
+	normal += (2*(texture(fractals1[1].normalmap, mapCoords*fractals1[1].scaling).rbg)-1);
+	normal += (2*(texture(fractals1[2].normalmap, mapCoords*fractals1[2].scaling).rbg)-1);
+	normal += (2*(texture(fractals1[3].normalmap, mapCoords*fractals1[3].scaling).rbg)-1);
+	normal += (2*(texture(fractals1[4].normalmap, mapCoords*fractals1[4].scaling).rbg)-1);
+	normal += (2*(texture(fractals1[5].normalmap, mapCoords*fractals1[5].scaling).rbg)-1);
+	normal += (2*(texture(fractals1[6].normalmap, mapCoords*fractals1[6].scaling).rbg)-1);
 	normal = normalize(normal);
 	
 	if (dist < largeDetailedRange-20)
@@ -78,9 +76,9 @@ void main()
 		mat3 TBN = mat3(tangent,normal,bitangent);
 		
 		vec3 bumpNormal =   normalize(
-							 (2*(texture(fractals2[7].normalmap, mapCoords*fractals2[7].scaling).rbg)-1)
-							+(2*(texture(fractals2[8].normalmap, mapCoords*fractals2[8].scaling).rbg)-1)
-							+(2*(texture(fractals2[9].normalmap, mapCoords*fractals2[9].scaling).rbg)-1));
+							 (2*(texture(fractals1[7].normalmap, mapCoords*fractals1[7].scaling).rbg)-1)
+							+(2*(texture(fractals1[8].normalmap, mapCoords*fractals1[8].scaling).rbg)-1)
+							+(2*(texture(fractals1[9].normalmap, mapCoords*fractals1[9].scaling).rbg)-1));
 
 		bumpNormal.xz *= attenuation;
 		
@@ -110,7 +108,7 @@ void main()
 	vec3 sandrock = mix(sand,rock, clamp(height/(scaleY/2)+0.2,0,1));
 	vec3 sandrocksnow = mix(sandrock,snow, clamp((height-scaleY/4)/(scaleY/2),0,1));
 	fragColor = mix(darkRock,sandrocksnow, clamp((height+scaleY/2)/(scaleY/4),0,1));
-	float grassFactor = clamp(height/(scaleY*4)+0.95,0.9,1);
+	float grassFactor = clamp(height/(scaleY*4)+0.95,0.9,1.0);
 	if (normal.y > grassFactor){
 		fragColor = mix(grass,fragColor,(1-normal.y)*10);
 	}

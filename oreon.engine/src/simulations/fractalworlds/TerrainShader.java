@@ -1,7 +1,7 @@
 package simulations.fractalworlds;
 
 import static org.lwjgl.opengl.GL13.GL_TEXTURE15;
-import static org.lwjgl.opengl.GL13.GL_TEXTURE16;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE22;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 import modules.terrain.TerrainConfiguration;
 import modules.terrain.TerrainNode;
@@ -51,19 +51,16 @@ public class TerrainShader extends Shader{
 		addUniform("lod");
 		addUniform("location");
 		
-		for (int i=0; i<10; i++)
+		for (int i=0; i<7; i++)
 		{
 			addUniform("fractals0[" + i + "].heightmap");
 			addUniform("fractals0[" + i + "].scaling");
 			addUniform("fractals0[" + i + "].strength");
-			
-			addUniform("fractals1[" + i + "].heightmap");
+		}
+		
+		for (int i=0; i<10; i++){
 			addUniform("fractals1[" + i + "].normalmap");
 			addUniform("fractals1[" + i + "].scaling");
-			
-			addUniform("fractals2[" + i + "].normalmap");
-			addUniform("fractals2[" + i + "].scaling");
-			addUniform("fractals2[" + i + "].strength");
 		}
 		
 		for (int i=0; i<8; i++){
@@ -80,7 +77,7 @@ public class TerrainShader extends Shader{
 	{	
 		bindUniformBlock("Camera", Constants.CameraUniformBlockBinding);
 		bindUniformBlock("DirectionalLight", Constants.DirectionalLightUniformBlockBinding);
-		
+
 		setUniform("worldMatrix", object.getTransform().getWorldMatrix());
 		
 		setUniform("clipplane", RenderingEngine.getClipplane());
@@ -91,25 +88,23 @@ public class TerrainShader extends Shader{
 		float gap = ((TerrainNode) object).getGap();
 		Vec2f location = ((TerrainNode) object).getLocation();
 		
-		for (int i=0; i<10; i++)
+		for (int i=0; i<7; i++)
 		{
-			glActiveTexture(GL_TEXTURE15 + i*2);
+			glActiveTexture(GL_TEXTURE15 + i);
 			terrConfig.getFractals().get(i).getHeightmap().bind();
-			setUniformi("fractals0[" + i +"].heightmap", 15+i*2);
-			setUniformi("fractals1[" + i +"].heightmap", 15+i*2);
-			
-			glActiveTexture(GL_TEXTURE16 + i*2);
-			terrConfig.getFractals().get(i).getNormalmap().bind();
-			setUniformi("fractals1[" + i + "].normalmap", 16+i*2);
-			setUniformi("fractals2[" + i + "].normalmap", 16+i*2);
+			setUniformi("fractals0[" + i +"].heightmap", 15+i);
 			
 			setUniformi("fractals0[" + i +"].scaling", terrConfig.getFractals().get(i).getScaling());
-			setUniformi("fractals1[" + i +"].scaling", terrConfig.getFractals().get(i).getScaling());
-			setUniformi("fractals2[" + i +"].scaling", terrConfig.getFractals().get(i).getScaling());
-			
 			setUniformf("fractals0[" + i +"].strength", terrConfig.getFractals().get(i).getStrength());
-			setUniformf("fractals2[" + i +"].strength", terrConfig.getFractals().get(i).getStrength());
 		}
+		
+		for (int i=0; i<10; i++)
+			{
+				glActiveTexture(GL_TEXTURE22 + i);
+				terrConfig.getFractals().get(i).getNormalmap().bind();
+				setUniformi("fractals1[" + i +"].normalmap", 22+i);
+				setUniformi("fractals1[" + i +"].scaling", terrConfig.getFractals().get(i).getScaling());
+			}
 		
 		setUniformf("scaleY", terrConfig.getScaleY());
 		setUniformf("scaleXZ", terrConfig.getScaleXZ());

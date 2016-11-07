@@ -24,14 +24,12 @@ private static FractalFourierComponentsShader instance = null;
 		compileShader();
 		
 		addUniform("L");
-		addUniform("N");
 		addUniform("t");
 	}
 	
-	public void updateUniforms(int L, int N, float t)
+	public void updateUniforms(int L, float t)
 	{
 		setUniformi("L", L);
-		setUniformi("N", N);
 		setUniformf("t", t);
 	}
 }

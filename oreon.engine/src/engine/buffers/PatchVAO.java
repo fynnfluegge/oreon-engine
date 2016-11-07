@@ -84,8 +84,10 @@ public class PatchVAO implements VAO{
 	
 	public void delete()
 	{	
+			glBindVertexArray(vaoId);
 			glDeleteBuffers(vbo);
 			glDeleteVertexArrays(vaoId);
+			glBindVertexArray(0);
 	}
 
 }

@@ -18,9 +18,9 @@ import engine.textures.Texture;
 
 public class Tilde_h0 extends FourierSpectrum{
 	
-	private Vec2f wind = new Vec2f(1,0).normalize();
-	private float windspeed = 26;
-	private float A = 20;
+	private Vec2f wind = new Vec2f(1,1).normalize();
+	private float windspeed = 25;
+	private float A = 2f;
 	private Texture noise0;
 	private Texture noise1;
 	private Texture noise2;
@@ -31,7 +31,7 @@ public class Tilde_h0 extends FourierSpectrum{
 	public Tilde_h0(int N, int L)
 	{
 		super(N,L);
-			
+		
 		setShader(Tilde_h0Shader.getInstance());
 		
 		h0k = new Texture();

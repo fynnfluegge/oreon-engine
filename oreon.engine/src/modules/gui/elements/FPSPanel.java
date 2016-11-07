@@ -21,11 +21,12 @@ public class FPSPanel extends GUIElement{
 	private Vec2f[] fps;
 	private Texture texture;
 	
-	public FPSPanel(){
+	@Override
+	public void init() {
+		// TODO Auto-generated method stub
 	}
 	
-	public void init()
-	{
+	public FPSPanel(){
 		texture = new Texture("./res/textures/gui/Fonts.png");
 		texCoords = new Vec2f[24];
 		fps = new Vec2f[24];

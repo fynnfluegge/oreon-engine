@@ -38,7 +38,6 @@ public class TerrainConfiguration {
 	
 	private int[] lod_range = new int[8];
 	private int[] lod_morphing_area = new int[8];
-	private int[] lodPatches = new int[8];
 
 	private float megabytes;
 	
@@ -455,11 +454,6 @@ public class TerrainConfiguration {
 	public int[] getLod_morphing_area() {
 		return lod_morphing_area;
 	}
-	
-	public int[] getLodPatches() {
-		return lodPatches;
-	}
-
 
 	public float getMegabytes() {
 		return megabytes;

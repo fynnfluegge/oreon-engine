@@ -24,7 +24,7 @@ public class OceanFFT extends FastFourierTransform{
 		{
 			super(N);
 			
-			t_delta = 0.1f;
+			t_delta = 0.04f;
 			int L = 1000;
 			
 			setFourierComponents(new Tilde_hkt(N,L));

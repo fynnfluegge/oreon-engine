@@ -7,7 +7,6 @@ import modules.gui.GUIVAO;
 import engine.configs.Default;
 import engine.core.Transform;
 import engine.geometrics.Geometrics;
-import engine.main.OpenGLDisplay;
 import engine.math.Matrix4f;
 import engine.shaders.gui.GuiShader;
 import engine.textures.Texture;
@@ -16,18 +15,21 @@ public class TexturePanel extends GUIElement{
 
 	static Texture texture;
 	
-	public void init(){
-		
+	public TexturePanel() {
 		texture = new Texture();
 		setShader(GuiShader.getInstance());
 		setConfig(new Default());
 		setOrthographicMatrix(new Matrix4f().Orthographic2D());
 		setOrthoTransform(new Transform());
-		getOrthoTransform().setTranslation(20, 20, 0);
-		getOrthoTransform().setScaling(OpenGLDisplay.getInstance().getLwjglWindow().getWidth()/3, OpenGLDisplay.getInstance().getLwjglWindow().getHeight()/3, 0);
+		getOrthoTransform().setTranslation(0, 0, 0);
+		getOrthoTransform().setScaling(100, 100, 0);
 		setOrthographicMatrix(getOrthographicMatrix().mul(getOrthoTransform().getWorldMatrix()));
 		setVao(new GUIVAO());
 		getVao().addData(Geometrics.Quad2D());
+	}
+	
+	public void init(){
+	
 	}
 	
 	public void render()

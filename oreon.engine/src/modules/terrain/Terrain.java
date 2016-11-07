@@ -15,7 +15,6 @@ public class Terrain extends Node{
 		terrainConfiguration = new TerrainConfiguration();
 		
 		terrainConfiguration.loadFile(file);
-		System.out.print("a");
 		terrainConfiguration.setGridShader(grid);
 		terrainConfiguration.setShader(shader);
 		terrainConfiguration.setShadowShader(shadow);

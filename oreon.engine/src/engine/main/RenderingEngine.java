@@ -51,7 +51,6 @@ public class RenderingEngine {
 
 		// render shadow maps
 		shadowMaps.bind();
-		RenderConfig.clearScreen();
 		scenegraph.renderShadows();
 		shadowMaps.unbind();
 		
@@ -79,7 +78,6 @@ public class RenderingEngine {
 	public void update()
 	{
 		Input.update();
-		scenegraph.input();
 		Camera.getInstance().update();
 		gui.update();
 		scenegraph.update();

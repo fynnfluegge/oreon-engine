@@ -52,15 +52,17 @@ void main(void)
 	vec2 k = vec2(2.0 * M_PI * x.x/L, 2.0 * M_PI * x.y/L);
 	
 	float magnitude = length(k);
-	if (magnitude < 0.0001) magnitude = 0.0001;
+	if (magnitude < 0.00001) magnitude = 0.00001;
 	
 	float w = sqrt(9.81 * magnitude);
 	
 	complex tilde_h0k 	 	 = complex(imageLoad(tilde_h0k, ivec2(gl_GlobalInvocationID.xy)).r, 
 							imageLoad(tilde_h0k, ivec2(gl_GlobalInvocationID.xy)).g);
+							
+	ivec2 x_inv = ivec2(gl_GlobalInvocationID.xy);
 	
-	complex tilde_h0minuskconj   = conj(complex(imageLoad(tilde_h0minusk, ivec2(gl_GlobalInvocationID.xy)).r, 
-								imageLoad(tilde_h0minusk, ivec2(gl_GlobalInvocationID.xy)).g));
+	complex tilde_h0minuskconj   = conj(complex(imageLoad(tilde_h0minusk, x_inv).r, 
+								imageLoad(tilde_h0minusk, x_inv).g));
 		
 	float cosinus = cos(w*t);
 	float sinus   = sin(w*t);

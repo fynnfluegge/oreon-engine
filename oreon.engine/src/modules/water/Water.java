@@ -71,7 +71,7 @@ public class Water extends GameObject{
 	
 	private Scenegraph scenegraph;
 	
-	public Water(int patches)
+	public Water(int patches, int fftResolution)
 	{
 		PatchVAO meshBuffer = new PatchVAO();
 		meshBuffer.addData(generatePatch2D4x4(patches),16);
@@ -84,9 +84,9 @@ public class Water extends GameObject{
 		
 		addComponent("Renderer", renderer);
 
-		fft = new OceanFFT(256); 
+		fft = new OceanFFT(fftResolution); 
 		fft.init();
-		normalmapRenderer = new NormalMapRenderer(256);
+		normalmapRenderer = new NormalMapRenderer(fftResolution);
 		
 		reflectionTexture = new Texture();
 		reflectionTexture.generate();

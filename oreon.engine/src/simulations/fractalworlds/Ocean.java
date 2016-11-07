@@ -7,7 +7,7 @@ import engine.math.Quaternion;
 public class Ocean extends Water{
 
 	public Ocean() {
-		super(32);
+		super(128,256);
 		
 		getTransform().setScaling(Constants.ZFAR,1,Constants.ZFAR);
 		getTransform().setTranslation(-Constants.ZFAR/2,0,-Constants.ZFAR/2);

@@ -32,8 +32,8 @@ uniform float emission;
 uniform float shininess;
 
 vec2 wind = vec2(1,0);
-const vec3 refractionColor = vec3(0.02,0.03,0.055);
-const vec3 reflectionColor = vec3(0.3294,0.4917,0.7270);
+const vec3 refractionColor = vec3(0.02,0.03,0.065);
+const vec3 reflectionColor = vec3(0.2994,0.4417,0.6870);
 const float zFar = 10000;
 const vec4 fogColor = vec4(0.1,0.15,0.25,0);
 
@@ -129,8 +129,8 @@ void main(void)
 		float attenuation = -dist/(largeDetailRange-20) + 1;
 		//vec3 bitangent = normalize(cross(tangent, normal));
 		mat3 TBN = mat3(tangent,normal,bitangent);
-		vec3 bumpNormal = 2 * texture(normalmap, texCoordF*4).rbg - 1;
-		bumpNormal.y *= 1.4;
+		vec3 bumpNormal = 2 * texture(normalmap, texCoordF*8).rbg - 1;
+		bumpNormal.y *= 1.2;
 		bumpNormal.xz *= attenuation;
 		normal = normalize(TBN * bumpNormal);
 	}
@@ -147,14 +147,14 @@ void main(void)
     // Reflection //
 	vec2 reflecCoords = projCoord.xy + dudvCoord.rb * kReflection;
 	reflecCoords = clamp(reflecCoords, kReflection, 1-kReflection);
-    vec3 reflection = mix(texture(waterReflection, reflecCoords).rgb, reflectionColor,  0.6);
+    vec3 reflection = mix(texture(waterReflection, reflecCoords).rgb, reflectionColor,  0.8);
     reflection *= F;
  
     // Refraction //
 	vec2 refracCoords = projCoord.xy + dudvCoord.rb * kRefraction;
 	refracCoords = clamp(refracCoords, kRefraction, 1-kRefraction);
 	
-    vec3 refraction = mix(texture(waterRefraction, refracCoords).rgb, refractionColor, 0.6); 
+    vec3 refraction = mix(texture(waterRefraction, refracCoords).rgb, refractionColor, 0.8); 
 	refraction *= 1-F;
 	
 	float diffuse = diffuse(normal);

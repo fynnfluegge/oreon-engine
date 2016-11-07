@@ -63,7 +63,7 @@ void main(void)
 	float dir = dot(normalize(k),w);
 	float L_ = (V*V)/g;
 
-	float h0 = clamp(sqrt((A/(magSq*magSq)) * pow(dir, 2.0) * exp(-(1.0/(magSq * L_ * L_))) * exp(-magSq*pow(L_/l,2)))/ sqrt(2.0), 0, 100000);
+	float h0 = clamp(sqrt((A/(magSq*magSq)) * pow(dir, 2.0) * exp(-(1.0/(magSq * L_ * L_))) * exp(-magSq*pow(L_/l,2)))/ sqrt(2.0), 0, L);
 	
 	imageStore(h0k, ivec2(gl_GlobalInvocationID.xy), vec4(gaussRND0() * h0, 0, 1));
 	imageStore(h0kminus, ivec2(gl_GlobalInvocationID.xy), vec4(gaussRND1() * h0, 0, 1));

@@ -1,7 +1,6 @@
 package simulations.fractalworlds;
 
 import static org.lwjgl.opengl.GL13.GL_TEXTURE15;
-import static org.lwjgl.opengl.GL13.GL_TEXTURE16;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 import modules.terrain.TerrainConfiguration;
 import modules.terrain.TerrainNode;
@@ -38,24 +37,17 @@ public class TerrainGridShader extends Shader{
 		
 		addUniform("worldMatrix");
 		addUniform("scaleY");
-		addUniform("scaleXZ");
 		
-		for (int i=0; i<10; i++)
+		for (int i=0; i<7; i++)
 		{
 			addUniform("fractals0[" + i + "].heightmap");
 			addUniform("fractals0[" + i + "].scaling");
 			addUniform("fractals0[" + i + "].strength");
-			
-			addUniform("fractals1[" + i + "].heightmap");
-			addUniform("fractals1[" + i + "].normalmap");
-			addUniform("fractals1[" + i + "].scaling");
 		}
-		
 		addUniform("bezier");
 		addUniform("tessFactor");
 		addUniform("tessSlope");
 		addUniform("tessShift");
-		addUniform("largeDetailedRange");
 		addUniform("lod");
 		addUniform("index");
 		addUniform("location");
@@ -85,30 +77,20 @@ public class TerrainGridShader extends Shader{
 		Vec2f location = terrainNode.getLocation();
 		float gap = terrainNode.getGap();
 		
-		for (int i=0; i<10; i++)
+		for (int i=0; i<7; i++)
 		{
-			glActiveTexture(GL_TEXTURE15 + i*2);
+			glActiveTexture(GL_TEXTURE15 + i);
 			terrConfig.getFractals().get(i).getHeightmap().bind();
-			setUniformi("fractals0[" + i +"].heightmap", 15+i*2);
-			setUniformi("fractals1[" + i +"].heightmap", 15+i*2);
-			
-			glActiveTexture(GL_TEXTURE16 + i*2);
-			terrConfig.getFractals().get(i).getNormalmap().bind();
-			setUniformi("fractals1[" + i + "].normalmap", 16+i*2);
-			
+			setUniformi("fractals0[" + i +"].heightmap", 15+i);
 			setUniformi("fractals0[" + i +"].scaling", terrConfig.getFractals().get(i).getScaling());
-			setUniformi("fractals1[" + i +"].scaling", terrConfig.getFractals().get(i).getScaling());
-			
 			setUniformf("fractals0[" + i +"].strength", terrConfig.getFractals().get(i).getStrength());
 		}
 		
 		setUniformf("scaleY", terrConfig.getScaleY());
-		setUniformf("scaleXZ", terrConfig.getScaleXZ());
 		setUniformi("bezier", terrConfig.getBezíer());
 		setUniformi("tessFactor", terrConfig.getTessellationFactor());
 		setUniformf("tessSlope", terrConfig.getTessellationSlope());
 		setUniformf("tessShift", terrConfig.getTessellationShift());
-		setUniformi("largeDetailedRange", terrConfig.getDetailRange());
 		setUniformi("lod", lod);
 		setUniform("index", index);
 		setUniform("location", location);

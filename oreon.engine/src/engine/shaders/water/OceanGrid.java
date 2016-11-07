@@ -35,7 +35,7 @@ private static OceanGrid instance = null;
 		addFragmentShader(ResourceLoader.loadShader("shaders/ocean/OceanGrid_FS.glsl"));
 		compileShader();
 		
-		addUniform("projectionViewMatrix");
+		addUniform("viewProjectionMatrix");
 		addUniform("worldMatrix");
 		addUniform("eyePosition");
 		

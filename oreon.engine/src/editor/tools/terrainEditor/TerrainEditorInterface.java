@@ -929,9 +929,6 @@ public class TerrainEditorInterface extends JFrame{
         				2 * (this.LoD1Range_Slider1.getValue() - DB.getTerrainConfiguration().getLod_morphing_area()[0]));
         	}
         }
-        
-        LoDPtachesSeriesData.update(1.0, DB.getTerrainConfiguration().getLodPatches()[0]);
-        TerrainEditorInterface.megabytes.setText(Float.toString(DB.getTerrainConfiguration().getMegabytes()));
     }                                              
 
     private void LoD2Range_Slider1StateChanged(javax.swing.event.ChangeEvent evt) {  
@@ -950,9 +947,6 @@ public class TerrainEditorInterface extends JFrame{
         		this.LoD3Range_Slider1.setMaximum(this.LoD2Range_Slider1.getValue() - 
         				2 * (this.LoD2Range_Slider1.getValue() - DB.getTerrainConfiguration().getLod_morphing_area()[1]));
         	}
-        	
-        	LoDPtachesSeriesData.update(2.0, DB.getTerrainConfiguration().getLodPatches()[1]);
-        	TerrainEditorInterface.megabytes.setText(Float.toString(DB.getTerrainConfiguration().getMegabytes()));
         }    
     }                                              
 
@@ -972,9 +966,6 @@ public class TerrainEditorInterface extends JFrame{
     			this.LoD4Range_Slider1.setMaximum(this.LoD3Range_Slider1.getValue() - 
     					2 * (this.LoD3Range_Slider1.getValue() - DB.getTerrainConfiguration().getLod_morphing_area()[2]));
     		}
-    		
-    		LoDPtachesSeriesData.update(3.0, DB.getTerrainConfiguration().getLodPatches()[2]);
-    		TerrainEditorInterface.megabytes.setText(Float.toString(DB.getTerrainConfiguration().getMegabytes()));
         }    
     }                                              
 
@@ -994,9 +985,6 @@ public class TerrainEditorInterface extends JFrame{
     			this.LoD5Range_Slider1.setMaximum(this.LoD4Range_Slider1.getValue() - 
     					2 * (this.LoD4Range_Slider1.getValue() - DB.getTerrainConfiguration().getLod_morphing_area()[3]));
     		}
-    		
-    		LoDPtachesSeriesData.update(4.0, DB.getTerrainConfiguration().getLodPatches()[3]);
-    		TerrainEditorInterface.megabytes.setText(Float.toString(DB.getTerrainConfiguration().getMegabytes()));
         }    
     }                                              
 
@@ -1016,9 +1004,6 @@ public class TerrainEditorInterface extends JFrame{
         	this.LoD6Range_Slider1.setMaximum(this.LoD5Range_Slider1.getValue() - 
     			2 * (this.LoD5Range_Slider1.getValue() - DB.getTerrainConfiguration().getLod_morphing_area()[4]));
     		}
-    		
-    		LoDPtachesSeriesData.update(5.0, DB.getTerrainConfiguration().getLodPatches()[4]);
-    		TerrainEditorInterface.megabytes.setText(Float.toString(DB.getTerrainConfiguration().getMegabytes()));
         } 
     }                                              
 
@@ -1038,9 +1023,6 @@ public class TerrainEditorInterface extends JFrame{
         	this.LoD7Range_Slider1.setMaximum(this.LoD6Range_Slider1.getValue() - 
     			2 * (this.LoD6Range_Slider1.getValue() - DB.getTerrainConfiguration().getLod_morphing_area()[5]));
     		}
-    		
-    		LoDPtachesSeriesData.update(6.0, DB.getTerrainConfiguration().getLodPatches()[5]);
-    		TerrainEditorInterface.megabytes.setText(Float.toString(DB.getTerrainConfiguration().getMegabytes()));
         } 
     }                                              
 
@@ -1061,9 +1043,6 @@ public class TerrainEditorInterface extends JFrame{
         	this.LoD8Range_Slider1.setMaximum(this.LoD7Range_Slider1.getValue() - 
     			2 * (this.LoD7Range_Slider1.getValue() - DB.getTerrainConfiguration().getLod_morphing_area()[6]));
     		}
-    		
-    		LoDPtachesSeriesData.update(7.0, DB.getTerrainConfiguration().getLodPatches()[6]);
-    		TerrainEditorInterface.megabytes.setText(Float.toString(DB.getTerrainConfiguration().getMegabytes()));
     	}
     }                                              
 
@@ -1078,9 +1057,6 @@ public class TerrainEditorInterface extends JFrame{
     		}
     		if(this.LoD8Range_Slider1.getValue() == 0)
         		this.LoD7Range_Slider1.setMinimum(0);
-    		
-    		LoDPtachesSeriesData.update(8.0, DB.getTerrainConfiguration().getLodPatches()[7]);
-    		TerrainEditorInterface.megabytes.setText(Float.toString(DB.getTerrainConfiguration().getMegabytes()));
     	}
     }                                              
 
@@ -1149,14 +1125,6 @@ public class TerrainEditorInterface extends JFrame{
     	TerrainEditorInterface.megabytes.setText(Float.toString(DB.getTerrainConfiguration().getMegabytes()));
     	
     	LoDPtachesSeriesData = new XYSeries("LoD bars");
-    	LoDPtachesSeriesData.add(1.0, DB.getTerrainConfiguration().getLodPatches()[0]);
-		LoDPtachesSeriesData.add(2.0, DB.getTerrainConfiguration().getLodPatches()[1]);
-		LoDPtachesSeriesData.add(3.0, DB.getTerrainConfiguration().getLodPatches()[2]);
-		LoDPtachesSeriesData.add(4.0, DB.getTerrainConfiguration().getLodPatches()[3]);
-		LoDPtachesSeriesData.add(5.0, DB.getTerrainConfiguration().getLodPatches()[4]);
-		LoDPtachesSeriesData.add(6.0, DB.getTerrainConfiguration().getLodPatches()[5]);
-		LoDPtachesSeriesData.add(7.0, DB.getTerrainConfiguration().getLodPatches()[6]);
-		LoDPtachesSeriesData.add(8.0, DB.getTerrainConfiguration().getLodPatches()[7]);
     	IntervalXYDataset dataset = new XYBarDataset(new XYSeriesCollection(
     			LoDPtachesSeriesData), 0.5);
 
@@ -1299,14 +1267,6 @@ public class TerrainEditorInterface extends JFrame{
     public static void updateLoDPatchesChart(){
 
     	if (init){
-    	LoDPtachesSeriesData.update(1.0, DB.getTerrainConfiguration().getLodPatches()[0]);
-		LoDPtachesSeriesData.update(2.0, DB.getTerrainConfiguration().getLodPatches()[1]);
-		LoDPtachesSeriesData.update(3.0, DB.getTerrainConfiguration().getLodPatches()[2]);
-		LoDPtachesSeriesData.update(4.0, DB.getTerrainConfiguration().getLodPatches()[3]);
-		LoDPtachesSeriesData.update(5.0, DB.getTerrainConfiguration().getLodPatches()[4]);
-		LoDPtachesSeriesData.update(6.0, DB.getTerrainConfiguration().getLodPatches()[5]);
-		LoDPtachesSeriesData.update(7.0, DB.getTerrainConfiguration().getLodPatches()[6]);
-		LoDPtachesSeriesData.update(8.0, DB.getTerrainConfiguration().getLodPatches()[7]);
 		megabytes.setText(Float.toString(DB.getTerrainConfiguration().getMegabytes()));
     	}
     }

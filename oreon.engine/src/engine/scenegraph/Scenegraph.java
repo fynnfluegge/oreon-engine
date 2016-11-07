@@ -5,7 +5,6 @@ import engine.core.Transform;
 public class Scenegraph extends Node{
 	
 	private Node rootObject;
-//	private Node Lights;
 	private Node terrain;
 	private Node water;
 	
