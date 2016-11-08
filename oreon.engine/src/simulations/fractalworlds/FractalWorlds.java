@@ -7,9 +7,9 @@ public class FractalWorlds {
 	
 	public static void main(String[] args) {
 		
-		Game game = new Game(800, 600, "Fractalworlds");
+		Game game = new Game();
 		game.setGui(new GUI());
-		game.getEngine().createWindow();
+		game.getEngine().createWindow(800, 600, "Fractalworlds");
 		game.init();
 		game.getScenegraph().setTerrain(new Terrain());
 		game.getScenegraph().addObject(new SkySphere());

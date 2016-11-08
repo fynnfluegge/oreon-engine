@@ -18,9 +18,9 @@ public class OpenGLEngine implements Runnable{
 	@Override
 	public void run() {
 		
-		Game game = new Game(1200, 350, "TerrainLoader");
+		Game game = new Game();
 		game.setGui(new EngineGUI());
-		game.getEngine().embedWindow(OpenGLCanvas);
+		game.getEngine().embedWindow(1200, 350, OpenGLCanvas);
 		game.init();
 		game.getScenegraph().setTerrain(new Terrain());
 		game.getScenegraph().addObject(new SkySphere());	

@@ -9,8 +9,8 @@ public class Game {
 	private Scenegraph scenegraph;
 	private GUI gui;
 	
-	public Game(int width, int height, String title){
-		engine = new CoreEngine(width, height, title);
+	public Game(){
+		engine = new CoreEngine();
 		scenegraph = new Scenegraph();
 	}
 	

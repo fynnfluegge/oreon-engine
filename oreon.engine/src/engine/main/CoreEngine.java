@@ -18,9 +18,6 @@ import engine.scenegraph.Scenegraph;
 
 public class CoreEngine{
 	
-	private int width;
-	private int height;
-	private String title;
 	private static int fps;
 	private static float framerate = 100;
 	private static float frameTime = 1.0f/framerate;
@@ -32,24 +29,16 @@ public class CoreEngine{
 	private static Condition holdGLContext = glContextLock.newCondition();
 	
 	private RenderingEngine renderingEngine;
-
-	public CoreEngine(int width, int height, String title)
-	{
-		this.width = width;
-		this.height = height;
-		this.title = title;
-		isRunning = false;
-	}
 	
-	public void createWindow()
+	public void createWindow(int width, int height, String title)
 	{
-		OpenGLDisplay.getInstance().getLwjglWindow().create(this.width, this.height, this.title);
+		OpenGLDisplay.getInstance().getLwjglWindow().create(width, height, title);
 		System.out.println("OpenGL version: " + GL11.glGetString(GL11.GL_VERSION));
 	}
 	
-	public void embedWindow(Canvas canvas)
+	public void embedWindow(int width, int height, Canvas canvas)
 	{
-		OpenGLDisplay.getInstance().getLwjglWindow().embed(this.width, this.height, canvas);
+		OpenGLDisplay.getInstance().getLwjglWindow().embed(width, height, canvas);
 		System.out.println("OpenGL version: " + GL11.glGetString(GL11.GL_VERSION));
 	}
 	
