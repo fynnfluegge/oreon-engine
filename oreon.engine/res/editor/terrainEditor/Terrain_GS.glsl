@@ -4,13 +4,16 @@ layout(triangles) in;
 
 layout(triangle_strip, max_vertices = 3) out;
 
+in vec2 texCoordG[];
+
+out vec2 texCoordF;
 out vec3 position;
 out vec3 tangent;
 
-struct Fractal
+struct Material
 {
-	sampler2D heightmap;
-	int scaling;
+	sampler2D displacemap;
+	float displaceScale;
 };
 
 layout (std140, row_major) uniform Camera{
@@ -19,52 +22,44 @@ layout (std140, row_major) uniform Camera{
 	vec4 frustumPlanes[6];
 };
 
-uniform Fractal fractals1[3];
 uniform int largeDetailedRange;
-uniform float scaleY;
-uniform float scaleXZ;
 uniform vec4 clipplane;
 
 vec3 Tangent;
-vec2 mapCoords[3];
 
 void calcTangent()
 {	
 	vec3 v0 = gl_in[0].gl_Position.xyz;
 	vec3 v1 = gl_in[1].gl_Position.xyz;
 	vec3 v2 = gl_in[2].gl_Position.xyz;
-	
-	mapCoords[0] = (gl_in[0].gl_Position.xz + scaleXZ/2)/scaleXZ;
-	mapCoords[1] = (gl_in[1].gl_Position.xz + scaleXZ/2)/scaleXZ;
-	mapCoords[2] = (gl_in[2].gl_Position.xz + scaleXZ/2)/scaleXZ;
 
+	// edges of the face/triangle
     vec3 e1 = v1 - v0;
     vec3 e2 = v2 - v0;
-
-    float dU1 = mapCoords[1].x - mapCoords[0].x;
-    float dV1 = mapCoords[1].y - mapCoords[0].y;
-    float dU2 = mapCoords[2].x - mapCoords[0].x;
-    float dV2 = mapCoords[2].y - mapCoords[0].y;
-
-    float f = 1.0 / (dU1 * dV2 - dU2 * dV1);
-
-    vec3 t;
-
-    t.x = f * (dV2 * e1.x - dV1 * e2.x);
-    t.y = f * (dV2 * e1.y - dV1 * e2.y);
-    t.z = f * (dV2 * e1.z - dV1 * e2.z);
 	
-	Tangent = normalize(t);
+	vec2 uv0 = texCoordG[0];
+	vec2 uv1 = texCoordG[1];
+	vec2 uv2 = texCoordG[2];
+
+    vec2 deltaUV1 = uv1 - uv0;
+	vec2 deltaUV2 = uv2 - uv0;
+	
+	float r = 1.0 / (deltaUV1.x * deltaUV2.y - deltaUV1.y * deltaUV2.x);
+	
+	Tangent = normalize((e1 * deltaUV2.y - e2 * deltaUV1.y)*r);
 }
 
-void main()
-{	
+
+
+void main() {
+
 	float dist = (distance(gl_in[0].gl_Position.xyz, eyePosition) + distance(gl_in[1].gl_Position.xyz, eyePosition) + distance(gl_in[2].gl_Position.xyz, eyePosition))/3;
 	if (dist < largeDetailedRange){
+		
 		calcTangent();
 	}
 	
-	for (int i=0; i<gl_in.length(); i++)
+	for (int i = 0; i < gl_in.length(); ++i)
 	{
 		vec4 vertexPos = gl_in[i].gl_Position;
 		gl_Position = viewProjectionMatrix * vertexPos;
@@ -75,10 +70,10 @@ void main()
 		gl_ClipDistance[4] = dot(gl_Position ,frustumPlanes[4]);
 		gl_ClipDistance[5] = dot(gl_Position ,frustumPlanes[5]);
 		gl_ClipDistance[6] = dot(vertexPos ,clipplane);
-		position = (vertexPos).xyz;
+		texCoordF = texCoordG[i];
+		position = vertexPos.xyz;
 		tangent = Tangent;
 		EmitVertex();
 	}
-	
 	EndPrimitive();
 }

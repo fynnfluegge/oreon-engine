@@ -1,5 +1,8 @@
 package engine.main;
 
+import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.glClear;
+import static org.lwjgl.opengl.GL11.glClearDepth;
 import static org.lwjgl.opengl.GL11.glFinish;
 
 import modules.gui.GUI;
@@ -51,6 +54,8 @@ public class RenderingEngine {
 
 		// render shadow maps
 		shadowMaps.bind();
+		glClearDepth(1.0);
+		glClear(GL_DEPTH_BUFFER_BIT);
 		scenegraph.renderShadows();
 		shadowMaps.unbind();
 		

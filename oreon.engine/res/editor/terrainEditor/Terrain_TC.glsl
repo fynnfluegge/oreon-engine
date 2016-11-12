@@ -15,7 +15,6 @@ layout (std140, row_major) uniform Camera{
 uniform int tessFactor;
 uniform float tessSlope;
 uniform float tessShift;
-uniform int detailRange;
 
 const int AB = 2;
 const int BC = 3;

@@ -12,9 +12,7 @@ import static org.lwjgl.opengl.GL11.glTexParameteri;
 import static org.lwjgl.opengl.GL12.GL_CLAMP_TO_EDGE;
 import static org.lwjgl.opengl.GL42.glTexStorage3D;
 import static org.lwjgl.opengl.GL14.GL_TEXTURE_COMPARE_FUNC;
-import static org.lwjgl.opengl.GL14.GL_TEXTURE_COMPARE_MODE;
 import static org.lwjgl.opengl.GL20.glDrawBuffers;
-import static org.lwjgl.opengl.GL30.GL_COMPARE_REF_TO_TEXTURE;
 import static org.lwjgl.opengl.GL30.GL_DEPTH_ATTACHMENT;
 import static org.lwjgl.opengl.GL30.GL_DEPTH_COMPONENT32F;
 import static org.lwjgl.opengl.GL30.GL_FRAMEBUFFER;
@@ -44,10 +42,10 @@ public class ShadowMaps {
 
 		glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
 		glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
 		glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		
 		glBindTexture(GL_TEXTURE_2D_ARRAY, 0);
 		
 		fbo = new Framebuffer();

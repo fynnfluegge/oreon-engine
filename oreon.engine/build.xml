@@ -1,5 +1,5 @@
-<project name="Oreon Engine" default="dist">
-  <property name="MyApp" value="MyApp" />
+<project name="Oreon.Engine.Ocean" default="dist">
+  <property name="MyApp" value="Ocean" />
   <path id="compile.classpath">
     <fileset dir="lib" />
   	

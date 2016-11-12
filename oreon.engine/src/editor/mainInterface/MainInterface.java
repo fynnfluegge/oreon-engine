@@ -1,4 +1,4 @@
-package editor.main;
+package editor.mainInterface;
 
 import javax.swing.JFrame;
 
@@ -15,19 +15,18 @@ public class MainInterface extends JFrame{
 	private TerrainEditorInterface terrainEditor;
 	
 	
-	public MainInterface() {
-	     initComponents();
-	}
-                        
+	 public MainInterface() {
+	        initComponents();
+	    }
+
+	    
 	    private void initComponents() {
 
-	    	jPanel1 = new javax.swing.JPanel();
+	        jPanel1 = new javax.swing.JPanel();
 	        OpenGLCanvas = new java.awt.Canvas();
-	        tessellationFunctionPanel = new javax.swing.JPanel();
-	        LoDChartPanel = new javax.swing.JPanel();
-	        dataVolumetxt = new javax.swing.JLabel();
 	        dataVolumeValue = new javax.swing.JLabel();
-	        mbtxt = new javax.swing.JLabel();
+	        jButtonSave = new javax.swing.JButton();
+	        jButtonReload = new javax.swing.JButton();
 	        jMenuBar1 = new javax.swing.JMenuBar();
 	        FileMenu = new javax.swing.JMenu();
 	        EditMenu = new javax.swing.JMenu();
@@ -40,61 +39,56 @@ public class MainInterface extends JFrame{
 	        jPanel1.setBackground(new java.awt.Color(30, 30, 30));
 	        jPanel1.setForeground(new java.awt.Color(255, 255, 255));
 
-	        tessellationFunctionPanel.setLayout(new java.awt.BorderLayout());
-
-	        LoDChartPanel.setLayout(new java.awt.BorderLayout());
-
-	        dataVolumetxt.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-	        dataVolumetxt.setForeground(new java.awt.Color(51, 255, 51));
-	        dataVolumetxt.setText(" GPU memory usage");
-
 	        dataVolumeValue.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
 	        dataVolumeValue.setForeground(new java.awt.Color(102, 255, 102));
 
-	        mbtxt.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-	        mbtxt.setForeground(new java.awt.Color(102, 255, 102));
-	        mbtxt.setText("mb");
+	        jButtonSave.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+	        jButtonSave.setText("Save");
+	        jButtonSave.addActionListener(new java.awt.event.ActionListener() {
+	            public void actionPerformed(java.awt.event.ActionEvent evt) {
+	                jButtonSaveActionPerformed(evt);
+	            }
+	        });
+
+	        jButtonReload.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+	        jButtonReload.setText("Reload");
+	        jButtonReload.addActionListener(new java.awt.event.ActionListener() {
+	            public void actionPerformed(java.awt.event.ActionEvent evt) {
+	                jButtonReloadActionPerformed(evt);
+	            }
+	        });
 
 	        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
 	        jPanel1.setLayout(jPanel1Layout);
 	        jPanel1Layout.setHorizontalGroup(
 	            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 	            .addGroup(jPanel1Layout.createSequentialGroup()
-	                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+	                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
 	                    .addGroup(jPanel1Layout.createSequentialGroup()
-	                        .addGap(128, 128, 128)
-	                        .addComponent(LoDChartPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE)
-	                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-	                            .addGroup(jPanel1Layout.createSequentialGroup()
-	                                .addGap(164, 164, 164)
-	                                .addComponent(tessellationFunctionPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 410, javax.swing.GroupLayout.PREFERRED_SIZE))
-	                            .addGroup(jPanel1Layout.createSequentialGroup()
-	                                .addGap(272, 272, 272)
-	                                .addComponent(dataVolumetxt)
-	                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-	                                .addComponent(dataVolumeValue, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
-	                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-	                                .addComponent(mbtxt))))
-	                    .addGroup(jPanel1Layout.createSequentialGroup()
-	                        .addGap(38, 38, 38)
-	                        .addComponent(OpenGLCanvas, javax.swing.GroupLayout.PREFERRED_SIZE, 1200, javax.swing.GroupLayout.PREFERRED_SIZE)))
+	                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+	                        .addComponent(jButtonReload)
+	                        .addGap(46, 46, 46)
+	                        .addComponent(jButtonSave))
+	                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+	                        .addGroup(jPanel1Layout.createSequentialGroup()
+	                            .addGap(886, 886, 886)
+	                            .addComponent(dataVolumeValue, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
+	                        .addGroup(jPanel1Layout.createSequentialGroup()
+	                            .addGap(38, 38, 38)
+	                            .addComponent(OpenGLCanvas, javax.swing.GroupLayout.PREFERRED_SIZE, 1200, javax.swing.GroupLayout.PREFERRED_SIZE))))
 	                .addContainerGap(42, Short.MAX_VALUE))
 	        );
 	        jPanel1Layout.setVerticalGroup(
 	            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 	            .addGroup(jPanel1Layout.createSequentialGroup()
 	                .addGap(41, 41, 41)
-	                .addComponent(OpenGLCanvas, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE)
-	                .addGap(28, 28, 28)
-	                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-	                    .addGroup(jPanel1Layout.createSequentialGroup()
-	                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-	                            .addComponent(dataVolumetxt)
-	                            .addComponent(dataVolumeValue, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
-	                            .addComponent(mbtxt))
-	                        .addGap(33, 33, 33)
-	                        .addComponent(tessellationFunctionPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
-	                    .addComponent(LoDChartPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+	                .addComponent(OpenGLCanvas, javax.swing.GroupLayout.PREFERRED_SIZE, 500, javax.swing.GroupLayout.PREFERRED_SIZE)
+	                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+	                .addComponent(dataVolumeValue, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
+	                .addGap(18, 18, 18)
+	                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+	                    .addComponent(jButtonSave)
+	                    .addComponent(jButtonReload))
 	                .addGap(32, 32, 32))
 	        );
 
@@ -148,7 +142,15 @@ public class MainInterface extends JFrame{
 	    	
 	    	terrainEditor.setLocation(1000, 50);
 	    	terrainEditor.setVisible(true);
-	    }                                                 
+	    }     
+	    
+	    private void jButtonSaveActionPerformed(java.awt.event.ActionEvent evt) {                                            
+	        // TODO add your handling code here:
+	    }                                           
+
+	    private void jButtonReloadActionPerformed(java.awt.event.ActionEvent evt) {                                              
+	        // TODO add your handling code here:
+	    }    
 
 	    /**
 	     * @param args the command line arguments
@@ -193,17 +195,11 @@ public class MainInterface extends JFrame{
 	    private javax.swing.JMenuItem TerrainEditorTool;
 	    private javax.swing.JMenu ToolsMenu;
 	    private javax.swing.JLabel dataVolumeValue;
-	    private javax.swing.JLabel dataVolumetxt;
 	    private javax.swing.JMenuBar jMenuBar1;
 	    private javax.swing.JPanel jPanel1;
-	    private javax.swing.JLabel mbtxt;
 	    private javax.swing.JPanel tessellationFunctionPanel;
+	    private javax.swing.JButton jButtonReload;
+	    private javax.swing.JButton jButtonSave;
 	    // End of variables declaration   
-
-	public static void main(String[] args) {
-		//MainInterface window = new MainInterface();
-		MainInterface.start();
-
-	}
 
 }

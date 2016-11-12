@@ -1,19 +1,16 @@
 package editor.terrain;
 
 import static org.lwjgl.opengl.GL13.GL_TEXTURE10;
-import static org.lwjgl.opengl.GL13.GL_TEXTURE12;
-import static org.lwjgl.opengl.GL13.GL_TEXTURE13;
-import static org.lwjgl.opengl.GL13.GL_TEXTURE14;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE11;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE15;
-import static org.lwjgl.opengl.GL13.GL_TEXTURE16;
-import static org.lwjgl.opengl.GL13.GL_TEXTURE3;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE22;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE4;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE5;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE6;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE7;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE8;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE9;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
-import modules.lighting.DirectionalLight;
 import modules.terrain.TerrainConfiguration;
 import modules.terrain.TerrainNode;
 import engine.core.Constants;
@@ -40,11 +37,11 @@ public class TerrainShader extends Shader{
 	{
 		super();
 
-		addVertexShader(ResourceLoader.loadShader("cdk/terrainEditor/Terrain_VS.glsl"));
-		addTessellationControlShader(ResourceLoader.loadShader("cdk/terrainEditor/Terrain_TC.glsl"));
-		addTessellationEvaluationShader(ResourceLoader.loadShader("cdk/terrainEditor/Terrain_TE.glsl"));
-		addGeometryShader(ResourceLoader.loadShader("cdk/terrainEditor/Terrain_GS.glsl"));
-		addFragmentShader(ResourceLoader.loadShader("cdk/terrainEditor/Terrain_FS.glsl"));
+		addVertexShader(ResourceLoader.loadShader("editor/terrainEditor/Terrain_VS.glsl"));
+		addTessellationControlShader(ResourceLoader.loadShader("editor/terrainEditor/Terrain_TC.glsl"));
+		addTessellationEvaluationShader(ResourceLoader.loadShader("editor/terrainEditor/Terrain_TE.glsl"));
+		addGeometryShader(ResourceLoader.loadShader("editor/terrainEditor/Terrain_GS.glsl"));
+		addFragmentShader(ResourceLoader.loadShader("editor/terrainEditor/Terrain_FS.glsl"));
 		compileShader();
 		
 		addUniform("worldMatrix");
@@ -63,14 +60,15 @@ public class TerrainShader extends Shader{
 		addUniform("location");
 		addUniform("texDetail");
 		
-		addUniform("splatmap");
-		
-		for (int i=0; i<10; i++)
+		for (int i=0; i<7; i++)
 		{
 			addUniform("fractals0[" + i + "].heightmap");
 			addUniform("fractals0[" + i + "].scaling");
 			addUniform("fractals0[" + i + "].strength");
-			
+		}
+		
+		for (int i=0; i<7; i++)
+		{
 			addUniform("fractals1[" + i + "].normalmap");
 			addUniform("fractals1[" + i + "].scaling");
 		}
@@ -78,45 +76,34 @@ public class TerrainShader extends Shader{
 		for (int i=0; i<8; i++){
 			addUniform("lod_morph_area[" + i + "]");
 		}
-		
-		addUniform("sunlight.intensity");
-		addUniform("sunlight.color");
-		addUniform("sunlight.direction");
-		addUniform("sunlight.ambient");
-		
-		addUniform("rock0.displaceScale");
-		addUniform("rock0.displacemap");
-		addUniform("sand0.displaceScale");
-		addUniform("sand0.displacemap");
-		addUniform("snow0.displaceScale");
-		addUniform("snow0.displacemap");
-		
-		addUniform("sand1.diffusemap");
-		addUniform("sand1.normalmap");
-		addUniform("sand1.shininess");
-		addUniform("sand1.emission");
-		addUniform("rock1.diffusemap");
-		addUniform("rock1.normalmap");
-		addUniform("rock1.shininess");
-		addUniform("rock1.emission");
-		addUniform("snow1.diffusemap");
-		addUniform("snow1.normalmap");
-		addUniform("snow1.shininess");
-		addUniform("snow1.emission");
+
+//		addUniform("grass.diffusemap");
+//		addUniform("grass.normalmap");
+		addUniform("grass.shininess");
+		addUniform("grass.emission");
+		addUniform("sand.diffusemap");
+//		addUniform("sand.normalmap");
+		addUniform("sand.shininess");
+		addUniform("sand.emission");
+		addUniform("rock.diffusemap");
+//		addUniform("rock.normalmap");
+		addUniform("rock.shininess");
+		addUniform("rock.emission");
+//		addUniform("snow.diffusemap");
+//		addUniform("snow.normalmap");
+		addUniform("snow.shininess");
+		addUniform("snow.emission");
 		
 		addUniform("clipplane");
 		
 		addUniformBlock("Camera");
+		addUniformBlock("DirectionalLight");
 	}
 	
 	public void updateUniforms(GameObject object)
 	{	
 		bindUniformBlock("Camera", Constants.CameraUniformBlockBinding);
-	
-		setUniform("sunlight.ambient", DirectionalLight.getInstance().getAmbient());
-		setUniformf("sunlight.intensity", DirectionalLight.getInstance().getIntensity());
-		setUniform("sunlight.color", DirectionalLight.getInstance().getColor());
-		setUniform("sunlight.direction", DirectionalLight.getInstance().getDirection());	
+		bindUniformBlock("DirectionalLight", Constants.DirectionalLightUniformBlockBinding);	
 		
 		setUniform("clipplane", RenderingEngine.getClipplane());
 		
@@ -128,24 +115,21 @@ public class TerrainShader extends Shader{
 		
 		setUniform("worldMatrix", object.getTransform().getWorldMatrix());
 		
-		glActiveTexture(GL_TEXTURE3);
-		terrConfig.getSplatmap().bind();
-		setUniformi("splatmap", 3);
-		
-		for (int i=0; i<10; i++)
+		for (int i=0; i<7; i++)
 		{
-			glActiveTexture(GL_TEXTURE15 + i*2);
+			glActiveTexture(GL_TEXTURE15 + i);
 			terrConfig.getFractals().get(i).getHeightmap().bind();
-			setUniformi("fractals0[" + i +"].heightmap", 15+i*2);
-			
-			glActiveTexture(GL_TEXTURE16 + i*2);
-			terrConfig.getFractals().get(i).getNormalmap().bind();
-			setUniformi("fractals1[" + i + "].normalmap", 16+i*2);
-			
+			setUniformi("fractals0[" + i +"].heightmap", 15+i);	
 			setUniformi("fractals0[" + i +"].scaling", terrConfig.getFractals().get(i).getScaling());
-			setUniformi("fractals1[" + i +"].scaling", terrConfig.getFractals().get(i).getScaling());
-			
 			setUniformf("fractals0[" + i +"].strength", terrConfig.getFractals().get(i).getStrength());
+		}
+		
+		for (int i=0; i<7; i++)
+		{
+			glActiveTexture(GL_TEXTURE22 + i);
+			terrConfig.getFractals().get(i).getNormalmap().bind();
+			setUniformi("fractals1[" + i +"].normalmap", 22+i);	
+			setUniformi("fractals1[" + i +"].scaling", terrConfig.getFractals().get(i).getScaling());
 		}
 		
 		setUniformf("scaleY", terrConfig.getScaleY());
@@ -166,46 +150,44 @@ public class TerrainShader extends Shader{
 			setUniformi("lod_morph_area[" + i + "]", terrConfig.getLod_morphing_area()[i]);
 		}
 		
-		glActiveTexture(GL_TEXTURE4);
-		terrConfig.getMaterial1().getDiffusemap().bind();
-		setUniformi("sand1.diffusemap", 4);
-		glActiveTexture(GL_TEXTURE5);
-		terrConfig.getMaterial1().getNormalmap().bind();
-		setUniformi("sand1.normalmap", 5);
-		glActiveTexture(GL_TEXTURE6);
-		terrConfig.getMaterial1().getDisplacemap().bind();
-		setUniformi("sand0.displacemap", 6);
+//		glActiveTexture(GL_TEXTURE4);
+//		terrConfig.getMaterial0().getDiffusemap().bind();
+//		setUniformi("grass.diffusemap", 4);
+//		glActiveTexture(GL_TEXTURE5);
+//		terrConfig.getMaterial0().getNormalmap().bind();
+//		setUniformi("grass.normalmap", 5);
 		
-		setUniformf("sand0.displaceScale", terrConfig.getMaterial1().getDisplaceScale());
-		setUniformf("sand1.shininess", terrConfig.getMaterial1().getShininess());
-		setUniformf("sand1.emission", terrConfig.getMaterial1().getEmission());
+		setUniformf("grass.shininess", terrConfig.getMaterial0().getShininess());
+		setUniformf("grass.emission", terrConfig.getMaterial0().getEmission());
+		
+		glActiveTexture(GL_TEXTURE6);
+		terrConfig.getMaterial1().getDiffusemap().bind();
+		setUniformi("sand.diffusemap", 6);
+//		glActiveTexture(GL_TEXTURE7);
+//		terrConfig.getMaterial1().getNormalmap().bind();
+//		setUniformi("sand.normalmap", 7);
+
+		setUniformf("sand.shininess", terrConfig.getMaterial1().getShininess());
+		setUniformf("sand.emission", terrConfig.getMaterial1().getEmission());
 		
 		glActiveTexture(GL_TEXTURE8);
 		terrConfig.getMaterial2().getDiffusemap().bind();
-		setUniformi("rock1.diffusemap", 8);
-		glActiveTexture(GL_TEXTURE9);
-		terrConfig.getMaterial2().getNormalmap().bind();
-		setUniformi("rock1.normalmap", 9);
-		glActiveTexture(GL_TEXTURE10);
-		terrConfig.getMaterial2().getDisplacemap().bind();
-		setUniformi("rock0.displacemap", 10);
+		setUniformi("rock.diffusemap", 8);
+//		glActiveTexture(GL_TEXTURE9);
+//		terrConfig.getMaterial2().getNormalmap().bind();
+//		setUniformi("rock.normalmap", 9);
+
+		setUniformf("rock.shininess", terrConfig.getMaterial2().getShininess());
+		setUniformf("rock.emission", terrConfig.getMaterial2().getEmission());
 		
-		setUniformf("rock0.displaceScale", terrConfig.getMaterial2().getDisplaceScale());
-		setUniformf("rock1.shininess", terrConfig.getMaterial2().getShininess());
-		setUniformf("rock1.emission", terrConfig.getMaterial2().getEmission());
-		
-		glActiveTexture(GL_TEXTURE12);
-		terrConfig.getMaterial3().getDiffusemap().bind();
-		setUniformi("snow1.diffusemap", 12);
-		glActiveTexture(GL_TEXTURE13);
-		terrConfig.getMaterial3().getNormalmap().bind();
-		setUniformi("snow1.normalmap", 13);
-		glActiveTexture(GL_TEXTURE14);
-		terrConfig.getMaterial3().getDisplacemap().bind();
-		setUniformi("snow0.displacemap", 14);
-		
-		setUniformf("snow0.displaceScale", terrConfig.getMaterial3().getDisplaceScale());
-		setUniformf("snow1.shininess", terrConfig.getMaterial3().getShininess());
-		setUniformf("snow1.emission", terrConfig.getMaterial3().getEmission());
+//		glActiveTexture(GL_TEXTURE10);
+//		terrConfig.getMaterial3().getDiffusemap().bind();
+//		setUniformi("snow.diffusemap", 10);
+//		glActiveTexture(GL_TEXTURE11);
+//		terrConfig.getMaterial3().getNormalmap().bind();
+//		setUniformi("snow.normalmap", 11);
+
+		setUniformf("snow.shininess", terrConfig.getMaterial3().getShininess());
+		setUniformf("snow.emission", terrConfig.getMaterial3().getEmission());
 	}
 }

@@ -20,7 +20,7 @@ public class OpenGLEngine implements Runnable{
 		
 		Game game = new Game();
 		game.setGui(new EngineGUI());
-		game.getEngine().embedWindow(1200, 350, OpenGLCanvas);
+		game.getEngine().embedWindow(1200, 500, OpenGLCanvas);
 		game.init();
 		game.getScenegraph().setTerrain(new Terrain());
 		game.getScenegraph().addObject(new SkySphere());	

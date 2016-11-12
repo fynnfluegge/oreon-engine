@@ -31,6 +31,7 @@ public class TerrainConfiguration {
 	private Texture normalmap;
 	private Texture ambientmap;
 	private Texture splatmap;
+	private Material material0;
 	private Material material1;
 	private Material material2;
 	private Material material3;
@@ -92,6 +93,31 @@ public class TerrainConfiguration {
 						setSplatmap(new Texture(tokens[1]));
 						getSplatmap().bind();
 						getSplatmap().mipmap();
+					}
+					if(tokens[0].equals("material0_DIF")){
+						setMaterial0(new Material());
+						getMaterial0().setDiffusemap(new Texture(tokens[1]));
+						getMaterial0().getDiffusemap().bind();
+						getMaterial0().getDiffusemap().mipmap();
+					}
+					if(tokens[0].equals("material0_NRM")){
+						getMaterial0().setNormalmap(new Texture(tokens[1]));
+						getMaterial0().getNormalmap().bind();
+						getMaterial0().getNormalmap().mipmap();
+					}
+					if(tokens[0].equals("material0_DISP")){
+						getMaterial0().setDisplacemap(new Texture(tokens[1]));
+						getMaterial0().getDisplacemap().bind();
+						getMaterial0().getDisplacemap().mipmap();
+					}
+					if(tokens[0].equals("material0_displaceScale")){
+						getMaterial0().setDisplaceScale(Float.valueOf(tokens[1]));
+					}
+					if(tokens[0].equals("material0_emission")){
+						getMaterial0().setEmission(Float.valueOf(tokens[1]));
+					}
+					if(tokens[0].equals("material0_shininess")){
+						getMaterial0().setShininess(Float.valueOf(tokens[1]));
 					}
 					if(tokens[0].equals("material1_DIF")){
 						setMaterial1(new Material());
@@ -481,5 +507,13 @@ public class TerrainConfiguration {
 
 	public int[] getLod_range() {
 		return lod_range;
+	}
+
+	public Material getMaterial0() {
+		return material0;
+	}
+
+	public void setMaterial0(Material material0) {
+		this.material0 = material0;
 	}
 }

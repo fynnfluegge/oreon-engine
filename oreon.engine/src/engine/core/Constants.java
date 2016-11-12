@@ -16,7 +16,7 @@ public class Constants {
 	public static Quaternion PLANE0 = new Quaternion(0,0,0,0);
 	public static int CLIPOFFSET;
 	public static final int PSSM_SPLITS = 4;
-	public static final float[] PSSM_SPLIT_SHEME= {0,0.05f,0.2f,0.5f,1};
+	public static final float[] PSSM_SPLIT_SHEME= {0,0.02f,0.1f,0.25f,1};
 	
 	// Uniform Block Bindings
 	public static final int CameraUniformBlockBinding = 1;

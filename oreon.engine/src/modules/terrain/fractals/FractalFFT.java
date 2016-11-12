@@ -21,8 +21,9 @@ public class FractalFFT extends FastFourierTransform{
 	private Texture heightmap;
 	
 	public FractalFFT(int N, int L, float A, float v, Vec2f w, float l) {
-		
+			
 		super(N);
+
 		t = new Random().nextInt(1000);
 		FractalFourierComponents components = new FractalFourierComponents(N, L, A, v, w, l);
 		setFourierComponents(components);
