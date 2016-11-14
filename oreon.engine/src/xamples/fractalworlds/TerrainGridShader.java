@@ -1,4 +1,4 @@
-package simulations.fractalworlds;
+package xamples.fractalworlds;
 
 import static org.lwjgl.opengl.GL13.GL_TEXTURE15;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
@@ -6,34 +6,35 @@ import modules.terrain.TerrainConfiguration;
 import modules.terrain.TerrainNode;
 import engine.core.Constants;
 import engine.core.ResourceLoader;
+import engine.main.RenderingEngine;
 import engine.math.Vec2f;
 import engine.scenegraph.GameObject;
 import engine.shaders.Shader;
 
-public class TerrainShadowShader extends Shader{
+public class TerrainGridShader extends Shader{
 	
-private static TerrainShadowShader instance = null;
+	private static TerrainGridShader instance = null;
 	
-	public static TerrainShadowShader getInstance() 
+	public static TerrainGridShader getInstance() 
 	{
 	    if(instance == null) 
 	    {
-	    	instance = new TerrainShadowShader();
+	    	instance = new TerrainGridShader();
 	    }
 	      return instance;
 	}
 	
-	protected TerrainShadowShader(){
-		
+	protected TerrainGridShader()
+	{
 		super();
-		
+
 		addVertexShader(ResourceLoader.loadShader("demos/FractalWorlds/Terrain_VS.glsl"));
 		addTessellationControlShader(ResourceLoader.loadShader("demos/FractalWorlds/Terrain_TC.glsl"));
 		addTessellationEvaluationShader(ResourceLoader.loadShader("demos/FractalWorlds/Terrain_TE.glsl"));
-		addGeometryShader(ResourceLoader.loadShader("demos/FractalWorlds/TerrainShadow_GS.glsl"));
+		addGeometryShader(ResourceLoader.loadShader("demos/FractalWorlds/TerrainGrid_GS.glsl"));
 		addFragmentShader(ResourceLoader.loadShader("demos/FractalWorlds/TerrainGrid_FS.glsl"));
 		compileShader();
-
+		
 		addUniform("worldMatrix");
 		addUniform("scaleY");
 		
@@ -43,7 +44,6 @@ private static TerrainShadowShader instance = null;
 			addUniform("fractals0[" + i + "].scaling");
 			addUniform("fractals0[" + i + "].strength");
 		}
-		
 		addUniform("bezier");
 		addUniform("tessFactor");
 		addUniform("tessSlope");
@@ -57,15 +57,18 @@ private static TerrainShadowShader instance = null;
 			addUniform("lod_morph_area[" + i + "]");
 		}
 		
+		addUniform("clipplane");
+		
 		addUniformBlock("Camera");
-		addUniformBlock("LightViewProjections");
 	}
 	
 	public void updateUniforms(GameObject object)
 	{	
-		bindUniformBlock("Camera",Constants.CameraUniformBlockBinding);
-		bindUniformBlock("LightViewProjections",Constants.LightMatricesUniformBlockBinding);
+		bindUniformBlock("Camera", Constants.CameraUniformBlockBinding);
+		
 		setUniform("worldMatrix", object.getTransform().getWorldMatrix());
+		
+		setUniform("clipplane", RenderingEngine.getClipplane());
 
 		TerrainNode terrainNode = (TerrainNode) object;
 		TerrainConfiguration terrConfig = terrainNode.getTerrConfig();
@@ -97,5 +100,4 @@ private static TerrainShadowShader instance = null;
 			setUniformi("lod_morph_area[" + i + "]", terrConfig.getLod_morphing_area()[i]);
 		}
 	}
-
 }

@@ -1,4 +1,4 @@
-package simulations.objLoader;
+package xamples.objLoader;
 import modules.glass.GlassRenderer;
 
 import org.lwjgl.input.Keyboard;

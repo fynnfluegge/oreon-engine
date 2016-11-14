@@ -1,4 +1,4 @@
-package simulations.objLoader;
+package xamples.objLoader;
 
 import modules.gui.GUIs.VoidGUI;
 import engine.main.Game;

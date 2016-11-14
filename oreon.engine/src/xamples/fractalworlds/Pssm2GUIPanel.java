@@ -1,4 +1,4 @@
-package simulations.ocean;
+package xamples.fractalworlds;
 
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
@@ -7,29 +7,23 @@ import modules.gui.GUIVAO;
 import engine.configs.Default;
 import engine.core.Transform;
 import engine.geometrics.Geometrics;
+import engine.main.OpenGLDisplay;
+import engine.main.RenderingEngine;
 import engine.math.Matrix4f;
-import engine.shaders.gui.GuiShader;
-import engine.textures.Texture;
 
-public class TexturePanel extends GUIElement{
-
-	static Texture texture;
+public class Pssm2GUIPanel extends GUIElement{
 	
-	public TexturePanel() {
-		texture = new Texture();
-		setShader(GuiShader.getInstance());
+	public void init(){
+		
+		setShader(PssmGUIShader.getInstance());
 		setConfig(new Default());
 		setOrthographicMatrix(new Matrix4f().Orthographic2D());
 		setOrthoTransform(new Transform());
-		getOrthoTransform().setTranslation(0, 0, 0);
-		getOrthoTransform().setScaling(100, 100, 0);
+		getOrthoTransform().setTranslation(380, 20, 0);
+		getOrthoTransform().setScaling(OpenGLDisplay.getInstance().getLwjglWindow().getWidth()/5, OpenGLDisplay.getInstance().getLwjglWindow().getHeight()/5, 0);
 		setOrthographicMatrix(getOrthographicMatrix().mul(getOrthoTransform().getWorldMatrix()));
 		setVao(new GUIVAO());
 		getVao().addData(Geometrics.Quad2D());
-	}
-	
-	public void init(){
-	
 	}
 	
 	public void render()
@@ -38,13 +32,9 @@ public class TexturePanel extends GUIElement{
 		getShader().bind();
 		getShader().updateUniforms(getOrthographicMatrix());
 		glActiveTexture(GL_TEXTURE0);
-		texture.bind();
-		getShader().updateUniforms(0);
+		RenderingEngine.getShadowMaps().getDepthMaps().bind2DArray();
+		getShader().updateUniforms(0,1.5f);
 		getVao().draw();
 		getConfig().disable();
 	}	
-
-	public Texture getTexture() {
-		return texture;
-	}
 }

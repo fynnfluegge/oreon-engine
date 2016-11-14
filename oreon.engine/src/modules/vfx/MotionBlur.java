@@ -28,7 +28,7 @@ public class MotionBlur {
 	private Texture pixelVelocityMap;
 	private PixelVelocityShader pixelVelocityShader;
 	private MotionBlurShader motionBlurShader;
-	private boolean enabled = true;
+	private boolean enabled = false;
 	
 	public MotionBlur() {
 		pixelVelocityMap = new Texture();
