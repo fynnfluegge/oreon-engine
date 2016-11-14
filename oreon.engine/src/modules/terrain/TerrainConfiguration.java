@@ -318,6 +318,64 @@ public class TerrainConfiguration {
 		getFractals().add(new FractalMaps(512,amp,l,scaling,strength));
 	}
 	
+	public void ReloadFractals(String file){
+		
+		getFractals().clear();
+		BufferedReader reader = null;
+		
+		try{
+			if(new File(file).exists()){
+				reader = new BufferedReader(new FileReader(file));
+				String line;
+				
+				while((line = reader.readLine()) != null){
+					
+					String[] tokens = line.split(" ");
+					tokens = Util.removeEmptyStrings(tokens);
+					
+					if(tokens.length == 0)
+						continue;
+					if(tokens[0].equals("fractal_stage0")){
+						loadFractalMap(reader);
+					}	
+					if(tokens[0].equals("fractal_stage1")){
+						loadFractalMap(reader);
+					}	
+					if(tokens[0].equals("fractal_stage2")){
+						loadFractalMap(reader);
+					}	
+					if(tokens[0].equals("fractal_stage3")){
+						loadFractalMap(reader);
+					}	
+					if(tokens[0].equals("fractal_stage4")){
+						loadFractalMap(reader);
+					}	
+					if(tokens[0].equals("fractal_stage5")){
+						loadFractalMap(reader);
+					}	
+					if(tokens[0].equals("fractal_stage6")){
+						loadFractalMap(reader);
+					}	
+					if(tokens[0].equals("fractal_stage7")){
+						loadFractalMap(reader);
+					}	
+					if(tokens[0].equals("fractal_stage8")){
+						loadFractalMap(reader);
+					}	
+					if(tokens[0].equals("fractal_stage9")){
+						loadFractalMap(reader);
+					}	
+				}
+				reader.close();
+				}
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+				System.exit(1);
+			}
+	}
+	
 	private int updateMorphingArea(int lod){
 		return (int) ((6000/TerrainQuadtree.getRootPatches()) / (Math.pow(2, lod)));
 	}

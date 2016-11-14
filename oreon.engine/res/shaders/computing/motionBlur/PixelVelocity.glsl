@@ -43,7 +43,7 @@ void main(void){
 	previousPos /= previousPos.w;
 	
 	//window space velocity
-	vec2 velocity = (previousPos.xy - N.xy).xy * 100;
+	vec2 velocity = (previousPos.xy - N.xy).xy * 200;
 
 	imageStore(velocitymap, ivec2(gl_GlobalInvocationID.xy), vec4(velocity,0,1));
 }

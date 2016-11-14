@@ -8,6 +8,8 @@ struct Material
 {
 	sampler2D diffusemap;
 	sampler2D normalmap;
+	sampler2D heightmap;
+	float displaceScale;
 	float shininess;
 	float emission;
 };
@@ -82,10 +84,15 @@ void main()
 	normal += (2*(texture(fractals1[6].normalmap, mapCoords*fractals1[6].scaling).rbg)-1);
 	normal = normalize(normal);
 	
-	float grassBlend = 0.001;
-	float rockBlend  = 0.001;
-	float sandBlend  = 0.001;
-	float snowBlend  = 0.001;
+	float snowBlend  = clamp(height/200,0,1);
+	float rockBlend = 0;
+	if (height <= 300)
+		rockBlend  = clamp((height+200)/200,0,1);
+	else
+		rockBlend = clamp((-height+200)/200,0,1);
+	
+	float sandBlend  = clamp(-height/200,0,1);
+	float grassBlend = clamp((height+200)/-400 + 1,0,1);
 	
 	if (dist < largeDetailedRange-20)
 	{
@@ -94,7 +101,9 @@ void main()
 		vec3 bitangent = normalize(cross(tangent, normal));
 		mat3 TBN = mat3(tangent,normal,bitangent);
 		
-		vec3 bumpNormal = vec3(0,1,0);
+		vec3 bumpNormal = normalize((2*(texture(sand.normalmap, texCoordF).rbg) - 1) * sandBlend
+								 +  (2*(texture(rock.normalmap, texCoordF).rbg) - 1) * rockBlend
+								 +  (2*(texture(snow.normalmap, texCoordF).rbg) - 1) * snowBlend);
 		
 		bumpNormal.xz *= attenuation;
 		
@@ -109,15 +118,11 @@ void main()
 	vec3 diffuseLight = directional_light.ambient + directional_light.color * diffuse;
 	vec3 specularLight = directional_light.color * specular;
 	
-	vec3 darkRock = vec3(0.82,0.02,0.02);
-	
-	vec3 fragColor = mix(texture(sand.diffusemap, texCoordF).rgb, texture(rock.diffusemap, texCoordF).rgb, clamp((height+150)/200.0,0,1));
-	// fragColor = mix(fragColor, texture(snow.diffusemap,texCoordF).rgb, clamp((height-scaleY/4)/(scaleY/2),0,1));
-	// fragColor = mix(darkRock,fragColor, clamp((height+scaleY/2)/(scaleY/4),0,1));
-	// grassFactor = clamp(height/(scaleY*4)+0.95,0.99,1.0);
-	// if (normal.y > 0.999){
-		// fragColor = mix(texture(grass.diffusemap,texCoordF).rgb, fragColor,(1-normal.y)*10);
-	// }
+	vec3 fragColor = mix(texture(sand.diffusemap, texCoordF).rgb, texture(rock.diffusemap, texCoordF).rgb, clamp((height+200)/400.0,0,1));
+	fragColor = mix(fragColor, texture(snow.diffusemap,texCoordF).rgb, clamp((height-100)/200,0,1));
+	if (normal.y > 0.97){
+		fragColor = mix(fragColor, texture(grass.diffusemap,texCoordF).rgb,grassBlend);
+	}
 	
 	fragColor *= diffuseLight;
 	fragColor += specularLight;

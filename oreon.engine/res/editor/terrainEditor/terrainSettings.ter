@@ -1,48 +1,48 @@
 
 #textures
-material0_DIF ./res/editor/terrainEditor/materials/grass_DIF.jpg
-material0_NRM ./res/editor/terrainEditor/materials/grass_NRM.jpg
-material0_DISP ./res/editor/terrainEditor/materials/grass_DISP.jpg
-material0_displaceScale 2
+material0_DIF ./res/editor/terrainEditor/materials/grass0_DIF.jpg
+material0_NRM ./res/editor/terrainEditor/materials/grass0_NRM.jpg
+material0_DISP ./res/editor/terrainEditor/materials/grass0_DISP.jpg
+material0_displaceScale 0.2
 material0_emission 0.0
 material0_shininess 200.0
 material1_DIF ./res/editor/terrainEditor/materials/sand_DIF.jpg
 material1_NRM ./res/editor/terrainEditor/materials/sand_NRM.jpg
 material1_DISP ./res/editor/terrainEditor/materials/sand_DISP.jpg
-material1_displaceScale 2
+material1_displaceScale 0.6
 material1_emission 0.0
 material1_shininess 200.0
-material2_DIF ./res/editor/terrainEditor/materials/rock_DIF.jpg
-material2_NRM ./res/editor/terrainEditor/materials/rock_NRM.jpg
-material2_DISP ./res/editor/terrainEditor/materials/rock_DISP.jpg
-material2_displaceScale 2
+material2_DIF ./res/editor/terrainEditor/materials/rock0_DIF.jpg
+material2_NRM ./res/editor/terrainEditor/materials/rock0_NRM.jpg
+material2_DISP ./res/editor/terrainEditor/materials/rock0_DISP.jpg
+material2_displaceScale 0.8
 material2_emission 0.0
-material2_shininess 200.0
+material2_shininess 20.0
 material3_DIF ./res/editor/terrainEditor/materials/SnowIce_DIF.jpg
 material3_NRM ./res/editor/terrainEditor/materials/SnowIce_NRM.jpg
 material3_DISP ./res/editor/terrainEditor/materials/SnowIce_DISP.jpg
-material3_displaceScale 2
+material3_displaceScale 0.8
 material3_emission 0.0
-material3_shininess 200.0
+material3_shininess 20.0
 
 #terrain mesh settings
 scaleXZ 6000.0
-scaleY 800.0
+scaleY 1200.0
 texDetail 400.0
-tessellationFactor 200
-tessellationSlope 1
-tessellationShift -0.1
-detailRange 50
+tessellationFactor 734
+tessellationSlope 1.63
+tessellationShift -0.5
+detailRange 200
 bezier 0
 
 #lod ranges
 lod1_range 1800
 lod2_range 1000
-lod3_range 600
+lod3_range 500
 lod4_range 200
-lod5_range 0
-lod6_range 0
-lod7_range 0
+lod5_range 100
+lod6_range 40
+lod7_range 20
 lod8_range 0
 
 #fractals settings
@@ -66,26 +66,26 @@ scaling 4
 strength 0.4
 
 fractal_stage3
-amp 6
+amp 4
 l 100
 scaling 6
 strength 0.2
 
 fractal_stage4
-amp 10
-l 400
+amp 4
+l 200
 scaling 10
 strength 0.08
 
 fractal_stage5
-amp 20
-l 1000
+amp 6
+l 400
 scaling 20
 strength 0.02
 
 fractal_stage6
-amp 20
-l 1000
+amp 6
+l 400
 scaling 22
 strength 0.02
 

@@ -2,9 +2,13 @@ package editor.mainInterface;
 
 import javax.swing.JFrame;
 
+import org.lwjgl.LWJGLException;
+import org.lwjgl.opengl.Display;
+
 import editor.db.DB;
 import editor.tools.terrainEditor.OpenGLEngine;
 import editor.tools.terrainEditor.TerrainEditorInterface;
+import engine.main.CoreEngine;
 
 public class MainInterface extends JFrame{
 
@@ -34,7 +38,7 @@ public class MainInterface extends JFrame{
 	        TerrainEditorTool = new javax.swing.JMenuItem();
 
 	        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-	        setPreferredSize(new java.awt.Dimension(1280, 720));
+	        setPreferredSize(new java.awt.Dimension(1300, 740));
 
 	        jPanel1.setBackground(new java.awt.Color(30, 30, 30));
 	        jPanel1.setForeground(new java.awt.Color(255, 255, 255));
@@ -54,7 +58,11 @@ public class MainInterface extends JFrame{
 	        jButtonReload.setText("Reload");
 	        jButtonReload.addActionListener(new java.awt.event.ActionListener() {
 	            public void actionPerformed(java.awt.event.ActionEvent evt) {
-	                jButtonReloadActionPerformed(evt);
+	                try {
+						jButtonReloadActionPerformed(evt);
+					} catch (LWJGLException e) {
+						e.printStackTrace();
+					}
 	            }
 	        });
 
@@ -75,7 +83,7 @@ public class MainInterface extends JFrame{
 	                            .addComponent(dataVolumeValue, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
 	                        .addGroup(jPanel1Layout.createSequentialGroup()
 	                            .addGap(38, 38, 38)
-	                            .addComponent(OpenGLCanvas, javax.swing.GroupLayout.PREFERRED_SIZE, 1200, javax.swing.GroupLayout.PREFERRED_SIZE))))
+	                            .addComponent(OpenGLCanvas, javax.swing.GroupLayout.PREFERRED_SIZE, 1000, javax.swing.GroupLayout.PREFERRED_SIZE))))
 	                .addContainerGap(42, Short.MAX_VALUE))
 	        );
 	        jPanel1Layout.setVerticalGroup(
@@ -140,7 +148,7 @@ public class MainInterface extends JFrame{
 	        
 	    	terrainEditor.update(LoDChartPanel, tessellationFunctionPanel, dataVolumeValue);
 	    	
-	    	terrainEditor.setLocation(1000, 50);
+	    	terrainEditor.setLocation(1000, 100);
 	    	terrainEditor.setVisible(true);
 	    }     
 	    
@@ -148,9 +156,43 @@ public class MainInterface extends JFrame{
 	        // TODO add your handling code here:
 	    }                                           
 
-	    private void jButtonReloadActionPerformed(java.awt.event.ActionEvent evt) {                                              
-	        // TODO add your handling code here:
+	    private void jButtonReloadActionPerformed(java.awt.event.ActionEvent evt) throws LWJGLException { 
+	    	CoreEngine.setShareGLContext(true);
+	    	
+	    	CoreEngine.getGLContextLock().lock();
+	    	try{
+	    		while(!CoreEngine.isGlContextfree())
+	    		{
+	    			try {
+	    				CoreEngine.getHoldGLContext().await();
+	    			} catch (InterruptedException e) {
+	    				e.printStackTrace();
+	    			}
+	    		}
+	    	}
+	    	finally{
+	    		CoreEngine.getGLContextLock().unlock();
+	    	}
+	  
+	    	Display.makeCurrent();
+	    	
+	        DB.getTerrainConfiguration().ReloadFractals("./res/editor/terrainEditor/terrainSettings.ter");
+	        
+	        CoreEngine.getGLContextLock().lock();
+	        try{
+	        	try {
+	        		Display.releaseContext();
+	        		CoreEngine.setGlContextfree(false);
+	        		CoreEngine.getHoldGLContext().signal();
+	        	} catch (LWJGLException e1) {
+	        		e1.printStackTrace();
+	        	}
+	        }
+	        finally{
+	        	CoreEngine.getGLContextLock().unlock();
+	        }
 	    }    
+	    
 
 	    /**
 	     * @param args the command line arguments

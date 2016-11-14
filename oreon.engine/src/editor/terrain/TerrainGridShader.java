@@ -1,6 +1,9 @@
 package editor.terrain;
 
 import static org.lwjgl.opengl.GL13.GL_TEXTURE15;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE2;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE3;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 import modules.terrain.TerrainConfiguration;
 import modules.terrain.TerrainNode;
@@ -46,6 +49,8 @@ public class TerrainGridShader extends Shader{
 			addUniform("fractals0[" + i + "].strength");
 		}
 		
+		addUniform("largeDetailedRange");
+		addUniform("texDetail");
 		addUniform("bezier");
 		addUniform("tessFactor");
 		addUniform("tessSlope");
@@ -54,6 +59,13 @@ public class TerrainGridShader extends Shader{
 		addUniform("index");
 		addUniform("location");
 		addUniform("gap");
+		
+		addUniform("sand.heightmap");
+		addUniform("sand.displaceScale");
+		addUniform("rock.heightmap");
+		addUniform("rock.displaceScale");
+		addUniform("snow.heightmap");
+		addUniform("snow.displaceScale");
 		
 		addUniform("clipplane");
 		
@@ -87,6 +99,23 @@ public class TerrainGridShader extends Shader{
 			setUniformf("fractals0[" + i +"].strength", terrConfig.getFractals().get(i).getStrength());
 		}
 
+		glActiveTexture(GL_TEXTURE1);
+		terrConfig.getMaterial1().getDisplacemap().bind();
+		setUniformi("sand.heightmap", 1);
+		setUniformf("sand.displaceScale", terrConfig.getMaterial1().getDisplaceScale());
+		
+		glActiveTexture(GL_TEXTURE2);
+		terrConfig.getMaterial2().getDisplacemap().bind();
+		setUniformi("rock.heightmap", 2);
+		setUniformf("rock.displaceScale", terrConfig.getMaterial2().getDisplaceScale());
+		
+		glActiveTexture(GL_TEXTURE3);
+		terrConfig.getMaterial3().getDisplacemap().bind();
+		setUniformi("snow.heightmap", 3);
+		setUniformf("snow.displaceScale", terrConfig.getMaterial3().getDisplaceScale());
+		
+		setUniformi("largeDetailedRange", terrConfig.getDetailRange());
+		setUniformf("texDetail", terrConfig.getTexDetail());
 		setUniformf("scaleY", terrConfig.getScaleY());
 		setUniformi("bezier", terrConfig.getBezíer());
 		setUniformi("tessFactor", terrConfig.getTessellationFactor());

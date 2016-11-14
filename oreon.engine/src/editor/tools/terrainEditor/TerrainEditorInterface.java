@@ -107,6 +107,22 @@ public class TerrainEditorInterface extends JFrame{
         jLabelFractalStrength7 = new javax.swing.JLabel();
         jLabelFractalStrength8 = new javax.swing.JLabel();
         jLabelFractalStrength9 = new javax.swing.JLabel();
+        
+        TessellationFactor_Slider1.setMaximum(5000);
+        TessellationSlope_Slider1.setMaximum(200);
+        TessellationSlope_Slider1.setMinimum(-200);
+        TessellationShift_Slider1.setMaximum(1000);
+        TessellationShift_Slider1.setMinimum(-1000);
+        jSliderFractalStrength0.setMaximum(300);
+        jSliderFractalStrength1.setMaximum(200);
+        jSliderFractalStrength2.setMaximum(100);
+        jSliderFractalStrength3.setMaximum(100);
+        jSliderFractalStrength4.setMaximum(20);
+        jSliderFractalStrength5.setMaximum(10);
+        jSliderFractalStrength6.setMaximum(10);
+        jSliderFractalStrength7.setMaximum(200);
+        jSliderFractalStrength8.setMaximum(200);
+        jSliderFractalStrength9.setMaximum(200);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -945,44 +961,54 @@ public class TerrainEditorInterface extends JFrame{
     	}
     }                                              
 
-    private void jSliderFractalStrength0StateChanged(javax.swing.event.ChangeEvent evt) {                                                     
-        // TODO add your handling code here:
+    private void jSliderFractalStrength0StateChanged(javax.swing.event.ChangeEvent evt) {  
+    	jLabelFractalStrength0.setText(Float.toString(jSliderFractalStrength0.getValue()/100f));
+    	DB.getTerrainConfiguration().getFractals().get(0).setStrength(jSliderFractalStrength0.getValue()/100f);
     }                                                    
 
     private void jSliderFractalStrength1StateChanged(javax.swing.event.ChangeEvent evt) {                                                     
-        // TODO add your handling code here:
+    	jLabelFractalStrength1.setText(Float.toString(jSliderFractalStrength1.getValue()/100f));
+    	DB.getTerrainConfiguration().getFractals().get(1).setStrength(jSliderFractalStrength1.getValue()/100f);
     }                                                    
 
     private void jSliderFractalStrength2StateChanged(javax.swing.event.ChangeEvent evt) {                                                     
-        // TODO add your handling code here:
+    	jLabelFractalStrength2.setText(Float.toString(jSliderFractalStrength2.getValue()/100f));
+    	DB.getTerrainConfiguration().getFractals().get(2).setStrength(jSliderFractalStrength2.getValue()/100f);
     }                                                    
 
     private void jSliderFractalStrength3StateChanged(javax.swing.event.ChangeEvent evt) {                                                     
-        // TODO add your handling code here:
+    	jLabelFractalStrength3.setText(Float.toString(jSliderFractalStrength3.getValue()/100f));
+    	DB.getTerrainConfiguration().getFractals().get(3).setStrength(jSliderFractalStrength3.getValue()/100f);
     }                                                    
 
     private void jSliderFractalStrength4StateChanged(javax.swing.event.ChangeEvent evt) {                                                     
-        // TODO add your handling code here:
+    	jLabelFractalStrength4.setText(Float.toString(jSliderFractalStrength4.getValue()/100f));
+    	DB.getTerrainConfiguration().getFractals().get(4).setStrength(jSliderFractalStrength4.getValue()/100f);
     }                                                    
 
     private void jSliderFractalStrength5StateChanged(javax.swing.event.ChangeEvent evt) {                                                     
-        // TODO add your handling code here:
+    	jLabelFractalStrength5.setText(Float.toString(jSliderFractalStrength5.getValue()/100f));
+    	DB.getTerrainConfiguration().getFractals().get(5).setStrength(jSliderFractalStrength5.getValue()/100f);
     }                                                    
 
     private void jSliderFractalStrength6StateChanged(javax.swing.event.ChangeEvent evt) {                                                     
-        // TODO add your handling code here:
+    	jLabelFractalStrength6.setText(Float.toString(jSliderFractalStrength6.getValue()/100f));
+    	DB.getTerrainConfiguration().getFractals().get(6).setStrength(jSliderFractalStrength6.getValue()/100f);
     }                                                    
 
     private void jSliderFractalStrength7StateChanged(javax.swing.event.ChangeEvent evt) {                                                     
-        // TODO add your handling code here:
+    	jLabelFractalStrength7.setText(Float.toString(jSliderFractalStrength7.getValue()/100f));
+    	DB.getTerrainConfiguration().getFractals().get(7).setStrength(jSliderFractalStrength7.getValue()/100f);
     }                                                    
 
     private void jSliderFractalStrength8StateChanged(javax.swing.event.ChangeEvent evt) {                                                     
-        // TODO add your handling code here:
+    	jLabelFractalStrength8.setText(Float.toString(jSliderFractalStrength8.getValue()/100f));
+    	DB.getTerrainConfiguration().getFractals().get(8).setStrength(jSliderFractalStrength8.getValue()/100f);
     }                                                    
 
     private void jSliderFractalStrength9StateChanged(javax.swing.event.ChangeEvent evt) {                                                     
-        // TODO add your handling code here:
+    	jLabelFractalStrength9.setText(Float.toString(jSliderFractalStrength9.getValue()/100f));
+    	DB.getTerrainConfiguration().getFractals().get(9).setStrength(jSliderFractalStrength9.getValue()/100f);
     }               
     
     public void update(javax.swing.JPanel LoDChartPanel, javax.swing.JPanel tessellationFunctionPanel, javax.swing.JLabel dataVolumeValue){
@@ -998,6 +1024,27 @@ public class TerrainEditorInterface extends JFrame{
     	
     	this.DetailRange_Slider1.setValue(DB.getTerrainConfiguration().getDetailRange());
     	this.DetailRange_Value1.setText(Integer.toString(DetailRange_Slider1.getValue()));
+    	
+    	this.jLabelFractalStrength0.setText(Float.toString(DB.getTerrainConfiguration().getFractals().get(0).getStrength()));
+    	this.jSliderFractalStrength0.setValue((int) (DB.getTerrainConfiguration().getFractals().get(0).getStrength()*100f));
+    	this.jLabelFractalStrength1.setText(Float.toString(DB.getTerrainConfiguration().getFractals().get(1).getStrength()));
+    	this.jSliderFractalStrength1.setValue((int) (DB.getTerrainConfiguration().getFractals().get(1).getStrength()*100f));
+    	this.jLabelFractalStrength2.setText(Float.toString(DB.getTerrainConfiguration().getFractals().get(2).getStrength()));
+    	this.jSliderFractalStrength2.setValue((int) (DB.getTerrainConfiguration().getFractals().get(2).getStrength()*100f));
+    	this.jLabelFractalStrength3.setText(Float.toString(DB.getTerrainConfiguration().getFractals().get(3).getStrength()));
+    	this.jSliderFractalStrength3.setValue((int) (DB.getTerrainConfiguration().getFractals().get(3).getStrength()*100f));
+    	this.jLabelFractalStrength4.setText(Float.toString(DB.getTerrainConfiguration().getFractals().get(4).getStrength()));
+    	this.jSliderFractalStrength4.setValue((int) (DB.getTerrainConfiguration().getFractals().get(4).getStrength()*100f));
+    	this.jLabelFractalStrength5.setText(Float.toString(DB.getTerrainConfiguration().getFractals().get(5).getStrength()));
+    	this.jSliderFractalStrength5.setValue((int) (DB.getTerrainConfiguration().getFractals().get(5).getStrength()*100f));
+    	this.jLabelFractalStrength6.setText(Float.toString(DB.getTerrainConfiguration().getFractals().get(6).getStrength()));
+    	this.jSliderFractalStrength6.setValue((int) (DB.getTerrainConfiguration().getFractals().get(6).getStrength()*100f));
+    	this.jLabelFractalStrength7.setText(Float.toString(DB.getTerrainConfiguration().getFractals().get(7).getStrength()));
+    	this.jSliderFractalStrength7.setValue((int) (DB.getTerrainConfiguration().getFractals().get(7).getStrength()*100f));
+    	this.jLabelFractalStrength8.setText(Float.toString(DB.getTerrainConfiguration().getFractals().get(8).getStrength()));
+    	this.jSliderFractalStrength8.setValue((int) (DB.getTerrainConfiguration().getFractals().get(8).getStrength()*100f));
+    	this.jLabelFractalStrength9.setText(Float.toString(DB.getTerrainConfiguration().getFractals().get(9).getStrength()));
+    	this.jSliderFractalStrength9.setValue((int) (DB.getTerrainConfiguration().getFractals().get(9).getStrength()*100f));
     	
     	this.LoD1Range_Slider1.setValue(DB.getTerrainConfiguration().getLod_range()[0]);
     	this.LoD1Range_Value1.setText(Integer.toString(LoD1Range_Slider1.getValue()));

@@ -51,4 +51,8 @@ public class FractalMaps {
 	public float getStrength() {
 		return strength;
 	}
+	
+	public void setStrength(float s) {
+		strength = s;
+	}
 }
