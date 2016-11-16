@@ -1,5 +1,5 @@
 <project name="Oreon.Engine.Ocean" default="dist">
-  <property name="MyApp" value="Ocean" />
+  <property name="MyApp" value="Terrain Generator" />
   <path id="compile.classpath">
     <fileset dir="lib" />
   	
