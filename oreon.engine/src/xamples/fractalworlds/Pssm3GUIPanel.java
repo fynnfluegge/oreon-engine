@@ -1,17 +1,17 @@
-package simulations.fractalworlds;
+package xamples.fractalworlds;
 
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
+import modules.gui.GUIElement;
+import modules.gui.GUIVAO;
 import engine.configs.Default;
 import engine.core.Transform;
 import engine.geometrics.Geometrics;
 import engine.main.OpenGLDisplay;
 import engine.main.RenderingEngine;
 import engine.math.Matrix4f;
-import modules.gui.GUIElement;
-import modules.gui.GUIVAO;
 
-public class Pssm0GUIPanel extends GUIElement{
+public class Pssm3GUIPanel extends GUIElement{
 	
 	public void init(){
 		
@@ -19,7 +19,7 @@ public class Pssm0GUIPanel extends GUIElement{
 		setConfig(new Default());
 		setOrthographicMatrix(new Matrix4f().Orthographic2D());
 		setOrthoTransform(new Transform());
-		getOrthoTransform().setTranslation(20, 20, 0);
+		getOrthoTransform().setTranslation(560, 20, 0);
 		getOrthoTransform().setScaling(OpenGLDisplay.getInstance().getLwjglWindow().getWidth()/5, OpenGLDisplay.getInstance().getLwjglWindow().getHeight()/5, 0);
 		setOrthographicMatrix(getOrthographicMatrix().mul(getOrthoTransform().getWorldMatrix()));
 		setVao(new GUIVAO());
@@ -33,7 +33,7 @@ public class Pssm0GUIPanel extends GUIElement{
 		getShader().updateUniforms(getOrthographicMatrix());
 		glActiveTexture(GL_TEXTURE0);
 		RenderingEngine.getShadowMaps().getDepthMaps().bind2DArray();
-		getShader().updateUniforms(0,0.0f);
+		getShader().updateUniforms(0,2.6f);
 		getVao().draw();
 		getConfig().disable();
 	}	

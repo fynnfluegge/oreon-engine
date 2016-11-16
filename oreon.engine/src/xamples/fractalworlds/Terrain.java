@@ -1,4 +1,4 @@
-package simulations.fractalworlds;
+package xamples.fractalworlds;
 
 
 public class Terrain extends modules.terrain.Terrain{

@@ -1,4 +1,4 @@
-package simulations.fractalworlds;
+package xamples.fractalworlds;
 
 import modules.gui.GUIElement;
 import modules.gui.Screen;

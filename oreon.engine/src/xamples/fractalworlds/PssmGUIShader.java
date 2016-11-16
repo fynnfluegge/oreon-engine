@@ -1,4 +1,4 @@
-package simulations.fractalworlds;
+package xamples.fractalworlds;
 
 import engine.core.ResourceLoader;
 import engine.math.Matrix4f;

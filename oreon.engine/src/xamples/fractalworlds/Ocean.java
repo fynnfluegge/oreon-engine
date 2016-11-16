@@ -1,4 +1,4 @@
-package simulations.fractalworlds;
+package xamples.fractalworlds;
 
 import modules.water.Water;
 import engine.core.Constants;

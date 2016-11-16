@@ -1,4 +1,4 @@
-package simulations.objLoader;
+package xamples.objLoader;
 
 import engine.buffers.MeshVAO;
 import engine.configs.CCW;
