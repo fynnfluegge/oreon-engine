@@ -1,3 +1,3 @@
 ##This is the documentation of the Oreon.Engine-OpenGL-Java project.
 
-Please visit the official website: _
+The documentation website is available at http://oreon3d.github.io/Oreon.Engine-OpenGL-Java/
