@@ -1,3 +1,3 @@
-![Banner](oreon.engine/docs/image/Banner.png)
+![Banner](docs/image/Banner.png)
 ## Oreon Engine OpenGL/Java
 Welcome to the Cross Platform and Open Source 3D OpenGL Engine in Java.
