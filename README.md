@@ -4,6 +4,4 @@ Welcome to the Cross Platform and Open Source 3D OpenGL Engine in Java.
 
 Official website https://www.oreonengine.com
 
-Documentation: http://oreon3d.github.io/Oreon.Engine-OpenGL-Java/
-
-![Terrain](https://www.youtube.com/watch?v=7UKfnJS2gdo)
+Documentation: http://oreon3d.github.io/Oreon.Engine-OpenGL-Java
