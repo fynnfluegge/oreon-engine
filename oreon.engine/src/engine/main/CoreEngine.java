@@ -26,7 +26,6 @@ public class CoreEngine{
 	private static boolean glContextfree = false;
 	private static Lock glContextLock = new ReentrantLock();
 	private static Condition holdGLContext = glContextLock.newCondition();
-	
 	private RenderingEngine renderingEngine;
 	
 	public void createWindow(int width, int height, String title)
