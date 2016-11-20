@@ -22,7 +22,6 @@ public class CoreEngine{
 	private static float framerate = 200;
 	private static float frameTime = 1.0f/framerate;
 	private boolean isRunning;
-	
 	private static boolean shareGLContext = false;
 	private static boolean glContextfree = false;
 	private static Lock glContextLock = new ReentrantLock();
