@@ -3,13 +3,34 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Oreon.Engine-OpenGL-Java's documentation!
-====================================================
+Welcome to the Oreon Engine documentation!
+======================================================
+
+.. toctree::
+   :caption: Home
+   :hidden:
+
+   Welcome <self>
+
+.. toctree::
+   :caption: For Users
+   :hidden:
+
+   Installing coala <Users/Install>
+   Getting Started with coala <Users/Tutorial>
+   Writing a coala Configuration File (coafile and coarc) <Users/coafile>
+   Using Glob Patterns <Users/Glob_Patterns>
+   Exit Codes <Users/Exit_Codes>
+   Adding coala as a Git Hook <Users/coala_as_Git_Hook>
+   Shell Autocompletion <Users/Shell_Autocompletion>
+   coala as a Docker Image <Users/Docker_Image>
+
+.. image:: _static/Banner.png
 
 Contents:
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
 
 
