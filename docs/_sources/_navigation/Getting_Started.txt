@@ -15,14 +15,13 @@ Make sure that you fully understand the following keywords:
 - Branch
 - Clone
 - Fork
-- Commit
-- Pull
-
 
 If you want to become a contributor or even a collaborator you should also understand:
 
+- Commit
 - Fetch
 - Merge
+- Pull (Fetch + Merge in one command)
 - Upstream
 - Pull Request
 

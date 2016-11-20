@@ -1,0 +1,36 @@
+Update forked repository
+========================
+
+You may successfully forked Oreon Engine and want to stay up-to-date?
+It's simple.
+
+- In Eclipse go to Window -> Show View -> Other...
+	- Choose Git -> Git Repositories
+
+Create a new Remote
+~~~~~~~~~~~~~~~~~~~
+
+.. image:: /_images/create_new_Remote.png
+
+- Choose 'Configure fetch' and a remote name ('original' for example)
+
+.. image:: /_images/configure_fetch.png
+
+- Click Change
+
+.. image:: /_images/change_fetch_URI.png
+
+- Set the original URI (https://github.com/oreon3D/Oreon.Engine-OpenGL-Java)
+	- Eclipse will fill the other field automatically
+- specifiy your GitHub username and password
+
+.. image:: /_images/set_original_remote_fetch.png
+
+Pull and Push the incoming changes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. image:: /_images/fetch_original.png
+
+- Now You need to merge all the new stuff
+	- Rightclick on your project -> Team -> Merge
+After finishing the Merge the Pull is completed and you can 'Push to upstream', which is your own GitHub repository.
