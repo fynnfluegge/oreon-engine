@@ -1,8 +1,8 @@
 package modules.terrain.fractals;
 
-import modules.gpucomputing.NormalMapRenderer;
 import engine.math.Vec2f;
 import engine.textures.Texture;
+import modules.gpgpu.NormalMapRenderer;
 
 public class FractalMaps {
 	

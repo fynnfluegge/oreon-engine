@@ -1,4 +1,4 @@
-package modules.fastFourierTransform;
+package modules.gpgpu.fft;
 
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL15.GL_WRITE_ONLY;

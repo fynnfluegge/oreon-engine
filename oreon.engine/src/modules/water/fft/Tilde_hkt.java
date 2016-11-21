@@ -7,9 +7,10 @@ import static org.lwjgl.opengl.GL11.glFinish;
 import static org.lwjgl.opengl.GL15.GL_READ_WRITE;
 import static org.lwjgl.opengl.GL42.glBindImageTexture;
 import static org.lwjgl.opengl.GL43.glDispatchCompute;
-import modules.fastFourierTransform.FourierComponents;
+
 import engine.shaders.water.Tilde_hktShader;
 import engine.textures.Texture;
+import modules.gpgpu.fft.FourierComponents;
 
 public class Tilde_hkt extends FourierComponents{
 	

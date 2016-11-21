@@ -8,7 +8,7 @@ import static org.lwjgl.opengl.GL11.glFinish;
 import modules.gui.GUI;
 import modules.gui.elements.FullScreenTexturePanel;
 import modules.lighting.DirectionalLight;
-import modules.shadowmapping.ShadowMaps;
+import modules.shadowmapping.directionalLights.ShadowMaps;
 import modules.vfx.MotionBlur;
 import engine.configs.RenderConfig;
 import engine.core.Camera;

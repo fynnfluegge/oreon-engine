@@ -10,11 +10,11 @@ import static org.lwjgl.opengl.GL43.glDispatchCompute;
 
 import java.util.Random;
 
-import modules.fastFourierTransform.FastFourierTransform;
 import engine.math.Vec2f;
 import engine.shaders.computing.FFTButterflyShader;
 import engine.shaders.computing.FFTInversionShader;
 import engine.textures.Texture;
+import modules.gpgpu.fft.FastFourierTransform;
 
 public class FractalFFT extends FastFourierTransform{
 

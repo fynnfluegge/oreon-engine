@@ -11,10 +11,11 @@ import static org.lwjgl.opengl.GL30.GL_RGBA32F;
 import static org.lwjgl.opengl.GL42.glBindImageTexture;
 import static org.lwjgl.opengl.GL42.glTexStorage2D;
 import static org.lwjgl.opengl.GL43.glDispatchCompute;
-import modules.fastFourierTransform.FourierSpectrum;
+
 import engine.math.Vec2f;
 import engine.shaders.terrain.fractals.FractalSpectrumShader;
 import engine.textures.Texture;
+import modules.gpgpu.fft.FourierSpectrum;
 
 public class FractalSpectrum extends FourierSpectrum{
 
