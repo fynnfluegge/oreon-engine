@@ -17,7 +17,6 @@ import engine.textures.Texture;
 
 public class TerrainConfiguration {
 
-	private BufferedImage heightmapSampler;
 	private float scaleY;
 	private float scaleXZ;
 	private int bezíer;
@@ -67,17 +66,6 @@ public class TerrainConfiguration {
 					}
 					if(tokens[0].equals("scaleXZ")){
 						setScaleXZ(Float.valueOf(tokens[1]));
-					}
-					if(tokens[0].equals("heightmap")){
-						setHeightmap(new Texture(tokens[1]));
-						getHeightmap().bind();
-						getHeightmap().mipmap();
-						BufferedImage img = null;
-						try {
-						    img = ImageIO.read(new File(tokens[1]));
-						} catch (IOException e) {
-						}
-						setHeightmapSampler(img);
 					}
 					if(tokens[0].equals("normalmap")){
 						setNormalmap(new Texture(tokens[1]));
@@ -475,12 +463,6 @@ public class TerrainConfiguration {
 	}
 	public void setMaterial3(Material material3) {
 		this.material3 = material3;
-	}
-	public BufferedImage getHeightmapSampler() {
-		return heightmapSampler;
-	}
-	public void setHeightmapSampler(BufferedImage heightmapSampler) {
-		this.heightmapSampler = heightmapSampler;
 	}
 
 	public ArrayList<FractalMaps> getFractals() {
