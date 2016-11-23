@@ -1,17 +1,28 @@
 package modules.terrain;
 
+import engine.core.Camera;
+import engine.math.Vec2f;
 import engine.scenegraph.Node;
 import engine.shaders.Shader;
 
 
 public class Terrain extends Node{
 	
+	private static Terrain instance = null;
 	private TerrainConfiguration terrainConfiguration;
 	private static final Object lock = new Object();
-		
-	public Terrain(String file, Shader shader, Shader grid, Shader shadow)
+	
+	public static Terrain getInstance() 
 	{
+	    if(instance == null) 
+	    {
+	    	instance = new Terrain();
+	    }
+	      return instance;
+	}
 		
+	public void init (String file, Shader shader, Shader grid, Shader shadow)
+	{
 		terrainConfiguration = new TerrainConfiguration();
 		
 		terrainConfiguration.loadFile(file);
@@ -26,6 +37,13 @@ public class Terrain extends Node{
 	public float getTerrainHeight(float x, float z)
 	{
 		float h = 0;
+		Vec2f pos = new Vec2f();
+		pos.setX(Camera.getInstance().getPosition().getX());
+		pos.setY(Camera.getInstance().getPosition().getY());
+		pos.add(terrainConfiguration.getScaleXZ()/2f);
+		pos.div(terrainConfiguration.getScaleXZ());
+		
+		return h;
 		
 		// heightmap sampling
 //		int xWidth = (int) ((location.getX() + gap/2f) * (float) (terrConfig.getHeightmapSampler().getWidth()));
@@ -65,8 +83,6 @@ public class Terrain extends Node{
         
         Vec3f heightPos = v0.add(( dU.mul(percentU).add(dV.mul(percentV ))));
         h = heightPos.getY();*/
-   		
-		return h;
 	}
 
 

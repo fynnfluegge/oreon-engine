@@ -15,11 +15,6 @@ public class TerrainQuadtree extends Node{
 			}
 		}
 	}	
-	
-	public void update()
-	{
-		super.update();
-	}
 
 	public static int getRootPatches() {
 		return rootPatches;
