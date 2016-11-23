@@ -5,7 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.nio.ByteBuffer;
 
-import modules.gpucomputing.NormalMapRenderer;
+import modules.gpgpu.NormalMapRenderer;
 import modules.terrain.Terrain;
 import modules.water.fft.OceanFFT;
 import engine.buffers.Framebuffer;

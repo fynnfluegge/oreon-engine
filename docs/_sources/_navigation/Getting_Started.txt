@@ -1,0 +1,106 @@
+Getting Started
+===============
+
+System Requirements
+-------------------
+Your System needs to support OpenGL 4.3.
+
+Prerequisites
+-------------
+Before start you should be familiar with GitHub.
+If you are not I recommend to go through the following explanations: https://help.github.com/articles/github-glossary .
+Make sure that you fully understand the following keywords:
+
+- Branch
+- Clone
+- Fork
+
+If you want to become a contributor or even a collaborator you should also understand:
+
+- Commit
+- Fetch
+- Merge
+- Pull (Fetch + Merge in one command)
+- Upstream
+- Pull Request
+
+Github User Account
+~~~~~~~~~~~~~~~~~~~
+If you don't have a GitHub User Account, Sign up for one. You will need it to fork the project and stay up-to-date.
+
+Eclipse Mars IDE
+~~~~~~~~~~~~~~~~
+The recommended IDE is Eclipse Mars https://eclipse.org/mars . 
+
+.. note::
+	You can also use Oxygen or Neon, but the following instructions for setting up the project are based on Mars.
+
+Setup Oreon Engine Java Project
+--------------------------
+
+Fork the repository
+~~~~~~~~~~~~~~~~
+
+To fork the repository just log-in to your GitHub account and click on the top-right corner of this page or visit https://github.com/oreon3D/Oreon.Engine-OpenGL-Java .
+Just click the "Fork" Button and you are done. You will see Oreon.Engine-OpenGL-Java as a forked repository at your user repositories.
+Now you are ready to clone the repository to your local system and set it up as a project in Eclipse.
+
+Clone the repository and import the project into Eclipse
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Open Eclipse IDE, choose File -> Import... -> Projects from Git
+
+.. image:: /_images/Eclipse_Git_Import.png
+
+- Select Clone URI -> Next >
+
+.. image:: /_images/CloneURI.png
+
+
+- Go to your forked Oreon.Engine-OpenGL-Java repository on GitHub
+- copy URL -> paste URL into the URI-field
+	- Eclipse will fill the other fields for you
+- type in your GitHub username and password
+- click Next >
+
+.. image:: /_images/RepoUri_User.png
+
+
+- Select master-branch -> click Next >
+
+- choose a directory for the local repository -> click Next >
+
+.. image:: /_images/local_Repo.png
+
+
+- Eclipse will clone the GitHub repository to the previously created local repository
+- when finished, choose 'Import using the New Project wizard' -> click Finish
+
+.. image:: /_images/build_local_repo.png
+
+
+- Choose Java Project -> Next >
+
+.. image:: /_images/New_project.png
+
+- Set a project name
+- Deselect 'Use default location'
+	- Choose the project path of your local repository as location
+- click Next>
+
+.. image:: /_images/newProject2.png
+
+- Finally make sure that lwjgl.jar and slick.jar exists ind the libraries build path
+	- if not, add them via Add JARs... (lib folder)
+- click Finish
+	
+.. image:: /_images/libraries.png
+
+- Congratulations! You are done!
+- You will see the project in your Eclipse package Explorer
+
+.. image:: /_images/Project_Setup_Finished.png
+
+
+
+

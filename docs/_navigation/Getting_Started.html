@@ -1,0 +1,252 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Getting Started &#8212; Oreon Engine
+OpenGL/Java 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="Oreon Engine
+OpenGL/Java 1.0.0 documentation" href="../index.html" />
+    <link rel="next" title="Update forked repository" href="Update_Fork.html" />
+    <link rel="prev" title="Welcome to the Oreon Engine developer documentation!" href="../index.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="getting-started">
+<h1>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="system-requirements">
+<h2>System Requirements<a class="headerlink" href="#system-requirements" title="Permalink to this headline">¶</a></h2>
+<p>Your System needs to support OpenGL 4.3.</p>
+</div>
+<div class="section" id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
+<p>Before start you should be familiar with GitHub.
+If you are not I recommend to go through the following explanations: <a class="reference external" href="https://help.github.com/articles/github-glossary">https://help.github.com/articles/github-glossary</a> .
+Make sure that you fully understand the following keywords:</p>
+<ul class="simple">
+<li>Branch</li>
+<li>Clone</li>
+<li>Fork</li>
+</ul>
+<p>If you want to become a contributor or even a collaborator you should also understand:</p>
+<ul class="simple">
+<li>Commit</li>
+<li>Fetch</li>
+<li>Merge</li>
+<li>Pull (Fetch + Merge in one command)</li>
+<li>Upstream</li>
+<li>Pull Request</li>
+</ul>
+<div class="section" id="github-user-account">
+<h3>Github User Account<a class="headerlink" href="#github-user-account" title="Permalink to this headline">¶</a></h3>
+<p>If you don&#8217;t have a GitHub User Account, Sign up for one. You will need it to fork the project and stay up-to-date.</p>
+</div>
+<div class="section" id="eclipse-mars-ide">
+<h3>Eclipse Mars IDE<a class="headerlink" href="#eclipse-mars-ide" title="Permalink to this headline">¶</a></h3>
+<p>The recommended IDE is Eclipse Mars <a class="reference external" href="https://eclipse.org/mars">https://eclipse.org/mars</a> .</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You can also use Oxygen or Neon, but the following instructions for setting up the project are based on Mars.</p>
+</div>
+</div>
+</div>
+<div class="section" id="setup-oreon-engine-java-project">
+<h2>Setup Oreon Engine Java Project<a class="headerlink" href="#setup-oreon-engine-java-project" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="fork-the-repository">
+<h3>Fork the repository<a class="headerlink" href="#fork-the-repository" title="Permalink to this headline">¶</a></h3>
+<p>To fork the repository just log-in to your GitHub account and click on the top-right corner of this page or visit <a class="reference external" href="https://github.com/oreon3D/Oreon.Engine-OpenGL-Java">https://github.com/oreon3D/Oreon.Engine-OpenGL-Java</a> .
+Just click the &#8220;Fork&#8221; Button and you are done. You will see Oreon.Engine-OpenGL-Java as a forked repository at your user repositories.
+Now you are ready to clone the repository to your local system and set it up as a project in Eclipse.</p>
+</div>
+<div class="section" id="clone-the-repository-and-import-the-project-into-eclipse">
+<h3>Clone the repository and import the project into Eclipse<a class="headerlink" href="#clone-the-repository-and-import-the-project-into-eclipse" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Open Eclipse IDE, choose File -&gt; Import... -&gt; Projects from Git</li>
+</ul>
+<img alt="../_images/Eclipse_Git_Import.png" src="../_images/Eclipse_Git_Import.png" />
+<ul class="simple">
+<li>Select Clone URI -&gt; Next &gt;</li>
+</ul>
+<img alt="../_images/CloneURI.png" src="../_images/CloneURI.png" />
+<ul>
+<li><p class="first">Go to your forked Oreon.Engine-OpenGL-Java repository on GitHub</p>
+</li>
+<li><dl class="first docutils">
+<dt>copy URL -&gt; paste URL into the URI-field</dt>
+<dd><ul class="first last simple">
+<li>Eclipse will fill the other fields for you</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p class="first">type in your GitHub username and password</p>
+</li>
+<li><p class="first">click Next &gt;</p>
+</li>
+</ul>
+<img alt="../_images/RepoUri_User.png" src="../_images/RepoUri_User.png" />
+<ul class="simple">
+<li>Select master-branch -&gt; click Next &gt;</li>
+<li>choose a directory for the local repository -&gt; click Next &gt;</li>
+</ul>
+<img alt="../_images/local_Repo.png" src="../_images/local_Repo.png" />
+<ul class="simple">
+<li>Eclipse will clone the GitHub repository to the previously created local repository</li>
+<li>when finished, choose &#8216;Import using the New Project wizard&#8217; -&gt; click Finish</li>
+</ul>
+<img alt="../_images/build_local_repo.png" src="../_images/build_local_repo.png" />
+<ul class="simple">
+<li>Choose Java Project -&gt; Next &gt;</li>
+</ul>
+<img alt="../_images/New_project.png" src="../_images/New_project.png" />
+<ul>
+<li><p class="first">Set a project name</p>
+</li>
+<li><dl class="first docutils">
+<dt>Deselect &#8216;Use default location&#8217;</dt>
+<dd><ul class="first last simple">
+<li>Choose the project path of your local repository as location</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p class="first">click Next&gt;</p>
+</li>
+</ul>
+<img alt="../_images/newProject2.png" src="../_images/newProject2.png" />
+<ul>
+<li><dl class="first docutils">
+<dt>Finally make sure that lwjgl.jar and slick.jar exists ind the libraries build path</dt>
+<dd><ul class="first last simple">
+<li>if not, add them via Add JARs... (lib folder)</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p class="first">click Finish</p>
+</li>
+</ul>
+<img alt="../_images/libraries.png" src="../_images/libraries.png" />
+<ul class="simple">
+<li>Congratulations! You are done!</li>
+<li>You will see the project in your Eclipse package Explorer</li>
+</ul>
+<img alt="../_images/Project_Setup_Finished.png" src="../_images/Project_Setup_Finished.png" />
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">Oreon Engine
+OpenGL/Java</a></h1>
+
+
+
+
+
+
+
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Home</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#system-requirements">System Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#prerequisites">Prerequisites</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#github-user-account">Github User Account</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#eclipse-mars-ide">Eclipse Mars IDE</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#setup-oreon-engine-java-project">Setup Oreon Engine Java Project</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#fork-the-repository">Fork the repository</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#clone-the-repository-and-import-the-project-into-eclipse">Clone the repository and import the project into Eclipse</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Update_Fork.html">Update Fork</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Creating Your First App.html">Creating Your First App</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="../index.html" title="previous chapter">Welcome to the Oreon Engine developer documentation!</a></li>
+      <li>Next: <a href="Update_Fork.html" title="next chapter">Update forked repository</a></li>
+  </ul></li>
+</ul>
+</div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Fynn.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="../_sources/_navigation/Getting_Started.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com//" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

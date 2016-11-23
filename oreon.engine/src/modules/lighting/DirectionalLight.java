@@ -2,12 +2,12 @@ package modules.lighting;
 
 import java.nio.FloatBuffer;
 
-import modules.shadowmapping.PSSMCamera;
 import engine.buffers.BufferAllocation;
 import engine.buffers.UBO;
 import engine.core.Constants;
 import engine.math.Matrix4f;
 import engine.math.Vec3f;
+import modules.shadowmapping.directionalLights.PSSMCamera;
 
 public class DirectionalLight extends Light{
 

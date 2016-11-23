@@ -1,0 +1,59 @@
+Getting Started
+===============
+
+Prerequisites
+-------------
+Before start you should be familiar with GitHub.
+If you are not I recommend to go through the following explanations: https://help.github.com/articles/github-glossary .
+Make sure that you fully understand the following keywords:
+
+- Branch
+- Clone
+- Fork
+- Fetch
+- Pull
+- Merge
+
+If you want to become a contributor or even a collaborator you should also understand:
+
+- Commit
+- Pull Request
+- Upstream
+
+System Requirements
+~~~~~~~~~~~~~~~~~~~
+Your System needs to support OpenGL 4.3.
+Make sure to install the latest graphics driver.
+
+Github User Account
+~~~~~~~~~~~~~~~~~~~
+If you don't have a GitHub User Account, Sign up for one. You will need it to fork the project and stay up-to-date.
+
+Eclipse Mars IDE
+~~~~~~~~~~~~~~~~
+The recommended IDE is Eclipse Mars https://eclipse.org/mars . 
+
+.. note::
+	You can also use Oxygen or Neon, but the following instructions for setting up the project are based on Mars.
+
+Setup Oreon Engine Project
+--------------------------
+
+Fork the project
+~~~~~~~~~~~~~~~~
+
+To fork the project just log-in to your GitHub account and click on the top-right corner of this page or visit https://github.com/oreon3D/Oreon.Engine-OpenGL-Java .
+Just click on the "Fork" Button and you are done. You will see Oreon.Engine-OpenGL-Java as a forked repository at your user repositories.
+Now we are ready to clone the project to your local system and set it up to Eclipse IDE.
+
+Clone the project into Eclipse
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Open Eclipse IDE, choose File -> Import...
+
+- choose Projects from Git
+
+.. image:: Eclipse_Git_Import.png
+
+
+

@@ -1,4 +1,4 @@
-package modules.shadowmapping;
+package modules.shadowmapping.directionalLights;
 
 import engine.core.Camera;
 import engine.math.Matrix4f;

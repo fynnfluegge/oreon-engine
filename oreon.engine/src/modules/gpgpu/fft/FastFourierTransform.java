@@ -1,4 +1,4 @@
-package modules.fastFourierTransform;
+package modules.gpgpu.fft;
 
 import engine.shaders.Shader;
 import engine.textures.Texture;
