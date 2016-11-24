@@ -4,6 +4,9 @@ import engine.core.Camera;
 import engine.math.Vec2f;
 import engine.scenegraph.Node;
 import engine.shaders.Shader;
+import static org.lwjgl.opengl.GL11.glGetTexImage;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+
 
 
 public class Terrain extends Node{
