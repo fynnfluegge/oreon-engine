@@ -1,11 +1,9 @@
 package engine.core;
 
 import java.nio.FloatBuffer;
-
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
-
 import engine.buffers.BufferAllocation;
 import engine.buffers.UBO;
 import engine.main.CoreEngine;
@@ -35,8 +33,6 @@ public class Camera {
 	private FloatBuffer floatBuffer;
 	private final int bufferSize = Float.BYTES * (4+16+(6*4));
 	
-	private float zNear;
-	private float zFar;
 	private float width;
 	private float height;
 	private float fovY;
@@ -69,8 +65,7 @@ public class Camera {
 	protected Camera()
 	{
 		this(new Vec3f(0,100,0), new Vec3f(0,-1,1), new Vec3f(0,1,1));
-		this.setProjection(70, OpenGLDisplay.getInstance().getLwjglWindow().getWidth(), OpenGLDisplay.getInstance().getLwjglWindow().getHeight(), Constants.ZNEAR, Constants.ZFAR);
-		this.projectionMatrix = new Matrix4f().PerspectiveProjection(fovY, width, height, zNear, zFar);
+		this.setProjection(70, OpenGLDisplay.getInstance().getLwjglWindow().getWidth(), OpenGLDisplay.getInstance().getLwjglWindow().getHeight());
 		this.setViewMatrix(new Matrix4f().View(this.getForward(), this.getUp()).mul(
 				new Matrix4f().Translation(this.getPosition().mul(-1))));
 		this.initfrustumPlanes();
@@ -199,6 +194,9 @@ public class Camera {
 		
 		if(mouselocked) Input.setMousePosition(lockedMousePosition);
 		
+//		this.position.setY(Terrain.getInstance().getTerrainHeight(Camera.getInstance().getPosition().getX(),
+//				   Camera.getInstance().getPosition().getZ()));
+		
 		setPreviousViewMatrix(viewMatrix);
 		setPreviousViewProjectionMatrix(viewProjectionMatrix);
 		setViewMatrix(new Matrix4f().View(this.getForward(), this.getUp()).mul(
@@ -218,6 +216,7 @@ public class Camera {
 		floatBuffer.clear();
 		floatBuffer.put(BufferAllocation.createFlippedBuffer(this.position));
 		floatBuffer.put(0);
+		floatBuffer.put(BufferAllocation.createFlippedBuffer(viewMatrix));
 		floatBuffer.put(BufferAllocation.createFlippedBuffer(viewProjectionMatrix));
 		floatBuffer.put(BufferAllocation.createFlippedBuffer(frustumPlanes));
 		ubo.updateData(floatBuffer, bufferSize);
@@ -330,13 +329,13 @@ public class Camera {
 		this.projectionMatrix = projectionMatrix;
 	}
 	
-	public  void setProjection(float fovY, float width, float height, float zNear, float zFar)
+	public  void setProjection(float fovY, float width, float height)
 	{
 		this.fovY = fovY;
 		this.width = width;
 		this.height = height;
-		this.zNear = zNear;
-		this.zFar = zFar;
+		
+		this.projectionMatrix = new Matrix4f().PerspectiveProjection(fovY, width, height, Constants.ZNEAR, Constants.ZFAR);
 	}
 
 	public Matrix4f getViewMatrix() {

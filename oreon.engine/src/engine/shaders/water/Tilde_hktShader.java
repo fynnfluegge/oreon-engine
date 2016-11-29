@@ -27,7 +27,7 @@ public class Tilde_hktShader extends Shader{
 		addUniform("t");
 	}
 	
-	public void updateUniforms(int L, int N, float t)
+	public void updateUniforms(int L, float t)
 	{
 		setUniformi("L", L);
 		setUniformf("t", t);

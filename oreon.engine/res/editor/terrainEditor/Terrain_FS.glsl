@@ -22,7 +22,8 @@ struct Fractal
 
 layout (std140, row_major) uniform Camera{
 	vec3 eyePosition;
-	mat4 viewProjectionMatrix;
+	mat4 m_View;
+	mat4 m_ViewProjection;
 	vec4 frustumPlanes[6];
 };
 

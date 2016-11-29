@@ -13,7 +13,8 @@ struct Material
 
 layout (std140, row_major) uniform Camera{
 	vec3 eyePosition;
-	mat4 viewProjectionMatrix;
+	mat4 m_View;
+	mat4 m_ViewProjection;
 	vec4 frustumPlanes[6];
 };
 
@@ -62,7 +63,7 @@ void main() {
 	for (int i = 0; i < gl_in.length(); ++i)
 	{
 		vec4 position = gl_in[i].gl_Position + displacement[i];
-		gl_Position = viewProjectionMatrix * position;
+		gl_Position = m_ViewProjection * position;
 		gl_ClipDistance[0] = dot(gl_Position ,frustumPlanes[0]);
 		gl_ClipDistance[1] = dot(gl_Position ,frustumPlanes[1]);
 		gl_ClipDistance[2] = dot(gl_Position ,frustumPlanes[2]);
@@ -74,7 +75,7 @@ void main() {
 	}
 	
 	vec4 vertexPos = gl_in[0].gl_Position + displacement[0];
-	gl_Position = viewProjectionMatrix * vertexPos;
+	gl_Position = m_ViewProjection * vertexPos;
 	gl_ClipDistance[0] = dot(gl_Position ,frustumPlanes[0]);
 	gl_ClipDistance[1] = dot(gl_Position ,frustumPlanes[1]);
 	gl_ClipDistance[2] = dot(gl_Position ,frustumPlanes[2]);

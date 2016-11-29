@@ -47,12 +47,12 @@ public class Tilde_hkt extends FourierComponents{
 	public void update(float t) {
 		
 		getShader().bind();
-		getShader().updateUniforms(L,getN(),t);
+		getShader().updateUniforms(L,t);
 		glBindImageTexture(0, dyComponents.getId(), 0, false, 0, GL_READ_WRITE, GL_RGBA32F);
 		glBindImageTexture(1, dxComponents.getId(), 0, false, 0, GL_READ_WRITE, GL_RGBA32F);
 		glBindImageTexture(2, dzComponents.getId(), 0, false, 0, GL_READ_WRITE, GL_RGBA32F);
 		glBindImageTexture(3, ((Tilde_h0)getSpectrum()).geth0k().getId(), 0, false, 0, GL_READ_WRITE, GL_RGBA32F);
-		glBindImageTexture(4,  ((Tilde_h0)getSpectrum()).geth0kminus().getId(), 0, false, 0, GL_READ_WRITE, GL_RGBA32F);
+		glBindImageTexture(4, ((Tilde_h0)getSpectrum()).geth0kminus().getId(), 0, false, 0, GL_READ_WRITE, GL_RGBA32F);
 		glDispatchCompute(getN()/16,getN()/16,1);	
 		glFinish();
 	}
@@ -61,31 +61,14 @@ public class Tilde_hkt extends FourierComponents{
 		return L;
 	}
 
-	public void setL(int l) {
-		L = l;
-	}
-
 	public Texture getDyComponents() {
 		return dyComponents;
-	}
-
-	public void setDyComponents(Texture dyComponents) {
-		this.dyComponents = dyComponents;
 	}
 
 	public Texture getDxComponents() {
 		return dxComponents;
 	}
-
-	public void setDxComponents(Texture dxComponents) {
-		this.dxComponents = dxComponents;
-	}
-
 	public Texture getDzComponents() {
 		return dzComponents;
-	}
-
-	public void setDzComponents(Texture dzComponents) {
-		this.dzComponents = dzComponents;
 	}
 }

@@ -34,9 +34,16 @@ public class TerrainNode extends GameObject{
 		this.gap = 1f/(TerrainQuadtree.getRootPatches() * (float)(Math.pow(2, lod)));
 		PatchVAO meshBuffer = new PatchVAO();
 		meshBuffer.addData(generatePatch(),16);
-		setRenderInfo(new RenderInfo(new engine.configs.Default(),terrConfig.getShader(),terrConfig.getShadowShader()));
+		setRenderInfo(new RenderInfo(new engine.configs.Default(),terrConfig.getShader()));
 		Renderer renderer = new Renderer(terrConfig.getShader(), meshBuffer);
 		addComponent("Renderer", renderer);
+		
+		getTransform().setLocalScaling(terrConfig.getScaleXZ(), terrConfig.getScaleY(), terrConfig.getScaleXZ());
+		getTransform().getLocalTranslation().setX(-terrConfig.getScaleXZ()/2f);
+		getTransform().getLocalTranslation().setZ(-terrConfig.getScaleXZ()/2f);
+		
+		getTransform().setScaling(getTransform().getLocalScaling());
+		getTransform().setTranslation(getTransform().getLocalTranslation());
 		
 		computeWorldPos();
 	}
@@ -47,14 +54,8 @@ public class TerrainNode extends GameObject{
 				getRenderInfo().setShader(terrConfig.getGridShader());
 			else if (!RenderingEngine.isGrid())
 				getRenderInfo().setShader(terrConfig.getShader());
-		
-			getTransform().setLocalScaling(terrConfig.getScaleXZ(), terrConfig.getScaleY(), terrConfig.getScaleXZ());
-			getTransform().getLocalTranslation().setX(-terrConfig.getScaleXZ()/2f);
-			getTransform().getLocalTranslation().setZ(-terrConfig.getScaleXZ()/2f);
 			
-			getTransform().setScaling(getTransform().getLocalScaling());
-			getTransform().setTranslation(getTransform().getLocalTranslation());
-			
+			getComponents().get("Renderer").setShader(getRenderInfo().getShader());
 			updateQuadtree();
 			
 			for(Node child: getChildren())

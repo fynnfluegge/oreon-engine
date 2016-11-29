@@ -50,7 +50,6 @@ public class OceanFFT extends FastFourierTransform{
 			setPingpongTexture(new Texture());
 			getPingpongTexture().generate();
 			getPingpongTexture().bind();
-			getPingpongTexture().noFilter();
 			glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA32F, N, N);
 		}
 		
@@ -58,8 +57,8 @@ public class OceanFFT extends FastFourierTransform{
 		{
 			getFourierComponents().update(t);
 			
-			// Dy-FFT
-			
+//			// Dy-FFT
+//			
 			pingpong = 0;
 			
 			getButterflyShader().bind();

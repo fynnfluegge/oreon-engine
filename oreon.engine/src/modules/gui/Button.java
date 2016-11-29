@@ -5,7 +5,7 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 import engine.configs.AlphaBlending;
 import engine.core.Input;
 import engine.core.Transform;
-import engine.geometrics.Mesh;
+import engine.geometry.Mesh;
 import engine.math.Matrix4f;
 import engine.math.Quaternion;
 import engine.math.Vec2f;

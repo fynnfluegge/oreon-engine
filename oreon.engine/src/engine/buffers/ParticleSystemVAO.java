@@ -24,10 +24,12 @@ import static org.lwjgl.opengl.GL40.GL_TRANSFORM_FEEDBACK;
 import static org.lwjgl.opengl.GL40.glBindTransformFeedback;
 import static org.lwjgl.opengl.GL40.glDrawTransformFeedback;
 import static org.lwjgl.opengl.GL40.glGenTransformFeedbacks;
+
+import engine.geometry.Particle;
+
 import static org.lwjgl.opengl.GL40.glDeleteTransformFeedbacks;
 import static org.lwjgl.opengl.GL30.glDeleteVertexArrays;
 import static org.lwjgl.opengl.GL15.glDeleteBuffers;
-import engine.geometrics.Particle;
 
 public class ParticleSystemVAO {
 

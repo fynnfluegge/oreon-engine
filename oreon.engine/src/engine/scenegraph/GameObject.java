@@ -4,6 +4,7 @@ import static org.lwjgl.opengl.GL11.glViewport;
 
 import java.util.HashMap;
 
+import engine.core.Constants;
 import engine.main.OpenGLDisplay;
 import engine.scenegraph.components.Component;
 import engine.scenegraph.components.RenderInfo;
@@ -56,7 +57,7 @@ public class GameObject extends Node{
 		if (renderinfo.isShadowCaster()){
 			components.get("Renderer").setShader(renderinfo.getShadowShader());
 			renderinfo.getConfig().enable();
-			glViewport(0,0,1024,1024);
+			glViewport(0,0,Constants.PSSM_SHADOWMAP_RESOLUTION,Constants.PSSM_SHADOWMAP_RESOLUTION);
 			
 			components.get("Renderer").render();
 			

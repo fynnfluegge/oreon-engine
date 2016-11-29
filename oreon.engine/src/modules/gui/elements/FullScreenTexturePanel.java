@@ -6,7 +6,7 @@ import modules.gui.GUIElement;
 import modules.gui.GUIVAO;
 import engine.configs.AlphaCullFaceDisable;
 import engine.core.Transform;
-import engine.geometrics.Geometrics;
+import engine.geometry.Geometrics;
 import engine.main.OpenGLDisplay;
 import engine.math.Matrix4f;
 import engine.shaders.gui.GuiShader;

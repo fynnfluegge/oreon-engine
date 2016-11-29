@@ -119,10 +119,10 @@ public class Matrix4f {
 		float tanFOV = (float) Math.tan(Math.toRadians(fovY/2));
 		float aspectRatio = width/height;
 		
-		m[0][0] = 1/(tanFOV*aspectRatio); m[0][1] = 0; 		 	   m[0][2] = 0; 							m[0][3] = 0;
-		m[1][0] = 0; 					  m[1][1] = 1/tanFOV; m[1][2] = 0; 									m[1][3] = 0;
-		m[2][0] = 0; 				 	  m[2][1] = 0; 		 	   m[2][2] = (-zNear-zFar)/(zNear-zFar);	m[2][3] = 2*zFar*zNear / (zNear-zFar);
-		m[3][0] = 0; 				 	  m[3][1] = 0; 		 	   m[3][2] = 1; 							m[3][3] = 1;
+		m[0][0] = 1/(tanFOV*aspectRatio); m[0][1] = 0; 		 	   m[0][2] = 0; 				m[0][3] = 0;
+		m[1][0] = 0; 					  m[1][1] = 1/tanFOV; 	   m[1][2] = 0; 			 	m[1][3] = 0;
+		m[2][0] = 0; 				 	  m[2][1] = 0; 		 	   m[2][2] = zFar/(zFar-zNear);	m[2][3] = zFar*zNear /(zFar-zNear);
+		m[3][0] = 0; 				 	  m[3][1] = 0; 		 	   m[3][2] = 1; 				m[3][3] = 1;
 	
 		return this;
 	}

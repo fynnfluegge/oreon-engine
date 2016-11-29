@@ -3,13 +3,13 @@ package engine.core;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
-import engine.geometrics.Mesh;
-import engine.geometrics.Vertex;
-import engine.geometrics.obj.Face;
-import engine.geometrics.obj.SmoothingGroup;
+import engine.geometry.Mesh;
+import engine.geometry.Vertex;
 import engine.math.Quaternion;
 import engine.math.Vec2f;
 import engine.math.Vec3f;
+import modules.modelLoader.obj.Face;
+import modules.modelLoader.obj.SmoothingGroup;
 
 public class Util {
 	

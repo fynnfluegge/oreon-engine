@@ -2,9 +2,13 @@ package editor.tools.terrainEditor;
 
 import java.awt.Canvas;
 
-import editor.terrain.Terrain;
+import editor.db.DB;
+import editor.terrain.TerrainGridShader;
+import editor.terrain.TerrainShader;
+import editor.terrain.TerrainShadowShader;
 import modules.gui.GUIs.EngineGUI;
 import modules.sky.SkySphere;
+import modules.terrain.Terrain;
 import engine.main.Game;
 
 public class OpenGLEngine implements Runnable{
@@ -20,9 +24,12 @@ public class OpenGLEngine implements Runnable{
 		
 		Game game = new Game();
 		game.setGui(new EngineGUI());
-		game.getEngine().embedWindow(1000, 520, OpenGLCanvas);
+		game.getEngine().embedWindow(1000, 500, OpenGLCanvas);
 		game.init();
-		game.getScenegraph().setTerrain(new Terrain());
+		game.getScenegraph().setTerrain(Terrain.getInstance());
+		Terrain.getInstance().init("./res/editor/terrainEditor/terrainSettings.ter", TerrainShader.getInstance(),
+				TerrainGridShader.getInstance(), TerrainShadowShader.getInstance());
+		DB.setTerrainConfiguration(Terrain.getInstance().getTerrainConfiguration());
 		game.getScenegraph().addObject(new SkySphere());	
 		game.launch();
 	}

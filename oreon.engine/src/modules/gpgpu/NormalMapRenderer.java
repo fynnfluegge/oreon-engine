@@ -24,6 +24,7 @@ public class NormalMapRenderer {
 		normalmap = new Texture();
 		normalmap.generate();
 		normalmap.bind();
+		normalmap.mipmap();
 		glTexStorage2D(GL_TEXTURE_2D,  (int) (Math.log(N)/Math.log(2)), GL_RGBA32F, N, N);
 	}
 	

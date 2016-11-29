@@ -1,15 +1,13 @@
 package modules.terrain;
 
-import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
-
-import javax.imageio.ImageIO;
+import java.util.Random;
 
 import modules.terrain.fractals.FractalMaps;
+import engine.core.Constants;
 import engine.core.Util;
 import engine.scenegraph.components.Material;
 import engine.shaders.Shader;
@@ -194,6 +192,9 @@ public class TerrainConfiguration {
 					if(tokens[0].equals("texDetail")){
 						setTexDetail(Float.valueOf(tokens[1]));
 					}
+					if(tokens[0].equals("sightRangeFactor")){
+						sightRangeFactor = Float.valueOf(tokens[1]);
+					}
 					if(tokens[0].equals("bezier")){
 						setBezíer(Integer.valueOf(tokens[1]));
 					}
@@ -274,6 +275,7 @@ public class TerrainConfiguration {
 		int l = 0;
 		int scaling = 0;
 		float strength = 0;
+		int random = 0;
 		
 		try{
 			line = reader.readLine();
@@ -296,14 +298,23 @@ public class TerrainConfiguration {
 			tokens = Util.removeEmptyStrings(tokens);
 			if(tokens[0].equals("strength"))
 				strength = Float.valueOf(tokens[1]);
+			line = reader.readLine();
+			tokens = line.split(" ");
+			tokens = Util.removeEmptyStrings(tokens);
+			if(tokens[0].equals("random")){
+				if (tokens.length == 2)
+					random = Integer.valueOf(tokens[1]);
+				else
+					random = new Random().nextInt(1000);
 			}
+		}
 		catch(Exception e)
 		{
 			e.printStackTrace();
 			System.exit(1);
 		}
-		
-		getFractals().add(new FractalMaps(512,amp,l,scaling,strength));
+		FractalMaps fractal = new FractalMaps(Constants.TERRAIN_FRACTALS_RESOLUTION,amp,l,scaling,strength,random);
+		getFractals().add(fractal);
 	}
 	
 	public void ReloadFractals(String file){

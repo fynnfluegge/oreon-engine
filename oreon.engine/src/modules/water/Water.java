@@ -114,7 +114,7 @@ public class Water extends GameObject{
 		refractionFBO.setDrawBuffer(0);
 		refractionFBO.colorTextureAttachment(refractionTexture.getId(), 0);
 		refractionFBO.checkStatus();
-		refractionFBO.unbind();
+		refractionFBO.unbind();		
 	}
 	
 	public void loadSettingsFile(String file)
@@ -245,7 +245,6 @@ public class Water extends GameObject{
 	
 	public void render()
 	{
-	
 		if (!Input.isPause()){
 			distortion += getDistortionOffset();
 			motion += getMotionOffset();

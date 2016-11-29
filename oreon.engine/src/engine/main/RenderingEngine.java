@@ -2,14 +2,12 @@ package engine.main;
 
 import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.glClear;
-import static org.lwjgl.opengl.GL11.glClearDepth;
-import static org.lwjgl.opengl.GL11.glFinish;
 
 import modules.gui.GUI;
 import modules.gui.elements.FullScreenTexturePanel;
 import modules.lighting.DirectionalLight;
+import modules.postProcessingEffects.MotionBlur;
 import modules.shadowmapping.directionalLights.ShadowMaps;
-import modules.vfx.MotionBlur;
 import engine.configs.RenderConfig;
 import engine.core.Camera;
 import engine.core.Constants;
@@ -53,17 +51,15 @@ public class RenderingEngine {
 		RenderConfig.clearScreen();
 
 		// render shadow maps
-		shadowMaps.bind();
-		glClearDepth(1.0);
+		shadowMaps.getFBO().bind();
 		glClear(GL_DEPTH_BUFFER_BIT);
 		scenegraph.renderShadows();
-		shadowMaps.unbind();
+		shadowMaps.getFBO().unbind();
 		
 		// render scene/deferred maps
 		OpenGLDisplay.getInstance().getFBO().bind();
 		RenderConfig.clearScreen();
 		scenegraph.render();	
-		glFinish();
 		OpenGLDisplay.getInstance().getFBO().unbind();
 		
 		gui.render();

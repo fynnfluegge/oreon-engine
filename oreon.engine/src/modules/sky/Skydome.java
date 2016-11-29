@@ -2,8 +2,7 @@ package modules.sky;
 
 import engine.buffers.MeshVAO;
 import engine.configs.CullFaceDisable;
-import engine.geometrics.Mesh;
-import engine.geometrics.obj.OBJLoader;
+import engine.geometry.Mesh;
 import engine.main.RenderingEngine;
 import engine.scenegraph.GameObject;
 import engine.scenegraph.components.Material;
@@ -12,6 +11,7 @@ import engine.scenegraph.components.Renderer;
 import engine.shaders.basic.Textured;
 import engine.textures.ProceduralTexturing;
 import engine.textures.Texture;
+import modules.modelLoader.obj.OBJLoader;
 
 public class Skydome extends GameObject{
 	
