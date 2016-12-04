@@ -7,9 +7,10 @@ import static org.lwjgl.opengl.GL30.GL_RGBA32F;
 import static org.lwjgl.opengl.GL42.glBindImageTexture;
 import static org.lwjgl.opengl.GL42.glTexStorage2D;
 import static org.lwjgl.opengl.GL43.glDispatchCompute;
-import engine.shaders.Shader;
-import engine.shaders.computing.NormalMapShader;
-import engine.textures.Texture;
+
+import engine.shadersamples.Shader;
+import engine.shadersamples.computing.NormalMapShader;
+import engine.texturing.Texture;
 
 public class NormalMapRenderer {
 

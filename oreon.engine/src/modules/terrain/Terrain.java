@@ -3,7 +3,7 @@ package modules.terrain;
 import engine.core.Constants;
 import engine.math.Vec2f;
 import engine.scenegraph.Node;
-import engine.shaders.Shader;
+import engine.shadersamples.Shader;
 
 
 public class Terrain extends Node{

@@ -3,7 +3,7 @@ package samples.fractalworlds;
 import engine.core.Constants;
 import engine.core.ResourceLoader;
 import engine.scenegraph.GameObject;
-import engine.shaders.Shader;
+import engine.shadersamples.Shader;
 
 public class TestObjectShadowShader extends Shader{
 
@@ -23,8 +23,8 @@ public class TestObjectShadowShader extends Shader{
 		super();
 		
 		addVertexShader(ResourceLoader.loadShader("shaders/blinn-phong/TBN/Vertex.glsl"));
-		addGeometryShader(ResourceLoader.loadShader("demos/FractalWorlds/testObject/Shadow_GS.glsl"));
-		addFragmentShader(ResourceLoader.loadShader("demos/FractalWorlds/testObject/Shadow_FS.glsl"));
+		addGeometryShader(ResourceLoader.loadShader("samples/FractalWorlds/testObject/Shadow_GS.glsl"));
+		addFragmentShader(ResourceLoader.loadShader("samples/FractalWorlds/testObject/Shadow_FS.glsl"));
 		compileShader();
 		
 		addUniform("worldMatrix");

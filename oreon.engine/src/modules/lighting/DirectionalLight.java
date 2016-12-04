@@ -25,11 +25,11 @@ public class DirectionalLight extends Light{
 	private FloatBuffer floatBufferLight;
 	private FloatBuffer floatBufferMatrices;
 	private final int lightBufferSize = Float.BYTES * 12;
-	private final int matricesBufferSize = Float.BYTES * 64
+	private final int matricesBufferSize = Float.BYTES * 96
 										 // split ranges
-										 + Float.BYTES * 16
+										 + Float.BYTES * 24
 										 // shadowmap array indices
-										 + Float.BYTES * 16;
+										 + Float.BYTES * 24;
 
 	
 	public static DirectionalLight getInstance(){

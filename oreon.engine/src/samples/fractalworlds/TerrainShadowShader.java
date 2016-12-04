@@ -8,7 +8,7 @@ import engine.core.Constants;
 import engine.core.ResourceLoader;
 import engine.math.Vec2f;
 import engine.scenegraph.GameObject;
-import engine.shaders.Shader;
+import engine.shadersamples.Shader;
 
 public class TerrainShadowShader extends Shader{
 	
@@ -27,11 +27,11 @@ private static TerrainShadowShader instance = null;
 		
 		super();
 		
-		addVertexShader(ResourceLoader.loadShader("demos/FractalWorlds/Terrain/shader/Terrain_VS.glsl"));
-		addTessellationControlShader(ResourceLoader.loadShader("demos/FractalWorlds/Terrain/shader/Terrain_TC.glsl"));
-		addTessellationEvaluationShader(ResourceLoader.loadShader("demos/FractalWorlds/Terrain/shader/Terrain_TE.glsl"));
-		addGeometryShader(ResourceLoader.loadShader("demos/FractalWorlds/Terrain/shader/TerrainShadow_GS.glsl"));
-		addFragmentShader(ResourceLoader.loadShader("demos/FractalWorlds/Terrain/shader/TerrainGrid_FS.glsl"));
+		addVertexShader(ResourceLoader.loadShader("samples/FractalWorlds/Terrain/shader/Terrain_VS.glsl"));
+		addTessellationControlShader(ResourceLoader.loadShader("samples/FractalWorlds/Terrain/shader/Terrain_TC.glsl"));
+		addTessellationEvaluationShader(ResourceLoader.loadShader("samples/FractalWorlds/Terrain/shader/Terrain_TE.glsl"));
+		addGeometryShader(ResourceLoader.loadShader("samples/FractalWorlds/Terrain/shader/TerrainShadow_GS.glsl"));
+		addFragmentShader(ResourceLoader.loadShader("samples/FractalWorlds/Terrain/shader/TerrainGrid_FS.glsl"));
 		compileShader();
 
 		addUniform("worldMatrix");

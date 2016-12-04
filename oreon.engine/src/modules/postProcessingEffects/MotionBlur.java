@@ -18,9 +18,9 @@ import org.lwjgl.input.Keyboard;
 import engine.core.Camera;
 import engine.core.Input;
 import engine.main.OpenGLDisplay;
-import engine.shaders.motionblur.MotionBlurShader;
-import engine.shaders.motionblur.PixelVelocityShader;
-import engine.textures.Texture;
+import engine.shadersamples.motionblur.MotionBlurShader;
+import engine.shadersamples.motionblur.PixelVelocityShader;
+import engine.texturing.Texture;
 
 public class MotionBlur {
 	

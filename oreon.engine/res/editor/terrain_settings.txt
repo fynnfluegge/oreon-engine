@@ -1,0 +1,89 @@
+#textures
+#terrain mesh settings
+scaleXZ 6000.0
+scaleY 1200.0
+texDetail 400.0
+tessellationFactor 761
+tessellationSlope 1.63
+tessellationShift -0.5
+detailRange 100
+sightRangeFactor 1.4
+#lod ranges
+lod1_range 1750
+lod2_range 874
+lod3_range 386
+lod4_range 192
+lod5_range 100
+lod6_range 42
+lod7_range 20
+lod8_range 0
+fractal_stage0
+amp 2.0
+l 100.0
+scaling 1
+strength 2.23
+normalStrength 32
+random 941
+fractal_stage0
+amp 2.0
+l 100.0
+scaling 2
+strength 1.05
+normalStrength 32
+random 558
+fractal_stage0
+amp 4.0
+l 100.0
+scaling 4
+strength 0.28
+normalStrength 32
+random 812
+fractal_stage0
+amp 4.0
+l 100.0
+scaling 6
+strength 0.2
+normalStrength 32
+random 470
+fractal_stage0
+amp 4.0
+l 200.0
+scaling 10
+strength 0.06
+normalStrength 32
+random 158
+fractal_stage0
+amp 6.0
+l 400.0
+scaling 20
+strength 0.02
+normalStrength 32
+random 789
+fractal_stage0
+amp 6.0
+l 400.0
+scaling 22
+strength 0.01
+normalStrength 32
+random 35
+fractal_stage0
+amp 2.0
+l 1000.0
+scaling 400
+strength 0.0
+normalStrength 32
+random 357
+fractal_stage0
+amp 2.0
+l 1000.0
+scaling 410
+strength 0.0
+normalStrength 32
+random 805
+fractal_stage0
+amp 2.0
+l 1000.0
+scaling 420
+strength 0.0
+normalStrength 32
+random 755

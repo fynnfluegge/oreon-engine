@@ -1,6 +1,6 @@
 package modules.gpgpu.fft;
 
-import engine.shaders.Shader;
+import engine.shadersamples.Shader;
 
 
 public abstract class FourierComponents {

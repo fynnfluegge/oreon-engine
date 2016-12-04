@@ -1,7 +1,6 @@
 package modules.modelLoader.obj;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -14,7 +13,7 @@ import engine.geometry.Vertex;
 import engine.math.Vec2f;
 import engine.math.Vec3f;
 import engine.scenegraph.components.Material;
-import engine.textures.Texture;
+import engine.texturing.Texture;
 
 public class OBJLoader {
 
@@ -27,14 +26,14 @@ public class OBJLoader {
 	private int currentSmoothingGroup;
 	private String materialname = null;
 	
-	private Frontface frontface = Frontface.CW;
+	private Frontface frontface = Frontface.CCW;
 	private boolean generateNormals = true;
 	
 	private enum Frontface {
 		CW,CCW
 	}
 	
-	public Model[] load(String fileName)
+	public Model[] load(String path, String objFile, String mtlFile)
 	{
 		long time = System.currentTimeMillis();
 		
@@ -42,70 +41,70 @@ public class OBJLoader {
 			BufferedReader mtlReader = null;
 			
 			// load .mtl
-			try{
-				if(new File("./res/models/obj/" + fileName + "/" + fileName + ".mtl").exists()){
-					mtlReader = new BufferedReader(new FileReader("./res/models/obj/" + fileName + "/" + fileName + ".mtl"));
-					String line;
-					String currentMtl = "";
-					
-					while((line = mtlReader.readLine()) != null){
+			if (mtlFile != null){
+				try{
+						mtlReader = new BufferedReader(new FileReader(path + "/" +  mtlFile));
+						String line;
+						String currentMtl = "";
 						
-						String[] tokens = line.split(" ");
-						tokens = Util.removeEmptyStrings(tokens);
-						
-						if(tokens.length == 0)
-							continue;
-						if(tokens[0].equals("newmtl")){
-							Material material = new Material();
-							material.setName(tokens[1]);
-							materials.put(tokens[1], material);
-							currentMtl = tokens[1];
-						}
-						if(tokens[0].equals("Kd")){
-							if (tokens.length > 1){
-								Vec3f color = new Vec3f(Float.valueOf(tokens[1]), Float.valueOf(tokens[2]), Float.valueOf(tokens[3]));
-								materials.get(currentMtl).setColor(color);
+						while((line = mtlReader.readLine()) != null){
+							
+							String[] tokens = line.split(" ");
+							tokens = Util.removeEmptyStrings(tokens);
+							
+							if(tokens.length == 0)
+								continue;
+							if(tokens[0].equals("newmtl")){
+								Material material = new Material();
+								material.setName(tokens[1]);
+								materials.put(tokens[1], material);
+								currentMtl = tokens[1];
+							}
+							if(tokens[0].equals("Kd")){
+								if (tokens.length > 1){
+									Vec3f color = new Vec3f(Float.valueOf(tokens[1]), Float.valueOf(tokens[2]), Float.valueOf(tokens[3]));
+									materials.get(currentMtl).setColor(color);
+								}
+							}
+							if(tokens[0].equals("map_Kd")){
+								if (tokens.length > 1)
+								materials.get(currentMtl).setDiffusemap(new Texture(path + "/" + tokens[1]));
+								materials.get(currentMtl).getDiffusemap().bind();
+								materials.get(currentMtl).getDiffusemap().mipmap();
+							}
+							if(tokens[0].equals("map_Ks")){
+								if (tokens.length > 1)
+									materials.get(currentMtl).setSpecularmap(new Texture(path + "/" + tokens[1]));
+								materials.get(currentMtl).getSpecularmap().bind();
+								materials.get(currentMtl).getSpecularmap().mipmap();
+							}
+							if(tokens[0].equals("map_bump")){
+								if (tokens.length > 1)
+									materials.get(currentMtl).setNormalmap(new Texture(path + "/" + tokens[1]));
+									materials.get(currentMtl).getNormalmap().bind();
+									materials.get(currentMtl).getNormalmap().mipmap();
+							}
+							if(tokens[0].equals("illum")){
+								if (tokens.length > 1)
+									materials.get(currentMtl).setEmission(Float.valueOf(tokens[1]));
+							}
+							if(tokens[0].equals("Ns")){
+								if (tokens.length > 1)
+									materials.get(currentMtl).setShininess(Float.valueOf(tokens[1]));
 							}
 						}
-						if(tokens[0].equals("map_Kd")){
-							if (tokens.length > 1)
-							materials.get(currentMtl).setDiffusemap(new Texture("./res/models/obj/" + fileName + "/" + tokens[1]));
-							materials.get(currentMtl).getDiffusemap().bind();
-							materials.get(currentMtl).getDiffusemap().mipmap();
-						}
-						if(tokens[0].equals("map_Ks")){
-							if (tokens.length > 1)
-								materials.get(currentMtl).setSpecularmap(new Texture("./res/models/obj/" + fileName + "/" + tokens[1]));
-							materials.get(currentMtl).getSpecularmap().bind();
-							materials.get(currentMtl).getSpecularmap().mipmap();
-						}
-						if(tokens[0].equals("map_bump")){
-							if (tokens.length > 1)
-								materials.get(currentMtl).setNormalmap(new Texture("./res/models/obj/" + fileName + "/" + tokens[1]));
-								materials.get(currentMtl).getNormalmap().bind();
-								materials.get(currentMtl).getNormalmap().mipmap();
-						}
-						if(tokens[0].equals("illum")){
-							if (tokens.length > 1)
-								materials.get(currentMtl).setEmission(Float.valueOf(tokens[1]));
-						}
-						if(tokens[0].equals("Ns")){
-							if (tokens.length > 1)
-								materials.get(currentMtl).setShininess(Float.valueOf(tokens[1]));
-						}
+						mtlReader.close();
 					}
-					mtlReader.close();
+				catch(Exception e)
+				{
+					e.printStackTrace();
+					System.exit(1);
 				}
 			}
-			catch(Exception e)
-			{
-				e.printStackTrace();
-				System.exit(1);
-			}
-			
+				
 			// load .obj
 			try{
-				meshReader = new BufferedReader(new FileReader("./res/models/obj/" + fileName + "/" + fileName + ".obj"));
+				meshReader = new BufferedReader(new FileReader(path + "/" + objFile));
 				String line;
 				while((line = meshReader.readLine()) != null)
 				{

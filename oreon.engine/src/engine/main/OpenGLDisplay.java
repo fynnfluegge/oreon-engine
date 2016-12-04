@@ -23,7 +23,7 @@ import java.nio.ByteBuffer;
 
 import engine.buffers.Framebuffer;
 import engine.core.LwjglWindow;
-import engine.textures.Texture;
+import engine.texturing.Texture;
 
 public class OpenGLDisplay {
 	

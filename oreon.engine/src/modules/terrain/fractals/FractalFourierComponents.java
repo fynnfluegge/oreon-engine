@@ -9,8 +9,8 @@ import static org.lwjgl.opengl.GL42.glTexStorage2D;
 import static org.lwjgl.opengl.GL43.glDispatchCompute;
 
 import engine.math.Vec2f;
-import engine.shaders.terrain.fractals.FractalFourierComponentsShader;
-import engine.textures.Texture;
+import engine.shadersamples.terrain.fractals.FractalFourierComponentsShader;
+import engine.texturing.Texture;
 import modules.gpgpu.fft.FourierComponents;
 
 public class FractalFourierComponents extends FourierComponents{

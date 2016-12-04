@@ -18,7 +18,7 @@ void main()
 	gl_ClipDistance[0] = dot(worldMatrix * vec4(position0,1), clipplane);
 	
 	position1 = (worldMatrix * vec4(position0,1)).xyz;
-	normal1 = normalize(worldMatrix * vec4(normal0,1)).xyz;
+	normal1 = normalize(vec4(normal0,1)).xyz;
 	texCoord1 = texCoord0;
 }
 

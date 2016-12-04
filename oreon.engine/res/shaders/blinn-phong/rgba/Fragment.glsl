@@ -45,18 +45,18 @@ void main()
 {	
 	vec3 diffuseLight;
 	vec3 specularLight;
-	float diffuse;
-	float specular;
+	float diffuseFactor;
+	float specularFactor;
 
-	diffuse = diffuse(directionalLight.direction, normal1, directionalLight.intensity);
+	diffuseFactor = diffuse(directionalLight.direction, normal1, directionalLight.intensity);
 	
-	if (diffuse == 0.0)
-		specular = 0.0;
+	if (diffuseFactor == 0.0)
+		specularFactor = 0.0;
 	else
-		specular = specular(directionalLight.direction, normal1, eyePosition, position1);
+		specularFactor = specular(directionalLight.direction, normal1, eyePosition, position1);
 	
-	diffuseLight = directionalLight.color * diffuse;
-	specularLight = directionalLight.color * specular;
+	diffuseLight = directionalLight.color * diffuseFactor;
+	specularLight = directionalLight.color * specularFactor;
 	
 	vec3 rgb = material.color * (directionalLight.ambient + diffuseLight) + specularLight;
 	

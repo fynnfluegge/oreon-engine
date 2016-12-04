@@ -153,7 +153,7 @@ public class MainInterface extends JFrame{
 	    }     
 	    
 	    private void jButtonSaveActionPerformed(java.awt.event.ActionEvent evt) {                                            
-	        
+	        DB.getTerrainConfiguration().saveToFile();
 	    }                                           
 
 	    private void jButtonReloadActionPerformed(java.awt.event.ActionEvent evt) throws LWJGLException { 

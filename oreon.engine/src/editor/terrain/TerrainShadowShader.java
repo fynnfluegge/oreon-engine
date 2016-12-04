@@ -8,7 +8,7 @@ import engine.core.Constants;
 import engine.core.ResourceLoader;
 import engine.math.Vec2f;
 import engine.scenegraph.GameObject;
-import engine.shaders.Shader;
+import engine.shadersamples.Shader;
 
 public class TerrainShadowShader extends Shader{
 	

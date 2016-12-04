@@ -8,7 +8,7 @@ import java.nio.FloatBuffer;
 import engine.buffers.BufferAllocation;
 import engine.core.Constants;
 import engine.math.Vec2f;
-import engine.textures.Texture;
+import engine.texturing.Texture;
 import modules.gpgpu.NormalMapRenderer;
 
 public class FractalMaps {
@@ -22,8 +22,9 @@ public class FractalMaps {
 	private int scaling;
 	private float strength;
 	private int random;
+	private int normalStrength;
 	
-	public FractalMaps(int N, float amplitude, float l, int scaling, float strength, int random){
+	public FractalMaps(int N, float amplitude, float l, int scaling, float strength, int normalStrength, int random){
 		
 		this.scaling = scaling;
 		this.strength = strength;
@@ -31,6 +32,7 @@ public class FractalMaps {
 		this.random = random;
 		this.l = l;
 		this.N = N;
+		this.normalStrength = normalStrength;
 		int L = 1000;
 		int v = 100;
 		this.scaling = scaling;
@@ -41,7 +43,7 @@ public class FractalMaps {
 		fft.init();
 		fft.render();
 		NormalMapRenderer normalmapRenderer = new NormalMapRenderer(N);
-		normalmapRenderer.setStrength(32);
+		normalmapRenderer.setStrength(normalStrength);
 		normalmapRenderer.render(fft.getHeightmap());
 		heightmap = fft.getHeightmap();
 		normalmap = normalmapRenderer.getNormalmap();
@@ -108,5 +110,13 @@ public class FractalMaps {
 
 	public int getN() {
 		return N;
+	}
+
+	public int getNormalStrength() {
+		return normalStrength;
+	}
+
+	public void setNormalStrength(int normalStrength) {
+		this.normalStrength = normalStrength;
 	}
 }

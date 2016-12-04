@@ -23,9 +23,10 @@ import engine.scenegraph.GameObject;
 import engine.scenegraph.Scenegraph;
 import engine.scenegraph.components.RenderInfo;
 import engine.scenegraph.components.Renderer;
-import engine.shaders.water.OceanBRDF;
-import engine.shaders.water.OceanGrid;
-import engine.textures.Texture;
+import engine.shadersamples.water.OceanBRDF;
+import engine.shadersamples.water.OceanGrid;
+import engine.texturing.Texture;
+
 import static org.lwjgl.opengl.GL11.glTexImage2D;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.GL_RGBA;

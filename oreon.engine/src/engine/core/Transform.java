@@ -35,13 +35,11 @@ public class Transform {
 		return translationMatrix.mul(scalingMatrix.mul(rotationMatrix));
 	}
 	
-	public Matrix4f getLocalMatrix()
+	public Matrix4f getModelMatrix()
 	{
-		Matrix4f translationMatrix = new Matrix4f().Translation(localTranslation);
-		Matrix4f rotationMatrix = new Matrix4f().Rotation(localRotation);
-		Matrix4f scalingMatrix = new Matrix4f().Scaling(localScaling);
+		Matrix4f rotationMatrix = new Matrix4f().Rotation(rotation);
 		
-		return translationMatrix.mul(scalingMatrix.mul(rotationMatrix));
+		return rotationMatrix;
 	}	
 	
 	public Matrix4f getModelViewProjectionMatrix()

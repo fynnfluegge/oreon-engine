@@ -1,8 +1,11 @@
 package modules.terrain;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -10,8 +13,8 @@ import modules.terrain.fractals.FractalMaps;
 import engine.core.Constants;
 import engine.core.Util;
 import engine.scenegraph.components.Material;
-import engine.shaders.Shader;
-import engine.textures.Texture;
+import engine.shadersamples.Shader;
+import engine.texturing.Texture;
 
 public class TerrainConfiguration {
 
@@ -42,6 +45,64 @@ public class TerrainConfiguration {
 	private Shader shader;
 	private Shader gridShader;
 	private Shader shadowShader;
+	
+	public void saveToFile()
+	{
+		
+		File file = new File("./res/editor/terrain_settings.txt");
+		try {
+			BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+			writer.write("#textures");
+			writer.newLine();
+			writer.write("#terrain mesh settings");
+			writer.newLine();
+			writer.write("scaleXZ " + scaleXZ);
+			writer.newLine();
+			writer.write("scaleY " + scaleY);
+			writer.newLine();
+			writer.write("texDetail " + texDetail);
+			writer.newLine();
+			writer.write("tessellationFactor " + tessellationFactor);
+			writer.newLine();
+			writer.write("tessellationSlope " + tessellationSlope);
+			writer.newLine();
+			writer.write("tessellationShift " + tessellationShift);
+			writer.newLine();
+			writer.write("detailRange " + detailRange);
+			writer.newLine();
+			writer.write("sightRangeFactor " + sightRangeFactor);
+			writer.newLine();
+			writer.write("#lod ranges");
+			writer.newLine();
+			int i = 1;
+			for (int lod_range : lod_range){
+				writer.write("lod" + i + "_range " + lod_range);
+				writer.newLine();
+				i++;
+			}
+			i = 0;
+			for (FractalMaps fractal : fractals){
+				writer.write("fractal_stage" + i);
+				writer.newLine();
+				writer.write("amp " + fractal.getAmplitude());
+				writer.newLine();
+				writer.write("l " + fractal.getL());
+				writer.newLine();
+				writer.write("scaling " + fractal.getScaling());
+				writer.newLine();
+				writer.write("strength " + fractal.getStrength());
+				writer.newLine();
+				writer.write("normalStrength " + fractal.getNormalStrength());
+				writer.newLine();
+				writer.write("random " + fractal.getRandom());
+				writer.newLine();
+			}
+			writer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		System.out.println(file.canWrite());
+	}
 	
 	public void loadFile(String file)
 	{
@@ -271,23 +332,24 @@ public class TerrainConfiguration {
 		String line;
 		String[] tokens;
 		
-		int amp = 0;
-		int l = 0;
+		float amp = 0;
+		float l = 0;
 		int scaling = 0;
 		float strength = 0;
 		int random = 0;
+		int normalStrength = 0;
 		
 		try{
 			line = reader.readLine();
 			tokens = line.split(" ");
 			tokens = Util.removeEmptyStrings(tokens);
 			if(tokens[0].equals("amp"))
-				amp = Integer.valueOf(tokens[1]);
+				amp = Float.valueOf(tokens[1]);
 			line = reader.readLine();
 			tokens = line.split(" ");
 			tokens = Util.removeEmptyStrings(tokens);
 			if(tokens[0].equals("l"))
-				l = Integer.valueOf(tokens[1]);
+				l = Float.valueOf(tokens[1]);
 			line = reader.readLine();
 			tokens = line.split(" ");
 			tokens = Util.removeEmptyStrings(tokens);
@@ -298,6 +360,11 @@ public class TerrainConfiguration {
 			tokens = Util.removeEmptyStrings(tokens);
 			if(tokens[0].equals("strength"))
 				strength = Float.valueOf(tokens[1]);
+			line = reader.readLine();
+			tokens = line.split(" ");
+			tokens = Util.removeEmptyStrings(tokens);
+			if(tokens[0].equals("normalStrength"))
+				normalStrength = Integer.valueOf(tokens[1]);
 			line = reader.readLine();
 			tokens = line.split(" ");
 			tokens = Util.removeEmptyStrings(tokens);
@@ -313,7 +380,7 @@ public class TerrainConfiguration {
 			e.printStackTrace();
 			System.exit(1);
 		}
-		FractalMaps fractal = new FractalMaps(Constants.TERRAIN_FRACTALS_RESOLUTION,amp,l,scaling,strength,random);
+		FractalMaps fractal = new FractalMaps(Constants.TERRAIN_FRACTALS_RESOLUTION,amp,l,scaling,strength,normalStrength,random);
 		getFractals().add(fractal);
 	}
 	

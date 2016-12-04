@@ -202,8 +202,8 @@ public class Util {
 	
 	public static void generateTangentsBitangents(Mesh mesh)
 	{
-		 for ( int i = 0; i < mesh.getIndices().length; i += 3 )
-		    {
+		for ( int i = 0; i < mesh.getIndices().length; i += 3 )
+		{
 		    	Vec3f v0 = mesh.getVertices()[mesh.getIndices()[i]].getPos();
 		    	Vec3f v1 = mesh.getVertices()[mesh.getIndices()[i+1]].getPos();
 		    	Vec3f v2 = mesh.getVertices()[mesh.getIndices()[i+2]].getPos();
@@ -218,10 +218,16 @@ public class Util {
 		    	Vec2f deltaUV1 = uv1.sub(uv0);
 		    	Vec2f deltaUV2 = uv2.sub(uv0);
 		    	
-		    	float r = (float) (1.0 / (deltaUV1.getX() * deltaUV2.getY() - deltaUV1.getY() * deltaUV2.getX()));
+		    	float r = (1.0f / (deltaUV1.getX() * deltaUV2.getY() - deltaUV1.getY() * deltaUV2.getX()));
 		    	
-		    	Vec3f tangent = (e1.mul(deltaUV2.getY()).sub(e2.mul(deltaUV1.getY()))).mul(r);
-		    	Vec3f bitangent = (e2.mul(deltaUV1.getX()).sub(e1.mul(deltaUV2.getX()))).mul(r);
+		    	Vec3f tangent = new Vec3f();
+		    	tangent.setX(r * deltaUV2.getY() * e1.getX() - deltaUV1.getY() * e2.getX());
+		    	tangent.setY(r * deltaUV2.getY() * e1.getY() - deltaUV1.getY() * e2.getY());
+		    	tangent.setZ(r * deltaUV2.getY() * e1.getZ() - deltaUV1.getY() * e2.getZ());
+		    	Vec3f bitangent = new Vec3f();
+		    	
+		    	tangent = tangent.normalize();
+		    	bitangent = bitangent.normalize();
 		    	
 		    	if (mesh.getVertices()[mesh.getIndices()[i]].getTangent() == null) 
 		    		mesh.getVertices()[mesh.getIndices()[i]].setTangent(new Vec3f(0,0,0));
@@ -242,7 +248,7 @@ public class Util {
 		    	mesh.getVertices()[mesh.getIndices()[i+1]].getBitangent().add(bitangent);
 		    	mesh.getVertices()[mesh.getIndices()[i+2]].getTangent().add(tangent);
 		    	mesh.getVertices()[mesh.getIndices()[i+2]].getBitangent().add(bitangent);
-		    }
+		 }
 	}
 	
 	public static Quaternion normalizePlane(Quaternion plane)

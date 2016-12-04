@@ -12,8 +12,8 @@ import engine.main.CoreEngine;
 import engine.main.OpenGLDisplay;
 import engine.math.Matrix4f;
 import engine.math.Vec2f;
-import engine.shaders.gui.GuiShader;
-import engine.textures.Texture;
+import engine.shadersamples.gui.GuiShader;
+import engine.texturing.Texture;
 
 
 public class FPSPanel extends GUIElement{

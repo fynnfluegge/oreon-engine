@@ -4,7 +4,7 @@ import modules.gui.Button;
 import engine.main.OpenGLDisplay;
 import engine.main.RenderingEngine;
 import engine.math.Vec2f;
-import engine.textures.Texture;
+import engine.texturing.Texture;
 
 public class GridButton extends Button{
 	

@@ -11,11 +11,12 @@ public class FFTMapGUI extends GUI{
 	@Override
 	public void init() {
 		Screen screen0 = new Screen();
-		screen0.setElements(new GUIElement[2]);
+		screen0.setElements(new GUIElement[3]);
 		screen0.getElements()[0] = new FPSPanel();
 		screen0.getElements()[1] = new GridButton();
+		screen0.getElements()[0].init();
 		screen0.getElements()[1].init();
-		screen0.getElements()[0] = new TexturePanel();
+		screen0.getElements()[2] = new TexturePanel();
 		getScreens().add(screen0);
 	}
 

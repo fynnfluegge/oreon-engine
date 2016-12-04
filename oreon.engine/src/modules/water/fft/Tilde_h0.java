@@ -13,8 +13,8 @@ import static org.lwjgl.opengl.GL42.glTexStorage2D;
 import static org.lwjgl.opengl.GL43.glDispatchCompute;
 
 import engine.math.Vec2f;
-import engine.shaders.water.Tilde_h0Shader;
-import engine.textures.Texture;
+import engine.shadersamples.water.Tilde_h0Shader;
+import engine.texturing.Texture;
 import modules.gpgpu.fft.FourierSpectrum;
 
 public class Tilde_h0 extends FourierSpectrum{

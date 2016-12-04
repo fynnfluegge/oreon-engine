@@ -5,7 +5,6 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 import engine.configs.Default;
 import engine.core.Transform;
 import engine.geometry.Geometrics;
-import engine.main.OpenGLDisplay;
 import engine.main.RenderingEngine;
 import engine.math.Matrix4f;
 import modules.gui.GUIElement;
@@ -20,7 +19,7 @@ public class Pssm0GUIPanel extends GUIElement{
 		setOrthographicMatrix(new Matrix4f().Orthographic2D());
 		setOrthoTransform(new Transform());
 		getOrthoTransform().setTranslation(20, 20, 0);
-		getOrthoTransform().setScaling(OpenGLDisplay.getInstance().getLwjglWindow().getWidth()/5, OpenGLDisplay.getInstance().getLwjglWindow().getHeight()/5, 0);
+		getOrthoTransform().setScaling(100, 100, 0);
 		setOrthographicMatrix(getOrthographicMatrix().mul(getOrthoTransform().getWorldMatrix()));
 		setVao(new GUIVAO());
 		getVao().addData(Geometrics.Quad2D());

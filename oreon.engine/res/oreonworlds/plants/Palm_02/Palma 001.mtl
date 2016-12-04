@@ -1,0 +1,23 @@
+# Max2Mtl Version 4.0 Mar 10th, 2001
+#
+# Multi/Sub Material__35 (2) to come 
+#
+newmtl Stem
+Ka  0.6 0.6 0.6
+Kd  0.6 0.6 0.6
+Ks  0.9 0.9 0.9
+d  1.0
+Ns  0.0
+illum 2
+#
+newmtl L1
+Ka  0.2 0.2 0.1
+Kd  0.2 0.2 0.1
+Ks  0.9 0.9 0.9
+d  1.0
+Ns  1.6
+illum 2
+#
+# Multi/Sub Material__35 done 
+#
+# EOF

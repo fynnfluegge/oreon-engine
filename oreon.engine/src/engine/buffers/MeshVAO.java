@@ -25,7 +25,7 @@ public class MeshVAO implements VAO{
 	private int ibo;
 	private int vaoId;
 	private int size;
-		
+	private boolean hasTangentsBitangents;	
 	
 	public MeshVAO()
 	{
@@ -37,6 +37,7 @@ public class MeshVAO implements VAO{
 	public void addData(Mesh mesh)
 	{
 			size = mesh.getIndices().length;
+			hasTangentsBitangents = mesh.isTangentSpace();
 		
 			glBindVertexArray(vaoId);
 			
@@ -51,7 +52,7 @@ public class MeshVAO implements VAO{
 				glVertexAttribPointer(1, 3, GL_FLOAT, false, Vertex.BYTES, Float.BYTES * 3);
 				glVertexAttribPointer(2, 2, GL_FLOAT, false, Vertex.BYTES, Float.BYTES * 6);
 				glVertexAttribPointer(3, 3, GL_FLOAT, false, Vertex.BYTES, Float.BYTES * 8);
-				glVertexAttribPointer(3, 3, GL_FLOAT, false, Vertex.BYTES, Float.BYTES * 11);
+				glVertexAttribPointer(4, 3, GL_FLOAT, false, Vertex.BYTES, Float.BYTES * 11);
 			}
 			else{
 				glVertexAttribPointer(0, 3, GL_FLOAT, false, Float.BYTES * 8, 0);
@@ -70,13 +71,21 @@ public class MeshVAO implements VAO{
 			glEnableVertexAttribArray(0);
 			glEnableVertexAttribArray(1);
 			glEnableVertexAttribArray(2);
+			if (hasTangentsBitangents){
+				glEnableVertexAttribArray(3);
+				glEnableVertexAttribArray(4);
+			}
 			
 			glDrawElements(GL_TRIANGLES, size, GL_UNSIGNED_INT, 0);
 			
 			glDisableVertexAttribArray(0);
 			glDisableVertexAttribArray(1);
 			glDisableVertexAttribArray(2);
-			
+			if (hasTangentsBitangents){
+				glDisableVertexAttribArray(3);
+				glDisableVertexAttribArray(4);
+			}
+				
 			glBindVertexArray(0);
 	}
 

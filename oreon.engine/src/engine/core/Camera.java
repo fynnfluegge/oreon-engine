@@ -64,7 +64,7 @@ public class Camera {
 	
 	protected Camera()
 	{
-		this(new Vec3f(0,100,0), new Vec3f(0,-1,1), new Vec3f(0,1,1));
+		this(new Vec3f(0,100,100), new Vec3f(0,0,1), new Vec3f(0,1,0));
 		this.setProjection(70, OpenGLDisplay.getInstance().getLwjglWindow().getWidth(), OpenGLDisplay.getInstance().getLwjglWindow().getHeight());
 		this.setViewMatrix(new Matrix4f().View(this.getForward(), this.getUp()).mul(
 				new Matrix4f().Translation(this.getPosition().mul(-1))));

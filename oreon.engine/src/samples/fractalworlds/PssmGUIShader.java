@@ -2,7 +2,7 @@ package samples.fractalworlds;
 
 import engine.core.ResourceLoader;
 import engine.math.Matrix4f;
-import engine.shaders.Shader;
+import engine.shadersamples.Shader;
 
 public class PssmGUIShader extends Shader{
 
@@ -22,8 +22,8 @@ public class PssmGUIShader extends Shader{
 	{
 		super();
 
-		addVertexShader(ResourceLoader.loadShader("demos/FractalWorlds/GUI/PssmGUI_VS.glsl"));
-		addFragmentShader(ResourceLoader.loadShader("demos/FractalWorlds/GUI/PssmGUI_FS.glsl"));
+		addVertexShader(ResourceLoader.loadShader("samples/FractalWorlds/GUI/PssmGUI_VS.glsl"));
+		addFragmentShader(ResourceLoader.loadShader("samples/FractalWorlds/GUI/PssmGUI_FS.glsl"));
 		compileShader();
 		
 		addUniform("orthographicMatrix");

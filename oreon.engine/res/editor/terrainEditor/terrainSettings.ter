@@ -49,11 +49,13 @@ lod8_range 0
 
 #fractals settings
 
+
 fractal_stage0
 amp 2
 l 100
 scaling 1
 strength 2
+normalStrength 32
 random
 
 fractal_stage1
@@ -61,6 +63,7 @@ amp 2
 l 100
 scaling 2
 strength 1.4
+normalStrength 32
 random 
 
 fractal_stage2
@@ -68,6 +71,7 @@ amp 4
 l 100
 scaling 4
 strength 0.4
+normalStrength 32
 random
 
 fractal_stage3
@@ -75,6 +79,7 @@ amp 4
 l 100
 scaling 6
 strength 0.2
+normalStrength 32
 random
 
 fractal_stage4
@@ -82,6 +87,7 @@ amp 4
 l 200
 scaling 10
 strength 0.08
+normalStrength 32
 random
 
 fractal_stage5
@@ -89,6 +95,7 @@ amp 6
 l 400
 scaling 20
 strength 0.02
+normalStrength 32
 random
 
 fractal_stage6
@@ -96,6 +103,7 @@ amp 6
 l 400
 scaling 22
 strength 0.02
+normalStrength 32
 random
 
 fractal_stage7
@@ -103,6 +111,7 @@ amp 2
 l 1000
 scaling 400
 strength 0
+normalStrength 32
 random
 
 fractal_stage8
@@ -110,6 +119,7 @@ amp 2
 l 1000
 scaling 410
 strength 0
+normalStrength 32
 random
 
 fractal_stage9
@@ -117,4 +127,5 @@ amp 2
 l 1000
 scaling 420
 strength 0
+normalStrength 32
 random

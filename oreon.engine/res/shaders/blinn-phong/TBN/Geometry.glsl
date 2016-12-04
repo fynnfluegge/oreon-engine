@@ -8,6 +8,7 @@ in vec2 texCoord1[];
 in vec3 normal1[];
 in vec3 tangent1[];
 in vec3 bitangent1[];
+in vec3 position1[];
 
 out vec2 texCoord2;
 out vec3 position2;
@@ -81,7 +82,7 @@ void main()
 	gl_ClipDistance[5] = dot(gl_Position ,frustumPlanes[5]);
 	gl_ClipDistance[6] = dot(position00 ,clipplane);
 	texCoord2 = texCoord1[0];
-	position2 = (position00).xyz;
+	position2 = position1[0];
 	normal2 = normal1[0];
 	tangent2 = tangent1[0];
 	bitangent2 = bitangent1[0];
@@ -97,7 +98,7 @@ void main()
 	gl_ClipDistance[5] = dot(gl_Position ,frustumPlanes[5]);
 	gl_ClipDistance[6] = dot(position01 ,clipplane);
 	texCoord2 = texCoord1[1];
-	position2 = (position01).xyz;
+	position2 = position1[1];
 	normal2 = normal1[1];
 	tangent2 = tangent1[1];
 	bitangent2 = bitangent1[1];
@@ -113,7 +114,7 @@ void main()
 	gl_ClipDistance[5] = dot(gl_Position ,frustumPlanes[5]);
 	gl_ClipDistance[6] = dot(position02 ,clipplane);
 	texCoord2 = texCoord1[2];
-	position2 = (position02).xyz;
+	position2 = position1[2];
 	normal2 = normal1[2];
 	tangent2 = tangent1[2];
 	bitangent2 = bitangent1[2];

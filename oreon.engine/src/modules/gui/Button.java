@@ -9,8 +9,8 @@ import engine.geometry.Mesh;
 import engine.math.Matrix4f;
 import engine.math.Quaternion;
 import engine.math.Vec2f;
-import engine.shaders.gui.GuiShader;
-import engine.textures.Texture;
+import engine.shadersamples.gui.GuiShader;
+import engine.texturing.Texture;
 
 public abstract class Button extends GUIElement{
 

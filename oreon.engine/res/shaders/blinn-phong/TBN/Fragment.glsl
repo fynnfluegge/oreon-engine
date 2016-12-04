@@ -29,24 +29,26 @@ uniform vec3 eyePosition;
 uniform DirectionalLight directionalLight;
 uniform int specularmap;
 uniform int diffusemap;
+uniform mat4 viewMatrix;
 
 
-float diffuse(vec3 direction, vec3 normal, float intensity)
+float diffuse(vec3 lightDir, vec3 normal, float intensity)
 {
-	return max(0.0, dot(normal, -direction) * intensity);
+	return max(0.0, dot(normal, -lightDir) * intensity);
 }
 
-float specular(vec3 direction, vec3 normal, vec3 eyePosition, vec3 vertexPosition)
+float specular(vec3 lightDir, vec3 normal, vec3 eyeDir)
 {
-	vec3 reflectionVector = normalize(reflect(-direction, normal));
-	vec3 vertexToEye = normalize(eyePosition - vertexPosition);
+	vec3 reflectionVector = normalize(reflect(lightDir, normal));
 	
-	float reflection = dot(vertexToEye, reflectionVector);
+	float specular = max(0, dot(eyeDir, reflectionVector));
 	
-	if(specularmap == 1)
-		return pow(reflection, material2.shininess) * (material2.emission);
-	else
-		return pow(reflection, material2.shininess) * (material2.emission); 
+	specular = pow(specular, material2.shininess) * material2.emission;
+	
+	if (specularmap == 1)
+		specular *= texture(material2.specularmap, texCoord2).r;
+	
+	return specular;
 }
 
 void main()
@@ -56,19 +58,14 @@ void main()
 	float diffuseFactor = 0;
 	float specularFactor = 0;
 
-	mat3 TBN = transpose(mat3(tangent2, normal2, bitangent2));
-	
+	mat3 TBN = (mat3(tangent2, normal2, bitangent2));
 	vec3 normal = normalize(2*(texture(material2.normalmap, texCoord2).rbg)-1);
 	
-	vec3 lightdirection_tangentspace = TBN * directionalLight.direction;
-	vec3 eye_tangentspace = TBN * eyePosition;
+	vec3 eyeDirection = normalize(eyePosition - position2);
 	
-	diffuseFactor = diffuse(lightdirection_tangentspace, normal, directionalLight.intensity);
+	diffuseFactor = diffuse(directionalLight.direction, TBN * normal, directionalLight.intensity);
 	
-	if (diffuseFactor == 0.0)
-		specularFactor = 0.0;
-	else
-		specularFactor = specular(lightdirection_tangentspace, normal, eye_tangentspace, position2);
+	specularFactor = specular(directionalLight.direction, TBN * normal, eyeDirection);
 	
 	diffuseLight = directionalLight.ambient + directionalLight.color * diffuseFactor;
 	specularLight = directionalLight.color * specularFactor;
@@ -78,14 +75,11 @@ void main()
 	if (diffusemap == 1)
 	{
 		diffuseColor = texture(material2.diffusemap, texCoord2).rgb;
-		
-		if (specularmap == 1)
-			diffuseColor += texture(material2.specularmap, texCoord2).rgb;
 	}
 	else
 		diffuseColor = material2.color;
 		
 	vec3 rgb = diffuseColor * diffuseLight + specularLight;
 	
-	gl_FragColor = vec4(rgb*2,1.0);
+	gl_FragColor = vec4(rgb,1.0);
 }

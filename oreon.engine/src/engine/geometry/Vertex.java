@@ -5,7 +5,7 @@ import engine.math.Vec3f;
 
 public class Vertex {
 
-	public static final int BYTES = 56;
+	public static final int BYTES = 14 * Float.BYTES;
 	public static final int FLOATS = 14;
 	
 	private Vec3f pos;
