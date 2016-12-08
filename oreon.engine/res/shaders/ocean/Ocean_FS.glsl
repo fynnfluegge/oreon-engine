@@ -1,8 +1,8 @@
 #version 430
 #define M_PI 3.1415926535897932384626433832795
 
-in vec3 position;
-in vec2 texCoordF;
+in vec3 position_FS;
+in vec2 texCoord_FS;
 flat in vec3 tangent;
 
 struct DirectionalLight
@@ -113,11 +113,11 @@ float reflectedSunRadiance(vec3 normal, vec3 tx, vec3 ty)
  
 void main(void)
 {
-	vertexToEye = normalize(eyePosition - position);
-	float dist = length(eyePosition - position);
+	vertexToEye = normalize(eyePosition - position_FS);
+	float dist = length(eyePosition - position_FS);
 	
 	// normal
-	vec3 normal = 2 * texture(normalmap, texCoordF + (wind*motion)).rbg - 1;
+	vec3 normal = 2 * texture(normalmap, texCoord_FS + (wind*motion)).rbg - 1;
 
 	normal = normalize(normal);
 
@@ -129,7 +129,7 @@ void main(void)
 		float attenuation = -dist/(largeDetailRange-20) + 1;
 		//vec3 bitangent = normalize(cross(tangent, normal));
 		mat3 TBN = mat3(tangent,normal,bitangent);
-		vec3 bumpNormal = 2 * texture(normalmap, texCoordF*8).rbg - 1;
+		vec3 bumpNormal = 2 * texture(normalmap, texCoord_FS*8).rbg - 1;
 		bumpNormal.y *= 1.2;
 		bumpNormal.xz *= attenuation;
 		normal = normalize(TBN * bumpNormal);
@@ -141,7 +141,7 @@ void main(void)
 	float F = fresnelApproximated(normal);
 	
 	// projCoord //
-	vec3 dudvCoord = normalize((2 * texture(dudv, texCoordF + distortion).rbg) - 1);
+	vec3 dudvCoord = normalize((2 * texture(dudv, texCoord_FS + distortion).rbg) - 1);
 	vec2 projCoord = vec2(gl_FragCoord.x/windowWidth, gl_FragCoord.y/windowHeight);
  
     // Reflection //
