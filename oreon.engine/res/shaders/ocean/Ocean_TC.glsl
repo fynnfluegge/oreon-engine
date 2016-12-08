@@ -2,9 +2,9 @@
 
 layout(vertices = 16) out;
 
-in vec2 texCoord1[];
+in vec2 texCoord_TC[];
 
-out vec2 texCoordTE[];
+out vec2 texCoord_TE[];
 
 uniform vec3 eyePosition;
 uniform int tessFactor;
@@ -54,5 +54,5 @@ void main(){
 	}
 	
 	gl_out[gl_InvocationID].gl_Position = gl_in[gl_InvocationID].gl_Position;
-	texCoordTE[gl_InvocationID] = texCoord1[gl_InvocationID];
+	texCoord_TE[gl_InvocationID] = texCoord_TC[gl_InvocationID];
 }
