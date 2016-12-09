@@ -1,7 +1,7 @@
 package engine.shadersamples.computing;
 
-import engine.core.ResourceLoader;
 import engine.shadersamples.Shader;
+import engine.utils.ResourceLoader;
 
 public class FFTTwiddleFactorsShader extends Shader{
 

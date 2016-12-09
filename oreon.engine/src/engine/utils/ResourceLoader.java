@@ -1,11 +1,15 @@
-package engine.core;
+package engine.utils;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.List;
+
 import org.newdawn.slick.opengl.TextureLoader;
+
+import engine.math.Matrix4f;
 import engine.math.Vec3f;
 
 public class ResourceLoader {
@@ -61,6 +65,31 @@ public class ResourceLoader {
 		}
 		
 		return shaderSource.toString();
+	}
+	
+	public static List<Matrix4f> loadObjectTransforms(String fileName){
+		
+		List<Matrix4f> matrices = new ArrayList<Matrix4f>();
+		
+		BufferedReader reader = null;
+		
+		try{
+			if(new File(fileName).exists()){
+				reader = new BufferedReader(new FileReader(fileName));
+				String line;
+				
+				while((line = reader.readLine()) != null){
+					
+				}
+			}
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			System.exit(1);
+		}
+		
+		return null;
 	}
 	
 	

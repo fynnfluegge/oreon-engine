@@ -7,7 +7,7 @@ import modules.gui.elements.FPSPanel;
 import modules.gui.elements.GridButton;
 
 
-public class EngineGUI extends GUI{
+public class GridFPS extends GUI{
 	
 	public void init() {
 		Screen screen0 = new Screen();

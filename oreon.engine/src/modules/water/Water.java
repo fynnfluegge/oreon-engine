@@ -14,7 +14,6 @@ import engine.configs.Default;
 import engine.configs.RenderConfig;
 import engine.core.Constants;
 import engine.core.Input;
-import engine.core.Util;
 import engine.main.OpenGLDisplay;
 import engine.main.RenderingEngine;
 import engine.math.Quaternion;
@@ -26,6 +25,7 @@ import engine.scenegraph.components.Renderer;
 import engine.shadersamples.water.OceanBRDF;
 import engine.shadersamples.water.OceanGrid;
 import engine.texturing.Texture;
+import engine.utils.Util;
 
 import static org.lwjgl.opengl.GL11.glTexImage2D;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;

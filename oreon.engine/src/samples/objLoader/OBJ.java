@@ -8,13 +8,13 @@ import org.lwjgl.input.Keyboard;
 import engine.buffers.MeshVAO;
 import engine.configs.CullFaceDisable;
 import engine.core.Input;
-import engine.core.Util;
 import engine.math.Vec3f;
 import engine.scenegraph.GameObject;
 import engine.scenegraph.Node;
 import engine.scenegraph.components.Material;
 import engine.scenegraph.components.RenderInfo;
 import engine.scenegraph.components.Renderer;
+import engine.utils.Util;
 
 public class OBJ extends Node{
 

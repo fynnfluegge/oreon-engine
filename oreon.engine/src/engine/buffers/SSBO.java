@@ -7,6 +7,7 @@ import static org.lwjgl.opengl.GL15.GL_STATIC_READ;
 import static org.lwjgl.opengl.GL30.glBindBufferBase;
 import static org.lwjgl.opengl.GL43.GL_SHADER_STORAGE_BUFFER;
 import engine.math.Vec2f;
+import engine.utils.BufferAllocation;
 
 
 /**

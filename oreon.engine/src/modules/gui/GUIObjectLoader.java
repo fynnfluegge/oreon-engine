@@ -4,10 +4,10 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
 
-import engine.core.Util;
 import engine.geometry.Mesh;
 import engine.geometry.Vertex;
 import engine.math.Vec3f;
+import engine.utils.Util;
 
 public class GUIObjectLoader {
 

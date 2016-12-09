@@ -6,9 +6,9 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE2;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 import modules.water.Water;
 import engine.core.Camera;
-import engine.core.ResourceLoader;
 import engine.scenegraph.GameObject;
 import engine.shadersamples.Shader;
+import engine.utils.ResourceLoader;
 
 public class OceanGrid extends Shader{
 

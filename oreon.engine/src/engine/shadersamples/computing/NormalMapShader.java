@@ -2,9 +2,10 @@ package engine.shadersamples.computing;
 
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
-import engine.core.ResourceLoader;
+
 import engine.shadersamples.Shader;
 import engine.texturing.Texture;
+import engine.utils.ResourceLoader;
 
 public class NormalMapShader extends Shader{
 

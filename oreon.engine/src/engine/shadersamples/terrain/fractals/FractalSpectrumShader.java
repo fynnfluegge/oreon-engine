@@ -1,8 +1,8 @@
 package engine.shadersamples.terrain.fractals;
 
-import engine.core.ResourceLoader;
 import engine.math.Vec2f;
 import engine.shadersamples.Shader;
+import engine.utils.ResourceLoader;
 
 
 public class FractalSpectrumShader extends Shader{

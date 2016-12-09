@@ -2,13 +2,13 @@ package samples.fractalworlds;
 
 import engine.buffers.MeshVAO;
 import engine.configs.Default;
-import engine.core.Util;
 import engine.math.Vec3f;
 import engine.scenegraph.GameObject;
 import engine.scenegraph.Node;
 import engine.scenegraph.components.Material;
 import engine.scenegraph.components.RenderInfo;
 import engine.scenegraph.components.Renderer;
+import engine.utils.Util;
 import modules.modelLoader.obj.Model;
 import modules.modelLoader.obj.OBJLoader;
 import modules.terrain.Terrain;

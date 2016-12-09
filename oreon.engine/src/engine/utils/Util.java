@@ -1,4 +1,4 @@
-package engine.core;
+package engine.utils;
 
 import java.nio.FloatBuffer;
 import java.util.ArrayList;

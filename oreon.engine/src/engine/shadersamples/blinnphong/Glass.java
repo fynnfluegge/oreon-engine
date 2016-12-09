@@ -2,10 +2,10 @@ package engine.shadersamples.blinnphong;
 
 import modules.lighting.DirectionalLight;
 import engine.core.Camera;
-import engine.core.ResourceLoader;
 import engine.scenegraph.GameObject;
 import engine.scenegraph.components.Material;
 import engine.shadersamples.Shader;
+import engine.utils.ResourceLoader;
 
 public class Glass extends Shader{
 	

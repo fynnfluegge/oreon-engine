@@ -11,10 +11,10 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 import modules.lighting.DirectionalLight;
 import modules.water.Water;
 import engine.core.Camera;
-import engine.core.ResourceLoader;
 import engine.main.OpenGLDisplay;
 import engine.scenegraph.GameObject;
 import engine.shadersamples.Shader;
+import engine.utils.ResourceLoader;
 
 public class OceanBRDF extends Shader{
 

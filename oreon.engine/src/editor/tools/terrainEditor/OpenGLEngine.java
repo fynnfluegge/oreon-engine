@@ -6,7 +6,7 @@ import editor.db.DB;
 import editor.terrain.TerrainGridShader;
 import editor.terrain.TerrainShader;
 import editor.terrain.TerrainShadowShader;
-import modules.gui.GUIs.EngineGUI;
+import modules.gui.GUIs.GridFPS;
 import modules.sky.SkySphere;
 import modules.terrain.Terrain;
 import engine.main.Game;
@@ -23,7 +23,7 @@ public class OpenGLEngine implements Runnable{
 	public void run() {
 		
 		Game game = new Game();
-		game.setGui(new EngineGUI());
+		game.setGui(new GridFPS());
 		game.getEngine().embedWindow(1000, 500, OpenGLCanvas);
 		game.init();
 		game.getScenegraph().setTerrain(Terrain.getInstance());

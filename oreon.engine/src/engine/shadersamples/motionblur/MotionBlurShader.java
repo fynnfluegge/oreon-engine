@@ -1,7 +1,7 @@
 package engine.shadersamples.motionblur;
 
-import engine.core.ResourceLoader;
 import engine.shadersamples.Shader;
+import engine.utils.ResourceLoader;
 
 public class MotionBlurShader extends Shader{
 	

@@ -1,8 +1,8 @@
 package engine.shadersamples.gui;
 
-import engine.core.ResourceLoader;
 import engine.math.Matrix4f;
 import engine.shadersamples.Shader;
+import engine.utils.ResourceLoader;
 
 public class GuiShader extends Shader{
 

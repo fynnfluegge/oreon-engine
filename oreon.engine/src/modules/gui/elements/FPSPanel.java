@@ -7,13 +7,13 @@ import modules.gui.GUIObjectLoader;
 import modules.gui.GUIVAO;
 import engine.configs.AlphaBlending;
 import engine.core.Transform;
-import engine.core.Util;
 import engine.main.CoreEngine;
 import engine.main.OpenGLDisplay;
 import engine.math.Matrix4f;
 import engine.math.Vec2f;
 import engine.shadersamples.gui.GuiShader;
 import engine.texturing.Texture;
+import engine.utils.Util;
 
 
 public class FPSPanel extends GUIElement{
@@ -37,7 +37,7 @@ public class FPSPanel extends GUIElement{
 		int size = 20;
 		setOrthoTransform(new Transform());
 		setOrthographicMatrix(new Matrix4f().Orthographic2D());
-		getOrthoTransform().setTranslation(5, OpenGLDisplay.getInstance().getLwjglWindow().getHeight()-size, 0);
+		getOrthoTransform().setTranslation(OpenGLDisplay.getInstance().getLwjglWindow().getWidth()-80, OpenGLDisplay.getInstance().getLwjglWindow().getHeight()-40, 0);
 		getOrthoTransform().setScaling(size, size, 0);
 		setOrthographicMatrix(getOrthographicMatrix().mul(getOrthoTransform().getWorldMatrix()));
 		Vec2f[] texCoords = new Vec2f[4];

@@ -1,9 +1,9 @@
 package oreonworlds.shaders;
 
 import engine.core.Constants;
-import engine.core.ResourceLoader;
 import engine.scenegraph.GameObject;
 import engine.shadersamples.Shader;
+import engine.utils.ResourceLoader;
 
 public class PalmBushShadwoShader extends Shader{
 

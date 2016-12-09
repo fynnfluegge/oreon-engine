@@ -19,6 +19,7 @@ import static org.lwjgl.opengl.GL40.GL_PATCHES;
 import static org.lwjgl.opengl.GL11.glDrawArrays;
 import engine.math.Vec2f;
 import engine.math.Vec3f;
+import engine.utils.BufferAllocation;
 
 public class PatchVAO implements VAO{
 

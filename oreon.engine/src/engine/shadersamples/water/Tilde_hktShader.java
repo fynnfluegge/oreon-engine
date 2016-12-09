@@ -1,7 +1,7 @@
 package engine.shadersamples.water;
 
-import engine.core.ResourceLoader;
 import engine.shadersamples.Shader;
+import engine.utils.ResourceLoader;
 
 public class Tilde_hktShader extends Shader{
 

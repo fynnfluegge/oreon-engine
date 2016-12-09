@@ -3,11 +3,11 @@ package engine.shadersamples.motionblur;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
-import engine.core.ResourceLoader;
 import engine.main.OpenGLDisplay;
 import engine.math.Matrix4f;
 import engine.shadersamples.Shader;
 import engine.texturing.Texture;
+import engine.utils.ResourceLoader;
 
 public class PixelVelocityShader extends Shader{
 	

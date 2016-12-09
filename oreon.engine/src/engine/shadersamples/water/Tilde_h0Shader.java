@@ -1,8 +1,8 @@
 package engine.shadersamples.water;
 
-import engine.core.ResourceLoader;
 import engine.math.Vec2f;
 import engine.shadersamples.Shader;
+import engine.utils.ResourceLoader;
 
 public class Tilde_h0Shader extends Shader{
 

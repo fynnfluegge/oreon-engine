@@ -1,10 +1,10 @@
 package engine.shadersamples.basic;
 
-import engine.core.ResourceLoader;
 import engine.main.RenderingEngine;
 import engine.scenegraph.GameObject;
 import engine.scenegraph.components.Material;
 import engine.shadersamples.Shader;
+import engine.utils.ResourceLoader;
 
 public class Grid extends Shader{
 

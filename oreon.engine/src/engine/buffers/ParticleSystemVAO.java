@@ -26,6 +26,7 @@ import static org.lwjgl.opengl.GL40.glDrawTransformFeedback;
 import static org.lwjgl.opengl.GL40.glGenTransformFeedbacks;
 
 import engine.geometry.Particle;
+import engine.utils.BufferAllocation;
 
 import static org.lwjgl.opengl.GL40.glDeleteTransformFeedbacks;
 import static org.lwjgl.opengl.GL30.glDeleteVertexArrays;

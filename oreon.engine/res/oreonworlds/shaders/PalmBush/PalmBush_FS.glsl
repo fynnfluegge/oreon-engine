@@ -72,7 +72,5 @@ void main()
 	
     vec3 rgb = mix(fogColor, fragColor, clamp(fogFactor,0,1));
 	
-	gl_FragColor = vec4(rgb,1);
-	
 	gl_FragColor = vec4(rgb,1.0);
 }

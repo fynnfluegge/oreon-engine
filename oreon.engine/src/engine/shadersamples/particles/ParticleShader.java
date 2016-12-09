@@ -1,7 +1,7 @@
 package engine.shadersamples.particles;
 
-import engine.core.ResourceLoader;
 import engine.shadersamples.Shader;
+import engine.utils.ResourceLoader;
 
 import static org.lwjgl.opengl.GL30.GL_INTERLEAVED_ATTRIBS;
 import static org.lwjgl.opengl.GL30.glTransformFeedbackVaryings;

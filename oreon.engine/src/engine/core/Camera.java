@@ -4,7 +4,7 @@ import java.nio.FloatBuffer;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
-import engine.buffers.BufferAllocation;
+
 import engine.buffers.UBO;
 import engine.main.CoreEngine;
 import engine.main.OpenGLDisplay;
@@ -12,6 +12,8 @@ import engine.math.Matrix4f;
 import engine.math.Quaternion;
 import engine.math.Vec2f;
 import engine.math.Vec3f;
+import engine.utils.BufferAllocation;
+import engine.utils.Util;
 
 public class Camera {
 	
@@ -48,7 +50,7 @@ public class Camera {
 	private float rotXamt;
 	private float rotXcounter;
 	private boolean rotXInitiated = false;
-	private float mouseSensitivity = 0.2f;
+	private float mouseSensitivity = 1f;
 	
 	private Quaternion[] frustumPlanes = new Quaternion[6];
 	private Vec3f[] frustumCorners = new Vec3f[8];
@@ -137,7 +139,7 @@ public class Camera {
 			// y-axxis rotation
 			
 			if (dy != 0){
-				rotYstride = Math.abs(dy * CoreEngine.getFrameTime() * 10);
+				rotYstride = Math.abs(dy * 0.01f);
 				rotYamt = dy;
 				rotYcounter = 0;
 				rotYInitiated = true;
@@ -165,7 +167,7 @@ public class Camera {
 			
 			// x-axxis rotation
 			if (dx != 0){
-				rotXstride = Math.abs(dx * CoreEngine.getFrameTime() * 10);
+				rotXstride = Math.abs(dx * 0.01f);
 				rotXamt = dx;
 				rotXcounter = 0;
 				rotXInitiated = true;

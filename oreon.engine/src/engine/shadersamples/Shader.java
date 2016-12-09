@@ -10,13 +10,13 @@ import static org.lwjgl.opengl.GL43.GL_COMPUTE_SHADER;
 
 import java.util.HashMap;
 
-import engine.buffers.BufferAllocation;
 import engine.math.Matrix4f;
 import engine.math.Quaternion;
 import engine.math.Vec2f;
 import engine.math.Vec3f;
 import engine.scenegraph.GameObject;
 import engine.texturing.Texture;
+import engine.utils.BufferAllocation;
 
 public abstract class Shader {
 

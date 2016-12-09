@@ -7,9 +7,10 @@ import engine.scenegraph.GameObject;
 import engine.scenegraph.Node;
 import engine.scenegraph.components.RenderInfo;
 import engine.scenegraph.components.Renderer;
-import engine.shadersamples.blinnphong.RGBA;
 import modules.modelLoader.obj.Model;
 import modules.modelLoader.obj.OBJLoader;
+import oreonworlds.shaders.PalmShader;
+import oreonworlds.shaders.PalmShadowShader;
 
 public class Palm extends Node{
 
@@ -28,7 +29,7 @@ public Palm(Vec3f translation){
 			model.getMesh().setTangentSpace(false);
 			meshBuffer.addData(model.getMesh());
 
-			object.setRenderInfo(new RenderInfo(new CullFaceDisable(), RGBA.getInstance()));
+			object.setRenderInfo(new RenderInfo(new CullFaceDisable(), PalmShader.getInstance(), PalmShadowShader.getInstance()));
 			Renderer renderer = new Renderer(object.getRenderInfo().getShader(), meshBuffer);
 
 			object.addComponent("Material", model.getMaterial());

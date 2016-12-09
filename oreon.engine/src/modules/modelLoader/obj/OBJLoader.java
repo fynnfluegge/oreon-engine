@@ -7,13 +7,13 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashMap;
 
-import engine.core.Util;
 import engine.geometry.Mesh;
 import engine.geometry.Vertex;
 import engine.math.Vec2f;
 import engine.math.Vec3f;
 import engine.scenegraph.components.Material;
 import engine.texturing.Texture;
+import engine.utils.Util;
 
 public class OBJLoader {
 

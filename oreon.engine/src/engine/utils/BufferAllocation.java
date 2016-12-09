@@ -1,4 +1,4 @@
-package engine.buffers;
+package engine.utils;
 
 import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;

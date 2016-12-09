@@ -5,10 +5,11 @@ import static org.lwjgl.opengl.GL11.glGetTexImage;
 import static org.lwjgl.opengl.GL11.GL_RED;
 import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import java.nio.FloatBuffer;
-import engine.buffers.BufferAllocation;
+
 import engine.core.Constants;
 import engine.math.Vec2f;
 import engine.texturing.Texture;
+import engine.utils.BufferAllocation;
 import modules.gpgpu.NormalMapRenderer;
 
 public class FractalMaps {

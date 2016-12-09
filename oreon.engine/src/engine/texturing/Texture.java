@@ -11,8 +11,10 @@ import static org.lwjgl.opengl.GL11.glDeleteTextures;
 import static org.lwjgl.opengl.GL11.glGenTextures;
 import static org.lwjgl.opengl.GL11.glTexParameteri;
 import static org.lwjgl.opengl.GL30.glGenerateMipmap;
+
+import engine.utils.ResourceLoader;
+
 import static org.lwjgl.opengl.GL30.GL_TEXTURE_2D_ARRAY;
-import engine.core.ResourceLoader;
 
 public class Texture {
 	

@@ -11,10 +11,10 @@ import java.util.Random;
 
 import modules.terrain.fractals.FractalMaps;
 import engine.core.Constants;
-import engine.core.Util;
 import engine.scenegraph.components.Material;
 import engine.shadersamples.Shader;
 import engine.texturing.Texture;
+import engine.utils.Util;
 
 public class TerrainConfiguration {
 

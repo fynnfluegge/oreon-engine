@@ -5,10 +5,10 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 import modules.lighting.DirectionalLight;
 import engine.core.Camera;
-import engine.core.ResourceLoader;
 import engine.scenegraph.GameObject;
 import engine.scenegraph.components.Material;
 import engine.shadersamples.Shader;
+import engine.utils.ResourceLoader;
 
 public class Textured extends Shader{
 	

@@ -18,6 +18,7 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
 import engine.geometry.Mesh;
 import engine.geometry.Vertex;
+import engine.utils.BufferAllocation;
 
 public class MeshVAO implements VAO{
 

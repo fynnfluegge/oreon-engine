@@ -2,11 +2,12 @@ package engine.shadersamples.basic;
 
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
-import engine.core.ResourceLoader;
+
 import engine.main.RenderingEngine;
 import engine.scenegraph.GameObject;
 import engine.scenegraph.components.Material;
 import engine.shadersamples.Shader;
+import engine.utils.ResourceLoader;
 
 public class Textured extends Shader{
 

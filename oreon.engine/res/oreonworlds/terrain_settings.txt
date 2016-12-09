@@ -47,65 +47,65 @@ amp 2.0
 l 100.0
 scaling 1
 strength 2.23
-normalStrength 32
+normalStrength 64
 random 941
-fractal_stage0
+fractal_stage1
 amp 2.0
 l 100.0
 scaling 2
 strength 1.05
-normalStrength 32
+normalStrength 64
 random 558
-fractal_stage0
+fractal_stage2
 amp 4.0
 l 100.0
 scaling 4
 strength 0.28
-normalStrength 32
+normalStrength 48
 random 812
-fractal_stage0
+fractal_stage3
 amp 4.0
 l 100.0
 scaling 6
 strength 0.2
 normalStrength 32
 random 470
-fractal_stage0
+fractal_stage4
 amp 4.0
 l 200.0
 scaling 10
 strength 0.06
 normalStrength 32
 random 158
-fractal_stage0
+fractal_stage5
 amp 6.0
 l 400.0
 scaling 20
 strength 0.02
-normalStrength 32
+normalStrength 16
 random 789
-fractal_stage0
+fractal_stage6
 amp 6.0
 l 400.0
 scaling 22
 strength 0.01
-normalStrength 32
+normalStrength 16
 random 35
-fractal_stage0
+fractal_stage7
 amp 2.0
 l 1000.0
 scaling 400
 strength 0.0
 normalStrength 32
 random 357
-fractal_stage0
+fractal_stage8
 amp 2.0
 l 1000.0
 scaling 410
 strength 0.0
 normalStrength 32
 random 805
-fractal_stage0
+fractal_stage9
 amp 2.0
 l 1000.0
 scaling 420
