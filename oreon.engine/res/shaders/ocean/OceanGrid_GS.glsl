@@ -3,7 +3,7 @@
 layout(triangles) in;
 layout(line_strip, max_vertices = 4) out;
 
-in vec2 texCoordG[];
+in vec2 texCoord_GS[];
 
 uniform int largeDetailRange;
 uniform mat4 viewProjectionMatrix;
@@ -18,9 +18,9 @@ void main()
 {	
 	float dx,dy,dz;
 
-	dy = texture(Dy, texCoordG[0]).r * displacementScale;
-	dx = texture(Dx, texCoordG[0]).r * choppiness;
-	dz = texture(Dz, texCoordG[0]).r * choppiness;
+	dy = texture(Dy, texCoord_GS[0]).r * displacementScale;
+	dx = texture(Dx, texCoord_GS[0]).r * choppiness;
+	dz = texture(Dz, texCoord_GS[0]).r * choppiness;
 	vec4 position0 = gl_in[0].gl_Position;
 	position0.y += dy;
 	position0.x -= dx;
@@ -34,9 +34,9 @@ void main()
 	gl_ClipDistance[5] = dot(gl_Position ,frustumPlanes[5]);
     EmitVertex();
 	
-	dy = texture(Dy, texCoordG[1]).r * displacementScale;
-	dx = texture(Dx, texCoordG[1]).r * choppiness;
-	dz = texture(Dz, texCoordG[1]).r * choppiness;
+	dy = texture(Dy, texCoord_GS[1]).r * displacementScale;
+	dx = texture(Dx, texCoord_GS[1]).r * choppiness;
+	dz = texture(Dz, texCoord_GS[1]).r * choppiness;
 	vec4 position1 = gl_in[1].gl_Position;
 	position1.y += dy;
 	position1.x -= dx;
@@ -50,9 +50,9 @@ void main()
 	gl_ClipDistance[5] = dot(gl_Position ,frustumPlanes[5]);
     EmitVertex();
 
-	dy = texture(Dy, texCoordG[2]).r * displacementScale;
-	dx = texture(Dx, texCoordG[2]).r * choppiness;
-	dz = texture(Dz, texCoordG[2]).r * choppiness;
+	dy = texture(Dy, texCoord_GS[2]).r * displacementScale;
+	dx = texture(Dx, texCoord_GS[2]).r * choppiness;
+	dz = texture(Dz, texCoord_GS[2]).r * choppiness;
 	vec4 position2 = gl_in[2].gl_Position;
 	position2.y += dy;
 	position2.x -= dx;
