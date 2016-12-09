@@ -1,7 +1,7 @@
 package modules.sky;
 
-import engine.core.Constants;
 import engine.scenegraph.Node;
+import engine.utils.Constants;
 
 public class SkySphere extends Node{
 

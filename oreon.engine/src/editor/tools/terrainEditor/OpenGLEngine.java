@@ -6,10 +6,10 @@ import editor.db.DB;
 import editor.terrain.TerrainGridShader;
 import editor.terrain.TerrainShader;
 import editor.terrain.TerrainShadowShader;
+import engine.core.Game;
 import modules.gui.GUIs.GridFPS;
 import modules.sky.SkySphere;
 import modules.terrain.Terrain;
-import engine.main.Game;
 
 public class OpenGLEngine implements Runnable{
 	

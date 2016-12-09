@@ -7,7 +7,7 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE3;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 import modules.lighting.DirectionalLight;
 import engine.core.Camera;
-import engine.main.RenderingEngine;
+import engine.core.RenderingEngine;
 import engine.scenegraph.GameObject;
 import engine.scenegraph.components.Material;
 import engine.shadersamples.Shader;

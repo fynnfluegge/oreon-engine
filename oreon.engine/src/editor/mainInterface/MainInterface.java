@@ -8,7 +8,7 @@ import org.lwjgl.opengl.Display;
 import editor.db.DB;
 import editor.tools.terrainEditor.OpenGLEngine;
 import editor.tools.terrainEditor.TerrainEditorInterface;
-import engine.main.CoreEngine;
+import engine.core.CoreEngine;
 
 public class MainInterface extends JFrame{
 

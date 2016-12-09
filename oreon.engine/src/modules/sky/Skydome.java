@@ -2,8 +2,8 @@ package modules.sky;
 
 import engine.buffers.MeshVAO;
 import engine.configs.CullFaceDisable;
+import engine.core.RenderingEngine;
 import engine.geometry.Mesh;
-import engine.main.RenderingEngine;
 import engine.scenegraph.GameObject;
 import engine.scenegraph.components.Material;
 import engine.scenegraph.components.RenderInfo;

@@ -1,4 +1,4 @@
-package engine.core;
+package engine.utils;
 
 import engine.math.Quaternion;
 

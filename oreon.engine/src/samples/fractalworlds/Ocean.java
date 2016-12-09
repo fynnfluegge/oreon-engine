@@ -1,8 +1,8 @@
 package samples.fractalworlds;
 
 import modules.water.Water;
-import engine.core.Constants;
 import engine.math.Quaternion;
+import engine.utils.Constants;
 
 public class Ocean extends Water{
 

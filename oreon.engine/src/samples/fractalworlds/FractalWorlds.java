@@ -1,8 +1,8 @@
 package samples.fractalworlds;
 
+import engine.core.Game;
 import modules.sky.SkySphere;
 import modules.terrain.Terrain;
-import engine.main.Game;
 
 public class FractalWorlds {
 	

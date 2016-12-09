@@ -3,7 +3,7 @@ package engine.shadersamples.motionblur;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
-import engine.main.OpenGLDisplay;
+import engine.core.OpenGLDisplay;
 import engine.math.Matrix4f;
 import engine.shadersamples.Shader;
 import engine.texturing.Texture;

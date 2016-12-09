@@ -1,8 +1,8 @@
 package modules.gui.elements;
 
 import modules.gui.Button;
-import engine.main.OpenGLDisplay;
-import engine.main.RenderingEngine;
+import engine.core.OpenGLDisplay;
+import engine.core.RenderingEngine;
 import engine.math.Vec2f;
 import engine.texturing.Texture;
 

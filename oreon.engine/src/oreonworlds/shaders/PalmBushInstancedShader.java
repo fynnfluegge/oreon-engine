@@ -4,10 +4,10 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 import modules.lighting.DirectionalLight;
 import modules.terrain.Terrain;
-import engine.core.Constants;
 import engine.scenegraph.GameObject;
 import engine.scenegraph.components.Material;
 import engine.shadersamples.Shader;
+import engine.utils.Constants;
 import engine.utils.ResourceLoader;
 
 public class PalmBushInstancedShader extends Shader{
@@ -32,7 +32,6 @@ private static PalmBushInstancedShader instance = null;
 		addFragmentShader(ResourceLoader.loadShader("oreonworlds/shaders/PalmBush/PalmBush_FS.glsl"));
 		compileShader();
 		
-		addUniform("worldMatrix");
 		addUniform("modelMatrix");
 		addUniform("sightRangeFactor");
 		addUniform("directionalLight.intensity");
@@ -43,12 +42,14 @@ private static PalmBushInstancedShader instance = null;
 //		addUniform("material.emission");
 //		addUniform("material.shininess");
 		
+		addUniformBlock("InstancedMatrices");
 		addUniformBlock("Camera");
 	}
 	
 	public void updateUniforms(GameObject object)
 	{
 		bindUniformBlock("Camera", Constants.CameraUniformBlockBinding);
+		bindUniformBlock("InstancedMatrices", Constants.PalmBushInstancedMatrices);
 		setUniform("worldMatrix", object.getTransform().getWorldMatrix());
 		setUniform("modelMatrix", object.getTransform().getModelMatrix());
 		setUniformf("sightRangeFactor", Terrain.getInstance().getTerrainConfiguration().getSightRangeFactor());

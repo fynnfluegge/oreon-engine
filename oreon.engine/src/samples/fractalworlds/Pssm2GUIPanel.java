@@ -5,8 +5,8 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 import modules.gui.GUIElement;
 import modules.gui.GUIVAO;
 import engine.configs.Default;
+import engine.core.RenderingEngine;
 import engine.geometry.Geometrics;
-import engine.main.RenderingEngine;
 import engine.math.Matrix4f;
 import engine.scenegraph.components.Transform;
 

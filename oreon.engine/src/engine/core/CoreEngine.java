@@ -1,4 +1,4 @@
-package engine.main;
+package engine.core;
 
 import java.awt.Canvas;
 import java.util.concurrent.locks.Condition;
@@ -12,8 +12,8 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 
 import engine.configs.RenderConfig;
-import engine.core.Constants;
 import engine.scenegraph.Scenegraph;
+import engine.utils.Constants;
 
 
 public class CoreEngine{

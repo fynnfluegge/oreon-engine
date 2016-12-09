@@ -1,8 +1,8 @@
 package samples.fractalworlds;
 
-import engine.core.Constants;
 import engine.scenegraph.GameObject;
 import engine.shadersamples.Shader;
+import engine.utils.Constants;
 import engine.utils.ResourceLoader;
 
 public class TestObjectShadowShader extends Shader{

@@ -1,9 +1,9 @@
 package modules.terrain;
 
-import engine.core.Constants;
 import engine.math.Vec2f;
 import engine.scenegraph.Node;
 import engine.shadersamples.Shader;
+import engine.utils.Constants;
 
 
 public class Terrain extends Node{

@@ -1,6 +1,6 @@
 package engine.math;
 
-import engine.main.OpenGLDisplay;
+import engine.core.OpenGLDisplay;
 
 
 public class Matrix4f {

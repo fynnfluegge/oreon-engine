@@ -1,7 +1,7 @@
 package samples.objLoader;
 
+import engine.core.Game;
 import modules.gui.GUIs.VoidGUI;
-import engine.main.Game;
 
 
 public class Main{

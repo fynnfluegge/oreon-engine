@@ -4,8 +4,8 @@ import static org.lwjgl.opengl.GL11.glViewport;
 
 import engine.buffers.PatchVAO;
 import engine.core.Camera;
-import engine.main.OpenGLDisplay;
-import engine.main.RenderingEngine;
+import engine.core.OpenGLDisplay;
+import engine.core.RenderingEngine;
 import engine.math.Vec2f;
 import engine.math.Vec3f;
 import engine.scenegraph.GameObject;

@@ -29,7 +29,7 @@ void main()
 {	
 	for (int i = 0; i < gl_in.length(); ++i)
 	{
-		gl_Position = viewProjectionMatrix * gl_in[i].gl_Position;
+		gl_Position = viewProjectionMatrix * (m_World[gl_InvocationID] * gl_in[i].gl_Position);
 		gl_ClipDistance[0] = dot(gl_Position ,frustumPlanes[0]);
 		gl_ClipDistance[1] = dot(gl_Position ,frustumPlanes[1]);
 		gl_ClipDistance[2] = dot(gl_Position ,frustumPlanes[2]);
@@ -37,7 +37,7 @@ void main()
 		gl_ClipDistance[4] = dot(gl_Position ,frustumPlanes[4]);
 		gl_ClipDistance[5] = dot(gl_Position ,frustumPlanes[5]);
 		texCoord2 = texCoord1[i];
-		position2 = position1[i];
+		position2 = m_World[gl_InvocationID] * position1[i];
 		normal2 = normal1[i];
 		EmitVertex();
 	}	

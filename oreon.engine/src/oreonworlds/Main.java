@@ -1,6 +1,6 @@
 package oreonworlds;
 
-import engine.main.Game;
+import engine.core.Game;
 import engine.math.Vec3f;
 import modules.gui.GUIs.GridFPS;
 import modules.sky.SkySphere;

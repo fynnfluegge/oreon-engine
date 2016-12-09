@@ -7,11 +7,11 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE3;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 import modules.terrain.TerrainConfiguration;
 import modules.terrain.TerrainNode;
-import engine.core.Constants;
-import engine.main.RenderingEngine;
+import engine.core.RenderingEngine;
 import engine.math.Vec2f;
 import engine.scenegraph.GameObject;
 import engine.shadersamples.Shader;
+import engine.utils.Constants;
 import engine.utils.ResourceLoader;
 
 public class TerrainGridShader extends Shader{

@@ -1,4 +1,4 @@
-package engine.main;
+package engine.core;
 
 import static org.lwjgl.opengl.GL11.GL_DEPTH_COMPONENT;
 import static org.lwjgl.opengl.GL11.GL_FLOAT;
@@ -22,7 +22,6 @@ import static org.lwjgl.opengl.GL30.GL_RGBA32F;
 import java.nio.ByteBuffer;
 
 import engine.buffers.Framebuffer;
-import engine.core.LwjglWindow;
 import engine.texturing.Texture;
 
 public class OpenGLDisplay {

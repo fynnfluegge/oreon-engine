@@ -6,10 +6,10 @@ import static org.lwjgl.opengl.GL11.GL_RED;
 import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import java.nio.FloatBuffer;
 
-import engine.core.Constants;
 import engine.math.Vec2f;
 import engine.texturing.Texture;
 import engine.utils.BufferAllocation;
+import engine.utils.Constants;
 import modules.gpgpu.NormalMapRenderer;
 
 public class FractalMaps {

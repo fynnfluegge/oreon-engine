@@ -6,13 +6,12 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 
 import engine.buffers.UBO;
-import engine.main.CoreEngine;
-import engine.main.OpenGLDisplay;
 import engine.math.Matrix4f;
 import engine.math.Quaternion;
 import engine.math.Vec2f;
 import engine.math.Vec3f;
 import engine.utils.BufferAllocation;
+import engine.utils.Constants;
 import engine.utils.Util;
 
 public class Camera {

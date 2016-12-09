@@ -1,6 +1,6 @@
 package engine.shadersamples.basic;
 
-import engine.main.RenderingEngine;
+import engine.core.RenderingEngine;
 import engine.scenegraph.GameObject;
 import engine.scenegraph.components.Material;
 import engine.shadersamples.Shader;

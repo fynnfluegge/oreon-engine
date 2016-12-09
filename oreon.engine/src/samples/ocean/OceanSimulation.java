@@ -1,7 +1,7 @@
 package samples.ocean;
 
+import engine.core.Game;
 import modules.sky.SkySphere;
-import engine.main.Game;
 
 public class OceanSimulation {
 

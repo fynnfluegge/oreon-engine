@@ -4,10 +4,10 @@ import static org.lwjgl.opengl.GL11.glViewport;
 
 import java.util.HashMap;
 
-import engine.core.Constants;
-import engine.main.OpenGLDisplay;
+import engine.core.OpenGLDisplay;
 import engine.scenegraph.components.Component;
 import engine.scenegraph.components.RenderInfo;
+import engine.utils.Constants;
 
 public class GameObject extends Node{
 

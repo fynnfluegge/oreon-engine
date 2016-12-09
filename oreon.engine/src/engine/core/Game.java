@@ -1,4 +1,4 @@
-package engine.main;
+package engine.core;
 
 import engine.scenegraph.Scenegraph;
 import modules.gui.GUI;

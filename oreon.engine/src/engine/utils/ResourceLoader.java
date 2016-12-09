@@ -89,15 +89,15 @@ public class ResourceLoader {
 				Vec3f translation = null;
 				Vec3f scaling = null;
 				Vec3f rotation = null;
-				
+
 				if(tokens[0].equals("["))
 				{
 						translation = new Vec3f(Float.valueOf(tokens[1]),
 												Float.valueOf(tokens[2]),
 												Float.valueOf(tokens[3]));
 						
-						if(tokens[4].equals("]")) continue;
-						else System.err.println("parsing error of file " + fileName + " at line " + linecounter);
+						if(!tokens[4].equals("]"))
+							System.err.println("parsing error of file " + fileName + " at line " + linecounter);
 				}
 				if(tokens[5].equals("["))
 				{
@@ -105,8 +105,8 @@ public class ResourceLoader {
 							  				Float.valueOf(tokens[7]),
 							  				Float.valueOf(tokens[8]));
 					
-					if(tokens[9].equals("]")) continue;
-					else System.err.println("parsing error of file " + fileName + " at line " + linecounter);
+					if(!tokens[9].equals("]"))
+						System.err.println("parsing error of file " + fileName + " at line " + linecounter);
 				}
 				if(tokens[10].equals("["))
 				{
@@ -114,8 +114,8 @@ public class ResourceLoader {
 							  			 Float.valueOf(tokens[12]),
 							  			 Float.valueOf(tokens[13]));
 					
-					if(tokens[14].equals("]")) continue;
-					else System.err.println("parsing error of file " + fileName + " at line " + linecounter);
+					if(!tokens[14].equals("]"))
+						System.err.println("parsing error of file " + fileName + " at line " + linecounter);
 				}
 				linecounter++;
 				

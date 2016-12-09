@@ -1,4 +1,4 @@
-package engine.main;
+package engine.core;
 
 import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.glClear;
@@ -9,11 +9,9 @@ import modules.lighting.DirectionalLight;
 import modules.postProcessingEffects.MotionBlur;
 import modules.shadowmapping.directionalLights.ShadowMaps;
 import engine.configs.RenderConfig;
-import engine.core.Camera;
-import engine.core.Constants;
-import engine.core.Input;
 import engine.math.Quaternion;
 import engine.scenegraph.Scenegraph;
+import engine.utils.Constants;
 
 public class RenderingEngine {
 
