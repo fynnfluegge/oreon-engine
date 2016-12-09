@@ -19,8 +19,14 @@ struct Material
 	float emission;
 };
 
+layout (std140, row_major) uniform Camera{
+	vec3 eyePosition;
+	mat4 m_View;
+	mat4 viewProjectionMatrix;
+	vec4 frustumPlanes[6];
+};
+
 uniform Material material;
-uniform vec3 eyePosition;
 uniform DirectionalLight directionalLight;
 uniform float sightRangeFactor;
 

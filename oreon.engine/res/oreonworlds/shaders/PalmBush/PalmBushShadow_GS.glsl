@@ -1,25 +1,34 @@
 #version 430
 
-layout(triangles, invocations = 6) in;
+layout(triangles, invocations = 2) in;
 
-layout(triangle_strip, max_vertices = 3) out;
+// 6 layers := 6 triangles := 18 vertices
+layout(triangle_strip, max_vertices = 18) out;
 
 layout (std140, row_major) uniform Camera{
 	vec3 eyePosition;
+	mat4 m_View;
 	mat4 viewProjectionMatrix;
 	vec4 frustumPlanes[6];
+};
+
+layout (std140, row_major) uniform InstancedMatrices{
+	mat4 m_World[2];
 };
 
 layout (std140, row_major) uniform LightViewProjections{
 	mat4 m_lightViewProjection[6];
 };
 
+uniform vec4 clipplane;
+
 void main()
 {	
+for (int j = 0; j < 6; j++){
 	for (int i = 0; i < gl_in.length(); ++i)
 	{
-		gl_Layer = gl_InvocationID;
-		gl_Position = m_lightViewProjection[gl_InvocationID] * gl_in[i].gl_Position;
+		gl_Layer = j;
+		gl_Position = m_lightViewProjection[j] * gl_in[i].gl_Position;
 		gl_ClipDistance[0] = dot(gl_Position ,frustumPlanes[0]);
 		gl_ClipDistance[1] = dot(gl_Position ,frustumPlanes[1]);
 		gl_ClipDistance[2] = dot(gl_Position ,frustumPlanes[2]);
@@ -29,4 +38,5 @@ void main()
 		EmitVertex();
 	}	
 	EndPrimitive();
+}
 }

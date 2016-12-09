@@ -4,26 +4,26 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 import modules.lighting.DirectionalLight;
 import modules.terrain.Terrain;
-import engine.core.Camera;
+import engine.core.Constants;
 import engine.scenegraph.GameObject;
 import engine.scenegraph.components.Material;
 import engine.shadersamples.Shader;
 import engine.utils.ResourceLoader;
 
-public class PalmBushShader extends Shader{
+public class PalmBushInstancedShader extends Shader{
 	
-private static PalmBushShader instance = null;
+private static PalmBushInstancedShader instance = null;
 	
-	public static PalmBushShader getInstance() 
+	public static PalmBushInstancedShader getInstance() 
 	{
 	    if(instance == null) 
 	    {
-	    	instance = new PalmBushShader();
+	    	instance = new PalmBushInstancedShader();
 	    }
 	      return instance;
 	}
 	
-	protected PalmBushShader()
+	protected PalmBushInstancedShader()
 	{
 		super();
 
@@ -32,10 +32,8 @@ private static PalmBushShader instance = null;
 		addFragmentShader(ResourceLoader.loadShader("oreonworlds/shaders/PalmBush/PalmBush_FS.glsl"));
 		compileShader();
 		
-		addUniform("viewProjectionMatrix");
 		addUniform("worldMatrix");
 		addUniform("modelMatrix");
-		addUniform("eyePosition");
 		addUniform("sightRangeFactor");
 		addUniform("directionalLight.intensity");
 		addUniform("directionalLight.color");
@@ -44,15 +42,16 @@ private static PalmBushShader instance = null;
 		addUniform("material.diffusemap");
 //		addUniform("material.emission");
 //		addUniform("material.shininess");
+		
+		addUniformBlock("Camera");
 	}
 	
 	public void updateUniforms(GameObject object)
 	{
-		setUniform("viewProjectionMatrix", Camera.getInstance().getViewProjectionMatrix());
+		bindUniformBlock("Camera", Constants.CameraUniformBlockBinding);
 		setUniform("worldMatrix", object.getTransform().getWorldMatrix());
 		setUniform("modelMatrix", object.getTransform().getModelMatrix());
 		setUniformf("sightRangeFactor", Terrain.getInstance().getTerrainConfiguration().getSightRangeFactor());
-		setUniform("eyePosition", Camera.getInstance().getPosition());
 		setUniform("directionalLight.ambient", DirectionalLight.getInstance().getAmbient());
 		setUniformf("directionalLight.intensity", DirectionalLight.getInstance().getIntensity());
 		setUniform("directionalLight.color", DirectionalLight.getInstance().getColor());

@@ -21,7 +21,7 @@ public class Constants {
 	public static final int CameraUniformBlockBinding = 1;
 	public static final int DirectionalLightUniformBlockBinding = 2;
 	public static final int LightMatricesUniformBlockBinding = 3;
-	
+	public static final int PalmBushInstancedMatrices = 4;
 
 	
 

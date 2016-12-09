@@ -20,7 +20,7 @@ public Palm(Vec3f translation){
 		getTransform().setLocalScaling(0.2f,0.21f,0.2f);
 		getTransform().setLocalTranslation(translation);
 		OBJLoader loader = new OBJLoader();
-		Model[] models = loader.load("./res/oreonworlds/plants/Palm_02","Palma 001.obj","Palma 001.mtl");
+		Model[] models = loader.load("./res/oreonworlds/plants/Palma 001","Palma 001.obj","Palma 001.mtl");
 
 		for (Model model : models){
 			

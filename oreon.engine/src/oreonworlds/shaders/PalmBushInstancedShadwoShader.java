@@ -5,20 +5,20 @@ import engine.scenegraph.GameObject;
 import engine.shadersamples.Shader;
 import engine.utils.ResourceLoader;
 
-public class PalmBushShadwoShader extends Shader{
+public class PalmBushInstancedShadwoShader extends Shader{
 
-		private static PalmBushShadwoShader instance;
+		private static PalmBushInstancedShadwoShader instance;
 
-		public static PalmBushShadwoShader getInstance() 
+		public static PalmBushInstancedShadwoShader getInstance() 
 		{
 		    if(instance == null) 
 		    {
-		    	instance = new PalmBushShadwoShader();
+		    	instance = new PalmBushInstancedShadwoShader();
 		    }
 		     return instance;
 		}
 		
-		protected PalmBushShadwoShader()
+		protected PalmBushInstancedShadwoShader()
 		{
 			super();
 			
