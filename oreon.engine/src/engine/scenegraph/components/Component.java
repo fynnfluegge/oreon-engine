@@ -1,6 +1,5 @@
 package engine.scenegraph.components;
 
-import engine.core.Transform;
 import engine.scenegraph.GameObject;
 import engine.shadersamples.Shader;
 

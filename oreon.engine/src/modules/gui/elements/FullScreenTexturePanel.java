@@ -5,10 +5,10 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 import modules.gui.GUIElement;
 import modules.gui.GUIVAO;
 import engine.configs.AlphaCullFaceDisable;
-import engine.core.Transform;
 import engine.geometry.Geometrics;
 import engine.main.OpenGLDisplay;
 import engine.math.Matrix4f;
+import engine.scenegraph.components.Transform;
 import engine.shadersamples.gui.GuiShader;
 import engine.texturing.Texture;
 

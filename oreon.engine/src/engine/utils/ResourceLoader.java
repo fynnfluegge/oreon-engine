@@ -70,18 +70,72 @@ public class ResourceLoader {
 	public static List<Matrix4f> loadObjectTransforms(String fileName){
 		
 		List<Matrix4f> matrices = new ArrayList<Matrix4f>();
-		
+
 		BufferedReader reader = null;
 		
-		try{
-			if(new File(fileName).exists()){
-				reader = new BufferedReader(new FileReader(fileName));
-				String line;
+		try
+		{
+			reader = new BufferedReader(new FileReader(fileName));
+			String line;
+			int linecounter = 0;
+			while((line = reader.readLine()) != null)
+			{
+				String[] tokens = line.split(" ");
+				tokens = Util.removeEmptyStrings(tokens);
 				
-				while((line = reader.readLine()) != null){
+				if(tokens.length == 0 || tokens[0].equals("#"))
+					continue;
+				
+				Vec3f translation = null;
+				Vec3f scaling = null;
+				Vec3f rotation = null;
+				
+				if(tokens[0].equals("["))
+				{
+						translation = new Vec3f(Float.valueOf(tokens[1]),
+												Float.valueOf(tokens[2]),
+												Float.valueOf(tokens[3]));
+						
+						if(tokens[4].equals("]")) continue;
+						else System.err.println("parsing error of file " + fileName + " at line " + linecounter);
+				}
+				if(tokens[5].equals("["))
+				{
+						scaling = new Vec3f(Float.valueOf(tokens[6]),
+							  				Float.valueOf(tokens[7]),
+							  				Float.valueOf(tokens[8]));
 					
+					if(tokens[9].equals("]")) continue;
+					else System.err.println("parsing error of file " + fileName + " at line " + linecounter);
+				}
+				if(tokens[10].equals("["))
+				{
+					rotation = new Vec3f(Float.valueOf(tokens[11]),
+							  			 Float.valueOf(tokens[12]),
+							  			 Float.valueOf(tokens[13]));
+					
+					if(tokens[14].equals("]")) continue;
+					else System.err.println("parsing error of file " + fileName + " at line " + linecounter);
+				}
+				linecounter++;
+				
+				try{
+					Matrix4f translationMatrix = new Matrix4f().Translation(translation);
+					Matrix4f rotationMatrix = new Matrix4f().Rotation(rotation);
+					Matrix4f scalingMatrix = new Matrix4f().Scaling(scaling);
+					
+					matrices.add(translationMatrix.mul(scalingMatrix.mul(rotationMatrix)));
+				}
+				catch (Exception e)
+				{
+					System.err.println("error when try to create worldMatrix of line " + linecounter);
+					e.printStackTrace();
+					System.exit(1);
 				}
 			}
+			
+			reader.close();
+			
 		}
 		catch(Exception e)
 		{
@@ -89,7 +143,7 @@ public class ResourceLoader {
 			System.exit(1);
 		}
 		
-		return null;
+		return matrices;
 	}
 	
 	

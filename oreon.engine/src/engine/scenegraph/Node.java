@@ -3,7 +3,7 @@ package engine.scenegraph;
 import java.util.ArrayList;
 import java.util.List;
 
-import engine.core.Transform;
+import engine.scenegraph.components.Transform;
 
 public class Node {
 

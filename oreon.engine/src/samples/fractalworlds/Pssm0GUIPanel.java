@@ -3,10 +3,10 @@ package samples.fractalworlds;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 import engine.configs.Default;
-import engine.core.Transform;
 import engine.geometry.Geometrics;
 import engine.main.RenderingEngine;
 import engine.math.Matrix4f;
+import engine.scenegraph.components.Transform;
 import modules.gui.GUIElement;
 import modules.gui.GUIVAO;
 

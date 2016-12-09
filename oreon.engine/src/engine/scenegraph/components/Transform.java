@@ -1,5 +1,6 @@
-package engine.core;
+package engine.scenegraph.components;
 
+import engine.core.Camera;
 import engine.math.Matrix4f;
 import engine.math.Vec3f;
 

@@ -1,6 +1,6 @@
 package engine.scenegraph;
 
-import engine.core.Transform;
+import engine.scenegraph.components.Transform;
 
 public class Scenegraph extends Node{
 	
