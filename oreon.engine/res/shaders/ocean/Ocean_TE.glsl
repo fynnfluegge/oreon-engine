@@ -2,9 +2,9 @@
 
 layout(quads, fractional_odd_spacing, cw) in;
 
-in vec2 texCoordTE[];
+in vec2 texCoord_TE[];
 
-out vec2 texCoordG;
+out vec2 texCoord_GS;
 
 uniform int texDetail;
 
@@ -22,12 +22,12 @@ void main(){
 	(1 - u) * v * gl_in[15].gl_Position);
 	
 	vec2 texCoord =
-	((1 - u) * (1 - v) * texCoordTE[12] +
-	u * (1 - v) * texCoordTE[0] +
-	u * v * texCoordTE[3] +
-	(1 - u) * v * texCoordTE[15]);
+	((1 - u) * (1 - v) * texCoord_TE[12] +
+	u * (1 - v) * texCoord_TE[0] +
+	u * v * texCoord_TE[3] +
+	(1 - u) * v * texCoord_TE[15]);
 	
-	texCoordG = texCoord * texDetail;
+	texCoord_GS = texCoord * texDetail;
 	
 	gl_Position = position;
 }
