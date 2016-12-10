@@ -3,24 +3,27 @@
 in vec3 normal_FS;
 in vec3 position_FS;
 
-
-struct DirectionalLight
-{
-	vec3 direction;
-	vec3 color;
-	vec3 ambient;
-	float intensity;
-};
-
 struct Material
 {
 	vec3 color;
 	float shininess;
 	float emission;
 };
+
+layout (std140, row_major) uniform Camera{
+	vec3 eyePosition;
+	mat4 m_View;
+	mat4 viewProjectionMatrix;
+	vec4 frustumPlanes[6];
+};
+
+layout (std140) uniform DirectionalLight{
+	vec3 direction;
+	float intensity;
+	vec3 ambient;
+	vec3 color;
+} directional_light;
 	
-uniform vec3 eyePosition;
-uniform DirectionalLight directionalLight;
 uniform Material material;
 uniform float sightRangeFactor;
 
@@ -47,16 +50,16 @@ void main()
 {	
 	float dist = length(eyePosition - position_FS);
 
-	float diffuseFactor = diffuse(directionalLight.direction, normal_FS, directionalLight.intensity);
+	float diffuseFactor = diffuse(directional_light.direction, normal_FS, directional_light.intensity);
 	float specularFactor = 0;
 	
 	if (diffuseFactor > 0.0)
-		specularFactor = specular(directionalLight.direction, normal_FS, eyePosition, position_FS);
+		specularFactor = specular(directional_light.direction, normal_FS, eyePosition, position_FS);
 	
-	vec3 diffuseLight = directionalLight.color * diffuseFactor;
-	vec3 specularLight = directionalLight.color * specularFactor;
+	vec3 diffuseLight = directional_light.color * diffuseFactor;
+	vec3 specularLight = directional_light.color * specularFactor;
 	
-	vec3 fragColor = material.color * (directionalLight.ambient + diffuseLight);// + specularLight;
+	vec3 fragColor = material.color * (directional_light.ambient + diffuseLight);// + specularLight;
 	
 	float fogFactor = -0.0005/sightRangeFactor*(dist-zFar/5*sightRangeFactor);
 	

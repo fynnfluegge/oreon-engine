@@ -67,6 +67,63 @@ public class ResourceLoader {
 		return shaderSource.toString();
 	}
 	
+	public static List<Matrix4f> loadObjectTransformsModelMatrix(String fileName){
+		
+		List<Matrix4f> matrices = new ArrayList<Matrix4f>();
+
+		BufferedReader reader = null;
+		
+		try
+		{
+			reader = new BufferedReader(new FileReader(fileName));
+			String line;
+			int linecounter = 0;
+			while((line = reader.readLine()) != null)
+			{
+				String[] tokens = line.split(" ");
+				tokens = Util.removeEmptyStrings(tokens);
+				
+				if(tokens.length == 0 || tokens[0].equals("#"))
+					continue;
+				
+				Vec3f rotation = null;
+
+				if(tokens[10].equals("["))
+				{
+					rotation = new Vec3f(Float.valueOf(tokens[11]),
+							  			 Float.valueOf(tokens[12]),
+							  			 Float.valueOf(tokens[13]));
+					
+					if(!tokens[14].equals("]"))
+						System.err.println("parsing error of file " + fileName + " at line " + linecounter);
+				}
+				linecounter++;
+				
+				try{
+					Matrix4f rotationMatrix = new Matrix4f().Rotation(rotation);
+					
+					matrices.add(rotationMatrix);
+				}
+				catch (Exception e)
+				{
+					System.err.println("error when try to create modelMatrix of line " + linecounter);
+					e.printStackTrace();
+					System.exit(1);
+				}
+			}
+			
+			reader.close();
+			
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			System.exit(1);
+		}
+		
+		return matrices;
+	}
+	
 	public static List<Matrix4f> loadObjectTransforms(String fileName){
 		
 		List<Matrix4f> matrices = new ArrayList<Matrix4f>();

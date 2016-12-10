@@ -10,6 +10,8 @@ import modules.gui.GUI;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL31;
+import org.lwjgl.opengl.GL40;
 
 import engine.configs.RenderConfig;
 import engine.scenegraph.Scenegraph;
@@ -31,13 +33,13 @@ public class CoreEngine{
 	public void createWindow(int width, int height, String title)
 	{
 		OpenGLDisplay.getInstance().getLwjglWindow().create(width, height, title);
-		System.out.println("OpenGL version: " + GL11.glGetString(GL11.GL_VERSION));
+		getDeviceProperties();
 	}
 	
 	public void embedWindow(int width, int height, Canvas canvas)
 	{
 		OpenGLDisplay.getInstance().getLwjglWindow().embed(width, height, canvas);
-		System.out.println("OpenGL version: " + GL11.glGetString(GL11.GL_VERSION));
+		getDeviceProperties();
 	}
 	
 	public void init(Scenegraph scenegraph, GUI gui)
@@ -153,7 +155,7 @@ public class CoreEngine{
 		cleanUp();	
 	}
 
-	public void stop()
+	private void stop()
 	{
 		if(!isRunning)
 			return;
@@ -161,20 +163,28 @@ public class CoreEngine{
 		isRunning = false;
 	}
 	
-	public void render()
+	private void render()
 	{
 		renderingEngine.render();
 	}
 	
-	public void update()
+	private void update()
 	{
 		renderingEngine.update();
 	}
 	
-	public void cleanUp()
+	private void cleanUp()
 	{
 		renderingEngine.shutdown();
 		OpenGLDisplay.getInstance().getLwjglWindow().dispose();
+	}
+	
+	private void getDeviceProperties(){
+		System.out.println("OpenGL version: " + GL11.glGetString(GL11.GL_VERSION));
+		System.out.println("Max Geometry Uniform Blocks: " + GL31.GL_MAX_GEOMETRY_UNIFORM_BLOCKS);
+		System.out.println("Max Geometry Shader Invocations: " + GL40.GL_MAX_GEOMETRY_SHADER_INVOCATIONS);
+		System.out.println("Max Uniform Buffer Bindings: " + GL31.GL_MAX_UNIFORM_BUFFER_BINDINGS);
+		System.out.println("Max Uniform Block Size: " + GL31.GL_MAX_UNIFORM_BLOCK_SIZE);
 	}
 
 	public static float getFrameTime() {

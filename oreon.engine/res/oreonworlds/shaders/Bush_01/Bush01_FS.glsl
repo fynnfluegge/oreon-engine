@@ -1,16 +1,8 @@
 #version 430
 
-in vec2 texCoord2;
-in vec3 position2;
-in vec3 normal2;
-
-struct DirectionalLight
-{
-	float intensity;
-	vec3 ambient;
-	vec3 direction;
-	vec3 color;
-};
+in vec2 texCoord_FS;
+in vec3 position_FS;
+in vec3 normal_FS;
 
 struct Material
 {
@@ -18,6 +10,13 @@ struct Material
 	float shininess;
 	float emission;
 };
+
+layout (std140) uniform DirectionalLight{
+	vec3 direction;
+	float intensity;
+	vec3 ambient;
+	vec3 color;
+} directional_light;
 
 layout (std140, row_major) uniform Camera{
 	vec3 eyePosition;
@@ -27,7 +26,6 @@ layout (std140, row_major) uniform Camera{
 };
 
 uniform Material material;
-uniform DirectionalLight directionalLight;
 uniform float sightRangeFactor;
 
 const float zFar = 10000;
@@ -57,19 +55,18 @@ void main()
 	float diffuseFactor = 0;
 	float specularFactor = 0;
 	
-	float dist = length(eyePosition - position2);
+	float dist = length(eyePosition - position_FS);
 
+	vec3 eyeDirection = normalize(eyePosition - position_FS);
 	
-	vec3 eyeDirection = normalize(eyePosition - position2);
+	diffuseFactor = diffuse(directional_light.direction, normal_FS, directional_light.intensity);
 	
-	diffuseFactor = diffuse(directionalLight.direction, normal2, directionalLight.intensity);
+	specularFactor = specular(directional_light.direction, normal_FS, eyeDirection);
 	
-	specularFactor = specular(directionalLight.direction, normal2, eyeDirection);
+	diffuseLight = directional_light.ambient + directional_light.color * diffuseFactor;
+	specularLight = directional_light.color * specularFactor;
 	
-	diffuseLight = directionalLight.ambient + directionalLight.color * diffuseFactor;
-	specularLight = directionalLight.color * specularFactor;
-	
-	vec3 diffuseColor = texture(material.diffusemap, texCoord2).rgb;
+	vec3 diffuseColor = texture(material.diffusemap, texCoord_FS).rgb;
 	
 		
 	vec3 fragColor = diffuseColor * diffuseLight;// + specularLight;
