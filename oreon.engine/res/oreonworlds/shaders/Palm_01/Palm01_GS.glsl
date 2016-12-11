@@ -1,6 +1,6 @@
 #version 430
 
-layout(triangles, invocations = 4) in;
+layout(triangles, invocations = 5) in;
 
 layout(triangle_strip, max_vertices = 3) out;
 
@@ -10,8 +10,8 @@ out vec3 position_FS;
 out vec3 normal_FS;
 
 layout (std140, row_major) uniform InstancedMatrices{
-	mat4 m_World[4];
-	mat4 m_Model[4];
+	mat4 m_World[5];
+	mat4 m_Model[5];
 };
 
 layout (std140, row_major) uniform Camera{
