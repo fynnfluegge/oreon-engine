@@ -18,8 +18,8 @@ public class Pssm3GUIPanel extends GUIElement{
 		setConfig(new Default());
 		setOrthographicMatrix(new Matrix4f().Orthographic2D());
 		setOrthoTransform(new Transform());
-		getOrthoTransform().setTranslation(380, 20, 0);
-		getOrthoTransform().setScaling(100, 100, 0);
+		getOrthoTransform().setTranslation(830, 20, 0);
+		getOrthoTransform().setScaling(250, 250, 0);
 		setOrthographicMatrix(getOrthographicMatrix().mul(getOrthoTransform().getWorldMatrix()));
 		setVao(new GUIVAO());
 		getVao().addData(Geometrics.Quad2D());
