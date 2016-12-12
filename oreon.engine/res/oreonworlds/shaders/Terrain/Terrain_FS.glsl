@@ -38,7 +38,6 @@ layout (std140) uniform DirectionalLight{
 layout (std140, row_major) uniform LightViewProjections{
 	mat4 m_lightViewProjection[6];
 	float splitRange[6];
-	float shadowMapArrayIndices[6];
 };
 
 uniform sampler2DArray shadowMaps;
@@ -83,35 +82,33 @@ float shadow(vec3 worldPos)
 	float depth = viewSpacePos.z/zFar;
 	if (depth < splitRange[0]){
 		vec4 lightSpacePos = m_lightViewProjection[0] * vec4(worldPos,1.0);
-		// Note if lightViewProjSpace is perspective dont't forget lightSpacePos.xyz/lightSpacePos.w
-		// Due to orthographic projection, it's not necessary for directional lights
 		projCoords = lightSpacePos.xyz * 0.5 + 0.5;
-		shadowMapDepth = texture(shadowMaps, vec3(projCoords.xy,shadowMapArrayIndices[0])).r; 
+		shadowMapDepth = texture(shadowMaps, vec3(projCoords.xy,0)).r; 
 	}
 	else if (depth < splitRange[1]){
 		vec4 lightSpacePos = m_lightViewProjection[1] * vec4(worldPos,1.0);
 		projCoords = lightSpacePos.xyz * 0.5 + 0.5;
-		shadowMapDepth = texture(shadowMaps, vec3(projCoords.xy,shadowMapArrayIndices[1])).r;  
+		shadowMapDepth = texture(shadowMaps, vec3(projCoords.xy,1)).r;  
 	}
 	else if (depth < splitRange[2]){
 		vec4 lightSpacePos = m_lightViewProjection[2] * vec4(worldPos,1.0);
 		projCoords = lightSpacePos.xyz * 0.5 + 0.5;
-		shadowMapDepth = texture(shadowMaps, vec3(projCoords.xy,shadowMapArrayIndices[2])).r; 
+		shadowMapDepth = texture(shadowMaps, vec3(projCoords.xy,2)).r; 
 	}
 	else if (depth < splitRange[3]){
 		vec4 lightSpacePos = m_lightViewProjection[3] * vec4(worldPos,1.0);
 		projCoords = lightSpacePos.xyz * 0.5 + 0.5;
-		shadowMapDepth = texture(shadowMaps, vec3(projCoords.xy,shadowMapArrayIndices[3])).r; 
+		shadowMapDepth = texture(shadowMaps, vec3(projCoords.xy,3)).r; 
 	}
 	else if (depth < splitRange[4]){
 		vec4 lightSpacePos = m_lightViewProjection[4] * vec4(worldPos,1.0);
 		projCoords = lightSpacePos.xyz * 0.5 + 0.5;
-		shadowMapDepth = texture(shadowMaps, vec3(projCoords.xy,shadowMapArrayIndices[4])).r; 
+		shadowMapDepth = texture(shadowMaps, vec3(projCoords.xy,4)).r; 
 	}
 	else if (depth < splitRange[5]){
 		vec4 lightSpacePos = m_lightViewProjection[5] * vec4(worldPos,1.0);
 		projCoords = lightSpacePos.xyz * 0.5 + 0.5;
-		shadowMapDepth = texture(shadowMaps, vec3(projCoords.xy,shadowMapArrayIndices[5])).r; 
+		shadowMapDepth = texture(shadowMaps, vec3(projCoords.xy,5)).r; 
 	}
 	else return 1;
 	

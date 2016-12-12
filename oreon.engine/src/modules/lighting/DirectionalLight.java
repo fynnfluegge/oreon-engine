@@ -27,8 +27,6 @@ public class DirectionalLight extends Light{
 	private final int lightBufferSize = Float.BYTES * 12;
 	private final int matricesBufferSize = Float.BYTES * 96
 										 // split ranges
-										 + Float.BYTES * 24
-										 // shadowmap array indices
 										 + Float.BYTES * 24;
 
 	
@@ -85,12 +83,6 @@ public class DirectionalLight extends Light{
 		}
 		for (int i = 0; i<Constants.PSSM_SPLITS; i++){
 			floatBufferMatrices.put(Constants.PSSM_SPLIT_SHEME[i+1]);
-			floatBufferMatrices.put(0);
-			floatBufferMatrices.put(0);
-			floatBufferMatrices.put(0);
-		}
-		for (int i = 0; i<Constants.PSSM_SPLITS; i++){
-			floatBufferMatrices.put(Constants.PSSM_SHADOWMAPARRAY_INDICES[i]);
 			floatBufferMatrices.put(0);
 			floatBufferMatrices.put(0);
 			floatBufferMatrices.put(0);

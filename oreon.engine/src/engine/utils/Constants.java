@@ -14,7 +14,7 @@ public class Constants {
 	public static final float[] PSSM_SPLIT_SHEME= {-0.004f,0.004f,0.01f,0.02f,0.04f,0.1f,0.2f};
 	public static final int TERRAIN_FRACTALS_RESOLUTION = 512;
 	public static final int PSSM_SHADOWMAP_RESOLUTION = 4096;
-	public static final float[] PSSM_SHADOWMAPARRAY_INDICES = {0.0f,0.6f,1.5f,2.6f,3.6f,4.6f};
+	public static final float[] PSSM_SHADOWMAPARRAY_INDICES = {0.0f,1f,2f,3f,4f,5f};
 	
 	
 	// Uniform Block Bindings

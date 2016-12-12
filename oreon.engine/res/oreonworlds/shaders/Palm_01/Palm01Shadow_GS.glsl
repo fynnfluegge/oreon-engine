@@ -2,7 +2,7 @@
 
 layout(triangles, invocations = 5) in;
 
-// 6 shadow layers := 6 triangles := 18 vertices
+// 6 shadow layers := 6 triangles = 18 vertices
 layout(triangle_strip, max_vertices = 18) out;
 
 layout (std140, row_major) uniform Camera{
