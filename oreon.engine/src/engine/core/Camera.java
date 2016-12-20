@@ -65,7 +65,7 @@ public class Camera {
 	
 	protected Camera()
 	{
-		this(new Vec3f(0,100,100), new Vec3f(0,0,1), new Vec3f(0,1,0));
+		this(new Vec3f(0,100,0), new Vec3f(0,0,1), new Vec3f(0,1,0));
 		this.setProjection(70, OpenGLDisplay.getInstance().getLwjglWindow().getWidth(), OpenGLDisplay.getInstance().getLwjglWindow().getHeight());
 		this.setViewMatrix(new Matrix4f().View(this.getForward(), this.getUp()).mul(
 				new Matrix4f().Translation(this.getPosition().mul(-1))));
@@ -96,14 +96,14 @@ public class Camera {
 		float movAmt = scaleFactor *  CoreEngine.getFrameTime();
 		float rotAmt = scaleFactor * CoreEngine.getFrameTime(); 
 		
-		if(Input.getButtonDown(2))
+		if(Input.isButtonDown(2))
 		{
 			Input.setCursor(false);
 			lockedMousePosition = Input.getMousePos();
 			mouselocked = true;
 		}
 		
-		if(Input.getButtonreleased(2))
+		if(Input.isButtonreleased(2))
 		{
 			Input.setCursor(true);
 			mouselocked = false;
@@ -194,9 +194,6 @@ public class Camera {
 		}
 		
 		if(mouselocked) Input.setMousePosition(lockedMousePosition);
-		
-//		this.position.setY(Terrain.getInstance().getTerrainHeight(Camera.getInstance().getPosition().getX(),
-//				   Camera.getInstance().getPosition().getZ()));
 		
 		setPreviousViewMatrix(viewMatrix);
 		setPreviousViewProjectionMatrix(viewProjectionMatrix);

@@ -6,6 +6,7 @@ import static org.lwjgl.opengl.GL11.glClear;
 import modules.gui.GUI;
 import modules.gui.elements.FullScreenTexturePanel;
 import modules.lighting.DirectionalLight;
+import modules.mousePicking.TerrainPicking;
 import modules.postProcessingEffects.MotionBlur;
 import modules.shadowmapping.directionalLights.ShadowMaps;
 import engine.configs.RenderConfig;
@@ -82,6 +83,7 @@ public class RenderingEngine {
 		scenegraph.update();
 		DirectionalLight.getInstance().update();
 		motionBlur.update();
+		TerrainPicking.getInstance().getTerrainPosition();
 	}
 	
 	public void shutdown()

@@ -1,20 +1,20 @@
 package oreonworlds;
 
 import engine.core.Game;
+import modules.gui.GUIs.GridFPS;
 import modules.sky.SkySphere;
 import modules.terrain.Terrain;
 import oreonworlds.plants.Palm01Instanced;
 import oreonworlds.plants.Bush01Instanced;
 import oreonworlds.shaders.TerrainGridShader;
 import oreonworlds.shaders.TerrainShader;
-import samples.fractalworlds.GUI;
 
 public class Main {
 
 	public static void main(String[] args) {
 		
 		Game game = new Game();
-		game.setGui(new GUI());
+		game.setGui(new GridFPS());
 		game.getEngine().createWindow(1900, 1000, "oreon worlds");
 		game.init();
 		game.getScenegraph().setTerrain(Terrain.getInstance());

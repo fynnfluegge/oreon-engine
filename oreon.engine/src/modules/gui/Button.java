@@ -65,7 +65,7 @@ public abstract class Button extends GUIElement{
 	
 	public void update()
 	{
-		if(Input.getButtonDown(0))
+		if(Input.isButtonDown(0))
 		{
 			if(onClick())
 			{
@@ -73,7 +73,7 @@ public abstract class Button extends GUIElement{
 				onClickActionPerformed();
 			}
 		}
-		if(Input.getButtonreleased(0))
+		if(Input.isButtonreleased(0))
 			onClick = false;
 	}
 	

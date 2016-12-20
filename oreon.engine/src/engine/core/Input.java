@@ -48,7 +48,7 @@ public class Input {
 		}
 		
 		while(Mouse.next())
-		{
+		{	
 			button = getButton();
 			hold = Mouse.getEventButtonState();
 			if(hold && !holdButtons.contains(button))
@@ -102,12 +102,12 @@ public class Input {
 		return Mouse.getEventButton();
 	}
 	
-	public static boolean getButtonDown(int key)
+	public static boolean isButtonDown(int key)
 	{
 		return holdButtons.contains(key);
 	}
 	
-	public static boolean getButtonreleased(int key)
+	public static boolean isButtonreleased(int key)
 	{
 		return releasedButtons.contains(key);
 	}
