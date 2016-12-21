@@ -61,7 +61,7 @@ public class GameObject extends Node{
 			
 			components.get("Renderer").render();
 			
-			glViewport(0,0,OpenGLDisplay.getInstance().getLwjglWindow().getWidth(), OpenGLDisplay.getInstance().getLwjglWindow().getHeight());
+			glViewport(0,0,OpenGLDisplay.getInstance().getWidth(), OpenGLDisplay.getInstance().getHeight());
 			renderinfo.getConfig().disable();
 			components.get("Renderer").setShader(renderinfo.getShader());
 		}

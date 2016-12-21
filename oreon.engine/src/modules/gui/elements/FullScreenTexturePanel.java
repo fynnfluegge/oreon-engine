@@ -24,7 +24,7 @@ public class FullScreenTexturePanel extends GUIElement{
 		setOrthographicMatrix(new Matrix4f().Orthographic2D());
 		setOrthoTransform(new Transform());
 		getOrthoTransform().setTranslation(0, 0, 0);
-		getOrthoTransform().setScaling(OpenGLDisplay.getInstance().getLwjglWindow().getWidth(), OpenGLDisplay.getInstance().getLwjglWindow().getHeight(), 0);
+		getOrthoTransform().setScaling(OpenGLDisplay.getInstance().getWidth(), OpenGLDisplay.getInstance().getHeight(), 0);
 		setOrthographicMatrix(getOrthographicMatrix().mul(getOrthoTransform().getWorldMatrix()));
 		setVao(new GUIVAO());
 		getVao().addData(Geometrics.Quad2D());

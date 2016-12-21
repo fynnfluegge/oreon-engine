@@ -32,13 +32,13 @@ public class CoreEngine{
 	
 	public void createWindow(int width, int height, String title)
 	{
-		OpenGLDisplay.getInstance().getLwjglWindow().create(width, height, title);
+		OpenGLDisplay.getInstance().create(width, height, title);
 		getDeviceProperties();
 	}
 	
 	public void embedWindow(int width, int height, Canvas canvas)
 	{
-		OpenGLDisplay.getInstance().getLwjglWindow().embed(width, height, canvas);
+		OpenGLDisplay.getInstance().embed(width, height, canvas);
 		getDeviceProperties();
 	}
 	
@@ -125,7 +125,7 @@ public class CoreEngine{
 				render = true;
 				unprocessedTime -= frameTime;
 				
-				if(OpenGLDisplay.getInstance().getLwjglWindow().isCloseRequested())
+				if(OpenGLDisplay.getInstance().isCloseRequested())
 					stop();
 				
 				update();
@@ -176,7 +176,7 @@ public class CoreEngine{
 	private void cleanUp()
 	{
 		renderingEngine.shutdown();
-		OpenGLDisplay.getInstance().getLwjglWindow().dispose();
+		OpenGLDisplay.getInstance().dispose();
 	}
 	
 	private void getDeviceProperties(){

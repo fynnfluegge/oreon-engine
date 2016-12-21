@@ -85,8 +85,8 @@ private static OceanBRDF instance = null;
 		setUniform("projectionViewMatrix", Camera.getInstance().getViewProjectionMatrix());
 		setUniform("worldMatrix", object.getTransform().getWorldMatrix());
 		setUniform("eyePosition", Camera.getInstance().getPosition());
-		setUniformi("windowWidth", OpenGLDisplay.getInstance().getLwjglWindow().getWidth());
-		setUniformi("windowHeight", OpenGLDisplay.getInstance().getLwjglWindow().getHeight());
+		setUniformi("windowWidth", OpenGLDisplay.getInstance().getWidth());
+		setUniformi("windowHeight", OpenGLDisplay.getInstance().getHeight());
 		
 		setUniform("sunlight.ambient", DirectionalLight.getInstance().getAmbient());
 		setUniformf("sunlight.intensity", DirectionalLight.getInstance().getIntensity());

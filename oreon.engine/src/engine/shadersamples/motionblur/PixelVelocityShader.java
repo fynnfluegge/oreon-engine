@@ -43,8 +43,8 @@ public class PixelVelocityShader extends Shader{
 		glActiveTexture(GL_TEXTURE0);
 		depthmap.bind();
 		setUniformi("depthmap", 0);
-		setUniformf("windowWidth", OpenGLDisplay.getInstance().getLwjglWindow().getWidth());
-		setUniformf("windowHeight", OpenGLDisplay.getInstance().getLwjglWindow().getHeight());
+		setUniformf("windowWidth", OpenGLDisplay.getInstance().getWidth());
+		setUniformf("windowHeight", OpenGLDisplay.getInstance().getHeight());
 		setUniform("projectionMatrix", projectionMatrix);
 		setUniform("inverseViewProjectionMatrix", inverseViewProjectionMatrix);
 		setUniform("previousViewProjectionMatrix", previousViewProjectionMatrix);

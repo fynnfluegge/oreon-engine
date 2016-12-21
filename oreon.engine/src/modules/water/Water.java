@@ -92,28 +92,28 @@ public class Water extends GameObject{
 		reflectionTexture = new Texture();
 		reflectionTexture.generate();
 		reflectionTexture.bind();
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, OpenGLDisplay.getInstance().getLwjglWindow().getWidth()/2, OpenGLDisplay.getInstance().getLwjglWindow().getHeight()/2, 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, OpenGLDisplay.getInstance().getWidth()/2, OpenGLDisplay.getInstance().getHeight()/2, 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		
 		reflectionFBO = new Framebuffer();
 		reflectionFBO.bind();
 		reflectionFBO.setDrawBuffer(0);
-		reflectionFBO.colorTextureAttachment(reflectionTexture.getId(), 0);
+		reflectionFBO.createColorTextureAttachment(reflectionTexture.getId(), 0);
 		reflectionFBO.checkStatus();
 		reflectionFBO.unbind();
 		
 		refractionTexture = new Texture();
 		refractionTexture.generate();
 		refractionTexture.bind();
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, OpenGLDisplay.getInstance().getLwjglWindow().getWidth()/2, OpenGLDisplay.getInstance().getLwjglWindow().getHeight()/2, 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, OpenGLDisplay.getInstance().getWidth()/2, OpenGLDisplay.getInstance().getHeight()/2, 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	
 		refractionFBO = new Framebuffer();
 		refractionFBO.bind();
 		refractionFBO.setDrawBuffer(0);
-		refractionFBO.colorTextureAttachment(refractionTexture.getId(), 0);
+		refractionFBO.createColorTextureAttachment(refractionTexture.getId(), 0);
 		refractionFBO.checkStatus();
 		refractionFBO.unbind();		
 	}
@@ -282,7 +282,7 @@ public class Water extends GameObject{
 			
 			//render reflection to texture
 
-			glViewport(0,0,OpenGLDisplay.getInstance().getLwjglWindow().getWidth()/2, OpenGLDisplay.getInstance().getLwjglWindow().getHeight()/2);
+			glViewport(0,0,OpenGLDisplay.getInstance().getWidth()/2, OpenGLDisplay.getInstance().getHeight()/2);
 			
 			this.getReflectionFBO().bind();
 			RenderConfig.clearScreenDeepOceanReflection();
@@ -319,7 +319,7 @@ public class Water extends GameObject{
 			
 		RenderingEngine.setClipplane(Constants.PLANE0);	
 	
-		glViewport(0,0,OpenGLDisplay.getInstance().getLwjglWindow().getWidth(), OpenGLDisplay.getInstance().getLwjglWindow().getHeight());
+		glViewport(0,0,OpenGLDisplay.getInstance().getWidth(), OpenGLDisplay.getInstance().getHeight());
 		
 		OpenGLDisplay.getInstance().getFBO().bind();
 		RenderConfig.clearScreen();

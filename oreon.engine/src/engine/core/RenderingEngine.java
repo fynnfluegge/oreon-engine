@@ -56,10 +56,14 @@ public class RenderingEngine {
 		shadowMaps.getFBO().unbind();
 		
 		// render scene/deferred maps
-		OpenGLDisplay.getInstance().getFBO().bind();
+		OpenGLDisplay.getInstance().getMultisampledFbo().bind();
 		RenderConfig.clearScreen();
 		scenegraph.render();	
+		OpenGLDisplay.getInstance().getMultisampledFbo().unbind();
+		OpenGLDisplay.getInstance().getFBO().bind();;
+		RenderConfig.clearScreen();
 		OpenGLDisplay.getInstance().getFBO().unbind();
+		OpenGLDisplay.getInstance().blitMultisampledFBO();
 		
 		gui.render();
 		
@@ -72,7 +76,7 @@ public class RenderingEngine {
 
 		screenTexture.render();
 		
-		display.getLwjglWindow().render();
+		display.render();
 	}
 	
 	public void update()

@@ -83,7 +83,7 @@ public class TerrainNode extends GameObject{
 			
 			getComponents().get("Renderer").render();
 			
-			glViewport(0,0,OpenGLDisplay.getInstance().getLwjglWindow().getWidth(), OpenGLDisplay.getInstance().getLwjglWindow().getHeight());
+			glViewport(0,0,OpenGLDisplay.getInstance().getWidth(), OpenGLDisplay.getInstance().getHeight());
 			getRenderInfo().getConfig().disable();
 			getComponents().get("Renderer").setShader(getRenderInfo().getShader());
 		}
