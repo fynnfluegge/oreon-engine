@@ -1,6 +1,7 @@
 package engine.buffers;
 
 import static org.lwjgl.opengl.GL11.GL_NEAREST;
+import static org.lwjgl.opengl.GL11.GL_RGBA8;
 import static org.lwjgl.opengl.GL30.GL_RGBA32F;
 import static org.lwjgl.opengl.GL30.glBlitFramebuffer;
 import static org.lwjgl.opengl.GL30.GL_DEPTH_COMPONENT32F;
@@ -82,7 +83,7 @@ public class Framebuffer {
 	public void createColorBufferMultisampleAttachment(int samples){
 		int colorBuffer = glGenRenderbuffers();
 		glBindRenderbuffer(GL_RENDERBUFFER, colorBuffer);
-		glRenderbufferStorageMultisample(GL_RENDERBUFFER, samples, GL_RGBA32F, 
+		glRenderbufferStorageMultisample(GL_RENDERBUFFER, samples, GL_RGBA8, 
 									       		OpenGLDisplay.getInstance().getWidth(), 
 									       		OpenGLDisplay.getInstance().getHeight());
 		glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,
@@ -92,7 +93,7 @@ public class Framebuffer {
 	public void createDepthBufferMultisampleAttachment(int samples){
 		int depthBuffer = glGenRenderbuffers();
 		glBindRenderbuffer(GL_RENDERBUFFER, depthBuffer);
-		glRenderbufferStorageMultisample(GL_RENDERBUFFER, 4, GL_DEPTH_COMPONENT32F, 
+		glRenderbufferStorageMultisample(GL_RENDERBUFFER, samples, GL_DEPTH_COMPONENT32F, 
 									       		OpenGLDisplay.getInstance().getWidth(), 
 									       		OpenGLDisplay.getInstance().getHeight());
 		glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER,GL_DEPTH_ATTACHMENT,
@@ -100,11 +101,13 @@ public class Framebuffer {
 	}
 	
 	public void blitFrameBuffer(int writeFBO){
-		glBindFramebuffer(GL_READ_FRAMEBUFFER, id);
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, writeFBO);
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, id);
 		glBlitFramebuffer(0,0,OpenGLDisplay.getInstance().getWidth(),OpenGLDisplay.getInstance().getHeight(),
 						  0,0,OpenGLDisplay.getInstance().getWidth(),OpenGLDisplay.getInstance().getHeight(),
-						  GL_COLOR_BUFFER_BIT, GL_NEAREST);
+						  GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
 	}
 	
 	public void checkStatus()

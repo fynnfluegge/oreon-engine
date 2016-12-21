@@ -17,7 +17,7 @@ import static org.lwjgl.opengl.GL14.GL_TEXTURE_COMPARE_FUNC;
 import static org.lwjgl.opengl.GL14.GL_TEXTURE_COMPARE_MODE;
 import static org.lwjgl.opengl.GL30.GL_COMPARE_REF_TO_TEXTURE;
 import static org.lwjgl.opengl.GL30.GL_DEPTH_COMPONENT32F;
-import static org.lwjgl.opengl.GL30.GL_RGBA32F;
+import static org.lwjgl.opengl.GL11.GL_RGBA8;
 
 import java.awt.Canvas;
 import java.io.File;
@@ -59,7 +59,6 @@ public class OpenGLDisplay {
 		
 		multisampledFbo = new Framebuffer();
 		multisampledFbo.bind();
-		multisampledFbo.setDrawBuffer(0);
 		multisampledFbo.createColorBufferMultisampleAttachment(4);
 		multisampledFbo.createDepthBufferMultisampleAttachment(4);
 		multisampledFbo.checkStatus();
@@ -69,7 +68,7 @@ public class OpenGLDisplay {
 		setSceneTexture(new Texture());
 		getSceneTexture().generate();
 		getSceneTexture().bind();
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, getWidth(), getHeight(), 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, getWidth(), getHeight(), 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		setSceneDepthmap(new Texture());
