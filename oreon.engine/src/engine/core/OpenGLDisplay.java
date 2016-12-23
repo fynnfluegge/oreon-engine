@@ -93,7 +93,20 @@ public class OpenGLDisplay {
 	{
 		Display.setTitle(title);
 		try {
-			Display.setDisplayMode(new DisplayMode(width, height));
+			DisplayMode displayMode = null;
+	        DisplayMode[] modes = Display.getAvailableDisplayModes();
+
+	         for (int i = 0; i < modes.length; i++)
+	         {
+	             if (modes[i].getWidth() == width
+	            	&& modes[i].getHeight() == height
+	            	&& modes[i].isFullscreenCapable())
+	             {
+	            	 	displayMode = modes[i];
+	             }
+	         }
+	       
+			Display.setDisplayMode(displayMode);
 			Display.setIcon(new ByteBuffer[] {
 					new ImageIOImageData().imageToByteBuffer(ImageIO.read(new File("res/logo/oreon_lwjgl_icon16.png")), false, false, null),
                     new ImageIOImageData().imageToByteBuffer(ImageIO.read(new File("res/logo/oreon_lwjgl_icon32.png")), false, false, null)
