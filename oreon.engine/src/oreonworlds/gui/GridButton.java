@@ -10,8 +10,8 @@ public class GridButton extends Button{
 	
 	public GridButton()
 	{
-		buttonMap = new Texture("./res/textures/gui/buttons.png");
-		buttonClickMap = new Texture("./res/textures/gui/buttonsClicked.png");
+		buttonMap = new Texture("./res/gui/tex/buttons.png");
+		buttonClickMap = new Texture("./res/gui/tex/buttonsClicked.png");
 		getOrthoTransform().setTranslation(5, OpenGLDisplay.getInstance().getHeight()-110, 0);
 		getOrthoTransform().setScaling(50, 35, 0);
 		Vec2f[] texCoordsgb = new Vec2f[4];

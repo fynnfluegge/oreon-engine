@@ -24,7 +24,7 @@ public class GUIObjectLoader {
 		
 			try
 			{
-				meshReader = new BufferedReader(new FileReader("./res/models/gui/" + fileName));
+				meshReader = new BufferedReader(new FileReader("./res/gui/" + fileName));
 				String line;
 				while((line = meshReader.readLine()) != null)
 				{
