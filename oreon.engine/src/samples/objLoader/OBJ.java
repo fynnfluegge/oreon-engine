@@ -43,19 +43,19 @@ public class OBJ extends Node{
 			}
 
 			if (model.getMaterial().getName().equals("glass")){
-				object.setRenderInfo(new RenderInfo(new CullFaceDisable(), engine.shadersamples.blinnphong.Glass.getInstance()));
+				object.setRenderInfo(new RenderInfo(new CullFaceDisable(), engine.shader.blinnphong.Glass.getInstance()));
 				renderer = new Renderer(object.getRenderInfo().getShader(), meshBuffer);
 			}
 			else if (model.getMaterial().getNormalmap() != null){
-				object.setRenderInfo(new RenderInfo(new CullFaceDisable(), engine.shadersamples.blinnphong.TBN.getInstance()));
+				object.setRenderInfo(new RenderInfo(new CullFaceDisable(), engine.shader.blinnphong.TBN.getInstance()));
 				renderer = new Renderer(object.getRenderInfo().getShader(), meshBuffer);
 			}
 			else if (model.getMaterial().getDiffusemap() != null){
-				object.setRenderInfo(new RenderInfo(new CullFaceDisable(), engine.shadersamples.blinnphong.Textured.getInstance()));
+				object.setRenderInfo(new RenderInfo(new CullFaceDisable(), engine.shader.blinnphong.Textured.getInstance()));
 				renderer = new Renderer(object.getRenderInfo().getShader(), meshBuffer);
 			}
 			else{
-				object.setRenderInfo(new RenderInfo(new CullFaceDisable(), engine.shadersamples.blinnphong.RGBA.getInstance()));
+				object.setRenderInfo(new RenderInfo(new CullFaceDisable(), engine.shader.blinnphong.RGBA.getInstance()));
 				renderer = new Renderer(object.getRenderInfo().getShader(), meshBuffer);
 			}
 
@@ -73,20 +73,20 @@ public class OBJ extends Node{
 		if (Input.getHoldingKeys().contains(Keyboard.KEY_G))
 		{
 			for(Node gameobject : this.getChildren()){
-				((Renderer) ((GameObject) gameobject).getComponent("Renderer")).setShader(engine.shadersamples.basic.Grid.getInstance());
+				((Renderer) ((GameObject) gameobject).getComponent("Renderer")).setShader(engine.shader.basic.Grid.getInstance());
 			}
 		}
 		else {
 			for(Node gameobject : this.getChildren()){
 				if((Material) ((GameObject) gameobject).getComponent("Material") != null){
 					if (((Material) ((GameObject) gameobject).getComponent("Material")).getName().equals("glass"))
-						((Renderer) ((GameObject) gameobject).getComponent("Renderer")).setShader(engine.shadersamples.blinnphong.Glass.getInstance());	
+						((Renderer) ((GameObject) gameobject).getComponent("Renderer")).setShader(engine.shader.blinnphong.Glass.getInstance());	
 					else if (((Material) ((GameObject) gameobject).getComponent("Material")).getNormalmap() != null)
-						((Renderer) ((GameObject) gameobject).getComponent("Renderer")).setShader(engine.shadersamples.blinnphong.TBN.getInstance());
+						((Renderer) ((GameObject) gameobject).getComponent("Renderer")).setShader(engine.shader.blinnphong.TBN.getInstance());
 					else if (((Material) ((GameObject) gameobject).getComponent("Material")).getDiffusemap() != null)
-						((Renderer) ((GameObject) gameobject).getComponent("Renderer")).setShader(engine.shadersamples.blinnphong.Textured.getInstance());
+						((Renderer) ((GameObject) gameobject).getComponent("Renderer")).setShader(engine.shader.blinnphong.Textured.getInstance());
 					else
-						((Renderer) ((GameObject) gameobject).getComponent("Renderer")).setShader(engine.shadersamples.blinnphong.RGBA.getInstance());	
+						((Renderer) ((GameObject) gameobject).getComponent("Renderer")).setShader(engine.shader.blinnphong.RGBA.getInstance());	
 				}
 			}
 		}

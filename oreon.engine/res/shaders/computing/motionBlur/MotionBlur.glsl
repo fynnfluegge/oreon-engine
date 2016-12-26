@@ -2,11 +2,11 @@
 
 layout (local_size_x = 8, local_size_y = 8) in;
 
-layout (binding = 0, rgba32f) uniform writeonly image2D motionBlur;
+layout (binding = 0, rgba8) uniform writeonly image2D motionBlur;
 
-layout (binding = 1, rgba32f) uniform readonly image2D sceneSampler;
+layout (binding = 1, rgba8) uniform readonly image2D sceneSampler;
 
-layout (binding = 2, rgba32f) uniform readonly image2D velocityMap;
+layout (binding = 2, rgba32F) uniform readonly image2D velocityMap;
 
 uniform float windowWidth;
 uniform float windowHeight;

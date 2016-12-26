@@ -9,7 +9,7 @@ import engine.math.Matrix4f;
 import engine.math.Quaternion;
 import engine.math.Vec2f;
 import engine.scenegraph.components.Transform;
-import engine.shadersamples.gui.GuiShader;
+import engine.shader.gui.GuiShader;
 import engine.texturing.Texture;
 
 public abstract class Button extends GUIElement{

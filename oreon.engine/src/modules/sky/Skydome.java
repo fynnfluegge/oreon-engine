@@ -8,7 +8,7 @@ import engine.scenegraph.GameObject;
 import engine.scenegraph.components.Material;
 import engine.scenegraph.components.RenderInfo;
 import engine.scenegraph.components.Renderer;
-import engine.shadersamples.basic.Textured;
+import engine.shader.basic.Textured;
 import engine.texturing.ProceduralTexturing;
 import engine.texturing.Texture;
 import modules.modelLoader.obj.OBJLoader;

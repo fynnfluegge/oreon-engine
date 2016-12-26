@@ -8,7 +8,7 @@ import engine.configs.Default;
 import engine.geometry.Geometrics;
 import engine.math.Matrix4f;
 import engine.scenegraph.components.Transform;
-import engine.shadersamples.gui.GuiShader;
+import engine.shader.gui.GuiShader;
 import engine.texturing.Texture;
 
 public class TexturePanel extends GUIElement{

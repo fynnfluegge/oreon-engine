@@ -65,8 +65,8 @@ public class Camera {
 	
 	protected Camera()
 	{
-		this(new Vec3f(0,100,0), new Vec3f(0,0,1), new Vec3f(0,1,0));
-		this.setProjection(70, OpenGLDisplay.getInstance().getWidth(), OpenGLDisplay.getInstance().getHeight());
+		this(new Vec3f(1150,0,-600), new Vec3f(0,0,1), new Vec3f(0,1,0));
+		this.setProjection(70, Window.getInstance().getWidth(), Window.getInstance().getHeight());
 		this.setViewMatrix(new Matrix4f().View(this.getForward(), this.getUp()).mul(
 				new Matrix4f().Translation(this.getPosition().mul(-1))));
 		this.initfrustumPlanes();

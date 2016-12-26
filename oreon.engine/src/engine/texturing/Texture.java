@@ -25,6 +25,12 @@ public class Texture {
 	public Texture(){
 	}
 	
+	public Texture(Texture texture){
+		id = texture.getId();
+		width = texture.getWidth();
+		height = texture.getHeight();
+	}
+	
 	public Texture(String file)
 	{
 		id = ResourceLoader.loadTexture(file);

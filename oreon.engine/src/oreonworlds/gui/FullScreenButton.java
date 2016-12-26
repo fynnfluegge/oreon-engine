@@ -3,7 +3,7 @@ package oreonworlds.gui;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 
-import engine.core.OpenGLDisplay;
+import engine.core.Window;
 import engine.math.Vec2f;
 import engine.texturing.Texture;
 import modules.gui.Button;
@@ -16,7 +16,7 @@ public class FullScreenButton  extends Button{
 	{
 		buttonMap = new Texture("./res/gui/tex/maximize.png");
 		buttonClickMap = new Texture("./res/gui/tex/maximize.png");
-		getOrthoTransform().setTranslation(10, OpenGLDisplay.getInstance().getHeight()-70, 0);
+		getOrthoTransform().setTranslation(10, Window.getInstance().getHeight()-70, 0);
 		getOrthoTransform().setScaling(15,30,0);
 		Vec2f[] texCoords = new Vec2f[4];
 		texCoords[0] = new Vec2f(0,1f);

@@ -2,7 +2,7 @@ package modules.terrain;
 
 import engine.math.Vec2f;
 import engine.scenegraph.Node;
-import engine.shadersamples.Shader;
+import engine.shader.Shader;
 import engine.utils.Constants;
 
 

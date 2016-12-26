@@ -4,7 +4,7 @@ import static org.lwjgl.opengl.GL11.glViewport;
 
 import engine.buffers.PatchVAO;
 import engine.core.Camera;
-import engine.core.OpenGLDisplay;
+import engine.core.Window;
 import engine.core.RenderingEngine;
 import engine.math.Vec2f;
 import engine.math.Vec3f;
@@ -83,7 +83,7 @@ public class TerrainNode extends GameObject{
 			
 			getComponents().get("Renderer").render();
 			
-			glViewport(0,0,OpenGLDisplay.getInstance().getWidth(), OpenGLDisplay.getInstance().getHeight());
+			glViewport(0,0,Window.getInstance().getWidth(), Window.getInstance().getHeight());
 			getRenderInfo().getConfig().disable();
 			getComponents().get("Renderer").setShader(getRenderInfo().getShader());
 		}

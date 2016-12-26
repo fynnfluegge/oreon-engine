@@ -1,7 +1,7 @@
 package modules.gui.elements;
 
 import modules.gui.Button;
-import engine.core.OpenGLDisplay;
+import engine.core.Window;
 import engine.core.RenderingEngine;
 import engine.math.Vec2f;
 import engine.texturing.Texture;
@@ -12,7 +12,7 @@ public class GridButton extends Button{
 	{
 		buttonMap = new Texture("./res/guit/tex/buttons.png");
 		buttonClickMap = new Texture("./res/gui/tex/buttonsClicked.png");
-		getOrthoTransform().setTranslation(5, OpenGLDisplay.getInstance().getHeight()-60, 0);
+		getOrthoTransform().setTranslation(5, Window.getInstance().getHeight()-60, 0);
 		getOrthoTransform().setScaling(60, 40, 0);
 		Vec2f[] texCoordsgb = new Vec2f[4];
 		texCoordsgb[0] = new Vec2f(0,0.3f);

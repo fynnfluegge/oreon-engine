@@ -8,7 +8,7 @@ import static org.lwjgl.opengl.GL15.GL_READ_WRITE;
 import static org.lwjgl.opengl.GL42.glBindImageTexture;
 import static org.lwjgl.opengl.GL43.glDispatchCompute;
 
-import engine.shadersamples.water.Tilde_hktShader;
+import engine.shader.water.Tilde_hktShader;
 import engine.texturing.Texture;
 import modules.gpgpu.fft.FourierComponents;
 

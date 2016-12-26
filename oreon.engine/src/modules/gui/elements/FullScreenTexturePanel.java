@@ -5,11 +5,11 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 import modules.gui.GUIElement;
 import modules.gui.GUIVAO;
 import engine.configs.AlphaCullFaceDisable;
-import engine.core.OpenGLDisplay;
+import engine.core.Window;
 import engine.geometry.Geometrics;
 import engine.math.Matrix4f;
 import engine.scenegraph.components.Transform;
-import engine.shadersamples.gui.GuiShader;
+import engine.shader.gui.GuiShader;
 import engine.texturing.Texture;
 
 public class FullScreenTexturePanel extends GUIElement{
@@ -24,7 +24,7 @@ public class FullScreenTexturePanel extends GUIElement{
 		setOrthographicMatrix(new Matrix4f().Orthographic2D());
 		setOrthoTransform(new Transform());
 		getOrthoTransform().setTranslation(0, 0, 0);
-		getOrthoTransform().setScaling(OpenGLDisplay.getInstance().getWidth(), OpenGLDisplay.getInstance().getHeight(), 0);
+		getOrthoTransform().setScaling(Window.getInstance().getWidth(), Window.getInstance().getHeight(), 0);
 		setOrthographicMatrix(getOrthographicMatrix().mul(getOrthoTransform().getWorldMatrix()));
 		setVao(new GUIVAO());
 		getVao().addData(Geometrics.Quad2D());

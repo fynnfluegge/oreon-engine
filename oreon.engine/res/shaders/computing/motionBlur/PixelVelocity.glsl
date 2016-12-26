@@ -22,16 +22,14 @@ float linearize(float depth)
 
 void main(void){
 	
-	vec2 texCoord = vec2(gl_GlobalInvocationID.x/windowWidth, gl_GlobalInvocationID.y/windowHeight);
+	// window coords
+	vec2 w = vec2(gl_GlobalInvocationID.x/windowWidth, gl_GlobalInvocationID.y/windowHeight);
 	
 	// Get the depth buffer value at this pixel.  
-	float depth = texture(depthmap, texCoord).r ; 
-	
-	// window coords
-	vec2 W = vec2(gl_GlobalInvocationID.x/windowWidth, gl_GlobalInvocationID.y/windowHeight);
+	float depth = texture(depthmap, w).r ; 
 	
 	//ndc coords
-	vec3 N = vec3(W.x * 2 - 1, W.y * 2 - 1, depth);
+	vec3 N = vec3(w.x * 2 - 1, w.y * 2 - 1, depth);
 	
 	float Cw = projectionMatrix[2][3] / (N.z - projectionMatrix[2][2]); 
 	vec3 clip = N * Cw;
@@ -43,7 +41,7 @@ void main(void){
 	previousPos /= previousPos.w;
 	
 	//window space velocity
-	vec2 velocity = (previousPos.xy - N.xy).xy * 200;
+	vec2 velocity = (previousPos.xy - N.xy).xy * 120;
 
 	imageStore(velocitymap, ivec2(gl_GlobalInvocationID.xy), vec4(velocity,0,1));
 }

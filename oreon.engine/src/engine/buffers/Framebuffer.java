@@ -11,7 +11,7 @@ import static org.lwjgl.opengl.GL30.glRenderbufferStorageMultisample;
 import static org.lwjgl.opengl.GL30.glGenRenderbuffers;
 import static org.lwjgl.opengl.GL30.glFramebufferTexture2D;
 import static org.lwjgl.opengl.GL32.glFramebufferTexture;
-import engine.core.OpenGLDisplay;
+import engine.core.Window;
 import static org.lwjgl.opengl.GL30.glGenFramebuffers;
 import static org.lwjgl.opengl.GL30.glBindFramebuffer;
 import static org.lwjgl.opengl.GL30.GL_FRAMEBUFFER;
@@ -84,8 +84,8 @@ public class Framebuffer {
 		int colorBuffer = glGenRenderbuffers();
 		glBindRenderbuffer(GL_RENDERBUFFER, colorBuffer);
 		glRenderbufferStorageMultisample(GL_RENDERBUFFER, samples, GL_RGBA8, 
-									       		OpenGLDisplay.getInstance().getWidth(), 
-									       		OpenGLDisplay.getInstance().getHeight());
+									       		Window.getInstance().getWidth(), 
+									       		Window.getInstance().getHeight());
 		glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,
 									GL_RENDERBUFFER,colorBuffer);
 	}
@@ -94,8 +94,8 @@ public class Framebuffer {
 		int depthBuffer = glGenRenderbuffers();
 		glBindRenderbuffer(GL_RENDERBUFFER, depthBuffer);
 		glRenderbufferStorageMultisample(GL_RENDERBUFFER, samples, GL_DEPTH_COMPONENT32F, 
-									       		OpenGLDisplay.getInstance().getWidth(), 
-									       		OpenGLDisplay.getInstance().getHeight());
+									       		Window.getInstance().getWidth(), 
+									       		Window.getInstance().getHeight());
 		glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER,GL_DEPTH_ATTACHMENT,
 									GL_RENDERBUFFER,depthBuffer);
 	}
@@ -103,8 +103,8 @@ public class Framebuffer {
 	public void blitFrameBuffer(int writeFBO){
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, writeFBO);
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, id);
-		glBlitFramebuffer(0,0,OpenGLDisplay.getInstance().getWidth(),OpenGLDisplay.getInstance().getHeight(),
-						  0,0,OpenGLDisplay.getInstance().getWidth(),OpenGLDisplay.getInstance().getHeight(),
+		glBlitFramebuffer(0,0,Window.getInstance().getWidth(),Window.getInstance().getHeight(),
+						  0,0,Window.getInstance().getWidth(),Window.getInstance().getHeight(),
 						  GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, GL_NEAREST);
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);

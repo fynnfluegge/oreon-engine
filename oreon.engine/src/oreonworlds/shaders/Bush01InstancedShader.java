@@ -6,7 +6,7 @@ import modules.terrain.Terrain;
 import engine.core.RenderingEngine;
 import engine.scenegraph.GameObject;
 import engine.scenegraph.components.Material;
-import engine.shadersamples.Shader;
+import engine.shader.Shader;
 import engine.utils.Constants;
 import engine.utils.ResourceLoader;
 

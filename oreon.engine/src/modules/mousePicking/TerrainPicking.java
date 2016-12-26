@@ -8,7 +8,7 @@ import java.nio.FloatBuffer;
 
 import engine.core.Camera;
 import engine.core.Input;
-import engine.core.OpenGLDisplay;
+import engine.core.Window;
 import engine.math.Quaternion;
 import engine.math.Vec2f;
 import engine.math.Vec3f;
@@ -30,8 +30,8 @@ public class TerrainPicking {
 	}
 	
 	private TerrainPicking(){
-		depthmapBuffer = BufferAllocation.createFloatBuffer(OpenGLDisplay.getInstance().getWidth() * 
-															OpenGLDisplay.getInstance().getHeight());
+		depthmapBuffer = BufferAllocation.createFloatBuffer(Window.getInstance().getWidth() * 
+															Window.getInstance().getHeight());
 		
 	}
 	
@@ -40,12 +40,12 @@ public class TerrainPicking {
 		if (isActive() && Input.isButtonDown(0)){
 			Vec3f pos = new Vec3f(0,0,0);
 			Vec2f screenPos = Input.getMousePos();
-			OpenGLDisplay.getInstance().getSceneDepthmap().bind();
+			Window.getInstance().getSceneDepthmap().bind();
 			glGetTexImage(GL_TEXTURE_2D,0,GL_DEPTH_COMPONENT,GL_FLOAT,depthmapBuffer);
-			float depth = depthmapBuffer.get((int) (OpenGLDisplay.getInstance().getWidth() * screenPos.getY() + screenPos.getX()));
+			float depth = depthmapBuffer.get((int) (Window.getInstance().getWidth() * screenPos.getY() + screenPos.getX()));
 			// window coords
-			Vec2f w = new Vec2f(screenPos.getX()/OpenGLDisplay.getInstance().getWidth(),
-								screenPos.getY()/OpenGLDisplay.getInstance().getHeight());
+			Vec2f w = new Vec2f(screenPos.getX()/Window.getInstance().getWidth(),
+								screenPos.getY()/Window.getInstance().getHeight());
 			//ndc coords
 			Vec3f ndc = new Vec3f(w.getX() * 2 - 1, w.getY() * 2 - 1, depth);
 			float cw = Camera.getInstance().getProjectionMatrix().get(3,2) / (ndc.getZ() - Camera.getInstance().getProjectionMatrix().get(2,2)); 

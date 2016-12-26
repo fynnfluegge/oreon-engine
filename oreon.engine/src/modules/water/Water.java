@@ -13,7 +13,7 @@ import engine.buffers.PatchVAO;
 import engine.configs.Default;
 import engine.configs.RenderConfig;
 import engine.core.Input;
-import engine.core.OpenGLDisplay;
+import engine.core.Window;
 import engine.core.RenderingEngine;
 import engine.math.Quaternion;
 import engine.math.Vec2f;
@@ -21,8 +21,8 @@ import engine.scenegraph.GameObject;
 import engine.scenegraph.Scenegraph;
 import engine.scenegraph.components.RenderInfo;
 import engine.scenegraph.components.Renderer;
-import engine.shadersamples.water.OceanBRDF;
-import engine.shadersamples.water.OceanGrid;
+import engine.shader.water.OceanBRDFShader;
+import engine.shader.water.OceanGridShader;
 import engine.texturing.Texture;
 import engine.utils.Constants;
 import engine.utils.Util;
@@ -76,8 +76,8 @@ public class Water extends GameObject{
 	{
 		PatchVAO meshBuffer = new PatchVAO();
 		meshBuffer.addData(generatePatch2D4x4(patches),16);
-		setRenderInfo(new RenderInfo( new Default(), OceanBRDF.getInstance()));
-		Renderer renderer = new Renderer(OceanBRDF.getInstance(), meshBuffer);
+		setRenderInfo(new RenderInfo( new Default(), OceanBRDFShader.getInstance()));
+		Renderer renderer = new Renderer(OceanBRDFShader.getInstance(), meshBuffer);
 		
 		dudv = new Texture("./res/textures/water/dudv/dudv1.jpg");
 		dudv.bind();
@@ -92,7 +92,7 @@ public class Water extends GameObject{
 		reflectionTexture = new Texture();
 		reflectionTexture.generate();
 		reflectionTexture.bind();
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, OpenGLDisplay.getInstance().getWidth()/2, OpenGLDisplay.getInstance().getHeight()/2, 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, Window.getInstance().getWidth()/2, Window.getInstance().getHeight()/2, 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		
@@ -106,7 +106,7 @@ public class Water extends GameObject{
 		refractionTexture = new Texture();
 		refractionTexture.generate();
 		refractionTexture.bind();
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, OpenGLDisplay.getInstance().getWidth()/2, OpenGLDisplay.getInstance().getHeight()/2, 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, Window.getInstance().getWidth()/2, Window.getInstance().getHeight()/2, 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	
@@ -192,12 +192,12 @@ public class Water extends GameObject{
 	{
 		if (RenderingEngine.isGrid())
 		{
-			((Renderer) getComponents().get("Renderer")).setShader(OceanGrid.getInstance());
+			((Renderer) getComponents().get("Renderer")).setShader(OceanGridShader.getInstance());
 		}
 		
 		else if (!RenderingEngine.isGrid())
 		{
-			((Renderer) getComponents().get("Renderer")).setShader(OceanBRDF.getInstance());
+			((Renderer) getComponents().get("Renderer")).setShader(OceanBRDFShader.getInstance());
 		}
 	}
 	
@@ -282,7 +282,7 @@ public class Water extends GameObject{
 			
 			//render reflection to texture
 
-			glViewport(0,0,OpenGLDisplay.getInstance().getWidth()/2, OpenGLDisplay.getInstance().getHeight()/2);
+			glViewport(0,0,Window.getInstance().getWidth()/2, Window.getInstance().getHeight()/2);
 			
 			this.getReflectionFBO().bind();
 			RenderConfig.clearScreenDeepOceanReflection();
@@ -319,9 +319,9 @@ public class Water extends GameObject{
 			
 		RenderingEngine.setClipplane(Constants.PLANE0);	
 	
-		glViewport(0,0,OpenGLDisplay.getInstance().getWidth(), OpenGLDisplay.getInstance().getHeight());
+		glViewport(0,0,Window.getInstance().getWidth(), Window.getInstance().getHeight());
 		
-		OpenGLDisplay.getInstance().getFBO().bind();
+		Window.getInstance().getFBO().bind();
 		RenderConfig.clearScreen();
 		fft.render();
 		normalmapRenderer.render(fft.getDy());
@@ -330,7 +330,7 @@ public class Water extends GameObject{
 		scenegraph.getRoot().render();
 		
 		glFinish(); //important, prevent conflicts with following compute shaders
-		OpenGLDisplay.getInstance().getFBO().unbind();
+		Window.getInstance().getFBO().unbind();
 	}
 
 	public Quaternion getClipplane() {

@@ -5,9 +5,9 @@ material0_DISP ./res/editor/terrainEditor/materials/grass0_DISP.jpg
 material0_displaceScale 0.2
 material0_emission 0.0
 material0_shininess 200.0
-material1_DIF ./res/editor/terrainEditor/materials/sand_DIF.jpg
-material1_NRM ./res/editor/terrainEditor/materials/sand_NRM.jpg
-material1_DISP ./res/editor/terrainEditor/materials/sand_DISP.jpg
+material1_DIF ./res/editor/terrainEditor/materials/rock0_DIF.jpg
+material1_NRM ./res/editor/terrainEditor/materials/rock0_NRM.jpg
+material1_DISP ./res/editor/terrainEditor/materials/rock0_DISP.jpg
 material1_displaceScale 0.6
 material1_emission 0.0
 material1_shininess 200.0
@@ -46,14 +46,14 @@ fractal_stage0
 amp 2.0
 l 100.0
 scaling 1
-strength 2.23
+strength 2.63
 normalStrength 64
 random 941
 fractal_stage1
 amp 2.0
 l 100.0
 scaling 2
-strength 1.05
+strength 1.25
 normalStrength 64
 random 558
 fractal_stage2

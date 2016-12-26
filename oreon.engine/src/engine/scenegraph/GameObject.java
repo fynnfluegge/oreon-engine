@@ -4,7 +4,7 @@ import static org.lwjgl.opengl.GL11.glViewport;
 
 import java.util.HashMap;
 
-import engine.core.OpenGLDisplay;
+import engine.core.Window;
 import engine.scenegraph.components.Component;
 import engine.scenegraph.components.RenderInfo;
 import engine.utils.Constants;
@@ -61,7 +61,7 @@ public class GameObject extends Node{
 			
 			components.get("Renderer").render();
 			
-			glViewport(0,0,OpenGLDisplay.getInstance().getWidth(), OpenGLDisplay.getInstance().getHeight());
+			glViewport(0,0,Window.getInstance().getWidth(), Window.getInstance().getHeight());
 			renderinfo.getConfig().disable();
 			components.get("Renderer").setShader(renderinfo.getShader());
 		}

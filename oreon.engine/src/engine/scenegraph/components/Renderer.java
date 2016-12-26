@@ -1,7 +1,7 @@
 package engine.scenegraph.components;
 
 import engine.buffers.VAO;
-import engine.shadersamples.Shader;
+import engine.shader.Shader;
 
 public class Renderer extends Component{
 	

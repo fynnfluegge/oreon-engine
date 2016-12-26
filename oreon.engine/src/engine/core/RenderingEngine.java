@@ -7,17 +7,20 @@ import modules.gui.GUI;
 import modules.gui.elements.FullScreenTexturePanel;
 import modules.lighting.DirectionalLight;
 import modules.mousePicking.TerrainPicking;
+import modules.postProcessingEffects.DepthOfFieldBlur;
 import modules.postProcessingEffects.MotionBlur;
 import modules.shadowmapping.directionalLights.ShadowMaps;
 import engine.configs.RenderConfig;
 import engine.math.Quaternion;
 import engine.scenegraph.Scenegraph;
+import engine.texturing.Texture;
 import engine.utils.Constants;
 
 public class RenderingEngine {
 
-	private OpenGLDisplay display;
+	private Window window;
 	private FullScreenTexturePanel screenTexture;
+	private Texture postProcessingTexture;
 	
 	private static Quaternion clipplane;
 	private static boolean grid;
@@ -26,22 +29,24 @@ public class RenderingEngine {
 	private static ShadowMaps shadowMaps;
 	private GUI gui;
 	private MotionBlur motionBlur;
+	private DepthOfFieldBlur dofBlur;
 	
 	public RenderingEngine(Scenegraph scenegraph, GUI gui)
 	{
-		display = OpenGLDisplay.getInstance();
+		window = Window.getInstance();
 		this.scenegraph = scenegraph;
 		this.gui = gui;
 	}
 	
 	public void init()
 	{
-		display.init();
+		window.init();
 		gui.init();
 		
 		shadowMaps = new ShadowMaps();
 		screenTexture = new FullScreenTexturePanel();
 		motionBlur = new MotionBlur();
+		dofBlur = new DepthOfFieldBlur();
 	}
 	
 	public void render()
@@ -56,27 +61,35 @@ public class RenderingEngine {
 		shadowMaps.getFBO().unbind();
 		
 		// render scene/deferred maps
-		OpenGLDisplay.getInstance().getMultisampledFbo().bind();
+		window.getMultisampledFbo().bind();
 		RenderConfig.clearScreen();
 		scenegraph.render();	
-		OpenGLDisplay.getInstance().getMultisampledFbo().unbind();
-		OpenGLDisplay.getInstance().getFBO().bind();;
+		window.getMultisampledFbo().unbind();
+		window.getFBO().bind();
 		RenderConfig.clearScreen();
-		OpenGLDisplay.getInstance().getFBO().unbind();
-		OpenGLDisplay.getInstance().blitMultisampledFBO();
+		window.getFBO().unbind();
+		window.blitMultisampledFBO();
 		
-		gui.render();
+		postProcessingTexture = new Texture(window.getSceneTexture());
+		
+		// post processing
+		if (dofBlur.isEnabled()){
+			dofBlur.render(window.getSceneDepthmap(), postProcessingTexture);
+			postProcessingTexture = dofBlur.getDofBlurTexture();
+		}
 		
 		if (motionBlur.isEnabled()){
-			motionBlur.render(display.getSceneDepthmap(), display.getSceneTexture());
-			screenTexture.setTexture(motionBlur.getMotionBlurTexture());
+			motionBlur.render(window.getSceneDepthmap(), postProcessingTexture);
+			postProcessingTexture = motionBlur.getMotionBlurTexture();
 		}
-		else 
-			screenTexture.setTexture(display.getSceneTexture());	
-
-		screenTexture.render();
 		
-		display.render();
+		// final scene texture
+		screenTexture.setTexture(postProcessingTexture);	
+
+		gui.render();
+		screenTexture.render();
+
+		window.render();
 	}
 	
 	public void update()
