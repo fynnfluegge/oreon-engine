@@ -5,7 +5,7 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import engine.core.Window;
 import engine.shader.Shader;
-import engine.texturing.Texture;
+import engine.textures.Texture;
 import engine.utils.ResourceLoader;
 
 public class DepthOfFieldHorizontalBlurShader extends Shader{

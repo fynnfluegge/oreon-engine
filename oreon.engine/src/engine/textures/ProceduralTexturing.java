@@ -1,4 +1,4 @@
-package engine.texturing;
+package engine.textures;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;

@@ -11,7 +11,7 @@ import static org.lwjgl.opengl.GL11.glFinish;
 import engine.core.Input;
 import engine.shader.computing.FFTButterflyShader;
 import engine.shader.computing.FFTInversionShader;
-import engine.texturing.Texture;
+import engine.textures.Texture;
 import modules.gpgpu.fft.FastFourierTransform;
 
 

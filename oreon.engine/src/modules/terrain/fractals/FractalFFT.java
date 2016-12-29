@@ -10,7 +10,7 @@ import static org.lwjgl.opengl.GL43.glDispatchCompute;
 import engine.math.Vec2f;
 import engine.shader.computing.FFTButterflyShader;
 import engine.shader.computing.FFTInversionShader;
-import engine.texturing.Texture;
+import engine.textures.Texture;
 import modules.gpgpu.fft.FastFourierTransform;
 
 public class FractalFFT extends FastFourierTransform{

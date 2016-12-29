@@ -1,4 +1,4 @@
-package engine.texturing;
+package engine.textures;
 
 
 import static org.lwjgl.opengl.GL11.GL_LINEAR_MIPMAP_LINEAR;

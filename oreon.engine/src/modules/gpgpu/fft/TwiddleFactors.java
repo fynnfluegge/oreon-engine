@@ -8,7 +8,7 @@ import static org.lwjgl.opengl.GL42.glTexStorage2D;
 import static org.lwjgl.opengl.GL43.glDispatchCompute;
 import engine.buffers.SSBO;
 import engine.shader.computing.FFTTwiddleFactorsShader;
-import engine.texturing.Texture;
+import engine.textures.Texture;
 
 public class TwiddleFactors {
 

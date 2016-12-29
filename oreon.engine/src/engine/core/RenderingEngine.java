@@ -13,7 +13,7 @@ import modules.shadowmapping.directionalLights.ShadowMaps;
 import engine.configs.RenderConfig;
 import engine.math.Quaternion;
 import engine.scenegraph.Scenegraph;
-import engine.texturing.Texture;
+import engine.textures.Texture;
 import engine.utils.Constants;
 
 public class RenderingEngine {

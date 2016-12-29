@@ -12,7 +12,7 @@ import java.util.Random;
 import modules.terrain.fractals.FractalMaps;
 import engine.scenegraph.components.Material;
 import engine.shader.Shader;
-import engine.texturing.Texture;
+import engine.textures.Texture;
 import engine.utils.Constants;
 import engine.utils.Util;
 

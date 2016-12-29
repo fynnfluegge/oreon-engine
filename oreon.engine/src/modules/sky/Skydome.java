@@ -9,8 +9,8 @@ import engine.scenegraph.components.Material;
 import engine.scenegraph.components.RenderInfo;
 import engine.scenegraph.components.Renderer;
 import engine.shader.basic.Textured;
-import engine.texturing.ProceduralTexturing;
-import engine.texturing.Texture;
+import engine.textures.ProceduralTexturing;
+import engine.textures.Texture;
 import modules.modelLoader.obj.OBJLoader;
 
 public class Skydome extends GameObject{

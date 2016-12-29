@@ -19,7 +19,7 @@ import static org.lwjgl.opengl.GL32.glFramebufferTexture;
 
 
 import engine.buffers.Framebuffer;
-import engine.texturing.Texture;
+import engine.textures.Texture;
 import engine.utils.Constants;
 
 public class ShadowMaps {

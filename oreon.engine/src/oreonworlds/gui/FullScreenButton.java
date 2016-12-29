@@ -5,7 +5,7 @@ import org.lwjgl.opengl.Display;
 
 import engine.core.Window;
 import engine.math.Vec2f;
-import engine.texturing.Texture;
+import engine.textures.Texture;
 import modules.gui.Button;
 
 public class FullScreenButton  extends Button{

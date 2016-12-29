@@ -14,7 +14,7 @@ import static org.lwjgl.opengl.GL43.glDispatchCompute;
 
 import engine.math.Vec2f;
 import engine.shader.water.Tilde_h0Shader;
-import engine.texturing.Texture;
+import engine.textures.Texture;
 import modules.gpgpu.fft.FourierSpectrum;
 
 public class Tilde_h0 extends FourierSpectrum{

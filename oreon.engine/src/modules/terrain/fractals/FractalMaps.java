@@ -7,7 +7,7 @@ import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import java.nio.FloatBuffer;
 
 import engine.math.Vec2f;
-import engine.texturing.Texture;
+import engine.textures.Texture;
 import engine.utils.BufferAllocation;
 import engine.utils.Constants;
 import modules.gpgpu.NormalMapRenderer;

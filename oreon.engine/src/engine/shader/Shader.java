@@ -15,7 +15,7 @@ import engine.math.Quaternion;
 import engine.math.Vec2f;
 import engine.math.Vec3f;
 import engine.scenegraph.GameObject;
-import engine.texturing.Texture;
+import engine.textures.Texture;
 import engine.utils.BufferAllocation;
 
 public abstract class Shader {

@@ -30,7 +30,7 @@ import org.lwjgl.opengl.DisplayMode;
 import org.newdawn.slick.opengl.ImageIOImageData;
 
 import engine.buffers.Framebuffer;
-import engine.texturing.Texture;
+import engine.textures.Texture;
 
 public class Window {
 	

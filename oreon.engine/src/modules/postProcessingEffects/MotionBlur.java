@@ -21,7 +21,7 @@ import engine.core.Input;
 import engine.core.Window;
 import engine.shader.motionblur.MotionBlurShader;
 import engine.shader.motionblur.PixelVelocityShader;
-import engine.texturing.Texture;
+import engine.textures.Texture;
 
 public class MotionBlur {
 	

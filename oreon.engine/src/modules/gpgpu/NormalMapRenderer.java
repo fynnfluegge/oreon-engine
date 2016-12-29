@@ -10,7 +10,7 @@ import static org.lwjgl.opengl.GL43.glDispatchCompute;
 
 import engine.shader.Shader;
 import engine.shader.computing.NormalMapShader;
-import engine.texturing.Texture;
+import engine.textures.Texture;
 
 public class NormalMapRenderer {
 

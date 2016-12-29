@@ -12,7 +12,7 @@ import engine.scenegraph.components.RenderInfo;
 import engine.scenegraph.components.Renderer;
 import engine.shader.basic.TessellationGrid;
 import engine.shader.blinnphong.Tessellation;
-import engine.texturing.Texture;
+import engine.textures.Texture;
 
 public class Logo extends GameObject{
 

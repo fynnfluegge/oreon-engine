@@ -23,7 +23,7 @@ import engine.scenegraph.components.RenderInfo;
 import engine.scenegraph.components.Renderer;
 import engine.shader.water.OceanBRDFShader;
 import engine.shader.water.OceanGridShader;
-import engine.texturing.Texture;
+import engine.textures.Texture;
 import engine.utils.Constants;
 import engine.utils.Util;
 

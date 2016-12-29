@@ -12,7 +12,7 @@ import engine.geometry.Vertex;
 import engine.math.Vec2f;
 import engine.math.Vec3f;
 import engine.scenegraph.components.Material;
-import engine.texturing.Texture;
+import engine.textures.Texture;
 import engine.utils.Util;
 
 public class OBJLoader {

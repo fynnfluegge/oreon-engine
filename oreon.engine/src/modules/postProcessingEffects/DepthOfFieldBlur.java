@@ -15,7 +15,7 @@ import static org.lwjgl.opengl.GL43.glDispatchCompute;
 
 import engine.core.Window;
 import engine.shader.dofBlur.DepthOfFieldHorizontalBlurShader;
-import engine.texturing.Texture;
+import engine.textures.Texture;
 
 public class DepthOfFieldBlur {
 	
