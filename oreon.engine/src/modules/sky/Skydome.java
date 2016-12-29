@@ -10,7 +10,7 @@ import engine.scenegraph.components.RenderInfo;
 import engine.scenegraph.components.Renderer;
 import engine.shader.basic.Textured;
 import engine.textures.ProceduralTexturing;
-import engine.textures.Texture;
+import engine.textures.Texture2D;
 import modules.modelLoader.obj.OBJLoader;
 
 public class Skydome extends GameObject{
@@ -20,7 +20,7 @@ public class Skydome extends GameObject{
 		Mesh mesh = new OBJLoader().load("./res/models/obj/dome", "dome.obj", null)[0].getMesh();
 		ProceduralTexturing.dome(mesh);
 		Material material = new Material();
-		material.setDiffusemap(new Texture("./res/textures/sky/SkyDome8.png"));
+		material.setDiffusemap(new Texture2D("./res/textures/sky/SkyDome8.png"));
 		material.getDiffusemap().bind();
 		material.getDiffusemap().mipmap();
 		MeshVAO meshBuffer = new MeshVAO();

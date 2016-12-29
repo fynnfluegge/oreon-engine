@@ -10,26 +10,26 @@ import static org.lwjgl.opengl.GL43.glDispatchCompute;
 
 import engine.shader.Shader;
 import engine.shader.computing.NormalMapShader;
-import engine.textures.Texture;
+import engine.textures.Texture2D;
 
 public class NormalMapRenderer {
 
 	private float strength;
-	private Texture normalmap;
+	private Texture2D normalmap;
 	private Shader computeShader;
 	private int N;
 	
 	public NormalMapRenderer(int N){
 		this.N = N;
 		computeShader = NormalMapShader.getInstance();
-		normalmap = new Texture();
+		normalmap = new Texture2D();
 		normalmap.generate();
 		normalmap.bind();
-		normalmap.mipmap();
+		normalmap.trilinearFilter();
 		glTexStorage2D(GL_TEXTURE_2D,  (int) (Math.log(N)/Math.log(2)), GL_RGBA32F, N, N);
 	}
 	
-	public void render(Texture heightmap){
+	public void render(Texture2D heightmap){
 		computeShader.bind();
 		computeShader.updateUniforms(heightmap, N, strength);
 		glBindImageTexture(0, normalmap.getId(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA32F);
@@ -47,11 +47,11 @@ public class NormalMapRenderer {
 		this.strength = strength;
 	}
 
-	public Texture getNormalmap() {
+	public Texture2D getNormalmap() {
 		return normalmap;
 	}
 
-	public void setNormalmap(Texture normalmap) {
+	public void setNormalmap(Texture2D normalmap) {
 		this.normalmap = normalmap;
 	}
 }

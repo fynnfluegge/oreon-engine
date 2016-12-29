@@ -23,7 +23,7 @@ import engine.scenegraph.components.RenderInfo;
 import engine.scenegraph.components.Renderer;
 import engine.shader.water.OceanBRDFShader;
 import engine.shader.water.OceanGridShader;
-import engine.textures.Texture;
+import engine.textures.Texture2D;
 import engine.utils.Constants;
 import engine.utils.Util;
 
@@ -61,9 +61,9 @@ public class Water extends GameObject{
 	private float emission;
 	private float kReflection;
 	private float kRefraction;	
-	private Texture dudv;
-	private Texture reflectionTexture;
-	private Texture refractionTexture;
+	private Texture2D dudv;
+	private Texture2D reflectionTexture;
+	private Texture2D refractionTexture;
 	private Framebuffer reflectionFBO;
 	private Framebuffer refractionFBO;
 	
@@ -79,7 +79,7 @@ public class Water extends GameObject{
 		setRenderInfo(new RenderInfo( new Default(), OceanBRDFShader.getInstance()));
 		Renderer renderer = new Renderer(OceanBRDFShader.getInstance(), meshBuffer);
 		
-		dudv = new Texture("./res/textures/water/dudv/dudv1.jpg");
+		dudv = new Texture2D("./res/textures/water/dudv/dudv1.jpg");
 		dudv.bind();
 		dudv.mipmap();
 		
@@ -89,7 +89,7 @@ public class Water extends GameObject{
 		fft.init();
 		normalmapRenderer = new NormalMapRenderer(fftResolution);
 		
-		reflectionTexture = new Texture();
+		reflectionTexture = new Texture2D();
 		reflectionTexture.generate();
 		reflectionTexture.bind();
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, Window.getInstance().getWidth()/2, Window.getInstance().getHeight()/2, 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
@@ -103,7 +103,7 @@ public class Water extends GameObject{
 		reflectionFBO.checkStatus();
 		reflectionFBO.unbind();
 		
-		refractionTexture = new Texture();
+		refractionTexture = new Texture2D();
 		refractionTexture.generate();
 		refractionTexture.bind();
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, Window.getInstance().getWidth()/2, Window.getInstance().getHeight()/2, 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
@@ -465,19 +465,19 @@ public class Water extends GameObject{
 		this.refractionFBO = refractionFBO;
 	}
 
-	public Texture getReflectionTexture() {
+	public Texture2D getReflectionTexture() {
 		return reflectionTexture;
 	}
 
-	public void setReflectionTexture(Texture reflectionTexture) {
+	public void setReflectionTexture(Texture2D reflectionTexture) {
 		this.reflectionTexture = reflectionTexture;
 	}
 
-	public Texture getRefractionTexture() {
+	public Texture2D getRefractionTexture() {
 		return refractionTexture;
 	}
 
-	public void setRefractionTexture(Texture refractionTexture) {
+	public void setRefractionTexture(Texture2D refractionTexture) {
 		this.refractionTexture = refractionTexture;
 	}
 
@@ -489,11 +489,11 @@ public class Water extends GameObject{
 		this.tessellationShift = tessellationShift;
 	}
 
-	public Texture getDudv() {
+	public Texture2D getDudv() {
 		return dudv;
 	}
 
-	public void setDudv(Texture dudv) {
+	public void setDudv(Texture2D dudv) {
 		this.dudv = dudv;
 	}
 

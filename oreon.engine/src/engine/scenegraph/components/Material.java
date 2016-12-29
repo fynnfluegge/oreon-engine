@@ -1,58 +1,58 @@
 package engine.scenegraph.components;
 
 import engine.math.Vec3f;
-import engine.textures.Texture;
+import engine.textures.Texture2D;
 
 
 public class Material extends Component{
 	
 	private String name;
-	private Texture diffusemap;
-	private Texture normalmap;
-	private Texture displacemap;
-	private Texture ambientmap;
-	private Texture specularmap;
-	private Texture alphamap;
+	private Texture2D diffusemap;
+	private Texture2D normalmap;
+	private Texture2D displacemap;
+	private Texture2D ambientmap;
+	private Texture2D specularmap;
+	private Texture2D alphamap;
 	private Vec3f color;
 	private float alpha;
 	private float displaceScale;
 	private float emission;
 	private float shininess;
 	
-	public Texture getDiffusemap() {
+	public Texture2D getDiffusemap() {
 		return diffusemap;
 	}
-	public void setDiffusemap(Texture diffusemap) {
+	public void setDiffusemap(Texture2D diffusemap) {
 		this.diffusemap = diffusemap;
 	}
-	public Texture getNormalmap() {
+	public Texture2D getNormalmap() {
 		return normalmap;
 	}
-	public void setNormalmap(Texture normalmap) {
+	public void setNormalmap(Texture2D normalmap) {
 		this.normalmap = normalmap;
 	}
-	public Texture getDisplacemap() {
+	public Texture2D getDisplacemap() {
 		return displacemap;
 	}
-	public void setDisplacemap(Texture displacemap) {
+	public void setDisplacemap(Texture2D displacemap) {
 		this.displacemap = displacemap;
 	}
-	public Texture getAmbientmap() {
+	public Texture2D getAmbientmap() {
 		return ambientmap;
 	}
-	public void setAmbientmap(Texture ambientmap) {
+	public void setAmbientmap(Texture2D ambientmap) {
 		this.ambientmap = ambientmap;
 	}
-	public Texture getSpecularmap() {
+	public Texture2D getSpecularmap() {
 		return specularmap;
 	}
-	public void setSpecularmap(Texture specularmap) {
+	public void setSpecularmap(Texture2D specularmap) {
 		this.specularmap = specularmap;
 	}
-	public Texture getAlphamap() {
+	public Texture2D getAlphamap() {
 		return alphamap;
 	}
-	public void setAlphamap(Texture alphamap) {
+	public void setAlphamap(Texture2D alphamap) {
 		this.alphamap = alphamap;
 	}
 	public Vec3f getColor() {

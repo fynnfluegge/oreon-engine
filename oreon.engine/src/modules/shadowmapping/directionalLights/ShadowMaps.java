@@ -19,16 +19,16 @@ import static org.lwjgl.opengl.GL32.glFramebufferTexture;
 
 
 import engine.buffers.Framebuffer;
-import engine.textures.Texture;
+import engine.textures.Texture2D;
 import engine.utils.Constants;
 
 public class ShadowMaps {
 
 	private Framebuffer fbo;
-	private Texture depthMaps;
+	private Texture2D depthMaps;
 	
 	public ShadowMaps(){
-		depthMaps = new Texture();
+		depthMaps = new Texture2D();
 		depthMaps.generate();
 		glBindTexture(GL_TEXTURE_2D_ARRAY, depthMaps.getId());
 		glTexStorage3D(GL_TEXTURE_2D_ARRAY,
@@ -59,7 +59,7 @@ public class ShadowMaps {
 	public Framebuffer getFBO(){
 		return fbo;
 	}
-	public Texture getDepthMaps(){
+	public Texture2D getDepthMaps(){
 		return depthMaps;
 	}
 }

@@ -10,15 +10,15 @@ import engine.geometry.Geometrics;
 import engine.math.Matrix4f;
 import engine.scenegraph.components.Transform;
 import engine.shader.gui.GuiShader;
-import engine.textures.Texture;
+import engine.textures.Texture2D;
 
 public class FullScreenTexturePanel extends GUIElement{
 	
-	private Texture texture;
+	private Texture2D texture;
 	
 	public FullScreenTexturePanel(){
 		
-		texture = new Texture();
+		texture = new Texture2D();
 		setShader(GuiShader.getInstance());
 		setConfig(new AlphaCullFaceDisable(0.0f));
 		setOrthographicMatrix(new Matrix4f().Orthographic2D());
@@ -43,11 +43,11 @@ public class FullScreenTexturePanel extends GUIElement{
 		getConfig().disable();
 	}	
 
-	public Texture getTexture() {
+	public Texture2D getTexture() {
 		return texture;
 	}
 
-	public void setTexture(Texture texture) {
+	public void setTexture(Texture2D texture) {
 		this.texture = texture;
 	}
 

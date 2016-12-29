@@ -12,7 +12,7 @@ import engine.scenegraph.components.RenderInfo;
 import engine.scenegraph.components.Renderer;
 import engine.shader.basic.TessellationGrid;
 import engine.shader.blinnphong.Tessellation;
-import engine.textures.Texture;
+import engine.textures.Texture2D;
 
 public class Logo extends GameObject{
 
@@ -26,10 +26,10 @@ public class Logo extends GameObject{
 		Renderer renderer = new Renderer(Tessellation.getInstance(), meshBuffer);
 		
 		Material material = new Material();
-		material.setDiffusemap(new Texture("./res/textures/logo/eye.png"));
-		material.setNormalmap(new Texture("./res/textures/logo/eye_NRM.jpg"));
-		material.setDisplacemap(new Texture("./res/textures/logo/eye_DISP.jpg"));
-		material.setSpecularmap(new Texture("./res/textures/logo/eye_SPEC.jpg"));
+		material.setDiffusemap(new Texture2D("./res/textures/logo/eye.png"));
+		material.setNormalmap(new Texture2D("./res/textures/logo/eye_NRM.jpg"));
+		material.setDisplacemap(new Texture2D("./res/textures/logo/eye_DISP.jpg"));
+		material.setSpecularmap(new Texture2D("./res/textures/logo/eye_SPEC.jpg"));
 		material.setDisplaceScale(120);
 		material.setEmission(0f);
 		material.setShininess(100);

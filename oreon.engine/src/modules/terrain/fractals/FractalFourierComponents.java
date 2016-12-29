@@ -10,12 +10,12 @@ import static org.lwjgl.opengl.GL43.glDispatchCompute;
 
 import engine.math.Vec2f;
 import engine.shader.terrain.fractals.FractalFourierComponentsShader;
-import engine.textures.Texture;
+import engine.textures.Texture2D;
 import modules.gpgpu.fft.FourierComponents;
 
 public class FractalFourierComponents extends FourierComponents{
 
-	private Texture fourierComponents;
+	private Texture2D fourierComponents;
 
 	public FractalFourierComponents(int N, int L, float A, float v, Vec2f w, float l) {
 		
@@ -24,7 +24,7 @@ public class FractalFourierComponents extends FourierComponents{
 		setSpectrum(spectrum);
 		setShader(FractalFourierComponentsShader.getInstance());
 		
-		fourierComponents = new Texture();
+		fourierComponents = new Texture2D();
 		fourierComponents.generate();
 		fourierComponents.bind();
 		fourierComponents.noFilter();
@@ -43,11 +43,11 @@ public class FractalFourierComponents extends FourierComponents{
 		glFinish();
 	}
 
-	public Texture getFourierComponents() {
+	public Texture2D getFourierComponents() {
 		return fourierComponents;
 	}
 
-	public void setFourierComponents(Texture fourierComponents) {
+	public void setFourierComponents(Texture2D fourierComponents) {
 		this.fourierComponents = fourierComponents;
 	}
 }

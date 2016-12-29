@@ -57,7 +57,7 @@ public class ProceduralTexturing{
 			}
 		}
 		
-		public static void mapCoordsToTextureFormat(Vertex[] vertices, Texture texture){
+		public static void mapCoordsToTextureFormat(Vertex[] vertices, Texture2D texture){
 			
 			float div = texture.getHeight()/texture.getWidth();
 			

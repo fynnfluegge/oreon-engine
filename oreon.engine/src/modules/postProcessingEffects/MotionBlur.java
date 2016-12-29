@@ -21,24 +21,24 @@ import engine.core.Input;
 import engine.core.Window;
 import engine.shader.motionblur.MotionBlurShader;
 import engine.shader.motionblur.PixelVelocityShader;
-import engine.textures.Texture;
+import engine.textures.Texture2D;
 
 public class MotionBlur {
 	
-	private Texture motionBlurTexture;
-	private Texture pixelVelocityMap;
+	private Texture2D motionBlurTexture;
+	private Texture2D pixelVelocityMap;
 	private PixelVelocityShader pixelVelocityShader;
 	private MotionBlurShader motionBlurShader;
 	private boolean enabled = true;
 	
 	public MotionBlur() {
-		pixelVelocityMap = new Texture();
+		pixelVelocityMap = new Texture2D();
 		pixelVelocityMap.generate();
 		pixelVelocityMap.bind();
 		pixelVelocityMap.noFilter();
 		glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA32F, Window.getInstance().getWidth(), Window.getInstance().getHeight());
 		
-		motionBlurTexture = new Texture();
+		motionBlurTexture = new Texture2D();
 		motionBlurTexture.generate();
 		motionBlurTexture.bind();
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -49,7 +49,7 @@ public class MotionBlur {
 		motionBlurShader = MotionBlurShader.getInstance();
 	}
 	
-	public void render(Texture depthmap, Texture sceneSampler) {
+	public void render(Texture2D depthmap, Texture2D sceneSampler) {
 		
 		pixelVelocityShader.bind();
 		glBindImageTexture(0, pixelVelocityMap.getId(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA32F);
@@ -75,10 +75,10 @@ public class MotionBlur {
 			else enabled = true;			
 	}
 	
-	public Texture getMotionBlurTexture() {
+	public Texture2D getMotionBlurTexture() {
 		return motionBlurTexture;
 	}
-	public void setMotionBlurTexture(Texture motionBlurTexture) {
+	public void setMotionBlurTexture(Texture2D motionBlurTexture) {
 		this.motionBlurTexture = motionBlurTexture;
 	}
 
@@ -90,11 +90,11 @@ public class MotionBlur {
 		this.enabled = enabled;
 	}
 
-	public Texture getPixelVelocityMap() {
+	public Texture2D getPixelVelocityMap() {
 		return pixelVelocityMap;
 	}
 
-	public void setPixelVelocityMap(Texture pixelVelocityMap) {
+	public void setPixelVelocityMap(Texture2D pixelVelocityMap) {
 		this.pixelVelocityMap = pixelVelocityMap;
 	}
 	

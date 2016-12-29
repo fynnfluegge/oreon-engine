@@ -1,49 +1,22 @@
 package engine.textures;
 
-
 import static org.lwjgl.opengl.GL11.GL_LINEAR_MIPMAP_LINEAR;
-import static org.lwjgl.opengl.GL11.GL_NEAREST;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_MAG_FILTER;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_MIN_FILTER;
 import static org.lwjgl.opengl.GL11.glBindTexture;
 import static org.lwjgl.opengl.GL11.glDeleteTextures;
 import static org.lwjgl.opengl.GL11.glGenTextures;
 import static org.lwjgl.opengl.GL11.glTexParameteri;
+import static org.lwjgl.opengl.GL30.GL_TEXTURE_2D_ARRAY;
 import static org.lwjgl.opengl.GL30.glGenerateMipmap;
 
-import engine.utils.ResourceLoader;
+public class Texture2DArray {
 
-import static org.lwjgl.opengl.GL30.GL_TEXTURE_2D_ARRAY;
-
-public class Texture {
-	
 	private int id;
 	private int width;
 	private int height;
 	
-	public Texture(){
-	}
-	
-	public Texture(Texture texture){
-		id = texture.getId();
-		width = texture.getWidth();
-		height = texture.getHeight();
-	}
-	
-	public Texture(String file)
-	{
-		id = ResourceLoader.loadTexture(file);
-	}
-	
-	public void bind()
-	{
-		glBindTexture(GL_TEXTURE_2D, id);
-	}
-	
-	public void bind2DArray()
-	{
-		glBindTexture(GL_TEXTURE_2D_ARRAY, id);
+	public Texture2DArray(){
 	}
 	
 	public void generate()
@@ -56,23 +29,17 @@ public class Texture {
 		glDeleteTextures(id);
 	}
 	
-	public void unbind()
+	public void bind()
 	{
-		glBindTexture(GL_TEXTURE_2D, 0);
+		glBindTexture(GL_TEXTURE_2D_ARRAY, id);
 	}
 	
-	public void noFilter()
+	public void unbind()
 	{
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glBindTexture(GL_TEXTURE_2D_ARRAY, 0);
 	}
 	
 	public void mipmap()
-	{
-		glGenerateMipmap(GL_TEXTURE_2D);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	}
-	
-	public void mipmapArrayTexture()
 	{
 		glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
 		glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
@@ -81,11 +48,9 @@ public class Texture {
 	public int getId() {
 		return id;
 	}
-
 	public int getWidth() {
 		return width;
 	}
-
 	public int getHeight() {
 		return height;
 	}

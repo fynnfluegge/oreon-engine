@@ -13,14 +13,14 @@ import modules.shadowmapping.directionalLights.ShadowMaps;
 import engine.configs.RenderConfig;
 import engine.math.Quaternion;
 import engine.scenegraph.Scenegraph;
-import engine.textures.Texture;
+import engine.textures.Texture2D;
 import engine.utils.Constants;
 
 public class RenderingEngine {
 
 	private Window window;
 	private FullScreenTexturePanel screenTexture;
-	private Texture postProcessingTexture;
+	private Texture2D postProcessingTexture;
 	
 	private static Quaternion clipplane;
 	private static boolean grid;
@@ -70,7 +70,7 @@ public class RenderingEngine {
 		window.getFBO().unbind();
 		window.blitMultisampledFBO();
 		
-		postProcessingTexture = new Texture(window.getSceneTexture());
+		postProcessingTexture = new Texture2D(window.getSceneTexture());
 		
 		// post processing
 		if (dofBlur.isEnabled()){

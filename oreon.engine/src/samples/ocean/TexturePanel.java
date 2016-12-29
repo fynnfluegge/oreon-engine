@@ -9,14 +9,14 @@ import engine.geometry.Geometrics;
 import engine.math.Matrix4f;
 import engine.scenegraph.components.Transform;
 import engine.shader.gui.GuiShader;
-import engine.textures.Texture;
+import engine.textures.Texture2D;
 
 public class TexturePanel extends GUIElement{
 
-	static Texture texture;
+	static Texture2D texture;
 	
 	public TexturePanel() {
-		texture = new Texture();
+		texture = new Texture2D();
 		setShader(GuiShader.getInstance());
 		setConfig(new Default());
 		setOrthographicMatrix(new Matrix4f().Orthographic2D());
@@ -44,7 +44,7 @@ public class TexturePanel extends GUIElement{
 		getConfig().disable();
 	}	
 
-	public Texture getTexture() {
+	public Texture2D getTexture() {
 		return texture;
 	}
 }

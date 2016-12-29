@@ -10,12 +10,12 @@ import static org.lwjgl.opengl.GL43.glDispatchCompute;
 import engine.math.Vec2f;
 import engine.shader.computing.FFTButterflyShader;
 import engine.shader.computing.FFTInversionShader;
-import engine.textures.Texture;
+import engine.textures.Texture2D;
 import modules.gpgpu.fft.FastFourierTransform;
 
 public class FractalFFT extends FastFourierTransform{
 
-	private Texture heightmap;
+	private Texture2D heightmap;
 	
 	public FractalFFT(int N, int L, float A, float v, Vec2f w, float l) {
 			
@@ -24,13 +24,13 @@ public class FractalFFT extends FastFourierTransform{
 		setFourierComponents(new FractalFourierComponents(N, L, A, v, w, l));
 		setButterflyShader(FFTButterflyShader.getInstance());
 		setInversionShader(FFTInversionShader.getInstance());
-		heightmap = new Texture();
+		heightmap = new Texture2D();
 		heightmap.generate();
 		heightmap.bind();
 		heightmap.mipmap();
 		glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA32F, N, N);
 		
-		setPingpongTexture(new Texture());
+		setPingpongTexture(new Texture2D());
 		getPingpongTexture().generate();
 		getPingpongTexture().bind();
 		glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA32F, N, N);
@@ -77,7 +77,7 @@ public class FractalFFT extends FastFourierTransform{
 		heightmap.mipmap();
 	}
 
-	public Texture getHeightmap() {
+	public Texture2D getHeightmap() {
 		return heightmap;
 	}
 

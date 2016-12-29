@@ -15,7 +15,7 @@ import engine.math.Quaternion;
 import engine.math.Vec2f;
 import engine.math.Vec3f;
 import engine.scenegraph.GameObject;
-import engine.textures.Texture;
+import engine.textures.Texture2D;
 import engine.utils.BufferAllocation;
 
 public abstract class Shader {
@@ -42,7 +42,7 @@ public abstract class Shader {
 	
 	public void updateUniforms(Matrix4f matrix0, Matrix4f matrix1, Matrix4f matrix2){};
 	
-	public void updateUniforms(Texture texture, int i, float j){};
+	public void updateUniforms(Texture2D texture, int i, float j){};
 	
 	public void updateUniforms(Matrix4f matrix0, Matrix4f matrix1){};
 	

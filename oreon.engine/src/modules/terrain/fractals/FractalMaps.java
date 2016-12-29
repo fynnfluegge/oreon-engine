@@ -7,7 +7,7 @@ import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import java.nio.FloatBuffer;
 
 import engine.math.Vec2f;
-import engine.textures.Texture;
+import engine.textures.Texture2D;
 import engine.utils.BufferAllocation;
 import engine.utils.Constants;
 import modules.gpgpu.NormalMapRenderer;
@@ -17,8 +17,8 @@ public class FractalMaps {
 	private int N;
 	private float amplitude; 
 	private float l;
-	private Texture heightmap;
-	private Texture normalmap;
+	private Texture2D heightmap;
+	private Texture2D normalmap;
 	private FloatBuffer heightDataBuffer;
 	private int scaling;
 	private float strength;
@@ -53,19 +53,19 @@ public class FractalMaps {
 		glGetTexImage(GL_TEXTURE_2D,0,GL_RED,GL_FLOAT,heightDataBuffer);
 	}
 
-	public Texture getHeightmap() {
+	public Texture2D getHeightmap() {
 		return heightmap;
 	}
 
-	public void setHeightmap(Texture heightmap) {
+	public void setHeightmap(Texture2D heightmap) {
 		this.heightmap = heightmap;
 	}
 
-	public Texture getNormalmap() {
+	public Texture2D getNormalmap() {
 		return normalmap;
 	}
 
-	public void setNormalmap(Texture normalmap) {
+	public void setNormalmap(Texture2D normalmap) {
 		this.normalmap = normalmap;
 	}
 

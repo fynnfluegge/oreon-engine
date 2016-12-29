@@ -9,14 +9,14 @@ import static org.lwjgl.opengl.GL42.glBindImageTexture;
 import static org.lwjgl.opengl.GL43.glDispatchCompute;
 
 import engine.shader.water.Tilde_hktShader;
-import engine.textures.Texture;
+import engine.textures.Texture2D;
 import modules.gpgpu.fft.FourierComponents;
 
 public class Tilde_hkt extends FourierComponents{
 	
-	private Texture dyComponents;
-	private Texture dxComponents;
-	private Texture dzComponents;
+	private Texture2D dyComponents;
+	private Texture2D dxComponents;
+	private Texture2D dzComponents;
 
 	public Tilde_hkt(int N, int L) {
 		
@@ -24,19 +24,19 @@ public class Tilde_hkt extends FourierComponents{
 		setSpectrum(new Tilde_h0(N,L));
 		setShader(Tilde_hktShader.getInstance());
 		
-		dyComponents = new Texture();
+		dyComponents = new Texture2D();
 		dyComponents.generate();
 		dyComponents.bind();
 		dyComponents.noFilter();
 		glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA32F, N, N);
 		
-		dxComponents = new Texture();
+		dxComponents = new Texture2D();
 		dxComponents.generate();
 		dxComponents.bind();
 		dxComponents.noFilter();
 		glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA32F, N, N);
 		
-		dzComponents = new Texture();
+		dzComponents = new Texture2D();
 		dzComponents.generate();
 		dzComponents.bind();
 		dzComponents.noFilter();
@@ -61,14 +61,14 @@ public class Tilde_hkt extends FourierComponents{
 		return L;
 	}
 
-	public Texture getDyComponents() {
+	public Texture2D getDyComponents() {
 		return dyComponents;
 	}
 
-	public Texture getDxComponents() {
+	public Texture2D getDxComponents() {
 		return dxComponents;
 	}
-	public Texture getDzComponents() {
+	public Texture2D getDzComponents() {
 		return dzComponents;
 	}
 }

@@ -10,12 +10,12 @@ import engine.math.Quaternion;
 import engine.math.Vec2f;
 import engine.scenegraph.components.Transform;
 import engine.shader.gui.GuiShader;
-import engine.textures.Texture;
+import engine.textures.Texture2D;
 
 public abstract class Button extends GUIElement{
 
-	protected Texture buttonMap;
-	protected Texture buttonClickMap;
+	protected Texture2D buttonMap;
+	protected Texture2D buttonClickMap;
 	private boolean onClick = false;
 	private Vec2f[] pos;
 	

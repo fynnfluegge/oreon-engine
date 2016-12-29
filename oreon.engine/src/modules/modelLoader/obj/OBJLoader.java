@@ -12,7 +12,7 @@ import engine.geometry.Vertex;
 import engine.math.Vec2f;
 import engine.math.Vec3f;
 import engine.scenegraph.components.Material;
-import engine.textures.Texture;
+import engine.textures.Texture2D;
 import engine.utils.Util;
 
 public class OBJLoader {
@@ -68,19 +68,19 @@ public class OBJLoader {
 							}
 							if(tokens[0].equals("map_Kd")){
 								if (tokens.length > 1)
-								materials.get(currentMtl).setDiffusemap(new Texture(path + "/" + tokens[1]));
+								materials.get(currentMtl).setDiffusemap(new Texture2D(path + "/" + tokens[1]));
 								materials.get(currentMtl).getDiffusemap().bind();
 								materials.get(currentMtl).getDiffusemap().mipmap();
 							}
 							if(tokens[0].equals("map_Ks")){
 								if (tokens.length > 1)
-									materials.get(currentMtl).setSpecularmap(new Texture(path + "/" + tokens[1]));
+									materials.get(currentMtl).setSpecularmap(new Texture2D(path + "/" + tokens[1]));
 								materials.get(currentMtl).getSpecularmap().bind();
 								materials.get(currentMtl).getSpecularmap().mipmap();
 							}
 							if(tokens[0].equals("map_bump")){
 								if (tokens.length > 1)
-									materials.get(currentMtl).setNormalmap(new Texture(path + "/" + tokens[1]));
+									materials.get(currentMtl).setNormalmap(new Texture2D(path + "/" + tokens[1]));
 									materials.get(currentMtl).getNormalmap().bind();
 									materials.get(currentMtl).getNormalmap().mipmap();
 							}

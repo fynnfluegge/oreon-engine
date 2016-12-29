@@ -30,7 +30,7 @@ import org.lwjgl.opengl.DisplayMode;
 import org.newdawn.slick.opengl.ImageIOImageData;
 
 import engine.buffers.Framebuffer;
-import engine.textures.Texture;
+import engine.textures.Texture2D;
 
 public class Window {
 	
@@ -38,8 +38,8 @@ public class Window {
 	
 	private Framebuffer multisampledFbo;
 	private Framebuffer fbo;
-	private Texture sceneTexture;
-	private Texture sceneDepthmap;
+	private Texture2D sceneTexture;
+	private Texture2D sceneDepthmap;
 
 	
 	public static Window getInstance() 
@@ -61,13 +61,13 @@ public class Window {
 		multisampledFbo.unbind();
 		
 		fbo = new Framebuffer();
-		setSceneTexture(new Texture());
+		setSceneTexture(new Texture2D());
 		getSceneTexture().generate();
 		getSceneTexture().bind();
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, getWidth(), getHeight(), 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		setSceneDepthmap(new Texture());
+		setSceneDepthmap(new Texture2D());
 		getSceneDepthmap().generate();
 		getSceneDepthmap().bind();
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32F, getWidth(), getHeight(), 0, GL_DEPTH_COMPONENT, GL_FLOAT, (ByteBuffer) null);
@@ -164,16 +164,16 @@ public class Window {
 		return Display.getTitle();
 	}
 	
-	public Texture getSceneTexture() {
+	public Texture2D getSceneTexture() {
 		return sceneTexture;
 	}
-	public void setSceneTexture(Texture sceneTexture) {
+	public void setSceneTexture(Texture2D sceneTexture) {
 		this.sceneTexture = sceneTexture;
 	}
-	public Texture getSceneDepthmap() {
+	public Texture2D getSceneDepthmap() {
 		return sceneDepthmap;
 	}
-	public void setSceneDepthmap(Texture sceneDepthmap) {
+	public void setSceneDepthmap(Texture2D sceneDepthmap) {
 		this.sceneDepthmap = sceneDepthmap;
 	}
 	public Framebuffer getFBO() {

@@ -15,11 +15,11 @@ import static org.lwjgl.opengl.GL43.glDispatchCompute;
 
 import engine.core.Window;
 import engine.shader.dofBlur.DepthOfFieldHorizontalBlurShader;
-import engine.textures.Texture;
+import engine.textures.Texture2D;
 
 public class DepthOfFieldBlur {
 	
-	private Texture dofBlurTexture;
+	private Texture2D dofBlurTexture;
 	private DepthOfFieldHorizontalBlurShader dofBlurShader;
 	
 	private float[] gaussianKernel3 = {0.27901f,0.44198f,0.27901f};
@@ -32,7 +32,7 @@ public class DepthOfFieldBlur {
 	public DepthOfFieldBlur() {
 		
 		dofBlurShader = DepthOfFieldHorizontalBlurShader.getInstance();
-		dofBlurTexture = new Texture();
+		dofBlurTexture = new Texture2D();
 		dofBlurTexture.generate();
 		dofBlurTexture.bind();
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -40,7 +40,7 @@ public class DepthOfFieldBlur {
 		glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, Window.getInstance().getWidth(), Window.getInstance().getHeight());
 	}
 	
-	public void render(Texture depthmap, Texture sceneSampler) {
+	public void render(Texture2D depthmap, Texture2D sceneSampler) {
 		
 		dofBlurShader.bind();
 		glBindImageTexture(0, sceneSampler.getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA8);
@@ -50,11 +50,11 @@ public class DepthOfFieldBlur {
 		glFinish();
 	}
 	
-	public Texture getDofBlurTexture() {
+	public Texture2D getDofBlurTexture() {
 		return dofBlurTexture;
 	}
 
-	public void setDofBlurTexture(Texture dofBlurTexture) {
+	public void setDofBlurTexture(Texture2D dofBlurTexture) {
 		this.dofBlurTexture = dofBlurTexture;
 	}
 

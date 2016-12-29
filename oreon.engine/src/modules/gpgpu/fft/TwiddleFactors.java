@@ -8,7 +8,7 @@ import static org.lwjgl.opengl.GL42.glTexStorage2D;
 import static org.lwjgl.opengl.GL43.glDispatchCompute;
 import engine.buffers.SSBO;
 import engine.shader.computing.FFTTwiddleFactorsShader;
-import engine.textures.Texture;
+import engine.textures.Texture2D;
 
 public class TwiddleFactors {
 
@@ -16,7 +16,7 @@ public class TwiddleFactors {
 	private int log_2_N;
 	private FFTTwiddleFactorsShader shader;
 	private SSBO bitReversedSSBO;
-	private Texture texture;
+	private Texture2D texture;
 	
 	public TwiddleFactors(int N)
 	{
@@ -27,7 +27,7 @@ public class TwiddleFactors {
 		
 		log_2_N = (int) (Math.log(N)/Math.log(2));
 		shader = FFTTwiddleFactorsShader.getInstance();
-		texture = new Texture();
+		texture = new Texture2D();
 		texture.generate();
 		texture.bind();
 		texture.noFilter();
@@ -58,7 +58,7 @@ public class TwiddleFactors {
 		return bitReversedIndices;
 	}
 
-	public Texture getTexture() {
+	public Texture2D getTexture() {
 		return texture;
 	}
 }

@@ -14,7 +14,7 @@ import static org.lwjgl.opengl.GL43.glDispatchCompute;
 
 import engine.math.Vec2f;
 import engine.shader.water.Tilde_h0Shader;
-import engine.textures.Texture;
+import engine.textures.Texture2D;
 import modules.gpgpu.fft.FourierSpectrum;
 
 public class Tilde_h0 extends FourierSpectrum{
@@ -22,12 +22,12 @@ public class Tilde_h0 extends FourierSpectrum{
 	private Vec2f wind = new Vec2f(1,1).normalize();
 	private float windspeed = 25;
 	private float A = 2f;
-	private Texture noise0;
-	private Texture noise1;
-	private Texture noise2;
-	private Texture noise3;
-	private Texture h0k;
-	private Texture h0kminus;
+	private Texture2D noise0;
+	private Texture2D noise1;
+	private Texture2D noise2;
+	private Texture2D noise3;
+	private Texture2D h0k;
+	private Texture2D h0kminus;
 	
 	public Tilde_h0(int N, int L)
 	{
@@ -35,28 +35,28 @@ public class Tilde_h0 extends FourierSpectrum{
 		
 		setShader(Tilde_h0Shader.getInstance());
 		
-		h0k = new Texture();
+		h0k = new Texture2D();
 		h0k.generate();
 		h0k.bind();
 		h0k.noFilter();
 		glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA32F, N, N);
 		
-		h0kminus = new Texture();
+		h0kminus = new Texture2D();
 		h0kminus.generate();
 		h0kminus.bind();
 		h0kminus.noFilter();
 		glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA32F, N, N);
 		
-		noise0 = new Texture("./res/textures/Noise/Noise" + N + "_0.jpg");
+		noise0 = new Texture2D("./res/textures/Noise/Noise" + N + "_0.jpg");
 		noise0.bind();
 		noise0.noFilter();
-		noise1 = new Texture("./res/textures/Noise/Noise" + N + "_1.jpg");
+		noise1 = new Texture2D("./res/textures/Noise/Noise" + N + "_1.jpg");
 		noise1.bind();
 		noise1.noFilter();
-		noise2 = new Texture("./res/textures/Noise/Noise" + N + "_2.jpg");
+		noise2 = new Texture2D("./res/textures/Noise/Noise" + N + "_2.jpg");
 		noise2.bind();
 		noise2.noFilter();
-		noise3 = new Texture("./res/textures/Noise/Noise" + N + "_3.jpg");
+		noise3 = new Texture2D("./res/textures/Noise/Noise" + N + "_3.jpg");
 		noise3.bind();
 		noise3.noFilter();
 	}
@@ -88,11 +88,11 @@ public class Tilde_h0 extends FourierSpectrum{
 		glDispatchCompute(getN()/16,getN()/16,1);		
 	}
 
-	public Texture geth0kminus() {
+	public Texture2D geth0kminus() {
 		return h0kminus;
 	}
 
-	public Texture geth0k() {
+	public Texture2D geth0k() {
 		return h0k;
 	}
 }

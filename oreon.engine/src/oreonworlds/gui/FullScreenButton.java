@@ -5,7 +5,7 @@ import org.lwjgl.opengl.Display;
 
 import engine.core.Window;
 import engine.math.Vec2f;
-import engine.textures.Texture;
+import engine.textures.Texture2D;
 import modules.gui.Button;
 
 public class FullScreenButton  extends Button{
@@ -14,8 +14,8 @@ public class FullScreenButton  extends Button{
 	
 	public FullScreenButton()
 	{
-		buttonMap = new Texture("./res/gui/tex/maximize.png");
-		buttonClickMap = new Texture("./res/gui/tex/maximize.png");
+		buttonMap = new Texture2D("./res/gui/tex/maximize.png");
+		buttonClickMap = new Texture2D("./res/gui/tex/maximize.png");
 		getOrthoTransform().setTranslation(10, Window.getInstance().getHeight()-70, 0);
 		getOrthoTransform().setScaling(15,30,0);
 		Vec2f[] texCoords = new Vec2f[4];
@@ -30,8 +30,8 @@ public class FullScreenButton  extends Button{
 	public void onClickActionPerformed()
 	{
 		if (!isFullScreenMode){
-			buttonMap = new Texture("./res/gui/tex/minimize.png");
-			buttonClickMap = new Texture("./res/gui/tex/minimize.png");
+			buttonMap = new Texture2D("./res/gui/tex/minimize.png");
+			buttonClickMap = new Texture2D("./res/gui/tex/minimize.png");
 			try {
 				Display.setFullscreen(true);
 			} catch (LWJGLException e) {
@@ -40,8 +40,8 @@ public class FullScreenButton  extends Button{
 			isFullScreenMode = true;
 		}
 		else {
-			buttonMap = new Texture("./res/gui/tex/maximize.png");
-			buttonClickMap = new Texture("./res/gui/tex/maximize.png");
+			buttonMap = new Texture2D("./res/gui/tex/maximize.png");
+			buttonClickMap = new Texture2D("./res/gui/tex/maximize.png");
 			try {
 				Display.setFullscreen(false);
 			} catch (LWJGLException e) {

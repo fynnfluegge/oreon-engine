@@ -5,7 +5,7 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import engine.core.Window;
 import engine.shader.Shader;
-import engine.textures.Texture;
+import engine.textures.Texture2D;
 import engine.utils.ResourceLoader;
 
 public class DepthOfFieldHorizontalBlurShader extends Shader{
@@ -37,7 +37,7 @@ private static DepthOfFieldHorizontalBlurShader instance = null;
 		}
 	}
 	
-	public void updateUniforms(Texture depthmap, float[] gaussianKernel)
+	public void updateUniforms(Texture2D depthmap, float[] gaussianKernel)
 	{
 		glActiveTexture(GL_TEXTURE0);
 		depthmap.bind();

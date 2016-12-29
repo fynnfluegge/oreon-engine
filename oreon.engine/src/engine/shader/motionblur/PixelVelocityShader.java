@@ -6,7 +6,7 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 import engine.core.Window;
 import engine.math.Matrix4f;
 import engine.shader.Shader;
-import engine.textures.Texture;
+import engine.textures.Texture2D;
 import engine.utils.ResourceLoader;
 
 public class PixelVelocityShader extends Shader{
@@ -38,7 +38,7 @@ public class PixelVelocityShader extends Shader{
 		addUniform("previousViewProjectionMatrix");
 	}
 	
-	public void updateUniforms(Matrix4f projectionMatrix, Matrix4f inverseViewProjectionMatrix, Matrix4f previousViewProjectionMatrix, Texture depthmap)
+	public void updateUniforms(Matrix4f projectionMatrix, Matrix4f inverseViewProjectionMatrix, Matrix4f previousViewProjectionMatrix, Texture2D depthmap)
 	{
 		glActiveTexture(GL_TEXTURE0);
 		depthmap.bind();

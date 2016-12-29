@@ -1,7 +1,7 @@
 package modules.gpgpu.fft;
 
 import engine.shader.Shader;
-import engine.textures.Texture;
+import engine.textures.Texture2D;
 
 
 
@@ -14,7 +14,7 @@ public abstract class FastFourierTransform {
 	protected float t_delta;
 	private Shader butterflyShader;
 	private Shader inversionShader;
-	private Texture pingpongTexture;
+	private Texture2D pingpongTexture;
 	private TwiddleFactors twiddles;
 	private FourierComponents fourierComponents;
 	
@@ -100,11 +100,11 @@ public abstract class FastFourierTransform {
 		this.inversionShader = inversionShader;
 	}
 
-	public Texture getPingpongTexture() {
+	public Texture2D getPingpongTexture() {
 		return pingpongTexture;
 	}
 
-	public void setPingpongTexture(Texture pingpongTexture) {
+	public void setPingpongTexture(Texture2D pingpongTexture) {
 		this.pingpongTexture = pingpongTexture;
 	}
 	

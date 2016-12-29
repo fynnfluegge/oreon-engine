@@ -12,14 +12,14 @@ import engine.math.Matrix4f;
 import engine.math.Vec2f;
 import engine.scenegraph.components.Transform;
 import engine.shader.gui.GuiShader;
-import engine.textures.Texture;
+import engine.textures.Texture2D;
 import engine.utils.Util;
 
 
 public class FPSPanel extends GUIElement{
 	
 	private Vec2f[] fps;
-	private Texture texture;
+	private Texture2D texture;
 	
 	@Override
 	public void init() {
@@ -27,7 +27,7 @@ public class FPSPanel extends GUIElement{
 	}
 	
 	public FPSPanel(){
-		texture = new Texture("./res/gui/tex/Fonts.png");
+		texture = new Texture2D("./res/gui/tex/Fonts.png");
 		texCoords = new Vec2f[24];
 		fps = new Vec2f[24];
 		setShader(GuiShader.getInstance());

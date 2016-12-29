@@ -4,14 +4,14 @@ import modules.gui.Button;
 import engine.core.Window;
 import engine.core.RenderingEngine;
 import engine.math.Vec2f;
-import engine.textures.Texture;
+import engine.textures.Texture2D;
 
 public class GridButton extends Button{
 	
 	public GridButton()
 	{
-		buttonMap = new Texture("./res/guit/tex/buttons.png");
-		buttonClickMap = new Texture("./res/gui/tex/buttonsClicked.png");
+		buttonMap = new Texture2D("./res/guit/tex/buttons.png");
+		buttonClickMap = new Texture2D("./res/gui/tex/buttonsClicked.png");
 		getOrthoTransform().setTranslation(5, Window.getInstance().getHeight()-60, 0);
 		getOrthoTransform().setScaling(60, 40, 0);
 		Vec2f[] texCoordsgb = new Vec2f[4];

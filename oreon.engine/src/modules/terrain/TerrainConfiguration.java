@@ -12,7 +12,7 @@ import java.util.Random;
 import modules.terrain.fractals.FractalMaps;
 import engine.scenegraph.components.Material;
 import engine.shader.Shader;
-import engine.textures.Texture;
+import engine.textures.Texture2D;
 import engine.utils.Constants;
 import engine.utils.Util;
 
@@ -27,10 +27,10 @@ public class TerrainConfiguration {
 	private float tessellationSlope;
 	private float tessellationShift;
 	private int detailRange;
-	private Texture heightmap;
-	private Texture normalmap;
-	private Texture ambientmap;
-	private Texture splatmap;
+	private Texture2D heightmap;
+	private Texture2D normalmap;
+	private Texture2D ambientmap;
+	private Texture2D splatmap;
 	private Material material0;
 	private Material material1;
 	private Material material2;
@@ -127,33 +127,33 @@ public class TerrainConfiguration {
 						setScaleXZ(Float.valueOf(tokens[1]));
 					}
 					if(tokens[0].equals("normalmap")){
-						setNormalmap(new Texture(tokens[1]));
+						setNormalmap(new Texture2D(tokens[1]));
 						getNormalmap().bind();
 						getNormalmap().mipmap();
 					}
 					if(tokens[0].equals("ambientmap")){
-						setAmbientmap(new Texture(tokens[1]));
+						setAmbientmap(new Texture2D(tokens[1]));
 						getAmbientmap().bind();
 						getAmbientmap().mipmap();
 					}
 					if(tokens[0].equals("splatmap")){
-						setSplatmap(new Texture(tokens[1]));
+						setSplatmap(new Texture2D(tokens[1]));
 						getSplatmap().bind();
 						getSplatmap().mipmap();
 					}
 					if(tokens[0].equals("material0_DIF")){
 						setMaterial0(new Material());
-						getMaterial0().setDiffusemap(new Texture(tokens[1]));
+						getMaterial0().setDiffusemap(new Texture2D(tokens[1]));
 						getMaterial0().getDiffusemap().bind();
 						getMaterial0().getDiffusemap().mipmap();
 					}
 					if(tokens[0].equals("material0_NRM")){
-						getMaterial0().setNormalmap(new Texture(tokens[1]));
+						getMaterial0().setNormalmap(new Texture2D(tokens[1]));
 						getMaterial0().getNormalmap().bind();
 						getMaterial0().getNormalmap().mipmap();
 					}
 					if(tokens[0].equals("material0_DISP")){
-						getMaterial0().setDisplacemap(new Texture(tokens[1]));
+						getMaterial0().setDisplacemap(new Texture2D(tokens[1]));
 						getMaterial0().getDisplacemap().bind();
 						getMaterial0().getDisplacemap().mipmap();
 					}
@@ -168,17 +168,17 @@ public class TerrainConfiguration {
 					}
 					if(tokens[0].equals("material1_DIF")){
 						setMaterial1(new Material());
-						getMaterial1().setDiffusemap(new Texture(tokens[1]));
+						getMaterial1().setDiffusemap(new Texture2D(tokens[1]));
 						getMaterial1().getDiffusemap().bind();
 						getMaterial1().getDiffusemap().mipmap();
 					}
 					if(tokens[0].equals("material1_NRM")){
-						getMaterial1().setNormalmap(new Texture(tokens[1]));
+						getMaterial1().setNormalmap(new Texture2D(tokens[1]));
 						getMaterial1().getNormalmap().bind();
 						getMaterial1().getNormalmap().mipmap();
 					}
 					if(tokens[0].equals("material1_DISP")){
-						getMaterial1().setDisplacemap(new Texture(tokens[1]));
+						getMaterial1().setDisplacemap(new Texture2D(tokens[1]));
 						getMaterial1().getDisplacemap().bind();
 						getMaterial1().getDisplacemap().mipmap();
 					}
@@ -193,17 +193,17 @@ public class TerrainConfiguration {
 					}
 					if(tokens[0].equals("material2_DIF")){
 						setMaterial2(new Material());
-						getMaterial2().setDiffusemap(new Texture(tokens[1]));
+						getMaterial2().setDiffusemap(new Texture2D(tokens[1]));
 						getMaterial2().getDiffusemap().bind();
 						getMaterial2().getDiffusemap().mipmap();
 					}
 					if(tokens[0].equals("material2_NRM")){
-						getMaterial2().setNormalmap(new Texture(tokens[1]));
+						getMaterial2().setNormalmap(new Texture2D(tokens[1]));
 						getMaterial2().getNormalmap().bind();
 						getMaterial2().getNormalmap().mipmap();
 					}
 					if(tokens[0].equals("material2_DISP")){
-						getMaterial2().setDisplacemap(new Texture(tokens[1]));
+						getMaterial2().setDisplacemap(new Texture2D(tokens[1]));
 						getMaterial2().getDisplacemap().bind();
 						getMaterial2().getDisplacemap().mipmap();
 					}
@@ -218,17 +218,17 @@ public class TerrainConfiguration {
 					}
 					if(tokens[0].equals("material3_DIF")){
 						setMaterial3(new Material());
-						getMaterial3().setDiffusemap(new Texture(tokens[1]));
+						getMaterial3().setDiffusemap(new Texture2D(tokens[1]));
 						getMaterial3().getDiffusemap().bind();
 						getMaterial3().getDiffusemap().mipmap();
 					}
 					if(tokens[0].equals("material3_NRM")){
-						getMaterial3().setNormalmap(new Texture(tokens[1]));
+						getMaterial3().setNormalmap(new Texture2D(tokens[1]));
 						getMaterial3().getNormalmap().bind();
 						getMaterial3().getNormalmap().mipmap();
 					}
 					if(tokens[0].equals("material3_DISP")){
-						getMaterial3().setDisplacemap(new Texture(tokens[1]));
+						getMaterial3().setDisplacemap(new Texture2D(tokens[1]));
 						getMaterial3().getDisplacemap().bind();
 						getMaterial3().getDisplacemap().mipmap();
 					}
@@ -500,28 +500,28 @@ public class TerrainConfiguration {
 	public void setDetailRange(int detailRange) {
 		this.detailRange = detailRange;
 	}
-	public Texture getHeightmap() {
+	public Texture2D getHeightmap() {
 		return heightmap;
 	}
-	public void setHeightmap(Texture heightmap) {
+	public void setHeightmap(Texture2D heightmap) {
 		this.heightmap = heightmap;
 	}
-	public Texture getNormalmap() {
+	public Texture2D getNormalmap() {
 		return normalmap;
 	}
-	public void setNormalmap(Texture normalmap) {
+	public void setNormalmap(Texture2D normalmap) {
 		this.normalmap = normalmap;
 	}
-	public Texture getAmbientmap() {
+	public Texture2D getAmbientmap() {
 		return ambientmap;
 	}
-	public void setAmbientmap(Texture ambientmap) {
+	public void setAmbientmap(Texture2D ambientmap) {
 		this.ambientmap = ambientmap;
 	}
-	public Texture getSplatmap() {
+	public Texture2D getSplatmap() {
 		return splatmap;
 	}
-	public void setSplatmap(Texture splatmap) {
+	public void setSplatmap(Texture2D splatmap) {
 		this.splatmap = splatmap;
 	}
 	public Material getMaterial1() {
