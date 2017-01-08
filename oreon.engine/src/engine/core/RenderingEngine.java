@@ -2,6 +2,7 @@ package engine.core;
 
 import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.glClear;
+import static org.lwjgl.opengl.GL11.glViewport;
 
 import modules.gui.GUI;
 import modules.gui.elements.FullScreenTexturePanel;
@@ -30,6 +31,7 @@ public class RenderingEngine {
 	private GUI gui;
 	private MotionBlur motionBlur;
 	private DepthOfFieldBlur dofBlur;
+	
 	
 	public RenderingEngine(Scenegraph scenegraph, GUI gui)
 	{
@@ -74,8 +76,25 @@ public class RenderingEngine {
 		
 		// post processing
 		if (dofBlur.isEnabled()){
+			
+			// copy scene texture into low-resolution texture
+			dofBlur.getSmallBlurFbo().bind();
+			screenTexture.setTexture(window.getSceneTexture());
+			glViewport(0,0,(int)(window.getWidth()/2),(int)(window.getHeight()/2));
+			screenTexture.render();
+			dofBlur.getSmallBlurFbo().unbind();
+			glViewport(0,0,window.getWidth(),window.getHeight());
+			
+			// copy scene texture into low-resolution texture
+			dofBlur.getLargeBlurFbo().bind();
+			screenTexture.setTexture(window.getSceneTexture());
+			glViewport(0,0,(int)(window.getWidth()/1.5f),(int)(window.getHeight()/1.5f));
+			screenTexture.render();
+			dofBlur.getLargeBlurFbo().unbind();
+			glViewport(0,0,window.getWidth(),window.getHeight());
+			
 			dofBlur.render(window.getSceneDepthmap(), postProcessingTexture);
-			postProcessingTexture = dofBlur.getDofBlurTexture();
+			postProcessingTexture = dofBlur.getDepthOfFieldBlurTexture();
 		}
 		
 		if (motionBlur.isEnabled()){

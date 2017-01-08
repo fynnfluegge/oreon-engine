@@ -24,7 +24,7 @@ public class OpenGLEngine implements Runnable{
 		
 		Game game = new Game();
 		game.setGui(new GridFPS());
-		game.getEngine().embedWindow(1000, 500, OpenGLCanvas);
+		game.getEngine().embedWindow(1000, 520, OpenGLCanvas);
 		game.init();
 		game.getScenegraph().setTerrain(Terrain.getInstance());
 		Terrain.getInstance().init("./res/editor/terrainEditor/terrainSettings.ter", TerrainShader.getInstance(),

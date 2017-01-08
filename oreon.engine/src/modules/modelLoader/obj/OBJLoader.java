@@ -67,22 +67,25 @@ public class OBJLoader {
 								}
 							}
 							if(tokens[0].equals("map_Kd")){
-								if (tokens.length > 1)
-								materials.get(currentMtl).setDiffusemap(new Texture2D(path + "/" + tokens[1]));
-								materials.get(currentMtl).getDiffusemap().bind();
-								materials.get(currentMtl).getDiffusemap().mipmap();
+								if (tokens.length > 1){
+									materials.get(currentMtl).setDiffusemap(new Texture2D(path + "/" + tokens[1]));
+									materials.get(currentMtl).getDiffusemap().bind();
+									materials.get(currentMtl).getDiffusemap().trilinearFilter();
+								}
 							}
 							if(tokens[0].equals("map_Ks")){
-								if (tokens.length > 1)
+								if (tokens.length > 1){
 									materials.get(currentMtl).setSpecularmap(new Texture2D(path + "/" + tokens[1]));
-								materials.get(currentMtl).getSpecularmap().bind();
-								materials.get(currentMtl).getSpecularmap().mipmap();
+									materials.get(currentMtl).getSpecularmap().bind();
+									materials.get(currentMtl).getSpecularmap().trilinearFilter();
+								}
 							}
 							if(tokens[0].equals("map_bump")){
-								if (tokens.length > 1)
+								if (tokens.length > 1){
 									materials.get(currentMtl).setNormalmap(new Texture2D(path + "/" + tokens[1]));
 									materials.get(currentMtl).getNormalmap().bind();
-									materials.get(currentMtl).getNormalmap().mipmap();
+									materials.get(currentMtl).getNormalmap().trilinearFilter();
+								}
 							}
 							if(tokens[0].equals("illum")){
 								if (tokens.length > 1)

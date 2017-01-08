@@ -24,15 +24,15 @@ public class OBJ extends Node{
 		getTransform().setLocalScaling(10f,10f,10f);
 		getTransform().setLocalTranslation(0,0,0);
 		OBJLoader loader = new OBJLoader();
-		Model[] models = loader.load("./res/models/obj/M60","M60.obj","M60.mtl");
+		Model[] models = loader.load("./res/models/obj/nanosuit","nanosuit.obj","nanosuit.mtl");
 		int size = 0;
 		for (Model model : models){
 			size += model.getMesh().getVertices().length;
 			GameObject object = new GameObject();
 			MeshVAO meshBuffer = new MeshVAO();
 			Util.generateNormalsCW(model.getMesh().getVertices(), model.getMesh().getIndices());
-//			Util.generateTangentsBitangents(model.getMesh());
-//			model.getMesh().setTangentSpace(true);
+			Util.generateTangentsBitangents(model.getMesh());
+			model.getMesh().setTangentSpace(true);
 			meshBuffer.addData(model.getMesh());
 			Renderer renderer = null;
 			if(model.getMaterial() == null){

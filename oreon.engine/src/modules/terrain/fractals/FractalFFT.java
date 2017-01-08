@@ -27,7 +27,7 @@ public class FractalFFT extends FastFourierTransform{
 		heightmap = new Texture2D();
 		heightmap.generate();
 		heightmap.bind();
-		heightmap.mipmap();
+		heightmap.trilinearFilter();
 		glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA32F, N, N);
 		
 		setPingpongTexture(new Texture2D());
@@ -74,7 +74,7 @@ public class FractalFFT extends FastFourierTransform{
 		glDispatchCompute(N/16,N/16,1);
 		glFinish();
 		heightmap.bind();
-		heightmap.mipmap();
+		heightmap.trilinearFilter();
 	}
 
 	public Texture2D getHeightmap() {

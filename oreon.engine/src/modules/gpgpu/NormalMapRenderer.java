@@ -26,7 +26,7 @@ public class NormalMapRenderer {
 		normalmap.generate();
 		normalmap.bind();
 		normalmap.trilinearFilter();
-		glTexStorage2D(GL_TEXTURE_2D,  (int) (Math.log(N)/Math.log(2)), GL_RGBA32F, N, N);
+		glTexStorage2D(GL_TEXTURE_2D, (int) (Math.log(N)/Math.log(2)), GL_RGBA32F, N, N);
 	}
 	
 	public void render(Texture2D heightmap){
@@ -36,7 +36,7 @@ public class NormalMapRenderer {
 		glDispatchCompute(N/16,N/16,1);
 		glFinish();
 		normalmap.bind();
-		normalmap.mipmap();
+		normalmap.trilinearFilter();
 	}
 
 	public float getStrength() {

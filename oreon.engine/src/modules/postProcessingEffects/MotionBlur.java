@@ -1,11 +1,7 @@
 package modules.postProcessingEffects;
 
-import static org.lwjgl.opengl.GL11.GL_LINEAR;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_MAG_FILTER;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_MIN_FILTER;
 import static org.lwjgl.opengl.GL11.glFinish;
-import static org.lwjgl.opengl.GL11.glTexParameteri;
 import static org.lwjgl.opengl.GL15.GL_WRITE_ONLY;
 import static org.lwjgl.opengl.GL15.GL_READ_ONLY;
 import static org.lwjgl.opengl.GL11.GL_RGBA8;
@@ -29,20 +25,17 @@ public class MotionBlur {
 	private Texture2D pixelVelocityMap;
 	private PixelVelocityShader pixelVelocityShader;
 	private MotionBlurShader motionBlurShader;
-	private boolean enabled = true;
+	private boolean enabled = false;
 	
 	public MotionBlur() {
 		pixelVelocityMap = new Texture2D();
 		pixelVelocityMap.generate();
 		pixelVelocityMap.bind();
-		pixelVelocityMap.noFilter();
 		glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA32F, Window.getInstance().getWidth(), Window.getInstance().getHeight());
 		
 		motionBlurTexture = new Texture2D();
 		motionBlurTexture.generate();
 		motionBlurTexture.bind();
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, Window.getInstance().getWidth(), Window.getInstance().getHeight());
 		
 		pixelVelocityShader = PixelVelocityShader.getInstance();

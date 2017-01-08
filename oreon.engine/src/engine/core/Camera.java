@@ -84,7 +84,7 @@ public class Camera {
 		this.setPosition(position);
 		this.setForward(forward);
 		this.setUp(up);
-		this.setScaleFactor(100);
+		this.setScaleFactor(1);
 		up.normalize();
 		forward.normalize();
 	}
@@ -93,8 +93,8 @@ public class Camera {
 	{
 		this.setScaleFactor(Math.max(1, scaleFactor + Mouse.getDWheel()/10));
 		
-		float movAmt = scaleFactor *  CoreEngine.getFrameTime();
-		float rotAmt = scaleFactor * CoreEngine.getFrameTime(); 
+		float movAmt = scaleFactor * 0.001f;
+		float rotAmt = 4 * scaleFactor * 0.001f; 
 		
 		if(Input.isButtonDown(2))
 		{

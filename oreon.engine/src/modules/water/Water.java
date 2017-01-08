@@ -76,12 +76,12 @@ public class Water extends GameObject{
 	{
 		PatchVAO meshBuffer = new PatchVAO();
 		meshBuffer.addData(generatePatch2D4x4(patches),16);
-		setRenderInfo(new RenderInfo( new Default(), OceanBRDFShader.getInstance()));
+		setRenderInfo(new RenderInfo(new Default(), OceanBRDFShader.getInstance()));
 		Renderer renderer = new Renderer(OceanBRDFShader.getInstance(), meshBuffer);
 		
 		dudv = new Texture2D("./res/textures/water/dudv/dudv1.jpg");
 		dudv.bind();
-		dudv.mipmap();
+		dudv.trilinearFilter();
 		
 		addComponent("Renderer", renderer);
 
@@ -192,13 +192,13 @@ public class Water extends GameObject{
 	{
 		if (RenderingEngine.isGrid())
 		{
-			((Renderer) getComponents().get("Renderer")).setShader(OceanGridShader.getInstance());
+			getRenderInfo().setShader(OceanGridShader.getInstance());
 		}
-		
 		else if (!RenderingEngine.isGrid())
 		{
-			((Renderer) getComponents().get("Renderer")).setShader(OceanBRDFShader.getInstance());
+			getRenderInfo().setShader(OceanBRDFShader.getInstance());
 		}
+		getComponents().get("Renderer").setShader(getRenderInfo().getShader());
 	}
 	
 	public static Vec2f[] generatePatch2D4x4(int patches)
@@ -321,16 +321,13 @@ public class Water extends GameObject{
 	
 		glViewport(0,0,Window.getInstance().getWidth(), Window.getInstance().getHeight());
 		
-		Window.getInstance().getFBO().bind();
-		RenderConfig.clearScreen();
+		Window.getInstance().getMultisampledFbo().bind();
 		fft.render();
 		normalmapRenderer.render(fft.getDy());
 		getComponents().get("Renderer").render();
 		
-		scenegraph.getRoot().render();
-		
 		glFinish(); //important, prevent conflicts with following compute shaders
-		Window.getInstance().getFBO().unbind();
+		Window.getInstance().getMultisampledFbo().unbind();
 	}
 
 	public Quaternion getClipplane() {

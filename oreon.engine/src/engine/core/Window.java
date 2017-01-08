@@ -2,16 +2,9 @@ package engine.core;
 
 import static org.lwjgl.opengl.GL11.GL_DEPTH_COMPONENT;
 import static org.lwjgl.opengl.GL11.GL_FLOAT;
-import static org.lwjgl.opengl.GL11.GL_LINEAR;
 import static org.lwjgl.opengl.GL11.GL_RGBA;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_MAG_FILTER;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_MIN_FILTER;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_WRAP_S;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_WRAP_T;
 import static org.lwjgl.opengl.GL11.glTexImage2D;
-import static org.lwjgl.opengl.GL11.glTexParameteri;
-import static org.lwjgl.opengl.GL12.GL_CLAMP_TO_EDGE;
 import static org.lwjgl.opengl.GL30.GL_DEPTH_COMPONENT32F;
 import static org.lwjgl.opengl.GL11.GL_RGBA8;
 
@@ -60,23 +53,22 @@ public class Window {
 		multisampledFbo.checkStatus();
 		multisampledFbo.unbind();
 		
-		fbo = new Framebuffer();
-		setSceneTexture(new Texture2D());
+		sceneTexture = new Texture2D();
 		getSceneTexture().generate();
 		getSceneTexture().bind();
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, getWidth(), getHeight(), 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		setSceneDepthmap(new Texture2D());
+		getSceneTexture().bilinearFilter();
+		getSceneTexture().clampToEdge();
+		
+		sceneDepthmap = new Texture2D();
 		getSceneDepthmap().generate();
 		getSceneDepthmap().bind();
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32F, getWidth(), getHeight(), 0, GL_DEPTH_COMPONENT, GL_FLOAT, (ByteBuffer) null);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		getSceneDepthmap().bilinearFilter();
+		getSceneDepthmap().clampToEdge();
+		
+		fbo = new Framebuffer();
 		fbo.bind();
-		fbo.setDrawBuffer(0);
 		fbo.createColorTextureAttachment(getSceneTexture().getId(),0);
 		fbo.createDepthTextureAttachment(getSceneDepthmap().getId());
 		fbo.checkStatus();
@@ -167,25 +159,16 @@ public class Window {
 	public Texture2D getSceneTexture() {
 		return sceneTexture;
 	}
-	public void setSceneTexture(Texture2D sceneTexture) {
-		this.sceneTexture = sceneTexture;
-	}
+
 	public Texture2D getSceneDepthmap() {
 		return sceneDepthmap;
 	}
-	public void setSceneDepthmap(Texture2D sceneDepthmap) {
-		this.sceneDepthmap = sceneDepthmap;
-	}
+
 	public Framebuffer getFBO() {
 		return fbo;
 	}
-	public void setFBO(Framebuffer fBO) {
-		fbo = fBO;
-	}
+
 	public Framebuffer getMultisampledFbo() {
 		return multisampledFbo;
-	}
-	public void setMultisampledFbo(Framebuffer multisampledFbo) {
-		this.multisampledFbo = multisampledFbo;
 	}
 }

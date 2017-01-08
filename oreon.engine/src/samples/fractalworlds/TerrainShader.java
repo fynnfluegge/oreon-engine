@@ -112,7 +112,7 @@ public class TerrainShader extends Shader{
 		}
 		
 		glActiveTexture(GL_TEXTURE0);
-		RenderingEngine.getShadowMaps().getDepthMaps().bind2DArray();
+		RenderingEngine.getShadowMaps().getDepthMaps().bind();
 		setUniformi("shadowMaps", 0);
 		
 		setUniformf("scaleY", terrConfig.getScaleY());

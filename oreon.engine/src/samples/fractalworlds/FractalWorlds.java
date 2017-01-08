@@ -10,7 +10,7 @@ public class FractalWorlds {
 		
 		Game game = new Game();
 		game.setGui(new GUI());
-		game.getEngine().createWindow(1000, 800, "Fractalworlds");
+		game.getEngine().createWindow(1280, 720, "Fractalworlds");
 		game.init();
 		game.getScenegraph().setTerrain(Terrain.getInstance());
 		Terrain.getInstance().init("./res/samples/FractalWorlds/Terrain/terrainSettings.ter",

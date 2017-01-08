@@ -1,6 +1,6 @@
 #version 430
 
-layout(triangles, invocations = 8) in;
+layout(triangles, invocations = 9) in;
 
 // 6 shadow layers := 6 triangles := 18 vertices
 layout(triangle_strip, max_vertices = 18) out;
@@ -13,7 +13,7 @@ layout (std140, row_major) uniform Camera{
 };
 
 layout (std140, row_major) uniform InstancedMatrices{
-	mat4 m_World[8];
+	mat4 m_World[9];
 };
 
 layout (std140, row_major) uniform LightViewProjections{

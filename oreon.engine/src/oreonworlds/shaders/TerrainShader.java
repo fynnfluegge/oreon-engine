@@ -118,7 +118,7 @@ public class TerrainShader extends Shader{
 		bindUniformBlock("LightViewProjections",Constants.LightMatricesUniformBlockBinding);
 		
 		glActiveTexture(GL_TEXTURE0);
-		RenderingEngine.getShadowMaps().getDepthMaps().bind2DArray();
+		RenderingEngine.getShadowMaps().getDepthMaps().bind();
 		setUniformi("shadowMaps", 0);
 		
 		setUniform("clipplane", RenderingEngine.getClipplane());

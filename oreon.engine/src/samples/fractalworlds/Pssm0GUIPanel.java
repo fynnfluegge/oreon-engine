@@ -31,7 +31,7 @@ public class Pssm0GUIPanel extends GUIElement{
 		getShader().bind();
 		getShader().updateUniforms(getOrthographicMatrix());
 		glActiveTexture(GL_TEXTURE0);
-		RenderingEngine.getShadowMaps().getDepthMaps().bind2DArray();
+		RenderingEngine.getShadowMaps().getDepthMaps().bind();
 		getShader().updateUniforms(0,0.0f);
 		getVao().draw();
 		getConfig().disable();

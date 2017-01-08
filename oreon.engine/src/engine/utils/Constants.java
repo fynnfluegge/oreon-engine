@@ -21,8 +21,10 @@ public class Constants {
 	public static final int CameraUniformBlockBinding = 1;
 	public static final int DirectionalLightUniformBlockBinding = 2;
 	public static final int LightMatricesUniformBlockBinding = 3;
-	public static final int Bush01InstancedMatrices = 4;
-	public static final int Palm01InstancedMatrices = 5;
+	public static final int Bush01InstancedMatricesBinding = 4;
+	public static final int Palm01InstancedMatricesBinding = 5;
+	public static final int Rock01InstancedMatricesBinding = 6;
+	public static final int Rock02InstancedMatricesBinding = 7;
 
 	
 

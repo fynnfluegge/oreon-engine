@@ -22,7 +22,7 @@ public class Skydome extends GameObject{
 		Material material = new Material();
 		material.setDiffusemap(new Texture2D("./res/textures/sky/SkyDome8.png"));
 		material.getDiffusemap().bind();
-		material.getDiffusemap().mipmap();
+		material.getDiffusemap().trilinearFilter();
 		MeshVAO meshBuffer = new MeshVAO();
 		meshBuffer.addData(mesh);
 		setRenderInfo(new RenderInfo(new CullFaceDisable(),Textured.getInstance()));

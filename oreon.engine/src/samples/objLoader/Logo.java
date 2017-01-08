@@ -34,13 +34,13 @@ public class Logo extends GameObject{
 		material.setEmission(0f);
 		material.setShininess(100);
 		material.getDiffusemap().bind();
-		material.getDiffusemap().mipmap();
+		material.getDiffusemap().trilinearFilter();;
 		material.getNormalmap().bind();
-		material.getNormalmap().mipmap();
+		material.getNormalmap().trilinearFilter();;
 		material.getDisplacemap().bind();
-		material.getDisplacemap().mipmap();
+		material.getDisplacemap().trilinearFilter();;
 		material.getSpecularmap().bind();
-		material.getSpecularmap().mipmap();
+		material.getSpecularmap().trilinearFilter();;
 		
 		addComponent("Material", material);
 		addComponent("Renderer", renderer);	

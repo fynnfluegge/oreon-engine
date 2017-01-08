@@ -129,33 +129,33 @@ public class TerrainConfiguration {
 					if(tokens[0].equals("normalmap")){
 						setNormalmap(new Texture2D(tokens[1]));
 						getNormalmap().bind();
-						getNormalmap().mipmap();
+						getNormalmap().trilinearFilter();
 					}
 					if(tokens[0].equals("ambientmap")){
 						setAmbientmap(new Texture2D(tokens[1]));
 						getAmbientmap().bind();
-						getAmbientmap().mipmap();
+						getAmbientmap().trilinearFilter();
 					}
 					if(tokens[0].equals("splatmap")){
 						setSplatmap(new Texture2D(tokens[1]));
 						getSplatmap().bind();
-						getSplatmap().mipmap();
+						getSplatmap().trilinearFilter();
 					}
 					if(tokens[0].equals("material0_DIF")){
 						setMaterial0(new Material());
 						getMaterial0().setDiffusemap(new Texture2D(tokens[1]));
 						getMaterial0().getDiffusemap().bind();
-						getMaterial0().getDiffusemap().mipmap();
+						getMaterial0().getDiffusemap().trilinearFilter();
 					}
 					if(tokens[0].equals("material0_NRM")){
 						getMaterial0().setNormalmap(new Texture2D(tokens[1]));
 						getMaterial0().getNormalmap().bind();
-						getMaterial0().getNormalmap().mipmap();
+						getMaterial0().getNormalmap().trilinearFilter();
 					}
 					if(tokens[0].equals("material0_DISP")){
 						getMaterial0().setDisplacemap(new Texture2D(tokens[1]));
 						getMaterial0().getDisplacemap().bind();
-						getMaterial0().getDisplacemap().mipmap();
+						getMaterial0().getDisplacemap().trilinearFilter();
 					}
 					if(tokens[0].equals("material0_displaceScale")){
 						getMaterial0().setDisplaceScale(Float.valueOf(tokens[1]));
@@ -170,17 +170,17 @@ public class TerrainConfiguration {
 						setMaterial1(new Material());
 						getMaterial1().setDiffusemap(new Texture2D(tokens[1]));
 						getMaterial1().getDiffusemap().bind();
-						getMaterial1().getDiffusemap().mipmap();
+						getMaterial1().getDiffusemap().trilinearFilter();
 					}
 					if(tokens[0].equals("material1_NRM")){
 						getMaterial1().setNormalmap(new Texture2D(tokens[1]));
 						getMaterial1().getNormalmap().bind();
-						getMaterial1().getNormalmap().mipmap();
+						getMaterial1().getNormalmap().trilinearFilter();
 					}
 					if(tokens[0].equals("material1_DISP")){
 						getMaterial1().setDisplacemap(new Texture2D(tokens[1]));
 						getMaterial1().getDisplacemap().bind();
-						getMaterial1().getDisplacemap().mipmap();
+						getMaterial1().getDisplacemap().trilinearFilter();
 					}
 					if(tokens[0].equals("material1_displaceScale")){
 						getMaterial1().setDisplaceScale(Float.valueOf(tokens[1]));
@@ -195,17 +195,17 @@ public class TerrainConfiguration {
 						setMaterial2(new Material());
 						getMaterial2().setDiffusemap(new Texture2D(tokens[1]));
 						getMaterial2().getDiffusemap().bind();
-						getMaterial2().getDiffusemap().mipmap();
+						getMaterial2().getDiffusemap().trilinearFilter();
 					}
 					if(tokens[0].equals("material2_NRM")){
 						getMaterial2().setNormalmap(new Texture2D(tokens[1]));
 						getMaterial2().getNormalmap().bind();
-						getMaterial2().getNormalmap().mipmap();
+						getMaterial2().getNormalmap().trilinearFilter();
 					}
 					if(tokens[0].equals("material2_DISP")){
 						getMaterial2().setDisplacemap(new Texture2D(tokens[1]));
 						getMaterial2().getDisplacemap().bind();
-						getMaterial2().getDisplacemap().mipmap();
+						getMaterial2().getDisplacemap().trilinearFilter();
 					}
 					if(tokens[0].equals("material2_displaceScale")){
 						getMaterial2().setDisplaceScale(Float.valueOf(tokens[1]));
@@ -220,17 +220,17 @@ public class TerrainConfiguration {
 						setMaterial3(new Material());
 						getMaterial3().setDiffusemap(new Texture2D(tokens[1]));
 						getMaterial3().getDiffusemap().bind();
-						getMaterial3().getDiffusemap().mipmap();
+						getMaterial3().getDiffusemap().trilinearFilter();
 					}
 					if(tokens[0].equals("material3_NRM")){
 						getMaterial3().setNormalmap(new Texture2D(tokens[1]));
 						getMaterial3().getNormalmap().bind();
-						getMaterial3().getNormalmap().mipmap();
+						getMaterial3().getNormalmap().trilinearFilter();
 					}
 					if(tokens[0].equals("material3_DISP")){
 						getMaterial3().setDisplacemap(new Texture2D(tokens[1]));
 						getMaterial3().getDisplacemap().bind();
-						getMaterial3().getDisplacemap().mipmap();
+						getMaterial3().getDisplacemap().trilinearFilter();
 					}
 					if(tokens[0].equals("material3_displaceScale")){
 						getMaterial3().setDisplaceScale(Float.valueOf(tokens[1]));

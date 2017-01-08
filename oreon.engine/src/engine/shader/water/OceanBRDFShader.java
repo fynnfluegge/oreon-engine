@@ -113,7 +113,7 @@ private static OceanBRDFShader instance = null;
 		setUniformf("emission", ocean.getEmission());
 		setUniformf("shininess", ocean.getShininess());
 		setUniformf("motion", ocean.getMotion());
-		
+				
 		glActiveTexture(GL_TEXTURE0);
 		ocean.getDudv().bind();
 		setUniformi("dudv", 0);
