@@ -1,5 +1,8 @@
 package engine.shader.blinnphong;
 
+import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
+import static org.lwjgl.opengl.GL13.glActiveTexture;
 import modules.lighting.DirectionalLight;
 import engine.core.Camera;
 import engine.scenegraph.GameObject;
@@ -7,25 +10,25 @@ import engine.scenegraph.components.Material;
 import engine.shader.Shader;
 import engine.utils.ResourceLoader;
 
-public class RGBA extends Shader{
+public class BlinnPhongTexturedShader extends Shader{
 	
-	private static RGBA instance;
-
-	public static RGBA getInstance() 
+private static BlinnPhongTexturedShader instance = null;
+	
+	public static BlinnPhongTexturedShader getInstance() 
 	{
 	    if(instance == null) 
 	    {
-	    	instance = new RGBA();
+	    	instance = new BlinnPhongTexturedShader();
 	    }
-	     return instance;
+	      return instance;
 	}
 	
-	protected RGBA()
+	protected BlinnPhongTexturedShader()
 	{
 		super();
 
-		addVertexShader(ResourceLoader.loadShader("shaders/blinn-phong/rgba/Vertex.glsl"));
-		addFragmentShader(ResourceLoader.loadShader("shaders/blinn-phong/rgba/Fragment.glsl"));
+		addVertexShader(ResourceLoader.loadShader("shaders/blinn-phong/texture/Vertex.glsl"));
+		addFragmentShader(ResourceLoader.loadShader("shaders/blinn-phong/texture/Fragment.glsl"));
 		compileShader();
 		
 		addUniform("modelViewProjectionMatrix");
@@ -35,9 +38,11 @@ public class RGBA extends Shader{
 		addUniform("directionalLight.color");
 		addUniform("directionalLight.direction");
 		addUniform("directionalLight.ambient");
-		addUniform("material.color");
+		addUniform("material.diffusemap");
+		addUniform("material.specularmap");
 		addUniform("material.emission");
 		addUniform("material.shininess");
+		addUniform("specularmap");
 	}
 	
 	public void updateUniforms(GameObject object)
@@ -49,9 +54,22 @@ public class RGBA extends Shader{
 		setUniformf("directionalLight.intensity", DirectionalLight.getInstance().getIntensity());
 		setUniform("directionalLight.color", DirectionalLight.getInstance().getColor());
 		setUniform("directionalLight.direction", DirectionalLight.getInstance().getDirection());
+		
 		Material material = (Material) object.getComponent("Material");
-		setUniform("material.color", material.getColor());
+
+		glActiveTexture(GL_TEXTURE0);
+		material.getDiffusemap().bind();
+		setUniformi("material.diffusemap", 0);
 		setUniformf("material.emission", material.getEmission());
 		setUniformf("material.shininess", material.getShininess());
+		
+		if (material.getSpecularmap() != null){
+			setUniformi("specularmap", 1);
+			glActiveTexture(GL_TEXTURE1);
+			material.getSpecularmap().bind();
+			setUniformi("material.specularmap", 1);
+		}
+		else
+			setUniformi("specularmap", 0);
 	}
 }

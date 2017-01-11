@@ -13,20 +13,20 @@ import engine.scenegraph.components.Material;
 import engine.shader.Shader;
 import engine.utils.ResourceLoader;
 
-public class TBN extends Shader{
+public class BlinnPhongBumpShader extends Shader{
 	
-	private static TBN instance;
+	private static BlinnPhongBumpShader instance;
 
-	public static TBN getInstance() 
+	public static BlinnPhongBumpShader getInstance() 
 	{
 	    if(instance == null) 
 	    {
-	    	instance = new TBN();
+	    	instance = new BlinnPhongBumpShader();
 	    }
 	     return instance;
 	}
 	
-	protected TBN()
+	protected BlinnPhongBumpShader()
 	{
 		super();
 

@@ -9,20 +9,20 @@ import engine.scenegraph.components.Material;
 import engine.shader.Shader;
 import engine.utils.ResourceLoader;
 
-public class TessellationGrid extends Shader{
+public class BasicTessellationGridShader extends Shader{
 	
-private static TessellationGrid instance = null;
+private static BasicTessellationGridShader instance = null;
 	
-	public static TessellationGrid getInstance() 
+	public static BasicTessellationGridShader getInstance() 
 	{
 	    if(instance == null) 
 	    {
-	    	instance = new TessellationGrid();
+	    	instance = new BasicTessellationGridShader();
 	    }
 	      return instance;
 	}
 	
-	protected TessellationGrid()
+	protected BasicTessellationGridShader()
 	{
 		super();
 

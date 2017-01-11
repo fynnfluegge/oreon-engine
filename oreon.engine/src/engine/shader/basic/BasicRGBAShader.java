@@ -6,32 +6,31 @@ import engine.scenegraph.components.Material;
 import engine.shader.Shader;
 import engine.utils.ResourceLoader;
 
-public class Grid extends Shader{
+public class BasicRGBAShader extends Shader{
 
-	private static Grid instance = null;
+	private static BasicRGBAShader instance = null;
 	
-	public static Grid getInstance() 
+	public static BasicRGBAShader getInstance() 
 	{
 		if(instance == null) 
 		{
-			instance = new Grid();
+			instance = new BasicRGBAShader();
 		}
 		return instance;
 	}
 		
-	protected Grid()
+	protected BasicRGBAShader()
 	{
 		super();
 
-		addVertexShader(ResourceLoader.loadShader("shaders/basic/grid/Vertex.glsl"));
-		addGeometryShader(ResourceLoader.loadShader("shaders/basic/grid/Geometry.glsl"));
-		addFragmentShader(ResourceLoader.loadShader("shaders/basic/grid/Fragment.glsl"));
+		addVertexShader(ResourceLoader.loadShader("shaders/basic/rgba/Vertex.glsl"));
+		addFragmentShader(ResourceLoader.loadShader("shaders/basic/rgba/Fragment.glsl"));
 		compileShader();
 			
 		addUniform("modelViewProjectionMatrix");
 		addUniform("worldMatrix");
-		addUniform("clipplane");
 		addUniform("color");
+		addUniform("clipplane");
 	}
 		
 	public void updateUniforms(GameObject object)

@@ -9,20 +9,20 @@ import engine.scenegraph.components.Material;
 import engine.shader.Shader;
 import engine.utils.ResourceLoader;
 
-public class Textured extends Shader{
+public class BasicTexturedShader extends Shader{
 
-	private static Textured instance = null;
+	private static BasicTexturedShader instance = null;
 	
-	public static Textured getInstance() 
+	public static BasicTexturedShader getInstance() 
 	{
 	    if(instance == null) 
 	    {
-	    	instance = new Textured();
+	    	instance = new BasicTexturedShader();
 	    }
 	      return instance;
 	}
 	
-	protected Textured()
+	protected BasicTexturedShader()
 	{
 		super();
 

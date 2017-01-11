@@ -7,25 +7,25 @@ import engine.scenegraph.components.Material;
 import engine.shader.Shader;
 import engine.utils.ResourceLoader;
 
-public class Glass extends Shader{
+public class BlinnPhongRGBAShader extends Shader{
 	
-	private static Glass instance;
+	private static BlinnPhongRGBAShader instance;
 
-	public static Glass getInstance() 
+	public static BlinnPhongRGBAShader getInstance() 
 	{
 	    if(instance == null) 
 	    {
-	    	instance = new Glass();
+	    	instance = new BlinnPhongRGBAShader();
 	    }
 	     return instance;
 	}
 	
-	protected Glass()
+	protected BlinnPhongRGBAShader()
 	{
 		super();
 
-		addVertexShader(ResourceLoader.loadShader("shaders/blinn-phong/glass/Vertex.glsl"));
-		addFragmentShader(ResourceLoader.loadShader("shaders/blinn-phong/glass/Fragment.glsl"));
+		addVertexShader(ResourceLoader.loadShader("shaders/blinn-phong/rgba/Vertex.glsl"));
+		addFragmentShader(ResourceLoader.loadShader("shaders/blinn-phong/rgba/Fragment.glsl"));
 		compileShader();
 		
 		addUniform("modelViewProjectionMatrix");
@@ -55,4 +55,3 @@ public class Glass extends Shader{
 		setUniformf("material.shininess", material.getShininess());
 	}
 }
-

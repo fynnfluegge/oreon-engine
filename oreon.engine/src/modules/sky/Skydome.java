@@ -8,7 +8,7 @@ import engine.scenegraph.GameObject;
 import engine.scenegraph.components.Material;
 import engine.scenegraph.components.RenderInfo;
 import engine.scenegraph.components.Renderer;
-import engine.shader.basic.Textured;
+import engine.shader.basic.BasicTexturedShader;
 import engine.textures.ProceduralTexturing;
 import engine.textures.Texture2D;
 import modules.modelLoader.obj.OBJLoader;
@@ -25,8 +25,8 @@ public class Skydome extends GameObject{
 		material.getDiffusemap().trilinearFilter();
 		MeshVAO meshBuffer = new MeshVAO();
 		meshBuffer.addData(mesh);
-		setRenderInfo(new RenderInfo(new CullFaceDisable(),Textured.getInstance()));
-		Renderer renderer = new Renderer(Textured.getInstance(), meshBuffer);
+		setRenderInfo(new RenderInfo(new CullFaceDisable(),BasicTexturedShader.getInstance()));
+		Renderer renderer = new Renderer(BasicTexturedShader.getInstance(), meshBuffer);
 		addComponent("Material", material);
 		addComponent("Renderer", renderer);
 	}

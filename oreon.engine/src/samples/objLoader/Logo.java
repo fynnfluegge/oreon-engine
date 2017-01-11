@@ -10,8 +10,8 @@ import engine.scenegraph.GameObject;
 import engine.scenegraph.components.Material;
 import engine.scenegraph.components.RenderInfo;
 import engine.scenegraph.components.Renderer;
-import engine.shader.basic.TessellationGrid;
-import engine.shader.blinnphong.Tessellation;
+import engine.shader.basic.BasicTessellationGridShader;
+import engine.shader.blinnphong.BlinnPhongTessellationShader;
 import engine.textures.Texture2D;
 
 public class Logo extends GameObject{
@@ -22,8 +22,8 @@ public class Logo extends GameObject{
 		
 		PatchVAO meshBuffer = new PatchVAO();
 		meshBuffer.addData(generatePatch2D4x4(),16);
-		setRenderInfo(new RenderInfo(new AlphaBlending(0.0f), Tessellation.getInstance()));
-		Renderer renderer = new Renderer(Tessellation.getInstance(), meshBuffer);
+		setRenderInfo(new RenderInfo(new AlphaBlending(0.0f), BlinnPhongTessellationShader.getInstance()));
+		Renderer renderer = new Renderer(BlinnPhongTessellationShader.getInstance(), meshBuffer);
 		
 		Material material = new Material();
 		material.setDiffusemap(new Texture2D("./res/textures/logo/eye.png"));
@@ -93,9 +93,9 @@ public class Logo extends GameObject{
 		
 		if (Input.getHoldingKey(Keyboard.KEY_G))
 		{
-			((Renderer) getComponent("Renderer")).setShader(TessellationGrid.getInstance());
+			((Renderer) getComponent("Renderer")).setShader(BasicTessellationGridShader.getInstance());
 		}
 		else
-			((Renderer) getComponent("Renderer")).setShader(Tessellation.getInstance());
+			((Renderer) getComponent("Renderer")).setShader(BlinnPhongTessellationShader.getInstance());
 	}
 }

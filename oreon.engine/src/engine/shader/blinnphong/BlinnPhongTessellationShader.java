@@ -14,20 +14,20 @@ import engine.shader.Shader;
 import engine.utils.ResourceLoader;
 
 
-public class Tessellation extends Shader{
+public class BlinnPhongTessellationShader extends Shader{
 	
-	private static Tessellation instance = null;
+	private static BlinnPhongTessellationShader instance = null;
 	
-	public static Tessellation getInstance() 
+	public static BlinnPhongTessellationShader getInstance() 
 	{
 	    if(instance == null) 
 	    {
-	    	instance = new Tessellation();
+	    	instance = new BlinnPhongTessellationShader();
 	    }
 	      return instance;
 	}
 	
-	protected Tessellation()
+	protected BlinnPhongTessellationShader()
 	{
 		super();
 
