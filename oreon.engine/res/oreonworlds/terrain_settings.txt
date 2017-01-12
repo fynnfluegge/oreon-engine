@@ -23,7 +23,7 @@ material3_DISP ./res/oreonworlds/materials/SnowIce_DISP.jpg
 material3_displaceScale 0.3
 material3_emission 0.0
 material3_shininess 20.0
-#textures
+
 #terrain mesh settings
 scaleXZ 6000.0
 scaleY 1200.0
@@ -33,6 +33,7 @@ tessellationSlope 1.63
 tessellationShift -0.5
 detailRange 400
 sightRangeFactor 1.4
+
 #lod ranges
 lod1_range 1750
 lod2_range 874
@@ -42,20 +43,23 @@ lod5_range 100
 lod6_range 42
 lod7_range 20
 lod8_range 0
+
 fractal_stage0
 amp 2.0
-l 100.0
+l 10.0
 scaling 1
-strength 2.8
+strength 8.0
 normalStrength 64
 random 941
+
 fractal_stage1
 amp 2.0
-l 100.0
+l 10.0
 scaling 2
-strength 1.4
+strength 1.8
 normalStrength 64
 random 558
+
 fractal_stage2
 amp 4.0
 l 100.0
@@ -63,6 +67,7 @@ scaling 4
 strength 0.28
 normalStrength 48
 random 812
+
 fractal_stage3
 amp 4.0
 l 100.0
@@ -70,6 +75,7 @@ scaling 6
 strength 0.2
 normalStrength 32
 random 470
+
 fractal_stage4
 amp 4.0
 l 200.0
@@ -77,6 +83,7 @@ scaling 10
 strength 0.06
 normalStrength 32
 random 158
+
 fractal_stage5
 amp 6.0
 l 400.0
@@ -84,6 +91,7 @@ scaling 20
 strength 0.02
 normalStrength 24
 random 789
+
 fractal_stage6
 amp 6.0
 l 400.0

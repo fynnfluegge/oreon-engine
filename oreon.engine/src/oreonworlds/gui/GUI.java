@@ -19,9 +19,13 @@ public class GUI extends modules.gui.GUI{
 		getScreens().add(screen0);
 		
 		guiButtonsPanel = new Screen();
-		guiButtonsPanel.setElements(new GUIElement[2]);
+		guiButtonsPanel.setElements(new GUIElement[6]);
 		guiButtonsPanel.getElements()[0] = new FullScreenButton();
 		guiButtonsPanel.getElements()[1] = new GridButton();
+		guiButtonsPanel.getElements()[2] = new MotionBlurFonts();
+		guiButtonsPanel.getElements()[3] = new DepthOfFieldBlurFonts();
+		guiButtonsPanel.getElements()[4] = new MotionBlurButton();
+		guiButtonsPanel.getElements()[5] = new DepthOfFieldBlurButton();
 		guiButtonsPanel.init();
 	}
 	

@@ -6,7 +6,7 @@ import static org.lwjgl.opengl.GL11.GL_RGBA;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.glTexImage2D;
 import static org.lwjgl.opengl.GL30.GL_DEPTH_COMPONENT32F;
-import static org.lwjgl.opengl.GL11.GL_RGBA8;
+import static org.lwjgl.opengl.GL30.GL_RGBA16F;
 
 import java.awt.Canvas;
 import java.io.File;
@@ -56,7 +56,7 @@ public class Window {
 		sceneTexture = new Texture2D();
 		getSceneTexture().generate();
 		getSceneTexture().bind();
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, getWidth(), getHeight(), 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, getWidth(), getHeight(), 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
 		getSceneTexture().bilinearFilter();
 		getSceneTexture().clampToEdge();
 		

@@ -32,6 +32,9 @@ public class RenderingEngine {
 	private MotionBlur motionBlur;
 	private DepthOfFieldBlur dofBlur;
 	
+	private static boolean motionBlurEnabled = false;
+	private static boolean depthOfFieldBlurEnabled = false;
+	
 	
 	public RenderingEngine(Scenegraph scenegraph, GUI gui)
 	{
@@ -75,7 +78,7 @@ public class RenderingEngine {
 		postProcessingTexture = new Texture2D(window.getSceneTexture());
 		
 		// post processing
-		if (dofBlur.isEnabled()){
+		if (isDepthOfFieldBlurEnabled()){
 			
 			// copy scene texture into low-resolution texture
 			dofBlur.getSmallBlurFbo().bind();
@@ -88,18 +91,18 @@ public class RenderingEngine {
 			// copy scene texture into low-resolution texture
 			dofBlur.getLargeBlurFbo().bind();
 			screenTexture.setTexture(window.getSceneTexture());
-			glViewport(0,0,(int)(window.getWidth()/1.5f),(int)(window.getHeight()/1.5f));
+			glViewport(0,0,(int)(window.getWidth()/1.2f),(int)(window.getHeight()/1.2f));
 			screenTexture.render();
 			dofBlur.getLargeBlurFbo().unbind();
 			glViewport(0,0,window.getWidth(),window.getHeight());
 			
 			dofBlur.render(window.getSceneDepthmap(), postProcessingTexture);
-			postProcessingTexture = dofBlur.getDepthOfFieldBlurTexture();
+			postProcessingTexture = dofBlur.getVerticalBlurSceneTexture();
 		}
 		
-		if (motionBlur.isEnabled()){
+		if (isMotionBlurEnabled()){
 			motionBlur.render(window.getSceneDepthmap(), postProcessingTexture);
-			postProcessingTexture = motionBlur.getMotionBlurTexture();
+			postProcessingTexture = motionBlur.getMotionBlurSceneTexture();
 		}
 		
 		// final scene texture
@@ -118,7 +121,6 @@ public class RenderingEngine {
 		gui.update();
 		scenegraph.update();
 		DirectionalLight.getInstance().update();
-		motionBlur.update();
 		TerrainPicking.getInstance().getTerrainPosition();
 	}
 	
@@ -157,5 +159,21 @@ public class RenderingEngine {
 
 	public static void setShadowMaps(ShadowMaps shadowMaps) {
 		RenderingEngine.shadowMaps = shadowMaps;
+	}
+
+	public static boolean isMotionBlurEnabled() {
+		return motionBlurEnabled;
+	}
+
+	public static void setMotionBlurEnabled(boolean motionBlurEnabled) {
+		RenderingEngine.motionBlurEnabled = motionBlurEnabled;
+	}
+
+	public static boolean isDepthOfFieldBlurEnabled() {
+		return depthOfFieldBlurEnabled;
+	}
+
+	public static void setDepthOfFieldBlurEnabled(boolean depthOfFieldBlurEnabled) {
+		RenderingEngine.depthOfFieldBlurEnabled = depthOfFieldBlurEnabled;
 	}
 }

@@ -25,7 +25,7 @@ private static DepthOfFieldHorizontalBlurShader instance = null;
 	{
 		super();
 		
-		addComputeShader(ResourceLoader.loadShader("shaders/computing/dofBlur/horizontalGaussian.glsl"));
+		addComputeShader(ResourceLoader.loadShader("shaders/computing/depthOfFieldBlur/horizontalGaussian.glsl"));
 		
 		compileShader();
 		

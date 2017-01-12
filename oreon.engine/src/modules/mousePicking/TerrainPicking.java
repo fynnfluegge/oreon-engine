@@ -31,8 +31,7 @@ public class TerrainPicking {
 	
 	private TerrainPicking(){
 		depthmapBuffer = BufferAllocation.createFloatBuffer(Window.getInstance().getWidth() * 
-															Window.getInstance().getHeight());
-		
+															Window.getInstance().getHeight());	
 	}
 	
 	public void getTerrainPosition(){
@@ -43,6 +42,7 @@ public class TerrainPicking {
 			Window.getInstance().getSceneDepthmap().bind();
 			glGetTexImage(GL_TEXTURE_2D,0,GL_DEPTH_COMPONENT,GL_FLOAT,depthmapBuffer);
 			float depth = depthmapBuffer.get((int) (Window.getInstance().getWidth() * screenPos.getY() + screenPos.getX()));
+			
 			// window coords
 			Vec2f w = new Vec2f(screenPos.getX()/Window.getInstance().getWidth(),
 								screenPos.getY()/Window.getInstance().getHeight());
@@ -53,7 +53,7 @@ public class TerrainPicking {
 			Quaternion clipPos = new Quaternion(clip.getX(),clip.getY(),clip.getZ(),cw);
 			Quaternion worldPos =  Camera.getInstance().getViewProjectionMatrix().invert().mul(clipPos);
 			worldPos = worldPos.div(worldPos.getW());
-//			
+		
 			pos.setX(worldPos.getX());
 			pos.setY(worldPos.getY());
 			pos.setZ(worldPos.getZ());

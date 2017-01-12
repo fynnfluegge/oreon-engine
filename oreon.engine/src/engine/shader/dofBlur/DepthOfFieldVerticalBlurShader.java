@@ -25,7 +25,7 @@ private static DepthOfFieldVerticalBlurShader instance = null;
 	{
 		super();
 		
-		addComputeShader(ResourceLoader.loadShader("shaders/computing/dofBlur/verticalGaussian.glsl"));
+		addComputeShader(ResourceLoader.loadShader("shaders/computing/depthOfFieldBlur/verticalGaussian.glsl"));
 		
 		compileShader();
 		

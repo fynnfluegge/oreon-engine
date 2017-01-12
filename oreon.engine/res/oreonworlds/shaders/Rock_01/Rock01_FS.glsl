@@ -61,7 +61,7 @@ void main()
 	float dist = length(eyePosition - position_FS);
 
 	mat3 TBN = mat3(tangent_FS, normal_FS, bitangent_FS);
-	vec3 normal = normalize(2*(texture(material.normalmap, texCoord_FS*4).rbg)-1);
+	vec3 normal = normalize(2*(texture(material.normalmap, texCoord_FS*6).rbg)-1);
 	
 	vec3 eyeDirection = normalize(eyePosition - position_FS);
 	
@@ -72,7 +72,7 @@ void main()
 	diffuseLight = directional_light.ambient + directional_light.color * diffuseFactor;
 	specularLight = directional_light.color * specularFactor;
 	
-	vec3 diffuseColor = texture(material.diffusemap, texCoord_FS*4).rgb;
+	vec3 diffuseColor = texture(material.diffusemap, texCoord_FS*6).rgb;
 	
 		
 	vec3 fragColor = diffuseColor * diffuseLight + specularLight;

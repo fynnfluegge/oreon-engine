@@ -229,7 +229,6 @@ public class Util {
 		    				   mesh.getVertices()[mesh.getIndices()[i+1]].getNormal()).add(
 		    				   mesh.getVertices()[mesh.getIndices()[i+2]].getNormal());
 		    	normal = normal.normalize();
-		    	System.out.println(normal);
 		    	
 		    	bitangent = tangent.cross(normal);
 		    	
