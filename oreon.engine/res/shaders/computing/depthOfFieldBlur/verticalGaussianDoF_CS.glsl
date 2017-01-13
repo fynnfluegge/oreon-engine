@@ -41,78 +41,22 @@ void main(void){
 		if (linDepth > 0.05) {
 			color = vec3(0,0,0);
 			
-			if (linearize(texture(depthmap, w + vec2(0,(-3*2)/windowWidth)).r) > 0.049)
-				color += imageLoad(horizontalBlurSceneSampler, computeCoord + ivec2(0,-3*2)).rgb * gaussianKernel7[0];
-			else
-				color += imageLoad(horizontalBlurSceneSampler, computeCoord).rgb * gaussianKernel7[0];
-			
-			if (linearize(texture(depthmap, w + vec2(0,(-2*2)/windowWidth)).r) > 0.049)
-				color += imageLoad(horizontalBlurSceneSampler, computeCoord + ivec2(0,-2*2)).rgb * gaussianKernel7[1];
-			else
-				color += imageLoad(horizontalBlurSceneSampler, computeCoord).rgb * gaussianKernel7[1];
-				
-			if (linearize(texture(depthmap, w + vec2(0,(-1*2)/windowWidth)).r) > 0.049)
-				color += imageLoad(horizontalBlurSceneSampler, computeCoord + ivec2(0,-1*2)).rgb * gaussianKernel7[2]; 
-			else
-				color += imageLoad(horizontalBlurSceneSampler, computeCoord).rgb * gaussianKernel7[2];
-				
-			if (linearize(texture(depthmap, w).r) > 0.049)
-				color += imageLoad(horizontalBlurSceneSampler, computeCoord).rgb * gaussianKernel7[3];
-			else
-				color += imageLoad(horizontalBlurSceneSampler, computeCoord).rgb * gaussianKernel7[3];
-				
-			if (linearize(texture(depthmap, w + vec2(0,(1*2)/windowWidth)).r) > 0.049)
-				color += imageLoad(horizontalBlurSceneSampler, computeCoord + ivec2(0,1*2)).rgb * gaussianKernel7[4]; 
-			else
-				color += imageLoad(horizontalBlurSceneSampler, computeCoord).rgb * gaussianKernel7[4];
-				
-			if (linearize(texture(depthmap, w + vec2(0,(2*2)/windowWidth)).r) > 0.049)
-				color += imageLoad(horizontalBlurSceneSampler, computeCoord + ivec2(0,2*2)).rgb * gaussianKernel7[5];
-			else
-				color += imageLoad(horizontalBlurSceneSampler, computeCoord).rgb * gaussianKernel7[5];
-			
-			if (linearize(texture(depthmap, w + vec2(0,(3*2)/windowWidth)).r) > 0.049)
-				color += imageLoad(horizontalBlurSceneSampler, computeCoord + ivec2(0,3*2)).rgb * gaussianKernel7[6];
-			else
-				color += imageLoad(horizontalBlurSceneSampler, computeCoord).rgb * gaussianKernel7[6];
+			for (int i=0; i<7; i++){
+				if (linearize(texture(depthmap, w + vec2(0,((i-3)*2)/windowWidth)).r) > 0.049)
+					color += imageLoad(horizontalBlurSceneSampler, computeCoord + ivec2(0,(i-3)*2)).rgb * gaussianKernel7[i];
+				else
+					color += imageLoad(horizontalBlurSceneSampler, computeCoord).rgb * gaussianKernel7[i];
+			}
 		}
 		else if (linDepth > 0.025) {
 			color = vec3(0,0,0);
 			
-			if (linearize(texture(depthmap, w + vec2(0,(-3*2)/windowWidth)).r) > 0.024)
-				color += imageLoad(horizontalBlurSceneSampler, computeCoord + ivec2(0,-3*2)).rgb * gaussianKernel7[0];
-			else
-				color += imageLoad(horizontalBlurSceneSampler, computeCoord).rgb * gaussianKernel7[0];
-			
-			if (linearize(texture(depthmap, w + vec2(0,(-2*2)/windowWidth)).r) > 0.024)
-				color += imageLoad(horizontalBlurSceneSampler, computeCoord + ivec2(0,-2*2)).rgb * gaussianKernel7[1];
-			else
-				color += imageLoad(horizontalBlurSceneSampler, computeCoord).rgb * gaussianKernel7[1];
-				
-			if (linearize(texture(depthmap, w + vec2(0,(-1*2)/windowWidth)).r) > 0.024)
-				color += imageLoad(horizontalBlurSceneSampler, computeCoord + ivec2(0,-1*2)).rgb * gaussianKernel7[2]; 
-			else
-				color += imageLoad(horizontalBlurSceneSampler, computeCoord).rgb * gaussianKernel7[2];
-				
-			if (linearize(texture(depthmap, w).r) > 0.024)
-				color += imageLoad(horizontalBlurSceneSampler, computeCoord).rgb * gaussianKernel7[3];
-			else
-				color += imageLoad(horizontalBlurSceneSampler, computeCoord).rgb * gaussianKernel7[3];
-				
-			if (linearize(texture(depthmap, w + vec2(0,(1*2)/windowWidth)).r) > 0.024)
-				color += imageLoad(horizontalBlurSceneSampler, computeCoord + ivec2(0,1*2)).rgb * gaussianKernel7[4]; 
-			else
-				color += imageLoad(horizontalBlurSceneSampler, computeCoord).rgb * gaussianKernel7[4];
-				
-			if (linearize(texture(depthmap, w + vec2(0,(2*2)/windowWidth)).r) > 0.024)
-				color += imageLoad(horizontalBlurSceneSampler, computeCoord + ivec2(0,2*2)).rgb * gaussianKernel7[5];
-			else
-				color += imageLoad(horizontalBlurSceneSampler, computeCoord).rgb * gaussianKernel7[5];
-				
-			if (linearize(texture(depthmap, w + vec2(0,(3*2)/windowWidth)).r) > 0.024)
-				color += imageLoad(horizontalBlurSceneSampler, computeCoord + ivec2(0,3*2)).rgb * gaussianKernel7[6];
-			else
-				color += imageLoad(horizontalBlurSceneSampler, computeCoord).rgb * gaussianKernel7[6];
+			for (int i=0; i<7; i++){
+				if (linearize(texture(depthmap, w + vec2(0,((i-3)*1.2)/windowWidth)).r) > 0.024)
+					color += imageLoad(horizontalBlurSceneSampler, computeCoord + ivec2(0,(i-3)*1.2)).rgb * gaussianKernel7[i];
+				else
+					color += imageLoad(horizontalBlurSceneSampler, computeCoord).rgb * gaussianKernel7[i];
+			}
 		}
 		else if (linDepth > 0.004){
 			color = vec3(0,0,0);
