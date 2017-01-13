@@ -8,8 +8,8 @@ import oreonworlds.assets.plants.Palm01Instanced;
 import oreonworlds.assets.rocks.Rock01Instanced;
 import oreonworlds.assets.rocks.Rock02Instanced;
 import oreonworlds.gui.GUI;
-import oreonworlds.shaders.TerrainGridShader;
-import oreonworlds.shaders.TerrainShader;
+import oreonworlds.shaders.terrain.TerrainGridShader;
+import oreonworlds.shaders.terrain.TerrainShader;
 
 public class Main {
 

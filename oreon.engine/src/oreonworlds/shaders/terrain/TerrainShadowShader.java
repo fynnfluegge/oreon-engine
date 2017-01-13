@@ -1,46 +1,41 @@
-package oreonworlds.shaders;
+package oreonworlds.shaders.terrain;
 
 import static org.lwjgl.opengl.GL13.GL_TEXTURE15;
-import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
-import static org.lwjgl.opengl.GL13.GL_TEXTURE2;
-import static org.lwjgl.opengl.GL13.GL_TEXTURE3;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 import modules.terrain.TerrainConfiguration;
 import modules.terrain.TerrainNode;
-import engine.core.RenderingEngine;
 import engine.math.Vec2f;
 import engine.scenegraph.GameObject;
 import engine.shader.Shader;
 import engine.utils.Constants;
 import engine.utils.ResourceLoader;
 
-public class TerrainGridShader extends Shader{
+public class TerrainShadowShader extends Shader{
 	
-	private static TerrainGridShader instance = null;
+	private static TerrainShadowShader instance = null;
 	
-	public static TerrainGridShader getInstance() 
+	public static TerrainShadowShader getInstance() 
 	{
 	    if(instance == null) 
 	    {
-	    	instance = new TerrainGridShader();
+	    	instance = new TerrainShadowShader();
 	    }
 	      return instance;
 	}
 	
-	protected TerrainGridShader()
-	{
+protected TerrainShadowShader(){
+		
 		super();
-
+		
 		addVertexShader(ResourceLoader.loadShader("oreonworlds/shaders/Terrain/Terrain_VS.glsl"));
 		addTessellationControlShader(ResourceLoader.loadShader("oreonworlds/shaders/Terrain/Terrain_TC.glsl"));
 		addTessellationEvaluationShader(ResourceLoader.loadShader("oreonworlds/shaders/Terrain/Terrain_TE.glsl"));
-		addGeometryShader(ResourceLoader.loadShader("oreonworlds/shaders/Terrain/TerrainGrid_GS.glsl"));
+		addGeometryShader(ResourceLoader.loadShader("oreonworlds/shaders/Terrain/TerrainShadow_GS.glsl"));
 		addFragmentShader(ResourceLoader.loadShader("oreonworlds/shaders/Terrain/TerrainGrid_FS.glsl"));
 		compileShader();
-		
+
 		addUniform("worldMatrix");
 		addUniform("scaleY");
-
 		
 		for (int i=0; i<7; i++)
 		{
@@ -49,8 +44,6 @@ public class TerrainGridShader extends Shader{
 			addUniform("fractals0[" + i + "].strength");
 		}
 		
-		addUniform("largeDetailedRange");
-		addUniform("texDetail");
 		addUniform("bezier");
 		addUniform("tessFactor");
 		addUniform("tessSlope");
@@ -60,35 +53,27 @@ public class TerrainGridShader extends Shader{
 		addUniform("location");
 		addUniform("gap");
 		
-		addUniform("sand.heightmap");
-		addUniform("sand.displaceScale");
-		addUniform("rock.heightmap");
-		addUniform("rock.displaceScale");
-		addUniform("snow.heightmap");
-		addUniform("snow.displaceScale");
-		
-		addUniform("clipplane");
-		
 		for (int i=0; i<8; i++){
 			addUniform("lod_morph_area[" + i + "]");
 		}
 		
 		addUniformBlock("Camera");
+		addUniformBlock("LightViewProjections");
 	}
 	
 	public void updateUniforms(GameObject object)
-	{
-		bindUniformBlock("Camera", Constants.CameraUniformBlockBinding);
-		
-		setUniform("clipplane", RenderingEngine.getClipplane());
-		
-		TerrainConfiguration terrConfig = ((TerrainNode) object).getTerrConfig();
-		int lod = ((TerrainNode) object).getLod();
-		Vec2f index = ((TerrainNode) object).getIndex();
-		Vec2f location = ((TerrainNode) object).getLocation();
-		float gap = ((TerrainNode) object).getGap();
-		
+	{	
+		bindUniformBlock("Camera",Constants.CameraUniformBlockBinding);
+		bindUniformBlock("LightViewProjections",Constants.LightMatricesUniformBlockBinding);
+
 		setUniform("worldMatrix", object.getTransform().getWorldMatrix());
+
+		TerrainNode terrainNode = (TerrainNode) object;
+		TerrainConfiguration terrConfig = terrainNode.getTerrConfig();
+		int lod = terrainNode.getLod();
+		Vec2f index = terrainNode.getIndex();
+		Vec2f location = terrainNode.getLocation();
+		float gap = terrainNode.getGap();
 		
 		for (int i=0; i<7; i++)
 		{
@@ -98,24 +83,7 @@ public class TerrainGridShader extends Shader{
 			setUniformi("fractals0[" + i +"].scaling", terrConfig.getFractals().get(i).getScaling());
 			setUniformf("fractals0[" + i +"].strength", terrConfig.getFractals().get(i).getStrength());
 		}
-
-		glActiveTexture(GL_TEXTURE1);
-		terrConfig.getMaterial1().getDisplacemap().bind();
-		setUniformi("sand.heightmap", 1);
-		setUniformf("sand.displaceScale", terrConfig.getMaterial1().getDisplaceScale());
 		
-		glActiveTexture(GL_TEXTURE2);
-		terrConfig.getMaterial2().getDisplacemap().bind();
-		setUniformi("rock.heightmap", 2);
-		setUniformf("rock.displaceScale", terrConfig.getMaterial2().getDisplaceScale());
-		
-		glActiveTexture(GL_TEXTURE3);
-		terrConfig.getMaterial3().getDisplacemap().bind();
-		setUniformi("snow.heightmap", 3);
-		setUniformf("snow.displaceScale", terrConfig.getMaterial3().getDisplaceScale());
-		
-		setUniformi("largeDetailedRange", terrConfig.getDetailRange());
-		setUniformf("texDetail", terrConfig.getTexDetail());
 		setUniformf("scaleY", terrConfig.getScaleY());
 		setUniformi("bezier", terrConfig.getBezíer());
 		setUniformi("tessFactor", terrConfig.getTessellationFactor());
@@ -130,4 +98,6 @@ public class TerrainGridShader extends Shader{
 			setUniformi("lod_morph_area[" + i + "]", terrConfig.getLod_morphing_area()[i]);
 		}
 	}
+
+
 }

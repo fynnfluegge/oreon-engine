@@ -1,4 +1,4 @@
-package modules.shadowmapping.directionalLights;
+package modules.shadowmapping.directionalLight;
 
 import static org.lwjgl.opengl.GL11.GL_NONE;
 import static org.lwjgl.opengl.GL42.glTexStorage3D;

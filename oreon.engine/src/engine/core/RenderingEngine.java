@@ -9,8 +9,9 @@ import modules.gui.elements.FullScreenTexturePanel;
 import modules.lighting.DirectionalLight;
 import modules.mousePicking.TerrainPicking;
 import modules.postProcessingEffects.DepthOfFieldBlur;
+import modules.postProcessingEffects.HdrBloom;
 import modules.postProcessingEffects.MotionBlur;
-import modules.shadowmapping.directionalLights.ShadowMaps;
+import modules.shadowmapping.directionalLight.ShadowMaps;
 import engine.configs.RenderConfig;
 import engine.math.Quaternion;
 import engine.scenegraph.Scenegraph;
@@ -29,11 +30,14 @@ public class RenderingEngine {
 	private Scenegraph scenegraph;
 	private static ShadowMaps shadowMaps;
 	private GUI gui;
+	
 	private MotionBlur motionBlur;
 	private DepthOfFieldBlur dofBlur;
+	private HdrBloom hdrBloom;
 	
 	private static boolean motionBlurEnabled = false;
 	private static boolean depthOfFieldBlurEnabled = false;
+	private static boolean hdrBloomEnabled = false;
 	
 	
 	public RenderingEngine(Scenegraph scenegraph, GUI gui)
@@ -77,7 +81,9 @@ public class RenderingEngine {
 		
 		postProcessingTexture = new Texture2D(window.getSceneTexture());
 		
-		// post processing
+		// post processing effects
+		
+		// Depth of Field Blur
 		if (isDepthOfFieldBlurEnabled()){
 			
 			// copy scene texture into low-resolution texture
@@ -100,6 +106,7 @@ public class RenderingEngine {
 			postProcessingTexture = dofBlur.getVerticalBlurSceneTexture();
 		}
 		
+		// Motion Blur
 		if (isMotionBlurEnabled()){
 			motionBlur.render(window.getSceneDepthmap(), postProcessingTexture);
 			postProcessingTexture = motionBlur.getMotionBlurSceneTexture();
@@ -175,5 +182,13 @@ public class RenderingEngine {
 
 	public static void setDepthOfFieldBlurEnabled(boolean depthOfFieldBlurEnabled) {
 		RenderingEngine.depthOfFieldBlurEnabled = depthOfFieldBlurEnabled;
+	}
+
+	public static boolean isHdrBloomEnabled() {
+		return hdrBloomEnabled;
+	}
+
+	public static void setHdrBloomEnabled(boolean hdrBloomEnabled) {
+		RenderingEngine.hdrBloomEnabled = hdrBloomEnabled;
 	}
 }

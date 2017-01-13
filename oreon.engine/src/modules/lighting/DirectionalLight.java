@@ -7,7 +7,7 @@ import engine.math.Matrix4f;
 import engine.math.Vec3f;
 import engine.utils.BufferAllocation;
 import engine.utils.Constants;
-import modules.shadowmapping.directionalLights.PSSMCamera;
+import modules.shadowmapping.directionalLight.PSSMCamera;
 
 public class DirectionalLight extends Light{
 

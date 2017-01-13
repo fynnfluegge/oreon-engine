@@ -1,4 +1,4 @@
-package oreonworlds.shaders;
+package oreonworlds.shaders.terrain;
 
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE10;
