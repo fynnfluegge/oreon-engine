@@ -2,13 +2,13 @@
 
 layout (local_size_x = 8, local_size_y = 8) in;
 
-layout (binding = 0, rgba8) uniform readonly image2D sceneSampler;
+layout (binding = 0, rgba16f) uniform readonly image2D sceneSampler;
 
-layout (binding = 1, rgba8) uniform readonly image2D smallBlurSceneSampler;
+layout (binding = 1, rgba16f) uniform readonly image2D smallBlurSceneSampler;
 
-layout (binding = 2, rgba8) uniform readonly image2D largeBlurSceneSampler;
+layout (binding = 2, rgba16f) uniform readonly image2D largeBlurSceneSampler;
 
-layout (binding = 3, rgba8) uniform writeonly image2D horizontalSceneBlur;
+layout (binding = 3, rgba16f) uniform writeonly image2D horizontalSceneBlur;
 
 uniform sampler2D depthmap;
 uniform float windowWidth;
@@ -51,7 +51,7 @@ void main(void){
 				if (linearize(texture(depthmap, w + vec2(((i-3)*2)/windowWidth,0)).r) > 0.049)
 					color += imageLoad(smallBlurSceneSampler, computeCoordSmallBlur + ivec2((i-3)*2,0)).rgb * gaussianKernel7[i];
 				else
-					color += imageLoad(smallBlurSceneSampler, computeCoordSmallBlur).rgb * gaussianKernel7[0];
+					color += imageLoad(smallBlurSceneSampler, computeCoordSmallBlur).rgb * gaussianKernel7[i];
 			}
 		}
 		else if (linDepth > 0.025) {

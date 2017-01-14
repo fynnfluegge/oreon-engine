@@ -172,9 +172,9 @@ void main()
 	
 	vec3 fragColor = mix(texture(sand.diffusemap, texCoordF).rgb, texture(rock.diffusemap, texCoordF).rgb, clamp((height+200)/400.0,0,1));
 	fragColor = mix(fragColor, texture(snow.diffusemap,texCoordF).rgb, clamp((height-100)/200,0,1));
-	float grassFactor = clamp(height/(scaleY*4)+0.95,0.97,1.0);
-	if (normal.y > grassFactor){
-		fragColor = mix(fragColor, texture(grass.diffusemap,texCoordF).rgb,grassBlend);
+	//float grassFactor = clamp(height/(scaleY*4)+0.97,0.97,1.0);
+	if (normal.y > 0.9){
+		fragColor = mix(texture(grass.diffusemap,texCoordF).rgb,fragColor,(1-normal.y)*10);
 	}
 	
 	fragColor *= diffuseLight;

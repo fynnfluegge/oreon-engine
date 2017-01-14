@@ -14,11 +14,8 @@ void main(void){
 	vec3 color = imageLoad(sceneSampler, computeCoord).rgb;  
 	
 	float brightness = dot(color, vec3(0.2126, 0.7152, 0.0722));
-	
-	vec3 brightColor = vec3(0,0,0);
-	
-    if(brightness > 1.0)
-        brightColor = color;
+
+	vec3 brightColor = color * pow(brightness,4);
 		
 	imageStore(brightColorSceneSampler, computeCoord, vec4(brightColor, 1.0));
 }

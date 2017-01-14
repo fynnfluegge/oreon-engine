@@ -9,7 +9,7 @@ import modules.gui.elements.FullScreenTexturePanel;
 import modules.lighting.DirectionalLight;
 import modules.mousePicking.TerrainPicking;
 import modules.postProcessingEffects.DepthOfFieldBlur;
-import modules.postProcessingEffects.HdrBloom;
+import modules.postProcessingEffects.Bloom;
 import modules.postProcessingEffects.MotionBlur;
 import modules.shadowmapping.directionalLight.ShadowMaps;
 import engine.configs.RenderConfig;
@@ -33,11 +33,11 @@ public class RenderingEngine {
 	
 	private MotionBlur motionBlur;
 	private DepthOfFieldBlur dofBlur;
-	private HdrBloom hdrBloom;
+	private Bloom hdrBloom;
 	
 	private static boolean motionBlurEnabled = false;
 	private static boolean depthOfFieldBlurEnabled = false;
-	private static boolean hdrBloomEnabled = false;
+	private static boolean hdrBloomEnabled = true;
 	
 	
 	public RenderingEngine(Scenegraph scenegraph, GUI gui)
@@ -56,6 +56,7 @@ public class RenderingEngine {
 		screenTexture = new FullScreenTexturePanel();
 		motionBlur = new MotionBlur();
 		dofBlur = new DepthOfFieldBlur();
+		hdrBloom = new Bloom();
 	}
 	
 	public void render()
@@ -83,12 +84,18 @@ public class RenderingEngine {
 		
 		// post processing effects
 		
+		// HDR Bloom
+		if (isHdrBloomEnabled()) {
+			hdrBloom.render(postProcessingTexture);
+			postProcessingTexture = hdrBloom.getBloomBLurSceneTexture();
+		}
+		
 		// Depth of Field Blur
 		if (isDepthOfFieldBlurEnabled()){
 			
 			// copy scene texture into low-resolution texture
 			dofBlur.getSmallBlurFbo().bind();
-			screenTexture.setTexture(window.getSceneTexture());
+			screenTexture.setTexture(postProcessingTexture);
 			glViewport(0,0,(int)(window.getWidth()/2),(int)(window.getHeight()/2));
 			screenTexture.render();
 			dofBlur.getSmallBlurFbo().unbind();
@@ -96,7 +103,7 @@ public class RenderingEngine {
 			
 			// copy scene texture into low-resolution texture
 			dofBlur.getLargeBlurFbo().bind();
-			screenTexture.setTexture(window.getSceneTexture());
+			screenTexture.setTexture(postProcessingTexture);
 			glViewport(0,0,(int)(window.getWidth()/1.2f),(int)(window.getHeight()/1.2f));
 			screenTexture.render();
 			dofBlur.getLargeBlurFbo().unbind();

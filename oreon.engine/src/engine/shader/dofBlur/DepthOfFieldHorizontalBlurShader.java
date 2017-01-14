@@ -10,7 +10,7 @@ import engine.utils.ResourceLoader;
 
 public class DepthOfFieldHorizontalBlurShader extends Shader{
 
-private static DepthOfFieldHorizontalBlurShader instance = null;
+	private static DepthOfFieldHorizontalBlurShader instance = null;
 	
 	public static DepthOfFieldHorizontalBlurShader getInstance() 
 	{
