@@ -37,7 +37,7 @@ public class RenderingEngine {
 	
 	private static boolean motionBlurEnabled = false;
 	private static boolean depthOfFieldBlurEnabled = false;
-	private static boolean hdrBloomEnabled = true;
+	private static boolean bloomEnabled = false;
 	
 	
 	public RenderingEngine(Scenegraph scenegraph, GUI gui)
@@ -85,28 +85,20 @@ public class RenderingEngine {
 		// post processing effects
 		
 		// HDR Bloom
-		if (isHdrBloomEnabled()) {
+		if (isBloomEnabled()) {
 			hdrBloom.render(postProcessingTexture);
-			postProcessingTexture = hdrBloom.getBloomBLurSceneTexture();
+			postProcessingTexture = hdrBloom.getBloomBlurSceneTexture();
 		}
 		
 		// Depth of Field Blur
 		if (isDepthOfFieldBlurEnabled()){
 			
 			// copy scene texture into low-resolution texture
-			dofBlur.getSmallBlurFbo().bind();
-			screenTexture.setTexture(postProcessingTexture);
-			glViewport(0,0,(int)(window.getWidth()/2),(int)(window.getHeight()/2));
-			screenTexture.render();
-			dofBlur.getSmallBlurFbo().unbind();
-			glViewport(0,0,window.getWidth(),window.getHeight());
-			
-			// copy scene texture into low-resolution texture
-			dofBlur.getLargeBlurFbo().bind();
+			dofBlur.getLowResFbo().bind();
 			screenTexture.setTexture(postProcessingTexture);
 			glViewport(0,0,(int)(window.getWidth()/1.2f),(int)(window.getHeight()/1.2f));
 			screenTexture.render();
-			dofBlur.getLargeBlurFbo().unbind();
+			dofBlur.getLowResFbo().unbind();
 			glViewport(0,0,window.getWidth(),window.getHeight());
 			
 			dofBlur.render(window.getSceneDepthmap(), postProcessingTexture);
@@ -191,11 +183,11 @@ public class RenderingEngine {
 		RenderingEngine.depthOfFieldBlurEnabled = depthOfFieldBlurEnabled;
 	}
 
-	public static boolean isHdrBloomEnabled() {
-		return hdrBloomEnabled;
+	public static boolean isBloomEnabled() {
+		return bloomEnabled;
 	}
 
-	public static void setHdrBloomEnabled(boolean hdrBloomEnabled) {
-		RenderingEngine.hdrBloomEnabled = hdrBloomEnabled;
+	public static void setBloomEnabled(boolean enabled) {
+		RenderingEngine.bloomEnabled = enabled;
 	}
 }

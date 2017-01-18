@@ -16,7 +16,7 @@ public class Ocean extends Water{
 		
 		setClipplane(new Quaternion(0,-1,0,getTransform().getTranslation().getY()));
 
-		this.loadSettingsFile("./res/samples/Ocean/waterSettings.wat");
+		this.loadSettingsFile("./res/samples/Ocean/waterSettings.txt");
 	}
 	
 	public void render(){

@@ -16,7 +16,7 @@ public class FullScreenButton  extends Button{
 	{
 		buttonMap = new Texture2D("./res/gui/tex/maximize.png");
 		buttonClickMap = new Texture2D("./res/gui/tex/maximize.png");
-		getOrthoTransform().setTranslation(10, Window.getInstance().getHeight()-70, 0);
+		getOrthoTransform().setTranslation(10, Window.getInstance().getHeight()-75, 0);
 		getOrthoTransform().setScaling(15,30,0);
 		Vec2f[] texCoords = new Vec2f[4];
 		texCoords[0] = new Vec2f(0,1f);

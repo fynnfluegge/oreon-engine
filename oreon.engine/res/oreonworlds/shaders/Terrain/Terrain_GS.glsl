@@ -85,8 +85,8 @@ void main() {
 			float sandBlend  = clamp(-height/200,0,1);
 			
 			float scale = texture(sand.heightmap, texCoordG[k]).r * sandBlend * sand.displaceScale
-						+ texture(rock.heightmap, texCoordG[k]).r * rockBlend * rock.displaceScale
-						+ texture(snow.heightmap, texCoordG[k]).r * snowBlend * snow.displaceScale;
+						+ texture(rock.heightmap, texCoordG[k]/2).r * rockBlend * rock.displaceScale
+						+ texture(snow.heightmap, texCoordG[k]/4).r * snowBlend * snow.displaceScale;
 						
 			scale *= (- distance(gl_in[k].gl_Position.xyz, eyePosition)/(largeDetailedRange) + 1);
 

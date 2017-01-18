@@ -11,8 +11,9 @@ uniform mat4 projectionMatrix;
 uniform mat4 inverseViewProjectionMatrix;
 uniform mat4 previousViewProjectionMatrix;
 
-float zfar = 10000.0f;
-float znear = 0.1f;
+const float zfar = 10000.0f;
+const float znear = 0.1f;
+const int blurFactor = 160; 
 
 float linearize(float depth)
 {
@@ -41,7 +42,7 @@ void main(void){
 	previousPos /= previousPos.w;
 	
 	//window space velocity
-	vec2 velocity = (previousPos.xy - N.xy).xy * 120;
+	vec2 velocity = (previousPos.xy - N.xy).xy * blurFactor;
 
 	imageStore(velocitymap, ivec2(gl_GlobalInvocationID.xy), vec4(velocity,0,1));
 }

@@ -15,6 +15,7 @@ public class Constants {
 	public static final int TERRAIN_FRACTALS_RESOLUTION = 512;
 	public static final int PSSM_SHADOWMAP_RESOLUTION = 4096;
 	public static final float[] PSSM_SHADOWMAPARRAY_INDICES = {0.0f,1f,2f,3f,4f,5f};
+	public static final int MULTISAMPLES = 8;
 	
 	
 	// Uniform Block Bindings

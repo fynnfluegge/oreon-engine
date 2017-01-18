@@ -24,7 +24,7 @@ public class DepthOfFieldBlurFonts extends GUIElement{
 		setConfig(new AlphaCullFaceDisable(0.0f));
 		setOrthographicMatrix(new Matrix4f().Orthographic2D());
 		setOrthoTransform(new Transform());
-		getOrthoTransform().setTranslation(5, Window.getInstance().getHeight()-140, 0);
+		getOrthoTransform().setTranslation(7, Window.getInstance().getHeight()-140, 0);
 		getOrthoTransform().setScaling(240, -30, 0);
 		setOrthographicMatrix(getOrthographicMatrix().mul(getOrthoTransform().getWorldMatrix()));
 		setVao(new GUIVAO());

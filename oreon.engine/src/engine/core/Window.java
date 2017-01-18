@@ -24,6 +24,7 @@ import org.newdawn.slick.opengl.ImageIOImageData;
 
 import engine.buffers.Framebuffer;
 import engine.textures.Texture2D;
+import engine.utils.Constants;
 
 public class Window {
 	
@@ -48,8 +49,8 @@ public class Window {
 		
 		multisampledFbo = new Framebuffer();
 		multisampledFbo.bind();
-		multisampledFbo.createColorBufferMultisampleAttachment(8);
-		multisampledFbo.createDepthBufferMultisampleAttachment(8);
+		multisampledFbo.createColorBufferMultisampleAttachment(Constants.MULTISAMPLES);
+		multisampledFbo.createDepthBufferMultisampleAttachment(Constants.MULTISAMPLES);
 		multisampledFbo.checkStatus();
 		multisampledFbo.unbind();
 		

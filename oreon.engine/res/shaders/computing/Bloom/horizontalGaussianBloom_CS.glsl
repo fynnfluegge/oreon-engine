@@ -2,7 +2,7 @@
 
 layout (local_size_x = 8, local_size_y = 8) in;
 
-layout (binding = 0, rgba16f) uniform readonly image2D brightColorSceneSampler;
+layout (binding = 0, rgba16f) uniform readonly image2D bloomSampler;
 
 layout (binding = 1, rgba16f) uniform writeonly image2D horizontalBloomBlurSceneSampler;
 
@@ -15,7 +15,7 @@ void main(void){
 	
 	vec3 color = vec3(0,0,0);
 	for (int i=0; i<21; i++){
-		color += imageLoad(brightColorSceneSampler, computeCoord + ivec2(i-10,0)).rgb * gaussianKernel21_sigma4[i];
+		color += imageLoad(bloomSampler, computeCoord + ivec2(i-10,0)).rgb * gaussianKernel21_sigma4[i];
 	}
 
 	imageStore(horizontalBloomBlurSceneSampler, computeCoord, vec4(color, 1.0));

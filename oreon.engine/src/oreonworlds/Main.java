@@ -17,7 +17,7 @@ public class Main {
 		
 		Game game = new Game();
 		game.setGui(new GUI());
-		game.getEngine().createWindow(1280, 720, "oreon worlds");
+		game.getEngine().createWindow(1920, 1080, "oreon worlds");
 		game.init();
 		game.getScenegraph().setTerrain(Terrain.getInstance());
 		Terrain.getInstance().init("./res/oreonworlds/terrain_settings.txt", TerrainShader.getInstance(),

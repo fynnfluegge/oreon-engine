@@ -12,7 +12,7 @@ public class GridButton extends Button{
 	{
 		buttonMap = new Texture2D("./res/gui/tex/buttons.png");
 		buttonClickMap = new Texture2D("./res/gui/tex/buttonsClicked.png");
-		getOrthoTransform().setTranslation(5, Window.getInstance().getHeight()-110, 0);
+		getOrthoTransform().setTranslation(5, Window.getInstance().getHeight()-115, 0);
 		getOrthoTransform().setScaling(50, 35, 0);
 		Vec2f[] texCoordsgb = new Vec2f[4];
 		texCoordsgb[0] = new Vec2f(0,0.3f);

@@ -27,13 +27,9 @@ public class DepthOfFieldBlur {
 	private DepthOfFieldHorizontalBlurShader horizontalBlurShader;
 	private DepthOfFieldVerticalBlurShader verticalBlurShader;
 	
-	private Framebuffer largeBlurFbo;
-	private Texture2D largeBlurSceneSampler;
-	private Framebuffer smallBlurFbo;
-	private Texture2D smallBlurSceneSampler;
-	
-	private float[] gaussianKernel_7 = {0.00598f,0.060626f,0.241843f,0.383103f,0.241843f,0.060626f,0.00598f};
-	
+	private Framebuffer lowResFbo;
+	private Texture2D lowResSceneSampler;
+		
 	public DepthOfFieldBlur() {
 		
 		horizontalBlurShader = DepthOfFieldHorizontalBlurShader.getInstance();
@@ -49,79 +45,46 @@ public class DepthOfFieldBlur {
 		verticalBlurSceneTexture.bind();
 		glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA16F, Window.getInstance().getWidth(), Window.getInstance().getHeight());
 		
-		smallBlurSceneSampler = new Texture2D();
-		smallBlurSceneSampler.generate();
-		smallBlurSceneSampler.bind();
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F,
-						Window.getInstance().getWidth()/2,
-						Window.getInstance().getHeight()/2,
-						0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
-		smallBlurSceneSampler.bilinearFilter();
-		smallBlurSceneSampler.clampToEdge();
-		
-		smallBlurFbo = new Framebuffer();
-		smallBlurFbo.bind();
-		smallBlurFbo.createColorTextureAttachment(smallBlurSceneSampler.getId(), 0);
-		smallBlurFbo.checkStatus();
-		smallBlurFbo.unbind();
-		
-		largeBlurSceneSampler = new Texture2D();
-		largeBlurSceneSampler.generate();
-		largeBlurSceneSampler.bind();
+		lowResSceneSampler = new Texture2D();
+		lowResSceneSampler.generate();
+		lowResSceneSampler.bind();
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F,
 						(int)(Window.getInstance().getWidth()/1.2f),
 						(int)(Window.getInstance().getHeight()/1.2f),
 						0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
-		largeBlurSceneSampler.bilinearFilter();
-		largeBlurSceneSampler.clampToEdge();
+		lowResSceneSampler.bilinearFilter();
+		lowResSceneSampler.clampToEdge();
 		
-		largeBlurFbo = new Framebuffer();
-		largeBlurFbo.bind();
-		largeBlurFbo.createColorTextureAttachment(largeBlurSceneSampler.getId(), 0);
-		largeBlurFbo.checkStatus();
-		largeBlurFbo.unbind();
+		lowResFbo = new Framebuffer();
+		lowResFbo.bind();
+		lowResFbo.createColorTextureAttachment(lowResSceneSampler.getId(), 0);
+		lowResFbo.checkStatus();
+		lowResFbo.unbind();
 	}
 	
 	public void render(Texture2D depthmap, Texture2D sceneSampler) {
 		
 		horizontalBlurShader.bind();
 		glBindImageTexture(0, sceneSampler.getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA16F);
-		glBindImageTexture(1, smallBlurSceneSampler.getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA16F);
-		glBindImageTexture(2, largeBlurSceneSampler.getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA16F);
-		glBindImageTexture(3, horizontalBlurSceneTexture.getId(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
-		horizontalBlurShader.updateUniforms(depthmap, gaussianKernel_7);
+		glBindImageTexture(1, lowResSceneSampler.getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA16F);
+		glBindImageTexture(2, horizontalBlurSceneTexture.getId(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
+		horizontalBlurShader.updateUniforms(depthmap);
 		glDispatchCompute(Window.getInstance().getWidth()/8, Window.getInstance().getHeight()/8, 1);	
 		glFinish();
 		
 		verticalBlurShader.bind();
 		glBindImageTexture(0, horizontalBlurSceneTexture.getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA16F);
 		glBindImageTexture(1, verticalBlurSceneTexture.getId(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
-		verticalBlurShader.updateUniforms(depthmap, gaussianKernel_7);
+		verticalBlurShader.updateUniforms(depthmap);
 		glDispatchCompute(Window.getInstance().getWidth()/8, Window.getInstance().getHeight()/8, 1);	
 		glFinish();
-	}
-	
-	public Texture2D getHorizontalBlurSceneTexture() {
-		return horizontalBlurSceneTexture;
 	}
 
 	public Texture2D getVerticalBlurSceneTexture() {
 		return verticalBlurSceneTexture;
 	}
 
-	public Framebuffer getLargeBlurFbo() {
-		return largeBlurFbo;
-	}
-
-	public Texture2D getLargeBlurSceneSampler() {
-		return largeBlurSceneSampler;
-	}
-
-	public Framebuffer getSmallBlurFbo() {
-		return smallBlurFbo;
-	}
-	
-	public Texture2D getSmallBlurSceneSampler() {
-		return smallBlurSceneSampler;
+	public Framebuffer getLowResFbo() {
+		return lowResFbo;
 	}
 }

@@ -32,21 +32,13 @@ public class DepthOfFieldHorizontalBlurShader extends Shader{
 		addUniform("depthmap");
 		addUniform("windowWidth");
 		addUniform("windowHeight");
-
-		for (int i=0; i<7; i++){
-			addUniform("gaussianKernel7[" + i + "]");
-		}
 	}
 	
-	public void updateUniforms(Texture2D depthmap, float[] gaussianKernel_7){
+	public void updateUniforms(Texture2D depthmap){
 		glActiveTexture(GL_TEXTURE0);
 		depthmap.bind();
 		setUniformi("depthmap", 0);
 		setUniformf("windowWidth", Window.getInstance().getWidth());
 		setUniformf("windowHeight", Window.getInstance().getHeight());
-		
-		for (int i=0; i<7; i++){
-			setUniformf("gaussianKernel7[" + i + "]", gaussianKernel_7[i]);
-		}
 	}
 }

@@ -13,6 +13,7 @@ import static org.lwjgl.opengl.GL15.GL_WRITE_ONLY;
 
 import java.nio.ByteBuffer;
 
+import engine.buffers.Framebuffer;
 import engine.core.Window;
 import engine.shader.bloom.BloomShader;
 import engine.shader.bloom.BloomBlurShader;
@@ -22,7 +23,7 @@ import engine.textures.Texture2D;
 
 public class Bloom {
 
-	private Texture2D bloomSceneTexture;
+	private Texture2D bloomTexture;
 	private Texture2D horizontalBloomBlurSceneTexture;
 	private Texture2D verticalBloomBlurSceneTexture;
 	private Texture2D bloomBlurSceneTexture;
@@ -32,6 +33,11 @@ public class Bloom {
 	private VerticalBloomBlurShader verticalBlurShader;
 	private BloomBlurShader bloomBlurShader;
 	
+	private Framebuffer fbo_div2;
+	private Framebuffer fbo_div4;
+	private Texture2D sceneSampler_div2;
+	private Texture2D sceneSampler_div4;
+	
 	
 	public Bloom(){
 		
@@ -40,15 +46,15 @@ public class Bloom {
 		verticalBlurShader = VerticalBloomBlurShader.getInstance();
 		bloomBlurShader = BloomBlurShader.getInstance();
 		
-		bloomSceneTexture = new Texture2D();
-		bloomSceneTexture.generate();
-		bloomSceneTexture.bind();
+		bloomTexture = new Texture2D();
+		bloomTexture.generate();
+		bloomTexture.bind();
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F,
 						Window.getInstance().getWidth(),
 						Window.getInstance().getHeight(),
 						0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
-		bloomSceneTexture.bilinearFilter();
-		bloomSceneTexture.clampToEdge();
+		bloomTexture.bilinearFilter();
+		bloomTexture.clampToEdge();
 		
 		horizontalBloomBlurSceneTexture = new Texture2D();
 		horizontalBloomBlurSceneTexture.generate();
@@ -79,18 +85,50 @@ public class Bloom {
 						0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
 		bloomBlurSceneTexture.bilinearFilter();
 		bloomBlurSceneTexture.clampToEdge();
+		
+		sceneSampler_div2 = new Texture2D();
+		sceneSampler_div2.generate();
+		sceneSampler_div2.bind();
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F,
+						Window.getInstance().getWidth()/2,
+						Window.getInstance().getHeight()/2,
+						0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
+		sceneSampler_div2.bilinearFilter();
+		sceneSampler_div2.clampToEdge();
+		
+		fbo_div2 = new Framebuffer();
+		fbo_div2.bind();
+		fbo_div2.createColorTextureAttachment(sceneSampler_div2.getId(), 0);
+		fbo_div2.checkStatus();
+		fbo_div2.unbind();
+		
+		sceneSampler_div4 = new Texture2D();
+		sceneSampler_div4.generate();
+		sceneSampler_div4.bind();
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F,
+						(int)(Window.getInstance().getWidth()/4f),
+						(int)(Window.getInstance().getHeight()/4f),
+						0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
+		sceneSampler_div4.bilinearFilter();
+		sceneSampler_div4.clampToEdge();
+		
+		fbo_div4 = new Framebuffer();
+		fbo_div4.bind();
+		fbo_div4.createColorTextureAttachment(sceneSampler_div4.getId(), 0);
+		fbo_div4.checkStatus();
+		fbo_div4.unbind();
 	}
 	
 	public void render(Texture2D sceneSampler) {
 		
 		bloomShader.bind();
 		glBindImageTexture(0, sceneSampler.getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA16F);
-		glBindImageTexture(1, bloomSceneTexture.getId(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
+		glBindImageTexture(1, bloomTexture.getId(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
 		glDispatchCompute(Window.getInstance().getWidth()/8, Window.getInstance().getHeight()/8, 1);	
 		glFinish();
 		
 		horizontalBlurShader.bind();
-		glBindImageTexture(0, bloomSceneTexture.getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA16F);
+		glBindImageTexture(0, bloomTexture.getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA16F);
 		glBindImageTexture(1, horizontalBloomBlurSceneTexture.getId(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
 		glDispatchCompute(Window.getInstance().getWidth()/8, Window.getInstance().getHeight()/8, 1);	
 		glFinish();
@@ -109,8 +147,8 @@ public class Bloom {
 		glFinish();
 	}
 	
-	public Texture2D getBloomSceneTexture() {
-		return bloomSceneTexture;
+	public Texture2D getBloomTexture() {
+		return bloomTexture;
 	}
 
 	public Texture2D getHorizontalBloomBlurSceneTexture() {
@@ -121,7 +159,15 @@ public class Bloom {
 		return verticalBloomBlurSceneTexture;
 	}
 
-	public Texture2D getBloomBLurSceneTexture() {
+	public Texture2D getBloomBlurSceneTexture() {
 		return bloomBlurSceneTexture;
+	}
+
+	public Framebuffer getFbo_div2() {
+		return fbo_div2;
+	}
+
+	public Framebuffer getFbo_div4() {
+		return fbo_div4;
 	}
 }

@@ -2,25 +2,25 @@
 material0_DIF ./res/editor/terrainEditor/materials/grass0_DIF.jpg
 material0_NRM ./res/editor/terrainEditor/materials/grass0_NRM.jpg
 material0_DISP ./res/editor/terrainEditor/materials/grass0_DISP.jpg
-material0_displaceScale 0.2
+material0_displaceScale 0.0
 material0_emission 0.0
 material0_shininess 200.0
-material1_DIF ./res/oreonworlds/materials/Ground_12_DIF.jpg
-material1_NRM ./res/oreonworlds/materials/Ground_12_NRM.jpg
-material1_DISP ./res/oreonworlds/materials/Ground_12_DISP.jpg
+material1_DIF ./res/oreonworlds/materials/Ground_11_DIF.jpg
+material1_NRM ./res/oreonworlds/materials/Ground_11_NRM.jpg
+material1_DISP ./res/oreonworlds/materials/Ground_11_DISP.jpg
 material1_displaceScale 0.4
 material1_emission 0.0
 material1_shininess 200.0
-material2_DIF ./res/oreonworlds/materials/Ground14_DIF.jpg
-material2_NRM ./res/oreonworlds/materials/Ground14_NRM.jpg
-material2_DISP ./res/oreonworlds/materials/Ground14_DISP.jpg
-material2_displaceScale 0.3
+material2_DIF ./res/oreonworlds/materials/Ground_17_DIF.jpg
+material2_NRM ./res/oreonworlds/materials/Ground_17_NRM.jpg
+material2_DISP ./res/oreonworlds/materials/Ground_17_DISP.jpg
+material2_displaceScale 0.8
 material2_emission 0.0
 material2_shininess 20.0
-material3_DIF ./res/oreonworlds/materials/SnowIce_DIF.jpg
-material3_NRM ./res/oreonworlds/materials/SnowIce_NRM.jpg
-material3_DISP ./res/oreonworlds/materials/SnowIce_DISP.jpg
-material3_displaceScale 0.3
+material3_DIF ./res/oreonworlds/materials/Ground_21_DIF.jpg
+material3_NRM ./res/oreonworlds/materials/Ground_21_NRM.jpg
+material3_DISP ./res/oreonworlds/materials/Ground_21_DISP.jpg
+material3_displaceScale 1.0
 material3_emission 0.0
 material3_shininess 20.0
 
@@ -32,7 +32,7 @@ tessellationFactor 761
 tessellationSlope 1.63
 tessellationShift -0.5
 detailRange 400
-sightRangeFactor 1.4
+sightRangeFactor 1.2
 
 #lod ranges
 lod1_range 1750
