@@ -33,7 +33,7 @@ public class RenderingEngine {
 	
 	private MotionBlur motionBlur;
 	private DepthOfFieldBlur dofBlur;
-	private Bloom hdrBloom;
+	private Bloom bloom;
 	
 	private static boolean motionBlurEnabled = false;
 	private static boolean depthOfFieldBlurEnabled = false;
@@ -56,7 +56,7 @@ public class RenderingEngine {
 		screenTexture = new FullScreenTexturePanel();
 		motionBlur = new MotionBlur();
 		dofBlur = new DepthOfFieldBlur();
-		hdrBloom = new Bloom();
+		bloom = new Bloom();
 	}
 	
 	public void render()
@@ -86,8 +86,17 @@ public class RenderingEngine {
 		
 		// HDR Bloom
 		if (isBloomEnabled()) {
-			hdrBloom.render(postProcessingTexture);
-			postProcessingTexture = hdrBloom.getBloomBlurSceneTexture();
+			
+			// copy scene texture into low-resolution (div by 2) texture 
+			bloom.getFbo_div2().bind();
+			screenTexture.setTexture(postProcessingTexture);
+			glViewport(0,0,(int)(window.getWidth()/2f),(int)(window.getHeight()/2f));
+			screenTexture.render();
+			bloom.getFbo_div2().unbind();
+			glViewport(0,0,window.getWidth(),window.getHeight());
+			
+			bloom.render(postProcessingTexture);
+			postProcessingTexture = bloom.getBloomBlurSceneTexture();
 		}
 		
 		// Depth of Field Blur
