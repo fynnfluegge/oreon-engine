@@ -12,6 +12,7 @@ import engine.scenegraph.GameObject;
 import engine.scenegraph.Node;
 import engine.scenegraph.components.RenderInfo;
 import engine.scenegraph.components.Renderer;
+import engine.utils.Constants;
 
 public class TerrainNode extends GameObject{
 	
@@ -79,7 +80,7 @@ public class TerrainNode extends GameObject{
 		if (getRenderInfo().isShadowCaster() && isleaf){
 			getComponents().get("Renderer").setShader(getRenderInfo().getShadowShader());
 			getRenderInfo().getConfig().enable();
-			glViewport(0,0,1024,1024);
+			glViewport(0,0,Constants.PSSM_SHADOWMAP_RESOLUTION,Constants.PSSM_SHADOWMAP_RESOLUTION);
 			
 			getComponents().get("Renderer").render();
 			

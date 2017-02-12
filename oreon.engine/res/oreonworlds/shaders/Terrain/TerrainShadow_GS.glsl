@@ -1,6 +1,6 @@
 #version 430
 
-layout(triangles, invocations = 4) in;
+layout(triangles, invocations = 6) in;
 
 layout(triangle_strip, max_vertices = 3) out;
 
@@ -15,7 +15,7 @@ layout (std140, row_major) uniform Camera{
 };
 
 layout (std140, row_major) uniform LightViewProjections{
-	mat4 m_lightViewProjection[4];
+	mat4 m_lightViewProjection[6];
 };
 
 

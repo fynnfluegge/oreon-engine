@@ -33,7 +33,7 @@ void main(void){
 	
 	ivec2 computeCoord = ivec2(gl_GlobalInvocationID.x, gl_GlobalInvocationID.y);
 	
-	ivec2 computeCoordLowRes = ivec2(gl_GlobalInvocationID.x/1.2f, gl_GlobalInvocationID.y/1.2f);
+	ivec2 computeCoordLowRes = ivec2(gl_GlobalInvocationID.x/1.4f, gl_GlobalInvocationID.y/1.4f);
 	
 	float linDepth = linearize(depth);
 	
@@ -46,11 +46,11 @@ void main(void){
 		if (linDepth > 0.06) {
 			color = vec3(0,0,0);
 			
-			for (int i=0; i<7; i++){
-				if (linearize(texture(depthmap, w + vec2(((i-3)*1.2)/windowWidth,0)).r) > 0.059)
-					color += imageLoad(lowResSceneSampler, computeCoordLowRes + ivec2((i-3),0)).rgb * gaussianKernel7_Sigma1_5[i];
+			for (int i=0; i<9; i++){
+				if (linearize(texture(depthmap, w + vec2(((i-4)*1.4)/windowWidth,0)).r) > 0.059)
+					color += imageLoad(lowResSceneSampler, computeCoordLowRes + ivec2((i-4),0)).rgb * gaussianKernel9_Sigma2[i];
 				else
-					color += imageLoad(lowResSceneSampler, computeCoordLowRes).rgb * gaussianKernel7_Sigma1_5[i];
+					color += imageLoad(lowResSceneSampler, computeCoordLowRes).rgb * gaussianKernel9_Sigma2[i];
 			}
 		}
 		else if (linDepth > 0.04) {
@@ -73,7 +73,7 @@ void main(void){
 					color += imageLoad(sceneSampler, computeCoord).rgb * gaussianKernel7_Sigma1_5[i];
 			}
 		}
-		else if (linDepth > 0.004){
+		else if (linDepth > 0.005){
 			color = vec3(0,0,0);
 			for (int i=0; i<7; i++){
 				color += imageLoad(sceneSampler, computeCoord + ivec2(i-3,0)).rgb * gaussianKernel7_Sigma1[i];

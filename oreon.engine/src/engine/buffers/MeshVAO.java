@@ -4,6 +4,7 @@ import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
 import static org.lwjgl.opengl.GL11.GL_UNSIGNED_INT;
 import static org.lwjgl.opengl.GL11.glDrawElements;
+import static org.lwjgl.opengl.GL31.glDrawElementsInstanced;
 import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
 import static org.lwjgl.opengl.GL15.GL_ELEMENT_ARRAY_BUFFER;
 import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
@@ -27,6 +28,8 @@ public class MeshVAO implements VAO{
 	private int vaoId;
 	private int size;
 	private boolean hasTangentsBitangents;	
+	private boolean isInstanced;
+	private int instances;
 	
 	public MeshVAO()
 	{
@@ -39,6 +42,8 @@ public class MeshVAO implements VAO{
 	{
 			size = mesh.getIndices().length;
 			hasTangentsBitangents = mesh.isTangentSpace();
+			isInstanced = mesh.isInstanced();
+			instances = mesh.getInstances();
 		
 			glBindVertexArray(vaoId);
 			
@@ -77,7 +82,10 @@ public class MeshVAO implements VAO{
 				glEnableVertexAttribArray(4);
 			}
 			
-			glDrawElements(GL_TRIANGLES, size, GL_UNSIGNED_INT, 0);
+			if (isInstanced)
+				glDrawElementsInstanced(GL_TRIANGLES, size, GL_UNSIGNED_INT, 0, instances);
+			else
+				glDrawElements(GL_TRIANGLES, size, GL_UNSIGNED_INT, 0);
 			
 			glDisableVertexAttribArray(0);
 			glDisableVertexAttribArray(1);

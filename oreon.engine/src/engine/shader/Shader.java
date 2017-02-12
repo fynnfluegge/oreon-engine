@@ -75,7 +75,7 @@ public abstract class Shader {
 		
 		if (uniformLocation == 0xFFFFFFFF)
 		{
-			System.err.println("Error: Could not find uniform: " + uniform);
+			System.err.println(this.getClass().getName() + " Error: Could not find uniform: " + uniform);
 			new Exception().printStackTrace();
 			System.exit(1);
 		}
@@ -88,7 +88,7 @@ public abstract class Shader {
 		int uniformLocation =  glGetUniformBlockIndex(program, uniform);		
 		if (uniformLocation == 0xFFFFFFFF)
 		{
-			System.err.println("Error: Could not find uniform: " + uniform);
+			System.err.println(this.getClass().getName() + " Error: Could not find uniform: " + uniform);
 			new Exception().printStackTrace();
 			System.exit(1);
 		}
@@ -132,7 +132,7 @@ public abstract class Shader {
 
 		if(glGetProgrami(program, GL_LINK_STATUS) == 0)
 		{
-			System.out.println(glGetProgramInfoLog(program, 1024));
+			System.out.println(this.getClass().getName() + " " + glGetProgramInfoLog(program, 1024));
 			System.exit(1);
 		}
 		
@@ -140,7 +140,7 @@ public abstract class Shader {
 		
 		if(glGetProgrami(program, GL_VALIDATE_STATUS) == 0)
 		{
-			System.err.println(glGetProgramInfoLog(program, 1024));
+			System.err.println(this.getClass().getName() +  " " + glGetProgramInfoLog(program, 1024));
 			System.exit(1);
 		}
 	}
@@ -151,7 +151,7 @@ public abstract class Shader {
 		
 		if (shader == 0)
 		{
-			System.err.println("Shader creation failed");
+			System.err.println(this.getClass().getName() + " Shader creation failed");
 			System.exit(1);
 		}	
 		
@@ -160,7 +160,7 @@ public abstract class Shader {
 		
 		if(glGetShaderi(shader, GL_COMPILE_STATUS) == 0)
 		{
-			System.err.println(glGetShaderInfoLog(shader, 1024));
+			System.err.println(this.getClass().getName() + " " + glGetShaderInfoLog(shader, 1024));
 			System.exit(1);
 		}
 		

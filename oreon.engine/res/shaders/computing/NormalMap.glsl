@@ -34,8 +34,8 @@ void main(void)
 	
 	// Sobel Filter
 	normal.z = 1.0/normalStrength;
-	normal.x = z2 + 2*z4 + z7 - z0 - 2*z3 - z5;
-	normal.y = z5 + 2*z6 + z7 -z0 - 2*z1 - z2;
+	normal.x = z0 + 2*z3 + z5 - z2 - 2*z4 - z7;
+	normal.y = z0 + 2*z1 + z2 -z5 - 2*z6 - z7;
 	
 	imageStore(normalmap, x, vec4((normalize(normal)+1)/2,1));
 }

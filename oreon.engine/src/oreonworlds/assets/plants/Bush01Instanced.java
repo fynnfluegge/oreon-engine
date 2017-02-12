@@ -4,6 +4,9 @@ import java.nio.FloatBuffer;
 import java.util.List;
 import engine.buffers.MeshVAO;
 import engine.buffers.UBO;
+import engine.configs.AlphaBlending;
+import engine.configs.AlphaCullFaceDisable;
+import engine.configs.AlphaTest;
 import engine.configs.CullFaceDisable;
 import engine.math.Matrix4f;
 import engine.math.Vec3f;
@@ -26,7 +29,7 @@ public class Bush01Instanced extends Node{
 	public Bush01Instanced(){
 		
 		OBJLoader loader = new OBJLoader();
-		Model[] models = loader.load("./res/oreonworlds/assets/plants/Bush_01","Bush_01.obj","Bush_01.mtl");
+		Model[] models = loader.load("./res/oreonworlds/assets/plants/Tree_01","tree01.obj","tree01.mtl");
 		
 		List<Matrix4f> instancedWorldMatrices = ResourceLoader.loadObjectTransforms("./res/oreonworlds/assets/plants/Bush_01/Bush_01_instancedtransforms.txt");
 		List<Matrix4f> instancedModelMatrices = ResourceLoader.loadObjectTransformsModelMatrix("./res/oreonworlds/assets/plants/Bush_01/Bush_01_instancedtransforms.txt");
@@ -59,7 +62,7 @@ public class Bush01Instanced extends Node{
 			model.getMesh().setTangentSpace(false);
 			meshBuffer.addData(model.getMesh());
 
-			object.setRenderInfo(new RenderInfo(new CullFaceDisable(), Bush01InstancedShader.getInstance(), Bush01InstancedShadowShader.getInstance()));
+			object.setRenderInfo(new RenderInfo(new AlphaTest(0.2f), Bush01InstancedShader.getInstance(), Bush01InstancedShadowShader.getInstance()));
 			Renderer renderer = new Renderer(object.getRenderInfo().getShader(), meshBuffer);
 
 			object.addComponent("Material", model.getMaterial());

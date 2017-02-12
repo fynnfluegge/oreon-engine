@@ -5,6 +5,8 @@ layout(triangles, invocations = 1) in;
 // 6 shadow layers := 6 triangles := 18 vertices
 layout(triangle_strip, max_vertices = 18) out;
 
+in int instanceID_GS[];
+
 layout (std140, row_major) uniform Camera{
 	vec3 eyePosition;
 	mat4 m_View;
@@ -13,7 +15,7 @@ layout (std140, row_major) uniform Camera{
 };
 
 layout (std140, row_major) uniform InstancedMatrices{
-	mat4 m_World[1];
+	mat4 m_World[50];
 };
 
 layout (std140, row_major) uniform LightViewProjections{
@@ -29,7 +31,7 @@ void main()
 		for (int i = 0; i < gl_in.length(); ++i)
 		{
 			gl_Layer = j;
-			gl_Position = m_lightViewProjection[j] * m_World[ gl_InvocationID ] * gl_in[i].gl_Position;
+			gl_Position = m_lightViewProjection[j] * m_World[ instanceID_GS[i] ] * gl_in[i].gl_Position;
 			gl_ClipDistance[0] = dot(gl_Position,frustumPlanes[0]);
 			gl_ClipDistance[1] = dot(gl_Position,frustumPlanes[1]);
 			gl_ClipDistance[2] = dot(gl_Position,frustumPlanes[2]);

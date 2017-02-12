@@ -24,7 +24,7 @@ public class MotionBlurFonts extends GUIElement{
 		setConfig(new AlphaCullFaceDisable(0.0f));
 		setOrthographicMatrix(new Matrix4f().Orthographic2D());
 		setOrthoTransform(new Transform());
-		getOrthoTransform().setTranslation(5, Window.getInstance().getHeight()-110, 0);
+		getOrthoTransform().setTranslation(5, Window.getInstance().getHeight()-130, 0);
 		getOrthoTransform().setScaling(160, -40, 0);
 		setOrthographicMatrix(getOrthographicMatrix().mul(getOrthoTransform().getWorldMatrix()));
 		setVao(new GUIVAO());

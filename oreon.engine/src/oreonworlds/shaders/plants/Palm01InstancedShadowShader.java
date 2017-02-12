@@ -28,7 +28,6 @@ public class Palm01InstancedShadowShader extends Shader{
 		addFragmentShader(ResourceLoader.loadShader("oreonworlds/shaders/Palm_01/Palm01Shadow_FS.glsl"));
 		compileShader();
 		
-		addUniform("pssm_splits");
 		addUniform("clipplane");
 		addUniformBlock("InstancedMatrices");
 		addUniformBlock("Camera");
@@ -37,7 +36,6 @@ public class Palm01InstancedShadowShader extends Shader{
 	
 	public void updateUniforms(GameObject object){
 		
-		setUniformi("pssm_splits", Constants.PSSM_SPLITS);
 		setUniform("clipplane", RenderingEngine.getClipplane());
 		bindUniformBlock("Camera",Constants.CameraUniformBlockBinding);
 		bindUniformBlock("LightViewProjections",Constants.LightMatricesUniformBlockBinding);

@@ -1,4 +1,4 @@
-package editor.terrain;
+package worldgenerator.tools.terrainEditor;
 
 import static org.lwjgl.opengl.GL13.GL_TEXTURE10;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE11;

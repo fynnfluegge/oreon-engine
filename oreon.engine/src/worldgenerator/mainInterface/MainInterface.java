@@ -1,14 +1,13 @@
-package editor.mainInterface;
+package worldgenerator.mainInterface;
 
 import javax.swing.JFrame;
 
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 
-import editor.db.DB;
-import editor.tools.terrainEditor.OpenGLEngine;
-import editor.tools.terrainEditor.TerrainEditorInterface;
 import engine.core.CoreEngine;
+import worldgenerator.db.DB;
+import worldgenerator.tools.terrainEditor.TerrainEditorInterface;
 
 public class MainInterface extends JFrame{
 
@@ -137,7 +136,7 @@ public class MainInterface extends JFrame{
 	        
 	        terrainEditor = new TerrainEditorInterface();
 	        
-	        Thread OpenGL = new Thread(new OpenGLEngine(OpenGLCanvas));
+	        Thread OpenGL = new Thread(new Engine(OpenGLCanvas));
 	        
 	        OpenGL.start();
 	        

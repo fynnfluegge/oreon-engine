@@ -67,7 +67,8 @@ void main()
 	
 	diffuseFactor = diffuse(directional_light.direction, normalize(TBN * normal), directional_light.intensity);
 	
-	specularFactor = specular(directional_light.direction, normalize(TBN * normal), eyeDirection);
+	if (diffuseFactor >= 1)
+		specularFactor = specular(directional_light.direction, normalize(TBN * normal), eyeDirection);
 	
 	diffuseLight = directional_light.ambient + directional_light.color * diffuseFactor;
 	specularLight = directional_light.color * specularFactor;

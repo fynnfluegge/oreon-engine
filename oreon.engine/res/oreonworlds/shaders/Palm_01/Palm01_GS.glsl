@@ -1,17 +1,18 @@
 #version 430
 
-layout(triangles, invocations = 13) in;
+layout(triangles, invocations = 1) in;
 
 layout(triangle_strip, max_vertices = 3) out;
 
 in vec4 normal_GS[];
+in int instanceID_GS[];
 
 out vec3 position_FS;
 out vec3 normal_FS;
 
 layout (std140, row_major) uniform InstancedMatrices{
-	mat4 m_World[13];
-	mat4 m_Model[13];
+	mat4 m_World[50];
+	mat4 m_Model[50];
 };
 
 layout (std140, row_major) uniform Camera{
@@ -27,7 +28,7 @@ void main()
 {	
 	for (int i = 0; i < gl_in.length(); ++i)
 	{
-		vec4 worldPos = m_World[ gl_InvocationID ] * gl_in[i].gl_Position;
+		vec4 worldPos = m_World[ instanceID_GS[i] ] * gl_in[i].gl_Position;
 		gl_Position = viewProjectionMatrix * worldPos;
 		gl_ClipDistance[0] = dot(gl_Position,frustumPlanes[0]);
 		gl_ClipDistance[1] = dot(gl_Position,frustumPlanes[1]);
@@ -37,7 +38,7 @@ void main()
 		gl_ClipDistance[5] = dot(gl_Position,frustumPlanes[5]);
 		gl_ClipDistance[6] = dot(gl_Position,clipplane);
 		position_FS = worldPos.xyz;
-		normal_FS = (m_Model[ gl_InvocationID ] * normal_GS[i]).xyz;
+		normal_FS = (m_Model[ instanceID_GS[i] ] * normal_GS[i]).xyz;
 		EmitVertex();
 	}	
 	EndPrimitive();

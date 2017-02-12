@@ -1,6 +1,7 @@
 package oreonworlds.shaders.plants;
 
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 import modules.terrain.Terrain;
 import engine.core.RenderingEngine;
@@ -35,12 +36,14 @@ public class Bush01InstancedShader extends Shader{
 		addUniform("sightRangeFactor");
 		addUniform("material.diffusemap");
 		addUniform("clipplane");
-//		addUniform("material.emission");
-//		addUniform("material.shininess");
+		addUniform("material.emission");
+		addUniform("material.shininess");
 		
 		addUniformBlock("DirectionalLight");
 		addUniformBlock("InstancedMatrices");
+		addUniformBlock("LightViewProjections");
 		addUniformBlock("Camera");
+		addUniform("shadowMaps");
 	}
 	
 	public void updateUniforms(GameObject object)
@@ -48,6 +51,7 @@ public class Bush01InstancedShader extends Shader{
 		bindUniformBlock("Camera", Constants.CameraUniformBlockBinding);
 		bindUniformBlock("InstancedMatrices", Constants.Bush01InstancedMatricesBinding);
 		bindUniformBlock("DirectionalLight", Constants.DirectionalLightUniformBlockBinding);
+		bindUniformBlock("LightViewProjections",Constants.LightMatricesUniformBlockBinding);
 		
 		setUniform("clipplane", RenderingEngine.getClipplane());
 		setUniformf("sightRangeFactor", Terrain.getInstance().getTerrainConfiguration().getSightRangeFactor());
@@ -57,7 +61,11 @@ public class Bush01InstancedShader extends Shader{
 		glActiveTexture(GL_TEXTURE0);
 		material.getDiffusemap().bind();
 		setUniformi("material.diffusemap", 0);
-//		setUniformf("material.emission", material.getEmission());
-//		setUniformf("material.shininess", material.getShininess());
+		setUniformf("material.emission", material.getEmission());
+		setUniformf("material.shininess", material.getShininess());
+		
+		glActiveTexture(GL_TEXTURE1);
+		RenderingEngine.getShadowMaps().getDepthMaps().bind();
+		setUniformi("shadowMaps", 1);
 	}
 }

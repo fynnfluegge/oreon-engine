@@ -1,21 +1,21 @@
-package editor.tools.terrainEditor;
+package worldgenerator.mainInterface;
 
 import java.awt.Canvas;
 
-import editor.db.DB;
-import editor.terrain.TerrainGridShader;
-import editor.terrain.TerrainShader;
-import editor.terrain.TerrainShadowShader;
 import engine.core.Game;
 import modules.gui.GUIs.GridFPS;
 import modules.sky.SkySphere;
 import modules.terrain.Terrain;
+import worldgenerator.db.DB;
+import worldgenerator.tools.terrainEditor.TerrainGridShader;
+import worldgenerator.tools.terrainEditor.TerrainShader;
+import worldgenerator.tools.terrainEditor.TerrainShadowShader;
 
-public class OpenGLEngine implements Runnable{
+public class Engine implements Runnable{
 	
 	Canvas OpenGLCanvas;
 	
-	public OpenGLEngine(Canvas canvas){
+	public Engine(Canvas canvas){
 		OpenGLCanvas = canvas;
 	}
 
@@ -24,7 +24,7 @@ public class OpenGLEngine implements Runnable{
 		
 		Game game = new Game();
 		game.setGui(new GridFPS());
-		game.getEngine().embedWindow(1000, 520, OpenGLCanvas);
+		game.getEngine().embedWindow(1000, 500, OpenGLCanvas);
 		game.init();
 		game.getScenegraph().setTerrain(Terrain.getInstance());
 		Terrain.getInstance().init("./res/editor/terrainEditor/terrainSettings.ter", TerrainShader.getInstance(),

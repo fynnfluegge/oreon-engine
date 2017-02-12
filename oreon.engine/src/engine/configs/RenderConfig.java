@@ -43,13 +43,13 @@ public interface RenderConfig {
 	
 	public static void clearScreenDeepOceanRefraction()
 	{
-		glClearColor(0.02f,0.03f,0.055f,1.0f);
+		glClearColor(0.015f,0.022f,0.04f,1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 	
 	public static void clearScreenDeepOceanReflection()
 	{
-		glClearColor(0.3294f,0.4917f,0.7270f,1.0f);
+		glClearColor(0.0f,0.0f,0.0f,1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 }

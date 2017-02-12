@@ -1,6 +1,6 @@
-package editor;
+package worldgenerator;
 
-import editor.mainInterface.MainInterface;
+import worldgenerator.mainInterface.MainInterface;
 
 public class Main {
 

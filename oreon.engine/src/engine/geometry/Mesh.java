@@ -5,8 +5,9 @@ public class Mesh{
 
 	private Vertex[] vertices;
 	private int[] indices;
+	private int instances;
 	private boolean tangentSpace;
-	private int GL_PRIMITIVE;
+	private boolean instanced;
 	
 	public Mesh(Vertex[] vertices, int[] indices)
 	{
@@ -30,19 +31,27 @@ public class Mesh{
 		this.indices = indices;
 	}
 
-	public int getGL_PRIMITIVE() {
-		return GL_PRIMITIVE;
-	}
-
-	public void setGL_PRIMITIVE(int gL_PRIMITIVE) {
-		GL_PRIMITIVE = gL_PRIMITIVE;
-	}
-
 	public boolean isTangentSpace() {
 		return tangentSpace;
 	}
 
 	public void setTangentSpace(boolean tangentSpace) {
 		this.tangentSpace = tangentSpace;
+	}
+
+	public boolean isInstanced() {
+		return instanced;
+	}
+
+	public void setInstanced(boolean instanced) {
+		this.instanced = instanced;
+	}
+
+	public int getInstances() {
+		return instances;
+	}
+
+	public void setInstances(int instances) {
+		this.instances = instances;
 	}
 }

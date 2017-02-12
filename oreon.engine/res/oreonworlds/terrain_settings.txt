@@ -1,14 +1,14 @@
 #textures
-material0_DIF ./res/editor/terrainEditor/materials/grass0_DIF.jpg
-material0_NRM ./res/editor/terrainEditor/materials/grass0_NRM.jpg
-material0_DISP ./res/editor/terrainEditor/materials/grass0_DISP.jpg
+material0_DIF ./res/oreonworlds/materials/grass0_DIF.jpg
+material0_NRM ./res/oreonworlds/materials/grass0_NRM.jpg
+material0_DISP ./res/oreonworlds/materials/grass0_DISP.jpg
 material0_displaceScale 0.0
 material0_emission 0.0
 material0_shininess 200.0
 material1_DIF ./res/oreonworlds/materials/Ground_11_DIF.jpg
 material1_NRM ./res/oreonworlds/materials/Ground_11_NRM.jpg
 material1_DISP ./res/oreonworlds/materials/Ground_11_DISP.jpg
-material1_displaceScale 0.4
+material1_displaceScale 0.3
 material1_emission 0.0
 material1_shininess 200.0
 material2_DIF ./res/oreonworlds/materials/Ground_17_DIF.jpg
@@ -49,22 +49,22 @@ amp 2.0
 l 10.0
 scaling 1
 strength 8.0
-normalStrength 64
+normalStrength 1000
 random 941
 
 fractal_stage1
 amp 2.0
-l 10.0
+l 20.0
 scaling 2
-strength 1.8
-normalStrength 64
+strength 2
+normalStrength 1000
 random 558
 
 fractal_stage2
 amp 4.0
 l 100.0
 scaling 4
-strength 0.28
+strength 0.4
 normalStrength 48
 random 812
 
@@ -72,7 +72,7 @@ fractal_stage3
 amp 4.0
 l 100.0
 scaling 6
-strength 0.2
+strength 0.1
 normalStrength 32
 random 470
 
@@ -80,7 +80,7 @@ fractal_stage4
 amp 4.0
 l 200.0
 scaling 10
-strength 0.06
+strength 0.04
 normalStrength 32
 random 158
 

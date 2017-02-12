@@ -1,9 +1,8 @@
-package editor.tools.terrainEditor;
+package worldgenerator.tools.terrainEditor;
 
 import javax.swing.JFrame;
 
-
-import editor.db.DB;
+import worldgenerator.db.DB;
 
 
 public class TerrainEditorInterface extends JFrame{

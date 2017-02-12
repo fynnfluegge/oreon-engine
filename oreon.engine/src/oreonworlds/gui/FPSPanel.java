@@ -37,7 +37,7 @@ public class FPSPanel extends GUIElement{
 		int size = 20;
 		setOrthoTransform(new Transform());
 		setOrthographicMatrix(new Matrix4f().Orthographic2D());
-		getOrthoTransform().setTranslation(Window.getInstance().getWidth()-75, Window.getInstance().getHeight()-20, 0);
+		getOrthoTransform().setTranslation(Window.getInstance().getWidth()-75, Window.getInstance().getHeight()-40, 0);
 		getOrthoTransform().setScaling(size, size, 0);
 		setOrthographicMatrix(getOrthographicMatrix().mul(getOrthoTransform().getWorldMatrix()));
 		Vec2f[] texCoords = new Vec2f[4];

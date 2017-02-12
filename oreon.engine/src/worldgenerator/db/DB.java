@@ -1,4 +1,4 @@
-package editor.db;
+package worldgenerator.db;
 
 import modules.terrain.TerrainConfiguration;
 

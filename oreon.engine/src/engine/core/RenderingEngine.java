@@ -86,15 +86,6 @@ public class RenderingEngine {
 		
 		// HDR Bloom
 		if (isBloomEnabled()) {
-			
-			// copy scene texture into low-resolution (div by 2) texture 
-			bloom.getFbo_div2().bind();
-			screenTexture.setTexture(postProcessingTexture);
-			glViewport(0,0,(int)(window.getWidth()/2f),(int)(window.getHeight()/2f));
-			screenTexture.render();
-			bloom.getFbo_div2().unbind();
-			glViewport(0,0,window.getWidth(),window.getHeight());
-			
 			bloom.render(postProcessingTexture);
 			postProcessingTexture = bloom.getBloomBlurSceneTexture();
 		}
@@ -105,7 +96,7 @@ public class RenderingEngine {
 			// copy scene texture into low-resolution texture
 			dofBlur.getLowResFbo().bind();
 			screenTexture.setTexture(postProcessingTexture);
-			glViewport(0,0,(int)(window.getWidth()/1.2f),(int)(window.getHeight()/1.2f));
+			glViewport(0,0,(int)(window.getWidth()/1.4f),(int)(window.getHeight()/1.4f));
 			screenTexture.render();
 			dofBlur.getLowResFbo().unbind();
 			glViewport(0,0,window.getWidth(),window.getHeight());

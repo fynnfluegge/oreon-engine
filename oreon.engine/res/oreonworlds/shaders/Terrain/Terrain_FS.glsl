@@ -52,7 +52,8 @@ uniform Material snow;
 uniform float sightRangeFactor;
 uniform int largeDetailedRange;
 
-const float zFar = 10000;
+const float zfar = 10000;
+const float znear = 0.1;
 const vec3 fogColor = vec3(0.62,0.85,0.95);
 
 float emission;
@@ -73,48 +74,76 @@ float specular(vec3 direction, vec3 normal, vec3 eyePosition, vec3 vertexPositio
 	return pow(specular, shininess) * emission;
 }
 
+float linearizeDepth(float depth)
+{
+	return (2 * znear) / (zfar + znear - depth * (zfar - znear));
+}
+
+float varianceShadow(vec3 projCoords, int split){
+	
+	float shadowFactor = 1.0;
+	float texelSize = 1.0/ 2048.0;
+	float currentDepth = projCoords.z;
+	
+	for (int i=-4; i<=4; i++){
+		for (int j=-4; j<=4; j++){
+			float shadowMapDepth = texture(shadowMaps, vec3(projCoords.xy,split)
+													   + vec3(i,j,0) * texelSize).r; 
+			if (currentDepth > shadowMapDepth)
+				shadowFactor -= 0.01;
+		}
+	}
+	
+	return shadowFactor;
+}
+
 
 float shadow(vec3 worldPos)
 {
 	float shadow = 1;
-	float shadowMapDepth = 0;
+	float shadowFactor = 0;
 	vec3 projCoords = vec3(0,0,0);
-	float depth = viewSpacePos.z/zFar;
+	float depth = viewSpacePos.z/zfar;
 	if (depth < splitRange[0]){
 		vec4 lightSpacePos = m_lightViewProjection[0] * vec4(worldPos,1.0);
 		projCoords = lightSpacePos.xyz * 0.5 + 0.5;
-		shadowMapDepth = texture(shadowMaps, vec3(projCoords.xy,0)).r; 
+		shadowFactor = varianceShadow(projCoords,0);
+		//shadowMapDepth = texture(shadowMaps, vec3(projCoords.xy,0)).r; 
 	}
 	else if (depth < splitRange[1]){
 		vec4 lightSpacePos = m_lightViewProjection[1] * vec4(worldPos,1.0);
 		projCoords = lightSpacePos.xyz * 0.5 + 0.5;
-		shadowMapDepth = texture(shadowMaps, vec3(projCoords.xy,1)).r;  
+		shadowFactor = varianceShadow(projCoords,1);
 	}
 	else if (depth < splitRange[2]){
 		vec4 lightSpacePos = m_lightViewProjection[2] * vec4(worldPos,1.0);
 		projCoords = lightSpacePos.xyz * 0.5 + 0.5;
-		shadowMapDepth = texture(shadowMaps, vec3(projCoords.xy,2)).r; 
+		shadowFactor = varianceShadow(projCoords,2);
 	}
 	else if (depth < splitRange[3]){
 		vec4 lightSpacePos = m_lightViewProjection[3] * vec4(worldPos,1.0);
 		projCoords = lightSpacePos.xyz * 0.5 + 0.5;
-		shadowMapDepth = texture(shadowMaps, vec3(projCoords.xy,3)).r; 
+		shadowFactor = varianceShadow(projCoords,3);
 	}
 	else if (depth < splitRange[4]){
 		vec4 lightSpacePos = m_lightViewProjection[4] * vec4(worldPos,1.0);
 		projCoords = lightSpacePos.xyz * 0.5 + 0.5;
-		shadowMapDepth = texture(shadowMaps, vec3(projCoords.xy,4)).r; 
+		shadowFactor = varianceShadow(projCoords,4); 
 	}
 	else if (depth < splitRange[5]){
 		vec4 lightSpacePos = m_lightViewProjection[5] * vec4(worldPos,1.0);
 		projCoords = lightSpacePos.xyz * 0.5 + 0.5;
-		shadowMapDepth = texture(shadowMaps, vec3(projCoords.xy,5)).r; 
+		shadowFactor = varianceShadow(projCoords,5); 
 	}
 	else return 1;
 	
-	float currentDepth = projCoords.z;  
-	shadow = currentDepth > shadowMapDepth ? 0.25 : 1.0; 
-	return shadow;
+	//float currentDepth = projCoords.z; 
+	
+	//float currentLinDepth = linearizeDepth(currentDepth);
+	//float shadowLinDepth  = linearizeDepth(shadowMapDepth);
+	
+	//shadow = currentDepth > shadowMapDepth ? 0.2 : 1.0; 
+	return shadowFactor;
 }
 
 void main()
@@ -172,16 +201,14 @@ void main()
 	
 	vec3 fragColor = mix(texture(sand.diffusemap, texCoordF).rgb, texture(rock.diffusemap, texCoordF/2).rgb, clamp((height+200)/400.0,0,1));
 	fragColor = mix(fragColor, texture(snow.diffusemap,texCoordF/4).rgb, clamp((height-100)/200,0,1));
-	float grassFactor = clamp((height+100)/(-scaleY)+0.6,0.0,0.9);
-	if (normal.y > 0.9){
-		fragColor = mix(fragColor,texture(grass.diffusemap,texCoordF).rgb,grassFactor);
-	}
+	float grassFactor = clamp((height+300)/(-scaleY*0.5)+0.8,0.0,0.8);
+	fragColor = mix(fragColor,texture(grass.diffusemap,texCoordF).rgb,grassFactor);
 	
 	fragColor *= diffuseLight;
 	fragColor += specularLight;
 	fragColor *= shadow(position);
 	
-	float fogFactor = -0.0005/sightRangeFactor*(dist-zFar/5*sightRangeFactor);
+	float fogFactor = -0.0005/sightRangeFactor*(dist-zfar/5*sightRangeFactor);
 	
     vec3 rgb = mix(fogColor, fragColor, clamp(fogFactor,0,1));
 	

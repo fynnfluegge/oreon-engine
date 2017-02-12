@@ -32,10 +32,10 @@ uniform float emission;
 uniform float shininess;
 
 vec2 wind = vec2(1,0);
-const vec3 refractionColor = vec3(0.02,0.03,0.065);
+const vec3 refractionColor = vec3(0.015,0.022,0.04);
 const vec3 reflectionColor = vec3(0.2994,0.4417,0.6870);
 const float zFar = 10000;
-const vec4 fogColor = vec4(0.1,0.15,0.25,0);
+const vec4 fogColor = vec4(0.1,0.12,0.28,0);
 
 const float R = 0.0403207622; 
 float SigmaSqX;

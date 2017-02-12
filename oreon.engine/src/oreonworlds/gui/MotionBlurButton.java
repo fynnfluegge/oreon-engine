@@ -18,7 +18,7 @@ public class MotionBlurButton extends Button{
 			buttonMap = new Texture2D("./res/gui/tex/checkbox.png");
 			buttonClickMap = new Texture2D("./res/gui/tex/checkbox.png");
 		}
-		getOrthoTransform().setTranslation(210, Window.getInstance().getHeight()-142, 0);
+		getOrthoTransform().setTranslation(210, Window.getInstance().getHeight()-162, 0);
 		getOrthoTransform().setScaling(15, 25, 0);
 		Vec2f[] texCoords = new Vec2f[4];
 		texCoords[0] = new Vec2f(0,1f);

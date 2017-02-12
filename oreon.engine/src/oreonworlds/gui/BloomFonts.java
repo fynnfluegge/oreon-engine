@@ -24,7 +24,7 @@ private Texture2D texture;
 		setConfig(new AlphaCullFaceDisable(0.0f));
 		setOrthographicMatrix(new Matrix4f().Orthographic2D());
 		setOrthoTransform(new Transform());
-		getOrthoTransform().setTranslation(8, Window.getInstance().getHeight()-172, 0);
+		getOrthoTransform().setTranslation(8, Window.getInstance().getHeight()-192, 0);
 		getOrthoTransform().setScaling(150, -25, 0);
 		setOrthographicMatrix(getOrthographicMatrix().mul(getOrthoTransform().getWorldMatrix()));
 		setVao(new GUIVAO());

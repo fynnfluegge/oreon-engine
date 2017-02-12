@@ -10,6 +10,7 @@ import oreonworlds.assets.rocks.Rock02Instanced;
 import oreonworlds.gui.GUI;
 import oreonworlds.shaders.terrain.TerrainGridShader;
 import oreonworlds.shaders.terrain.TerrainShader;
+import worldgenerator.tools.terrainEditor.TerrainShadowShader;
 
 public class Main {
 

@@ -42,11 +42,11 @@ void main(void){
 		if (linDepth > 0.06) {
 			color = vec3(0,0,0);
 			
-			for (int i=0; i<7; i++){
-				if (linearize(texture(depthmap, w + vec2(0,((i-3)*1.2)/windowWidth)).r) > 0.059)
-					color += imageLoad(horizontalBlurSceneSampler, computeCoord + ivec2(0,(i-3)*1.2)).rgb * gaussianKernel7_Sigma1_5[i];
+			for (int i=0; i<9; i++){
+				if (linearize(texture(depthmap, w + vec2(0,((i-4)*1.4)/windowWidth)).r) > 0.059)
+					color += imageLoad(horizontalBlurSceneSampler, computeCoord + ivec2(0,(i-4)*1.4)).rgb * gaussianKernel9_Sigma2[i];
 				else
-					color += imageLoad(horizontalBlurSceneSampler, computeCoord).rgb * gaussianKernel7_Sigma1_5[i];
+					color += imageLoad(horizontalBlurSceneSampler, computeCoord).rgb * gaussianKernel9_Sigma2[i];
 			}
 		}
 		else if (linDepth > 0.04) {
@@ -69,7 +69,7 @@ void main(void){
 					color += imageLoad(horizontalBlurSceneSampler, computeCoord).rgb * gaussianKernel7_Sigma1_5[i];
 			}
 		}
-		else if (linDepth > 0.004){
+		else if (linDepth > 0.005){
 			color = vec3(0,0,0);
 			
 			for (int i=0; i<7; i++){
