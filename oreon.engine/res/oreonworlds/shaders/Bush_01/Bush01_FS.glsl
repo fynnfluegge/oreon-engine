@@ -42,7 +42,7 @@ const vec3 fogColor = vec3(0.62,0.85,0.95);
 
 float diffuse(vec3 lightDir, vec3 normal, float intensity)
 {
-	return max(0.2, dot(normal, -lightDir) * intensity);
+	return max(0.0, dot(normal, -lightDir) * intensity);
 }
 
 float specular(vec3 lightDir, vec3 normal, vec3 eyeDir)
@@ -66,7 +66,7 @@ float varianceShadow(vec3 projCoords, int split){
 		for (int j=-1; j<=1; j++){
 			float shadowMapDepth = texture(shadowMaps, vec3(projCoords.xy,split)
 													   + vec3(i,j,0) * texelSize).r; 
-			if (currentDepth - 0.000 > shadowMapDepth)
+			if (currentDepth - 0.002 > shadowMapDepth)
 				shadowFactor -= 0.1;
 		}
 	}
@@ -137,7 +137,10 @@ void main()
 	
 		
 	vec3 fragColor = diffuseColor * diffuseLight + specularLight;
-	fragColor *= shadow(position_FS);
+	
+	// prevent shadows on faces backfacing lightsource
+	if (dot(normal_FS, -directional_light.direction) > 0.0)
+		fragColor *= shadow(position_FS);
 	
 	float fogFactor = -0.0005/sightRangeFactor*(dist-zfar/5*sightRangeFactor);
 	

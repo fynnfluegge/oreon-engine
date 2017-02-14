@@ -26,6 +26,7 @@ public class Constants {
 	public static final int Palm01InstancedMatricesBinding = 5;
 	public static final int Rock01InstancedMatricesBinding = 6;
 	public static final int Rock02InstancedMatricesBinding = 7;
+	public static final int Grass01InstancedMatricesBinding = 8;
 
 	
 

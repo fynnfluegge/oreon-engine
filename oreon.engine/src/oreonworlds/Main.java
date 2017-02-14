@@ -4,6 +4,7 @@ import engine.core.Game;
 import modules.sky.SkySphere;
 import modules.terrain.Terrain;
 import oreonworlds.assets.plants.Bush01Instanced;
+import oreonworlds.assets.plants.Grass01Instanced;
 import oreonworlds.assets.plants.Palm01Instanced;
 import oreonworlds.assets.rocks.Rock01Instanced;
 import oreonworlds.assets.rocks.Rock02Instanced;
@@ -24,10 +25,11 @@ public class Main {
 		Terrain.getInstance().init("./res/oreonworlds/terrain_settings.txt", TerrainShader.getInstance(),
 				TerrainGridShader.getInstance(), null);
 		game.getScenegraph().addObject(new SkySphere());	
-		game.getScenegraph().getRoot().addChild(new Bush01Instanced());
-		game.getScenegraph().getRoot().addChild(new Palm01Instanced());
+		//game.getScenegraph().getRoot().addChild(new Bush01Instanced());
+		//game.getScenegraph().getRoot().addChild(new Palm01Instanced());
 		game.getScenegraph().getRoot().addChild(new Rock01Instanced());
 		game.getScenegraph().getRoot().addChild(new Rock02Instanced());
+		game.getScenegraph().getRoot().addChild(new Grass01Instanced());
 		game.launch();
 	}
 
