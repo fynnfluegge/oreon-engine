@@ -5,7 +5,7 @@ import java.util.List;
 import engine.buffers.MeshVAO;
 import engine.buffers.UBO;
 import engine.configs.AlphaBlending;
-import engine.configs.AlphaCullFaceDisable;
+import engine.configs.AlphaTestCullFaceDisable;
 import engine.configs.AlphaTest;
 import engine.configs.CullFaceDisable;
 import engine.math.Matrix4f;

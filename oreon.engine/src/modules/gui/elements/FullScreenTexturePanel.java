@@ -4,7 +4,7 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 import modules.gui.GUIElement;
 import modules.gui.GUIVAO;
-import engine.configs.AlphaCullFaceDisable;
+import engine.configs.AlphaTestCullFaceDisable;
 import engine.core.Window;
 import engine.geometry.Geometrics;
 import engine.math.Matrix4f;
@@ -20,7 +20,7 @@ public class FullScreenTexturePanel extends GUIElement{
 		
 		texture = new Texture2D();
 		setShader(GuiShader.getInstance());
-		setConfig(new AlphaCullFaceDisable(0.0f));
+		setConfig(new AlphaTestCullFaceDisable(0.0f));
 		setOrthographicMatrix(new Matrix4f().Orthographic2D());
 		setOrthoTransform(new Transform());
 		getOrthoTransform().setTranslation(0, 0, 0);

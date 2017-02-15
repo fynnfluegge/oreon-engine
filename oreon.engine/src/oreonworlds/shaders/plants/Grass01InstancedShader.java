@@ -1,7 +1,6 @@
 package oreonworlds.shaders.plants;
 
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
-import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import engine.core.RenderingEngine;

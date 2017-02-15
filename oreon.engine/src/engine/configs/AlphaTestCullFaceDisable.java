@@ -10,11 +10,11 @@ import static org.lwjgl.opengl.GL11.glBlendFunc;
 import static org.lwjgl.opengl.GL11.glDisable;
 import static org.lwjgl.opengl.GL11.glEnable;
 
-public class AlphaCullFaceDisable implements RenderConfig{
+public class AlphaTestCullFaceDisable implements RenderConfig{
 	
 	private float alpha;
 	
-	public AlphaCullFaceDisable(float alpha){
+	public AlphaTestCullFaceDisable(float alpha){
 		this.setAlpha(alpha);
 	}
 	

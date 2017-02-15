@@ -3,7 +3,7 @@ package samples.ocean.gui;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
-import engine.configs.AlphaCullFaceDisable;
+import engine.configs.AlphaTestCullFaceDisable;
 import engine.core.Window;
 import engine.geometry.Geometrics;
 import engine.math.Matrix4f;
@@ -21,7 +21,7 @@ private Texture2D texture;
 		
 		texture = new Texture2D("./res/gui/tex/Bloomtxt.png");
 		setShader(GuiShader.getInstance());
-		setConfig(new AlphaCullFaceDisable(0.0f));
+		setConfig(new AlphaTestCullFaceDisable(0.0f));
 		setOrthographicMatrix(new Matrix4f().Orthographic2D());
 		setOrthoTransform(new Transform());
 		getOrthoTransform().setTranslation(8, Window.getInstance().getHeight()-192, 0);

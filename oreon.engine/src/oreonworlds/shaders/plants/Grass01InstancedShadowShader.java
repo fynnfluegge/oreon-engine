@@ -1,7 +1,11 @@
 package oreonworlds.shaders.plants;
 
+import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
+import static org.lwjgl.opengl.GL13.glActiveTexture;
+
 import engine.core.RenderingEngine;
 import engine.scenegraph.GameObject;
+import engine.scenegraph.components.Material;
 import engine.shader.Shader;
 import engine.utils.Constants;
 import engine.utils.ResourceLoader;
@@ -23,24 +27,29 @@ public class Grass01InstancedShadowShader extends Shader{
 	{
 		super();
 		
-		addVertexShader(ResourceLoader.loadShader("oreonworlds/shaders/Bush_01/Bush01_VS.glsl"));
-		addGeometryShader(ResourceLoader.loadShader("oreonworlds/shaders/Bush_01/Bush01Shadow_GS.glsl"));
-		addFragmentShader(ResourceLoader.loadShader("oreonworlds/shaders/Bush_01/Bush01Shadow_FS.glsl"));
+		addVertexShader(ResourceLoader.loadShader("oreonworlds/shaders/Grass_01/Grass01_VS.glsl"));
+		addGeometryShader(ResourceLoader.loadShader("oreonworlds/shaders/Grass_01/Grass01Shadow_GS.glsl"));
+		addFragmentShader(ResourceLoader.loadShader("oreonworlds/shaders/Grass_01/Grass01Shadow_FS.glsl"));
 		compileShader();
 		
-		addUniform("pssm_splits");
 		addUniform("clipplane");
 		addUniformBlock("InstancedMatrices");
 		addUniformBlock("Camera");
 		addUniformBlock("LightViewProjections");
+		addUniform("material.diffusemap");
 	}
 	
 	public void updateUniforms(GameObject object){
 		
-		setUniformi("pssm_splits", Constants.PSSM_SPLITS);
 		setUniform("clipplane", RenderingEngine.getClipplane());
 		bindUniformBlock("Camera",Constants.CameraUniformBlockBinding);
 		bindUniformBlock("LightViewProjections",Constants.LightMatricesUniformBlockBinding);
 		bindUniformBlock("InstancedMatrices", Constants.Grass01InstancedMatricesBinding);
+		
+		Material material = (Material) object.getComponent("Material");
+		
+		glActiveTexture(GL_TEXTURE0);
+		material.getDiffusemap().bind();
+		setUniformi("material.diffusemap", 0);
 	}
 }

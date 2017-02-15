@@ -7,13 +7,13 @@ import java.util.List;
 import engine.buffers.MeshVAO;
 import engine.buffers.UBO;
 import engine.configs.AlphaTest;
+import engine.configs.AlphaTestCullFaceDisable;
 import engine.math.Matrix4f;
 import engine.math.Vec3f;
 import engine.scenegraph.GameObject;
 import engine.scenegraph.Node;
 import engine.scenegraph.components.RenderInfo;
 import engine.scenegraph.components.Renderer;
-import engine.textures.Texture2D;
 import engine.utils.BufferAllocation;
 import engine.utils.Constants;
 import engine.utils.Util;
@@ -36,7 +36,7 @@ public class Grass01Instanced extends Node{
 		
 		for (int i=0; i<50; i++){
 			Vec3f translation = new Vec3f((float)(Math.random()*200)-100 + 1196, 0, (float)(Math.random()*200)-100 - 450);
-			float s = (float)(Math.random()*2 + 1);
+			float s = (float)(Math.random()*8 + 1);
 			Vec3f scaling = new Vec3f(s,s,s);
 			Vec3f rotation = new Vec3f(0,(float)(Math.random()*360),0);
 			
@@ -81,10 +81,9 @@ public class Grass01Instanced extends Node{
 			model.getMesh().setInstances(50);
 			meshBuffer.addData(model.getMesh());
 
-			object.setRenderInfo(new RenderInfo(new AlphaTest(0.0f), Grass01InstancedShader.getInstance(), Grass01InstancedShadowShader.getInstance()));
+			object.setRenderInfo(new RenderInfo(new AlphaTestCullFaceDisable(0.4f), Grass01InstancedShader.getInstance(), Grass01InstancedShadowShader.getInstance()));
 			Renderer renderer = new Renderer(object.getRenderInfo().getShader(), meshBuffer);
 
-			model.getMaterial().setDiffusemap(new Texture2D("./res/oreonworlds/assets/plants/Grass_01/grass01.png"));
 			object.addComponent("Material", model.getMaterial());
 			object.addComponent("Renderer", renderer);
 			addChild(object);
