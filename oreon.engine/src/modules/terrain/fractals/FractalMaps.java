@@ -3,6 +3,7 @@ package modules.terrain.fractals;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.glGetTexImage;
 import static org.lwjgl.opengl.GL11.GL_RED;
+import static org.lwjgl.opengl.GL11.GL_BLUE;
 import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import java.nio.FloatBuffer;
 
@@ -20,6 +21,7 @@ public class FractalMaps {
 	private Texture2D heightmap;
 	private Texture2D normalmap;
 	private FloatBuffer heightDataBuffer;
+	private FloatBuffer slopeDataBuffer;
 	private int scaling;
 	private float strength;
 	private int random;
@@ -51,6 +53,9 @@ public class FractalMaps {
 		heightDataBuffer = BufferAllocation.createFloatBuffer(Constants.TERRAIN_FRACTALS_RESOLUTION * Constants.TERRAIN_FRACTALS_RESOLUTION);
 		heightmap.bind();
 		glGetTexImage(GL_TEXTURE_2D,0,GL_RED,GL_FLOAT,heightDataBuffer);
+		slopeDataBuffer = BufferAllocation.createFloatBuffer(Constants.TERRAIN_FRACTALS_RESOLUTION * Constants.TERRAIN_FRACTALS_RESOLUTION);
+		normalmap.bind();
+		glGetTexImage(GL_TEXTURE_2D,0,GL_BLUE,GL_FLOAT,slopeDataBuffer);
 	}
 
 	public Texture2D getHeightmap() {
@@ -119,5 +124,13 @@ public class FractalMaps {
 
 	public void setNormalStrength(int normalStrength) {
 		this.normalStrength = normalStrength;
+	}
+
+	public FloatBuffer getSlopeDataBuffer() {
+		return slopeDataBuffer;
+	}
+
+	public void setSlopeDataBuffer(FloatBuffer slopeDataBuffer) {
+		this.slopeDataBuffer = slopeDataBuffer;
 	}
 }

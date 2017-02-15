@@ -36,7 +36,7 @@ public class Grass01Instanced extends Node{
 		
 		for (int i=0; i<50; i++){
 			Vec3f translation = new Vec3f((float)(Math.random()*200)-100 + 1196, 0, (float)(Math.random()*200)-100 - 450);
-			float s = (float)(Math.random()*8 + 1);
+			float s = (float)(Math.random()*6 + 10);
 			Vec3f scaling = new Vec3f(s,s,s);
 			Vec3f rotation = new Vec3f(0,(float)(Math.random()*360),0);
 			
@@ -78,7 +78,7 @@ public class Grass01Instanced extends Node{
 			Util.generateNormalsCCW(model.getMesh().getVertices(), model.getMesh().getIndices());
 			model.getMesh().setTangentSpace(false);
 			model.getMesh().setInstanced(true);
-			model.getMesh().setInstances(50);
+			model.getMesh().setInstances(10);
 			meshBuffer.addData(model.getMesh());
 
 			object.setRenderInfo(new RenderInfo(new AlphaTestCullFaceDisable(0.4f), Grass01InstancedShader.getInstance(), Grass01InstancedShadowShader.getInstance()));

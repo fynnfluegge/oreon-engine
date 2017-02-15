@@ -27,8 +27,8 @@ public class Main {
 		game.getScenegraph().addObject(new SkySphere());	
 		//game.getScenegraph().getRoot().addChild(new Bush01Instanced());
 		//game.getScenegraph().getRoot().addChild(new Palm01Instanced());
-		game.getScenegraph().getRoot().addChild(new Rock01Instanced());
-		game.getScenegraph().getRoot().addChild(new Rock02Instanced());
+//		game.getScenegraph().getRoot().addChild(new Rock01Instanced());
+//		game.getScenegraph().getRoot().addChild(new Rock02Instanced());
 		game.getScenegraph().getRoot().addChild(new Grass01Instanced());
 		game.launch();
 	}
