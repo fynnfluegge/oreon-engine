@@ -12,8 +12,8 @@ out vec2 texCoord_FS;
 out vec4 viewSpacePos;
 
 layout (std140, row_major) uniform InstancedMatrices{
-	mat4 m_World[50];
-	mat4 m_Model[50];
+	mat4 m_World[512];
+	mat4 m_Model[512];
 };
 
 layout (std140, row_major) uniform Camera{

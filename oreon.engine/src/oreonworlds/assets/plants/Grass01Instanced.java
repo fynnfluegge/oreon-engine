@@ -29,13 +29,13 @@ public class Grass01Instanced extends Node{
 	public Grass01Instanced(){
 		
 		OBJLoader loader = new OBJLoader();
-		Model[] models = loader.load("./res/oreonworlds/assets/plants/Grass_01","grassmodel.obj","grass01.mtl");
+		Model[] models = loader.load("./res/oreonworlds/assets/plants/Grass_01","grassmodel.obj","grassmodel.mtl");
 		
 		List<Matrix4f> instancedWorldMatrices = new ArrayList<Matrix4f>();
 		List<Matrix4f> instancedModelMatrices = new ArrayList<Matrix4f>();
 		
-		for (int i=0; i<50; i++){
-			Vec3f translation = new Vec3f((float)(Math.random()*200)-100 + 1196, 0, (float)(Math.random()*200)-100 - 450);
+		for (int i=0; i<1000; i++){
+			Vec3f translation = new Vec3f((float)(Math.random()*400)-200 + 1196, 0, (float)(Math.random()*400)-200 - 450);
 			float s = (float)(Math.random()*6 + 10);
 			Vec3f scaling = new Vec3f(s,s,s);
 			Vec3f rotation = new Vec3f(0,(float)(Math.random()*360),0);
@@ -78,7 +78,7 @@ public class Grass01Instanced extends Node{
 			Util.generateNormalsCCW(model.getMesh().getVertices(), model.getMesh().getIndices());
 			model.getMesh().setTangentSpace(false);
 			model.getMesh().setInstanced(true);
-			model.getMesh().setInstances(10);
+			model.getMesh().setInstances(512);
 			meshBuffer.addData(model.getMesh());
 
 			object.setRenderInfo(new RenderInfo(new AlphaTestCullFaceDisable(0.4f), Grass01InstancedShader.getInstance(), Grass01InstancedShadowShader.getInstance()));
