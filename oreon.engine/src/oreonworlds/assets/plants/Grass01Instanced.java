@@ -6,7 +6,6 @@ import java.util.List;
 
 import engine.buffers.MeshVAO;
 import engine.buffers.UBO;
-import engine.configs.AlphaTest;
 import engine.configs.AlphaTestCullFaceDisable;
 import engine.math.Matrix4f;
 import engine.math.Vec3f;
@@ -34,11 +33,11 @@ public class Grass01Instanced extends Node{
 		List<Matrix4f> instancedWorldMatrices = new ArrayList<Matrix4f>();
 		List<Matrix4f> instancedModelMatrices = new ArrayList<Matrix4f>();
 		
-		for (int i=0; i<1000; i++){
-			Vec3f translation = new Vec3f((float)(Math.random()*400)-200 + 1196, 0, (float)(Math.random()*400)-200 - 450);
+		for (int i=0; i<512; i++){
+			Vec3f translation = new Vec3f((float)(Math.random()*800)-400 + 1196, 0, (float)(Math.random()*800)-400 - 450);
 			float s = (float)(Math.random()*6 + 10);
 			Vec3f scaling = new Vec3f(s,s,s);
-			Vec3f rotation = new Vec3f(0,(float)(Math.random()*360),0);
+			Vec3f rotation = new Vec3f(0,0,0);
 			
 			Matrix4f translationMatrix = new Matrix4f().Translation(translation);
 			Matrix4f rotationMatrix = new Matrix4f().Rotation(rotation);
@@ -75,13 +74,13 @@ public class Grass01Instanced extends Node{
 			
 			GameObject object = new GameObject();
 			MeshVAO meshBuffer = new MeshVAO();
-			Util.generateNormalsCCW(model.getMesh().getVertices(), model.getMesh().getIndices());
+			//Util.generateNormalsCCW(model.getMesh().getVertices(), model.getMesh().getIndices());
 			model.getMesh().setTangentSpace(false);
 			model.getMesh().setInstanced(true);
 			model.getMesh().setInstances(512);
 			meshBuffer.addData(model.getMesh());
 
-			object.setRenderInfo(new RenderInfo(new AlphaTestCullFaceDisable(0.4f), Grass01InstancedShader.getInstance(), Grass01InstancedShadowShader.getInstance()));
+			object.setRenderInfo(new RenderInfo(new AlphaTestCullFaceDisable(0.3f), Grass01InstancedShader.getInstance(), Grass01InstancedShadowShader.getInstance()));
 			Renderer renderer = new Renderer(object.getRenderInfo().getShader(), meshBuffer);
 
 			object.addComponent("Material", model.getMaterial());

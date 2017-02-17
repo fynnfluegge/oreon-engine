@@ -1,6 +1,7 @@
 package oreonworlds.shaders.plants;
 
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import engine.core.RenderingEngine;
@@ -41,7 +42,7 @@ private static Grass01InstancedShader instance = null;
 		addUniformBlock("InstancedMatrices");
 		addUniformBlock("LightViewProjections");
 		addUniformBlock("Camera");
-		//addUniform("shadowMaps");
+		addUniform("shadowMaps");
 	}	
 	
 	public void updateUniforms(GameObject object)
@@ -60,8 +61,8 @@ private static Grass01InstancedShader instance = null;
 		material.getDiffusemap().bind();
 		setUniformi("material.diffusemap", 0);
 		
-//		glActiveTexture(GL_TEXTURE1);
-//		RenderingEngine.getShadowMaps().getDepthMaps().bind();
-//		setUniformi("shadowMaps", 1);
+		glActiveTexture(GL_TEXTURE1);
+		RenderingEngine.getShadowMaps().getDepthMaps().bind();
+		setUniformi("shadowMaps", 1);
 	}
 }
