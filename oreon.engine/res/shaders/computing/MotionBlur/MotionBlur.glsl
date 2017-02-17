@@ -6,7 +6,7 @@ layout (binding = 0, rgba16f) uniform writeonly image2D motionBlur;
 
 layout (binding = 1, rgba16f) uniform readonly image2D sceneSampler;
 
-layout (binding = 2, rgba32F) uniform readonly image2D velocityMap;
+layout (binding = 2, rgba32f) uniform readonly image2D velocityMap;
 
 uniform float windowWidth;
 uniform float windowHeight;
