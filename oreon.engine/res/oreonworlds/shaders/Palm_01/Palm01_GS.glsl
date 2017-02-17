@@ -11,8 +11,8 @@ out vec3 position_FS;
 out vec3 normal_FS;
 
 layout (std140, row_major) uniform InstancedMatrices{
-	mat4 m_World[50];
-	mat4 m_Model[50];
+	mat4 m_World[1];
+	mat4 m_Model[1];
 };
 
 layout (std140, row_major) uniform Camera{

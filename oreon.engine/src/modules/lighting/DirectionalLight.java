@@ -45,6 +45,7 @@ public class DirectionalLight extends Light{
 	private DirectionalLight(Vec3f direction, Vec3f ambient, Vec3f color, float intensity) {
 		
 		super(color, intensity);
+
 		this.direction = direction;
 		this.setAmbient(ambient);
 		up = new Vec3f(1,2,1).normalize();

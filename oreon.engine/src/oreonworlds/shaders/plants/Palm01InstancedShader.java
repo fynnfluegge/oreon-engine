@@ -48,7 +48,7 @@ private static Palm01InstancedShader instance = null;
 		bindUniformBlock("DirectionalLight", Constants.DirectionalLightUniformBlockBinding);
 		
 		setUniform("clipplane", RenderingEngine.getClipplane());
-		setUniformf("sightRangeFactor", Terrain.getInstance().getTerrainConfiguration().getSightRangeFactor());
+		setUniformf("sightRangeFactor", 200000);
 		
 		Material material = (Material) object.getComponent("Material");
 		setUniform("material.color", material.getColor());
