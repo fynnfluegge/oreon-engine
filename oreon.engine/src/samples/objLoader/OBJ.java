@@ -1,10 +1,7 @@
 package samples.objLoader;
-import modules.glass.GlassRenderer;
 import modules.modelLoader.obj.Model;
 import modules.modelLoader.obj.OBJLoader;
-import modules.terrain.Terrain;
 import oreonworlds.shaders.plants.Palm01InstancedShader;
-import oreonworlds.shaders.plants.Palm01InstancedShadowShader;
 
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
@@ -20,12 +17,10 @@ import engine.math.Matrix4f;
 import engine.math.Vec3f;
 import engine.scenegraph.GameObject;
 import engine.scenegraph.Node;
-import engine.scenegraph.components.Material;
 import engine.scenegraph.components.RenderInfo;
 import engine.scenegraph.components.Renderer;
 import engine.utils.BufferAllocation;
 import engine.utils.Constants;
-import engine.utils.Util;
 
 public class OBJ extends Node{
 
@@ -38,9 +33,9 @@ public class OBJ extends Node{
 		
 		for (int i=0; i<1; i++){
 			Vec3f translation = new Vec3f(0, 0, 0);
-			float s = 10;
+			float s = 1;
 			Vec3f scaling = new Vec3f(s,s,s);
-			Vec3f rotation = new Vec3f(0,0,0);
+			Vec3f rotation = new Vec3f(0,-90,0);
 			
 			Matrix4f translationMatrix = new Matrix4f().Translation(translation);
 			Matrix4f rotationMatrix = new Matrix4f().Rotation(rotation);

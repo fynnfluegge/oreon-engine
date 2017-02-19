@@ -13,6 +13,7 @@ import static org.lwjgl.opengl.GL11.glClearDepth;
 import static org.lwjgl.opengl.GL11.glCullFace;
 import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.opengl.GL11.glFrontFace;
+import static org.lwjgl.opengl.GL13.GL_SAMPLE_ALPHA_TO_COVERAGE;
 import static org.lwjgl.opengl.GL20.GL_POINT_SPRITE;
 import static org.lwjgl.opengl.GL30.GL_FRAMEBUFFER_SRGB;
 import static org.lwjgl.opengl.GL32.GL_PROGRAM_POINT_SIZE;
@@ -32,6 +33,7 @@ public interface RenderConfig {
 		glEnable(GL_TEXTURE_2D);
 		glEnable(GL_FRAMEBUFFER_SRGB);
 		glEnable(GL_PROGRAM_POINT_SIZE);
+		glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 	}
 	
 	public static void clearScreen()

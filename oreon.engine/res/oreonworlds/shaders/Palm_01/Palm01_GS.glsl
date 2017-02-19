@@ -9,10 +9,11 @@ in int instanceID_GS[];
 
 out vec3 position_FS;
 out vec3 normal_FS;
+out vec4 viewSpacePos;
 
 layout (std140, row_major) uniform InstancedMatrices{
-	mat4 m_World[1];
-	mat4 m_Model[1];
+	mat4 m_World[20];
+	mat4 m_Model[20];
 };
 
 layout (std140, row_major) uniform Camera{
@@ -39,6 +40,7 @@ void main()
 		gl_ClipDistance[6] = dot(gl_Position,clipplane);
 		position_FS = worldPos.xyz;
 		normal_FS = (m_Model[ instanceID_GS[i] ] * normal_GS[i]).xyz;
+		viewSpacePos = m_View * worldPos;
 		EmitVertex();
 	}	
 	EndPrimitive();

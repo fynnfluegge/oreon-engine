@@ -15,7 +15,6 @@ import engine.scenegraph.components.RenderInfo;
 import engine.scenegraph.components.Renderer;
 import engine.utils.BufferAllocation;
 import engine.utils.Constants;
-import engine.utils.Util;
 import modules.modelLoader.obj.Model;
 import modules.modelLoader.obj.OBJLoader;
 import modules.terrain.Terrain;
@@ -34,8 +33,8 @@ public class Grass01Instanced extends Node{
 		List<Matrix4f> instancedModelMatrices = new ArrayList<Matrix4f>();
 		
 		for (int i=0; i<512; i++){
-			Vec3f translation = new Vec3f((float)(Math.random()*800)-400 + 1196, 0, (float)(Math.random()*800)-400 - 450);
-			float s = (float)(Math.random()*6 + 10);
+			Vec3f translation = new Vec3f((float)(Math.random()*160)-80 + 1196, 0, (float)(Math.random()*160)-80 - 450);
+			float s = (float)(Math.random()*2 + 1);
 			Vec3f scaling = new Vec3f(s,s,s);
 			Vec3f rotation = new Vec3f(0,0,0);
 			
@@ -74,13 +73,12 @@ public class Grass01Instanced extends Node{
 			
 			GameObject object = new GameObject();
 			MeshVAO meshBuffer = new MeshVAO();
-			//Util.generateNormalsCCW(model.getMesh().getVertices(), model.getMesh().getIndices());
 			model.getMesh().setTangentSpace(false);
 			model.getMesh().setInstanced(true);
 			model.getMesh().setInstances(512);
 			meshBuffer.addData(model.getMesh());
 
-			object.setRenderInfo(new RenderInfo(new AlphaTestCullFaceDisable(0.3f), Grass01InstancedShader.getInstance(), Grass01InstancedShadowShader.getInstance()));
+			object.setRenderInfo(new RenderInfo(new AlphaTestCullFaceDisable(0.3f), Grass01InstancedShader.getInstance()));
 			Renderer renderer = new Renderer(object.getRenderInfo().getShader(), meshBuffer);
 
 			object.addComponent("Material", model.getMaterial());

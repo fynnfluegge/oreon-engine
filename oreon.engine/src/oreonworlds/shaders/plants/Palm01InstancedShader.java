@@ -1,5 +1,8 @@
 package oreonworlds.shaders.plants;
 
+import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
+import static org.lwjgl.opengl.GL13.glActiveTexture;
+
 import engine.core.RenderingEngine;
 import engine.scenegraph.GameObject;
 import engine.scenegraph.components.Material;
@@ -38,7 +41,9 @@ private static Palm01InstancedShader instance = null;
 		
 		addUniformBlock("DirectionalLight");
 		addUniformBlock("InstancedMatrices");
+		addUniformBlock("LightViewProjections");
 		addUniformBlock("Camera");
+		addUniform("shadowMaps");
 	}
 	
 	public void updateUniforms(GameObject object)
@@ -46,13 +51,18 @@ private static Palm01InstancedShader instance = null;
 		bindUniformBlock("Camera", Constants.CameraUniformBlockBinding);
 		bindUniformBlock("InstancedMatrices", Constants.Palm01InstancedMatricesBinding);
 		bindUniformBlock("DirectionalLight", Constants.DirectionalLightUniformBlockBinding);
+		bindUniformBlock("LightViewProjections",Constants.LightMatricesUniformBlockBinding);
 		
 		setUniform("clipplane", RenderingEngine.getClipplane());
-		setUniformf("sightRangeFactor", 200000);
+		setUniformf("sightRangeFactor", Terrain.getInstance().getTerrainConfiguration().getSightRangeFactor());
 		
 		Material material = (Material) object.getComponent("Material");
 		setUniform("material.color", material.getColor());
 //		setUniformf("material.emission", material.getEmission());
 //		setUniformf("material.shininess", material.getShininess());
+		
+		glActiveTexture(GL_TEXTURE1);
+		RenderingEngine.getShadowMaps().getDepthMaps().bind();
+		setUniformi("shadowMaps", 1);
 	}
 }

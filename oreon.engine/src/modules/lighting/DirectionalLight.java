@@ -26,7 +26,6 @@ public class DirectionalLight extends Light{
 	private FloatBuffer floatBufferMatrices;
 	private final int lightBufferSize = Float.BYTES * 12;
 	private final int matricesBufferSize = Float.BYTES * 96
-										 // split ranges
 										 + Float.BYTES * 24;
 
 	
@@ -39,7 +38,7 @@ public class DirectionalLight extends Light{
 	}
 	
 	protected DirectionalLight(){
-		this(new Vec3f(1,-1,1f).normalize(),new Vec3f(0.01f,0.01f,0.01f),new Vec3f(1,0.95f,0.87f),1.5f);
+		this(new Vec3f(1,-1,1f).normalize(),new Vec3f(0.01f,0.01f,0.01f),new Vec3f(1,0.95f,0.87f),1.2f);
 	}
 	
 	private DirectionalLight(Vec3f direction, Vec3f ambient, Vec3f color, float intensity) {
@@ -76,14 +75,14 @@ public class DirectionalLight extends Light{
 		
 		lightCameras = new PSSMCamera[Constants.PSSM_SPLITS];
 		
-		for (int i = 0; i<Constants.PSSM_SPLITS; i++){
-			lightCameras[i] = new PSSMCamera(Constants.PSSM_SPLIT_SHEME[i]*Constants.ZFAR,
+		for (int i = 0; i<Constants.PSSM_SPLITS*2; i += 2){
+			lightCameras[i/2] = new PSSMCamera(Constants.PSSM_SPLIT_SHEME[i]*Constants.ZFAR,
 											 Constants.PSSM_SPLIT_SHEME[i+1]*Constants.ZFAR);
-			lightCameras[i].update(m_View, up, right);
-			floatBufferMatrices.put(BufferAllocation.createFlippedBuffer(lightCameras[i].getM_orthographicViewProjection()));
+			lightCameras[i/2].update(m_View, up, right);
+			floatBufferMatrices.put(BufferAllocation.createFlippedBuffer(lightCameras[i/2].getM_orthographicViewProjection()));
 		}
-		for (int i = 0; i<Constants.PSSM_SPLITS; i++){
-			floatBufferMatrices.put(Constants.PSSM_SPLIT_SHEME[i+1]);
+		for (int i = 1; i<Constants.PSSM_SPLITS*2; i += 2){
+			floatBufferMatrices.put(Constants.PSSM_SPLIT_SHEME[i]);
 			floatBufferMatrices.put(0);
 			floatBufferMatrices.put(0);
 			floatBufferMatrices.put(0);
@@ -97,18 +96,7 @@ public class DirectionalLight extends Light{
 			lightCamera.update(m_View, up, right);
 			floatBufferMatrices.put(BufferAllocation.createFlippedBuffer(lightCamera.getM_orthographicViewProjection()));
 		}
-		for (int i = 0; i<Constants.PSSM_SPLITS; i++){
-			floatBufferMatrices.put(Constants.PSSM_SPLIT_SHEME[i+1]);
-			floatBufferMatrices.put(0);
-			floatBufferMatrices.put(0);
-			floatBufferMatrices.put(0);
-		}
-		for (int i = 0; i<Constants.PSSM_SPLITS; i++){
-			floatBufferMatrices.put(Constants.PSSM_SHADOWMAPARRAY_INDICES[i]);
-			floatBufferMatrices.put(0);
-			floatBufferMatrices.put(0);
-			floatBufferMatrices.put(0);
-		}
+
 		ubo_matrices.updateData(floatBufferMatrices, matricesBufferSize);
 	}
 	

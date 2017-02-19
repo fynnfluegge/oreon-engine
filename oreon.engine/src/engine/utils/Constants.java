@@ -11,7 +11,12 @@ public class Constants {
 	public static Quaternion PLANE0 = new Quaternion(0,0,0,0);
 	public static int CLIPOFFSET;
 	public static final int PSSM_SPLITS = 6;
-	public static final float[] PSSM_SPLIT_SHEME= {-0.004f,0.004f,0.01f,0.02f,0.04f,0.1f,0.2f};
+	public static final float[] PSSM_SPLIT_SHEME= { -0.005f,0.005f,
+													-0.005f,0.01f, 
+													0.0f,0.02f,
+													0.01f,0.04f,
+													0.02f,0.06f,
+													0.04f,0.1f};
 	public static final int TERRAIN_FRACTALS_RESOLUTION = 512;
 	public static final int PSSM_SHADOWMAP_RESOLUTION = 4096;
 	public static final float[] PSSM_SHADOWMAPARRAY_INDICES = {0.0f,1f,2f,3f,4f,5f};
@@ -27,6 +32,7 @@ public class Constants {
 	public static final int Rock01InstancedMatricesBinding = 6;
 	public static final int Rock02InstancedMatricesBinding = 7;
 	public static final int Grass01InstancedMatricesBinding = 8;
+	public static final int Palm01BillboardInstancedMatricesBinding = 9;
 
 	
 

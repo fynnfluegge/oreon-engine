@@ -6,9 +6,11 @@ layout(triangle_strip, max_vertices = 3) out;
 
 in int instanceID_GS[];
 in vec2 texCoord_GS[];
+in vec3 normal_GS[];
 
 out vec3 position_FS;
 out vec2 texCoord_FS;
+out vec3 normal_FS;
 out vec4 viewSpacePos;
 
 layout (std140, row_major) uniform InstancedMatrices{
@@ -40,6 +42,7 @@ void main()
 		gl_ClipDistance[6] = dot(gl_Position,clipplane);
 		texCoord_FS = texCoord_GS[i];
 		position_FS = worldPos.xyz;
+		normal_FS = normal_GS[i];
 		viewSpacePos = m_View * worldPos;
 		EmitVertex();
 	}	

@@ -23,13 +23,13 @@ public class Main {
 		game.init();
 		game.getScenegraph().setTerrain(Terrain.getInstance());
 		Terrain.getInstance().init("./res/oreonworlds/terrain_settings.txt", TerrainShader.getInstance(),
-				TerrainGridShader.getInstance(), null);
+				TerrainGridShader.getInstance(), TerrainShadowShader.getInstance());
 		game.getScenegraph().addObject(new SkySphere());	
-		//game.getScenegraph().getRoot().addChild(new Bush01Instanced());
-		//game.getScenegraph().getRoot().addChild(new Palm01Instanced());
+//		game.getScenegraph().getRoot().addChild(new Bush01Instanced());
 //		game.getScenegraph().getRoot().addChild(new Rock01Instanced());
 //		game.getScenegraph().getRoot().addChild(new Rock02Instanced());
-		game.getScenegraph().getRoot().addChild(new Grass01Instanced());
+//		game.getScenegraph().getRoot().addChild(new Grass01Instanced());
+		game.getScenegraph().getRoot().addChild(new Palm01Instanced());
 		game.launch();
 	}
 

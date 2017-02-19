@@ -2,6 +2,7 @@
 
 in vec3 position_FS;
 in vec2 texCoord_FS;
+in vec3 normal_FS;
 in vec4 viewSpacePos;
 
 struct Material
@@ -49,25 +50,26 @@ float diffuse(vec3 direction, vec3 normal, float intensity)
 float varianceShadow(vec3 projCoords, int split){
 	
 	float shadowFactor = 1.0;
-	float texelSize = 1.0/ 1024.0;
+	float texelSize = 1.0/ 4096.0;
 	float currentDepth = projCoords.z;
 	
 	for (int i=-1; i<=1; i++){
 		for (int j=-1; j<=1; j++){
 			float shadowMapDepth = texture(shadowMaps, vec3(projCoords.xy,split)
 													   + vec3(i,j,0) * texelSize).r; 
-			if (linearize(currentDepth) - 0.0002 > linearize(shadowMapDepth))
+			if (linearize(currentDepth) > linearize(shadowMapDepth) + 0.00002)
 				shadowFactor -= 0.1;
 		}
 	}
+
+	shadowFactor = max(0.1, shadowFactor);
 	
 	return shadowFactor;
 }
 
 float shadow(vec3 worldPos)
 {
-	float shadow = 1;
-	float shadowFactor = 0;
+	float shadowFactor = 1;
 	vec3 projCoords = vec3(0,0,0);
 	float depth = viewSpacePos.z/zFar;
 	if (depth < splitRange[0]){
@@ -100,7 +102,6 @@ float shadow(vec3 worldPos)
 		projCoords = lightSpacePos.xyz * 0.5 + 0.5;
 		shadowFactor = varianceShadow(projCoords,5); 
 	}
-	else return 1;
 
 	return shadowFactor;
 }
@@ -109,7 +110,7 @@ void main()
 {	
 	float dist = length(eyePosition - position_FS);
 
-	float diffuseFactor = diffuse(directional_light.direction, vec3(0,1,0), directional_light.intensity);
+	float diffuseFactor = diffuse(directional_light.direction, normal_FS, directional_light.intensity);
 	
 	vec3 diffuseLight = directional_light.color * diffuseFactor;
 	
@@ -121,6 +122,6 @@ void main()
 	float fogFactor = -0.0005/sightRangeFactor*(dist-zFar/5*sightRangeFactor);
 	
     vec3 rgb = mix(fogColor, fragColor, clamp(fogFactor,0,1));
-	
+
 	gl_FragColor = vec4(rgb,alpha);
 }

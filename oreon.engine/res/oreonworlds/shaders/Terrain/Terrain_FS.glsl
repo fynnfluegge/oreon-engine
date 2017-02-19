@@ -85,12 +85,12 @@ float varianceShadow(vec3 projCoords, int split){
 	float texelSize = 1.0/ 2048.0;
 	float currentDepth = projCoords.z;
 	
-	for (int i=-2; i<=2; i++){
-		for (int j=-2; j<=2; j++){
+	for (int i=-4; i<=4; i++){
+		for (int j=-4; j<=4; j++){
 			float shadowMapDepth = texture(shadowMaps, vec3(projCoords.xy,split)
 													   + vec3(i,j,0) * texelSize).r; 
 			if (currentDepth > shadowMapDepth)
-				shadowFactor -= 0.036;
+				shadowFactor -= 0.011;
 		}
 	}
 	
@@ -108,7 +108,6 @@ float shadow(vec3 worldPos)
 		vec4 lightSpacePos = m_lightViewProjection[0] * vec4(worldPos,1.0);
 		projCoords = lightSpacePos.xyz * 0.5 + 0.5;
 		shadowFactor = varianceShadow(projCoords,0);
-		//shadowMapDepth = texture(shadowMaps, vec3(projCoords.xy,0)).r; 
 	}
 	else if (depth < splitRange[1]){
 		vec4 lightSpacePos = m_lightViewProjection[1] * vec4(worldPos,1.0);
@@ -137,12 +136,6 @@ float shadow(vec3 worldPos)
 	}
 	else return 1;
 	
-	//float currentDepth = projCoords.z; 
-	
-	//float currentLinDepth = linearizeDepth(currentDepth);
-	//float shadowLinDepth  = linearizeDepth(shadowMapDepth);
-	
-	//shadow = currentDepth > shadowMapDepth ? 0.2 : 1.0; 
 	return shadowFactor;
 }
 
@@ -201,8 +194,11 @@ void main()
 	
 	vec3 fragColor = mix(texture(sand.diffusemap, texCoordF).rgb, texture(rock.diffusemap, texCoordF/2).rgb, clamp((height+200)/400.0,0,1));
 	fragColor = mix(fragColor, texture(snow.diffusemap,texCoordF/4).rgb, clamp((height-100)/200,0,1));
-	float grassFactor = clamp((height+300)/(-scaleY*0.5)+0.8,0.0,0.8);
-	fragColor = mix(fragColor,texture(grass.diffusemap,texCoordF).rgb,grassFactor);
+	// float grassFactor = clamp((height+300)/(-scaleY*0.5)+0.8,0.0,0.8);
+	// fragColor = mix(fragColor,texture(grass.diffusemap,texCoordF).rgb,grassFactor);
+	if (normal.y > 0.8){
+		fragColor = mix(fragColor,texture(grass.diffusemap,texCoordF).rgb,3*(normal.y-0.8));
+	}
 	
 	fragColor *= diffuseLight;
 	fragColor += specularLight;

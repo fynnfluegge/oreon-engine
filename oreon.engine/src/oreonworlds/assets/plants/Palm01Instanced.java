@@ -26,12 +26,15 @@ public class Palm01Instanced extends Node{
 public Palm01Instanced(){
 
 		OBJLoader loader = new OBJLoader();
-		Model[] models = loader.load("./res/oreonworlds/assets/plants/Tree_01","tree01.obj","tree01.mtl");
+		Model[] models = loader.load("./res/oreonworlds/assets/plants/Palm_01","Palma 001.obj","Palma 001.mtl");
+		Model[] billboard = loader.load("./res/oreonworlds/assets/plants/Palm_01","billboardmodel.obj","billboardmodel.mtl");
 		
 		List<Matrix4f> instancedWorldMatrices = new ArrayList<Matrix4f>();
 		List<Matrix4f> instancedModelMatrices = new ArrayList<Matrix4f>();
 		
-		for (int i=0; i<50; i++){
+		List<Matrix4f> billboardInstancedWorldMatrices = new ArrayList<Matrix4f>();
+		
+		for (int i=0; i<20; i++){
 			Vec3f translation = new Vec3f((float)(Math.random()*200)-100 + 1196, 0, (float)(Math.random()*200)-100 - 450);
 			float s = (float)(Math.random()*0.1 + 0.15);
 			Vec3f scaling = new Vec3f(s,s,s);
@@ -75,7 +78,7 @@ public Palm01Instanced(){
 			MeshVAO meshBuffer = new MeshVAO();
 			model.getMesh().setTangentSpace(false);
 			model.getMesh().setInstanced(true);
-			model.getMesh().setInstances(50);
+			model.getMesh().setInstances(20);
 			meshBuffer.addData(model.getMesh());
 
 			object.setRenderInfo(new RenderInfo(new CullFaceDisable(), Palm01InstancedShader.getInstance(), Palm01InstancedShadowShader.getInstance()));
@@ -85,5 +88,28 @@ public Palm01Instanced(){
 			object.addComponent("Renderer", renderer);
 			addChild(object);
 		}
+		
+		for (Model model : billboard){
+			
+			GameObject object = new GameObject();
+			MeshVAO meshBuffer = new MeshVAO();
+			model.getMesh().setTangentSpace(false);
+			model.getMesh().setInstanced(true);
+			model.getMesh().setInstances(2);
+			meshBuffer.addData(model.getMesh());
+
+			object.setRenderInfo(new RenderInfo(new CullFaceDisable(), Palm01InstancedShader.getInstance(), Palm01InstancedShadowShader.getInstance()));
+			Renderer renderer = new Renderer(object.getRenderInfo().getShader(), meshBuffer);
+
+			object.addComponent("Material", model.getMaterial());
+			object.addComponent("Renderer", renderer);
+			//addChild(object);
+		}
+	}
+
+	public void update()
+	{
+		for(Node child: getChildren())
+			child.update();
 	}
 }
