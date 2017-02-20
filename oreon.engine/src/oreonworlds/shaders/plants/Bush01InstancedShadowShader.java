@@ -23,9 +23,9 @@ public class Bush01InstancedShadowShader extends Shader{
 		{
 			super();
 			
-			addVertexShader(ResourceLoader.loadShader("oreonworlds/shaders/Bush_01/Bush01_VS.glsl"));
-			addGeometryShader(ResourceLoader.loadShader("oreonworlds/shaders/Bush_01/Bush01Shadow_GS.glsl"));
-			addFragmentShader(ResourceLoader.loadShader("oreonworlds/shaders/Bush_01/Bush01Shadow_FS.glsl"));
+			addVertexShader(ResourceLoader.loadShader("oreonworlds/assets/Bush_01/Bush01_VS.glsl"));
+			addGeometryShader(ResourceLoader.loadShader("oreonworlds/assets/Bush_01/Bush01Shadow_GS.glsl"));
+			addFragmentShader(ResourceLoader.loadShader("oreonworlds/assets/Bush_01/Bush01Shadow_FS.glsl"));
 			compileShader();
 			
 			addUniform("pssm_splits");

@@ -29,9 +29,9 @@ private static Grass01InstancedShader instance = null;
 	{
 		super();
 		
-		addVertexShader(ResourceLoader.loadShader("oreonworlds/shaders/Grass_01/Grass01_VS.glsl"));
-		addGeometryShader(ResourceLoader.loadShader("oreonworlds/shaders/Grass_01/Grass01_GS.glsl"));
-		addFragmentShader(ResourceLoader.loadShader("oreonworlds/shaders/Grass_01/Grass01_FS.glsl"));
+		addVertexShader(ResourceLoader.loadShader("oreonworlds/assets/Grass_01/Grass01_VS.glsl"));
+		addGeometryShader(ResourceLoader.loadShader("oreonworlds/assets/Grass_01/Grass01_GS.glsl"));
+		addFragmentShader(ResourceLoader.loadShader("oreonworlds/assets/Grass_01/Grass01_FS.glsl"));
 		compileShader();
 		
 		addUniform("sightRangeFactor");

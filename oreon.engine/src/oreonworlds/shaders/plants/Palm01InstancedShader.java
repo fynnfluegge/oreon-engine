@@ -28,9 +28,9 @@ private static Palm01InstancedShader instance = null;
 	{
 		super();
 
-		addVertexShader(ResourceLoader.loadShader("oreonworlds/shaders/Palm_01/Palm01_VS.glsl"));
-		addGeometryShader(ResourceLoader.loadShader("oreonworlds/shaders/Palm_01/Palm01_GS.glsl"));
-		addFragmentShader(ResourceLoader.loadShader("oreonworlds/shaders/Palm_01/Palm01_FS.glsl"));
+		addVertexShader(ResourceLoader.loadShader("oreonworlds/assets/Palm_01/Palm01_VS.glsl"));
+		addGeometryShader(ResourceLoader.loadShader("oreonworlds/assets/Palm_01/Palm01_GS.glsl"));
+		addFragmentShader(ResourceLoader.loadShader("oreonworlds/assets/Palm_01/Palm01_FS.glsl"));
 		compileShader();
 		
 		addUniform("sightRangeFactor");

@@ -28,9 +28,9 @@ public class Bush01InstancedShader extends Shader{
 	{
 		super();
 
-		addVertexShader(ResourceLoader.loadShader("oreonworlds/shaders/Bush_01/Bush01_VS.glsl"));
-		addGeometryShader(ResourceLoader.loadShader("oreonworlds/shaders/Bush_01/Bush01_GS.glsl"));
-		addFragmentShader(ResourceLoader.loadShader("oreonworlds/shaders/Bush_01/Bush01_FS.glsl"));
+		addVertexShader(ResourceLoader.loadShader("oreonworlds/assets/Bush_01/Bush01_VS.glsl"));
+		addGeometryShader(ResourceLoader.loadShader("oreonworlds/assets/Bush_01/Bush01_GS.glsl"));
+		addFragmentShader(ResourceLoader.loadShader("oreonworlds/assets/Bush_01/Bush01_FS.glsl"));
 		compileShader();
 		
 		addUniform("sightRangeFactor");

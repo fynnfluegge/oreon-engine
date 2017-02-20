@@ -10,26 +10,26 @@ import engine.shader.Shader;
 import engine.utils.Constants;
 import engine.utils.ResourceLoader;
 
-public class Grass01InstancedShadowShader extends Shader{
+public class Palm01BillboardInstancedShader extends Shader{
 
-	private static Grass01InstancedShadowShader instance = null;
+private static Palm01BillboardInstancedShader instance = null;
 	
-	public static Grass01InstancedShadowShader getInstance() 
+	public static Palm01BillboardInstancedShader getInstance() 
 	{
 	    if(instance == null) 
 	    {
-	    	instance = new Grass01InstancedShadowShader();
+	    	instance = new Palm01BillboardInstancedShader();
 	    }
 	      return instance;
 	}
 	
-	protected Grass01InstancedShadowShader()
+	protected Palm01BillboardInstancedShader()
 	{
 		super();
 		
-		addVertexShader(ResourceLoader.loadShader("oreonworlds/assets/Grass_01/Grass01_VS.glsl"));
-		addGeometryShader(ResourceLoader.loadShader("oreonworlds/assets/Grass_01/Grass01Shadow_GS.glsl"));
-		addFragmentShader(ResourceLoader.loadShader("oreonworlds/assets/Grass_01/Grass01Shadow_FS.glsl"));
+		addVertexShader(ResourceLoader.loadShader("oreonworlds/shaders/Grass_01/Palm01_VS.glsl"));
+		addGeometryShader(ResourceLoader.loadShader("oreonworlds/shaders/Grass_01/Palm01_GS.glsl"));
+		addFragmentShader(ResourceLoader.loadShader("oreonworlds/shaders/Grass_01/Palm01Billboard_FS.glsl"));
 		compileShader();
 		
 		addUniform("clipplane");
@@ -44,7 +44,7 @@ public class Grass01InstancedShadowShader extends Shader{
 		setUniform("clipplane", RenderingEngine.getClipplane());
 		bindUniformBlock("Camera",Constants.CameraUniformBlockBinding);
 		bindUniformBlock("LightViewProjections",Constants.LightMatricesUniformBlockBinding);
-		bindUniformBlock("InstancedMatrices", Constants.Grass01InstancedMatricesBinding);
+		bindUniformBlock("InstancedMatrices", Constants.Palm01BillboardInstancedMatricesBinding);
 		
 		Material material = (Material) object.getComponent("Material");
 		

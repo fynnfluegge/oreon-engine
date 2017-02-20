@@ -22,7 +22,7 @@ public class Main {
 		game.getEngine().createWindow(1920, 1080, "oreon worlds");
 		game.init();
 		game.getScenegraph().setTerrain(Terrain.getInstance());
-		Terrain.getInstance().init("./res/oreonworlds/terrain_settings.txt", TerrainShader.getInstance(),
+		Terrain.getInstance().init("./res/oreonworlds/terrain/terrain_settings.txt", TerrainShader.getInstance(),
 				TerrainGridShader.getInstance(), TerrainShadowShader.getInstance());
 		game.getScenegraph().addObject(new SkySphere());	
 //		game.getScenegraph().getRoot().addChild(new Bush01Instanced());

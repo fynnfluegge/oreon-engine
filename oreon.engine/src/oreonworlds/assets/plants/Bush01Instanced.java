@@ -29,7 +29,7 @@ public class Bush01Instanced extends Node{
 	public Bush01Instanced(){
 		
 		OBJLoader loader = new OBJLoader();
-		Model[] models = loader.load("./res/oreonworlds/assets/plants/Tree_01","tree01.obj","tree01.mtl");
+		Model[] models = loader.load("./res/oreonworlds/assets/plants/Bush_01","Bush_01.obj","Bush_01.mtl");
 		
 		List<Matrix4f> instancedWorldMatrices = ResourceLoader.loadObjectTransforms("./res/oreonworlds/assets/plants/Bush_01/Bush_01_instancedtransforms.txt");
 		List<Matrix4f> instancedModelMatrices = ResourceLoader.loadObjectTransformsModelMatrix("./res/oreonworlds/assets/plants/Bush_01/Bush_01_instancedtransforms.txt");
