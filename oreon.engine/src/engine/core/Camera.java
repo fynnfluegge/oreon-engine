@@ -23,6 +23,7 @@ public class Camera {
 	private Vec3f position;
 	private Vec3f previousPosition;
 	private Vec3f forward;
+	private Vec3f previousForward;
 	private Vec3f up;
 	private int scaleFactor;
 	private float movAmt;
@@ -33,7 +34,7 @@ public class Camera {
 	private Matrix4f previousViewMatrix;
 	private Matrix4f previousViewProjectionMatrix;
 	private boolean cameraMoved;
-	private boolean cameraMovedOrRotated;
+	private boolean cameraRotated;
 	
 	private UBO ubo;
 	private FloatBuffer floatBuffer;
@@ -98,8 +99,9 @@ public class Camera {
 	public void update()
 	{
 		previousPosition = new Vec3f(position);
+		previousForward = new Vec3f(forward);
 		cameraMoved = false;
-		cameraMovedOrRotated = false;
+		cameraRotated = false;
 		
 		setScaleFactor(Math.max(1, scaleFactor + Mouse.getDWheel()/10));
 		movAmt = scaleFactor * 0.001f;
@@ -208,8 +210,8 @@ public class Camera {
 			cameraMoved = true;	
 		}
 		
-		if (!viewMatrix.equals(previousViewMatrix)){
-			cameraMovedOrRotated = true;
+		if (!forward.equals(previousForward)){
+			cameraRotated = true;
 		}
 		
 		setPreviousViewMatrix(viewMatrix);
@@ -434,7 +436,7 @@ public class Camera {
 		return cameraMoved;
 	}
 
-	public boolean isCameraMovedOrRotated() {
-		return cameraMovedOrRotated;
+	public boolean isCameraRotated() {
+		return cameraRotated;
 	}
 }

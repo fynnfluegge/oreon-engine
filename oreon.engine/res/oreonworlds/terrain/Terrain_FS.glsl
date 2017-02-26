@@ -107,7 +107,11 @@ float shadow(vec3 worldPos)
 	if (depth < splitRange[0]){
 		vec4 lightSpacePos = m_lightViewProjection[0] * vec4(worldPos,1.0);
 		projCoords = lightSpacePos.xyz * 0.5 + 0.5;
-		shadowFactor = varianceShadow(projCoords,0);
+		float shadowFactor0 = varianceShadow(projCoords,0);
+		lightSpacePos = m_lightViewProjection[1] * vec4(worldPos,1.0);
+		projCoords = lightSpacePos.xyz * 0.5 + 0.5;
+		float shadowFactor1 = varianceShadow(projCoords,1);
+		shadowFactor = min(shadowFactor0,shadowFactor1);
 	}
 	else if (depth < splitRange[1]){
 		vec4 lightSpacePos = m_lightViewProjection[1] * vec4(worldPos,1.0);

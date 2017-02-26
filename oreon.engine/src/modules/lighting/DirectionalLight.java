@@ -2,8 +2,6 @@ package modules.lighting;
 
 import java.nio.FloatBuffer;
 
-import org.lwjgl.input.Mouse;
-
 import engine.buffers.UBO;
 import engine.core.Camera;
 import engine.math.Matrix4f;
@@ -95,7 +93,7 @@ public class DirectionalLight extends Light{
 	
 	public void update(){
 		
-		if (Camera.getInstance().isCameraMovedOrRotated()){
+		if (Camera.getInstance().isCameraRotated() || Camera.getInstance().isCameraMoved()){
 			floatBufferMatrices.clear();
 			for (PSSMCamera lightCamera : lightCameras){
 				lightCamera.update(m_View, up, right);

@@ -27,6 +27,7 @@ public class Constants {
 	public static final int CameraUniformBlockBinding = 1;
 	public static final int DirectionalLightUniformBlockBinding = 2;
 	public static final int LightMatricesUniformBlockBinding = 3;
+	
 	public static final int Palm001highPolyWorldMatricesBinding = 4;
 	public static final int Palm001highPolyModelMatricesBinding = 5;
 	public static final int Palm001BillboardWorldMatricesBinding = 6;
@@ -35,6 +36,9 @@ public class Constants {
 	public static final int Palm002highPolyModelMatricesBinding = 9;
 	public static final int Palm002BillboardWorldMatricesBinding = 10;
 	public static final int Palm002BillboardModelMatricesBinding = 11;
+	
+	public static final int Tree0101highPolyWorldMatricesBinding = 12;
+	public static final int Tree0101highPolyModelMatricesBinding = 13;
 
 
 	
