@@ -1,13 +1,12 @@
 package oreonworlds.assets.plants;
 
 import java.nio.FloatBuffer;
+import java.util.ArrayList;
 import java.util.List;
+
 import engine.buffers.MeshVAO;
 import engine.buffers.UBO;
-import engine.configs.AlphaBlending;
 import engine.configs.AlphaTestCullFaceDisable;
-import engine.configs.AlphaTest;
-import engine.configs.CullFaceDisable;
 import engine.math.Matrix4f;
 import engine.math.Vec3f;
 import engine.scenegraph.GameObject;
@@ -16,25 +15,40 @@ import engine.scenegraph.components.RenderInfo;
 import engine.scenegraph.components.Renderer;
 import engine.utils.BufferAllocation;
 import engine.utils.Constants;
-import engine.utils.ResourceLoader;
 import modules.modelLoader.obj.Model;
 import modules.modelLoader.obj.OBJLoader;
 import modules.terrain.Terrain;
-import oreonworlds.shaders.plants.Bush01InstancedShader;
-import oreonworlds.shaders.plants.Bush01InstancedShadowShader;
+import oreonworlds.shaders.plants.Grass01InstancedShader;
 
-public class Bush01Instanced extends Node{
+public class Plant01Instanced extends Node{
 	
+	private final int instances = 512;
 	
-	public Bush01Instanced(){
+	public Plant01Instanced(){
 		
 		OBJLoader loader = new OBJLoader();
-		Model[] models = loader.load("./res/oreonworlds/assets/plants/Bush_01","Bush_01.obj","Bush_01.mtl");
+		Model[] models = loader.load("./res/oreonworlds/assets/plants/Grass_01","grassmodel.obj","grassmodel.mtl");
 		
-		List<Matrix4f> instancedWorldMatrices = ResourceLoader.loadObjectTransforms("./res/oreonworlds/assets/plants/Bush_01/Bush_01_instancedtransforms.txt");
-		List<Matrix4f> instancedModelMatrices = ResourceLoader.loadObjectTransformsModelMatrix("./res/oreonworlds/assets/plants/Bush_01/Bush_01_instancedtransforms.txt");
+		List<Matrix4f> instancedWorldMatrices = new ArrayList<Matrix4f>();
+		List<Matrix4f> instancedModelMatrices = new ArrayList<Matrix4f>();
 		
-		// 2 matrices for each transform
+		for (int i=0; i<instances; i++){
+			Vec3f translation = new Vec3f((float)(Math.random()*400)-200 + 1196, 0, (float)(Math.random()*400)-200 - 450);
+			float s = (float)(Math.random()*2 + 3);
+			Vec3f scaling = new Vec3f(s,s,s);
+			Vec3f rotation = new Vec3f(0,0,0);
+			
+			Matrix4f translationMatrix = new Matrix4f().Translation(translation);
+			Matrix4f rotationMatrix = new Matrix4f().Rotation(rotation);
+			Matrix4f scalingMatrix = new Matrix4f().Scaling(scaling);
+			
+			Matrix4f worldMatrix = translationMatrix.mul(scalingMatrix.mul(rotationMatrix));
+			Matrix4f modelMatrix = rotationMatrix;
+			
+			instancedWorldMatrices.add(worldMatrix);
+			instancedModelMatrices.add(modelMatrix);
+		}
+		
 		int buffersize = Float.BYTES * 16 * 2 * instancedWorldMatrices.size();
 		FloatBuffer floatBuffer = BufferAllocation.createFloatBuffer(buffersize);
 		
@@ -50,7 +64,7 @@ public class Bush01Instanced extends Node{
 		}
 		
 		UBO ubo = new UBO();
-		ubo.setBinding_point_index(Constants.Bush01InstancedMatricesBinding);
+		ubo.setBinding_point_index(Constants.Plant01InstancedMatricesBinding);
 		ubo.bindBufferBase();
 		ubo.allocate(buffersize);
 		ubo.updateData(floatBuffer, buffersize);
@@ -60,9 +74,11 @@ public class Bush01Instanced extends Node{
 			GameObject object = new GameObject();
 			MeshVAO meshBuffer = new MeshVAO();
 			model.getMesh().setTangentSpace(false);
+			model.getMesh().setInstanced(true);
+			model.getMesh().setInstances(instances);
 			meshBuffer.addData(model.getMesh());
 
-			object.setRenderInfo(new RenderInfo(new AlphaTest(0.2f), Bush01InstancedShader.getInstance(), Bush01InstancedShadowShader.getInstance()));
+			object.setRenderInfo(new RenderInfo(new AlphaTestCullFaceDisable(0.3f), Grass01InstancedShader.getInstance()));
 			Renderer renderer = new Renderer(object.getRenderInfo().getShader(), meshBuffer);
 
 			object.addComponent("Material", model.getMaterial());

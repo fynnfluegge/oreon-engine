@@ -16,7 +16,7 @@ public class Constants {
 													0.0f,0.02f,
 													0.01f,0.04f,
 													0.02f,0.06f,
-													0.04f,0.1f};
+													0.05f,0.16f};
 	public static final int TERRAIN_FRACTALS_RESOLUTION = 512;
 	public static final int PSSM_SHADOWMAP_RESOLUTION = 4096;
 	public static final float[] PSSM_SHADOWMAPARRAY_INDICES = {0.0f,1f,2f,3f,4f,5f};
@@ -27,12 +27,15 @@ public class Constants {
 	public static final int CameraUniformBlockBinding = 1;
 	public static final int DirectionalLightUniformBlockBinding = 2;
 	public static final int LightMatricesUniformBlockBinding = 3;
-	public static final int Bush01InstancedMatricesBinding = 4;
-	public static final int Palm01InstancedMatricesBinding = 5;
-	public static final int Rock01InstancedMatricesBinding = 6;
-	public static final int Rock02InstancedMatricesBinding = 7;
-	public static final int Grass01InstancedMatricesBinding = 8;
-	public static final int Palm01BillboardInstancedMatricesBinding = 9;
+	public static final int Palm001highPolyWorldMatricesBinding = 4;
+	public static final int Palm001highPolyModelMatricesBinding = 5;
+	public static final int Palm001BillboardWorldMatricesBinding = 6;
+	public static final int Palm001BillboardModelMatricesBinding = 7;
+	public static final int Palm002highPolyWorldMatricesBinding = 8;
+	public static final int Palm002highPolyModelMatricesBinding = 9;
+	public static final int Palm002BillboardWorldMatricesBinding = 10;
+	public static final int Palm002BillboardModelMatricesBinding = 11;
+
 
 	
 

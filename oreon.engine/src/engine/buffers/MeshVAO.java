@@ -102,4 +102,8 @@ public class MeshVAO implements VAO{
 	public void delete() {
 		
 	}
+	
+	public void setInstances(int instances){
+		this.instances = instances;
+	}
 }

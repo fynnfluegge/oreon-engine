@@ -42,7 +42,7 @@ void main()
 		gl_ClipDistance[6] = dot(gl_Position,clipplane);
 		texCoord_FS = texCoord_GS[i];
 		position_FS = worldPos.xyz;
-		normal_FS = normal_GS[i];
+		normal_FS = (m_Model[ instanceID_GS[i] ] * vec4(normal_GS[i],1)).xyz;
 		viewSpacePos = m_View * worldPos;
 		EmitVertex();
 	}	

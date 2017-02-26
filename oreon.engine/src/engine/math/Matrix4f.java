@@ -231,6 +231,20 @@ public class Matrix4f {
 		return invM;
 	}
 	
+	public boolean equals(Matrix4f m){
+		if (this.m[0][0] == m.getM()[0][0] && this.m[0][1] == m.getM()[0][1] &&
+			this.m[0][2] == m.getM()[0][2] && this.m[0][3] == m.getM()[0][3] &&
+			this.m[1][0] == m.getM()[1][0] && this.m[1][1] == m.getM()[1][1] &&
+			this.m[1][2] == m.getM()[1][2] && this.m[1][3] == m.getM()[1][3] &&
+			this.m[2][0] == m.getM()[2][0] && this.m[2][1] == m.getM()[2][1] &&
+			this.m[2][2] == m.getM()[2][2] && this.m[2][3] == m.getM()[2][3] &&
+			this.m[3][0] == m.getM()[3][0] && this.m[3][1] == m.getM()[3][1] &&
+			this.m[3][2] == m.getM()[3][2] && this.m[3][3] == m.getM()[3][3])
+				return true;
+		else
+			return false;	
+	}
+	
 	public void set(int x, int y, float value)
 	{
 		this.m[x][y] = value;

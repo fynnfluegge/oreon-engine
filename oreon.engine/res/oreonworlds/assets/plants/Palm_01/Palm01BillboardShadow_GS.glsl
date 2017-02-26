@@ -5,6 +5,9 @@ layout(triangles, invocations = 6) in;
 layout(triangle_strip, max_vertices = 3) out;
 
 in int instanceID_GS[];
+in vec2 texCoord_GS[];
+
+out vec2 texCoord_FS;
 
 layout (std140, row_major) uniform Camera{
 	vec3 eyePosition;
@@ -13,8 +16,9 @@ layout (std140, row_major) uniform Camera{
 	vec4 frustumPlanes[6];
 };
 
-layout (std140, row_major) uniform worldMatrices{
-	mat4 m_World[100];
+layout (std140, row_major) uniform InstancedMatrices{
+	mat4 m_World[512];
+	mat4 m_Model[512];
 };
 
 layout (std140, row_major) uniform LightViewProjections{
@@ -36,6 +40,7 @@ void main()
 			gl_ClipDistance[4] = dot(gl_Position,frustumPlanes[4]);
 			gl_ClipDistance[5] = dot(gl_Position,frustumPlanes[5]);
 			gl_ClipDistance[6] = dot(gl_Position,clipplane);
+			texCoord_FS = texCoord_GS[i];
 			EmitVertex();
 		}	
 		EndPrimitive();

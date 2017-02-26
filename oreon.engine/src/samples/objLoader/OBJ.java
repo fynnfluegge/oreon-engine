@@ -1,7 +1,9 @@
 package samples.objLoader;
 import modules.modelLoader.obj.Model;
 import modules.modelLoader.obj.OBJLoader;
-import oreonworlds.shaders.plants.Palm01InstancedShader;
+import oreonworlds.shaders.plants.Grass01InstancedShader;
+import oreonworlds.shaders.plants.PalmBillboardShadowShader;
+import oreonworlds.shaders.plants.PalmShader;
 
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
@@ -27,13 +29,13 @@ public class OBJ extends Node{
 	public OBJ(){
 		
 		OBJLoader loader = new OBJLoader();
-		Model[] models = loader.load("./res/oreonworlds/assets/plants/Palm_01","Palma 001.obj","Palma 001.mtl");
+		Model[] models = loader.load("./res/oreonworlds/assets/plants/Tree_01","tree01.obj","tree01.mtl");
 		List<Matrix4f> instancedWorldMatrices = new ArrayList<Matrix4f>();
 		List<Matrix4f> instancedModelMatrices = new ArrayList<Matrix4f>();
 		
 		for (int i=0; i<1; i++){
 			Vec3f translation = new Vec3f(0, 0, 0);
-			float s = 1;
+			float s = 100;
 			Vec3f scaling = new Vec3f(s,s,s);
 			Vec3f rotation = new Vec3f(0,-90,0);
 			
@@ -61,7 +63,7 @@ public class OBJ extends Node{
 		}
 		
 		UBO ubo = new UBO();
-		ubo.setBinding_point_index(Constants.Palm01InstancedMatricesBinding);
+		ubo.setBinding_point_index(Constants.Palm01BillboardInstancedWorldMatricesBinding);
 		ubo.bindBufferBase();
 		ubo.allocate(buffersize);
 		ubo.updateData(floatBuffer, buffersize);
@@ -75,7 +77,7 @@ public class OBJ extends Node{
 			model.getMesh().setInstances(1);
 			meshBuffer.addData(model.getMesh());
 
-			object.setRenderInfo(new RenderInfo(new CullFaceDisable(), Palm01InstancedShader.getInstance()));
+			object.setRenderInfo(new RenderInfo(new CullFaceDisable(), PalmBillboardShadowShader.getInstance()));
 			Renderer renderer = new Renderer(object.getRenderInfo().getShader(), meshBuffer);
 
 			object.addComponent("Material", model.getMaterial());

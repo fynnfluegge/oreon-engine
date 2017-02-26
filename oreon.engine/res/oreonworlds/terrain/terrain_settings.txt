@@ -27,12 +27,12 @@ material3_shininess 20.0
 #terrain mesh settings
 scaleXZ 6000.0
 scaleY 1200.0
-texDetail 500.0
-tessellationFactor 761
-tessellationSlope 1.63
-tessellationShift -0.5
+texDetail 400.0
+tessellationFactor 600
+tessellationSlope 1.8
+tessellationShift -0.4
 detailRange 500
-sightRangeFactor 1.4
+sightRangeFactor 1.2
 
 #lod ranges
 lod1_range 1750
@@ -40,8 +40,8 @@ lod2_range 874
 lod3_range 386
 lod4_range 192
 lod5_range 100
-lod6_range 42
-lod7_range 20
+lod6_range 50
+lod7_range 0
 lod8_range 0
 
 fractal_stage0

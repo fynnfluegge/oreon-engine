@@ -130,6 +130,13 @@ public class Vec3f {
 		return new Vec3f(Math.abs(X), Math.abs(Y), Math.abs(Z));
 	}
 	
+	public boolean equals(Vec3f v)
+	{
+		if (X == v.getX() && Y == v.getY() && Z == v.getZ())
+			return true;
+		else return false;
+	}
+	
 	public String toString()
 	{
 		return "[" + this.X + "," + this.Y + "," + this.Z + "]";

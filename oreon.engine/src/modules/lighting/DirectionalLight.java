@@ -2,7 +2,10 @@ package modules.lighting;
 
 import java.nio.FloatBuffer;
 
+import org.lwjgl.input.Mouse;
+
 import engine.buffers.UBO;
+import engine.core.Camera;
 import engine.math.Matrix4f;
 import engine.math.Vec3f;
 import engine.utils.BufferAllocation;
@@ -38,7 +41,7 @@ public class DirectionalLight extends Light{
 	}
 	
 	protected DirectionalLight(){
-		this(new Vec3f(1,-1,1f).normalize(),new Vec3f(0.01f,0.01f,0.01f),new Vec3f(1,0.95f,0.87f),1.2f);
+		this(new Vec3f(1,-1,1f).normalize(),new Vec3f(0.04f,0.04f,0.04f),new Vec3f(1,0.95f,0.87f),1.2f);
 	}
 	
 	private DirectionalLight(Vec3f direction, Vec3f ambient, Vec3f color, float intensity) {
@@ -91,13 +94,15 @@ public class DirectionalLight extends Light{
 	}
 	
 	public void update(){
-		floatBufferMatrices.clear();
-		for (PSSMCamera lightCamera : lightCameras){
-			lightCamera.update(m_View, up, right);
-			floatBufferMatrices.put(BufferAllocation.createFlippedBuffer(lightCamera.getM_orthographicViewProjection()));
+		
+		if (Camera.getInstance().isCameraMovedOrRotated()){
+			floatBufferMatrices.clear();
+			for (PSSMCamera lightCamera : lightCameras){
+				lightCamera.update(m_View, up, right);
+				floatBufferMatrices.put(BufferAllocation.createFlippedBuffer(lightCamera.getM_orthographicViewProjection()));
+			}
+			ubo_matrices.updateData(floatBufferMatrices, matricesBufferSize);
 		}
-
-		ubo_matrices.updateData(floatBufferMatrices, matricesBufferSize);
 	}
 	
 	public Vec3f getDirection() {

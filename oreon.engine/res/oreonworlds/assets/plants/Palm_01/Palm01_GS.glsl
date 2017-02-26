@@ -2,18 +2,23 @@
 
 layout(triangles, invocations = 1) in;
 
-layout(triangle_strip, max_vertices = 3) out;
+layout(triangle_strip, max_vertices = 6) out;
 
-in vec4 normal_GS[];
+in vec3 normal_GS[];
 in int instanceID_GS[];
+in vec2 texCoord_GS[];
 
 out vec3 position_FS;
 out vec3 normal_FS;
-//out vec4 viewSpacePos;
+out vec4 viewSpacePos;
+out vec2 texCoord_FS;
 
-layout (std140, row_major) uniform InstancedMatrices{
-	mat4 m_World[512];
-	mat4 m_Model[512];
+layout (std140, row_major) uniform worldMatrices{
+	mat4 m_World[100];
+};
+
+layout (std140, row_major) uniform modelMatrices{
+	mat4 m_Model[100];
 };
 
 layout (std140, row_major) uniform Camera{
@@ -38,9 +43,10 @@ void main()
 		gl_ClipDistance[4] = dot(gl_Position,frustumPlanes[4]);
 		gl_ClipDistance[5] = dot(gl_Position,frustumPlanes[5]);
 		gl_ClipDistance[6] = dot(gl_Position,clipplane);
+		texCoord_FS = texCoord_GS[i];
 		position_FS = worldPos.xyz;
-		normal_FS = (m_Model[ instanceID_GS[i] ] * normal_GS[i]).xyz;
-		//viewSpacePos = m_View * worldPos;
+		normal_FS = (m_Model[ instanceID_GS[i] ] * vec4(normal_GS[i],1)).xyz;
+		viewSpacePos = m_View * worldPos;
 		EmitVertex();
 	}	
 	EndPrimitive();

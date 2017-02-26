@@ -13,7 +13,7 @@ public class OpenCloseButton extends Button{
 	{
 		buttonMap = new Texture2D("./res/gui/tex/open_arrow.png");
 		buttonClickMap = new Texture2D("./res/gui/tex/open_arrow.png");
-		getOrthoTransform().setTranslation(5, Window.getInstance().getHeight()-50, 0);
+		getOrthoTransform().setTranslation(5, Window.getInstance().getHeight()-25, 0);
 		getOrthoTransform().setScaling(15,30,0);
 		Vec2f[] texCoords = new Vec2f[4];
 		texCoords[0] = new Vec2f(0,1f);

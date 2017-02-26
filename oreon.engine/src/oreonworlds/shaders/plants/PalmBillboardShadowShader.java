@@ -9,27 +9,28 @@ import engine.scenegraph.components.Material;
 import engine.shader.Shader;
 import engine.utils.Constants;
 import engine.utils.ResourceLoader;
+import oreonworlds.assets.plants.PalmInstanced;
 
-public class Palm01BillboardInstancedShader extends Shader{
+public class PalmBillboardShadowShader extends Shader{
 
-private static Palm01BillboardInstancedShader instance = null;
+	private static PalmBillboardShadowShader instance = null;
 	
-	public static Palm01BillboardInstancedShader getInstance() 
+	public static PalmBillboardShadowShader getInstance() 
 	{
 	    if(instance == null) 
 	    {
-	    	instance = new Palm01BillboardInstancedShader();
+	    	instance = new PalmBillboardShadowShader();
 	    }
 	      return instance;
 	}
 	
-	protected Palm01BillboardInstancedShader()
+	protected PalmBillboardShadowShader()
 	{
 		super();
 		
-		addVertexShader(ResourceLoader.loadShader("oreonworlds/shaders/Grass_01/Palm01_VS.glsl"));
-		addGeometryShader(ResourceLoader.loadShader("oreonworlds/shaders/Grass_01/Palm01_GS.glsl"));
-		addFragmentShader(ResourceLoader.loadShader("oreonworlds/shaders/Grass_01/Palm01Billboard_FS.glsl"));
+		addVertexShader(ResourceLoader.loadShader("oreonworlds/assets/plants/Palm_01/Palm01_VS.glsl"));
+		addGeometryShader(ResourceLoader.loadShader("oreonworlds/assets/plants/Palm_01/Palm01BillboardShadow_GS.glsl"));
+		addFragmentShader(ResourceLoader.loadShader("oreonworlds/assets/plants/Palm_01/Palm01BillboardShadow_FS.glsl"));
 		compileShader();
 		
 		addUniform("clipplane");
@@ -44,7 +45,7 @@ private static Palm01BillboardInstancedShader instance = null;
 		setUniform("clipplane", RenderingEngine.getClipplane());
 		bindUniformBlock("Camera",Constants.CameraUniformBlockBinding);
 		bindUniformBlock("LightViewProjections",Constants.LightMatricesUniformBlockBinding);
-		bindUniformBlock("InstancedMatrices", Constants.Palm01BillboardInstancedMatricesBinding);
+		bindUniformBlock("InstancedMatrices",((PalmInstanced) object.getParent()).getBillboardWorldMatBinding());
 		
 		Material material = (Material) object.getComponent("Material");
 		

@@ -1,4 +1,4 @@
-#version 330
+#version 430
 
 in vec3 normal_FS;
 in vec3 position_FS;
@@ -127,11 +127,11 @@ void main()
 	if (diffuseFactor > 0.0)
 		specularFactor = specular(directional_light.direction, normal_FS, eyePosition, position_FS);
 	
-	vec3 diffuseLight = directional_light.color * diffuseFactor;
+	vec3 diffuseLight = directional_light.color * diffuseFactor * shadow(position_FS);
 	vec3 specularLight = directional_light.color * specularFactor;
 	
 	vec3 fragColor = material.color * (directional_light.ambient + diffuseLight);// + specularLight;
-	fragColor *= shadow(position_FS);
+	// fragColor *= shadow(position_FS);
 	
 	float fogFactor = -0.0005/sightRangeFactor*(dist-zFar/5*sightRangeFactor);
 	

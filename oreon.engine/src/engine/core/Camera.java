@@ -21,14 +21,19 @@ public class Camera {
 	private final Vec3f yAxis = new Vec3f(0,1,0);
 	
 	private Vec3f position;
+	private Vec3f previousPosition;
 	private Vec3f forward;
 	private Vec3f up;
 	private int scaleFactor;
+	private float movAmt;
+	private float rotAmt;
 	private Matrix4f viewMatrix;
 	private Matrix4f projectionMatrix;
 	private Matrix4f viewProjectionMatrix;
 	private Matrix4f previousViewMatrix;
 	private Matrix4f previousViewProjectionMatrix;
+	private boolean cameraMoved;
+	private boolean cameraMovedOrRotated;
 	
 	private UBO ubo;
 	private FloatBuffer floatBuffer;
@@ -66,13 +71,14 @@ public class Camera {
 	protected Camera()
 	{
 		this(new Vec3f(1196,-100,-450), new Vec3f(0,0,1), new Vec3f(0,1,0));
-		this.setProjection(70, Window.getInstance().getWidth(), Window.getInstance().getHeight());
-		this.setViewMatrix(new Matrix4f().View(this.getForward(), this.getUp()).mul(
+		setProjection(70, Window.getInstance().getWidth(), Window.getInstance().getHeight());
+		setViewMatrix(new Matrix4f().View(this.getForward(), this.getUp()).mul(
 				new Matrix4f().Translation(this.getPosition().mul(-1))));
-		this.initfrustumPlanes();
-		this.viewProjectionMatrix = new Matrix4f().Zero();
-		this.previousViewProjectionMatrix = new Matrix4f().Zero();
-		this.ubo = new UBO();
+		initfrustumPlanes();
+		previousViewMatrix = new Matrix4f().Zero();
+		viewProjectionMatrix = new Matrix4f().Zero();
+		previousViewProjectionMatrix = new Matrix4f().Zero();
+		ubo = new UBO();
 		ubo.setBinding_point_index(Constants.CameraUniformBlockBinding);
 		ubo.bindBufferBase();
 		ubo.allocate(bufferSize);
@@ -81,20 +87,23 @@ public class Camera {
 	
 	private Camera(Vec3f position, Vec3f forward, Vec3f up)
 	{
-		this.setPosition(position);
-		this.setForward(forward);
-		this.setUp(up);
-		this.setScaleFactor(1);
+		setPosition(position);
+		setForward(forward);
+		setUp(up);
+		setScaleFactor(1);
 		up.normalize();
 		forward.normalize();
 	}
 	
 	public void update()
 	{
-		this.setScaleFactor(Math.max(1, scaleFactor + Mouse.getDWheel()/10));
+		previousPosition = new Vec3f(position);
+		cameraMoved = false;
+		cameraMovedOrRotated = false;
 		
-		float movAmt = scaleFactor * 0.001f;
-		float rotAmt = 4 * scaleFactor * 0.001f; 
+		setScaleFactor(Math.max(1, scaleFactor + Mouse.getDWheel()/10));
+		movAmt = scaleFactor * 0.001f;
+		rotAmt = 4 * scaleFactor * 0.001f; 
 		
 		if(Input.isButtonDown(2))
 		{
@@ -194,6 +203,14 @@ public class Camera {
 		}
 		
 		if(mouselocked) Input.setMousePosition(lockedMousePosition);
+		
+		if (!position.equals(previousPosition)){
+			cameraMoved = true;	
+		}
+		
+		if (!viewMatrix.equals(previousViewMatrix)){
+			cameraMovedOrRotated = true;
+		}
 		
 		setPreviousViewMatrix(viewMatrix);
 		setPreviousViewProjectionMatrix(viewProjectionMatrix);
@@ -411,5 +428,13 @@ public class Camera {
 
 	public Vec3f[] getFrustumCorners() {
 		return frustumCorners;
+	}
+
+	public boolean isCameraMoved() {
+		return cameraMoved;
+	}
+
+	public boolean isCameraMovedOrRotated() {
+		return cameraMovedOrRotated;
 	}
 }

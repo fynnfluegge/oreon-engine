@@ -29,9 +29,9 @@ private static Grass01InstancedShader instance = null;
 	{
 		super();
 		
-		addVertexShader(ResourceLoader.loadShader("oreonworlds/assets/Grass_01/Grass01_VS.glsl"));
-		addGeometryShader(ResourceLoader.loadShader("oreonworlds/assets/Grass_01/Grass01_GS.glsl"));
-		addFragmentShader(ResourceLoader.loadShader("oreonworlds/assets/Grass_01/Grass01_FS.glsl"));
+		addVertexShader(ResourceLoader.loadShader("oreonworlds/assets/plants/Grass_01/Grass01_VS.glsl"));
+		addGeometryShader(ResourceLoader.loadShader("oreonworlds/assets/plants/Grass_01/Grass01_GS.glsl"));
+		addFragmentShader(ResourceLoader.loadShader("oreonworlds/assets/plants/Grass_01/Grass01_FS.glsl"));
 		compileShader();
 		
 		addUniform("sightRangeFactor");
@@ -48,12 +48,12 @@ private static Grass01InstancedShader instance = null;
 	public void updateUniforms(GameObject object)
 	{
 		bindUniformBlock("Camera", Constants.CameraUniformBlockBinding);
-		bindUniformBlock("InstancedMatrices", Constants.Grass01InstancedMatricesBinding);
+		bindUniformBlock("InstancedMatrices", Constants.Plant01InstancedMatricesBinding);
 		bindUniformBlock("DirectionalLight", Constants.DirectionalLightUniformBlockBinding);
 		bindUniformBlock("LightViewProjections",Constants.LightMatricesUniformBlockBinding);
 		
 		setUniform("clipplane", RenderingEngine.getClipplane());
-		setUniformf("sightRangeFactor", Terrain.getInstance().getTerrainConfiguration().getSightRangeFactor());
+		setUniformf("sightRangeFactor", 1000);//Terrain.getInstance().getTerrainConfiguration().getSightRangeFactor());
 		
 		Material material = (Material) object.getComponent("Material");
 

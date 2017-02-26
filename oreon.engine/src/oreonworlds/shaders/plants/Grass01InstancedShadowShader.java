@@ -44,7 +44,7 @@ public class Grass01InstancedShadowShader extends Shader{
 		setUniform("clipplane", RenderingEngine.getClipplane());
 		bindUniformBlock("Camera",Constants.CameraUniformBlockBinding);
 		bindUniformBlock("LightViewProjections",Constants.LightMatricesUniformBlockBinding);
-		bindUniformBlock("InstancedMatrices", Constants.Grass01InstancedMatricesBinding);
+		bindUniformBlock("InstancedMatrices", Constants.Plant01InstancedMatricesBinding);
 		
 		Material material = (Material) object.getComponent("Material");
 		

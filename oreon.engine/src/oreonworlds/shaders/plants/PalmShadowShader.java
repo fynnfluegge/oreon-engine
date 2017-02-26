@@ -5,31 +5,32 @@ import engine.scenegraph.GameObject;
 import engine.shader.Shader;
 import engine.utils.Constants;
 import engine.utils.ResourceLoader;
+import oreonworlds.assets.plants.PalmInstanced;
 
-public class Palm01InstancedShadowShader extends Shader{
+public class PalmShadowShader extends Shader{
 
-	private static Palm01InstancedShadowShader instance;
+	private static PalmShadowShader instance;
 
-	public static Palm01InstancedShadowShader getInstance() 
+	public static PalmShadowShader getInstance() 
 	{
 	    if(instance == null) 
 	    {
-	    	instance = new Palm01InstancedShadowShader();
+	    	instance = new PalmShadowShader();
 	    }
 	     return instance;
 	}
 	
-	protected Palm01InstancedShadowShader()
+	protected PalmShadowShader()
 	{
 		super();
 		
-		addVertexShader(ResourceLoader.loadShader("oreonworlds/assets/Palm_01/Palm01_VS.glsl"));
-		addGeometryShader(ResourceLoader.loadShader("oreonworlds/assets/Palm_01/Palm01Shadow_GS.glsl"));
-		addFragmentShader(ResourceLoader.loadShader("oreonworlds/assets/Palm_01/Palm01Shadow_FS.glsl"));
+		addVertexShader(ResourceLoader.loadShader("oreonworlds/assets/plants/Palm_01/Palm01_VS.glsl"));
+		addGeometryShader(ResourceLoader.loadShader("oreonworlds/assets/plants/Palm_01/Palm01Shadow_GS.glsl"));
+		addFragmentShader(ResourceLoader.loadShader("oreonworlds/assets/plants/Palm_01/Palm01Shadow_FS.glsl"));
 		compileShader();
 		
 		addUniform("clipplane");
-		addUniformBlock("InstancedMatrices");
+		addUniformBlock("worldMatrices");
 		addUniformBlock("Camera");
 		addUniformBlock("LightViewProjections");
 	}
@@ -39,6 +40,6 @@ public class Palm01InstancedShadowShader extends Shader{
 		setUniform("clipplane", RenderingEngine.getClipplane());
 		bindUniformBlock("Camera",Constants.CameraUniformBlockBinding);
 		bindUniformBlock("LightViewProjections",Constants.LightMatricesUniformBlockBinding);
-		bindUniformBlock("InstancedMatrices", Constants.Palm01InstancedMatricesBinding);
+		bindUniformBlock("worldMatrices", ((PalmInstanced) object.getParent()).getHighpolyWorldMatBinding());
 	}
 }

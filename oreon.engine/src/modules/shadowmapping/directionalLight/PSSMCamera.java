@@ -76,8 +76,6 @@ public class PSSMCamera {
 	
 	private void updateFrustumCorners(){
 		
-		// TODO performance optimization, redundante computations
-		
 		Vec3f right = Camera.getInstance().getUp().cross(Camera.getInstance().getForward());
 		
 		float tanFOV = (float) Math.tan(Math.toRadians(Camera.getInstance().getFovY()/2));

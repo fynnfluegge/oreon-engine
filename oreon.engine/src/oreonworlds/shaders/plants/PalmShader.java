@@ -10,27 +10,28 @@ import engine.shader.Shader;
 import engine.utils.Constants;
 import engine.utils.ResourceLoader;
 import modules.terrain.Terrain;
+import oreonworlds.assets.plants.PalmInstanced;
 
-public class Palm01InstancedShader extends Shader{
+public class PalmShader extends Shader{
 
-private static Palm01InstancedShader instance = null;
+private static PalmShader instance = null;
 	
-	public static Palm01InstancedShader getInstance() 
+	public static PalmShader getInstance() 
 	{
 	    if(instance == null) 
 	    {
-	    	instance = new Palm01InstancedShader();
+	    	instance = new PalmShader();
 	    }
 	      return instance;
 	}
 	
-	protected Palm01InstancedShader()
+	protected PalmShader()
 	{
 		super();
 
-		addVertexShader(ResourceLoader.loadShader("oreonworlds/assets/Palm_01/Palm01_VS.glsl"));
-		addGeometryShader(ResourceLoader.loadShader("oreonworlds/assets/Palm_01/Palm01_GS.glsl"));
-		addFragmentShader(ResourceLoader.loadShader("oreonworlds/assets/Palm_01/Palm01_FS.glsl"));
+		addVertexShader(ResourceLoader.loadShader("oreonworlds/assets/plants/Palm_01/Palm01_VS.glsl"));
+		addGeometryShader(ResourceLoader.loadShader("oreonworlds/assets/plants/Palm_01/Palm01_GS.glsl"));
+		addFragmentShader(ResourceLoader.loadShader("oreonworlds/assets/plants/Palm_01/Palm01_FS.glsl"));
 		compileShader();
 		
 		addUniform("sightRangeFactor");
@@ -40,7 +41,8 @@ private static Palm01InstancedShader instance = null;
 //		addUniform("material.shininess");
 		
 		addUniformBlock("DirectionalLight");
-		addUniformBlock("InstancedMatrices");
+		addUniformBlock("worldMatrices");
+		addUniformBlock("modelMatrices");
 		addUniformBlock("LightViewProjections");
 		addUniformBlock("Camera");
 		addUniform("shadowMaps");
@@ -49,7 +51,8 @@ private static Palm01InstancedShader instance = null;
 	public void updateUniforms(GameObject object)
 	{
 		bindUniformBlock("Camera", Constants.CameraUniformBlockBinding);
-		bindUniformBlock("InstancedMatrices", Constants.Palm01InstancedMatricesBinding);
+		bindUniformBlock("worldMatrices", ((PalmInstanced) object.getParent()).getHighpolyWorldMatBinding());
+		bindUniformBlock("modelMatrices", ((PalmInstanced) object.getParent()).getHighpolyModelMatBinding());
 		bindUniformBlock("DirectionalLight", Constants.DirectionalLightUniformBlockBinding);
 		bindUniformBlock("LightViewProjections",Constants.LightMatricesUniformBlockBinding);
 		

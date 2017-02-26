@@ -47,6 +47,7 @@ public class TerrainNode extends GameObject{
 		getTransform().setTranslation(getTransform().getLocalTranslation());
 		
 		computeWorldPos();
+		updateQuadtree();
 	}
 	
 	public void update()
@@ -57,7 +58,10 @@ public class TerrainNode extends GameObject{
 				getRenderInfo().setShader(terrConfig.getShader());
 			
 			getComponents().get("Renderer").setShader(getRenderInfo().getShader());
-			updateQuadtree();
+			
+			if (Camera.getInstance().isCameraMoved()){
+				updateQuadtree();
+			}
 			
 			for(Node child: getChildren())
 				child.update();		
@@ -92,16 +96,14 @@ public class TerrainNode extends GameObject{
 			child.renderShadows();
 	}
 	
-public void updateQuadtree(){
-		
-		float distance;
+	public void updateQuadtree(){
 		
 		if (Camera.getInstance().getPosition().getY() > (terrConfig.getScaleY())){
 			worldPos.setY(terrConfig.getScaleY());
 		}
 		else worldPos.setY(Camera.getInstance().getPosition().getY());
 
-		distance = (Camera.getInstance().getPosition().sub(worldPos)).length();
+		float distance = (Camera.getInstance().getPosition().sub(worldPos)).length();
 		
 		switch (lod){
 		case 0: if (distance < terrConfig.getLod_range()[0]){
