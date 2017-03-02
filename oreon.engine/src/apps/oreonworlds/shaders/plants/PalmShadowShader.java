@@ -1,5 +1,7 @@
 package apps.oreonworlds.shaders.plants;
 
+import java.util.List;
+
 import apps.oreonworlds.assets.plants.PalmInstanced;
 import engine.core.RenderingEngine;
 import engine.scenegraph.GameObject;
@@ -33,6 +35,11 @@ public class PalmShadowShader extends Shader{
 		addUniformBlock("worldMatrices");
 		addUniformBlock("Camera");
 		addUniformBlock("LightViewProjections");
+		
+		for (int i=0; i<100; i++)
+		{
+			addUniform("matrixIndices[" + i + "]");
+		}
 	}
 	
 	public void updateUniforms(GameObject object){
@@ -40,6 +47,13 @@ public class PalmShadowShader extends Shader{
 		setUniform("clipplane", RenderingEngine.getClipplane());
 		bindUniformBlock("Camera",Constants.CameraUniformBlockBinding);
 		bindUniformBlock("LightViewProjections",Constants.LightMatricesUniformBlockBinding);
-		bindUniformBlock("worldMatrices", ((PalmInstanced) object.getParent()).getHighpolyWorldMatBinding());
+		bindUniformBlock("worldMatrices", ((PalmInstanced) object.getParent()).getWorldMatBinding());
+		
+		List<Integer> indices = ((PalmInstanced) object.getParent()).getHighPolyIndices();
+		
+		for (int i=0; i<indices.size(); i++)
+		{
+			setUniformi("matrixIndices[" + i +"]", indices.get(i));	
+		}
 	}
 }

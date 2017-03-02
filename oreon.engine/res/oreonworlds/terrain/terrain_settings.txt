@@ -32,7 +32,7 @@ tessellationFactor 600
 tessellationSlope 1.8
 tessellationShift -0.4
 detailRange 500
-sightRangeFactor 1.2
+sightRangeFactor 1.4
 
 #lod ranges
 lod1_range 1750
@@ -48,7 +48,7 @@ fractal_stage0
 amp 2.0
 l 10.0
 scaling 1
-strength 8.0
+strength 0.0
 normalStrength 1000
 random 941
 
@@ -56,7 +56,7 @@ fractal_stage1
 amp 2.0
 l 20.0
 scaling 2
-strength 2
+strength 2.5
 normalStrength 1000
 random 558
 

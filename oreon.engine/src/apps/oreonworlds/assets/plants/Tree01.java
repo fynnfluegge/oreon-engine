@@ -9,9 +9,7 @@ public class Tree01 extends Node{
 	public Tree01(){
 		Tree01Instanced palms0 = new Tree01Instanced(new Vec3f(1060,0,-830),
 				 									 Constants.Tree0101highPolyModelMatricesBinding,
-													 Constants.Tree0101highPolyWorldMatricesBinding,
-													 40,
-													 41);
+													 Constants.Tree0101highPolyWorldMatricesBinding);
 	
 		addChild(palms0);
 	}

@@ -3,6 +3,8 @@ package apps.oreonworlds.shaders.plants;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
+import java.util.List;
+
 import apps.oreonworlds.assets.plants.PalmInstanced;
 import engine.core.RenderingEngine;
 import engine.scenegraph.GameObject;
@@ -38,6 +40,11 @@ public class PalmBillboardShadowShader extends Shader{
 		addUniformBlock("Camera");
 		addUniformBlock("LightViewProjections");
 		addUniform("material.diffusemap");
+		
+		for (int i=0; i<100; i++)
+		{
+			addUniform("matrixIndices[" + i + "]");
+		}
 	}
 	
 	public void updateUniforms(GameObject object){
@@ -45,12 +52,19 @@ public class PalmBillboardShadowShader extends Shader{
 		setUniform("clipplane", RenderingEngine.getClipplane());
 		bindUniformBlock("Camera",Constants.CameraUniformBlockBinding);
 		bindUniformBlock("LightViewProjections",Constants.LightMatricesUniformBlockBinding);
-		bindUniformBlock("InstancedMatrices",((PalmInstanced) object.getParent()).getBillboardWorldMatBinding());
+		bindUniformBlock("InstancedMatrices",((PalmInstanced) object.getParent()).getWorldMatBinding());
 		
 		Material material = (Material) object.getComponent("Material");
 		
 		glActiveTexture(GL_TEXTURE0);
 		material.getDiffusemap().bind();
 		setUniformi("material.diffusemap", 0);
+		
+		List<Integer> indices = ((PalmInstanced) object.getParent()).getBillboardIndices();
+		
+		for (int i=0; i<indices.size(); i++)
+		{
+			setUniformi("matrixIndices[" + i +"]", indices.get(i));	
+		}
 	}
 }

@@ -1,3 +1,0 @@
-# translation | scaling | rotation
-
-[ 1103 0 -586 ] [ 2 2 2 ] [ 0 0 0 ]

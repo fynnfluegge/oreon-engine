@@ -28,30 +28,24 @@ import modules.terrain.Terrain;
 public class PalmInstanced extends Node{
 	
 	private List<TransformsInstanced> transforms = new ArrayList<TransformsInstanced>();
-	private List<TransformsInstanced> highPolyModelTransforms = new ArrayList<TransformsInstanced>();
-	private List<TransformsInstanced> billboardTransforms = new ArrayList<TransformsInstanced>();
+	private List<Integer> highPolyIndices = new ArrayList<Integer>();
+	private List<Integer> billboardIndices = new ArrayList<Integer>();
 	
-	private UBO highPolyModelMatricesBuffer;
-	private UBO highPolyWorldMatricesBuffer;
-	private UBO billboardModelMatricesBuffer;
-	private UBO billboardWorldMatricesBuffer;
+	private UBO modelMatricesBuffer;
+	private UBO worldMatricesBuffer;
 
-	private final int instances = 50;
+	private final int instances = 80;
 	private final int buffersize = Float.BYTES * 16 * instances;
 	private Vec3f center;
 	
-	private int highpolyModelMatBinding;
-	private int highpolyWorldMatBinding;
-	private int billboardModelMatBinding;
-	private int billboardWorldMatBinding;
+	private int modelMatBinding;
+	private int worldMatBinding;
 
-	public PalmInstanced(Vec3f pos, int highpolyModelMatBinding, int highpolyWorldMatBinding, int billboardModelMatBinding, int billboardWorldMatBinding){
+	public PalmInstanced(Vec3f pos, int modelMatBinding, int worldMatBinding){
 		
 		center = pos;
-		this.highpolyModelMatBinding = highpolyModelMatBinding;
-		this.highpolyWorldMatBinding = highpolyWorldMatBinding;
-		this.billboardModelMatBinding = billboardModelMatBinding;
-		this.billboardWorldMatBinding = billboardWorldMatBinding;
+		this.setModelMatBinding(modelMatBinding);
+		this.setWorldMatBinding(worldMatBinding);
 		
 		Model[] models = new OBJLoader().load("./res/oreonworlds/assets/plants/Palm_01","Palma 001.obj","Palma 001.mtl");
 		Model[] billboards = new OBJLoader().load("./res/oreonworlds/assets/plants/Palm_01","billboardmodel.obj","billboardmodel.mtl");
@@ -74,26 +68,31 @@ public class PalmInstanced extends Node{
 			transforms.add(transform);
 		}
 		
-		highPolyModelMatricesBuffer = new UBO();
-		highPolyModelMatricesBuffer.setBinding_point_index(highpolyModelMatBinding);
-		highPolyModelMatricesBuffer.bindBufferBase();
-		highPolyModelMatricesBuffer.allocate(buffersize);
+		modelMatricesBuffer = new UBO();
+		modelMatricesBuffer.setBinding_point_index(modelMatBinding);
+		modelMatricesBuffer.bindBufferBase();
+		modelMatricesBuffer.allocate(buffersize);
 		
-		highPolyWorldMatricesBuffer = new UBO();
-		highPolyWorldMatricesBuffer.setBinding_point_index(highpolyWorldMatBinding);
-		highPolyWorldMatricesBuffer.bindBufferBase();
-		highPolyWorldMatricesBuffer.allocate(buffersize);
+		worldMatricesBuffer = new UBO();
+		worldMatricesBuffer.setBinding_point_index(worldMatBinding);
+		worldMatricesBuffer.bindBufferBase();
+		worldMatricesBuffer.allocate(buffersize);	
 		
-		billboardModelMatricesBuffer = new UBO();
-		billboardModelMatricesBuffer.setBinding_point_index(billboardModelMatBinding);
-		billboardModelMatricesBuffer.bindBufferBase();
-		billboardModelMatricesBuffer.allocate(buffersize);
+		/**
+		 * init matrices UBO's
+		 */
+		int size = Float.BYTES * 16 * instances;
 		
-		billboardWorldMatricesBuffer = new UBO();
-		billboardWorldMatricesBuffer.setBinding_point_index(billboardWorldMatBinding);
-		billboardWorldMatricesBuffer.bindBufferBase();
-		billboardWorldMatricesBuffer.allocate(buffersize);
+		FloatBuffer worldMatricesFloatBuffer = BufferAllocation.createFloatBuffer(size);
+		FloatBuffer modelMatricesFloatBuffer = BufferAllocation.createFloatBuffer(size);
 		
+		for(TransformsInstanced matrix : transforms){
+			worldMatricesFloatBuffer.put(BufferAllocation.createFlippedBuffer(matrix.getWorldMatrix()));
+			modelMatricesFloatBuffer.put(BufferAllocation.createFlippedBuffer(matrix.getModelMatrix()));
+		}
+		
+		worldMatricesBuffer.updateData(worldMatricesFloatBuffer, size);
+		modelMatricesBuffer.updateData(modelMatricesFloatBuffer, size);
 		
 		for (Model model : models){
 			
@@ -144,94 +143,64 @@ public class PalmInstanced extends Node{
 			updateUBOs();
 			
 //			System.out.println(center.sub(Camera.getInstance().getPosition()).length());
-//			System.out.println(highPolyModelTransforms.size());
+//			System.out.println(highPolyIndices.size());
 		}
 	}
 	
 	public void updateUBOs(){
 		
-		highPolyModelTransforms.clear();
-		billboardTransforms.clear();
+		highPolyIndices.clear();
+		billboardIndices.clear();
+		
+		int index = 0;
 		
 		for (TransformsInstanced transform : transforms){
 			if (transform.getTranslation().sub(Camera.getInstance().getPosition()).length() > 200){
-				billboardTransforms.add(transform);
+				billboardIndices.add(index);
 			}
 			else{
-				highPolyModelTransforms.add(transform);
+				highPolyIndices.add(index);
 			}
+			index++;
 		}
 		
-		((MeshVAO) ((Renderer) ((GameObject) getChildren().get(0)).getComponent("Renderer")).getVao()).setInstances(highPolyModelTransforms.size());
-		((MeshVAO) ((Renderer) ((GameObject) getChildren().get(1)).getComponent("Renderer")).getVao()).setInstances(highPolyModelTransforms.size());
-		((MeshVAO) ((Renderer) ((GameObject) getChildren().get(2)).getComponent("Renderer")).getVao()).setInstances(highPolyModelTransforms.size());
-		((MeshVAO) ((Renderer) ((GameObject) getChildren().get(3)).getComponent("Renderer")).getVao()).setInstances(highPolyModelTransforms.size());
+		((MeshVAO) ((Renderer) ((GameObject) getChildren().get(0)).getComponent("Renderer")).getVao()).setInstances(highPolyIndices.size());
+		((MeshVAO) ((Renderer) ((GameObject) getChildren().get(1)).getComponent("Renderer")).getVao()).setInstances(highPolyIndices.size());
+		((MeshVAO) ((Renderer) ((GameObject) getChildren().get(2)).getComponent("Renderer")).getVao()).setInstances(highPolyIndices.size());
+		((MeshVAO) ((Renderer) ((GameObject) getChildren().get(3)).getComponent("Renderer")).getVao()).setInstances(highPolyIndices.size());
 		
-		((MeshVAO) ((Renderer) ((GameObject) getChildren().get(4)).getComponent("Renderer")).getVao()).setInstances(billboardTransforms.size());
-		
-		/**
-		 * update matrices UBO's for high poly models
-		 */
-		int size = Float.BYTES * 16 * highPolyModelTransforms.size();
-		
-		FloatBuffer worldMatricesFloatBuffer = BufferAllocation.createFloatBuffer(size);
-		FloatBuffer modelMatricesFloatBuffer = BufferAllocation.createFloatBuffer(size);
-		
-		for(TransformsInstanced matrix : highPolyModelTransforms){
-			worldMatricesFloatBuffer.put(BufferAllocation.createFlippedBuffer(matrix.getWorldMatrix()));
-			modelMatricesFloatBuffer.put(BufferAllocation.createFlippedBuffer(matrix.getModelMatrix()));
-		}
-		
-		highPolyWorldMatricesBuffer.updateData(worldMatricesFloatBuffer, size);
-		highPolyModelMatricesBuffer.updateData(modelMatricesFloatBuffer, size);
-		
-		/**
-		 * update matrices UBO's fora billboard models
-		 */
-		size = Float.BYTES * 16 * billboardTransforms.size();
-		worldMatricesFloatBuffer.clear();
-		modelMatricesFloatBuffer.clear();
-		worldMatricesFloatBuffer = BufferAllocation.createFloatBuffer(size);
-		modelMatricesFloatBuffer = BufferAllocation.createFloatBuffer(size);
-		
-		for(TransformsInstanced matrix : billboardTransforms){
-			worldMatricesFloatBuffer.put(BufferAllocation.createFlippedBuffer(matrix.getWorldMatrix()));
-			modelMatricesFloatBuffer.put(BufferAllocation.createFlippedBuffer(matrix.getModelMatrix()));
-		}
-		
-		billboardWorldMatricesBuffer.updateData(worldMatricesFloatBuffer, size);
-		billboardModelMatricesBuffer.updateData(modelMatricesFloatBuffer, size);
+		((MeshVAO) ((Renderer) ((GameObject) getChildren().get(4)).getComponent("Renderer")).getVao()).setInstances(billboardIndices.size());
 	}
 
-	public int getHighpolyModelMatBinding() {
-		return highpolyModelMatBinding;
+	public int getModelMatBinding() {
+		return modelMatBinding;
 	}
 
-	public void setHighpolyModelMatBinding(int highpolyModelMatBinding) {
-		this.highpolyModelMatBinding = highpolyModelMatBinding;
+	public void setModelMatBinding(int modelMatBinding) {
+		this.modelMatBinding = modelMatBinding;
 	}
 
-	public int getHighpolyWorldMatBinding() {
-		return highpolyWorldMatBinding;
+	public int getWorldMatBinding() {
+		return worldMatBinding;
 	}
 
-	public void setHighpolyWorldMatBinding(int highpolyWorldMatBinding) {
-		this.highpolyWorldMatBinding = highpolyWorldMatBinding;
+	public void setWorldMatBinding(int worldMatBinding) {
+		this.worldMatBinding = worldMatBinding;
 	}
 
-	public int getBillboardModelMatBinding() {
-		return billboardModelMatBinding;
+	public List<Integer> getHighPolyIndices() {
+		return highPolyIndices;
 	}
 
-	public void setBillboardModelMatBinding(int billboardModelMatBinding) {
-		this.billboardModelMatBinding = billboardModelMatBinding;
+	public void setHighPolyIndices(List<Integer> highPolyIndices) {
+		this.highPolyIndices = highPolyIndices;
 	}
 
-	public int getBillboardWorldMatBinding() {
-		return billboardWorldMatBinding;
+	public List <Integer> getBillboardIndices() {
+		return billboardIndices;
 	}
 
-	public void setBillboardWorldMatBinding(int billboardWorldMatBinding) {
-		this.billboardWorldMatBinding = billboardWorldMatBinding;
+	public void setBillboardIndices(List <Integer> billboardIndices) {
+		this.billboardIndices = billboardIndices;
 	}
 }

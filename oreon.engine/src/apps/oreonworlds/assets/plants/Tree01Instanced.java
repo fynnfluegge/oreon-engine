@@ -4,13 +4,18 @@ import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-import apps.oreonworlds.shaders.plants.Tree01Shader;
+import apps.oreonworlds.shaders.plants.TreeBillboardShader;
+import apps.oreonworlds.shaders.plants.TreeBillboardShadowShader;
+import apps.oreonworlds.shaders.plants.TreeLeavesShader;
+import apps.oreonworlds.shaders.plants.TreeShadowShader;
+import apps.oreonworlds.shaders.plants.TreeTrunkShader;
 import engine.buffers.MeshVAO;
 import engine.buffers.UBO;
 import engine.configs.AlphaTest;
 import engine.configs.AlphaTestCullFaceDisable;
-import engine.configs.CullFaceDisable;
+import engine.configs.Default;
 import engine.core.Camera;
+import engine.geometry.Vertex;
 import engine.math.Vec3f;
 import engine.scenegraph.GameObject;
 import engine.scenegraph.Node;
@@ -18,6 +23,7 @@ import engine.scenegraph.components.RenderInfo;
 import engine.scenegraph.components.Renderer;
 import engine.scenegraph.components.TransformsInstanced;
 import engine.utils.BufferAllocation;
+import engine.utils.Util;
 import modules.modelLoader.obj.Model;
 import modules.modelLoader.obj.OBJLoader;
 import modules.terrain.Terrain;
@@ -25,42 +31,36 @@ import modules.terrain.Terrain;
 public class Tree01Instanced extends Node{
 
 	private List<TransformsInstanced> transforms = new ArrayList<TransformsInstanced>();
-	private List<TransformsInstanced> highPolyModelTransforms = new ArrayList<TransformsInstanced>();
-	private List<TransformsInstanced> billboardTransforms = new ArrayList<TransformsInstanced>();
+	private List<Integer> highPolyIndices = new ArrayList<Integer>();
+	private List<Integer> billboardIndices = new ArrayList<Integer>();
 	
-	private UBO highPolyModelMatricesBuffer;
-	private UBO highPolyWorldMatricesBuffer;
-	private UBO billboardModelMatricesBuffer;
-	private UBO billboardWorldMatricesBuffer;
+	private UBO modelMatricesBuffer;
+	private UBO worldMatricesBuffer;
 
-	private final int instances = 1;
+	private final int instances = 40;
 	private final int buffersize = Float.BYTES * 16 * instances;
 	private Vec3f center;
 	
-	private int highpolyModelMatBinding;
-	private int highpolyWorldMatBinding;
-	private int billboardModelMatBinding;
-	private int billboardWorldMatBinding;
+	private int modelMatBinding;
+	private int worldMatBinding;
 
-	public Tree01Instanced(Vec3f pos, int highpolyModelMatBinding, int highpolyWorldMatBinding, int billboardModelMatBinding, int billboardWorldMatBinding){
+	public Tree01Instanced(Vec3f pos, int modelMatBinding, int worldMatBinding){
 		
 		center = pos;
-		this.highpolyModelMatBinding = highpolyModelMatBinding;
-		this.highpolyWorldMatBinding = highpolyWorldMatBinding;
-		this.billboardModelMatBinding = billboardModelMatBinding;
-		this.billboardWorldMatBinding = billboardWorldMatBinding;
+		this.setModelMatBinding(modelMatBinding);
+		this.setWorldMatBinding(worldMatBinding);
 		
-		Model[] models = new OBJLoader().load("./res/oreonworlds/assets/plants/Tree_01","tree.obj","tree02.mtl");
-//		Model[] billboards = new OBJLoader().load("./res/oreonworlds/assets/plants/Tree_01","billboardmodel.obj","billboardmodel.mtl");
+		Model[] models = new OBJLoader().load("./res/oreonworlds/assets/plants/Tree_02","tree02.obj","tree02.mtl");
+		Model[] billboards = new OBJLoader().load("./res/oreonworlds/assets/plants/Tree_02","billboardmodel.obj","billboardmodel.mtl");
 		
 		for (int i=0; i<instances; i++){
-			Vec3f translation = new Vec3f((float)(Math.random()*500)-250 + center.getX(), 0, (float)(Math.random()*500)-250 + center.getZ());
+			Vec3f translation = new Vec3f((float)(Math.random()*200)-100 + center.getX(), 0, (float)(Math.random()*200)-100 + center.getZ());
 			float terrainHeight = Terrain.getInstance().getTerrainHeight(translation.getX(),translation.getZ());
 			terrainHeight -= 1;
 			translation.setY(terrainHeight);
-			float s = (float)(Math.random()*2 + 8);
+			float s = (float)(Math.random()*2 + 4);
 			Vec3f scaling = new Vec3f(s,s,s);
-			Vec3f rotation = new Vec3f(0,0,0);
+			Vec3f rotation = new Vec3f(0,(float) Math.random()*360f,0);
 			
 			TransformsInstanced transform = new TransformsInstanced();
 			transform.setTranslation(translation);
@@ -71,162 +71,144 @@ public class Tree01Instanced extends Node{
 			transforms.add(transform);
 		}
 		
-		highPolyModelMatricesBuffer = new UBO();
-		highPolyModelMatricesBuffer.setBinding_point_index(highpolyModelMatBinding);
-		highPolyModelMatricesBuffer.bindBufferBase();
-		highPolyModelMatricesBuffer.allocate(buffersize);
+		modelMatricesBuffer = new UBO();
+		modelMatricesBuffer.setBinding_point_index(modelMatBinding);
+		modelMatricesBuffer.bindBufferBase();
+		modelMatricesBuffer.allocate(buffersize);
 		
-		highPolyWorldMatricesBuffer = new UBO();
-		highPolyWorldMatricesBuffer.setBinding_point_index(highpolyWorldMatBinding);
-		highPolyWorldMatricesBuffer.bindBufferBase();
-		highPolyWorldMatricesBuffer.allocate(buffersize);
+		worldMatricesBuffer = new UBO();
+		worldMatricesBuffer.setBinding_point_index(worldMatBinding);
+		worldMatricesBuffer.bindBufferBase();
+		worldMatricesBuffer.allocate(buffersize);	
 		
-		billboardModelMatricesBuffer = new UBO();
-		billboardModelMatricesBuffer.setBinding_point_index(billboardModelMatBinding);
-		billboardModelMatricesBuffer.bindBufferBase();
-		billboardModelMatricesBuffer.allocate(buffersize);
+		/**
+		 * init matrices UBO's
+		 */
+		int size = Float.BYTES * 16 * instances;
 		
-		billboardWorldMatricesBuffer = new UBO();
-		billboardWorldMatricesBuffer.setBinding_point_index(billboardWorldMatBinding);
-		billboardWorldMatricesBuffer.bindBufferBase();
-		billboardWorldMatricesBuffer.allocate(buffersize);
+		FloatBuffer worldMatricesFloatBuffer = BufferAllocation.createFloatBuffer(size);
+		FloatBuffer modelMatricesFloatBuffer = BufferAllocation.createFloatBuffer(size);
 		
+		for(TransformsInstanced matrix : transforms){
+			worldMatricesFloatBuffer.put(BufferAllocation.createFlippedBuffer(matrix.getWorldMatrix()));
+			modelMatricesFloatBuffer.put(BufferAllocation.createFlippedBuffer(matrix.getModelMatrix()));
+		}
+		
+		worldMatricesBuffer.updateData(worldMatricesFloatBuffer, size);
+		modelMatricesBuffer.updateData(modelMatricesFloatBuffer, size);
 		
 		for (Model model : models){
 			
 			GameObject object = new GameObject();
 			MeshVAO meshBuffer = new MeshVAO();
-			model.getMesh().setTangentSpace(false);
+			if (model.equals(models[0])){
+				model.getMesh().setTangentSpace(true);
+				Util.generateTangentsBitangents(model.getMesh());
+			}
+			else
+				model.getMesh().setTangentSpace(false);
 			model.getMesh().setInstanced(true);
 			model.getMesh().setInstances(instances);
+			
+			for (Vertex vertex : model.getMesh().getVertices()){
+				vertex.getPos().setX(vertex.getPos().getX()*1.2f);
+				vertex.getPos().setZ(vertex.getPos().getZ()*1.2f);
+			}
+			
 			meshBuffer.addData(model.getMesh());
 
-			object.setRenderInfo(new RenderInfo(new AlphaTest(0.6f), Tree01Shader.getInstance()));
+			if (model.equals(models[0]))
+				object.setRenderInfo(new RenderInfo(new Default(), TreeTrunkShader.getInstance(), TreeShadowShader.getInstance()));
+			else
+				object.setRenderInfo(new RenderInfo(new AlphaTest(0.6f), TreeLeavesShader.getInstance(), TreeShadowShader.getInstance()));
+				
 			Renderer renderer = new Renderer(object.getRenderInfo().getShader(), meshBuffer);
 
 			object.addComponent("Material", model.getMaterial());
 			object.addComponent("Renderer", renderer);
 			addChild(object);
 		}
-//		for (Model billboard : billboards){	
-//			GameObject object = new GameObject();
-//			MeshVAO meshBuffer = new MeshVAO();
-//			billboard.getMesh().setTangentSpace(false);
-//			billboard.getMesh().setInstanced(true);
-//			billboard.getMesh().setInstances(0);
-//			
-//			for (Vertex vertex : billboard.getMesh().getVertices()){
-//				vertex.setPos(vertex.getPos().mul(135));
-//				vertex.getPos().setX(vertex.getPos().getX()*1.1f);
-//				vertex.getPos().setZ(vertex.getPos().getZ()*1.1f);
-//			}
-//			
-//			meshBuffer.addData(billboard.getMesh());
-//	
-//			object.setRenderInfo(new RenderInfo(new AlphaTestCullFaceDisable(0.4f), PalmBillboardShader.getInstance(), PalmBillboardShadowShader.getInstance()));
-//			Renderer renderer = new Renderer(object.getRenderInfo().getShader(), meshBuffer);
-//			
-//			object.addComponent("Material", billboard.getMaterial());
-//			object.addComponent("Renderer", renderer);
-//			addChild(object);
-//		}
+		for (Model billboard : billboards){	
+			GameObject object = new GameObject();
+			MeshVAO meshBuffer = new MeshVAO();
+			billboard.getMesh().setTangentSpace(false);
+			billboard.getMesh().setInstanced(true);
+			billboard.getMesh().setInstances(0);
+			
+			for (Vertex vertex : billboard.getMesh().getVertices()){
+				vertex.setPos(vertex.getPos().mul(7.4f));
+				vertex.getPos().setX(vertex.getPos().getX()*1f);
+				vertex.getPos().setZ(vertex.getPos().getZ()*1f);
+			}
+			
+			meshBuffer.addData(billboard.getMesh());
+	
+			object.setRenderInfo(new RenderInfo(new AlphaTestCullFaceDisable(0.4f), TreeBillboardShader.getInstance(), TreeBillboardShadowShader.getInstance()));
+			Renderer renderer = new Renderer(object.getRenderInfo().getShader(), meshBuffer);
+			
+			object.addComponent("Material", billboard.getMaterial());
+			object.addComponent("Renderer", renderer);
+			addChild(object);
+		}
 		
 		updateUBOs();
 	}
 
 	public void update()
 	{	
-		if (center.sub(Camera.getInstance().getPosition()).length() < 1550){
+		if (center.sub(Camera.getInstance().getPosition()).length() < 600){
 			
 			updateUBOs();
 			
-//			System.out.println(center.sub(Camera.getInstance().getPosition()).length());
-//			System.out.println(highPolyModelTransforms.size());
+			System.out.println(center.sub(Camera.getInstance().getPosition()).length());
+			System.out.println(highPolyIndices.size());
 		}
 	}
 	
 	public void updateUBOs(){
 		
-		highPolyModelTransforms.clear();
-		billboardTransforms.clear();
+		highPolyIndices.clear();
+		billboardIndices.clear();
+		
+		int index = 0;
 		
 		for (TransformsInstanced transform : transforms){
-			if (transform.getTranslation().sub(Camera.getInstance().getPosition()).length() > 1000){
-				billboardTransforms.add(transform);
+			if (transform.getTranslation().sub(Camera.getInstance().getPosition()).length() > 200){
+				billboardIndices.add(index);
 			}
 			else{
-				highPolyModelTransforms.add(transform);
+				highPolyIndices.add(index);
 			}
+			index++;
 		}
 		
-		((MeshVAO) ((Renderer) ((GameObject) getChildren().get(0)).getComponent("Renderer")).getVao()).setInstances(highPolyModelTransforms.size());
-		((MeshVAO) ((Renderer) ((GameObject) getChildren().get(1)).getComponent("Renderer")).getVao()).setInstances(highPolyModelTransforms.size());
+		((MeshVAO) ((Renderer) ((GameObject) getChildren().get(0)).getComponent("Renderer")).getVao()).setInstances(highPolyIndices.size());
+		((MeshVAO) ((Renderer) ((GameObject) getChildren().get(1)).getComponent("Renderer")).getVao()).setInstances(highPolyIndices.size());
 		
-//		((MeshVAO) ((Renderer) ((GameObject) getChildren().get(4)).getComponent("Renderer")).getVao()).setInstances(billboardTransforms.size());
-		
-		/**
-		 * update matrices UBO's for high poly models
-		 */
-		int size = Float.BYTES * 16 * highPolyModelTransforms.size();
-		
-		FloatBuffer worldMatricesFloatBuffer = BufferAllocation.createFloatBuffer(size);
-		FloatBuffer modelMatricesFloatBuffer = BufferAllocation.createFloatBuffer(size);
-		
-		for(TransformsInstanced matrix : highPolyModelTransforms){
-			worldMatricesFloatBuffer.put(BufferAllocation.createFlippedBuffer(matrix.getWorldMatrix()));
-			modelMatricesFloatBuffer.put(BufferAllocation.createFlippedBuffer(matrix.getModelMatrix()));
-		}
-		
-		highPolyWorldMatricesBuffer.updateData(worldMatricesFloatBuffer, size);
-		highPolyModelMatricesBuffer.updateData(modelMatricesFloatBuffer, size);
-		
-		/**
-		 * update matrices UBO's fora billboard models
-		 */
-		size = Float.BYTES * 16 * billboardTransforms.size();
-		worldMatricesFloatBuffer.clear();
-		modelMatricesFloatBuffer.clear();
-		worldMatricesFloatBuffer = BufferAllocation.createFloatBuffer(size);
-		modelMatricesFloatBuffer = BufferAllocation.createFloatBuffer(size);
-		
-		for(TransformsInstanced matrix : billboardTransforms){
-			worldMatricesFloatBuffer.put(BufferAllocation.createFlippedBuffer(matrix.getWorldMatrix()));
-			modelMatricesFloatBuffer.put(BufferAllocation.createFlippedBuffer(matrix.getModelMatrix()));
-		}
-		
-		billboardWorldMatricesBuffer.updateData(worldMatricesFloatBuffer, size);
-		billboardModelMatricesBuffer.updateData(modelMatricesFloatBuffer, size);
+		((MeshVAO) ((Renderer) ((GameObject) getChildren().get(2)).getComponent("Renderer")).getVao()).setInstances(billboardIndices.size());
 	}
 
-	public int getHighpolyModelMatBinding() {
-		return highpolyModelMatBinding;
+	public int getModelMatBinding() {
+		return modelMatBinding;
 	}
 
-	public void setHighpolyModelMatBinding(int highpolyModelMatBinding) {
-		this.highpolyModelMatBinding = highpolyModelMatBinding;
+	public void setModelMatBinding(int modelMatBinding) {
+		this.modelMatBinding = modelMatBinding;
 	}
 
-	public int getHighpolyWorldMatBinding() {
-		return highpolyWorldMatBinding;
+	public int getWorldMatBinding() {
+		return worldMatBinding;
 	}
 
-	public void setHighpolyWorldMatBinding(int highpolyWorldMatBinding) {
-		this.highpolyWorldMatBinding = highpolyWorldMatBinding;
+	public void setWorldMatBinding(int worldMatBinding) {
+		this.worldMatBinding = worldMatBinding;
 	}
-
-	public int getBillboardModelMatBinding() {
-		return billboardModelMatBinding;
+	
+	public List <Integer> getBillboardIndices() {
+		return billboardIndices;
 	}
-
-	public void setBillboardModelMatBinding(int billboardModelMatBinding) {
-		this.billboardModelMatBinding = billboardModelMatBinding;
-	}
-
-	public int getBillboardWorldMatBinding() {
-		return billboardWorldMatBinding;
-	}
-
-	public void setBillboardWorldMatBinding(int billboardWorldMatBinding) {
-		this.billboardWorldMatBinding = billboardWorldMatBinding;
+	
+	public List<Integer> getHighPolyIndices() {
+		return highPolyIndices;
 	}
 }

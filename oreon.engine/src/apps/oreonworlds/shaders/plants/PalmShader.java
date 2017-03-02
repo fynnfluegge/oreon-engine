@@ -3,6 +3,8 @@ package apps.oreonworlds.shaders.plants;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
+import java.util.List;
+
 import apps.oreonworlds.assets.plants.PalmInstanced;
 import engine.core.RenderingEngine;
 import engine.scenegraph.GameObject;
@@ -46,13 +48,18 @@ public class PalmShader extends Shader{
 		addUniformBlock("LightViewProjections");
 		addUniformBlock("Camera");
 		addUniform("shadowMaps");
+		
+		for (int i=0; i<100; i++)
+		{
+			addUniform("matrixIndices[" + i + "]");
+		}
 	}
 	
 	public void updateUniforms(GameObject object)
 	{
 		bindUniformBlock("Camera", Constants.CameraUniformBlockBinding);
-		bindUniformBlock("worldMatrices", ((PalmInstanced) object.getParent()).getHighpolyWorldMatBinding());
-		bindUniformBlock("modelMatrices", ((PalmInstanced) object.getParent()).getHighpolyModelMatBinding());
+		bindUniformBlock("worldMatrices", ((PalmInstanced) object.getParent()).getWorldMatBinding());
+		bindUniformBlock("modelMatrices", ((PalmInstanced) object.getParent()).getModelMatBinding());
 		bindUniformBlock("DirectionalLight", Constants.DirectionalLightUniformBlockBinding);
 		bindUniformBlock("LightViewProjections",Constants.LightMatricesUniformBlockBinding);
 		
@@ -67,5 +74,12 @@ public class PalmShader extends Shader{
 		glActiveTexture(GL_TEXTURE1);
 		RenderingEngine.getShadowMaps().getDepthMaps().bind();
 		setUniformi("shadowMaps", 1);
+		
+		List<Integer> indices = ((PalmInstanced) object.getParent()).getHighPolyIndices();
+		
+		for (int i=0; i<indices.size(); i++)
+		{
+			setUniformi("matrixIndices[" + i +"]", indices.get(i));	
+		}
 	}
 }
