@@ -49,7 +49,7 @@ amp 2.0
 l 10.0
 scaling 1
 strength 0.0
-normalStrength 1000
+normalStrength 0001
 random 941
 
 fractal_stage1
