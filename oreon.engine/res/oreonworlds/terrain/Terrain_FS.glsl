@@ -47,8 +47,8 @@ uniform float scaleY;
 uniform float scaleXZ;
 uniform Material sand;
 uniform Material grass;
-uniform Material rock;
-uniform Material snow;
+uniform Material rock0;
+uniform Material rock1;
 uniform float sightRangeFactor;
 uniform int largeDetailedRange;
 
@@ -164,15 +164,19 @@ void main()
 	normal = normalize(normal);
 	bumpNormal = normal;
 	
-	float snowBlend  = clamp(height/200,0,1);
-	float rockBlend = 0;
-	if (height <= 300)
-		rockBlend  = clamp((height+200)/200,0,1);
-	else
-		rockBlend = clamp((-height+200)/200,0,1);
-	
-	float sandBlend  = clamp(-height/200,0,1);
-	float grassBlend = clamp((height+200)/-400 + 1,0,1);
+	float rock1Blend  = clamp(height/200,0,1);
+	float rock0Blend  = clamp((height+200)/200,0,1) - rock1Blend;
+	float sandBlend   = clamp(-height/200,0,1);
+	float slopeFactor = 0;
+	if (normal.y < 0.95){
+		slopeFactor = 1-pow(normal.y+0.05,4);
+		rock1Blend += slopeFactor;
+		rock1Blend = clamp(rock1Blend);
+		rock0Blend -= slopeFactor;
+		rock0Blend = clamp(rock0Blend);
+		sandBlend -= slopeFactor;
+		sandBlend = clamp(sandBlend);
+	}
 	
 	if (dist < largeDetailedRange-20)
 	{
@@ -182,31 +186,29 @@ void main()
 		mat3 TBN = mat3(tangent,normal,bitangent);
 		
 		bumpNormal = normalize((2*(texture(sand.normalmap, texCoordF).rbg) - 1) * sandBlend
-								 +  (2*(texture(rock.normalmap, texCoordF/2).rbg) - 1) * rockBlend
-								 +  (2*(texture(snow.normalmap, texCoordF/4).rbg) - 1) * snowBlend);
+								 +  (2*(texture(rock0.normalmap, texCoordF/2).rbg) - 1) * rock0Blend
+								 +  (2*(texture(rock1.normalmap, texCoordF/4).rbg) - 1) * rock1Blend);
 		
 		bumpNormal.xz *= attenuation;
 		
 		bumpNormal = normalize(TBN * bumpNormal);
 	}
 	
-	emission  = grassBlend * grass.emission + sandBlend * sand.emission + rockBlend * rock.emission + snowBlend * snow.emission;
-	shininess = grassBlend * grass.shininess + sandBlend * sand.shininess + rockBlend * rock.shininess + snowBlend * snow.shininess;
+	emission  = sandBlend * sand.emission + rock0Blend * rock0.emission + rock1Blend * rock1.emission;
+	shininess = sandBlend * sand.shininess + rock0Blend * rock0.shininess + rock1Blend * rock1.shininess;
 	
 	float diffuse = diffuse(directional_light.direction, bumpNormal, directional_light.intensity);
 	float specular = specular(directional_light.direction, bumpNormal, eyePosition, position);
 	vec3 diffuseLight = directional_light.ambient + directional_light.color * diffuse;
 	vec3 specularLight = directional_light.color * specular;
 	
-	vec3 fragColor = mix(texture(sand.diffusemap, texCoordF).rgb, texture(rock.diffusemap, texCoordF/2).rgb, clamp((height+200)/400.0,0,1));
-	fragColor = mix(fragColor, texture(snow.diffusemap,texCoordF/4).rgb, clamp((height-100)/200,0,1));
-	// float grassFactor = clamp((height+300)/(-scaleY*0.5)+0.8,0.0,0.8);
-	// fragColor = mix(fragColor,texture(grass.diffusemap,texCoordF).rgb,grassFactor);
+	vec3 fragColor = mix(texture(sand.diffusemap, texCoordF).rgb, texture(rock0.diffusemap, texCoordF/2).rgb, rock0Blend);
+	fragColor = mix(fragColor, texture(rock1.diffusemap,texCoordF/4).rgb, rock1Blend);
 	if (normal.y > 0.9){
 		fragColor = mix(fragColor,texture(grass.diffusemap,texCoordF).rgb,3*(normal.y-0.8));
 	}
 	if (normal.y < 0.95){
-		fragColor = mix(texture(snow.diffusemap,texCoordF/4).rgb,fragColor,pow(normal.y+0.05,4));
+		fragColor = mix(fragColor,texture(rock1.diffusemap,texCoordF/4).rgb,slopeFactor);
 	}
 	
 	fragColor *= diffuseLight;
