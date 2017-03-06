@@ -4,19 +4,18 @@ import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-import apps.oreonworlds.shaders.rocks.Rock01InstancedShader;
-import apps.oreonworlds.shaders.rocks.Rock01InstancedShadowShader;
+import apps.oreonworlds.shaders.rocks.RockHighPolyShader;
+import apps.oreonworlds.shaders.rocks.RockShadowShader;
 import engine.buffers.MeshVAO;
 import engine.buffers.UBO;
-import engine.configs.CullFaceDisable;
-import engine.math.Matrix4f;
+import engine.configs.Default;
 import engine.math.Vec3f;
 import engine.scenegraph.GameObject;
 import engine.scenegraph.Node;
 import engine.scenegraph.components.RenderInfo;
 import engine.scenegraph.components.Renderer;
+import engine.scenegraph.components.TransformsInstanced;
 import engine.utils.BufferAllocation;
-import engine.utils.Constants;
 import engine.utils.Util;
 import modules.modelLoader.obj.Model;
 import modules.modelLoader.obj.OBJLoader;
@@ -24,65 +23,85 @@ import modules.terrain.Terrain;
 
 public class Rock01Instanced extends Node{
 	
-	public Rock01Instanced() {
+	private List<TransformsInstanced> transforms = new ArrayList<TransformsInstanced>();
+	private List<Integer> highPolyIndices = new ArrayList<Integer>();
+	
+	private UBO modelMatricesBuffer;
+	private UBO worldMatricesBuffer;
+
+	private final int instances = 100;
+	private final int buffersize = Float.BYTES * 16 * instances;
+	private Vec3f center;
+	
+	private int modelMatBinding;
+	private int worldMatBinding;
+	
+	public Rock01Instanced(Vec3f pos, int modelMatBinding, int worldMatBinding) {
 		
-		OBJLoader loader = new OBJLoader();
-		Model[] models = loader.load("./res/oreonworlds/assets/rocks/Rock_01","rock01.obj","rock01.mtl");
+		center = pos;
+		this.modelMatBinding = modelMatBinding;
+		this.worldMatBinding = worldMatBinding;
 		
+		Model[] models = new OBJLoader().load("./res/oreonworlds/assets/rocks/Rock_01","rock01.obj","rock01.mtl");
 		
-		
-		List<Matrix4f> instancedWorldMatrices = new ArrayList<Matrix4f>();
-		List<Matrix4f> instancedModelMatrices = new ArrayList<Matrix4f>();
-		
-		for (int i=0; i<50; i++){
-			Vec3f translation = new Vec3f((float)(Math.random()*200)-100 + 1196, 0, (float)(Math.random()*200)-100 - 450);
-			float s = (float)(Math.random()*5 + 2);
+		for (int i=0; i<instances; i++){
+			Vec3f translation = new Vec3f((float)(Math.random()*200)-100 + center.getX(), 0, (float)(Math.random()*200)-100 + center.getZ());
+			float terrainHeight = Terrain.getInstance().getTerrainHeight(translation.getX(),translation.getZ());
+			terrainHeight -= 2;
+			translation.setY(terrainHeight);
+			float s = (float)(Math.random()*2 + 2);
 			Vec3f scaling = new Vec3f(s,s,s);
-			Vec3f rotation = new Vec3f(0,(float)(Math.random()*360),0);
+			Vec3f rotation = new Vec3f(0,(float) Math.random()*360f,0);
 			
-			Matrix4f translationMatrix = new Matrix4f().Translation(translation);
-			Matrix4f rotationMatrix = new Matrix4f().Rotation(rotation);
-			Matrix4f scalingMatrix = new Matrix4f().Scaling(scaling);
-			
-			Matrix4f worldMatrix = translationMatrix.mul(scalingMatrix.mul(rotationMatrix));
-			Matrix4f modelMatrix = rotationMatrix;
-			
-			instancedWorldMatrices.add(worldMatrix);
-			instancedModelMatrices.add(modelMatrix);
+			TransformsInstanced transform = new TransformsInstanced();
+			transform.setTranslation(translation);
+			transform.setScaling(scaling);
+			transform.setRotation(rotation);
+			transform.setLocalRotation(rotation);
+			transform.initMatrices();
+			transforms.add(transform);
+			highPolyIndices.add(i);
 		}
 		
-		// 2 matrices for each transform
-		int buffersize = Float.BYTES * 16 * 2 * instancedWorldMatrices.size();
-		FloatBuffer floatBuffer = BufferAllocation.createFloatBuffer(buffersize);
+		modelMatricesBuffer = new UBO();
+		modelMatricesBuffer.setBinding_point_index(modelMatBinding);
+		modelMatricesBuffer.bindBufferBase();
+		modelMatricesBuffer.allocate(buffersize);
 		
-		for(Matrix4f matrix : instancedWorldMatrices){
-			Matrix4f verticalTranslation = new Matrix4f().Translation(
-					new Vec3f(0,Terrain.getInstance().getTerrainHeight(matrix.get(0,3),matrix.get(2, 3)) - 3,0));
-			matrix = verticalTranslation.mul(matrix);
-			floatBuffer.put(BufferAllocation.createFlippedBuffer(matrix));
+		worldMatricesBuffer = new UBO();
+		worldMatricesBuffer.setBinding_point_index(worldMatBinding);
+		worldMatricesBuffer.bindBufferBase();
+		worldMatricesBuffer.allocate(buffersize);	
+		
+		/**
+		 * init matrices UBO's
+		 */
+		int size = Float.BYTES * 16 * instances;
+		
+		FloatBuffer worldMatricesFloatBuffer = BufferAllocation.createFloatBuffer(size);
+		FloatBuffer modelMatricesFloatBuffer = BufferAllocation.createFloatBuffer(size);
+		
+		for(TransformsInstanced matrix : transforms){
+			worldMatricesFloatBuffer.put(BufferAllocation.createFlippedBuffer(matrix.getWorldMatrix()));
+			modelMatricesFloatBuffer.put(BufferAllocation.createFlippedBuffer(matrix.getModelMatrix()));
 		}
 		
-		for(Matrix4f matrix : instancedModelMatrices){
-			floatBuffer.put(BufferAllocation.createFlippedBuffer(matrix));
-		}
-		
-		UBO ubo = new UBO();
-		ubo.setBinding_point_index(Constants.Rock01InstancedMatricesBinding);
-		ubo.bindBufferBase();
-		ubo.allocate(buffersize);
-		ubo.updateData(floatBuffer, buffersize);
+		worldMatricesBuffer.updateData(worldMatricesFloatBuffer, size);
+		modelMatricesBuffer.updateData(modelMatricesFloatBuffer, size);
 		
 		for (Model model : models){
 			
 			GameObject object = new GameObject();
 			MeshVAO meshBuffer = new MeshVAO();
-			Util.generateTangentsBitangents(model.getMesh());
 			model.getMesh().setTangentSpace(true);
+			Util.generateTangentsBitangents(model.getMesh());
 			model.getMesh().setInstanced(true);
-			model.getMesh().setInstances(50);
+			model.getMesh().setInstances(instances);
+			
 			meshBuffer.addData(model.getMesh());
 
-			object.setRenderInfo(new RenderInfo(new CullFaceDisable(), Rock01InstancedShader.getInstance(), Rock01InstancedShadowShader.getInstance()));
+			object.setRenderInfo(new RenderInfo(new Default(),RockHighPolyShader.getInstance(), RockShadowShader.getInstance()));
+				
 			Renderer renderer = new Renderer(object.getRenderInfo().getShader(), meshBuffer);
 
 			object.addComponent("Material", model.getMaterial());
@@ -91,4 +110,15 @@ public class Rock01Instanced extends Node{
 		}
 	}
 
+	public int getModelMatBinding() {
+		return modelMatBinding;
+	}
+
+	public int getWorldMatBinding() {
+		return worldMatBinding;
+	}
+
+	public List<Integer> getHighPolyIndices() {
+		return highPolyIndices;
+	}
 }

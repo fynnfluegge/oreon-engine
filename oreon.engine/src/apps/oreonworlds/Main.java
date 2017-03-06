@@ -1,9 +1,8 @@
 package apps.oreonworlds;
 
 import apps.oreonworlds.assets.plants.Palm;
-import apps.oreonworlds.assets.plants.PalmInstanced;
-import apps.oreonworlds.assets.plants.Plant01Instanced;
 import apps.oreonworlds.assets.plants.Tree01;
+import apps.oreonworlds.assets.rocks.Rock01;
 import apps.oreonworlds.gui.GUI;
 import apps.oreonworlds.shaders.terrain.TerrainGridShader;
 import apps.oreonworlds.shaders.terrain.TerrainShader;
@@ -26,6 +25,7 @@ public class Main {
 		game.getScenegraph().addObject(new SkySphere());	
 		game.getScenegraph().getRoot().addChild(new Palm());
 		game.getScenegraph().getRoot().addChild(new Tree01());
+		game.getScenegraph().getRoot().addChild(new Rock01());
 		game.launch();
 	}
 

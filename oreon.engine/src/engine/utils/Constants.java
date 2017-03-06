@@ -39,6 +39,9 @@ public class Constants {
 	
 	public static final int Tree0101highPolyWorldMatricesBinding = 12;
 	public static final int Tree0101highPolyModelMatricesBinding = 13;
+	
+	public static final int Rock0101highPolyWorldMatricesBinding = 14;
+	public static final int Rock0101highPolyModelMatricesBinding = 15;
 
 
 	

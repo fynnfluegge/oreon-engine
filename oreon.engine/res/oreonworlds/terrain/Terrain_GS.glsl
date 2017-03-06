@@ -29,8 +29,8 @@ layout (std140, row_major) uniform Camera{
 };
 
 uniform Material sand;
-uniform Material rock;
-uniform Material snow;
+uniform Material rock0;
+uniform Material rock1;
 uniform int largeDetailedRange;
 uniform vec4 clipplane;
 
@@ -75,18 +75,13 @@ void main() {
 			
 			float height = gl_in[k].gl_Position.y;
 				
-			float snowBlend  = clamp(height/200,0,1);
-			float rockBlend = 0;
-			if (height <= 300)
-				rockBlend  = clamp((height+200)/200,0,1);
-			else
-				rockBlend = clamp((-height+200)/200,0,1);
-	
-			float sandBlend  = clamp(-height/200,0,1);
+			float rock1Blend  = clamp(height/200,0,1);
+			float rock0Blend  = clamp((height+200)/200,0,1) - rock1Blend;
+			float sandBlend   = clamp(-height/200,0,1);
 			
 			float scale = texture(sand.heightmap, texCoordG[k]).r * sandBlend * sand.displaceScale
-						+ texture(rock.heightmap, texCoordG[k]/2).r * rockBlend * rock.displaceScale
-						+ texture(snow.heightmap, texCoordG[k]/4).r * snowBlend * snow.displaceScale;
+						+ texture(rock0.heightmap, texCoordG[k]/2).r * rock0Blend * rock0.displaceScale
+						+ texture(rock1.heightmap, texCoordG[k]/4).r * rock1Blend * rock1.displaceScale;
 						
 			scale *= (- distance(gl_in[k].gl_Position.xyz, eyePosition)/(largeDetailedRange) + 1);
 

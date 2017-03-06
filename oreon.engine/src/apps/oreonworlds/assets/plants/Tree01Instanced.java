@@ -47,8 +47,8 @@ public class Tree01Instanced extends Node{
 	public Tree01Instanced(Vec3f pos, int modelMatBinding, int worldMatBinding){
 		
 		center = pos;
-		this.setModelMatBinding(modelMatBinding);
-		this.setWorldMatBinding(worldMatBinding);
+		this.modelMatBinding = modelMatBinding;
+		this.worldMatBinding = worldMatBinding;
 		
 		Model[] models = new OBJLoader().load("./res/oreonworlds/assets/plants/Tree_02","tree02.obj","tree02.mtl");
 		Model[] billboards = new OBJLoader().load("./res/oreonworlds/assets/plants/Tree_02","billboardmodel.obj","billboardmodel.mtl");
@@ -159,7 +159,8 @@ public class Tree01Instanced extends Node{
 		if (center.sub(Camera.getInstance().getPosition()).length() < 600){
 			
 			updateUBOs();
-			
+		}
+		else if(highPolyIndices.size() > 0){
 			System.out.println(center.sub(Camera.getInstance().getPosition()).length());
 			System.out.println(highPolyIndices.size());
 		}
@@ -192,16 +193,8 @@ public class Tree01Instanced extends Node{
 		return modelMatBinding;
 	}
 
-	public void setModelMatBinding(int modelMatBinding) {
-		this.modelMatBinding = modelMatBinding;
-	}
-
 	public int getWorldMatBinding() {
 		return worldMatBinding;
-	}
-
-	public void setWorldMatBinding(int worldMatBinding) {
-		this.worldMatBinding = worldMatBinding;
 	}
 	
 	public List <Integer> getBillboardIndices() {

@@ -30,7 +30,7 @@ public class TreeShadowShader extends Shader{
 	{
 		super();
 		
-		addVertexShader(ResourceLoader.loadShader("oreonworlds/shaders/Tree_Shader/Tree_VS.glsl"));
+		addVertexShader(ResourceLoader.loadShader("oreonworlds/shaders/Tree_Shader/TreeShadow_VS.glsl"));
 		addGeometryShader(ResourceLoader.loadShader("oreonworlds/shaders/Tree_Shader/TreeShadow_GS.glsl"));
 		addFragmentShader(ResourceLoader.loadShader("oreonworlds/shaders/Tree_Shader/TreeShadow_FS.glsl"));
 		compileShader();

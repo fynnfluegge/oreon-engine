@@ -1,12 +1,13 @@
-package apps.oreonworlds.shaders.plants;
+package apps.oreonworlds.shaders.rocks;
 
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE2;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import java.util.List;
 
-import apps.oreonworlds.assets.plants.Tree01Instanced;
+import apps.oreonworlds.assets.rocks.Rock01Instanced;
 import engine.core.RenderingEngine;
 import engine.scenegraph.GameObject;
 import engine.scenegraph.components.Material;
@@ -15,31 +16,33 @@ import engine.utils.Constants;
 import engine.utils.ResourceLoader;
 import modules.terrain.Terrain;
 
-public class TreeTrunkShader extends Shader{
+public class RockHighPolyShader extends Shader{
 
-	private static TreeTrunkShader instance = null;
+	private static RockHighPolyShader instance = null;
 
-	public static TreeTrunkShader getInstance() 
+	public static RockHighPolyShader getInstance() 
 	{
 	    if(instance == null) 
 	    {
-	    	instance = new TreeTrunkShader();
+	    	instance = new RockHighPolyShader();
 	    }
 	      return instance;
 	}
 	
-	protected TreeTrunkShader()
+	protected RockHighPolyShader()
 	{
 		super();
 		
-		addVertexShader(ResourceLoader.loadShader("oreonworlds/shaders/Tree_Shader/TreeTrunk_VS.glsl"));
-		addGeometryShader(ResourceLoader.loadShader("oreonworlds/shaders/Tree_Shader/TreeTrunk_GS.glsl"));
-		addFragmentShader(ResourceLoader.loadShader("oreonworlds/shaders/Tree_Shader/TreeTrunk_FS.glsl"));
+		addVertexShader(ResourceLoader.loadShader("oreonworlds/shaders/Rock_Shader/RockHighPoly_VS.glsl"));
+		addGeometryShader(ResourceLoader.loadShader("oreonworlds/shaders/Rock_Shader/RockHighPoly_GS.glsl"));
+		addFragmentShader(ResourceLoader.loadShader("oreonworlds/shaders/Rock_Shader/RockHighPoly_FS.glsl"));
 		compileShader();
 		
 		addUniform("sightRangeFactor");
 		addUniform("material.diffusemap");
 		addUniform("material.normalmap");
+		addUniform("material.shininess");
+		addUniform("material.emission");
 		addUniform("clipplane");
 		
 		addUniformBlock("DirectionalLight");
@@ -47,7 +50,7 @@ public class TreeTrunkShader extends Shader{
 		addUniformBlock("modelMatrices");
 		addUniformBlock("LightViewProjections");
 		addUniformBlock("Camera");
-//		addUniform("shadowMaps");
+		addUniform("shadowMaps");
 		
 		for (int i=0; i<100; i++)
 		{
@@ -58,8 +61,8 @@ public class TreeTrunkShader extends Shader{
 	public void updateUniforms(GameObject object)
 	{
 		bindUniformBlock("Camera", Constants.CameraUniformBlockBinding);
-		bindUniformBlock("worldMatrices", ((Tree01Instanced) object.getParent()).getWorldMatBinding());
-		bindUniformBlock("modelMatrices", ((Tree01Instanced) object.getParent()).getModelMatBinding());
+		bindUniformBlock("worldMatrices", ((Rock01Instanced) object.getParent()).getWorldMatBinding());
+		bindUniformBlock("modelMatrices", ((Rock01Instanced) object.getParent()).getModelMatBinding());
 		bindUniformBlock("DirectionalLight", Constants.DirectionalLightUniformBlockBinding);
 		bindUniformBlock("LightViewProjections",Constants.LightMatricesUniformBlockBinding);
 		
@@ -76,11 +79,14 @@ public class TreeTrunkShader extends Shader{
 		material.getNormalmap().bind();
 		setUniformi("material.normalmap", 1);
 		
-//		glActiveTexture(GL_TEXTURE");
-//		RenderingEngine.getShadowMaps().getDepthMaps().bind();
-//		setUniformi("shadowMaps", 1);
+		setUniformf("material.shininess", material.getShininess());
+		setUniformf("material.emission", material.getEmission());
 		
-		List<Integer> indices = ((Tree01Instanced) object.getParent()).getHighPolyIndices();
+		glActiveTexture(GL_TEXTURE2);
+		RenderingEngine.getShadowMaps().getDepthMaps().bind();
+		setUniformi("shadowMaps", 2);
+		
+		List<Integer> indices = ((Rock01Instanced) object.getParent()).getHighPolyIndices();
 		
 		for (int i=0; i<indices.size(); i++)
 		{

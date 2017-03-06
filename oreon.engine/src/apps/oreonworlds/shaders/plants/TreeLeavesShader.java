@@ -31,7 +31,7 @@ public class TreeLeavesShader extends Shader{
 	{
 		super();
 		
-		addVertexShader(ResourceLoader.loadShader("oreonworlds/shaders/Tree_Shader/Tree_VS.glsl"));
+		addVertexShader(ResourceLoader.loadShader("oreonworlds/shaders/Tree_Shader/TreeLeaves_VS.glsl"));
 		addGeometryShader(ResourceLoader.loadShader("oreonworlds/shaders/Tree_Shader/TreeLeaves_GS.glsl"));
 		addFragmentShader(ResourceLoader.loadShader("oreonworlds/shaders/Tree_Shader/TreeLeaves_FS.glsl"));
 		compileShader();

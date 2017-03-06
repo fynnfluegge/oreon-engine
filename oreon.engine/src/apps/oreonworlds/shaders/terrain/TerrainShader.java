@@ -81,8 +81,6 @@ public class TerrainShader extends Shader{
 		}
 
 		addUniform("grass.diffusemap");
-		addUniform("grass.shininess");
-		addUniform("grass.emission");
 		addUniform("sand.diffusemap");
 		addUniform("sand.normalmap");
 		addUniform("sand.shininess");
@@ -98,10 +96,10 @@ public class TerrainShader extends Shader{
 		
 		addUniform("sand.heightmap");
 		addUniform("sand.displaceScale");
-		addUniform("rock.heightmap");
-		addUniform("rock.displaceScale");
-		addUniform("snow.heightmap");
-		addUniform("snow.displaceScale");
+		addUniform("rock0.heightmap");
+		addUniform("rock0.displaceScale");
+		addUniform("rock1.heightmap");
+		addUniform("rock1.displaceScale");
 		
 		addUniform("clipplane");
 		
@@ -169,9 +167,6 @@ public class TerrainShader extends Shader{
 		glActiveTexture(GL_TEXTURE4);
 		terrConfig.getMaterial0().getDiffusemap().bind();
 		setUniformi("grass.diffusemap", 4);
-		
-		setUniformf("grass.shininess", terrConfig.getMaterial0().getShininess());
-		setUniformf("grass.emission", terrConfig.getMaterial0().getEmission());
 		
 		glActiveTexture(GL_TEXTURE6);
 		terrConfig.getMaterial1().getDiffusemap().bind();

@@ -79,22 +79,23 @@ float linearizeDepth(float depth)
 	return (2 * znear) / (zfar + znear - depth * (zfar - znear));
 }
 
-float varianceShadow(vec3 projCoords, int split){
+float varianceShadow(vec3 projCoords, int split, int kernels){
 	
 	float shadowFactor = 1.0;
 	float texelSize = 1.0/ 2048.0;
 	float currentDepth = projCoords.z;
+	float reduceFactor = 1/ pow(kernels*2+1,2);
 	
-	for (int i=-4; i<=4; i++){
-		for (int j=-4; j<=4; j++){
+	for (int i=-kernels; i<=kernels; i++){
+		for (int j=-kernels; j<=kernels; j++){
 			float shadowMapDepth = texture(shadowMaps, vec3(projCoords.xy,split)
 													   + vec3(i,j,0) * texelSize).r; 
 			if (currentDepth > shadowMapDepth)
-				shadowFactor -= 0.011;
+				shadowFactor -= reduceFactor;
 		}
 	}
 	
-	return shadowFactor;
+	return max(0.2,shadowFactor);
 }
 
 
@@ -107,36 +108,48 @@ float shadow(vec3 worldPos)
 	if (depth < splitRange[0]){
 		vec4 lightSpacePos = m_lightViewProjection[0] * vec4(worldPos,1.0);
 		projCoords = lightSpacePos.xyz * 0.5 + 0.5;
-		float shadowFactor0 = varianceShadow(projCoords,0);
+		float shadowFactor0 = varianceShadow(projCoords,0,4);
+		
 		lightSpacePos = m_lightViewProjection[1] * vec4(worldPos,1.0);
 		projCoords = lightSpacePos.xyz * 0.5 + 0.5;
-		float shadowFactor1 = varianceShadow(projCoords,1);
-		shadowFactor = min(shadowFactor0,shadowFactor1);
+		float shadowFactor1 = varianceShadow(projCoords,1,4);
+		
+		lightSpacePos = m_lightViewProjection[2] * vec4(worldPos,1.0);
+		projCoords = lightSpacePos.xyz * 0.5 + 0.5;
+		float shadowFactor2 = varianceShadow(projCoords,2,2);
+		
+		shadowFactor = min(shadowFactor2, min(shadowFactor0,shadowFactor1));
 	}
 	else if (depth < splitRange[1]){
 		vec4 lightSpacePos = m_lightViewProjection[1] * vec4(worldPos,1.0);
 		projCoords = lightSpacePos.xyz * 0.5 + 0.5;
-		shadowFactor = varianceShadow(projCoords,1);
+		float shadowFactor0 = varianceShadow(projCoords,1,4);
+		
+		lightSpacePos = m_lightViewProjection[2] * vec4(worldPos,1.0);
+		projCoords = lightSpacePos.xyz * 0.5 + 0.5;
+		float shadowFactor1 = varianceShadow(projCoords,2,2);
+		
+		shadowFactor = min(shadowFactor0,shadowFactor1);
 	}
 	else if (depth < splitRange[2]){
 		vec4 lightSpacePos = m_lightViewProjection[2] * vec4(worldPos,1.0);
 		projCoords = lightSpacePos.xyz * 0.5 + 0.5;
-		shadowFactor = varianceShadow(projCoords,2);
+		shadowFactor = varianceShadow(projCoords,2,2);
 	}
 	else if (depth < splitRange[3]){
 		vec4 lightSpacePos = m_lightViewProjection[3] * vec4(worldPos,1.0);
 		projCoords = lightSpacePos.xyz * 0.5 + 0.5;
-		shadowFactor = varianceShadow(projCoords,3);
+		shadowFactor = varianceShadow(projCoords,3,2);
 	}
 	else if (depth < splitRange[4]){
 		vec4 lightSpacePos = m_lightViewProjection[4] * vec4(worldPos,1.0);
 		projCoords = lightSpacePos.xyz * 0.5 + 0.5;
-		shadowFactor = varianceShadow(projCoords,4); 
+		shadowFactor = varianceShadow(projCoords,4,1); 
 	}
 	else if (depth < splitRange[5]){
 		vec4 lightSpacePos = m_lightViewProjection[5] * vec4(worldPos,1.0);
 		projCoords = lightSpacePos.xyz * 0.5 + 0.5;
-		shadowFactor = varianceShadow(projCoords,5); 
+		shadowFactor = varianceShadow(projCoords,5,1); 
 	}
 	else return 1;
 	
@@ -171,11 +184,11 @@ void main()
 	if (normal.y < 0.95){
 		slopeFactor = 1-pow(normal.y+0.05,4);
 		rock1Blend += slopeFactor;
-		rock1Blend = clamp(rock1Blend);
+		rock1Blend = clamp(rock1Blend,0,1);
 		rock0Blend -= slopeFactor;
-		rock0Blend = clamp(rock0Blend);
+		rock0Blend = clamp(rock0Blend,0,1);
 		sandBlend -= slopeFactor;
-		sandBlend = clamp(sandBlend);
+		sandBlend = clamp(sandBlend,0,1);
 	}
 	
 	if (dist < largeDetailedRange-20)
@@ -205,7 +218,7 @@ void main()
 	vec3 fragColor = mix(texture(sand.diffusemap, texCoordF).rgb, texture(rock0.diffusemap, texCoordF/2).rgb, rock0Blend);
 	fragColor = mix(fragColor, texture(rock1.diffusemap,texCoordF/4).rgb, rock1Blend);
 	if (normal.y > 0.9){
-		fragColor = mix(fragColor,texture(grass.diffusemap,texCoordF).rgb,3*(normal.y-0.8));
+		fragColor = mix(fragColor,texture(grass.diffusemap,texCoordF).rgb,6*(normal.y-0.9)* clamp(-(height-100)/200,0,1));
 	}
 	if (normal.y < 0.95){
 		fragColor = mix(fragColor,texture(rock1.diffusemap,texCoordF/4).rgb,slopeFactor);

@@ -10,6 +10,7 @@ out vec4 normal_GS;
 out vec2 texCoord_GS;
 out vec4 tangent_GS;
 out vec4 bitangent_GS;
+out int instanceID_GS;
 
 
 void main()
@@ -19,4 +20,5 @@ void main()
 	texCoord_GS = texCoord0;
 	tangent_GS = vec4(tangent0,1);
 	bitangent_GS = vec4(bitangent0,1);
+	instanceID_GS = gl_InstanceID;
 }
