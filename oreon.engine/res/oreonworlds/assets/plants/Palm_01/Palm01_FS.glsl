@@ -131,7 +131,6 @@ void main()
 	vec3 specularLight = directional_light.color * specularFactor;
 	
 	vec3 fragColor = material.color * (directional_light.ambient + diffuseLight);// + specularLight;
-	// fragColor *= shadow(position_FS);
 	
 	float fogFactor = -0.0005/sightRangeFactor*(dist-zFar/5*sightRangeFactor);
 	

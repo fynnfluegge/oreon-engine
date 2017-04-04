@@ -141,20 +141,20 @@ void main(void)
 	float F = fresnelApproximated(normal);
 	
 	// projCoord //
-	vec3 dudvCoord = normalize((2 * texture(dudv, texCoord_FS + distortion).rbg) - 1);
+	vec3 dudvCoord = normalize((2 * texture(dudv, texCoord_FS*4 + distortion).rbg) - 1);
 	vec2 projCoord = vec2(gl_FragCoord.x/windowWidth, gl_FragCoord.y/windowHeight);
  
     // Reflection //
 	vec2 reflecCoords = projCoord.xy + dudvCoord.rb * kReflection;
 	reflecCoords = clamp(reflecCoords, kReflection, 1-kReflection);
-    vec3 reflection = mix(texture(waterReflection, reflecCoords).rgb, reflectionColor,  0.8);
+    vec3 reflection = mix(texture(waterReflection, reflecCoords).rgb, reflectionColor,  0.4);
     reflection *= F;
  
     // Refraction //
 	vec2 refracCoords = projCoord.xy + dudvCoord.rb * kRefraction;
 	refracCoords = clamp(refracCoords, kRefraction, 1-kRefraction);
 	
-    vec3 refraction = mix(texture(waterRefraction, refracCoords).rgb, refractionColor, 0.8); 
+    vec3 refraction = mix(texture(waterRefraction, refracCoords).rgb, refractionColor, 0.4); 
 	refraction *= 1-F;
 	
 	float diffuse = diffuse(normal);

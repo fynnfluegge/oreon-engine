@@ -199,7 +199,7 @@ void main()
 		mat3 TBN = mat3(tangent,normal,bitangent);
 		
 		bumpNormal = normalize((2*(texture(sand.normalmap, texCoordF).rbg) - 1) * sandBlend
-								 +  (2*(texture(rock0.normalmap, texCoordF/2).rbg) - 1) * rock0Blend
+								 +  (2*(texture(rock0.normalmap, texCoordF).rbg) - 1) * rock0Blend
 								 +  (2*(texture(rock1.normalmap, texCoordF/4).rbg) - 1) * rock1Blend);
 		
 		bumpNormal.xz *= attenuation;
@@ -215,10 +215,11 @@ void main()
 	vec3 diffuseLight = directional_light.ambient + directional_light.color * diffuse;
 	vec3 specularLight = directional_light.color * specular;
 	
-	vec3 fragColor = mix(texture(sand.diffusemap, texCoordF).rgb, texture(rock0.diffusemap, texCoordF/2).rgb, rock0Blend);
+	vec3 fragColor = mix(texture(sand.diffusemap, texCoordF).rgb, texture(rock0.diffusemap, texCoordF).rgb, rock0Blend);
+	
 	fragColor = mix(fragColor, texture(rock1.diffusemap,texCoordF/4).rgb, rock1Blend);
-	if (normal.y > 0.9){
-		fragColor = mix(fragColor,texture(grass.diffusemap,texCoordF).rgb,6*(normal.y-0.9)* clamp(-(height-100)/200,0,1));
+	if (normal.y > 0.95){
+		fragColor = mix(fragColor,texture(grass.diffusemap,texCoordF).rgb,12*(normal.y-0.95)* clamp(-(height-100)/200,0,1));
 	}
 	if (normal.y < 0.95){
 		fragColor = mix(fragColor,texture(rock1.diffusemap,texCoordF/4).rgb,slopeFactor);

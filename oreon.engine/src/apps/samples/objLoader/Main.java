@@ -12,7 +12,9 @@ public static void main(String[] args) {
 		game.setGui(new VoidGUI());
 		game.getEngine().createWindow(1280,720,"Actionbox");
 		game.init();
-		game.getScenegraph().addObject(new OBJ());
+//		game.getScenegraph().addObject(new Tree01Instanced(new Vec3f(1060,0,-830),
+//				 Constants.Tree0101highPolyModelMatricesBinding,
+//				 Constants.Tree0101highPolyWorldMatricesBinding));
 		game.launch();
 	}
 }

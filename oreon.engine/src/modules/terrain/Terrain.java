@@ -1,5 +1,6 @@
 package modules.terrain;
 
+import engine.core.Camera;
 import engine.math.Vec2f;
 import engine.scenegraph.Node;
 import engine.shader.Shader;
@@ -11,6 +12,7 @@ public class Terrain extends Node{
 	private static Terrain instance = null;
 	private TerrainConfiguration terrainConfiguration;
 	private static final Object lock = new Object();
+	private int updateQuadtreeCounter = 0;
 	
 	public static Terrain getInstance() 
 	{
@@ -31,6 +33,16 @@ public class Terrain extends Node{
 		terrainConfiguration.setShadowShader(shadow);
 		
 		addChild(new TerrainQuadtree(terrainConfiguration));
+	}
+	
+	public void updateQuadtree(){
+		if (Camera.getInstance().isCameraMoved()){
+			updateQuadtreeCounter++;
+		}
+		if (updateQuadtreeCounter == 10){
+			((TerrainQuadtree) getChildren().get(0)).updateQuadtree();
+			updateQuadtreeCounter = 0;
+		}
 	}
 	
 	public float getTerrainHeight(float x, float z)

@@ -5,13 +5,13 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import java.util.List;
 
-import apps.oreonworlds.assets.plants.Tree01Instanced;
 import engine.core.RenderingEngine;
 import engine.scenegraph.GameObject;
 import engine.scenegraph.components.Material;
 import engine.shader.Shader;
 import engine.utils.Constants;
 import engine.utils.ResourceLoader;
+import modules.instancing.InstancingCluster;
 
 public class TreeShadowShader extends Shader{
 
@@ -52,7 +52,8 @@ public class TreeShadowShader extends Shader{
 		setUniform("clipplane", RenderingEngine.getClipplane());
 		bindUniformBlock("Camera",Constants.CameraUniformBlockBinding);
 		bindUniformBlock("LightViewProjections",Constants.LightMatricesUniformBlockBinding);
-		bindUniformBlock("worldMatrices", ((Tree01Instanced) object.getParent()).getWorldMatBinding());
+		((InstancingCluster) object.getParent()).getWorldMatricesBuffer().bindBufferBase(0);
+		bindUniformBlock("worldMatrices", 0);
 		
 		Material material = (Material) object.getComponent("Material");
 
@@ -60,7 +61,7 @@ public class TreeShadowShader extends Shader{
 		material.getDiffusemap().bind();
 		setUniformi("material.diffusemap", 0);
 		
-		List<Integer> indices = ((Tree01Instanced) object.getParent()).getHighPolyIndices();
+		List<Integer> indices = ((InstancingCluster) object.getParent()).getHighPolyIndices();
 		
 		for (int i=0; i<indices.size(); i++)
 		{

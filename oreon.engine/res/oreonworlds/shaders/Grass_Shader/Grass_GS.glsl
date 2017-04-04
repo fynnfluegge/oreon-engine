@@ -13,9 +13,12 @@ out vec2 texCoord_FS;
 out vec3 normal_FS;
 out vec4 viewSpacePos;
 
-layout (std140, row_major) uniform InstancedMatrices{
-	mat4 m_World[512];
-	mat4 m_Model[512];
+layout (std140, row_major) uniform worldMatrices{
+	mat4 m_World[500];
+};
+
+layout (std140, row_major) uniform modelMatrices{
+	mat4 m_Model[500];
 };
 
 layout (std140, row_major) uniform Camera{
@@ -26,12 +29,13 @@ layout (std140, row_major) uniform Camera{
 };
 
 uniform vec4 clipplane;
+uniform int matrixIndices[500];
 
 void main()
 {	
 	for (int i = 0; i < gl_in.length(); ++i)
 	{
-		vec4 worldPos = m_World[ instanceID_GS[i] ] * gl_in[i].gl_Position;
+		vec4 worldPos = m_World[matrixIndices[instanceID_GS[i]]] * gl_in[i].gl_Position;
 		gl_Position = viewProjectionMatrix * worldPos;
 		gl_ClipDistance[0] = dot(gl_Position,frustumPlanes[0]);
 		gl_ClipDistance[1] = dot(gl_Position,frustumPlanes[1]);
@@ -42,7 +46,7 @@ void main()
 		gl_ClipDistance[6] = dot(gl_Position,clipplane);
 		texCoord_FS = texCoord_GS[i];
 		position_FS = worldPos.xyz;
-		normal_FS = (m_Model[ instanceID_GS[i] ] * vec4(normal_GS[i],1)).xyz;
+		normal_FS = (m_Model[matrixIndices[instanceID_GS[i]]] * vec4(normal_GS[i],1)).xyz;
 		viewSpacePos = m_View * worldPos;
 		EmitVertex();
 	}	

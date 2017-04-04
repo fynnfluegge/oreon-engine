@@ -34,16 +34,15 @@ public class PalmInstanced extends Node{
 	private UBO modelMatricesBuffer;
 	private UBO worldMatricesBuffer;
 
-	private final int instances = 80;
-	private final int buffersize = Float.BYTES * 16 * instances;
 	private Vec3f center;
 	
 	private int modelMatBinding;
 	private int worldMatBinding;
 
-	public PalmInstanced(Vec3f pos, int modelMatBinding, int worldMatBinding){
+	public PalmInstanced(int instances, Vec3f pos, int modelMatBinding, int worldMatBinding){
 		
 		center = pos;
+		int buffersize = Float.BYTES * 16 * instances;
 		this.setModelMatBinding(modelMatBinding);
 		this.setWorldMatBinding(worldMatBinding);
 		
@@ -51,7 +50,7 @@ public class PalmInstanced extends Node{
 		Model[] billboards = new OBJLoader().load("./res/oreonworlds/assets/plants/Palm_01","billboardmodel.obj","billboardmodel.mtl");
 		
 		for (int i=0; i<instances; i++){
-			Vec3f translation = new Vec3f((float)(Math.random()*500)-250 + center.getX(), 0, (float)(Math.random()*500)-250 + center.getZ());
+			Vec3f translation = new Vec3f((float)(Math.random()*300)-150 + center.getX(), 0, (float)(Math.random()*300)-150 + center.getZ());
 			float terrainHeight = Terrain.getInstance().getTerrainHeight(translation.getX(),translation.getZ());
 			terrainHeight -= 3;
 			translation.setY(terrainHeight);

@@ -35,7 +35,14 @@ public class TerrainNode extends GameObject{
 		this.gap = 1f/(TerrainQuadtree.getRootPatches() * (float)(Math.pow(2, lod)));
 		PatchVAO meshBuffer = new PatchVAO();
 		meshBuffer.addData(generatePatch(),16);
+		
 		setRenderInfo(new RenderInfo(new engine.configs.Default(),terrConfig.getShader()));
+
+		if (RenderingEngine.isGrid())
+			getRenderInfo().setShader(terrConfig.getGridShader());
+		else if (!RenderingEngine.isGrid())
+			getRenderInfo().setShader(terrConfig.getShader());
+		
 		Renderer renderer = new Renderer(terrConfig.getShader(), meshBuffer);
 		addComponent("Renderer", renderer);
 		
@@ -58,10 +65,9 @@ public class TerrainNode extends GameObject{
 				getRenderInfo().setShader(terrConfig.getShader());
 			
 			getComponents().get("Renderer").setShader(getRenderInfo().getShader());
-			
-			if (Camera.getInstance().isCameraMoved()){
-				updateQuadtree();
-			}
+					
+			getTransform().setScaling(getTransform().getLocalScaling());
+			getTransform().setTranslation(getTransform().getLocalTranslation());
 			
 			for(Node child: getChildren())
 				child.update();		
@@ -103,6 +109,15 @@ public class TerrainNode extends GameObject{
 		}
 		else worldPos.setY(Camera.getInstance().getPosition().getY());
 
+		updateChildNodes();
+		
+		for (Node node : getChildren()){
+			((TerrainNode) node).updateQuadtree();
+		}
+	}
+	
+	private void updateChildNodes(){
+		
 		float distance = (Camera.getInstance().getPosition().sub(worldPos)).length();
 		
 		switch (lod){
@@ -165,7 +180,7 @@ public class TerrainNode extends GameObject{
 		}
 	}
 	
-	public void add4ChildNodes(int lod){
+	private void add4ChildNodes(int lod){
 		
 		if (isleaf){
 			isleaf = false;
@@ -180,7 +195,7 @@ public class TerrainNode extends GameObject{
 		}	
 	}
 	
-	public void removeChildNodes(){
+	private void removeChildNodes(){
 		
 		if (!isleaf){
 			isleaf = true;

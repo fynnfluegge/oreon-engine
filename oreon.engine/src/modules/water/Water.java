@@ -31,6 +31,7 @@ import static org.lwjgl.opengl.GL11.glTexImage2D;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.GL_RGBA;
 import static org.lwjgl.opengl.GL30.GL_RGBA32F;
+import static org.lwjgl.opengl.GL11.GL_BLEND;
 import static org.lwjgl.opengl.GL11.GL_CCW;
 import static org.lwjgl.opengl.GL11.GL_CW;
 import static org.lwjgl.opengl.GL11.GL_FLOAT;
@@ -39,13 +40,16 @@ import static org.lwjgl.opengl.GL11.glFrontFace;
 import static org.lwjgl.opengl.GL11.glTexParameteri;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_MAG_FILTER;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_MIN_FILTER;
+import static org.lwjgl.opengl.GL11.glDisable;
 import static org.lwjgl.opengl.GL11.GL_LINEAR;
 import static org.lwjgl.opengl.GL11.glViewport;
+import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL30.GL_CLIP_DISTANCE6;
 
 public class Water extends GameObject{
 	
 	private Quaternion clipplane;
-	private float clip_offset = 10;
+	private float clip_offset = 0;
 	private float distortionOffset;
 	private float motionOffset;
 	private float motion;
@@ -73,7 +77,7 @@ public class Water extends GameObject{
 	private Scenegraph scenegraph;
 	
 	public Water(int patches, int fftResolution)
-	{
+	{		
 		PatchVAO meshBuffer = new PatchVAO();
 		meshBuffer.addData(generatePatch2D4x4(patches),16);
 		setRenderInfo(new RenderInfo(new Default(), OceanBRDFShader.getInstance()));
@@ -100,6 +104,7 @@ public class Water extends GameObject{
 		reflectionFBO.bind();
 		reflectionFBO.setDrawBuffer(0);
 		reflectionFBO.createColorTextureAttachment(reflectionTexture.getId(), 0);
+		reflectionFBO.createDepthbufferAttachment(Window.getInstance().getWidth()/2, Window.getInstance().getHeight()/2);
 		reflectionFBO.checkStatus();
 		reflectionFBO.unbind();
 		
@@ -114,6 +119,7 @@ public class Water extends GameObject{
 		refractionFBO.bind();
 		refractionFBO.setDrawBuffer(0);
 		refractionFBO.createColorTextureAttachment(refractionTexture.getId(), 0);
+		refractionFBO.createDepthbufferAttachment(Window.getInstance().getWidth()/2, Window.getInstance().getHeight()/2);
 		refractionFBO.checkStatus();
 		refractionFBO.unbind();		
 	}
@@ -246,11 +252,16 @@ public class Water extends GameObject{
 	
 	public void render()
 	{
+		glEnable(GL_CLIP_DISTANCE6);
+		
 		if (!Input.isPause()){
 			distortion += getDistortionOffset();
 			motion += getMotionOffset();
 		}
-		clipplane.setW(getTransform().getTranslation().getY() + clip_offset);
+//		clipplane.setX(0);
+//		clipplane.setZ(0);
+//		clipplane.setY(-1);
+//		clipplane.setW(1);
 		
 		Scenegraph scenegraph = ((Scenegraph) getParent());
 		
@@ -270,11 +281,11 @@ public class Water extends GameObject{
 //			(skySphere.getTransform().getTranslation().getY() - RenderingEngine.getClipplane().getW()));
 			
 		synchronized(Terrain.getLock()){
-//			if (terrain != null){
-//				terrain.getTerrainConfiguration().setScaleY(terrain.getTerrainConfiguration().getScaleY() * -1f);
-//				terrain.getTransform().getLocalTranslation().setY(RenderingEngine.getClipplane().getW() - 
-//					(terrain.getTransform().getLocalTranslation().getY() - RenderingEngine.getClipplane().getW()));
-//			}
+			
+			Terrain terrain = (Terrain) scenegraph.getTerrain();
+			terrain.getTerrainConfiguration().setScaleY(terrain.getTerrainConfiguration().getScaleY() * -1f);
+			terrain.getTransform().getLocalTranslation().setY(RenderingEngine.getClipplane().getW() - 
+					(terrain.getTransform().getLocalTranslation().getY() - RenderingEngine.getClipplane().getW()));
 			
 			// TODO prevent update terrain Quadtree in this update call;
 			
@@ -298,11 +309,11 @@ public class Water extends GameObject{
 			scenegraph.getRoot().getTransform().setScaling(1,1,1);
 			scenegraph.getRoot().getTransform().getTranslation().setY(RenderingEngine.getClipplane().getW() - 
 					(scenegraph.getTransform().getTranslation().getY() - RenderingEngine.getClipplane().getW()));
-//			if (terrain != null){
-//				terrain.getTerrainConfiguration().setScaleY(terrain.getTerrainConfiguration().getScaleY()/ -1f);
-//				terrain.getTransform().getLocalTranslation().setY(RenderingEngine.getClipplane().getW() + 
-//					(RenderingEngine.getClipplane().getW() - terrain.getTransform().getLocalTranslation().getY()));
-//			}
+
+			terrain.getTerrainConfiguration().setScaleY(terrain.getTerrainConfiguration().getScaleY() * -1f);
+			terrain.getTransform().getLocalTranslation().setY(RenderingEngine.getClipplane().getW() + 
+					(RenderingEngine.getClipplane().getW() - terrain.getTransform().getLocalTranslation().getY()));
+
 			scenegraph.update();
 			
 			// render to refraction texture
@@ -310,9 +321,8 @@ public class Water extends GameObject{
 			this.getRefractionFBO().bind();
 			RenderConfig.clearScreenDeepOceanRefraction();
 			scenegraph.getRoot().render();
-//			if (terrain != null){
-//				terrain.render();
-//			}
+			scenegraph.getTerrain().render();
+			
 			glFinish(); //important, prevent conflicts with following compute shaders
 			this.getRefractionFBO().unbind();
 		}
@@ -321,11 +331,11 @@ public class Water extends GameObject{
 	
 		glViewport(0,0,Window.getInstance().getWidth(), Window.getInstance().getHeight());
 		
-		Window.getInstance().getMultisampledFbo().bind();
 		fft.render();
 		normalmapRenderer.render(fft.getDy());
-		getComponents().get("Renderer").render();
 		
+		Window.getInstance().getMultisampledFbo().bind();
+		getComponents().get("Renderer").render();
 		glFinish(); //important, prevent conflicts with following compute shaders
 		Window.getInstance().getMultisampledFbo().unbind();
 	}

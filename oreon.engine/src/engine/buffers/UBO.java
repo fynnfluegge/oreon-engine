@@ -24,10 +24,12 @@ public class UBO {
 	
 	private int ubo;
 	private int binding_point_index;
+	private String bindingName;
 	
 	public UBO()
 	{
 		ubo = glGenBuffers();
+		bindingName = new String();
 	}
 	
 	public void allocate(int bytes)
@@ -63,6 +65,11 @@ public class UBO {
 	{
 		glBindBufferBase(GL_UNIFORM_BUFFER, binding_point_index, ubo);
 	}
+	
+	public void bindBufferBase(int index)
+	{
+		glBindBufferBase(GL_UNIFORM_BUFFER, index, ubo);
+	}
 
 	public int getBinding_point_index() {
 		return binding_point_index;
@@ -70,5 +77,13 @@ public class UBO {
 
 	public void setBinding_point_index(int binding_point_index) {
 		this.binding_point_index = binding_point_index;
+	}
+
+	public String getBindingName() {
+		return bindingName;
+	}
+
+	public void setBindingName(String bindingName) {
+		this.bindingName = bindingName;
 	}
 }

@@ -41,18 +41,13 @@ void main() {
 			
 			float height = gl_in[k].gl_Position.y;
 				
-			float snowBlend  = clamp(height/200,0,1);
-			float rockBlend = 0;
-			if (height <= 300)
-				rockBlend  = clamp((height+200)/200,0,1);
-			else
-				rockBlend = clamp((-height+200)/200,0,1);
-	
-			float sandBlend  = clamp(-height/200,0,1);
+			float rock1Blend  = clamp(height/200,0,1);
+			float rock0Blend  = clamp((height+200)/200,0,1) - rock1Blend;
+			float sandBlend   = clamp(-height/200,0,1);
 			
 			float scale = texture(sand.heightmap, texCoordG[k]).r * sandBlend * sand.displaceScale
-						+ texture(rock.heightmap, texCoordG[k]).r * rockBlend * rock.displaceScale
-						+ texture(snow.heightmap, texCoordG[k]).r * snowBlend * snow.displaceScale;
+						+ texture(rock.heightmap, texCoordG[k]).r * rock0Blend * rock.displaceScale
+						+ texture(snow.heightmap, texCoordG[k]/4).r * rock1Blend * snow.displaceScale;
 						
 			scale *= (- distance(gl_in[k].gl_Position.xyz, eyePosition)/(largeDetailedRange) + 1);
 

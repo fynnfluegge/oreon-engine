@@ -75,7 +75,17 @@ float shadow(vec3 worldPos)
 	if (depth < splitRange[0]){
 		vec4 lightSpacePos = m_lightViewProjection[0] * vec4(worldPos,1.0);
 		projCoords = lightSpacePos.xyz * 0.5 + 0.5;
-		shadowFactor = varianceShadow(projCoords,0);
+		float shadowFactor0 = varianceShadow(projCoords,0);
+		
+		lightSpacePos = m_lightViewProjection[1] * vec4(worldPos,1.0);
+		projCoords = lightSpacePos.xyz * 0.5 + 0.5;
+		float shadowFactor1 = varianceShadow(projCoords,1);
+		
+		lightSpacePos = m_lightViewProjection[2] * vec4(worldPos,1.0);
+		projCoords = lightSpacePos.xyz * 0.5 + 0.5;
+		float shadowFactor2 = varianceShadow(projCoords,2);
+		
+		shadowFactor = min(shadowFactor2, min(shadowFactor0,shadowFactor1));
 	}
 	else if (depth < splitRange[1]){
 		vec4 lightSpacePos = m_lightViewProjection[1] * vec4(worldPos,1.0);
@@ -110,7 +120,7 @@ void main()
 {	
 	float dist = length(eyePosition - position_FS);
 
-	float diffuseFactor = diffuse(directional_light.direction, normal_FS, directional_light.intensity);
+	float diffuseFactor = diffuse(directional_light.direction, vec3(0,1,0), directional_light.intensity);
 	
 	vec3 diffuseLight = directional_light.color * diffuseFactor;
 	

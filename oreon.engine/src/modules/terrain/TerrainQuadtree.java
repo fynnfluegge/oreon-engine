@@ -15,6 +15,12 @@ public class TerrainQuadtree extends Node{
 			}
 		}
 	}	
+	
+	public void updateQuadtree(){
+		for (Node node : getChildren()){
+			((TerrainNode) node).updateQuadtree();
+		}
+	}
 
 	public static int getRootPatches() {
 		return rootPatches;

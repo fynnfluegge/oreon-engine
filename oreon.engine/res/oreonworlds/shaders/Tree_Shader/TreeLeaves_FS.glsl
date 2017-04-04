@@ -119,6 +119,11 @@ float shadow(vec3 worldPos)
 	return shadowFactor;
 }
 
+float alphaDistanceFactor(float dist)
+{
+	return clamp(0.005f * (-dist+400),0,1);
+}
+
 void main()
 {
 	vec3 diffuseLight = vec3(0,0,0);
@@ -151,6 +156,7 @@ void main()
     vec3 rgb = mix(fogColor, fragColor, clamp(fogFactor,0,1));
 	
 	float alpha = texture(material.diffusemap, texCoord_FS).a;
+	alpha *= alphaDistanceFactor(dist);
 	
 	gl_FragColor = vec4(rgb,alpha);
 }

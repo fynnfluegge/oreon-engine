@@ -1,7 +1,6 @@
-package apps.oreonworlds.shaders.rocks;
+package apps.oreonworlds.shaders.plants;
 
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
-import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE2;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
@@ -16,33 +15,32 @@ import engine.utils.ResourceLoader;
 import modules.instancing.InstancingCluster;
 import modules.terrain.Terrain;
 
-public class RockHighPolyShader extends Shader{
+public class GrassShader extends Shader{
 
-	private static RockHighPolyShader instance = null;
+	private static GrassShader instance = null;
 
-	public static RockHighPolyShader getInstance() 
+	public static GrassShader getInstance() 
 	{
 	    if(instance == null) 
 	    {
-	    	instance = new RockHighPolyShader();
+	    	instance = new GrassShader();
 	    }
 	      return instance;
 	}
 	
-	protected RockHighPolyShader()
+	protected GrassShader()
 	{
 		super();
 		
-		addVertexShader(ResourceLoader.loadShader("oreonworlds/shaders/Rock_Shader/RockHighPoly_VS.glsl"));
-		addGeometryShader(ResourceLoader.loadShader("oreonworlds/shaders/Rock_Shader/RockHighPoly_GS.glsl"));
-		addFragmentShader(ResourceLoader.loadShader("oreonworlds/shaders/Rock_Shader/RockHighPoly_FS.glsl"));
+		addVertexShader(ResourceLoader.loadShader("oreonworlds/shaders/Grass_Shader/Grass_VS.glsl"));
+		addGeometryShader(ResourceLoader.loadShader("oreonworlds/shaders/Grass_Shader/Grass_GS.glsl"));
+		addFragmentShader(ResourceLoader.loadShader("oreonworlds/shaders/Grass_Shader/Grass_FS.glsl"));
 		compileShader();
 		
 		addUniform("sightRangeFactor");
 		addUniform("material.diffusemap");
-		addUniform("material.normalmap");
-		addUniform("material.shininess");
-		addUniform("material.emission");
+//		addUniform("material.shininess");
+//		addUniform("material.emission");
 		addUniform("clipplane");
 		
 		addUniformBlock("DirectionalLight");
@@ -52,7 +50,7 @@ public class RockHighPolyShader extends Shader{
 		addUniformBlock("Camera");
 		addUniform("shadowMaps");
 		
-		for (int i=0; i<100; i++)
+		for (int i=0; i<500; i++)
 		{
 			addUniform("matrixIndices[" + i + "]");
 		}
@@ -75,12 +73,8 @@ public class RockHighPolyShader extends Shader{
 		material.getDiffusemap().bind();
 		setUniformi("material.diffusemap", 0);
 		
-		glActiveTexture(GL_TEXTURE1);
-		material.getNormalmap().bind();
-		setUniformi("material.normalmap", 1);
-		
-		setUniformf("material.shininess", material.getShininess());
-		setUniformf("material.emission", material.getEmission());
+//		setUniformf("material.shininess", material.getShininess());
+//		setUniformf("material.emission", material.getEmission());
 		
 		glActiveTexture(GL_TEXTURE2);
 		RenderingEngine.getShadowMaps().getDepthMaps().bind();

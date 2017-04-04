@@ -12,6 +12,7 @@ import modules.postProcessingEffects.DepthOfFieldBlur;
 import modules.postProcessingEffects.Bloom;
 import modules.postProcessingEffects.MotionBlur;
 import modules.shadowmapping.directionalLight.ShadowMaps;
+import modules.terrain.Terrain;
 import engine.configs.RenderConfig;
 import engine.math.Quaternion;
 import engine.scenegraph.Scenegraph;
@@ -126,6 +127,7 @@ public class RenderingEngine {
 		Camera.getInstance().update();
 		gui.update();
 		scenegraph.update();
+		((Terrain) scenegraph.getTerrain()).updateQuadtree();
 		DirectionalLight.getInstance().update();
 		TerrainPicking.getInstance().getTerrainPosition();
 	}

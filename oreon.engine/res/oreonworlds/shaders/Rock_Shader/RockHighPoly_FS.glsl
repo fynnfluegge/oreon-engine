@@ -142,13 +142,13 @@ void main()
 	
 	specularFactor = specular(directional_light.direction, normal, eyeDirection);
 	
-	diffuseLight = directional_light.ambient + directional_light.color * diffuseFactor;
-	specularLight = directional_light.color * specularFactor;
+	float shadowFactor = shadow(position_FS);
+	diffuseLight = directional_light.ambient + directional_light.color * diffuseFactor * shadowFactor;
+	specularLight = directional_light.color * specularFactor * shadowFactor;
 	
 	vec3 diffuseColor = texture(material.diffusemap, texCoord_FS*4).rgb;
 		
 	vec3 fragColor = diffuseColor * diffuseLight + specularLight;
-	fragColor *= shadow(position_FS);
 	
 	float fogFactor = -0.0005/sightRangeFactor*(dist-zFar/5*sightRangeFactor);
 	

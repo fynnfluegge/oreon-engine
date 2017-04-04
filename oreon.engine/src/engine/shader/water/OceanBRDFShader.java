@@ -18,7 +18,7 @@ import engine.utils.ResourceLoader;
 
 public class OceanBRDFShader extends Shader{
 
-private static OceanBRDFShader instance = null;
+	private static OceanBRDFShader instance = null;
 
 	public static OceanBRDFShader getInstance() 
 	{
@@ -84,6 +84,7 @@ private static OceanBRDFShader instance = null;
 	{
 		setUniform("projectionViewMatrix", Camera.getInstance().getViewProjectionMatrix());
 		setUniform("worldMatrix", object.getTransform().getWorldMatrix());
+				
 		setUniform("eyePosition", Camera.getInstance().getPosition());
 		setUniformi("windowWidth", Window.getInstance().getWidth());
 		setUniformi("windowHeight", Window.getInstance().getHeight());

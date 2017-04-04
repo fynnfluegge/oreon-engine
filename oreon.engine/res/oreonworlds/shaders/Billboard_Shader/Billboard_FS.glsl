@@ -34,6 +34,11 @@ float diffuse(vec3 direction, vec3 normal, float intensity)
 	return max(0.2, dot(normal, -direction) * intensity);
 }
 
+float alphaDistanceFactor(float dist)
+{
+	return 0.01f * (dist-120);
+}
+
 
 void main()
 {	
@@ -46,6 +51,7 @@ void main()
 	vec3 fragColor = texture(material.diffusemap, texCoord_FS).rgb * (directional_light.ambient + diffuseLight);
 	
 	float alpha = texture(material.diffusemap, texCoord_FS).a;
+	alpha *= alphaDistanceFactor(dist);
 	
 	float fogFactor = -0.0005/sightRangeFactor*(dist-zFar/5*sightRangeFactor);
 	

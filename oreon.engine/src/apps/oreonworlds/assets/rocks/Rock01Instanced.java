@@ -11,41 +11,36 @@ import engine.buffers.UBO;
 import engine.configs.Default;
 import engine.math.Vec3f;
 import engine.scenegraph.GameObject;
-import engine.scenegraph.Node;
 import engine.scenegraph.components.RenderInfo;
 import engine.scenegraph.components.Renderer;
 import engine.scenegraph.components.TransformsInstanced;
 import engine.utils.BufferAllocation;
 import engine.utils.Util;
+import modules.instancing.InstancingCluster;
 import modules.modelLoader.obj.Model;
 import modules.modelLoader.obj.OBJLoader;
 import modules.terrain.Terrain;
 
-public class Rock01Instanced extends Node{
+public class Rock01Instanced extends InstancingCluster{
 	
 	private List<TransformsInstanced> transforms = new ArrayList<TransformsInstanced>();
-	private List<Integer> highPolyIndices = new ArrayList<Integer>();
 	
 	private UBO modelMatricesBuffer;
 	private UBO worldMatricesBuffer;
 
-	private final int instances = 100;
-	private final int buffersize = Float.BYTES * 16 * instances;
 	private Vec3f center;
 	
-	private int modelMatBinding;
-	private int worldMatBinding;
-	
-	public Rock01Instanced(Vec3f pos, int modelMatBinding, int worldMatBinding) {
+	public Rock01Instanced(int instances, Vec3f pos, int modelMatBinding, int worldMatBinding) {
 		
 		center = pos;
-		this.modelMatBinding = modelMatBinding;
-		this.worldMatBinding = worldMatBinding;
+		int buffersize = Float.BYTES * 16 * instances;
+		setModelMatBinding(modelMatBinding);
+		setWorldMatBinding(worldMatBinding);
 		
 		Model[] models = new OBJLoader().load("./res/oreonworlds/assets/rocks/Rock_01","rock01.obj","rock01.mtl");
 		
 		for (int i=0; i<instances; i++){
-			Vec3f translation = new Vec3f((float)(Math.random()*200)-100 + center.getX(), 0, (float)(Math.random()*200)-100 + center.getZ());
+			Vec3f translation = new Vec3f((float)(Math.random()*100)-50 + center.getX(), 0, (float)(Math.random()*100)-50 + center.getZ());
 			float terrainHeight = Terrain.getInstance().getTerrainHeight(translation.getX(),translation.getZ());
 			terrainHeight -= 2;
 			translation.setY(terrainHeight);
@@ -60,7 +55,7 @@ public class Rock01Instanced extends Node{
 			transform.setLocalRotation(rotation);
 			transform.initMatrices();
 			transforms.add(transform);
-			highPolyIndices.add(i);
+			getHighPolyIndices().add(i);
 		}
 		
 		modelMatricesBuffer = new UBO();
@@ -108,17 +103,5 @@ public class Rock01Instanced extends Node{
 			object.addComponent("Renderer", renderer);
 			addChild(object);
 		}
-	}
-
-	public int getModelMatBinding() {
-		return modelMatBinding;
-	}
-
-	public int getWorldMatBinding() {
-		return worldMatBinding;
-	}
-
-	public List<Integer> getHighPolyIndices() {
-		return highPolyIndices;
 	}
 }

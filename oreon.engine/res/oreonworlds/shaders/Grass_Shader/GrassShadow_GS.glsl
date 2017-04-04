@@ -16,9 +16,8 @@ layout (std140, row_major) uniform Camera{
 	vec4 frustumPlanes[6];
 };
 
-layout (std140, row_major) uniform InstancedMatrices{
-	mat4 m_World[512];
-	mat4 m_Model[512];
+layout (std140, row_major) uniform worldMatrices{
+	mat4 m_World[500];
 };
 
 layout (std140, row_major) uniform LightViewProjections{
@@ -26,13 +25,14 @@ layout (std140, row_major) uniform LightViewProjections{
 };
 
 uniform vec4 clipplane;
+uniform int matrixIndices[500];
 
 void main()
 {	
 		for (int i = 0; i < gl_in.length(); ++i)
 		{
 			gl_Layer = gl_InvocationID;
-			gl_Position = m_lightViewProjection[ gl_InvocationID ] * m_World[ instanceID_GS[i] ] * gl_in[i].gl_Position;
+			gl_Position =  m_lightViewProjection[ gl_InvocationID ] * m_World[matrixIndices[instanceID_GS[i]]] * gl_in[i].gl_Position;
 			gl_ClipDistance[0] = dot(gl_Position,frustumPlanes[0]);
 			gl_ClipDistance[1] = dot(gl_Position,frustumPlanes[1]);
 			gl_ClipDistance[2] = dot(gl_Position,frustumPlanes[2]);

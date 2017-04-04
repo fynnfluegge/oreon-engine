@@ -5,13 +5,13 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import java.util.List;
 
-import apps.oreonworlds.assets.plants.Tree01Instanced;
 import engine.core.RenderingEngine;
 import engine.scenegraph.GameObject;
 import engine.scenegraph.components.Material;
 import engine.shader.Shader;
 import engine.utils.Constants;
 import engine.utils.ResourceLoader;
+import modules.instancing.InstancingCluster;
 import modules.terrain.Terrain;
 
 public class TreeLeavesShader extends Shader{
@@ -56,10 +56,13 @@ public class TreeLeavesShader extends Shader{
 	public void updateUniforms(GameObject object)
 	{
 		bindUniformBlock("Camera", Constants.CameraUniformBlockBinding);
-		bindUniformBlock("worldMatrices", ((Tree01Instanced) object.getParent()).getWorldMatBinding());
-		bindUniformBlock("modelMatrices", ((Tree01Instanced) object.getParent()).getModelMatBinding());
 		bindUniformBlock("DirectionalLight", Constants.DirectionalLightUniformBlockBinding);
 		bindUniformBlock("LightViewProjections",Constants.LightMatricesUniformBlockBinding);
+		
+		((InstancingCluster) object.getParent()).getWorldMatricesBuffer().bindBufferBase(0);
+		bindUniformBlock("worldMatrices", 0);
+		((InstancingCluster) object.getParent()).getModelMatricesBuffer().bindBufferBase(1);
+		bindUniformBlock("modelMatrices", 1);
 		
 		setUniform("clipplane", RenderingEngine.getClipplane());
 		setUniformf("sightRangeFactor", Terrain.getInstance().getTerrainConfiguration().getSightRangeFactor());
@@ -74,8 +77,8 @@ public class TreeLeavesShader extends Shader{
 //		RenderingEngine.getShadowMaps().getDepthMaps().bind();
 //		setUniformi("shadowMaps", 1);
 		
-		List<Integer> indices = ((Tree01Instanced) object.getParent()).getHighPolyIndices();
-		
+		List<Integer> indices = ((InstancingCluster) object.getParent()).getHighPolyIndices();
+					
 		for (int i=0; i<indices.size(); i++)
 		{
 			setUniformi("matrixIndices[" + i +"]", indices.get(i));	

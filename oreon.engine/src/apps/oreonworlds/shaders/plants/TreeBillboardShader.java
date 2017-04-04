@@ -5,13 +5,13 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import java.util.List;
 
-import apps.oreonworlds.assets.plants.Tree01Instanced;
 import engine.core.RenderingEngine;
 import engine.scenegraph.GameObject;
 import engine.scenegraph.components.Material;
 import engine.shader.Shader;
 import engine.utils.Constants;
 import engine.utils.ResourceLoader;
+import modules.instancing.InstancingCluster;
 import modules.terrain.Terrain;
 
 public class TreeBillboardShader extends Shader{
@@ -51,21 +51,24 @@ private static TreeBillboardShader instance = null;
 	}
 	
 	public void updateUniforms(GameObject object){
-		
+				
 		setUniform("clipplane", RenderingEngine.getClipplane());
 		setUniformf("sightRangeFactor", Terrain.getInstance().getTerrainConfiguration().getSightRangeFactor());
 		bindUniformBlock("Camera",Constants.CameraUniformBlockBinding);
 		bindUniformBlock("DirectionalLight", Constants.DirectionalLightUniformBlockBinding);
-		bindUniformBlock("worldMatrices", ((Tree01Instanced) object.getParent()).getWorldMatBinding());
-		bindUniformBlock("modelMatrices", ((Tree01Instanced) object.getParent()).getModelMatBinding());
 		
+		((InstancingCluster) object.getParent()).getWorldMatricesBuffer().bindBufferBase(0);
+		bindUniformBlock("worldMatrices", 0);
+		((InstancingCluster) object.getParent()).getModelMatricesBuffer().bindBufferBase(1);
+		bindUniformBlock("modelMatrices", 1);
+				
 		Material material = (Material) object.getComponent("Material");
 		
 		glActiveTexture(GL_TEXTURE0);
 		material.getDiffusemap().bind();
 		setUniformi("material.diffusemap", 0);
 		
-		List<Integer> indices = ((Tree01Instanced) object.getParent()).getBillboardIndices();
+		List<Integer> indices = ((InstancingCluster) object.getParent()).getLowPolyIndices();
 		
 		for (int i=0; i<indices.size(); i++)
 		{
