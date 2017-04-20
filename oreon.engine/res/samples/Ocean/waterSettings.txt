@@ -1,6 +1,6 @@
 
 displacementScale 4.0
-choppiness 4.0
+choppiness 8.0
 distortion 2.0E-3
 wavemotion 0.0001
 texDetail 25
@@ -10,6 +10,6 @@ tessellationShift -0.02
 detailRange 1800
 shininess 160.0
 emission 2.0
-kReflection 0.01
-kRefraction 0.005
-normalStrength 0.4
+kReflection 0.015
+kRefraction 0.01
+normalStrength 0.5

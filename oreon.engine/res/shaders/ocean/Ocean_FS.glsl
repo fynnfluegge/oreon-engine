@@ -73,7 +73,7 @@ float fresnelApproximated(vec3 normal)
     
     float cosine = dot(halfDirection, vertexToEye);
     float product = max(cosine, 0.0);
-    float factor = pow(product, 2.0);
+    float factor = pow(product, 1.2);
     
     return 1-factor;
 }
@@ -138,7 +138,7 @@ void main(void)
 		//vec3 bitangent = normalize(cross(tangent, normal));
 		mat3 TBN = mat3(tangent,normal,bitangent);
 		vec3 bumpNormal = 2 * texture(normalmap, texCoord_FS*8).rbg - 1;
-		bumpNormal.y *= 1.2;
+		bumpNormal.y *= 1.4;
 		bumpNormal.xz *= attenuation;
 		normal = normalize(TBN * bumpNormal);
 	}

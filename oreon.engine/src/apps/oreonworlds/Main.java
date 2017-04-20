@@ -22,7 +22,7 @@ public class Main {
 		
 		Game game = new Game();
 		game.setGui(new GUI());
-		game.getEngine().createWindow(1600, 900, "oreon worlds");
+		game.getEngine().createWindow(1366, 768, "oreon worlds");
 		game.init();
 		game.getScenegraph().setTerrain(Terrain.getInstance());
 		Terrain.getInstance().init("./res/oreonworlds/terrain/terrain_settings.txt", TerrainShader.getInstance(),
