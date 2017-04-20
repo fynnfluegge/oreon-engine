@@ -5,7 +5,6 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import java.util.List;
 
-import engine.core.RenderingEngine;
 import engine.scenegraph.GameObject;
 import engine.scenegraph.components.Material;
 import engine.shader.Shader;
@@ -35,7 +34,6 @@ public class GrassShadowShader extends Shader{
 		addFragmentShader(ResourceLoader.loadShader("oreonworlds/shaders/Grass_Shader/GrassShadow_FS.glsl"));
 		compileShader();
 		
-		addUniform("clipplane");
 		addUniformBlock("worldMatrices");
 		addUniformBlock("Camera");
 		addUniformBlock("LightViewProjections");
@@ -49,10 +47,10 @@ public class GrassShadowShader extends Shader{
 	
 	public void updateUniforms(GameObject object){
 		
-		setUniform("clipplane", RenderingEngine.getClipplane());
 		bindUniformBlock("Camera",Constants.CameraUniformBlockBinding);
 		bindUniformBlock("LightViewProjections",Constants.LightMatricesUniformBlockBinding);
-		bindUniformBlock("worldMatrices", ((InstancingCluster) object.getParent()).getWorldMatBinding());
+		((InstancingCluster) object.getParent()).getWorldMatricesBuffer().bindBufferBase(0);
+		bindUniformBlock("worldMatrices", 0);
 		
 		Material material = (Material) object.getComponent("Material");
 

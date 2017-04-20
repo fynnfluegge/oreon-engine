@@ -3,7 +3,6 @@ package apps.oreonworlds.shaders.rocks;
 
 import java.util.List;
 
-import engine.core.RenderingEngine;
 import engine.scenegraph.GameObject;
 import engine.shader.Shader;
 import engine.utils.Constants;
@@ -32,7 +31,6 @@ public class RockShadowShader extends Shader{
 		addFragmentShader(ResourceLoader.loadShader("oreonworlds/shaders/Rock_Shader/RockShadow_FS.glsl"));
 		compileShader();
 		
-		addUniform("clipplane");
 		addUniformBlock("worldMatrices");
 		addUniformBlock("Camera");
 		addUniformBlock("LightViewProjections");
@@ -45,10 +43,10 @@ public class RockShadowShader extends Shader{
 	
 	public void updateUniforms(GameObject object){
 		
-		setUniform("clipplane", RenderingEngine.getClipplane());
 		bindUniformBlock("Camera",Constants.CameraUniformBlockBinding);
 		bindUniformBlock("LightViewProjections",Constants.LightMatricesUniformBlockBinding);
-		bindUniformBlock("worldMatrices", ((InstancingCluster) object.getParent()).getWorldMatBinding());
+		((InstancingCluster) object.getParent()).getWorldMatricesBuffer().bindBufferBase(0);
+		bindUniformBlock("worldMatrices", 0);
 		
 		List<Integer> indices = ((InstancingCluster) object.getParent()).getHighPolyIndices();
 		

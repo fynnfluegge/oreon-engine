@@ -39,7 +39,7 @@ public class Terrain extends Node{
 		if (Camera.getInstance().isCameraMoved()){
 			updateQuadtreeCounter++;
 		}
-		if (updateQuadtreeCounter == 10){
+		if (updateQuadtreeCounter == 1){
 			((TerrainQuadtree) getChildren().get(0)).updateQuadtree();
 			updateQuadtreeCounter = 0;
 		}

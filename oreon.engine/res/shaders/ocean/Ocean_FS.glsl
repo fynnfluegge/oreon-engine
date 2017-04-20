@@ -30,14 +30,18 @@ uniform int windowHeight;
 uniform int texDetail;
 uniform float emission;
 uniform float shininess;
+uniform float sightRangeFactor = 1.4;
 
 vec2 wind = vec2(1,0);
 const vec3 refractionColor = vec3(0.015,0.022,0.04);
 const vec3 reflectionColor = vec3(0.2994,0.4417,0.6870);
 const float zFar = 10000;
-const vec4 fogColor = vec4(0.1,0.12,0.28,0);
+// const vec4 fogColor = vec4(0.1,0.12,0.28,0);
 
 const float R = 0.0403207622; 
+const vec3 fogColor = vec3(0.62,0.85,0.95);
+const float zfar = 10000;
+const float znear = 0.1;
 float SigmaSqX;
 float SigmaSqY;
 vec3 vertexToEye;
@@ -58,6 +62,10 @@ float specular(vec3 normal)
 	return pow(specular, shininess) * emission;
 }
 
+float linearizeDepth(float depth)
+{
+	return (2 * znear) / (zfar + znear - depth * (zfar - znear));
+}
 
 float fresnelApproximated(vec3 normal)
 {
@@ -147,14 +155,14 @@ void main(void)
     // Reflection //
 	vec2 reflecCoords = projCoord.xy + dudvCoord.rb * kReflection;
 	reflecCoords = clamp(reflecCoords, kReflection, 1-kReflection);
-    vec3 reflection = mix(texture(waterReflection, reflecCoords).rgb, reflectionColor,  0.4);
+    vec3 reflection = mix(texture(waterReflection, reflecCoords).rgb, reflectionColor,  0.1);
     reflection *= F;
  
     // Refraction //
 	vec2 refracCoords = projCoord.xy + dudvCoord.rb * kRefraction;
 	refracCoords = clamp(refracCoords, kRefraction, 1-kRefraction);
 	
-    vec3 refraction = mix(texture(waterRefraction, refracCoords).rgb, refractionColor, 0.4); 
+    vec3 refraction = mix(texture(waterRefraction, refracCoords).rgb, refractionColor, 0.7); 
 	refraction *= 1-F;
 	
 	float diffuse = diffuse(normal);
@@ -162,7 +170,11 @@ void main(void)
 	vec3 diffuseLight = sunlight.ambient + sunlight.color * diffuse;
 	vec3 specularLight = sunlight.color * specular;
 	
-	vec3 rgb = (reflection + refraction) * diffuseLight + specularLight;
+	vec3 fragColor = (reflection + refraction) * diffuseLight + specularLight;
+	
+	float fogFactor = -0.0005/sightRangeFactor*(dist-zfar/5*sightRangeFactor);
+	
+    vec3 rgb = mix(fogColor, fragColor, clamp(fogFactor,0,1));
 	
 	gl_FragColor = vec4(rgb,1);;
 }

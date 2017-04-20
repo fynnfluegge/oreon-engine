@@ -6,6 +6,7 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 import java.util.List;
 
 import engine.core.RenderingEngine;
+import engine.math.Matrix4f;
 import engine.scenegraph.GameObject;
 import engine.scenegraph.components.Material;
 import engine.shader.Shader;
@@ -40,6 +41,9 @@ private static TreeBillboardShader instance = null;
 		addUniform("clipplane");
 		addUniformBlock("worldMatrices");
 		addUniformBlock("modelMatrices");
+		addUniform("scalingMatrix");
+		addUniform("isReflection");
+		
 		addUniformBlock("Camera");
 		addUniformBlock("DirectionalLight");
 		addUniform("material.diffusemap");
@@ -56,6 +60,8 @@ private static TreeBillboardShader instance = null;
 		setUniformf("sightRangeFactor", Terrain.getInstance().getTerrainConfiguration().getSightRangeFactor());
 		bindUniformBlock("Camera",Constants.CameraUniformBlockBinding);
 		bindUniformBlock("DirectionalLight", Constants.DirectionalLightUniformBlockBinding);
+		setUniformi("isReflection", RenderingEngine.isReflection() ? 1 : 0);
+		setUniform("scalingMatrix", new Matrix4f().Scaling(object.getTransform().getScaling()));
 		
 		((InstancingCluster) object.getParent()).getWorldMatricesBuffer().bindBufferBase(0);
 		bindUniformBlock("worldMatrices", 0);

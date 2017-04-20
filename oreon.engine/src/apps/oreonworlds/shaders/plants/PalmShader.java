@@ -5,13 +5,15 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import java.util.List;
 
-import apps.oreonworlds.assets.plants.PalmInstanced;
+import apps.oreonworlds.assets.plants.Palm01Cluster;
 import engine.core.RenderingEngine;
+import engine.math.Matrix4f;
 import engine.scenegraph.GameObject;
 import engine.scenegraph.components.Material;
 import engine.shader.Shader;
 import engine.utils.Constants;
 import engine.utils.ResourceLoader;
+import modules.instancing.InstancingCluster;
 import modules.terrain.Terrain;
 
 public class PalmShader extends Shader{
@@ -39,6 +41,8 @@ public class PalmShader extends Shader{
 		addUniform("sightRangeFactor");
 		addUniform("material.color");
 		addUniform("clipplane");
+		addUniform("scalingMatrix");
+		addUniform("isReflection");
 //		addUniform("material.emission");
 //		addUniform("material.shininess");
 		
@@ -58,12 +62,17 @@ public class PalmShader extends Shader{
 	public void updateUniforms(GameObject object)
 	{
 		bindUniformBlock("Camera", Constants.CameraUniformBlockBinding);
-		bindUniformBlock("worldMatrices", ((PalmInstanced) object.getParent()).getWorldMatBinding());
-		bindUniformBlock("modelMatrices", ((PalmInstanced) object.getParent()).getModelMatBinding());
 		bindUniformBlock("DirectionalLight", Constants.DirectionalLightUniformBlockBinding);
 		bindUniformBlock("LightViewProjections",Constants.LightMatricesUniformBlockBinding);
+		setUniformi("isReflection", RenderingEngine.isReflection() ? 1 : 0);
+		
+		((InstancingCluster) object.getParent()).getWorldMatricesBuffer().bindBufferBase(0);
+		bindUniformBlock("worldMatrices", 0);
+		((InstancingCluster) object.getParent()).getModelMatricesBuffer().bindBufferBase(1);
+		bindUniformBlock("modelMatrices", 1);
 		
 		setUniform("clipplane", RenderingEngine.getClipplane());
+		setUniform("scalingMatrix", new Matrix4f().Scaling(object.getTransform().getScaling()));
 		setUniformf("sightRangeFactor", Terrain.getInstance().getTerrainConfiguration().getSightRangeFactor());
 		
 		Material material = (Material) object.getComponent("Material");
@@ -75,7 +84,7 @@ public class PalmShader extends Shader{
 		RenderingEngine.getShadowMaps().getDepthMaps().bind();
 		setUniformi("shadowMaps", 1);
 		
-		List<Integer> indices = ((PalmInstanced) object.getParent()).getHighPolyIndices();
+		List<Integer> indices = ((Palm01Cluster) object.getParent()).getHighPolyIndices();
 		
 		for (int i=0; i<indices.size(); i++)
 		{

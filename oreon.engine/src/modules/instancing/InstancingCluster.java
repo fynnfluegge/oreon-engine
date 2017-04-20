@@ -10,7 +10,7 @@ import engine.scenegraph.components.TransformsInstanced;
 
 public abstract class InstancingCluster extends Node{
 	
-	private List<TransformsInstanced> transforms = new ArrayList<TransformsInstanced>();
+	private List<TransformsInstanced> instancingTransforms = new ArrayList<TransformsInstanced>();
 	
 	private UBO modelMatricesBuffer;
 	private UBO worldMatricesBuffer;
@@ -36,12 +36,12 @@ public abstract class InstancingCluster extends Node{
 		this.lowPolyIndices = lowPolyIndices;
 	}
 
-	public List<TransformsInstanced> getTransforms() {
-		return transforms;
+	public List<TransformsInstanced> getInstancingTransforms() {
+		return instancingTransforms;
 	}
 
-	public void setTransforms(List<TransformsInstanced> transforms) {
-		this.transforms = transforms;
+	public void setInstancingTransforms(List<TransformsInstanced> transforms) {
+		this.instancingTransforms = transforms;
 	}
 
 	public UBO getModelMatricesBuffer() {

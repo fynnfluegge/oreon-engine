@@ -2,12 +2,13 @@ package apps.oreonworlds.shaders.plants;
 
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
-import static org.lwjgl.opengl.GL13.GL_TEXTURE2;
+//import static org.lwjgl.opengl.GL13.GL_TEXTURE2;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import java.util.List;
 
 import engine.core.RenderingEngine;
+import engine.math.Matrix4f;
 import engine.scenegraph.GameObject;
 import engine.scenegraph.components.Material;
 import engine.shader.Shader;
@@ -42,6 +43,8 @@ public class TreeTrunkShader extends Shader{
 		addUniform("material.diffusemap");
 		addUniform("material.normalmap");
 		addUniform("clipplane");
+		addUniform("scalingMatrix");
+		addUniform("isReflection");
 		
 		addUniformBlock("DirectionalLight");
 		addUniformBlock("worldMatrices");
@@ -61,6 +64,7 @@ public class TreeTrunkShader extends Shader{
 		bindUniformBlock("Camera", Constants.CameraUniformBlockBinding);
 		bindUniformBlock("DirectionalLight", Constants.DirectionalLightUniformBlockBinding);
 		bindUniformBlock("LightViewProjections",Constants.LightMatricesUniformBlockBinding);
+		setUniformi("isReflection", RenderingEngine.isReflection() ? 1 : 0);
 		
 		((InstancingCluster) object.getParent()).getWorldMatricesBuffer().bindBufferBase(0);
 		bindUniformBlock("worldMatrices", 0);
@@ -68,6 +72,7 @@ public class TreeTrunkShader extends Shader{
 		bindUniformBlock("modelMatrices", 1);
 		
 		setUniform("clipplane", RenderingEngine.getClipplane());
+		setUniform("scalingMatrix", new Matrix4f().Scaling(object.getTransform().getScaling()));
 		setUniformf("sightRangeFactor", Terrain.getInstance().getTerrainConfiguration().getSightRangeFactor());
 		
 		Material material = (Material) object.getComponent("Material");

@@ -155,7 +155,7 @@ public class Camera {
 				rotYInitiated = true;
 			}
 			
-			if (rotYInitiated){
+			if (rotYInitiated ){
 				
 				// up-rotation
 				if (rotYamt < 0){

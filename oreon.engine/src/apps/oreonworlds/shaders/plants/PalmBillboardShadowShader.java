@@ -5,13 +5,12 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import java.util.List;
 
-import apps.oreonworlds.assets.plants.PalmInstanced;
-import engine.core.RenderingEngine;
 import engine.scenegraph.GameObject;
 import engine.scenegraph.components.Material;
 import engine.shader.Shader;
 import engine.utils.Constants;
 import engine.utils.ResourceLoader;
+import modules.instancing.InstancingCluster;
 
 public class PalmBillboardShadowShader extends Shader{
 
@@ -35,7 +34,6 @@ public class PalmBillboardShadowShader extends Shader{
 		addFragmentShader(ResourceLoader.loadShader("oreonworlds/assets/plants/Palm_01/Palm01BillboardShadow_FS.glsl"));
 		compileShader();
 		
-		addUniform("clipplane");
 		addUniformBlock("InstancedMatrices");
 		addUniformBlock("Camera");
 		addUniformBlock("LightViewProjections");
@@ -49,10 +47,11 @@ public class PalmBillboardShadowShader extends Shader{
 	
 	public void updateUniforms(GameObject object){
 		
-		setUniform("clipplane", RenderingEngine.getClipplane());
 		bindUniformBlock("Camera",Constants.CameraUniformBlockBinding);
 		bindUniformBlock("LightViewProjections",Constants.LightMatricesUniformBlockBinding);
-		bindUniformBlock("InstancedMatrices",((PalmInstanced) object.getParent()).getWorldMatBinding());
+		
+		((InstancingCluster) object.getParent()).getWorldMatricesBuffer().bindBufferBase(0);
+		bindUniformBlock("InstancedMatrices", 0);
 		
 		Material material = (Material) object.getComponent("Material");
 		
@@ -60,7 +59,7 @@ public class PalmBillboardShadowShader extends Shader{
 		material.getDiffusemap().bind();
 		setUniformi("material.diffusemap", 0);
 		
-		List<Integer> indices = ((PalmInstanced) object.getParent()).getBillboardIndices();
+		List<Integer> indices = ((InstancingCluster) object.getParent()).getLowPolyIndices();
 		
 		for (int i=0; i<indices.size(); i++)
 		{

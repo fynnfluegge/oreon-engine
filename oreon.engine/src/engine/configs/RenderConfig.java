@@ -17,6 +17,12 @@ import static org.lwjgl.opengl.GL13.GL_SAMPLE_ALPHA_TO_COVERAGE;
 import static org.lwjgl.opengl.GL20.GL_POINT_SPRITE;
 import static org.lwjgl.opengl.GL30.GL_FRAMEBUFFER_SRGB;
 import static org.lwjgl.opengl.GL32.GL_PROGRAM_POINT_SIZE;
+import static org.lwjgl.opengl.GL30.GL_CLIP_DISTANCE0;
+import static org.lwjgl.opengl.GL30.GL_CLIP_DISTANCE1;
+import static org.lwjgl.opengl.GL30.GL_CLIP_DISTANCE2;
+import static org.lwjgl.opengl.GL30.GL_CLIP_DISTANCE3;
+import static org.lwjgl.opengl.GL30.GL_CLIP_DISTANCE4;
+import static org.lwjgl.opengl.GL30.GL_CLIP_DISTANCE5;
 
 public interface RenderConfig {
 
@@ -34,6 +40,12 @@ public interface RenderConfig {
 		glEnable(GL_FRAMEBUFFER_SRGB);
 		glEnable(GL_PROGRAM_POINT_SIZE);
 		glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+		glEnable(GL_CLIP_DISTANCE0);
+		glEnable(GL_CLIP_DISTANCE1);
+		glEnable(GL_CLIP_DISTANCE2);
+		glEnable(GL_CLIP_DISTANCE3);
+		glEnable(GL_CLIP_DISTANCE4);
+		glEnable(GL_CLIP_DISTANCE5);
 	}
 	
 	public static void clearScreen()

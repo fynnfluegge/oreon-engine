@@ -1,17 +1,18 @@
 package modules.instancing;
 
-
 import java.util.ArrayList;
 import java.util.List;
-
-import engine.scenegraph.GameObject;
 import engine.scenegraph.Node;
 
 public class InstancingObject extends Node{
+	
+	private List<InstancedDataObject> objectData = new ArrayList<InstancedDataObject>();
 
-	private List<GameObject> objects = new ArrayList<GameObject>();
+	public List<InstancedDataObject> getObjectData() {
+		return objectData;
+	}
 
-	public List<GameObject> getObjects() {
-		return objects;
+	public void setObjectData(List<InstancedDataObject> objectData) {
+		this.objectData = objectData;
 	}
 }

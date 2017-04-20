@@ -5,7 +5,6 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import java.util.List;
 
-import engine.core.RenderingEngine;
 import engine.scenegraph.GameObject;
 import engine.scenegraph.components.Material;
 import engine.shader.Shader;
@@ -35,7 +34,6 @@ public class TreeBillboardShadowShader extends Shader{
 		addFragmentShader(ResourceLoader.loadShader("oreonworlds/shaders/Billboard_Shader/BillboardShadow_FS.glsl"));
 		compileShader();
 		
-		addUniform("clipplane");
 		addUniformBlock("InstancedMatrices");
 		addUniformBlock("Camera");
 		addUniformBlock("LightViewProjections");
@@ -49,12 +47,10 @@ public class TreeBillboardShadowShader extends Shader{
 	
 	public void updateUniforms(GameObject object){
 		
-		setUniform("clipplane", RenderingEngine.getClipplane());
 		bindUniformBlock("Camera",Constants.CameraUniformBlockBinding);
 		bindUniformBlock("LightViewProjections",Constants.LightMatricesUniformBlockBinding);
 		
 		((InstancingCluster) object.getParent()).getWorldMatricesBuffer().bindBufferBase(0);
-		
 		bindUniformBlock("InstancedMatrices", 0);
 		
 		Material material = (Material) object.getComponent("Material");

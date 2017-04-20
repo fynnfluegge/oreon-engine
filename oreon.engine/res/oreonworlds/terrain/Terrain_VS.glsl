@@ -110,7 +110,8 @@ vec2 morph(int morph_area){
 	float planarFactor;
 	if (eyePosition.y > abs(scaleY))
 		planarFactor = 1;
-	else planarFactor = eyePosition.y/ abs(scaleY);
+	else
+		planarFactor = eyePosition.y/ abs(scaleY);
 	
 	distLatitude = length(eyePosition - (worldMatrix *
 			vec4(fixPointLatitude.x,planarFactor,fixPointLatitude.y,1)).xyz);

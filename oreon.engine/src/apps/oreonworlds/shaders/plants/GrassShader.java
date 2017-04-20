@@ -59,8 +59,10 @@ public class GrassShader extends Shader{
 	public void updateUniforms(GameObject object)
 	{
 		bindUniformBlock("Camera", Constants.CameraUniformBlockBinding);
-		bindUniformBlock("worldMatrices", ((InstancingCluster) object.getParent()).getWorldMatBinding());
-		bindUniformBlock("modelMatrices", ((InstancingCluster) object.getParent()).getModelMatBinding());
+		((InstancingCluster) object.getParent()).getWorldMatricesBuffer().bindBufferBase(0);
+		bindUniformBlock("worldMatrices", 0);
+		((InstancingCluster) object.getParent()).getModelMatricesBuffer().bindBufferBase(1);
+		bindUniformBlock("modelMatrices", 1);
 		bindUniformBlock("DirectionalLight", Constants.DirectionalLightUniformBlockBinding);
 		bindUniformBlock("LightViewProjections",Constants.LightMatricesUniformBlockBinding);
 		

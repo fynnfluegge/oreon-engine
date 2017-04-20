@@ -21,6 +21,8 @@ public class TerrainConfiguration {
 	private float scaleY;
 	private float scaleXZ;
 	private int bezíer;
+	private int isWaterReflected;
+	private int waterReflectionShift;
 	private float sightRangeFactor;
 	private float texDetail;
 	private int tessellationFactor;
@@ -39,8 +41,6 @@ public class TerrainConfiguration {
 	
 	private int[] lod_range = new int[8];
 	private int[] lod_morphing_area = new int[8];
-
-	private float megabytes;
 	
 	private Shader shader;
 	private Shader gridShader;
@@ -599,14 +599,6 @@ public class TerrainConfiguration {
 		return lod_morphing_area;
 	}
 
-	public float getMegabytes() {
-		return megabytes;
-	}
-
-	public void setMegabytes(float megabytes) {
-		this.megabytes = megabytes;
-	}
-
 	public Shader getShadowShader() {
 		return shadowShader;
 	}
@@ -633,5 +625,21 @@ public class TerrainConfiguration {
 
 	public void setMaterial0(Material material0) {
 		this.material0 = material0;
+	}
+
+	public int getIsWaterReflected() {
+		return isWaterReflected;
+	}
+
+	public void setIsWaterReflected(int isWaterReflected) {
+		this.isWaterReflected = isWaterReflected;
+	}
+
+	public int getWaterReflectionShift() {
+		return waterReflectionShift;
+	}
+
+	public void setWaterReflectionShift(int waterReflectionShift) {
+		this.waterReflectionShift = waterReflectionShift;
 	}
 }

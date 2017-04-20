@@ -2,7 +2,6 @@ package modules.sky;
 
 import engine.buffers.MeshVAO;
 import engine.configs.CullFaceDisable;
-import engine.core.RenderingEngine;
 import engine.geometry.Mesh;
 import engine.scenegraph.GameObject;
 import engine.scenegraph.components.Material;
@@ -36,10 +35,5 @@ public class Skydome extends GameObject{
 		getTransform().setRotation(getTransform().getLocalRotation().add(getParent().getTransform().getRotation()));
 		getTransform().setTranslation(getTransform().getLocalTranslation().add(getParent().getTransform().getTranslation()));
 		getTransform().setScaling(getTransform().getLocalScaling().mul(getParent().getTransform().getScaling()));
-	}
-	
-	public void render(){
-		if (!RenderingEngine.isGrid())
-			super.render();
 	}
 }

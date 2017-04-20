@@ -62,6 +62,7 @@ public class TerrainShader extends Shader{
 		addUniform("lod");
 		addUniform("location");
 		addUniform("texDetail");
+		addUniform("waterReflectionShift");
 		
 		for (int i=0; i<7; i++)
 		{
@@ -128,7 +129,7 @@ public class TerrainShader extends Shader{
 		Vec2f location = ((TerrainNode) object).getLocation();
 		
 		setUniform("worldMatrix", object.getTransform().getWorldMatrix());
-		
+				
 		for (int i=0; i<7; i++)
 		{
 			glActiveTexture(GL_TEXTURE15 + i);
@@ -159,6 +160,7 @@ public class TerrainShader extends Shader{
 		setUniform("index", index);
 		setUniformf("gap", gap);
 		setUniform("location", location);
+		setUniformi("waterReflectionShift", terrConfig.getWaterReflectionShift());
 		
 		for (int i=0; i<8; i++){
 			setUniformi("lod_morph_area[" + i + "]", terrConfig.getLod_morphing_area()[i]);

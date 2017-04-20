@@ -17,6 +17,8 @@ uniform Fractal fractals0[7];
 uniform float scaleY;
 uniform int bezier;
 uniform float texDetail;
+uniform mat4 worldMatrix;
+uniform int waterReflectionShift;
 
 
 // 		-1  3 -3  1
@@ -88,6 +90,7 @@ void main(){
 	height *= scaleY;
 					
 	position.y = height;
+	position.y += waterReflectionShift;
 
 	if (bezier == 1)
 		position.xyz = BezierInterpolation();

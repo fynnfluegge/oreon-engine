@@ -59,6 +59,7 @@ public class TerrainGridShader extends Shader{
 		addUniform("index");
 		addUniform("location");
 		addUniform("gap");
+		addUniform("waterReflectionShift");
 		
 		addUniform("sand.heightmap");
 		addUniform("sand.displaceScale");
@@ -125,6 +126,7 @@ public class TerrainGridShader extends Shader{
 		setUniform("index", index);
 		setUniform("location", location);
 		setUniformf("gap", gap);
+		setUniformi("waterReflectionShift", terrConfig.getWaterReflectionShift());
 		
 		for (int i=0; i<8; i++){
 			setUniformi("lod_morph_area[" + i + "]", terrConfig.getLod_morphing_area()[i]);

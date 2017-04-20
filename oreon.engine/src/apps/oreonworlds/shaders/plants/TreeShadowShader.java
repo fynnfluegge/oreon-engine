@@ -5,7 +5,6 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import java.util.List;
 
-import engine.core.RenderingEngine;
 import engine.scenegraph.GameObject;
 import engine.scenegraph.components.Material;
 import engine.shader.Shader;
@@ -35,7 +34,6 @@ public class TreeShadowShader extends Shader{
 		addFragmentShader(ResourceLoader.loadShader("oreonworlds/shaders/Tree_Shader/TreeShadow_FS.glsl"));
 		compileShader();
 		
-		addUniform("clipplane");
 		addUniformBlock("worldMatrices");
 		addUniformBlock("Camera");
 		addUniformBlock("LightViewProjections");
@@ -49,7 +47,6 @@ public class TreeShadowShader extends Shader{
 	
 	public void updateUniforms(GameObject object){
 		
-		setUniform("clipplane", RenderingEngine.getClipplane());
 		bindUniformBlock("Camera",Constants.CameraUniformBlockBinding);
 		bindUniformBlock("LightViewProjections",Constants.LightMatricesUniformBlockBinding);
 		((InstancingCluster) object.getParent()).getWorldMatricesBuffer().bindBufferBase(0);

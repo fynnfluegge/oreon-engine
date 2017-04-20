@@ -117,6 +117,11 @@ float shadow(vec3 worldPos)
 	return shadowFactor;
 }
 
+float alphaDistanceFactor(float dist)
+{
+	return clamp(0.005f * (-dist+400),0,1);
+}
+
 void main()
 {	
 	float dist = length(eyePosition - position_FS);
@@ -136,5 +141,8 @@ void main()
 	
     vec3 rgb = mix(fogColor, fragColor, clamp(fogFactor,0,1));
 	
-	gl_FragColor = vec4(rgb,1.0);
+	float alpha = 1;
+	alpha *= alphaDistanceFactor(dist);
+	
+	gl_FragColor = vec4(rgb,alpha);
 }

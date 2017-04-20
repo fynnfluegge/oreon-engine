@@ -5,13 +5,14 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import java.util.List;
 
-import apps.oreonworlds.assets.plants.PalmInstanced;
 import engine.core.RenderingEngine;
+import engine.math.Matrix4f;
 import engine.scenegraph.GameObject;
 import engine.scenegraph.components.Material;
 import engine.shader.Shader;
 import engine.utils.Constants;
 import engine.utils.ResourceLoader;
+import modules.instancing.InstancingCluster;
 import modules.terrain.Terrain;
 
 public class PalmBillboardShader extends Shader{
@@ -43,6 +44,8 @@ public class PalmBillboardShader extends Shader{
 		addUniformBlock("Camera");
 		addUniformBlock("DirectionalLight");
 		addUniform("material.diffusemap");
+		addUniform("scalingMatrix");
+		addUniform("isReflection");
 		
 		for (int i=0; i<100; i++)
 		{
@@ -56,8 +59,13 @@ public class PalmBillboardShader extends Shader{
 		setUniformf("sightRangeFactor", Terrain.getInstance().getTerrainConfiguration().getSightRangeFactor());
 		bindUniformBlock("Camera",Constants.CameraUniformBlockBinding);
 		bindUniformBlock("DirectionalLight", Constants.DirectionalLightUniformBlockBinding);
-		bindUniformBlock("worldMatrices", ((PalmInstanced) object.getParent()).getWorldMatBinding());
-		bindUniformBlock("modelMatrices", ((PalmInstanced) object.getParent()).getModelMatBinding());
+		setUniformi("isReflection", RenderingEngine.isReflection() ? 1 : 0);
+		setUniform("scalingMatrix", new Matrix4f().Scaling(object.getTransform().getScaling()));
+		
+		((InstancingCluster) object.getParent()).getWorldMatricesBuffer().bindBufferBase(0);
+		bindUniformBlock("worldMatrices", 0);
+		((InstancingCluster) object.getParent()).getModelMatricesBuffer().bindBufferBase(1);
+		bindUniformBlock("modelMatrices", 1);
 		
 		Material material = (Material) object.getComponent("Material");
 		
@@ -65,7 +73,7 @@ public class PalmBillboardShader extends Shader{
 		material.getDiffusemap().bind();
 		setUniformi("material.diffusemap", 0);
 		
-		List<Integer> indices = ((PalmInstanced) object.getParent()).getBillboardIndices();
+		List<Integer> indices = ((InstancingCluster) object.getParent()).getLowPolyIndices();
 		
 		for (int i=0; i<indices.size(); i++)
 		{

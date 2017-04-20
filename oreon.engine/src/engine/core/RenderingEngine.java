@@ -39,6 +39,7 @@ public class RenderingEngine {
 	private static boolean motionBlurEnabled = false;
 	private static boolean depthOfFieldBlurEnabled = false;
 	private static boolean bloomEnabled = false;
+	private static boolean isReflection = false;
 	
 	
 	public RenderingEngine(Scenegraph scenegraph, GUI gui)
@@ -127,7 +128,9 @@ public class RenderingEngine {
 		Camera.getInstance().update();
 		gui.update();
 		scenegraph.update();
-		((Terrain) scenegraph.getTerrain()).updateQuadtree();
+		if (Camera.getInstance().isCameraMoved()){
+			((Terrain) scenegraph.getTerrain()).updateQuadtree();
+		}
 		DirectionalLight.getInstance().update();
 		TerrainPicking.getInstance().getTerrainPosition();
 	}
@@ -191,5 +194,13 @@ public class RenderingEngine {
 
 	public static void setBloomEnabled(boolean enabled) {
 		RenderingEngine.bloomEnabled = enabled;
+	}
+
+	public static boolean isReflection() {
+		return isReflection;
+	}
+
+	public static void setReflection(boolean isReflection) {
+		RenderingEngine.isReflection = isReflection;
 	}
 }

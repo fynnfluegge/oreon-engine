@@ -43,12 +43,13 @@ public class TerrainNode extends GameObject{
 		else if (!RenderingEngine.isGrid())
 			getRenderInfo().setShader(terrConfig.getShader());
 		
-		Renderer renderer = new Renderer(terrConfig.getShader(), meshBuffer);
+		Renderer renderer = new Renderer(getRenderInfo().getShader(), meshBuffer);
 		addComponent("Renderer", renderer);
 		
 		getTransform().setLocalScaling(terrConfig.getScaleXZ(), terrConfig.getScaleY(), terrConfig.getScaleXZ());
 		getTransform().getLocalTranslation().setX(-terrConfig.getScaleXZ()/2f);
 		getTransform().getLocalTranslation().setZ(-terrConfig.getScaleXZ()/2f);
+		getTransform().getLocalTranslation().setY(0);
 		
 		getTransform().setScaling(getTransform().getLocalScaling());
 		getTransform().setTranslation(getTransform().getLocalTranslation());
@@ -67,7 +68,6 @@ public class TerrainNode extends GameObject{
 			getComponents().get("Renderer").setShader(getRenderInfo().getShader());
 					
 			getTransform().setScaling(getTransform().getLocalScaling());
-			getTransform().setTranslation(getTransform().getLocalTranslation());
 			
 			for(Node child: getChildren())
 				child.update();		
@@ -220,7 +220,8 @@ public class TerrainNode extends GameObject{
 	public void computeWorldPos(){
 		
 		Vec2f loc = location.add(gap/2f).mul(terrConfig.getScaleXZ()).sub(terrConfig.getScaleXZ()/2f);
-		this.worldPos = new Vec3f(loc.getX(),terrConfig.getScaleY(),loc.getY());
+		float height = Terrain.getInstance().getTerrainHeight(loc.getX(), loc.getY());
+		this.worldPos = new Vec3f(loc.getX(),height,loc.getY());
 	}
 	
 	public Vec2f[] generatePatch(){

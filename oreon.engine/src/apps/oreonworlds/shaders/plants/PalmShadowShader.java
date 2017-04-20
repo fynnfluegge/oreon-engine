@@ -2,12 +2,13 @@ package apps.oreonworlds.shaders.plants;
 
 import java.util.List;
 
-import apps.oreonworlds.assets.plants.PalmInstanced;
+import apps.oreonworlds.assets.plants.Palm01Cluster;
 import engine.core.RenderingEngine;
 import engine.scenegraph.GameObject;
 import engine.shader.Shader;
 import engine.utils.Constants;
 import engine.utils.ResourceLoader;
+import modules.instancing.InstancingCluster;
 
 public class PalmShadowShader extends Shader{
 
@@ -47,9 +48,11 @@ public class PalmShadowShader extends Shader{
 		setUniform("clipplane", RenderingEngine.getClipplane());
 		bindUniformBlock("Camera",Constants.CameraUniformBlockBinding);
 		bindUniformBlock("LightViewProjections",Constants.LightMatricesUniformBlockBinding);
-		bindUniformBlock("worldMatrices", ((PalmInstanced) object.getParent()).getWorldMatBinding());
 		
-		List<Integer> indices = ((PalmInstanced) object.getParent()).getHighPolyIndices();
+		((InstancingCluster) object.getParent()).getWorldMatricesBuffer().bindBufferBase(0);
+		bindUniformBlock("worldMatrices", 0);
+		
+		List<Integer> indices = ((Palm01Cluster) object.getParent()).getHighPolyIndices();
 		
 		for (int i=0; i<indices.size(); i++)
 		{

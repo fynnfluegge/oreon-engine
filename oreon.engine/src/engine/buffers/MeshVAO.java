@@ -38,6 +38,17 @@ public class MeshVAO implements VAO{
 		vaoId = glGenVertexArrays();
 		size = 0;
 	}
+	
+	public MeshVAO(MeshVAO copy)
+	{
+		vbo = copy.vbo;
+		ibo = copy.ibo;
+		vaoId = copy.vaoId;
+		size = copy.size;
+		hasTangentsBitangents = copy.hasTangentsBitangents;
+		isInstanced = copy.isInstanced;
+	}
+	
 	public void addData(Mesh mesh)
 	{
 			size = mesh.getIndices().length;
@@ -105,5 +116,44 @@ public class MeshVAO implements VAO{
 	
 	public void setInstances(int instances){
 		this.instances = instances;
+	}
+	public int getIbo() {
+		return ibo;
+	}
+	public int getVaoId() {
+		return vaoId;
+	}
+	public int getSize() {
+		return size;
+	}
+	public boolean isHasTangentsBitangents() {
+		return hasTangentsBitangents;
+	}
+	public boolean isInstanced() {
+		return isInstanced;
+	}
+	public int getInstances() {
+		return instances;
+	}
+	public void setIbo(int ibo) {
+		this.ibo = ibo;
+	}
+	public void setVaoId(int vaoId) {
+		this.vaoId = vaoId;
+	}
+	public void setSize(int size) {
+		this.size = size;
+	}
+	public void setHasTangentsBitangents(boolean hasTangentsBitangents) {
+		this.hasTangentsBitangents = hasTangentsBitangents;
+	}
+	public void setInstanced(boolean isInstanced) {
+		this.isInstanced = isInstanced;
+	}
+	public int getVbo() {
+		return vbo;
+	}
+	public void setVbo(int vbo) {
+		this.vbo = vbo;
 	}
 }

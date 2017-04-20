@@ -32,6 +32,7 @@ public class Scenegraph extends Node{
 	}
 	
 	public void update(){
+//		System.out.println(rootObject.getTransform().getScaling());
 		rootObject.update();
 		terrain.update();
 		water.update();

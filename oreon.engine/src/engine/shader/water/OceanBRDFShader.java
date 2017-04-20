@@ -66,6 +66,7 @@ public class OceanBRDFShader extends Shader{
 		addUniform("sunlight.ambient");
 		addUniform("emission");
 		addUniform("shininess");
+
 		
 		addUniform("normalmap");
 		
