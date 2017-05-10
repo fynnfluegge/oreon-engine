@@ -138,7 +138,7 @@ void main(void)
 		//vec3 bitangent = normalize(cross(tangent, normal));
 		mat3 TBN = mat3(tangent,normal,bitangent);
 		vec3 bumpNormal = 2 * texture(normalmap, texCoord_FS*8).rbg - 1;
-		bumpNormal.y *= 1.4;
+		bumpNormal.y *= 1.8;
 		bumpNormal.xz *= attenuation;
 		normal = normalize(TBN * bumpNormal);
 	}
@@ -155,7 +155,7 @@ void main(void)
     // Reflection //
 	vec2 reflecCoords = projCoord.xy + dudvCoord.rb * kReflection;
 	reflecCoords = clamp(reflecCoords, kReflection, 1-kReflection);
-    vec3 reflection = mix(texture(waterReflection, reflecCoords).rgb, reflectionColor,  0.1);
+    vec3 reflection = mix(texture(waterReflection, reflecCoords).rgb, reflectionColor,  0.2);
     reflection *= F;
  
     // Refraction //

@@ -73,7 +73,7 @@ float varianceShadow(vec3 projCoords, int split){
 		for (int j=-1; j<=1; j++){
 			float shadowMapDepth = texture(shadowMaps, vec3(projCoords.xy,split)
 													   + vec3(i,j,0) * texelSize).r; 
-			if (linearize(currentDepth) > linearize(shadowMapDepth) + 0.00002)
+			if (linearize(currentDepth) > linearize(shadowMapDepth) + 0.00001)
 				shadowFactor -= 0.1;
 		}
 	}

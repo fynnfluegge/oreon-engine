@@ -1,5 +1,6 @@
 package apps.oreonworlds;
 
+import apps.oreonworlds.assets.plants.Bush01ClusterGroup;
 import apps.oreonworlds.assets.plants.Grass01ClusterGroup;
 import apps.oreonworlds.assets.plants.Palm01ClusterGroup;
 import apps.oreonworlds.assets.plants.Plant01ClusterGroup;
@@ -22,11 +23,14 @@ public class Main {
 		
 		Game game = new Game();
 		game.setGui(new GUI());
-		game.getEngine().createWindow(1366, 768, "oreon worlds");
+		game.getEngine().createWindow(1280, 720, "oreon worlds");
 		game.init();
 		game.getScenegraph().setTerrain(Terrain.getInstance());
-		Terrain.getInstance().init("./res/oreonworlds/terrain/terrain_settings.txt", TerrainShader.getInstance(),
-				TerrainGridShader.getInstance(), TerrainShadowShader.getInstance());
+		Terrain.getInstance().init("./res/oreonworlds/terrain/terrain_settings.txt",
+								   "./res/oreonworlds/terrain/terrain_settings_LowPoly.txt",
+								   TerrainShader.getInstance(),
+								   TerrainGridShader.getInstance(), 
+								   TerrainShadowShader.getInstance());
 		game.getScenegraph().addObject(new SkySphere());	
 		game.getScenegraph().getRoot().addChild(new Palm01ClusterGroup());
 		game.getScenegraph().getRoot().addChild(new Plant01ClusterGroup());
@@ -35,6 +39,7 @@ public class Main {
 		game.getScenegraph().getRoot().addChild(new Tree02ClusterGroup());
 		game.getScenegraph().getRoot().addChild(new Rock01ClusterGroup());
 		game.getScenegraph().getRoot().addChild(new Rock02ClusterGroup());
+		game.getScenegraph().getRoot().addChild(new Bush01ClusterGroup());
 		game.getScenegraph().setWater(new Ocean());
 		game.launch();
 	}

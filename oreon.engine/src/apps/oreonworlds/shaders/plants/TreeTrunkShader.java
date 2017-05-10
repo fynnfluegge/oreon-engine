@@ -64,7 +64,7 @@ public class TreeTrunkShader extends Shader{
 		bindUniformBlock("Camera", Constants.CameraUniformBlockBinding);
 		bindUniformBlock("DirectionalLight", Constants.DirectionalLightUniformBlockBinding);
 		bindUniformBlock("LightViewProjections",Constants.LightMatricesUniformBlockBinding);
-		setUniformi("isReflection", RenderingEngine.isReflection() ? 1 : 0);
+		setUniformi("isReflection", RenderingEngine.isWaterReflection() ? 1 : 0);
 		
 		((InstancingCluster) object.getParent()).getWorldMatricesBuffer().bindBufferBase(0);
 		bindUniformBlock("worldMatrices", 0);
@@ -73,7 +73,7 @@ public class TreeTrunkShader extends Shader{
 		
 		setUniform("clipplane", RenderingEngine.getClipplane());
 		setUniform("scalingMatrix", new Matrix4f().Scaling(object.getTransform().getScaling()));
-		setUniformf("sightRangeFactor", Terrain.getInstance().getTerrainConfiguration().getSightRangeFactor());
+		setUniformf("sightRangeFactor", Terrain.getInstance().getConfiguration().getSightRangeFactor());
 		
 		Material material = (Material) object.getComponent("Material");
 

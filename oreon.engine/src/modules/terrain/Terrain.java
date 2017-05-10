@@ -10,7 +10,8 @@ import engine.utils.Constants;
 public class Terrain extends Node{
 	
 	private static Terrain instance = null;
-	private TerrainConfiguration terrainConfiguration;
+	private TerrainConfiguration configuration;
+	private TerrainConfiguration lowPolyConfiguration;
 	private static final Object lock = new Object();
 	private int updateQuadtreeCounter = 0;
 	
@@ -23,16 +24,22 @@ public class Terrain extends Node{
 	      return instance;
 	}
 		
-	public void init (String file, Shader shader, Shader grid, Shader shadow)
+	public void init (String config, String lowPolyConfig, Shader shader, Shader grid, Shader shadow)
 	{
-		terrainConfiguration = new TerrainConfiguration();
+		configuration = new TerrainConfiguration();
+		configuration.loadFile(config);
+		configuration.setGridShader(grid);
+		configuration.setShader(shader);
+		configuration.setShadowShader(shadow);
 		
-		terrainConfiguration.loadFile(file);
-		terrainConfiguration.setGridShader(grid);
-		terrainConfiguration.setShader(shader);
-		terrainConfiguration.setShadowShader(shadow);
+		lowPolyConfiguration = new TerrainConfiguration();
+		lowPolyConfiguration.loadFile(lowPolyConfig);
+		lowPolyConfiguration.setGridShader(grid);
+		lowPolyConfiguration.setShader(shader);
+		lowPolyConfiguration.setShadowShader(shadow);
 		
-		addChild(new TerrainQuadtree(terrainConfiguration));
+		addChild(new TerrainQuadtree(configuration));
+		addChild(new TerrainQuadtree(lowPolyConfiguration));
 	}
 	
 	public void updateQuadtree(){
@@ -41,8 +48,19 @@ public class Terrain extends Node{
 		}
 		if (updateQuadtreeCounter == 1){
 			((TerrainQuadtree) getChildren().get(0)).updateQuadtree();
+			((TerrainQuadtree) getChildren().get(1)).updateQuadtree();
 			updateQuadtreeCounter = 0;
 		}
+	}
+	
+	@Override
+	public void render() {
+		// render only high poly terrain
+		getChildren().get(0).render();
+	}
+	
+	public void renderLowPoly() {
+		getChildren().get(1).render();
 	}
 	
 	public float getTerrainHeight(float x, float z)
@@ -53,9 +71,9 @@ public class Terrain extends Node{
 			Vec2f pos = new Vec2f();
 			pos.setX(x);
 			pos.setY(z);
-			pos = pos.add(terrainConfiguration.getScaleXZ()/2f);
-			pos = pos.div(terrainConfiguration.getScaleXZ());
-			pos = pos.mul(terrainConfiguration.getFractals().get(i).getScaling());
+			pos = pos.add(configuration.getScaleXZ()/2f);
+			pos = pos.div(configuration.getScaleXZ());
+			pos = pos.mul(configuration.getFractals().get(i).getScaling());
 			Vec2f floor = new Vec2f((int) Math.floor(pos.getX()), (int) Math.floor(pos.getY()));
 			pos = pos.sub(floor);
 			pos = pos.mul(Constants.TERRAIN_FRACTALS_RESOLUTION-1);
@@ -64,10 +82,10 @@ public class Terrain extends Node{
 			int z0 = (int) Math.floor(pos.getY());
 			int z1 = z0 + 1;
 			
-			float h0 =  terrainConfiguration.getFractals().get(i).getHeightDataBuffer().get(Constants.TERRAIN_FRACTALS_RESOLUTION * z0 + x0);
-			float h1 =  terrainConfiguration.getFractals().get(i).getHeightDataBuffer().get(Constants.TERRAIN_FRACTALS_RESOLUTION * z0 + x1);
-			float h2 =  terrainConfiguration.getFractals().get(i).getHeightDataBuffer().get(Constants.TERRAIN_FRACTALS_RESOLUTION * z1 + x0);
-			float h3 =  terrainConfiguration.getFractals().get(i).getHeightDataBuffer().get(Constants.TERRAIN_FRACTALS_RESOLUTION * z1 + x1);
+			float h0 =  configuration.getFractals().get(i).getHeightDataBuffer().get(Constants.TERRAIN_FRACTALS_RESOLUTION * z0 + x0);
+			float h1 =  configuration.getFractals().get(i).getHeightDataBuffer().get(Constants.TERRAIN_FRACTALS_RESOLUTION * z0 + x1);
+			float h2 =  configuration.getFractals().get(i).getHeightDataBuffer().get(Constants.TERRAIN_FRACTALS_RESOLUTION * z1 + x0);
+			float h3 =  configuration.getFractals().get(i).getHeightDataBuffer().get(Constants.TERRAIN_FRACTALS_RESOLUTION * z1 + x1);
 			
 			float percentU = pos.getX() - x0;
 	        float percentV = pos.getY() - z0;
@@ -85,7 +103,7 @@ public class Terrain extends Node{
 	        }
 	        
 	        fractalHeight = h0 + (dU * percentU) + (dV * percentV );
-	        fractalHeight *= terrainConfiguration.getScaleY()*terrainConfiguration.getFractals().get(i).getStrength();
+	        fractalHeight *= configuration.getScaleY()*configuration.getFractals().get(i).getStrength();
 			h += fractalHeight;
 		}
 
@@ -100,9 +118,9 @@ public class Terrain extends Node{
 			Vec2f pos = new Vec2f();
 			pos.setX(x);
 			pos.setY(z);
-			pos = pos.add(terrainConfiguration.getScaleXZ()/2f);
-			pos = pos.div(terrainConfiguration.getScaleXZ());
-			pos = pos.mul(terrainConfiguration.getFractals().get(i).getScaling());
+			pos = pos.add(configuration.getScaleXZ()/2f);
+			pos = pos.div(configuration.getScaleXZ());
+			pos = pos.mul(configuration.getFractals().get(i).getScaling());
 			Vec2f floor = new Vec2f((int) Math.floor(pos.getX()), (int) Math.floor(pos.getY()));
 			pos = pos.sub(floor);
 			pos = pos.mul(Constants.TERRAIN_FRACTALS_RESOLUTION-1);
@@ -111,10 +129,10 @@ public class Terrain extends Node{
 			int z0 = (int) Math.floor(pos.getY());
 			int z1 = z0 + 1;
 			
-			float h0 =  terrainConfiguration.getFractals().get(i).getSlopeDataBuffer().get(Constants.TERRAIN_FRACTALS_RESOLUTION * z0 + x0);
-			float h1 =  terrainConfiguration.getFractals().get(i).getSlopeDataBuffer().get(Constants.TERRAIN_FRACTALS_RESOLUTION * z0 + x1);
-			float h2 =  terrainConfiguration.getFractals().get(i).getSlopeDataBuffer().get(Constants.TERRAIN_FRACTALS_RESOLUTION * z1 + x0);
-			float h3 =  terrainConfiguration.getFractals().get(i).getSlopeDataBuffer().get(Constants.TERRAIN_FRACTALS_RESOLUTION * z1 + x1);
+			float h0 =  configuration.getFractals().get(i).getSlopeDataBuffer().get(Constants.TERRAIN_FRACTALS_RESOLUTION * z0 + x0);
+			float h1 =  configuration.getFractals().get(i).getSlopeDataBuffer().get(Constants.TERRAIN_FRACTALS_RESOLUTION * z0 + x1);
+			float h2 =  configuration.getFractals().get(i).getSlopeDataBuffer().get(Constants.TERRAIN_FRACTALS_RESOLUTION * z1 + x0);
+			float h3 =  configuration.getFractals().get(i).getSlopeDataBuffer().get(Constants.TERRAIN_FRACTALS_RESOLUTION * z1 + x1);
 			
 			float percentU = pos.getX() - x0;
 	        float percentV = pos.getY() - z0;
@@ -132,23 +150,30 @@ public class Terrain extends Node{
 	        }
 	        
 	        fractalHeight = h0 + (dU * percentU) + (dV * percentV );
-	        fractalHeight *= terrainConfiguration.getScaleY()*terrainConfiguration.getFractals().get(i).getStrength();
+	        fractalHeight *= configuration.getScaleY()*configuration.getFractals().get(i).getStrength();
 			h += fractalHeight;
 		}
 
 		return h;
 	}
 
-
 	public static Object getLock() {
 		return lock;
 	}
-
-	public TerrainConfiguration getTerrainConfiguration() {
-		return terrainConfiguration;
+	
+	public TerrainConfiguration getConfiguration() {
+		return configuration;
 	}
 
-	public void setTerrainConfiguration(TerrainConfiguration terrainConfiguration) {
-		this.terrainConfiguration = terrainConfiguration;
+	public void setConfiguration(TerrainConfiguration configuration) {
+		this.configuration = configuration;
+	}
+
+	public TerrainConfiguration getLowPolyConfiguration() {
+		return lowPolyConfiguration;
+	}
+
+	public void setLowPolyConfiguration(TerrainConfiguration lowPolyConfiguration) {
+		this.lowPolyConfiguration = lowPolyConfiguration;
 	}
 }

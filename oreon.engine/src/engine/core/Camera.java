@@ -130,13 +130,13 @@ public class Camera {
 			move(getRight(), movAmt);
 		
 		if(Input.getHoldingKey(Keyboard.KEY_UP))
-			rotateX(-rotAmt);
+			rotateX(-rotAmt/8f);
 		if(Input.getHoldingKey(Keyboard.KEY_DOWN))
-			rotateX(rotAmt);
+			rotateX(rotAmt/8f);
 		if(Input.getHoldingKey(Keyboard.KEY_LEFT))
-			rotateY(-rotAmt);
+			rotateY(-rotAmt/8f);
 		if(Input.getHoldingKey(Keyboard.KEY_RIGHT))
-			rotateY(rotAmt);
+			rotateY(rotAmt/8f);
 		
 		// free mouse rotation
 		if(mouselocked)
@@ -162,6 +162,7 @@ public class Camera {
 					if (rotYcounter > rotYamt){
 						rotateX(-rotYstride * mouseSensitivity);
 						rotYcounter -= rotYstride;
+						rotYstride *= 0.95;
 					}
 					else rotYInitiated = false;
 				}
@@ -170,6 +171,7 @@ public class Camera {
 					if (rotYcounter < rotYamt){
 						rotateX(rotYstride * mouseSensitivity);
 						rotYcounter += rotYstride;
+						rotYstride *= 0.95;
 					}
 					else rotYInitiated = false;
 				}
@@ -190,6 +192,7 @@ public class Camera {
 					if (rotXcounter > rotXamt){
 						rotateY(rotXstride * mouseSensitivity);
 						rotXcounter -= rotXstride;
+						rotXstride *= 0.95;
 					}
 					else rotXInitiated = false;
 				}
@@ -198,6 +201,7 @@ public class Camera {
 					if (rotXcounter < rotXamt){
 						rotateY(-rotXstride * mouseSensitivity);
 						rotXcounter += rotXstride;
+						rotXstride *= 0.95;
 					}
 					else rotXInitiated = false;
 				}
@@ -439,4 +443,21 @@ public class Camera {
 	public boolean isCameraRotated() {
 		return cameraRotated;
 	}
+	
+	public Vec3f getPreviousPosition() {
+		return previousPosition;
+	}
+
+	public void setPreviousPosition(Vec3f previousPosition) {
+		this.previousPosition = previousPosition;
+	}
+	
+	public Vec3f getPreviousForward() {
+		return previousForward;
+	}
+
+	public void setPreviousForward(Vec3f previousForward) {
+		this.previousForward = previousForward;
+	}
+
 }

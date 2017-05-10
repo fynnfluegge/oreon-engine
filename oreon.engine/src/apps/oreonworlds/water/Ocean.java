@@ -7,7 +7,7 @@ import modules.water.Water;
 public class Ocean extends Water{
 
 	public Ocean() {
-		super(128,256);
+		super(64,256);
 		
 		getTransform().setScaling(Constants.ZFAR,1,Constants.ZFAR);
 		getTransform().setTranslation(-Constants.ZFAR/2,-200,-Constants.ZFAR/2);

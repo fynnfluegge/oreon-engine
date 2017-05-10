@@ -8,6 +8,8 @@ public class Scenegraph extends Node{
 	private Node terrain;
 	private Node water;
 	
+	private boolean terrainExists = false;
+	
 	public Scenegraph(){
 		
 		setTransform(new Transform());
@@ -32,7 +34,6 @@ public class Scenegraph extends Node{
 	}
 	
 	public void update(){
-//		System.out.println(rootObject.getTransform().getScaling());
 		rootObject.update();
 		terrain.update();
 		water.update();
@@ -65,6 +66,7 @@ public class Scenegraph extends Node{
 
 	public void setTerrain(Node terrain) {
 		terrain.setParent(this);
+		setTerrainExists(true);
 		this.terrain = terrain;
 	}
 
@@ -76,4 +78,13 @@ public class Scenegraph extends Node{
 		water.setParent(this);
 		this.water = water;
 	}
+
+	public boolean terrainExists() {
+		return terrainExists;
+	}
+
+	public void setTerrainExists(boolean terrainExists) {
+		this.terrainExists = terrainExists;
+	}
+
 }

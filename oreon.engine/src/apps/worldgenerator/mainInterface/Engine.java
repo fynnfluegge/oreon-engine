@@ -27,9 +27,12 @@ public class Engine implements Runnable{
 		game.getEngine().embedWindow(1000, 500, OpenGLCanvas);
 		game.init();
 		game.getScenegraph().setTerrain(Terrain.getInstance());
-		Terrain.getInstance().init("./res/editor/terrainEditor/terrainSettings.ter", TerrainShader.getInstance(),
-				TerrainGridShader.getInstance(), TerrainShadowShader.getInstance());
-		DB.setTerrainConfiguration(Terrain.getInstance().getTerrainConfiguration());
+		Terrain.getInstance().init("./res/editor/terrainEditor/terrainSettings.ter", 
+				"",
+				TerrainShader.getInstance(),
+				TerrainGridShader.getInstance(),
+				TerrainShadowShader.getInstance());
+				DB.setTerrainConfiguration(Terrain.getInstance().getConfiguration());
 		game.getScenegraph().addObject(new SkySphere());	
 		game.launch();
 	}

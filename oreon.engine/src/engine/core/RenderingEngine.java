@@ -39,7 +39,8 @@ public class RenderingEngine {
 	private static boolean motionBlurEnabled = false;
 	private static boolean depthOfFieldBlurEnabled = false;
 	private static boolean bloomEnabled = false;
-	private static boolean isReflection = false;
+	private static boolean waterReflection = false;
+	private static boolean waterRefraction = false;
 	
 	
 	public RenderingEngine(Scenegraph scenegraph, GUI gui)
@@ -109,8 +110,11 @@ public class RenderingEngine {
 		
 		// Motion Blur
 		if (isMotionBlurEnabled()){
-			motionBlur.render(window.getSceneDepthmap(), postProcessingTexture);
-			postProcessingTexture = motionBlur.getMotionBlurSceneTexture();
+			if (Camera.getInstance().getPreviousPosition().sub(Camera.getInstance().getPosition()).length() > 0.4f ||
+				Camera.getInstance().getForward().sub(Camera.getInstance().getPreviousForward()).length() > 0.01f){
+				motionBlur.render(window.getSceneDepthmap(), postProcessingTexture);
+				postProcessingTexture = motionBlur.getMotionBlurSceneTexture();
+			}
 		}
 		
 		// final scene texture
@@ -129,7 +133,8 @@ public class RenderingEngine {
 		gui.update();
 		scenegraph.update();
 		if (Camera.getInstance().isCameraMoved()){
-			((Terrain) scenegraph.getTerrain()).updateQuadtree();
+			if (scenegraph.terrainExists())
+				((Terrain) scenegraph.getTerrain()).updateQuadtree();
 		}
 		DirectionalLight.getInstance().update();
 		TerrainPicking.getInstance().getTerrainPosition();
@@ -196,11 +201,19 @@ public class RenderingEngine {
 		RenderingEngine.bloomEnabled = enabled;
 	}
 
-	public static boolean isReflection() {
-		return isReflection;
+	public static boolean isWaterReflection() {
+		return waterReflection;
 	}
 
-	public static void setReflection(boolean isReflection) {
-		RenderingEngine.isReflection = isReflection;
+	public static void setWaterReflection(boolean isReflection) {
+		RenderingEngine.waterReflection = isReflection;
+	}
+
+	public static boolean isWaterRefraction() {
+		return waterRefraction;
+	}
+
+	public static void setWaterRefraction(boolean waterRefraction) {
+		RenderingEngine.waterRefraction = waterRefraction;
 	}
 }

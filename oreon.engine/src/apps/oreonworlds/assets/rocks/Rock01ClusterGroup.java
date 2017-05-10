@@ -37,7 +37,7 @@ public class Rock01ClusterGroup extends InstancingObject{
 		
 		addChild(new Rock01Cluster(8,new Vec3f(1018,0,-67),getObjectData()));
 		addChild(new Rock01Cluster(8,new Vec3f(1303,0,-206),getObjectData()));
-		addChild(new Rock01Cluster(8,new Vec3f(1593,0,-287),getObjectData()));
+//		addChild(new Rock01Cluster(8,new Vec3f(1593,0,-287),getObjectData()));
 		addChild(new Rock01Cluster(10,new Vec3f(980,0,517),getObjectData()));
 		addChild(new Rock01Cluster(10,new Vec3f(1285,0,488),getObjectData()));
 		addChild(new Rock01Cluster(10,new Vec3f(819,0,82),getObjectData()));

@@ -2,8 +2,11 @@ package modules.terrain;
 
 import static org.lwjgl.opengl.GL11.glViewport;
 
+import org.lwjgl.input.Keyboard;
+
 import engine.buffers.PatchVAO;
 import engine.core.Camera;
+import engine.core.Input;
 import engine.core.Window;
 import engine.core.RenderingEngine;
 import engine.math.Vec2f;
@@ -38,7 +41,7 @@ public class TerrainNode extends GameObject{
 		
 		setRenderInfo(new RenderInfo(new engine.configs.Default(),terrConfig.getShader()));
 
-		if (RenderingEngine.isGrid())
+		if (RenderingEngine.isGrid() || Input.getHoldingKey(Keyboard.KEY_G))
 			getRenderInfo().setShader(terrConfig.getGridShader());
 		else if (!RenderingEngine.isGrid())
 			getRenderInfo().setShader(terrConfig.getShader());
@@ -60,7 +63,7 @@ public class TerrainNode extends GameObject{
 	
 	public void update()
 	{
-			if (RenderingEngine.isGrid())
+			if (RenderingEngine.isGrid() || Input.getHoldingKey(Keyboard.KEY_G))
 				getRenderInfo().setShader(terrConfig.getGridShader());
 			else if (!RenderingEngine.isGrid())
 				getRenderInfo().setShader(terrConfig.getShader());

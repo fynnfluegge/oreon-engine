@@ -57,10 +57,10 @@ private static TreeBillboardShader instance = null;
 	public void updateUniforms(GameObject object){
 				
 		setUniform("clipplane", RenderingEngine.getClipplane());
-		setUniformf("sightRangeFactor", Terrain.getInstance().getTerrainConfiguration().getSightRangeFactor());
+		setUniformf("sightRangeFactor", Terrain.getInstance().getConfiguration().getSightRangeFactor());
 		bindUniformBlock("Camera",Constants.CameraUniformBlockBinding);
 		bindUniformBlock("DirectionalLight", Constants.DirectionalLightUniformBlockBinding);
-		setUniformi("isReflection", RenderingEngine.isReflection() ? 1 : 0);
+		setUniformi("isReflection", RenderingEngine.isWaterReflection() ? 1 : 0);
 		setUniform("scalingMatrix", new Matrix4f().Scaling(object.getTransform().getScaling()));
 		
 		((InstancingCluster) object.getParent()).getWorldMatricesBuffer().bindBufferBase(0);

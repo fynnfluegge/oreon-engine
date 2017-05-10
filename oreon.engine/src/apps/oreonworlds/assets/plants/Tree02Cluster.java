@@ -45,6 +45,7 @@ public class Tree02Cluster extends InstancingCluster{
 			transform.setLocalRotation(rotation);
 			transform.initMatrices();
 			getInstancingTransforms().add(transform);
+			getLowPolyIndices().add(i);
 		}
 		
 		setModelMatricesBuffer(new UBO());
@@ -111,7 +112,6 @@ public class Tree02Cluster extends InstancingCluster{
 	public void updateUBOs(){
 		
 		getHighPolyIndices().clear();
-		getLowPolyIndices().clear();
 		
 		int index = 0;
 		
@@ -119,10 +119,6 @@ public class Tree02Cluster extends InstancingCluster{
 			if (transform.getTranslation().sub(Camera.getInstance().getPosition()).length() < 400){
 				getHighPolyIndices().add(index);
 			}
-			if (transform.getTranslation().sub(Camera.getInstance().getPosition()).length() > 100){
-				getLowPolyIndices().add(index);
-			}
-
 			index++;
 		}
 		
@@ -130,5 +126,18 @@ public class Tree02Cluster extends InstancingCluster{
 		((MeshVAO) ((Renderer) ((GameObject) getChildren().get(1)).getComponent("Renderer")).getVao()).setInstances(getHighPolyIndices().size());
 		
 		((MeshVAO) ((Renderer) ((GameObject) getChildren().get(2)).getComponent("Renderer")).getVao()).setInstances(getLowPolyIndices().size());
+	}
+	
+	public void renderShadows(){
+		
+		((MeshVAO) ((Renderer) ((GameObject) getChildren().get(0)).getComponent("Renderer")).getVao()).setInstances(0);
+		((MeshVAO) ((Renderer) ((GameObject) getChildren().get(1)).getComponent("Renderer")).getVao()).setInstances(0);
+		
+		((MeshVAO) ((Renderer) ((GameObject) getChildren().get(2)).getComponent("Renderer")).getVao()).setInstances(getLowPolyIndices().size());
+		
+		super.renderShadows();
+		
+		((MeshVAO) ((Renderer) ((GameObject) getChildren().get(0)).getComponent("Renderer")).getVao()).setInstances(getHighPolyIndices().size());
+		((MeshVAO) ((Renderer) ((GameObject) getChildren().get(1)).getComponent("Renderer")).getVao()).setInstances(getHighPolyIndices().size());
 	}
 }

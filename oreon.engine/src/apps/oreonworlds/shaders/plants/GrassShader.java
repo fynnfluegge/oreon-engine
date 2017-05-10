@@ -67,7 +67,7 @@ public class GrassShader extends Shader{
 		bindUniformBlock("LightViewProjections",Constants.LightMatricesUniformBlockBinding);
 		
 		setUniform("clipplane", RenderingEngine.getClipplane());
-		setUniformf("sightRangeFactor", Terrain.getInstance().getTerrainConfiguration().getSightRangeFactor());
+		setUniformf("sightRangeFactor", Terrain.getInstance().getConfiguration().getSightRangeFactor());
 		
 		Material material = (Material) object.getComponent("Material");
 

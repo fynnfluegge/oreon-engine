@@ -50,7 +50,7 @@ private static InstancingGridShader instance = null;
 	public void updateUniforms(GameObject object)
 	{
 		bindUniformBlock("Camera", Constants.CameraUniformBlockBinding);
-		setUniformi("isReflection", RenderingEngine.isReflection() ? 1 : 0);
+		setUniformi("isReflection", RenderingEngine.isWaterReflection() ? 1 : 0);
 		
 		((InstancingCluster) object.getParent()).getWorldMatricesBuffer().bindBufferBase(0);
 		bindUniformBlock("worldMatrices", 0);

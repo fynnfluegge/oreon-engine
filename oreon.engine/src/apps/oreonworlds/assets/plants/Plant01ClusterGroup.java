@@ -32,11 +32,12 @@ public class Plant01ClusterGroup extends InstancingObject{
 			getObjectData().add(object);
 		}
 		
-		addChild(new Plant01Cluster(50,new Vec3f(1703,0,-270),getObjectData()));
-		addChild(new Plant01Cluster(40,new Vec3f(1022,0,-1320),getObjectData()));
+//		addChild(new Plant01Cluster(50,new Vec3f(1703,0,-270),getObjectData()));
+//		addChild(new Plant01Cluster(40,new Vec3f(1022,0,-1320),getObjectData()));
 		addChild(new Plant01Cluster(40,new Vec3f(930,0,-1349),getObjectData()));
 		addChild(new Plant01Cluster(40,new Vec3f(1816,0,-91),getObjectData()));
-		addChild(new Plant01Cluster(40,new Vec3f(1068,0,527),getObjectData()));
+//		addChild(new Plant01Cluster(40,new Vec3f(1068,0,527),getObjectData()));
 		addChild(new Plant01Cluster(40,new Vec3f(1508,0,1400),getObjectData()));
+		addChild(new Plant01Cluster(20,new Vec3f(782,0,765),getObjectData()));
 	}
 }

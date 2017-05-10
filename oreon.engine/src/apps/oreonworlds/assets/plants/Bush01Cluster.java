@@ -4,6 +4,7 @@ import java.nio.FloatBuffer;
 import java.util.List;
 
 import apps.oreonworlds.shaders.InstancingGridShader;
+import apps.oreonworlds.shaders.plants.BushShader;
 import apps.oreonworlds.shaders.plants.PalmBillboardShader;
 import apps.oreonworlds.shaders.plants.PalmShader;
 import engine.buffers.MeshVAO;
@@ -20,9 +21,9 @@ import modules.instancing.InstancedDataObject;
 import modules.instancing.InstancingCluster;
 import modules.terrain.Terrain;
 
-public class Palm01Cluster extends InstancingCluster{
-
-	public Palm01Cluster(int instances, Vec3f pos,  List<InstancedDataObject> objects){
+public class Bush01Cluster extends InstancingCluster{
+	
+	public Bush01Cluster(int instances, Vec3f pos,  List<InstancedDataObject> objects){
 		
 		setCenter(pos);
 		int buffersize = Float.BYTES * 16 * instances;
@@ -43,6 +44,7 @@ public class Palm01Cluster extends InstancingCluster{
 			transform.setLocalRotation(rotation);
 			transform.initMatrices();
 			getInstancingTransforms().add(transform);
+			getHighPolyIndices().add(i);
 			getLowPolyIndices().add(i);
 		}
 		
@@ -79,7 +81,7 @@ public class Palm01Cluster extends InstancingCluster{
 			addChild(object);
 		}
 		
-		updateUBOs();
+//		updateUBOs();
 	}
 
 	public void update()
@@ -101,50 +103,29 @@ public class Palm01Cluster extends InstancingCluster{
 			}
 		}
 		else{
-			((GameObject) getChildren().get(0)).getRenderInfo().setShader(PalmShader.getInstance());
-			((GameObject) getChildren().get(1)).getRenderInfo().setShader(PalmShader.getInstance());
-			((GameObject) getChildren().get(2)).getRenderInfo().setShader(PalmShader.getInstance());
-			((GameObject) getChildren().get(3)).getRenderInfo().setShader(PalmShader.getInstance());
-			((GameObject) getChildren().get(4)).getRenderInfo().setShader(PalmBillboardShader.getInstance());
+			((GameObject) getChildren().get(0)).getRenderInfo().setShader(BushShader.getInstance());
+			((GameObject) getChildren().get(1)).getRenderInfo().setShader(BushShader.getInstance());
+//			((GameObject) getChildren().get(2)).getRenderInfo().setShader(PalmBillboardShader.getInstance());
 		}
 	}
 	
 	public void updateUBOs(){
 		
-		getHighPolyIndices().clear();
-		
-		int index = 0;
-		
-		for (TransformsInstanced transform : getInstancingTransforms()){
-			if (transform.getTranslation().sub(Camera.getInstance().getPosition()).length() < 400){
-				getHighPolyIndices().add(index);
-			}
-
-			index++;
-		}
-		
-		((MeshVAO) ((Renderer) ((GameObject) getChildren().get(0)).getComponent("Renderer")).getVao()).setInstances(getHighPolyIndices().size());
-		((MeshVAO) ((Renderer) ((GameObject) getChildren().get(1)).getComponent("Renderer")).getVao()).setInstances(getHighPolyIndices().size());
-		((MeshVAO) ((Renderer) ((GameObject) getChildren().get(2)).getComponent("Renderer")).getVao()).setInstances(getHighPolyIndices().size());
-		((MeshVAO) ((Renderer) ((GameObject) getChildren().get(3)).getComponent("Renderer")).getVao()).setInstances(getHighPolyIndices().size());
-		
-		((MeshVAO) ((Renderer) ((GameObject) getChildren().get(4)).getComponent("Renderer")).getVao()).setInstances(getLowPolyIndices().size());
-	}
-	
-//	public void renderShadows(){
+//		getHighPolyIndices().clear();
 //		
-//		((MeshVAO) ((Renderer) ((GameObject) getChildren().get(0)).getComponent("Renderer")).getVao()).setInstances(0);
-//		((MeshVAO) ((Renderer) ((GameObject) getChildren().get(1)).getComponent("Renderer")).getVao()).setInstances(0);
-//		((MeshVAO) ((Renderer) ((GameObject) getChildren().get(2)).getComponent("Renderer")).getVao()).setInstances(0);
-//		((MeshVAO) ((Renderer) ((GameObject) getChildren().get(3)).getComponent("Renderer")).getVao()).setInstances(0);
+//		int index = 0;
 //		
-//		((MeshVAO) ((Renderer) ((GameObject) getChildren().get(4)).getComponent("Renderer")).getVao()).setInstances(getLowPolyIndices().size());
-//		
-//		super.renderShadows();
+//		for (TransformsInstanced transform : getInstancingTransforms()){
+//			if (transform.getTranslation().sub(Camera.getInstance().getPosition()).length() < 400){
+//				getHighPolyIndices().add(index);
+//			}
+//
+//			index++;
+//		}
 //		
 //		((MeshVAO) ((Renderer) ((GameObject) getChildren().get(0)).getComponent("Renderer")).getVao()).setInstances(getHighPolyIndices().size());
 //		((MeshVAO) ((Renderer) ((GameObject) getChildren().get(1)).getComponent("Renderer")).getVao()).setInstances(getHighPolyIndices().size());
-//		((MeshVAO) ((Renderer) ((GameObject) getChildren().get(2)).getComponent("Renderer")).getVao()).setInstances(getHighPolyIndices().size());
-//		((MeshVAO) ((Renderer) ((GameObject) getChildren().get(3)).getComponent("Renderer")).getVao()).setInstances(getHighPolyIndices().size());
-//	}
+//		
+//		((MeshVAO) ((Renderer) ((GameObject) getChildren().get(2)).getComponent("Renderer")).getVao()).setInstances(getLowPolyIndices().size());
+	}
 }

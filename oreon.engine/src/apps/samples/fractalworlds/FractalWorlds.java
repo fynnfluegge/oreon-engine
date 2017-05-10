@@ -14,6 +14,7 @@ public class FractalWorlds {
 		game.init();
 		game.getScenegraph().setTerrain(Terrain.getInstance());
 		Terrain.getInstance().init("./res/samples/FractalWorlds/Terrain/terrainSettings.ter",
+				"",
 				TerrainShader.getInstance(),
 				TerrainGridShader.getInstance(),
 				TerrainShadowShader.getInstance());

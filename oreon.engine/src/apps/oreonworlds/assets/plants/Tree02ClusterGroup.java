@@ -9,6 +9,7 @@ import engine.buffers.MeshVAO;
 import engine.configs.AlphaTest;
 import engine.configs.AlphaTestCullFaceDisable;
 import engine.configs.Default;
+import engine.core.RenderingEngine;
 import engine.geometry.Vertex;
 import engine.math.Vec3f;
 import engine.scenegraph.components.RenderInfo;
@@ -78,25 +79,39 @@ public class Tree02ClusterGroup extends InstancingObject{
 			getObjectData().add(object);
 		}
 	
-		addChild(new Tree02Cluster(2,new Vec3f(1363,0,-1179),getObjectData()));
+		addChild(new Tree02Cluster(4,new Vec3f(1363,0,-1179),getObjectData()));
 		addChild(new Tree02Cluster(4,new Vec3f(599,0,-114),getObjectData()));
 		addChild(new Tree02Cluster(4,new Vec3f(735,0,-187),getObjectData()));
-		addChild(new Tree02Cluster(2,new Vec3f(1472,0,-1227),getObjectData()));
+		addChild(new Tree02Cluster(4,new Vec3f(1472,0,-1227),getObjectData()));
 		addChild(new Tree02Cluster(4,new Vec3f(1614,0,-1270),getObjectData()));
-		addChild(new Tree02Cluster(6,new Vec3f(1768,0,-1254),getObjectData()));
+		addChild(new Tree02Cluster(5,new Vec3f(1768,0,-1254),getObjectData()));
 		addChild(new Tree02Cluster(4,new Vec3f(1737,0,-1161),getObjectData()));
 		addChild(new Tree02Cluster(4,new Vec3f(1902,0,7),getObjectData()));
-		addChild(new Tree02Cluster(6,new Vec3f(1780,0,301),getObjectData()));
+		addChild(new Tree02Cluster(5,new Vec3f(1780,0,301),getObjectData()));
 		addChild(new Tree02Cluster(4,new Vec3f(92,0,1676),getObjectData()));
-		addChild(new Tree02Cluster(6,new Vec3f(218,0,1671),getObjectData()));
-		addChild(new Tree02Cluster(6,new Vec3f(315,0,1648),getObjectData()));
-		addChild(new Tree02Cluster(3,new Vec3f(516,0,1306),getObjectData()));
-		addChild(new Tree02Cluster(6,new Vec3f(474,0,1432),getObjectData()));
+		addChild(new Tree02Cluster(5,new Vec3f(218,0,1671),getObjectData()));
+		addChild(new Tree02Cluster(5,new Vec3f(315,0,1648),getObjectData()));
+		addChild(new Tree02Cluster(4,new Vec3f(516,0,1306),getObjectData()));
+		addChild(new Tree02Cluster(5,new Vec3f(474,0,1432),getObjectData()));
 		addChild(new Tree02Cluster(4,new Vec3f(-43,0,1677),getObjectData()));
-		addChild(new Tree02Cluster(3,new Vec3f(-167,0,1716),getObjectData()));
-		addChild(new Tree02Cluster(6,new Vec3f(-482,0,1702),getObjectData()));
+		addChild(new Tree02Cluster(4,new Vec3f(-167,0,1716),getObjectData()));
+		addChild(new Tree02Cluster(5,new Vec3f(-482,0,1702),getObjectData()));
 		addChild(new Tree02Cluster(4,new Vec3f(-657,0,1675),getObjectData()));
 		addChild(new Tree02Cluster(4,new Vec3f(-1901,0,1100),getObjectData()));
 		addChild(new Tree02Cluster(4,new Vec3f(-1834,0,140),getObjectData()));
+		addChild(new Tree02Cluster(4,new Vec3f(-1834,0,140),getObjectData()));
+		addChild(new Tree02Cluster(5,new Vec3f(829,0,-6),getObjectData()));
+		addChild(new Tree02Cluster(5,new Vec3f(889,0,-48),getObjectData()));
+		addChild(new Tree02Cluster(4,new Vec3f(979,0,-95),getObjectData()));
+		addChild(new Tree02Cluster(4,new Vec3f(1107,0,-121),getObjectData()));
+		addChild(new Tree02Cluster(5,new Vec3f(1200,0,-139),getObjectData()));
+		addChild(new Tree02Cluster(5,new Vec3f(752,0,-113),getObjectData()));
+		addChild(new Tree02Cluster(5,new Vec3f(1295,0,-186),getObjectData()));
+		addChild(new Tree02Cluster(5,new Vec3f(813,0,84),getObjectData()));
+	}
+	
+	public void render(){
+		if (!RenderingEngine.isWaterRefraction())
+			super.render();
 	}
 }

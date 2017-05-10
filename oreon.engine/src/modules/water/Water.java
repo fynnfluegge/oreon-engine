@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.nio.ByteBuffer;
 
+import org.lwjgl.input.Keyboard;
+
 import modules.gpgpu.NormalMapRenderer;
 import modules.terrain.Terrain;
 import modules.water.fft.OceanFFT;
@@ -22,6 +24,7 @@ import engine.scenegraph.Scenegraph;
 import engine.scenegraph.components.RenderInfo;
 import engine.scenegraph.components.Renderer;
 import engine.shader.water.OceanBRDFShader;
+import engine.shader.water.OceanGridShader;
 import engine.textures.Texture2D;
 import engine.utils.Constants;
 import engine.utils.Util;
@@ -123,6 +126,110 @@ public class Water extends GameObject{
 		refractionFBO.unbind();		
 	}
 	
+	
+	
+	public void update()
+	{
+		if (RenderingEngine.isGrid() || Input.getHoldingKey(Keyboard.KEY_G))
+		{
+			getRenderInfo().setShader(OceanGridShader.getInstance());
+		}
+		else if (!RenderingEngine.isGrid())
+		{
+			getRenderInfo().setShader(OceanBRDFShader.getInstance());
+		}
+		getComponents().get("Renderer").setShader(getRenderInfo().getShader());
+	}
+	
+	public void render()
+	{
+		glEnable(GL_CLIP_DISTANCE6);
+		
+		if (!Input.isPause()){
+			distortion += getDistortionOffset();
+			motion += getMotionOffset();
+		}
+		
+		Scenegraph scenegraph = ((Scenegraph) getParent());
+		
+		RenderingEngine.setClipplane(getClipplane());
+			
+		//mirror scene to clipplane
+			
+		scenegraph.getTransform().setScaling(1,-1,1);
+		scenegraph.getTransform().getTranslation().setY(0);
+		// TODO
+//		scenegraph.getTransform().getTranslation().setY(RenderingEngine.getClipplane().getW() - 
+//				(scenegraph.getTransform().getTranslation().getY() - RenderingEngine.getClipplane().getW()));
+			
+			if (scenegraph.terrainExists()){
+				synchronized(Terrain.getLock()){
+					Terrain terrain = (Terrain) scenegraph.getTerrain();
+					terrain.getLowPolyConfiguration().setScaleY(terrain.getLowPolyConfiguration().getScaleY() * -1f);
+					terrain.getLowPolyConfiguration().setWaterReflectionShift((int) (getClipplane().getW() * 2f));
+				}
+			}
+		
+		scenegraph.update();
+		
+		//render reflection to texture
+
+		glViewport(0,0,Window.getInstance().getWidth()/2, Window.getInstance().getHeight()/2);
+		RenderingEngine.setWaterReflection(true);
+		
+		this.getReflectionFBO().bind();
+		RenderConfig.clearScreenDeepOceanReflection();
+		glFrontFace(GL_CCW);
+		scenegraph.getRoot().render();
+		((Terrain) scenegraph.getTerrain()).renderLowPoly();
+		glFinish(); //important, prevent conflicts with following compute shaders
+		glFrontFace(GL_CW);
+		this.getReflectionFBO().unbind();
+		RenderingEngine.setWaterReflection(false);
+		
+		// antimirror scene to clipplane
+	
+		scenegraph.getTransform().setScaling(1,1,1);
+		scenegraph.getTransform().getTranslation().setY(0);
+		// TODO
+//		scenegraph.getTransform().getTranslation().setY(RenderingEngine.getClipplane().getW() - 
+//				(scenegraph.getTransform().getTranslation().getY() - RenderingEngine.getClipplane().getW()));
+
+		if (scenegraph.terrainExists()){
+			synchronized(Terrain.getLock()){
+				Terrain terrain = (Terrain) scenegraph.getTerrain();
+				terrain.getLowPolyConfiguration().setScaleY(terrain.getLowPolyConfiguration().getScaleY() / -1f);
+				terrain.getLowPolyConfiguration().setWaterReflectionShift(0);
+			}
+		}
+
+		scenegraph.update();
+		
+		// render to refraction texture
+		RenderingEngine.setWaterRefraction(true);
+		this.getRefractionFBO().bind();
+		RenderConfig.clearScreenDeepOceanRefraction();
+		scenegraph.getRoot().render();
+		((Terrain) scenegraph.getTerrain()).renderLowPoly();
+		
+		glFinish(); //important, prevent conflicts with following compute shaders
+		this.getRefractionFBO().unbind();
+		RenderingEngine.setWaterRefraction(false);
+		
+		glDisable(GL_CLIP_DISTANCE6);
+		RenderingEngine.setClipplane(Constants.PLANE0);	
+	
+		glViewport(0,0,Window.getInstance().getWidth(), Window.getInstance().getHeight());
+		
+		fft.render();
+		normalmapRenderer.render(fft.getDy());
+		
+		Window.getInstance().getMultisampledFbo().bind();
+		getComponents().get("Renderer").render();
+		glFinish(); //important, prevent conflicts with following compute shaders
+		Window.getInstance().getMultisampledFbo().unbind();
+	}
+	
 	public void loadSettingsFile(String file)
 	{
 		BufferedReader reader = null;
@@ -181,6 +288,12 @@ public class Water extends GameObject{
 					if(tokens[0].equals("detailRange")){
 						largeDetailRange = Integer.valueOf(tokens[1]);
 					}
+					if(tokens[0].equals("delta_T")){
+						getFft().setT_delta(Float.valueOf(tokens[1]));
+					}
+					if(tokens[0].equals("choppy")){
+						getFft().setChoppy(Integer.valueOf(tokens[1]) == 1 ? true : false);
+					}
 					
 				}
 				reader.close();
@@ -191,19 +304,6 @@ public class Water extends GameObject{
 			e.printStackTrace();
 			System.exit(1);
 		}
-	}
-	
-	public void update()
-	{
-//		if (RenderingEngine.isGrid())
-//		{
-//			getRenderInfo().setShader(OceanGridShader.getInstance());
-//		}
-//		else if (!RenderingEngine.isGrid())
-//		{
-//			getRenderInfo().setShader(OceanBRDFShader.getInstance());
-//		}
-//		getComponents().get("Renderer").setShader(getRenderInfo().getShader());
 	}
 	
 	public static Vec2f[] generatePatch2D4x4(int patches)
@@ -248,90 +348,6 @@ public class Water extends GameObject{
 		return vertices;
 	}
 
-	
-	public void render()
-	{
-		glEnable(GL_CLIP_DISTANCE6);
-		
-		if (!Input.isPause()){
-			distortion += getDistortionOffset();
-			motion += getMotionOffset();
-		}
-		
-		Scenegraph scenegraph = ((Scenegraph) getParent());
-		
-		RenderingEngine.setClipplane(getClipplane());
-			
-		//mirror scene to clipplane
-			
-		// TODO mirror transformation
-		
-		scenegraph.getTransform().setScaling(1,-1,1);
-		scenegraph.getTransform().getTranslation().setY(50);
-//		scenegraph.getTransform().getTranslation().setY(RenderingEngine.getClipplane().getW() - 
-//				(scenegraph.getTransform().getTranslation().getY() - RenderingEngine.getClipplane().getW()));
-			
-		synchronized(Terrain.getLock()){
-			
-			Terrain terrain = (Terrain) scenegraph.getTerrain();
-			terrain.getTerrainConfiguration().setScaleY(terrain.getTerrainConfiguration().getScaleY() * -1f);
-			terrain.getTerrainConfiguration().setWaterReflectionShift((int) (getClipplane().getW() * 2f));
-			
-			// TODO prevent update terrain Quadtree in this update call;
-			
-			scenegraph.update();
-			
-			//render reflection to texture
-
-			glViewport(0,0,Window.getInstance().getWidth()/2, Window.getInstance().getHeight()/2);
-			RenderingEngine.setReflection(true);
-			
-			this.getReflectionFBO().bind();
-			RenderConfig.clearScreenDeepOceanReflection();
-			glFrontFace(GL_CCW);
-			scenegraph.getRoot().render();
-			scenegraph.getTerrain().render();
-			glFinish(); //important, prevent conflicts with following compute shaders
-			glFrontFace(GL_CW);
-			this.getReflectionFBO().unbind();
-			
-			// antimirror scene to clipplane
-		
-			scenegraph.getTransform().setScaling(1,1,1);
-			scenegraph.getTransform().getTranslation().setY(0);
-//			scenegraph.getTransform().getTranslation().setY(RenderingEngine.getClipplane().getW() - 
-//					(scenegraph.getTransform().getTranslation().getY() - RenderingEngine.getClipplane().getW()));
-
-			terrain.getTerrainConfiguration().setScaleY(terrain.getTerrainConfiguration().getScaleY() / -1f);
-			terrain.getTerrainConfiguration().setWaterReflectionShift(0);
-
-			scenegraph.update();
-			
-			// render to refraction texture
-			RenderingEngine.setReflection(false);
-			
-			this.getRefractionFBO().bind();
-			RenderConfig.clearScreenDeepOceanRefraction();
-			scenegraph.getRoot().render();
-			scenegraph.getTerrain().render();
-			
-			glFinish(); //important, prevent conflicts with following compute shaders
-			this.getRefractionFBO().unbind();
-		}
-		
-		glDisable(GL_CLIP_DISTANCE6);
-		RenderingEngine.setClipplane(Constants.PLANE0);	
-	
-		glViewport(0,0,Window.getInstance().getWidth(), Window.getInstance().getHeight());
-		
-		fft.render();
-		normalmapRenderer.render(fft.getDy());
-		
-		Window.getInstance().getMultisampledFbo().bind();
-		getComponents().get("Renderer").render();
-		glFinish(); //important, prevent conflicts with following compute shaders
-		Window.getInstance().getMultisampledFbo().unbind();
-	}
 
 	public Quaternion getClipplane() {
 		return clipplane;
