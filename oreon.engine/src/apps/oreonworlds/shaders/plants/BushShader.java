@@ -1,12 +1,12 @@
 package apps.oreonworlds.shaders.plants;
 
+import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import java.util.List;
 
 import apps.oreonworlds.assets.plants.Bush01Cluster;
-import apps.oreonworlds.assets.plants.Palm01Cluster;
 import engine.core.RenderingEngine;
 import engine.math.Matrix4f;
 import engine.scenegraph.GameObject;
@@ -34,18 +34,16 @@ private static BushShader instance = null;
 	{
 		super();
 
-		addVertexShader(ResourceLoader.loadShader("oreonworlds/assets/plants/Palm_01/Palm01_VS.glsl"));
-		addGeometryShader(ResourceLoader.loadShader("oreonworlds/assets/plants/Palm_01/Palm01_GS.glsl"));
-		addFragmentShader(ResourceLoader.loadShader("oreonworlds/assets/plants/Palm_01/Palm01_FS.glsl"));
+		addVertexShader(ResourceLoader.loadShader("oreonworlds/assets/plants/Bush_01/Bush01_VS.glsl"));
+		addGeometryShader(ResourceLoader.loadShader("oreonworlds/assets/plants/Bush_01/Bush01_GS.glsl"));
+		addFragmentShader(ResourceLoader.loadShader("oreonworlds/assets/plants/Bush_01/Bush01_FS.glsl"));
 		compileShader();
 		
 		addUniform("sightRangeFactor");
-		addUniform("material.color");
+		addUniform("material.diffusemap");
 		addUniform("clipplane");
 		addUniform("scalingMatrix");
 		addUniform("isReflection");
-//		addUniform("material.emission");
-//		addUniform("material.shininess");
 		
 		addUniformBlock("DirectionalLight");
 		addUniformBlock("worldMatrices");
@@ -77,9 +75,9 @@ private static BushShader instance = null;
 		setUniformf("sightRangeFactor", Terrain.getInstance().getConfiguration().getSightRangeFactor());
 		
 		Material material = (Material) object.getComponent("Material");
-		setUniform("material.color", material.getColor());
-//		setUniformf("material.emission", material.getEmission());
-//		setUniformf("material.shininess", material.getShininess());
+		glActiveTexture(GL_TEXTURE0);
+		material.getDiffusemap().bind();
+		setUniformi("material.diffusemap", 0);
 		
 		glActiveTexture(GL_TEXTURE1);
 		RenderingEngine.getShadowMaps().getDepthMaps().bind();

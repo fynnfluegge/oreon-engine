@@ -5,8 +5,6 @@ import java.util.List;
 
 import apps.oreonworlds.shaders.InstancingGridShader;
 import apps.oreonworlds.shaders.plants.BushShader;
-import apps.oreonworlds.shaders.plants.PalmBillboardShader;
-import apps.oreonworlds.shaders.plants.PalmShader;
 import engine.buffers.MeshVAO;
 import engine.buffers.UBO;
 import engine.core.Camera;
@@ -31,9 +29,9 @@ public class Bush01Cluster extends InstancingCluster{
 		for (int i=0; i<instances; i++){
 			Vec3f translation = new Vec3f((float)(Math.random()*100)-50 + getCenter().getX(), 0, (float)(Math.random()*100)-50 + getCenter().getZ());
 			float terrainHeight = Terrain.getInstance().getTerrainHeight(translation.getX(),translation.getZ());
-			terrainHeight -= 3;
+			terrainHeight -= 1;
 			translation.setY(terrainHeight);
-			float s = (float)(Math.random()*0.15 + 0.2);
+			float s = (float)(Math.random()*0.2 + 0.6);
 			Vec3f scaling = new Vec3f(s,s,s);
 			Vec3f rotation = new Vec3f(0,(float) Math.random()*360f,0);
 			
@@ -45,7 +43,6 @@ public class Bush01Cluster extends InstancingCluster{
 			transform.initMatrices();
 			getInstancingTransforms().add(transform);
 			getHighPolyIndices().add(i);
-			getLowPolyIndices().add(i);
 		}
 		
 		setModelMatricesBuffer(new UBO());
@@ -81,21 +78,11 @@ public class Bush01Cluster extends InstancingCluster{
 			addChild(object);
 		}
 		
-//		updateUBOs();
 	}
 
 	public void update()
 	{	
 		super.update();
-		
-		if (getCenter().sub(Camera.getInstance().getPosition()).length() < 800){
-			
-			updateUBOs();
-		}
-		else if(getHighPolyIndices().size() > 0){
-			System.out.println(getCenter().sub(Camera.getInstance().getPosition()).length());
-			System.out.println(getHighPolyIndices().size());
-		}
 		
 		if (RenderingEngine.isGrid()){
 			for (Node child : getChildren()){
@@ -105,27 +92,12 @@ public class Bush01Cluster extends InstancingCluster{
 		else{
 			((GameObject) getChildren().get(0)).getRenderInfo().setShader(BushShader.getInstance());
 			((GameObject) getChildren().get(1)).getRenderInfo().setShader(BushShader.getInstance());
-//			((GameObject) getChildren().get(2)).getRenderInfo().setShader(PalmBillboardShader.getInstance());
 		}
 	}
 	
-	public void updateUBOs(){
-		
-//		getHighPolyIndices().clear();
-//		
-//		int index = 0;
-//		
-//		for (TransformsInstanced transform : getInstancingTransforms()){
-//			if (transform.getTranslation().sub(Camera.getInstance().getPosition()).length() < 400){
-//				getHighPolyIndices().add(index);
-//			}
-//
-//			index++;
-//		}
-//		
-//		((MeshVAO) ((Renderer) ((GameObject) getChildren().get(0)).getComponent("Renderer")).getVao()).setInstances(getHighPolyIndices().size());
-//		((MeshVAO) ((Renderer) ((GameObject) getChildren().get(1)).getComponent("Renderer")).getVao()).setInstances(getHighPolyIndices().size());
-//		
-//		((MeshVAO) ((Renderer) ((GameObject) getChildren().get(2)).getComponent("Renderer")).getVao()).setInstances(getLowPolyIndices().size());
+	public void render(){
+		if (getCenter().sub(Camera.getInstance().getPosition()).length() < 600){
+			super.render();
+		}
 	}
 }

@@ -63,6 +63,8 @@ public class TerrainShader extends Shader{
 		addUniform("location");
 		addUniform("texDetail");
 		addUniform("waterReflectionShift");
+		addUniform("isReflection");
+		addUniform("isRefraction");
 		
 		for (int i=0; i<7; i++)
 		{
@@ -121,6 +123,8 @@ public class TerrainShader extends Shader{
 		setUniformi("shadowMaps", 0);
 		
 		setUniform("clipplane", RenderingEngine.getClipplane());
+		setUniformi("isReflection", RenderingEngine.isWaterReflection() ? 1 : 0);
+		setUniformi("isRefraction", RenderingEngine.isWaterReflection() ? 1 : 0);
 		
 		TerrainConfiguration terrConfig = ((TerrainNode) object).getTerrConfig();
 		int lod = ((TerrainNode) object).getLod();

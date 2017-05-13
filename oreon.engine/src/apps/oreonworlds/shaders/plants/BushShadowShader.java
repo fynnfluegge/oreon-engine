@@ -3,7 +3,6 @@ package apps.oreonworlds.shaders.plants;
 import java.util.List;
 
 import apps.oreonworlds.assets.plants.Bush01Cluster;
-import apps.oreonworlds.assets.plants.Palm01Cluster;
 import engine.core.RenderingEngine;
 import engine.scenegraph.GameObject;
 import engine.shader.Shader;

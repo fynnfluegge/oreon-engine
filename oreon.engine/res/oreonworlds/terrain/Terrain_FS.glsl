@@ -51,6 +51,8 @@ uniform Material rock0;
 uniform Material rock1;
 uniform float sightRangeFactor;
 uniform int largeDetailedRange;
+uniform int isReflection;
+uniform int isRefraction;
 
 const float zfar = 10000;
 const float znear = 0.1;
@@ -191,7 +193,7 @@ void main()
 		sandBlend = clamp(sandBlend,0,1);
 	}
 	
-	if (dist < largeDetailedRange-20)
+	if (dist < largeDetailedRange-20 && isReflection == 0)
 	{
 		float attenuation = -dist/(largeDetailedRange-20) + 1;
 		
@@ -227,7 +229,9 @@ void main()
 	
 	fragColor *= diffuseLight;
 	fragColor += specularLight;
-	fragColor *= shadow(position);
+	if (isReflection == 0){
+		fragColor *= shadow(position);
+	}
 	
 	float fogFactor = -0.0005/sightRangeFactor*(dist-zfar/5*sightRangeFactor);
 	

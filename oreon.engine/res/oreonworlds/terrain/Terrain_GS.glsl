@@ -33,6 +33,8 @@ uniform Material rock0;
 uniform Material rock1;
 uniform int largeDetailedRange;
 uniform vec4 clipplane;
+uniform int isReflection;
+uniform int isRefraction;
 
 vec3 Tangent;
 
@@ -67,26 +69,29 @@ void main() {
 	}
 
 	float dist = (distance(gl_in[0].gl_Position.xyz, eyePosition) + distance(gl_in[1].gl_Position.xyz, eyePosition) + distance(gl_in[2].gl_Position.xyz, eyePosition))/3;
-	if (dist < largeDetailedRange){
 	
-		for(int k=0; k<gl_in.length(); k++){
-			
-			displacement[k] = vec4(0,1,0,0);
-			
-			float height = gl_in[k].gl_Position.y;
+	if (dist < largeDetailedRange && isReflection == 0){
+	
+		if (isRefraction == 0){
+			for(int k=0; k<gl_in.length(); k++){
 				
-			float rock1Blend  = clamp(height/200,0,1);
-			float rock0Blend  = clamp((height+200)/200,0,1) - rock1Blend;
-			float sandBlend   = clamp(-height/200,0,1);
-			
-			float scale = texture(sand.heightmap, texCoordG[k]).r * sandBlend * sand.displaceScale
-						+ texture(rock0.heightmap, texCoordG[k]).r * rock0Blend * rock0.displaceScale
-						+ texture(rock1.heightmap, texCoordG[k]/4).r * rock1Blend * rock1.displaceScale;
-						
-			scale *= (- distance(gl_in[k].gl_Position.xyz, eyePosition)/(largeDetailedRange) + 1);
+				displacement[k] = vec4(0,1,0,0);
+				
+				float height = gl_in[k].gl_Position.y;
+					
+				float rock1Blend  = clamp(height/200,0,1);
+				float rock0Blend  = clamp((height+200)/200,0,1) - rock1Blend;
+				float sandBlend   = clamp(-height/200,0,1);
+				
+				float scale = texture(sand.heightmap, texCoordG[k]).r * sandBlend * sand.displaceScale
+							+ texture(rock0.heightmap, texCoordG[k]).r * rock0Blend * rock0.displaceScale
+							+ texture(rock1.heightmap, texCoordG[k]/4).r * rock1Blend * rock1.displaceScale;
+							
+				scale *= (- distance(gl_in[k].gl_Position.xyz, eyePosition)/(largeDetailedRange) + 1);
 
-			displacement[k] *= scale;
-		}	
+				displacement[k] *= scale;
+			}	
+		}
 		
 		calcTangent();
 	}

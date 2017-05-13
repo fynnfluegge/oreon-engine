@@ -7,6 +7,7 @@ import apps.oreonworlds.shaders.InstancingGridShader;
 import apps.oreonworlds.shaders.plants.GrassShader;
 import engine.buffers.MeshVAO;
 import engine.buffers.UBO;
+import engine.core.Camera;
 import engine.core.RenderingEngine;
 import engine.math.Vec3f;
 import engine.scenegraph.GameObject;
@@ -80,6 +81,8 @@ public class Grass01Cluster extends InstancingCluster{
 	
 	public void update()
 	{	
+		super.update();
+		
 		if (RenderingEngine.isGrid()){
 			for (Node child : getChildren()){
 				((GameObject) child).getRenderInfo().setShader(InstancingGridShader.getInstance());
@@ -89,6 +92,12 @@ public class Grass01Cluster extends InstancingCluster{
 		else{
 			((GameObject) getChildren().get(0)).getRenderInfo().setShader(GrassShader.getInstance());
 			((GameObject) getChildren().get(0)).getComponents().get("Renderer").setShader(GrassShader.getInstance());
+		}
+	}
+	
+	public void render(){
+		if (getCenter().sub(Camera.getInstance().getPosition()).length() < 800){
+			super.render();
 		}
 	}
 }

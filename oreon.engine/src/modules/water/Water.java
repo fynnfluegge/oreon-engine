@@ -130,15 +130,15 @@ public class Water extends GameObject{
 	
 	public void update()
 	{
-		if (RenderingEngine.isGrid() || Input.getHoldingKey(Keyboard.KEY_G))
-		{
-			getRenderInfo().setShader(OceanGridShader.getInstance());
-		}
-		else if (!RenderingEngine.isGrid())
-		{
-			getRenderInfo().setShader(OceanBRDFShader.getInstance());
-		}
-		getComponents().get("Renderer").setShader(getRenderInfo().getShader());
+//		if (RenderingEngine.isGrid() || Input.getHoldingKey(Keyboard.KEY_G))
+//		{
+//			getRenderInfo().setShader(OceanGridShader.getInstance());
+//		}
+//		else if (!RenderingEngine.isGrid())
+//		{
+//			getRenderInfo().setShader(OceanBRDFShader.getInstance());
+//		}
+//		getComponents().get("Renderer").setShader(getRenderInfo().getShader());
 	}
 	
 	public void render()
@@ -157,7 +157,7 @@ public class Water extends GameObject{
 		//mirror scene to clipplane
 			
 		scenegraph.getTransform().setScaling(1,-1,1);
-		scenegraph.getTransform().getTranslation().setY(0);
+		
 		// TODO
 //		scenegraph.getTransform().getTranslation().setY(RenderingEngine.getClipplane().getW() - 
 //				(scenegraph.getTransform().getTranslation().getY() - RenderingEngine.getClipplane().getW()));
@@ -181,7 +181,9 @@ public class Water extends GameObject{
 		RenderConfig.clearScreenDeepOceanReflection();
 		glFrontFace(GL_CCW);
 		scenegraph.getRoot().render();
-		((Terrain) scenegraph.getTerrain()).renderLowPoly();
+		if (scenegraph.terrainExists()){
+			((Terrain) scenegraph.getTerrain()).renderLowPoly();
+		}
 		glFinish(); //important, prevent conflicts with following compute shaders
 		glFrontFace(GL_CW);
 		this.getReflectionFBO().unbind();
@@ -190,7 +192,7 @@ public class Water extends GameObject{
 		// antimirror scene to clipplane
 	
 		scenegraph.getTransform().setScaling(1,1,1);
-		scenegraph.getTransform().getTranslation().setY(0);
+
 		// TODO
 //		scenegraph.getTransform().getTranslation().setY(RenderingEngine.getClipplane().getW() - 
 //				(scenegraph.getTransform().getTranslation().getY() - RenderingEngine.getClipplane().getW()));
@@ -210,8 +212,9 @@ public class Water extends GameObject{
 		this.getRefractionFBO().bind();
 		RenderConfig.clearScreenDeepOceanRefraction();
 		scenegraph.getRoot().render();
-		((Terrain) scenegraph.getTerrain()).renderLowPoly();
-		
+		if (scenegraph.terrainExists()){
+			((Terrain) scenegraph.getTerrain()).renderLowPoly();
+		}
 		glFinish(); //important, prevent conflicts with following compute shaders
 		this.getRefractionFBO().unbind();
 		RenderingEngine.setWaterRefraction(false);

@@ -28,7 +28,6 @@ public class Tree02Cluster extends InstancingCluster{
 		setCenter(pos);
 		int buffersize = Float.BYTES * 16 * instances;
 		
-		
 		for (int i=0; i<instances; i++){
 			Vec3f translation = new Vec3f((float)(Math.random()*100)-50 + getCenter().getX(), 0, (float)(Math.random()*100)-50 + getCenter().getZ());
 			float terrainHeight = Terrain.getInstance().getTerrainHeight(translation.getX(),translation.getZ());
@@ -139,5 +138,23 @@ public class Tree02Cluster extends InstancingCluster{
 		
 		((MeshVAO) ((Renderer) ((GameObject) getChildren().get(0)).getComponent("Renderer")).getVao()).setInstances(getHighPolyIndices().size());
 		((MeshVAO) ((Renderer) ((GameObject) getChildren().get(1)).getComponent("Renderer")).getVao()).setInstances(getHighPolyIndices().size());
+	}
+	
+	public void render(){
+		
+		if (RenderingEngine.isWaterReflection() || RenderingEngine.isWaterReflection()){
+			((MeshVAO) ((Renderer) ((GameObject) getChildren().get(0)).getComponent("Renderer")).getVao()).setInstances(0);
+			((MeshVAO) ((Renderer) ((GameObject) getChildren().get(1)).getComponent("Renderer")).getVao()).setInstances(0);
+		
+			((MeshVAO) ((Renderer) ((GameObject) getChildren().get(2)).getComponent("Renderer")).getVao()).setInstances(getLowPolyIndices().size());
+		
+			super.render();
+		
+			((MeshVAO) ((Renderer) ((GameObject) getChildren().get(0)).getComponent("Renderer")).getVao()).setInstances(getHighPolyIndices().size());
+			((MeshVAO) ((Renderer) ((GameObject) getChildren().get(1)).getComponent("Renderer")).getVao()).setInstances(getHighPolyIndices().size());
+		}
+		else{
+			super.render();
+		}
 	}
 }
