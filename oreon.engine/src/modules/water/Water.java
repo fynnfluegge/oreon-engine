@@ -5,8 +5,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.nio.ByteBuffer;
 
-import org.lwjgl.input.Keyboard;
-
 import modules.gpgpu.NormalMapRenderer;
 import modules.terrain.Terrain;
 import modules.water.fft.OceanFFT;
@@ -24,7 +22,6 @@ import engine.scenegraph.Scenegraph;
 import engine.scenegraph.components.RenderInfo;
 import engine.scenegraph.components.Renderer;
 import engine.shader.water.OceanBRDFShader;
-import engine.shader.water.OceanGridShader;
 import engine.textures.Texture2D;
 import engine.utils.Constants;
 import engine.utils.Util;
@@ -130,11 +127,11 @@ public class Water extends GameObject{
 	
 	public void update()
 	{
-//		if (RenderingEngine.isGrid() || Input.getHoldingKey(Keyboard.KEY_G))
+//		if (Input.getHoldingKey(Keyboard.KEY_G))
 //		{
 //			getRenderInfo().setShader(OceanGridShader.getInstance());
 //		}
-//		else if (!RenderingEngine.isGrid())
+//		else
 //		{
 //			getRenderInfo().setShader(OceanBRDFShader.getInstance());
 //		}

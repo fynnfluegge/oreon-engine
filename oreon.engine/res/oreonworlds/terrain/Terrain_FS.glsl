@@ -53,13 +53,20 @@ uniform float sightRangeFactor;
 uniform int largeDetailedRange;
 uniform int isReflection;
 uniform int isRefraction;
+uniform vec4 clipplane;
 
 const float zfar = 10000;
 const float znear = 0.1;
 const vec3 fogColor = vec3(0.62,0.85,0.95);
+const vec3 waterRefractionColor = vec3(0.015,0.022,0.04);
 
 float emission;
 float shininess;
+
+float distancePointPlane(vec3 point, vec4 plane){
+	return abs(plane.x*point.x + plane.y*point.y + plane.z*point.z + plane.w) / 
+		   abs(sqrt(plane.x * plane.x + plane.y * plane.y + plane.z * plane.z));
+}
 
 float diffuse(vec3 direction, vec3 normal, float intensity)
 {
@@ -236,6 +243,14 @@ void main()
 	float fogFactor = -0.0005/sightRangeFactor*(dist-zfar/5*sightRangeFactor);
 	
     vec3 rgb = mix(fogColor, fragColor, clamp(fogFactor,0,1));
+	
+	if (isRefraction == 1){
+		
+		float distToWaterSurace = distancePointPlane(position,clipplane);
+		float refractionFactor = clamp(0.02 * distToWaterSurace,0,1);
+		
+		rgb = mix(rgb, waterRefractionColor, refractionFactor); 
+	}
 	
 	gl_FragColor = vec4(rgb,1);
 }

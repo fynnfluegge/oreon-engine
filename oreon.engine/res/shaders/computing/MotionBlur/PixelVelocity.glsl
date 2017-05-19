@@ -43,6 +43,10 @@ void main(void){
 	
 	//window space velocity
 	vec2 velocity = (previousPos.xy - N.xy).xy * blurFactor;
-
+	
+	if (length(velocity) < 0.4){
+		velocity = vec2(0,0);
+	}
+	
 	imageStore(velocitymap, ivec2(gl_GlobalInvocationID.xy), vec4(velocity,0,1));
 }

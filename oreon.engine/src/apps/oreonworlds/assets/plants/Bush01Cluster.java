@@ -96,8 +96,14 @@ public class Bush01Cluster extends InstancingCluster{
 	}
 	
 	public void render(){
-		if (getCenter().sub(Camera.getInstance().getPosition()).length() < 600){
+		if (getCenter().sub(Camera.getInstance().getPosition()).length() < 400){
 			super.render();
+		}
+	}
+	
+	public void renderShadows(){
+		if (getCenter().sub(Camera.getInstance().getPosition()).length() < 400){
+			super.renderShadows();;
 		}
 	}
 }

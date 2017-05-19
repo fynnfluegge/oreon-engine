@@ -61,7 +61,6 @@ public class Input {
 				releasedButtons.add(button);
 			}
 		}
-				
 	}
 	
 	public static void clear()

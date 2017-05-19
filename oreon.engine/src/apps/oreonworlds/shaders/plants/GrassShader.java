@@ -7,6 +7,7 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 import java.util.List;
 
 import engine.core.RenderingEngine;
+import engine.math.Matrix4f;
 import engine.scenegraph.GameObject;
 import engine.scenegraph.components.Material;
 import engine.shader.Shader;
@@ -42,6 +43,8 @@ public class GrassShader extends Shader{
 //		addUniform("material.shininess");
 //		addUniform("material.emission");
 		addUniform("clipplane");
+		addUniform("scalingMatrix");
+		addUniform("isReflection");
 		
 		addUniformBlock("DirectionalLight");
 		addUniformBlock("worldMatrices");
@@ -65,6 +68,8 @@ public class GrassShader extends Shader{
 		bindUniformBlock("modelMatrices", 1);
 		bindUniformBlock("DirectionalLight", Constants.DirectionalLightUniformBlockBinding);
 		bindUniformBlock("LightViewProjections",Constants.LightMatricesUniformBlockBinding);
+		setUniformi("isReflection", RenderingEngine.isWaterReflection() ? 1 : 0);
+		setUniform("scalingMatrix", new Matrix4f().Scaling(object.getTransform().getScaling()));
 		
 		setUniform("clipplane", RenderingEngine.getClipplane());
 		setUniformf("sightRangeFactor", Terrain.getInstance().getConfiguration().getSightRangeFactor());

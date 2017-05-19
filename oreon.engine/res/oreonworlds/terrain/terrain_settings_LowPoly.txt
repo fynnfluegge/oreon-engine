@@ -35,8 +35,8 @@ detailRange 100
 sightRangeFactor 1.4
 
 #lod ranges
-lod1_range 1200
-lod2_range 700
+lod1_range 1750
+lod2_range 874
 lod3_range 0
 lod4_range 0
 lod5_range 0

@@ -73,7 +73,7 @@ float fresnelApproximated(vec3 normal)
     
     float cosine = dot(halfDirection, vertexToEye);
     float product = max(cosine, 0.0);
-    float factor = pow(product, 1.2);
+    float factor = pow(product, 1.6);
     
     return 1-factor;
 }
@@ -155,14 +155,14 @@ void main(void)
     // Reflection //
 	vec2 reflecCoords = projCoord.xy + dudvCoord.rb * kReflection;
 	reflecCoords = clamp(reflecCoords, kReflection, 1-kReflection);
-    vec3 reflection = mix(texture(waterReflection, reflecCoords).rgb, reflectionColor,  0.4);
+    vec3 reflection = mix(texture(waterReflection, reflecCoords).rgb, reflectionColor,  0.25);
     reflection *= F;
  
     // Refraction //
 	vec2 refracCoords = projCoord.xy + dudvCoord.rb * kRefraction;
 	refracCoords = clamp(refracCoords, kRefraction, 1-kRefraction);
 	
-    vec3 refraction = mix(texture(waterRefraction, refracCoords).rgb, refractionColor, 0.8); 
+    vec3 refraction = mix(texture(waterRefraction, refracCoords).rgb, refractionColor, 0.4); 
 	refraction *= 1-F;
 	
 	float diffuse = diffuse(normal);

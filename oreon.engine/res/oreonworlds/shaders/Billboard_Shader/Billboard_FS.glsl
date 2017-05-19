@@ -24,6 +24,8 @@ layout (std140) uniform DirectionalLight{
 	
 uniform Material material;
 uniform float sightRangeFactor;
+uniform int isReflection;
+uniform int isRefraction;
 
 const float zFar = 10000;
 const float zNear = 0.1;
@@ -51,7 +53,10 @@ void main()
 	vec3 fragColor = texture(material.diffusemap, texCoord_FS).rgb * (directional_light.ambient + diffuseLight);
 	
 	float alpha = texture(material.diffusemap, texCoord_FS).a;
-	alpha *= alphaDistanceFactor(dist);
+	
+	if (isReflection == 0 && isRefraction == 0){
+		alpha *= alphaDistanceFactor(dist);
+	}
 	
 	float fogFactor = -0.0005/sightRangeFactor*(dist-zFar/5*sightRangeFactor);
 	

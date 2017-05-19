@@ -7,6 +7,7 @@ import apps.oreonworlds.shaders.InstancingGridShader;
 import apps.oreonworlds.shaders.plants.GrassShader;
 import engine.buffers.MeshVAO;
 import engine.buffers.UBO;
+import engine.core.Camera;
 import engine.core.RenderingEngine;
 import engine.math.Vec3f;
 import engine.scenegraph.GameObject;
@@ -28,7 +29,7 @@ public class Plant01Cluster extends InstancingCluster{
 		for (int i=0; i<instances; i++){
 			Vec3f translation = new Vec3f((float)(Math.random()*100)-50 + getCenter().getX(), 0, (float)(Math.random()*100)-50 + getCenter().getZ());
 			float terrainHeight = Terrain.getInstance().getTerrainHeight(translation.getX(),translation.getZ());
-			terrainHeight -= 1;
+			terrainHeight -= 2;
 			translation.setY(terrainHeight);
 			float s = (float)(Math.random()*2 + 8);
 			Vec3f scaling = new Vec3f(s,s,s);
@@ -86,6 +87,12 @@ public class Plant01Cluster extends InstancingCluster{
 		else{
 			((GameObject) getChildren().get(0)).getRenderInfo().setShader(GrassShader.getInstance());
 			((GameObject) getChildren().get(0)).getComponents().get("Renderer").setShader(GrassShader.getInstance());
+		}
+	}
+	
+	public void render(){
+		if (getCenter().sub(Camera.getInstance().getPosition()).length() < 600){
+			super.render();
 		}
 	}
 }

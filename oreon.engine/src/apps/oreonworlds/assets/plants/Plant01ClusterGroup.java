@@ -32,12 +32,17 @@ public class Plant01ClusterGroup extends InstancingObject{
 			getObjectData().add(object);
 		}
 		
-//		addChild(new Plant01Cluster(50,new Vec3f(1703,0,-270),getObjectData()));
-//		addChild(new Plant01Cluster(40,new Vec3f(1022,0,-1320),getObjectData()));
-//		addChild(new Plant01Cluster(40,new Vec3f(930,0,-1349),getObjectData()));
-		addChild(new Plant01Cluster(40,new Vec3f(1816,0,-91),getObjectData()));
-//		addChild(new Plant01Cluster(40,new Vec3f(1068,0,527),getObjectData()));
-		addChild(new Plant01Cluster(40,new Vec3f(1508,0,1400),getObjectData()));
+		addChild(new Plant01Cluster(20,new Vec3f(1692,0,-1254),getObjectData()));
+		addChild(new Plant01Cluster(40,new Vec3f(1406,0,-1181),getObjectData()));
+		addChild(new Plant01Cluster(20,new Vec3f(1114,0,-1132),getObjectData()));
+		addChild(new Plant01Cluster(40,new Vec3f(1189,0,-1138),getObjectData()));
+		addChild(new Plant01Cluster(20,new Vec3f(1086,0,-423),getObjectData()));
+//		addChild(new Plant01Cluster(40,new Vec3f(1508,0,1400),getObjectData()));
 		addChild(new Plant01Cluster(20,new Vec3f(782,0,765),getObjectData()));
+		addChild(new Plant01Cluster(20,new Vec3f(959,0,-249),getObjectData()));
+		addChild(new Plant01Cluster(20,new Vec3f(1054,0,-177),getObjectData()));
+		addChild(new Plant01Cluster(20,new Vec3f(1039,0,372),getObjectData()));
+		addChild(new Plant01Cluster(20,new Vec3f(571,0,1119),getObjectData()));
+		addChild(new Plant01Cluster(20,new Vec3f(561,0,1406),getObjectData()));
 	}
 }

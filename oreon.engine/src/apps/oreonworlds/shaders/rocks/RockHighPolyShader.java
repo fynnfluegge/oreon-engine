@@ -47,6 +47,7 @@ public class RockHighPolyShader extends Shader{
 		addUniform("clipplane");
 		addUniform("scalingMatrix");
 		addUniform("isReflection");
+		addUniform("isRefraction");
 		
 		addUniformBlock("DirectionalLight");
 		addUniformBlock("worldMatrices");
@@ -72,6 +73,7 @@ public class RockHighPolyShader extends Shader{
 		bindUniformBlock("LightViewProjections",Constants.LightMatricesUniformBlockBinding);
 		
 		setUniformi("isReflection", RenderingEngine.isWaterReflection() ? 1 : 0);
+		setUniformi("isRefraction", RenderingEngine.isWaterRefraction() ? 1 : 0);
 		setUniform("scalingMatrix", new Matrix4f().Scaling(object.getTransform().getScaling()));
 		setUniform("clipplane", RenderingEngine.getClipplane());
 		

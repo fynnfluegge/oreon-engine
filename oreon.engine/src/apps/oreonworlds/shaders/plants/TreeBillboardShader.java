@@ -43,6 +43,7 @@ private static TreeBillboardShader instance = null;
 		addUniformBlock("modelMatrices");
 		addUniform("scalingMatrix");
 		addUniform("isReflection");
+		addUniform("isRefraction");
 		
 		addUniformBlock("Camera");
 		addUniformBlock("DirectionalLight");
@@ -61,6 +62,7 @@ private static TreeBillboardShader instance = null;
 		bindUniformBlock("Camera",Constants.CameraUniformBlockBinding);
 		bindUniformBlock("DirectionalLight", Constants.DirectionalLightUniformBlockBinding);
 		setUniformi("isReflection", RenderingEngine.isWaterReflection() ? 1 : 0);
+		setUniformi("isRefraction", RenderingEngine.isWaterRefraction() ? 1 : 0);
 		setUniform("scalingMatrix", new Matrix4f().Scaling(object.getTransform().getScaling()));
 		
 		((InstancingCluster) object.getParent()).getWorldMatricesBuffer().bindBufferBase(0);

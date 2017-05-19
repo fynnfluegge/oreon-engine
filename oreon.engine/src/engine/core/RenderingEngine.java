@@ -6,6 +6,7 @@ import static org.lwjgl.opengl.GL11.glViewport;
 
 import modules.gui.GUI;
 import modules.gui.elements.FullScreenTexturePanel;
+import modules.instancing.InstancingThreadHandler;
 import modules.lighting.DirectionalLight;
 import modules.mousePicking.TerrainPicking;
 import modules.postProcessingEffects.DepthOfFieldBlur;
@@ -29,6 +30,7 @@ public class RenderingEngine {
 	private static boolean grid;
 	
 	private Scenegraph scenegraph;
+	private static InstancingThreadHandler instancingThreadHandler;
 	private static ShadowMaps shadowMaps;
 	private GUI gui;
 	
@@ -36,9 +38,9 @@ public class RenderingEngine {
 	private DepthOfFieldBlur dofBlur;
 	private Bloom bloom;
 	
-	private static boolean motionBlurEnabled = false;
-	private static boolean depthOfFieldBlurEnabled = false;
-	private static boolean bloomEnabled = false;
+	private static boolean motionBlurEnabled = true;
+	private static boolean depthOfFieldBlurEnabled = true;
+	private static boolean bloomEnabled = true;
 	private static boolean waterReflection = false;
 	private static boolean waterRefraction = false;
 	
@@ -55,6 +57,7 @@ public class RenderingEngine {
 		window.init();
 		gui.init();
 		
+		instancingThreadHandler = new InstancingThreadHandler();
 		shadowMaps = new ShadowMaps();
 		screenTexture = new FullScreenTexturePanel();
 		motionBlur = new MotionBlur();
@@ -110,7 +113,7 @@ public class RenderingEngine {
 		
 		// Motion Blur
 		if (isMotionBlurEnabled()){
-			if (Camera.getInstance().getPreviousPosition().sub(Camera.getInstance().getPosition()).length() > 0.4f ||
+			if (Camera.getInstance().getPreviousPosition().sub(Camera.getInstance().getPosition()).length() > 0.001f ||
 				Camera.getInstance().getForward().sub(Camera.getInstance().getPreviousForward()).length() > 0.01f){
 				motionBlur.render(window.getSceneDepthmap(), postProcessingTexture);
 				postProcessingTexture = motionBlur.getMotionBlurSceneTexture();
@@ -128,6 +131,8 @@ public class RenderingEngine {
 	
 	public void update()
 	{
+//		instancingThreadHandler.update();
+		
 		Input.update();
 		Camera.getInstance().update();
 		gui.update();
@@ -216,4 +221,14 @@ public class RenderingEngine {
 	public static void setWaterRefraction(boolean waterRefraction) {
 		RenderingEngine.waterRefraction = waterRefraction;
 	}
+
+	public static InstancingThreadHandler getInstancingThreadHandler() {
+		return instancingThreadHandler;
+	}
+
+	public static void setInstancingThreadHandler(InstancingThreadHandler instancingThreadHandler) {
+		RenderingEngine.instancingThreadHandler = instancingThreadHandler;
+	}
+
+
 }

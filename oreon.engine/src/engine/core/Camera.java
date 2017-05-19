@@ -55,7 +55,7 @@ public class Camera {
 	private float rotXamt;
 	private float rotXcounter;
 	private boolean rotXInitiated = false;
-	private float mouseSensitivity = 1f;
+	private float mouseSensitivity = 0.5f;
 	
 	private Quaternion[] frustumPlanes = new Quaternion[6];
 	private Vec3f[] frustumCorners = new Vec3f[8];

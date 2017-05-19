@@ -70,7 +70,7 @@ public class Tree01ClusterGroup extends InstancingObject{
 			
 			meshBuffer.addData(billboard.getMesh());
 	
-			object.setRenderInfo(new RenderInfo(new AlphaTestCullFaceDisable(0.9f), TreeBillboardShader.getInstance(), TreeBillboardShadowShader.getInstance()));
+			object.setRenderInfo(new RenderInfo(new AlphaTestCullFaceDisable(0.4f), TreeBillboardShader.getInstance(), TreeBillboardShadowShader.getInstance()));
 			
 			object.setMaterial(billboard.getMaterial());
 			object.setVao(meshBuffer);
@@ -82,10 +82,10 @@ public class Tree01ClusterGroup extends InstancingObject{
 		addChild(new Tree01Cluster(10,new Vec3f(1012,0,-1154),getObjectData()));
 		addChild(new Tree01Cluster(10,new Vec3f(812,0,-1084),getObjectData()));
 		addChild(new Tree01Cluster(10,new Vec3f(909,0,-1187),getObjectData()));
-		addChild(new Tree01Cluster(10,new Vec3f(1463,0,1589),getObjectData()));
-		addChild(new Tree01Cluster(10,new Vec3f(-662,0,-11),getObjectData()));
-		addChild(new Tree01Cluster(10,new Vec3f(1240,0,1664),getObjectData()));
-		addChild(new Tree01Cluster(10,new Vec3f(-702,0,306),getObjectData()));
-		addChild(new Tree01Cluster(10,new Vec3f(1375,0,1609),getObjectData()));
+//		addChild(new Tree01Cluster(10,new Vec3f(1463,0,1589),getObjectData()));
+//		addChild(new Tree01Cluster(10,new Vec3f(-662,0,-11),getObjectData()));
+//		addChild(new Tree01Cluster(10,new Vec3f(1240,0,1664),getObjectData()));
+//		addChild(new Tree01Cluster(10,new Vec3f(-702,0,306),getObjectData()));
+//		addChild(new Tree01Cluster(10,new Vec3f(1375,0,1609),getObjectData()));
 	}
 }

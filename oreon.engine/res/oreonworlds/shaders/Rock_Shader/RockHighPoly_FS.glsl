@@ -37,6 +37,8 @@ layout (std140, row_major) uniform LightViewProjections{
 uniform sampler2DArray shadowMaps;
 uniform Material material;
 uniform float sightRangeFactor;
+uniform int isReflection;
+uniform int isRefraction;
 
 const float zFar = 10000;
 const float zNear = 0.1;
@@ -142,7 +144,10 @@ void main()
 	
 	specularFactor = specular(directional_light.direction, normal, eyeDirection);
 	
-	float shadowFactor = shadow(position_FS);
+	float shadowFactor = 1;
+	if (isReflection == 0 && isRefraction == 0){
+		shadowFactor = shadow(position_FS);
+	}
 	diffuseLight = directional_light.ambient + directional_light.color * diffuseFactor * shadowFactor;
 	specularLight = directional_light.color * specularFactor * shadowFactor;
 	

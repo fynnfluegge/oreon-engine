@@ -86,8 +86,8 @@ public class Tree02ClusterGroup extends InstancingObject{
 		addChild(new Tree02Cluster(4,new Vec3f(1614,0,-1270),getObjectData()));
 		addChild(new Tree02Cluster(5,new Vec3f(1768,0,-1254),getObjectData()));
 		addChild(new Tree02Cluster(4,new Vec3f(1737,0,-1161),getObjectData()));
-		addChild(new Tree02Cluster(4,new Vec3f(1902,0,7),getObjectData()));
-		addChild(new Tree02Cluster(5,new Vec3f(1780,0,301),getObjectData()));
+//		addChild(new Tree02Cluster(4,new Vec3f(1902,0,7),getObjectData()));
+//		addChild(new Tree02Cluster(5,new Vec3f(1780,0,301),getObjectData()));
 		addChild(new Tree02Cluster(4,new Vec3f(92,0,1676),getObjectData()));
 		addChild(new Tree02Cluster(5,new Vec3f(218,0,1671),getObjectData()));
 		addChild(new Tree02Cluster(5,new Vec3f(315,0,1648),getObjectData()));
@@ -97,9 +97,9 @@ public class Tree02ClusterGroup extends InstancingObject{
 		addChild(new Tree02Cluster(4,new Vec3f(-167,0,1716),getObjectData()));
 		addChild(new Tree02Cluster(5,new Vec3f(-482,0,1702),getObjectData()));
 		addChild(new Tree02Cluster(4,new Vec3f(-657,0,1675),getObjectData()));
-		addChild(new Tree02Cluster(4,new Vec3f(-1901,0,1100),getObjectData()));
-		addChild(new Tree02Cluster(4,new Vec3f(-1834,0,140),getObjectData()));
-		addChild(new Tree02Cluster(4,new Vec3f(-1834,0,140),getObjectData()));
+//		addChild(new Tree02Cluster(4,new Vec3f(-1901,0,1100),getObjectData()));
+//		addChild(new Tree02Cluster(4,new Vec3f(-1834,0,140),getObjectData()));
+//		addChild(new Tree02Cluster(4,new Vec3f(-1834,0,140),getObjectData()));
 		addChild(new Tree02Cluster(5,new Vec3f(829,0,-6),getObjectData()));
 		addChild(new Tree02Cluster(5,new Vec3f(889,0,-48),getObjectData()));
 		addChild(new Tree02Cluster(4,new Vec3f(979,0,-95),getObjectData()));

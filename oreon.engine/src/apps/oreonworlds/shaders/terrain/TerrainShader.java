@@ -124,7 +124,7 @@ public class TerrainShader extends Shader{
 		
 		setUniform("clipplane", RenderingEngine.getClipplane());
 		setUniformi("isReflection", RenderingEngine.isWaterReflection() ? 1 : 0);
-		setUniformi("isRefraction", RenderingEngine.isWaterReflection() ? 1 : 0);
+		setUniformi("isRefraction", RenderingEngine.isWaterRefraction() ? 1 : 0);
 		
 		TerrainConfiguration terrConfig = ((TerrainNode) object).getTerrConfig();
 		int lod = ((TerrainNode) object).getLod();

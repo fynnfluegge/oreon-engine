@@ -7,6 +7,7 @@ import apps.oreonworlds.shaders.InstancingGridShader;
 import apps.oreonworlds.shaders.rocks.RockHighPolyShader;
 import engine.buffers.MeshVAO;
 import engine.buffers.UBO;
+import engine.core.Camera;
 import engine.core.RenderingEngine;
 import engine.math.Vec3f;
 import engine.scenegraph.GameObject;
@@ -87,6 +88,18 @@ public class Rock02Cluster extends InstancingCluster{
 		}
 		else{
 			((GameObject) getChildren().get(0)).getRenderInfo().setShader(RockHighPolyShader.getInstance());
+		}
+	}
+	
+	public void render(){
+		if (getCenter().sub(Camera.getInstance().getPosition()).length() < 800){
+			super.render();
+		}
+	}
+	
+	public void renderShadows(){
+		if (getCenter().sub(Camera.getInstance().getPosition()).length() < 800){
+			super.renderShadows();;
 		}
 	}
 }
