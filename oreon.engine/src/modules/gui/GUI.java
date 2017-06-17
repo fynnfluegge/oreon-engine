@@ -1,5 +1,9 @@
 package modules.gui;
 
+import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
+import static org.lwjgl.opengl.GL11.glDisable;
+import static org.lwjgl.opengl.GL11.glEnable;
+
 import java.util.ArrayList;
 
 public abstract class GUI {
@@ -19,9 +23,11 @@ public abstract class GUI {
 	};
 	
 	public void render(){
+		glDisable(GL_DEPTH_TEST);
 		for (Screen screen: screens ){
 			screen.render();
 		}
+		glEnable(GL_DEPTH_TEST);
 	};
 	
 	public ArrayList<Screen> getScreens() {

@@ -11,7 +11,7 @@ import engine.core.Window;
 import engine.math.Matrix4f;
 import engine.math.Vec2f;
 import engine.scenegraph.components.Transform;
-import engine.shader.gui.GuiShader;
+import engine.shaders.gui.GuiShader;
 import engine.textures.Texture2D;
 import engine.utils.Util;
 

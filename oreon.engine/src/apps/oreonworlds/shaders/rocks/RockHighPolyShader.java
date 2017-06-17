@@ -3,6 +3,8 @@ package apps.oreonworlds.shaders.rocks;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE2;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE3;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE4;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import java.util.List;
@@ -11,11 +13,12 @@ import engine.core.RenderingEngine;
 import engine.math.Matrix4f;
 import engine.scenegraph.GameObject;
 import engine.scenegraph.components.Material;
-import engine.shader.Shader;
+import engine.shaders.Shader;
 import engine.utils.Constants;
 import engine.utils.ResourceLoader;
 import modules.instancing.InstancingCluster;
 import modules.terrain.Terrain;
+import modules.water.UnderWater;
 
 public class RockHighPolyShader extends Shader{
 
@@ -48,6 +51,11 @@ public class RockHighPolyShader extends Shader{
 		addUniform("scalingMatrix");
 		addUniform("isReflection");
 		addUniform("isRefraction");
+		addUniform("isCameraUnderWater");
+		
+		addUniform("caustics");
+		addUniform("dudvCaustics");
+		addUniform("distortionCaustics");
 		
 		addUniformBlock("DirectionalLight");
 		addUniformBlock("worldMatrices");
@@ -79,6 +87,8 @@ public class RockHighPolyShader extends Shader{
 		
 		setUniformf("sightRangeFactor", Terrain.getInstance().getConfiguration().getSightRangeFactor());
 		
+		setUniformi("isCameraUnderWater", RenderingEngine.isCameraUnderWater() ? 1 : 0);
+		
 		Material material = (Material) object.getComponent("Material");
 
 		glActiveTexture(GL_TEXTURE0);
@@ -95,6 +105,15 @@ public class RockHighPolyShader extends Shader{
 		glActiveTexture(GL_TEXTURE2);
 		RenderingEngine.getShadowMaps().getDepthMaps().bind();
 		setUniformi("shadowMaps", 2);
+
+		setUniformf("distortionCaustics", UnderWater.getInstance().getDistortion());
+		
+		glActiveTexture(GL_TEXTURE3);
+		UnderWater.getInstance().getCausticsMap().bind();
+		setUniformi("caustics", 3);
+		glActiveTexture(GL_TEXTURE4);
+		UnderWater.getInstance().getDudvMap().bind();
+		setUniformi("dudvCaustics", 4);
 		
 		List<Integer> indices = ((InstancingCluster) object.getParent()).getHighPolyIndices();
 		

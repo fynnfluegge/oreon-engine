@@ -6,7 +6,7 @@ import java.util.List;
 import engine.core.RenderingEngine;
 import engine.math.Matrix4f;
 import engine.scenegraph.GameObject;
-import engine.shader.Shader;
+import engine.shaders.Shader;
 import engine.utils.Constants;
 import engine.utils.ResourceLoader;
 import modules.instancing.InstancingCluster;

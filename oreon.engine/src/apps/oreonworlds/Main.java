@@ -14,7 +14,8 @@ import apps.oreonworlds.shaders.terrain.TerrainShader;
 import apps.oreonworlds.water.Ocean;
 import apps.worldgenerator.tools.terrainEditor.TerrainShadowShader;
 import engine.core.Game;
-import modules.sky.SkySphere;
+import modules.atmosphere.SkySphere;
+import modules.atmosphere.Sun;
 import modules.terrain.Terrain;
 
 public class Main {
@@ -32,6 +33,7 @@ public class Main {
 								   TerrainGridShader.getInstance(), 
 								   TerrainShadowShader.getInstance());
 		game.getScenegraph().addObject(new SkySphere());	
+		game.getScenegraph().addObject(new Sun());
 		game.getScenegraph().getRoot().addChild(new Palm01ClusterGroup());
 		game.getScenegraph().getRoot().addChild(new Plant01ClusterGroup());
 		game.getScenegraph().getRoot().addChild(new Grass01ClusterGroup());

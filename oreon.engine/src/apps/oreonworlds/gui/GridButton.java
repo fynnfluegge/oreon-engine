@@ -1,10 +1,10 @@
 package apps.oreonworlds.gui;
 
-import modules.gui.Button;
 import engine.core.Window;
 import engine.core.RenderingEngine;
 import engine.math.Vec2f;
 import engine.textures.Texture2D;
+import modules.gui.elements.Button;
 
 public class GridButton extends Button{
 	
@@ -27,5 +27,4 @@ public class GridButton extends Button{
 	{
 		RenderingEngine.setGrid(!RenderingEngine.isGrid());
 	}
-
 }

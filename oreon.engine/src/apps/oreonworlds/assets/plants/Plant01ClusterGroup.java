@@ -45,4 +45,10 @@ public class Plant01ClusterGroup extends InstancingObject{
 		addChild(new Plant01Cluster(20,new Vec3f(571,0,1119),getObjectData()));
 		addChild(new Plant01Cluster(20,new Vec3f(561,0,1406),getObjectData()));
 	}
+
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		
+	}
 }

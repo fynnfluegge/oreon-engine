@@ -13,10 +13,7 @@ public class GridFPS extends GUI{
 		Screen screen0 = new Screen();
 		screen0.setElements(new GUIElement[2]);
 		screen0.getElements()[0] = new FPSPanel();
-		screen0.getElements()[0].init();
 		screen0.getElements()[1] = new GridButton();
-		screen0.getElements()[1].init();
-		screen0.init();
 		getScreens().add(screen0);
 	}
 }

@@ -5,7 +5,7 @@ import java.util.List;
 import apps.oreonworlds.assets.plants.Palm01Cluster;
 import engine.core.RenderingEngine;
 import engine.scenegraph.GameObject;
-import engine.shader.Shader;
+import engine.shaders.Shader;
 import engine.utils.Constants;
 import engine.utils.ResourceLoader;
 import modules.instancing.InstancingCluster;

@@ -7,7 +7,7 @@ import static org.lwjgl.opengl.GL15.GL_STATIC_READ;
 import static org.lwjgl.opengl.GL30.glBindBufferBase;
 import static org.lwjgl.opengl.GL43.GL_SHADER_STORAGE_BUFFER;
 import engine.math.Vec2f;
-import engine.utils.BufferAllocation;
+import engine.utils.BufferUtil;
 
 
 /**
@@ -29,13 +29,13 @@ public class SSBO {
 	public void addData(Vec2f[] data)
 	{
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
-		glBufferData(GL_SHADER_STORAGE_BUFFER, BufferAllocation.createFlippedBuffer(data), GL_STATIC_READ);
+		glBufferData(GL_SHADER_STORAGE_BUFFER, BufferUtil.createFlippedBuffer(data), GL_STATIC_READ);
 	}
 	
 	public void addData(int[] data)
 	{
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
-		glBufferData(GL_SHADER_STORAGE_BUFFER, BufferAllocation.createFlippedBuffer(data), GL_STATIC_READ);
+		glBufferData(GL_SHADER_STORAGE_BUFFER, BufferUtil.createFlippedBuffer(data), GL_STATIC_READ);
 	}
 	
 	public void bindBufferBase(int index)

@@ -8,7 +8,7 @@ import engine.core.Window;
 import engine.geometry.Geometrics;
 import engine.math.Matrix4f;
 import engine.scenegraph.components.Transform;
-import engine.shader.gui.GuiShader;
+import engine.shaders.gui.GuiShader;
 import engine.textures.Texture2D;
 import modules.gui.GUIElement;
 import modules.gui.GUIVAO;
@@ -29,12 +29,6 @@ public class DepthOfFieldBlurFonts extends GUIElement{
 		setOrthographicMatrix(getOrthographicMatrix().mul(getOrthoTransform().getWorldMatrix()));
 		setVao(new GUIVAO());
 		getVao().addData(Geometrics.Quad2D());
-	}
-
-	@Override
-	public void init() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override

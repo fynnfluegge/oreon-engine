@@ -33,7 +33,7 @@ public class Bush01ClusterGroup extends InstancingObject{
 		}
 		
 		addChild(new Bush01Cluster(12,new Vec3f(1218,0,-503),getObjectData()));
-		addChild(new Bush01Cluster(12,new Vec3f(925,0,-1022),getObjectData()));
+//		addChild(new Bush01Cluster(12,new Vec3f(925,0,-1022),getObjectData()));
 		addChild(new Bush01Cluster(12,new Vec3f(861,0,-1035),getObjectData()));
 		addChild(new Bush01Cluster(12,new Vec3f(797,0,-1048),getObjectData()));
 		addChild(new Bush01Cluster(12,new Vec3f(1147,0,-469),getObjectData()));
@@ -75,6 +75,14 @@ public class Bush01ClusterGroup extends InstancingObject{
 		addChild(new Bush01Cluster(12,new Vec3f(645,0,1010),getObjectData()));
 		addChild(new Bush01Cluster(12,new Vec3f(438,0,1330),getObjectData()));
 		addChild(new Bush01Cluster(12,new Vec3f(1728,0,-1214),getObjectData()));
-		addChild(new Bush01Cluster(12,new Vec3f(992,0,-976),getObjectData()));
+		addChild(new Bush01Cluster(12,new Vec3f(1017,0,-984),getObjectData()));
+		addChild(new Bush01Cluster(12,new Vec3f(1548,0,-1234),getObjectData()));
+		addChild(new Bush01Cluster(12,new Vec3f(1577,0,-1236),getObjectData()));
+	}
+
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		
 	}
 }

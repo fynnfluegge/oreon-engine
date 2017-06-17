@@ -159,17 +159,15 @@ public class MainInterface extends JFrame{
 	    	CoreEngine.setShareGLContext(true);
 	    	
 	    	CoreEngine.getGLContextLock().lock();
+	    	System.out.println("MainInterface lock");
 	    	try{
-	    		while(!CoreEngine.isGlContextfree())
-	    		{
-	    			try {
-	    				CoreEngine.getHoldGLContext().await();
-	    			} catch (InterruptedException e) {
-	    				e.printStackTrace();
-	    			}
-	    		}
-	    	}
+				System.out.println("MainInterface await");
+				CoreEngine.getHoldGLContext().await();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 	    	finally{
+	    		System.out.println("MainInterface unlock");
 	    		CoreEngine.getGLContextLock().unlock();
 	    	}
 	  
@@ -178,16 +176,16 @@ public class MainInterface extends JFrame{
 	        DB.getTerrainConfiguration().ReloadFractals("./res/editor/terrainEditor/terrainSettings.ter");
 	        
 	        CoreEngine.getGLContextLock().lock();
+	    	System.out.println("MainInterface lock");
 	        try{
-	        	try {
-	        		Display.releaseContext();
-	        		CoreEngine.setGlContextfree(false);
-	        		CoreEngine.getHoldGLContext().signal();
-	        	} catch (LWJGLException e1) {
-	        		e1.printStackTrace();
-	        	}
-	        }
+        		Display.releaseContext();
+    	    	System.out.println("MainInterface signal");
+        		CoreEngine.getHoldGLContext().signal();
+        	} catch (LWJGLException e1) {
+        		e1.printStackTrace();
+        	}
 	        finally{
+		    	System.out.println("MainInterface unlock");
 	        	CoreEngine.getGLContextLock().unlock();
 	        }
 	    }    

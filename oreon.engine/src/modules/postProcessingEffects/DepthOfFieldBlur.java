@@ -16,8 +16,8 @@ import java.nio.ByteBuffer;
 
 import engine.buffers.Framebuffer;
 import engine.core.Window;
-import engine.shader.dofBlur.DepthOfFieldHorizontalBlurShader;
-import engine.shader.dofBlur.DepthOfFieldVerticalBlurShader;
+import engine.shaders.dofBlur.DepthOfFieldHorizontalBlurShader;
+import engine.shaders.dofBlur.DepthOfFieldVerticalBlurShader;
 import engine.textures.Texture2D;
 
 public class DepthOfFieldBlur {

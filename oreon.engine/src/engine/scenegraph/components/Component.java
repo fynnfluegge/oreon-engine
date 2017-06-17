@@ -1,7 +1,7 @@
 package engine.scenegraph.components;
 
 import engine.scenegraph.GameObject;
-import engine.shader.Shader;
+import engine.shaders.Shader;
 
 public abstract class Component{
 	

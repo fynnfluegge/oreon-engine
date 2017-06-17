@@ -20,6 +20,8 @@ public abstract class InstancingCluster extends Node{
 	
 	private Vec3f center;
 	
+	public void updateUBOs(){};
+	
 	public List<Integer> getHighPolyIndices(){
 		return highPolyIndices;
 	}

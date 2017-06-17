@@ -11,7 +11,7 @@ import java.util.Random;
 
 import modules.terrain.fractals.FractalMaps;
 import engine.scenegraph.components.Material;
-import engine.shader.Shader;
+import engine.shaders.Shader;
 import engine.textures.Texture2D;
 import engine.utils.Constants;
 import engine.utils.Util;
@@ -21,7 +21,6 @@ public class TerrainConfiguration {
 	private float scaleY;
 	private float scaleXZ;
 	private int bezíer;
-	private int isWaterReflected;
 	private int waterReflectionShift;
 	private float sightRangeFactor;
 	private float texDetail;
@@ -625,14 +624,6 @@ public class TerrainConfiguration {
 
 	public void setMaterial0(Material material0) {
 		this.material0 = material0;
-	}
-
-	public int getIsWaterReflected() {
-		return isWaterReflected;
-	}
-
-	public void setIsWaterReflected(int isWaterReflected) {
-		this.isWaterReflected = isWaterReflected;
 	}
 
 	public int getWaterReflectionShift() {

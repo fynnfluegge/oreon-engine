@@ -13,13 +13,16 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE6;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE7;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE8;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE9;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE2;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE3;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 import modules.terrain.TerrainConfiguration;
 import modules.terrain.TerrainNode;
+import modules.water.UnderWater;
 import engine.core.RenderingEngine;
 import engine.math.Vec2f;
 import engine.scenegraph.GameObject;
-import engine.shader.Shader;
+import engine.shaders.Shader;
 import engine.utils.Constants;
 import engine.utils.ResourceLoader;
 
@@ -65,6 +68,11 @@ public class TerrainShader extends Shader{
 		addUniform("waterReflectionShift");
 		addUniform("isReflection");
 		addUniform("isRefraction");
+		addUniform("isCameraUnderWater");
+		
+		addUniform("caustics");
+		addUniform("dudvCaustics");
+		addUniform("distortionCaustics");
 		
 		for (int i=0; i<7; i++)
 		{
@@ -125,6 +133,7 @@ public class TerrainShader extends Shader{
 		setUniform("clipplane", RenderingEngine.getClipplane());
 		setUniformi("isReflection", RenderingEngine.isWaterReflection() ? 1 : 0);
 		setUniformi("isRefraction", RenderingEngine.isWaterRefraction() ? 1 : 0);
+		setUniformi("isCameraUnderWater", RenderingEngine.isCameraUnderWater() ? 1 : 0);		
 		
 		TerrainConfiguration terrConfig = ((TerrainNode) object).getTerrConfig();
 		int lod = ((TerrainNode) object).getLod();
@@ -165,6 +174,15 @@ public class TerrainShader extends Shader{
 		setUniformf("gap", gap);
 		setUniform("location", location);
 		setUniformi("waterReflectionShift", terrConfig.getWaterReflectionShift());
+		
+		glActiveTexture(GL_TEXTURE2);
+		UnderWater.getInstance().getCausticsMap().bind();
+		setUniformi("caustics", 2);
+		glActiveTexture(GL_TEXTURE3);
+		UnderWater.getInstance().getDudvMap().bind();
+		setUniformi("dudvCaustics", 3);
+		
+		setUniformf("distortionCaustics", UnderWater.getInstance().getDistortion());
 		
 		for (int i=0; i<8; i++){
 			setUniformi("lod_morph_area[" + i + "]", terrConfig.getLod_morphing_area()[i]);

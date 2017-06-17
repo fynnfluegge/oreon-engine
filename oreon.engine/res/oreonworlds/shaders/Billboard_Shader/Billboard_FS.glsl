@@ -3,6 +3,9 @@
 in vec3 position_FS;
 in vec2 texCoord_FS;
 
+layout(location = 0) out vec4 outputColor;
+layout(location = 1) out vec4 blackColor;
+
 struct Material
 {
 	sampler2D diffusemap;
@@ -62,5 +65,6 @@ void main()
 	
     vec3 rgb = mix(fogColor, fragColor, clamp(fogFactor,0,1));
 
-	gl_FragColor = vec4(rgb,alpha);
+	outputColor = vec4(rgb,alpha);
+	blackColor = vec4(0,0,0,alpha);
 }

@@ -20,7 +20,7 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
 import engine.geometry.Mesh;
 import engine.math.Vec2f;
-import engine.utils.BufferAllocation;
+import engine.utils.BufferUtil;
 
 public class GUIVAO {
 
@@ -48,10 +48,10 @@ public class GUIVAO {
 			glBindVertexArray(vaoId);
 			
 			glBindBuffer(GL_ARRAY_BUFFER, vbo);
-			glBufferData(GL_ARRAY_BUFFER, BufferAllocation.createFlippedBufferSOA(mesh.getVertices()), GL_DYNAMIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, BufferUtil.createFlippedBufferSOA(mesh.getVertices()), GL_DYNAMIC_DRAW);
 			
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, BufferAllocation.createFlippedBuffer(mesh.getIndices()), GL_STATIC_DRAW);
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, BufferUtil.createFlippedBuffer(mesh.getIndices()), GL_STATIC_DRAW);
 			
 			glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
 			glVertexAttribPointer(1, 2, GL_FLOAT, false, 0, vertices * offset);
@@ -79,7 +79,7 @@ public class GUIVAO {
 	{
 		glBindVertexArray(vaoId);
 		glBindBuffer(GL_ARRAY_BUFFER, vbo);
-		glBufferSubData(GL_ARRAY_BUFFER, vertices * offset, BufferAllocation.createFlippedBuffer(texCoords));
+		glBufferSubData(GL_ARRAY_BUFFER, vertices * offset, BufferUtil.createFlippedBuffer(texCoords));
 		glBindVertexArray(0);
 	}
 }

@@ -40,7 +40,7 @@ public class TestObject extends Node{
 				model.setMaterial(material);
 			}
 
-			object.setRenderInfo(new RenderInfo(new Default(), engine.shader.blinnphong.BlinnPhongBumpShader.getInstance(), TestObjectShadowShader.getInstance()));
+			object.setRenderInfo(new RenderInfo(new Default(), engine.shaders.blinnphong.BlinnPhongBumpShader.getInstance(), TestObjectShadowShader.getInstance()));
 			renderer = new Renderer(object.getRenderInfo().getShader(), meshBuffer);
 
 			object.addComponent("Material", model.getMaterial());

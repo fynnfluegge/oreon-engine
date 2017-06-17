@@ -13,7 +13,7 @@ uniform mat4 previousViewProjectionMatrix;
 
 const float zfar = 10000.0f;
 const float znear = 0.1f;
-const int blurFactor = 240; 
+const int blurFactor = 280; 
 
 float linearize(float depth)
 {

@@ -11,8 +11,8 @@ import static org.lwjgl.opengl.GL42.glTexStorage2D;
 import static org.lwjgl.opengl.GL43.glDispatchCompute;
 import engine.core.Camera;
 import engine.core.Window;
-import engine.shader.motionblur.MotionBlurShader;
-import engine.shader.motionblur.PixelVelocityShader;
+import engine.shaders.motionblur.MotionBlurShader;
+import engine.shaders.motionblur.PixelVelocityShader;
 import engine.textures.Texture2D;
 
 public class MotionBlur {

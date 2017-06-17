@@ -13,7 +13,7 @@ import static org.lwjgl.opengl.GL42.glTexStorage2D;
 import static org.lwjgl.opengl.GL43.glDispatchCompute;
 
 import engine.math.Vec2f;
-import engine.shader.terrain.fractals.FractalSpectrumShader;
+import engine.shaders.terrain.fractals.FractalSpectrumShader;
 import engine.textures.Texture2D;
 import modules.gpgpu.fft.FourierSpectrum;
 

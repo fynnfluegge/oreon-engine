@@ -5,6 +5,9 @@ in vec3 position_FS;
 in vec3 normal_FS;
 in vec4 viewSpacePos;
 
+layout(location = 0) out vec4 outputColor;
+layout(location = 1) out vec4 blackColor;
+
 struct Material
 {
 	sampler2D diffusemap;
@@ -158,5 +161,6 @@ void main()
 	float alpha = texture(material.diffusemap, texCoord_FS).a;
 	alpha *= alphaDistanceFactor(dist);
 	
-	gl_FragColor = vec4(rgb,alpha);
+	outputColor = vec4(rgb,alpha);
+	blackColor = vec4(0,0,0,alpha);
 }

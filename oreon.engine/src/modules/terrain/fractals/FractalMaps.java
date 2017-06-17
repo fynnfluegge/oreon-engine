@@ -9,7 +9,7 @@ import java.nio.FloatBuffer;
 
 import engine.math.Vec2f;
 import engine.textures.Texture2D;
-import engine.utils.BufferAllocation;
+import engine.utils.BufferUtil;
 import engine.utils.Constants;
 import modules.gpgpu.NormalMapRenderer;
 
@@ -50,10 +50,10 @@ public class FractalMaps {
 		normalmapRenderer.render(fft.getHeightmap());
 		heightmap = fft.getHeightmap();
 		normalmap = normalmapRenderer.getNormalmap();
-		heightDataBuffer = BufferAllocation.createFloatBuffer(Constants.TERRAIN_FRACTALS_RESOLUTION * Constants.TERRAIN_FRACTALS_RESOLUTION);
+		heightDataBuffer = BufferUtil.createFloatBuffer(Constants.TERRAIN_FRACTALS_RESOLUTION * Constants.TERRAIN_FRACTALS_RESOLUTION);
 		heightmap.bind();
 		glGetTexImage(GL_TEXTURE_2D,0,GL_RED,GL_FLOAT,heightDataBuffer);
-		slopeDataBuffer = BufferAllocation.createFloatBuffer(Constants.TERRAIN_FRACTALS_RESOLUTION * Constants.TERRAIN_FRACTALS_RESOLUTION);
+		slopeDataBuffer = BufferUtil.createFloatBuffer(Constants.TERRAIN_FRACTALS_RESOLUTION * Constants.TERRAIN_FRACTALS_RESOLUTION);
 		normalmap.bind();
 		glGetTexImage(GL_TEXTURE_2D,0,GL_BLUE,GL_FLOAT,slopeDataBuffer);
 	}

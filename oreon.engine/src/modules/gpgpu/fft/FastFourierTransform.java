@@ -1,6 +1,6 @@
 package modules.gpgpu.fft;
 
-import engine.shader.Shader;
+import engine.shaders.Shader;
 import engine.textures.Texture2D;
 
 

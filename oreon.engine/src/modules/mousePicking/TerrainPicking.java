@@ -12,7 +12,7 @@ import engine.core.Window;
 import engine.math.Quaternion;
 import engine.math.Vec2f;
 import engine.math.Vec3f;
-import engine.utils.BufferAllocation;
+import engine.utils.BufferUtil;
 
 public class TerrainPicking {
 	
@@ -30,7 +30,7 @@ public class TerrainPicking {
 	}
 	
 	private TerrainPicking(){
-		depthmapBuffer = BufferAllocation.createFloatBuffer(Window.getInstance().getWidth() * 
+		depthmapBuffer = BufferUtil.createFloatBuffer(Window.getInstance().getWidth() * 
 															Window.getInstance().getHeight());	
 	}
 	

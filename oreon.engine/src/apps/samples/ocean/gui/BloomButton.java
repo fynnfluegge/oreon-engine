@@ -4,7 +4,7 @@ import engine.core.RenderingEngine;
 import engine.core.Window;
 import engine.math.Vec2f;
 import engine.textures.Texture2D;
-import modules.gui.Button;
+import modules.gui.elements.Button;
 
 public class BloomButton extends Button{
 

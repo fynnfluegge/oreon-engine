@@ -4,7 +4,7 @@ import engine.configs.RenderConfig;
 import engine.math.Matrix4f;
 import engine.math.Vec2f;
 import engine.scenegraph.components.Transform;
-import engine.shader.Shader;
+import engine.shaders.Shader;
 
 public abstract class GUIElement {
 
@@ -15,11 +15,11 @@ public abstract class GUIElement {
 	private RenderConfig config;
 	protected Vec2f[] texCoords;
 	
-	public abstract void init();
-	
 	public abstract void render();
 	
 	public void update(){}
+	
+	public void init(){}
 
 	public Transform getOrthoTransform() {
 		return orthoTransform;

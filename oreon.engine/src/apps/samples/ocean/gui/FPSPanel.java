@@ -11,7 +11,7 @@ import engine.core.Window;
 import engine.math.Matrix4f;
 import engine.math.Vec2f;
 import engine.scenegraph.components.Transform;
-import engine.shader.gui.GuiShader;
+import engine.shaders.gui.GuiShader;
 import engine.textures.Texture2D;
 import engine.utils.Util;
 
@@ -20,11 +20,6 @@ public class FPSPanel extends GUIElement{
 	
 	private Vec2f[] fps;
 	private Texture2D texture;
-	
-	@Override
-	public void init() {
-		// TODO Auto-generated method stub
-	}
 	
 	public FPSPanel(){
 		texture = new Texture2D("./res/gui/tex/Fonts.png");

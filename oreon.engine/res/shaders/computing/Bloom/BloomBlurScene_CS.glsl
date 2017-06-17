@@ -6,7 +6,7 @@ layout (binding = 0, rgba16f) uniform readonly image2D sceneSampler;
 
 layout (binding = 1, rgba16f) uniform readonly image2D brightColorBlurSceneSampler;
 
-layout (binding = 2, rgba16f) uniform writeonly image2D hdrBloomSceneSampler;
+layout (binding = 2, rgba16f) uniform writeonly image2D bloomBlurSceneSampler;
 
 
 void main()
@@ -19,5 +19,5 @@ void main()
 	// additive blending
     hdrColor += bloomColor;
 	
-    imageStore(hdrBloomSceneSampler, computeCoord, vec4(hdrColor, 1.0));
+    imageStore(bloomBlurSceneSampler, computeCoord, vec4(hdrColor, 1.0));
 } 

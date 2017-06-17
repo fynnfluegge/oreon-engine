@@ -1,7 +1,7 @@
 package engine.scenegraph.components;
 
 import engine.configs.RenderConfig;
-import engine.shader.Shader;
+import engine.shaders.Shader;
 
 public class RenderInfo {
 	

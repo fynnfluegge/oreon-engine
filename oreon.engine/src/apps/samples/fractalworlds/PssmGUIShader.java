@@ -1,7 +1,7 @@
 package apps.samples.fractalworlds;
 
 import engine.math.Matrix4f;
-import engine.shader.Shader;
+import engine.shaders.Shader;
 import engine.utils.ResourceLoader;
 
 public class PssmGUIShader extends Shader{

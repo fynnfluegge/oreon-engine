@@ -10,8 +10,8 @@ import engine.scenegraph.GameObject;
 import engine.scenegraph.components.Material;
 import engine.scenegraph.components.RenderInfo;
 import engine.scenegraph.components.Renderer;
-import engine.shader.basic.BasicTessellationGridShader;
-import engine.shader.blinnphong.BlinnPhongTessellationShader;
+import engine.shaders.basic.BasicTessellationGridShader;
+import engine.shaders.blinnphong.BlinnPhongTessellationShader;
 import engine.textures.Texture2D;
 
 public class Logo extends GameObject{

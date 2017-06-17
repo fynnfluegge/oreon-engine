@@ -7,8 +7,8 @@ import apps.worldgenerator.tools.terrainEditor.TerrainGridShader;
 import apps.worldgenerator.tools.terrainEditor.TerrainShader;
 import apps.worldgenerator.tools.terrainEditor.TerrainShadowShader;
 import engine.core.Game;
+import modules.atmosphere.SkySphere;
 import modules.gui.GUIs.GridFPS;
-import modules.sky.SkySphere;
 import modules.terrain.Terrain;
 
 public class Engine implements Runnable{

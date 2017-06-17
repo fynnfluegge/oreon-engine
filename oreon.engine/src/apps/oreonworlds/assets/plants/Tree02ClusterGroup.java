@@ -9,13 +9,15 @@ import engine.buffers.MeshVAO;
 import engine.configs.AlphaTest;
 import engine.configs.AlphaTestCullFaceDisable;
 import engine.configs.Default;
-import engine.core.RenderingEngine;
+import engine.core.Camera;
 import engine.geometry.Vertex;
 import engine.math.Vec3f;
 import engine.scenegraph.components.RenderInfo;
 import engine.utils.Util;
 import modules.instancing.InstancedDataObject;
+import modules.instancing.InstancingCluster;
 import modules.instancing.InstancingObject;
+import modules.instancing.InstancingObjectHandler;
 import modules.modelLoader.obj.Model;
 import modules.modelLoader.obj.OBJLoader;
 
@@ -79,39 +81,73 @@ public class Tree02ClusterGroup extends InstancingObject{
 			getObjectData().add(object);
 		}
 	
-		addChild(new Tree02Cluster(4,new Vec3f(1363,0,-1179),getObjectData()));
-		addChild(new Tree02Cluster(4,new Vec3f(599,0,-114),getObjectData()));
-		addChild(new Tree02Cluster(4,new Vec3f(735,0,-187),getObjectData()));
-		addChild(new Tree02Cluster(4,new Vec3f(1472,0,-1227),getObjectData()));
-		addChild(new Tree02Cluster(4,new Vec3f(1614,0,-1270),getObjectData()));
-		addChild(new Tree02Cluster(5,new Vec3f(1768,0,-1254),getObjectData()));
-		addChild(new Tree02Cluster(4,new Vec3f(1737,0,-1161),getObjectData()));
-//		addChild(new Tree02Cluster(4,new Vec3f(1902,0,7),getObjectData()));
-//		addChild(new Tree02Cluster(5,new Vec3f(1780,0,301),getObjectData()));
-		addChild(new Tree02Cluster(4,new Vec3f(92,0,1676),getObjectData()));
-		addChild(new Tree02Cluster(5,new Vec3f(218,0,1671),getObjectData()));
-		addChild(new Tree02Cluster(5,new Vec3f(315,0,1648),getObjectData()));
-		addChild(new Tree02Cluster(4,new Vec3f(516,0,1306),getObjectData()));
-		addChild(new Tree02Cluster(5,new Vec3f(474,0,1432),getObjectData()));
-		addChild(new Tree02Cluster(4,new Vec3f(-43,0,1677),getObjectData()));
-		addChild(new Tree02Cluster(4,new Vec3f(-167,0,1716),getObjectData()));
-		addChild(new Tree02Cluster(5,new Vec3f(-482,0,1702),getObjectData()));
-		addChild(new Tree02Cluster(4,new Vec3f(-657,0,1675),getObjectData()));
-//		addChild(new Tree02Cluster(4,new Vec3f(-1901,0,1100),getObjectData()));
-//		addChild(new Tree02Cluster(4,new Vec3f(-1834,0,140),getObjectData()));
-//		addChild(new Tree02Cluster(4,new Vec3f(-1834,0,140),getObjectData()));
-		addChild(new Tree02Cluster(5,new Vec3f(829,0,-6),getObjectData()));
-		addChild(new Tree02Cluster(5,new Vec3f(889,0,-48),getObjectData()));
-		addChild(new Tree02Cluster(4,new Vec3f(979,0,-95),getObjectData()));
-		addChild(new Tree02Cluster(4,new Vec3f(1107,0,-121),getObjectData()));
-		addChild(new Tree02Cluster(5,new Vec3f(1200,0,-139),getObjectData()));
-		addChild(new Tree02Cluster(5,new Vec3f(752,0,-113),getObjectData()));
-		addChild(new Tree02Cluster(5,new Vec3f(1295,0,-186),getObjectData()));
-		addChild(new Tree02Cluster(5,new Vec3f(813,0,84),getObjectData()));
+		addCluster(new Tree02Cluster(4,new Vec3f(1363,0,-1179),getObjectData()));
+		addCluster(new Tree02Cluster(4,new Vec3f(599,0,-114),getObjectData()));
+		addCluster(new Tree02Cluster(4,new Vec3f(735,0,-187),getObjectData()));
+//		addCluster(new Tree02Cluster(4,new Vec3f(1472,0,-1227),getObjectData()));
+		addCluster(new Tree02Cluster(4,new Vec3f(1614,0,-1270),getObjectData()));
+		addCluster(new Tree02Cluster(5,new Vec3f(1768,0,-1254),getObjectData()));
+		addCluster(new Tree02Cluster(4,new Vec3f(1737,0,-1161),getObjectData()));
+//		addCluster(new Tree02Cluster(4,new Vec3f(1902,0,7),getObjectData()));
+//		addCluster(new Tree02Cluster(5,new Vec3f(1780,0,301),getObjectData()));
+		addCluster(new Tree02Cluster(4,new Vec3f(92,0,1676),getObjectData()));
+		addCluster(new Tree02Cluster(5,new Vec3f(218,0,1671),getObjectData()));
+		addCluster(new Tree02Cluster(5,new Vec3f(315,0,1648),getObjectData()));
+		addCluster(new Tree02Cluster(4,new Vec3f(516,0,1306),getObjectData()));
+		addCluster(new Tree02Cluster(5,new Vec3f(474,0,1432),getObjectData()));
+		addCluster(new Tree02Cluster(4,new Vec3f(-43,0,1677),getObjectData()));
+		addCluster(new Tree02Cluster(4,new Vec3f(-167,0,1716),getObjectData()));
+		addCluster(new Tree02Cluster(5,new Vec3f(-482,0,1702),getObjectData()));
+		addCluster(new Tree02Cluster(4,new Vec3f(-657,0,1675),getObjectData()));
+//		addCluster(new Tree02Cluster(4,new Vec3f(-1901,0,1100),getObjectData()));
+//		addCluster(new Tree02Cluster(4,new Vec3f(-1834,0,140),getObjectData()));
+//		addCluster(new Tree02Cluster(4,new Vec3f(-1834,0,140),getObjectData()));
+		addCluster(new Tree02Cluster(5,new Vec3f(829,0,-6),getObjectData()));
+		addCluster(new Tree02Cluster(5,new Vec3f(889,0,-48),getObjectData()));
+		addCluster(new Tree02Cluster(4,new Vec3f(979,0,-95),getObjectData()));
+		addCluster(new Tree02Cluster(4,new Vec3f(1107,0,-121),getObjectData()));
+		addCluster(new Tree02Cluster(5,new Vec3f(1200,0,-139),getObjectData()));
+		addCluster(new Tree02Cluster(5,new Vec3f(752,0,-113),getObjectData()));
+		addCluster(new Tree02Cluster(5,new Vec3f(1295,0,-186),getObjectData()));
+		addCluster(new Tree02Cluster(5,new Vec3f(813,0,84),getObjectData()));
+		
+		setThread(new Thread(this));
+		getThread().start();
+	}
+	
+	@Override
+	public void run(){
+		
+		while(true){
+		
+			InstancingObjectHandler.getInstance().getLock().lock();
+			try {
+				InstancingObjectHandler.getInstance().getCondition().await();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			finally{
+				InstancingObjectHandler.getInstance().getLock().unlock();
+			}
+			
+			getChildren().clear();
+			
+			synchronized (getChildren()) {
+				for (InstancingCluster cluster : getClusters()){
+					if (cluster.getCenter().sub(Camera.getInstance().getPosition()).length() < 1000){
+						cluster.updateUBOs();
+						addChild(cluster);
+					}
+				}
+			}
+		}
 	}
 	
 	public void render(){
-		if (!RenderingEngine.isWaterRefraction())
 			super.render();
+	}
+	
+	public void update(){
+		super.update();
 	}
 }

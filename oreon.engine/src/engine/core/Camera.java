@@ -10,7 +10,7 @@ import engine.math.Matrix4f;
 import engine.math.Quaternion;
 import engine.math.Vec2f;
 import engine.math.Vec3f;
-import engine.utils.BufferAllocation;
+import engine.utils.BufferUtil;
 import engine.utils.Constants;
 import engine.utils.Util;
 
@@ -55,7 +55,7 @@ public class Camera {
 	private float rotXamt;
 	private float rotXcounter;
 	private boolean rotXInitiated = false;
-	private float mouseSensitivity = 0.5f;
+	private float mouseSensitivity = 0.8f;
 	
 	private Quaternion[] frustumPlanes = new Quaternion[6];
 	private Vec3f[] frustumCorners = new Vec3f[8];
@@ -83,7 +83,7 @@ public class Camera {
 		ubo.setBinding_point_index(Constants.CameraUniformBlockBinding);
 		ubo.bindBufferBase();
 		ubo.allocate(bufferSize);
-		floatBuffer = BufferAllocation.createFloatBuffer(bufferSize);
+		floatBuffer = BufferUtil.createFloatBuffer(bufferSize);
 	}
 	
 	private Camera(Vec3f position, Vec3f forward, Vec3f up)
@@ -162,7 +162,7 @@ public class Camera {
 					if (rotYcounter > rotYamt){
 						rotateX(-rotYstride * mouseSensitivity);
 						rotYcounter -= rotYstride;
-						rotYstride *= 0.95;
+						rotYstride *= 0.96;
 					}
 					else rotYInitiated = false;
 				}
@@ -171,7 +171,7 @@ public class Camera {
 					if (rotYcounter < rotYamt){
 						rotateX(rotYstride * mouseSensitivity);
 						rotYcounter += rotYstride;
-						rotYstride *= 0.95;
+						rotYstride *= 0.96;
 					}
 					else rotYInitiated = false;
 				}
@@ -192,7 +192,7 @@ public class Camera {
 					if (rotXcounter > rotXamt){
 						rotateY(rotXstride * mouseSensitivity);
 						rotXcounter -= rotXstride;
-						rotXstride *= 0.95;
+						rotXstride *= 0.96;
 					}
 					else rotXInitiated = false;
 				}
@@ -201,7 +201,7 @@ public class Camera {
 					if (rotXcounter < rotXamt){
 						rotateY(-rotXstride * mouseSensitivity);
 						rotXcounter += rotXstride;
-						rotXstride *= 0.95;
+						rotXstride *= 0.96;
 					}
 					else rotXInitiated = false;
 				}
@@ -235,11 +235,11 @@ public class Camera {
 	
 	private void updateUBO(){
 		floatBuffer.clear();
-		floatBuffer.put(BufferAllocation.createFlippedBuffer(this.position));
+		floatBuffer.put(BufferUtil.createFlippedBuffer(this.position));
 		floatBuffer.put(0);
-		floatBuffer.put(BufferAllocation.createFlippedBuffer(viewMatrix));
-		floatBuffer.put(BufferAllocation.createFlippedBuffer(viewProjectionMatrix));
-		floatBuffer.put(BufferAllocation.createFlippedBuffer(frustumPlanes));
+		floatBuffer.put(BufferUtil.createFlippedBuffer(viewMatrix));
+		floatBuffer.put(BufferUtil.createFlippedBuffer(viewProjectionMatrix));
+		floatBuffer.put(BufferUtil.createFlippedBuffer(frustumPlanes));
 		ubo.updateData(floatBuffer, bufferSize);
 	}
 	

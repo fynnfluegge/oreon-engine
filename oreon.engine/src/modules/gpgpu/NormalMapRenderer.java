@@ -8,8 +8,8 @@ import static org.lwjgl.opengl.GL42.glBindImageTexture;
 import static org.lwjgl.opengl.GL42.glTexStorage2D;
 import static org.lwjgl.opengl.GL43.glDispatchCompute;
 
-import engine.shader.Shader;
-import engine.shader.computing.NormalMapShader;
+import engine.shaders.Shader;
+import engine.shaders.computing.NormalMapShader;
 import engine.textures.Texture2D;
 
 public class NormalMapRenderer {

@@ -1,7 +1,7 @@
 package apps.samples.fractalworlds;
 
 import engine.core.Game;
-import modules.sky.SkySphere;
+import modules.atmosphere.SkySphere;
 import modules.terrain.Terrain;
 
 public class FractalWorlds {

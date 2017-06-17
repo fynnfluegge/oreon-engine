@@ -7,6 +7,9 @@ in vec3 tangent_FS;
 in vec3 bitangent_FS;
 in vec4 viewSpacePos;
 
+layout(location = 0) out vec4 outputColor;
+layout(location = 1) out vec4 blackColor;
+
 struct Material
 {
 	sampler2D diffusemap;
@@ -35,15 +38,26 @@ layout (std140, row_major) uniform LightViewProjections{
 };
 
 uniform sampler2DArray shadowMaps;
+uniform vec4 clipplane;
 uniform Material material;
 uniform float sightRangeFactor;
 uniform int isReflection;
 uniform int isRefraction;
+uniform int isCameraUnderWater;
+uniform sampler2D dudvCaustics;
+uniform sampler2D caustics;
+uniform float distortionCaustics;
+
 
 const float zFar = 10000;
 const float zNear = 0.1;
 const vec3 fogColor = vec3(0.62,0.85,0.95);
+const vec3 waterRefractionColor = vec3(0.015,0.022,0.04);
 
+float distancePointPlane(vec3 point, vec4 plane){
+	return abs(plane.x*point.x + plane.y*point.y + plane.z*point.z + plane.w) / 
+		   abs(sqrt(plane.x * plane.x + plane.y * plane.y + plane.z * plane.z));
+}
 
 float diffuse(vec3 lightDir, vec3 normal, float intensity)
 {
@@ -155,9 +169,28 @@ void main()
 		
 	vec3 fragColor = diffuseColor * diffuseLight + specularLight;
 	
+	// caustics
+	if (isCameraUnderWater == 1 && isRefraction == 0){
+		vec2 causticsTexCoord = position_FS.xz / 80;
+		vec2 causticDistortion = texture(dudvCaustics, causticsTexCoord*0.2 + distortionCaustics*0.6).rb * 0.18;
+		vec3 causticsColor = texture(caustics, causticsTexCoord + causticDistortion).rbg;
+		
+		fragColor += (causticsColor/4);
+	}
+	
 	float fogFactor = -0.0005/sightRangeFactor*(dist-zFar/5*sightRangeFactor);
 	
     vec3 rgb = mix(fogColor, fragColor, clamp(fogFactor,0,1));
 	
-	gl_FragColor = vec4(rgb,1.0);
+	// underwater distance blue blur
+	if (isRefraction == 1 && isCameraUnderWater == 0){
+		
+		float distToWaterSurace = distancePointPlane(position_FS,clipplane);
+		float refractionFactor = clamp(0.02 * distToWaterSurace,0,1);
+		
+		rgb = mix(rgb, waterRefractionColor, refractionFactor); 
+	}
+	
+	outputColor = vec4(rgb,1);
+	blackColor = vec4(0,0,0,1);
 }

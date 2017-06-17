@@ -5,6 +5,9 @@ in vec3 position_FS;
 in vec2 texCoord_FS;
 flat in vec3 tangent;
 
+layout(location = 0) out vec4 outputColor;
+layout(location = 1) out vec4 blackColor;
+
 struct DirectionalLight
 {
 	float intensity;
@@ -18,10 +21,13 @@ uniform mat4 modelViewProjectionMatrix;
 uniform DirectionalLight sunlight;
 uniform sampler2D waterReflection;
 uniform sampler2D waterRefraction;
-uniform sampler2D dudv;
-uniform sampler2D normalmap;
-uniform float distortion;
+uniform sampler2D dudvRefracReflec;
+uniform float distortionRefracReflec;
+uniform sampler2D dudvCaustics;
+uniform float distortionCaustics;
+uniform sampler2D caustics;
 uniform float motion;
+uniform sampler2D normalmap;
 uniform vec3 eyePosition;
 uniform float kReflection;
 uniform float kRefraction;
@@ -30,13 +36,13 @@ uniform int windowHeight;
 uniform int texDetail;
 uniform float emission;
 uniform float shininess;
-uniform float sightRangeFactor = 1.4;
+uniform float sightRangeFactor;
+uniform int isCameraUnderWater;
 
 vec2 wind = vec2(1,0);
 const vec3 refractionColor = vec3(0.015,0.022,0.04);
 const vec3 reflectionColor = vec3(0.2994,0.4417,0.6870);
 const float zFar = 10000;
-// const vec4 fogColor = vec4(0.1,0.12,0.28,0);
 
 const float R = 0.0403207622; 
 const vec3 fogColor = vec3(0.62,0.85,0.95);
@@ -73,7 +79,7 @@ float fresnelApproximated(vec3 normal)
     
     float cosine = dot(halfDirection, vertexToEye);
     float product = max(cosine, 0.0);
-    float factor = pow(product, 1.6);
+    float factor = pow(product, 2.0);
     
     return 1-factor;
 }
@@ -138,7 +144,7 @@ void main(void)
 		//vec3 bitangent = normalize(cross(tangent, normal));
 		mat3 TBN = mat3(tangent,normal,bitangent);
 		vec3 bumpNormal = 2 * texture(normalmap, texCoord_FS*8).rbg - 1;
-		bumpNormal.y *= 1.8;
+		bumpNormal.y *= 2.8;
 		bumpNormal.xz *= attenuation;
 		normal = normalize(TBN * bumpNormal);
 	}
@@ -149,32 +155,55 @@ void main(void)
 	float F = fresnelApproximated(normal);
 	
 	// projCoord //
-	vec3 dudvCoord = normalize((2 * texture(dudv, texCoord_FS*4 + distortion).rbg) - 1);
+	vec3 dudvCoord = normalize((2 * texture(dudvRefracReflec, texCoord_FS*4 + distortionRefracReflec).rbg) - 1);
 	vec2 projCoord = vec2(gl_FragCoord.x/windowWidth, gl_FragCoord.y/windowHeight);
  
     // Reflection //
 	vec2 reflecCoords = projCoord.xy + dudvCoord.rb * kReflection;
 	reflecCoords = clamp(reflecCoords, kReflection, 1-kReflection);
-    vec3 reflection = mix(texture(waterReflection, reflecCoords).rgb, reflectionColor,  0.25);
+    vec3 reflection = mix(texture(waterReflection, reflecCoords).rgb, refractionColor,  0.25);
     reflection *= F;
  
     // Refraction //
 	vec2 refracCoords = projCoord.xy + dudvCoord.rb * kRefraction;
 	refracCoords = clamp(refracCoords, kRefraction, 1-kRefraction);
 	
-    vec3 refraction = mix(texture(waterRefraction, refracCoords).rgb, refractionColor, 0.4); 
-	refraction *= 1-F;
+	vec3 refraction = vec3(0,0,0);
+	
+	// under water only refraction, no reflection 
+	if (isCameraUnderWater == 1){
+		reflection = vec3(0,0,0);
+		refraction = texture(waterRefraction, refracCoords).rgb;
+	}
+	else {
+		refraction = mix(texture(waterRefraction, refracCoords).rgb, refractionColor, 0.1);
+		refraction *= 1-F;
+	}
 	
 	float diffuse = diffuse(normal);
 	float specular = specular(normal);
 	vec3 diffuseLight = sunlight.ambient + sunlight.color * diffuse;
 	vec3 specularLight = sunlight.color * specular;
 	
-	vec3 fragColor = (reflection + refraction) * diffuseLight + specularLight;
+	vec3 fragColor = (reflection + refraction) * diffuseLight;
+	
+	if (isCameraUnderWater == 0){
+		fragColor += specularLight;
+	}
+	
+	// caustics
+	if (isCameraUnderWater == 1){
+		vec2 causticsTexCoord = position_FS.xz / 80;
+		vec2 causticDistortion = texture(dudvCaustics, causticsTexCoord*0.2 + distortionCaustics*0.6).rb * 0.18;
+		vec3 causticsColor = texture(caustics, causticsTexCoord + causticDistortion).rbg;
+		
+		fragColor += (causticsColor/4);
+	}
 	
 	float fogFactor = -0.0005/sightRangeFactor*(dist-zfar/5*sightRangeFactor);
 	
     vec3 rgb = mix(fogColor, fragColor, clamp(fogFactor,0,1));
 	
-	gl_FragColor = vec4(rgb,1);;
+	outputColor = vec4(rgb,1);
+	blackColor = vec4(0,0,0,1);
 }

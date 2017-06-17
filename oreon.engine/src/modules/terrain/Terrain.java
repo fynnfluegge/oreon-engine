@@ -1,19 +1,25 @@
 package modules.terrain;
 
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 import engine.core.Camera;
 import engine.math.Vec2f;
 import engine.scenegraph.Node;
-import engine.shader.Shader;
+import engine.shaders.Shader;
 import engine.utils.Constants;
 
 
-public class Terrain extends Node{
+public class Terrain extends Node implements Runnable{
 	
 	private static Terrain instance = null;
 	private TerrainConfiguration configuration;
 	private TerrainConfiguration lowPolyConfiguration;
-	private static final Object lock = new Object();
-	private int updateQuadtreeCounter = 0;
+	private int updateQuadtreeCounter = 0;	
+	private Thread thread;
+	private Lock lock = new ReentrantLock();
+	private Condition condition = lock.newCondition();
 	
 	public static Terrain getInstance() 
 	{
@@ -40,6 +46,26 @@ public class Terrain extends Node{
 		
 		addChild(new TerrainQuadtree(configuration));
 		addChild(new TerrainQuadtree(lowPolyConfiguration));
+		
+		setThread(new Thread(this));
+		getThread().start();
+	}
+	
+	@Override
+	public void run() {
+		while(true){
+			lock.lock();
+			try{
+				condition.await();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			finally{
+				lock.unlock();
+			}
+			
+			updateQuadtree();
+		}
 	}
 	
 	public void updateQuadtree(){
@@ -47,8 +73,10 @@ public class Terrain extends Node{
 			updateQuadtreeCounter++;
 		}
 		if (updateQuadtreeCounter == 1){
+			
 			((TerrainQuadtree) getChildren().get(0)).updateQuadtree();
 			((TerrainQuadtree) getChildren().get(1)).updateQuadtree();
+			
 			updateQuadtreeCounter = 0;
 		}
 	}
@@ -157,10 +185,6 @@ public class Terrain extends Node{
 		return h;
 	}
 
-	public static Object getLock() {
-		return lock;
-	}
-	
 	public TerrainConfiguration getConfiguration() {
 		return configuration;
 	}
@@ -175,5 +199,29 @@ public class Terrain extends Node{
 
 	public void setLowPolyConfiguration(TerrainConfiguration lowPolyConfiguration) {
 		this.lowPolyConfiguration = lowPolyConfiguration;
+	}
+	
+	public Lock getLock() {
+		return lock;
+	}
+
+	public void setLock(Lock lock) {
+		this.lock = lock;
+	}
+	
+	public Condition getCondition() {
+		return condition;
+	}
+
+	public void setCondition(Condition condition) {
+		this.condition = condition;
+	}
+	
+	public Thread getThread() {
+		return thread;
+	}
+
+	public void setThread(Thread thread) {
+		this.thread = thread;
 	}
 }

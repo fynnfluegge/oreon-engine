@@ -2,7 +2,7 @@ package apps.oreonworlds.shaders.plants;
 
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
-//import static org.lwjgl.opengl.GL13.GL_TEXTURE2;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE2;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import java.util.List;
@@ -11,7 +11,7 @@ import engine.core.RenderingEngine;
 import engine.math.Matrix4f;
 import engine.scenegraph.GameObject;
 import engine.scenegraph.components.Material;
-import engine.shader.Shader;
+import engine.shaders.Shader;
 import engine.utils.Constants;
 import engine.utils.ResourceLoader;
 import modules.instancing.InstancingCluster;
@@ -51,7 +51,7 @@ public class TreeTrunkShader extends Shader{
 		addUniformBlock("modelMatrices");
 		addUniformBlock("LightViewProjections");
 		addUniformBlock("Camera");
-//		addUniform("shadowMaps");
+		addUniform("shadowMaps");
 		
 		for (int i=0; i<100; i++)
 		{
@@ -85,9 +85,9 @@ public class TreeTrunkShader extends Shader{
 		material.getNormalmap().bind();
 		setUniformi("material.normalmap", 1);
 		
-//		glActiveTexture(GL_TEXTURE2);
-//		RenderingEngine.getShadowMaps().getDepthMaps().bind();
-//		setUniformi("shadowMaps", 2);
+		glActiveTexture(GL_TEXTURE2);
+		RenderingEngine.getShadowMaps().getDepthMaps().bind();
+		setUniformi("shadowMaps", 2);
 		
 		List<Integer> indices = ((InstancingCluster) object.getParent()).getHighPolyIndices();
 		

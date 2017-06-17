@@ -14,11 +14,11 @@ import static org.lwjgl.opengl.GL15.GL_WRITE_ONLY;
 import java.nio.ByteBuffer;
 
 import engine.core.Window;
-import engine.shader.bloom.BloomShader;
-import engine.shader.bloom.BloomBlurAdditiveBlendShader;
-import engine.shader.bloom.BloomBlurSceneShader;
-import engine.shader.bloom.HorizontalBloomBlurShader;
-import engine.shader.bloom.VerticalBloomBlurShader;
+import engine.shaders.bloom.BloomBlurAdditiveBlendShader;
+import engine.shaders.bloom.BloomBlurSceneShader;
+import engine.shaders.bloom.BloomShader;
+import engine.shaders.bloom.HorizontalBloomBlurShader;
+import engine.shaders.bloom.VerticalBloomBlurShader;
 import engine.textures.Texture2D;
 
 public class Bloom {

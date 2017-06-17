@@ -5,6 +5,8 @@ import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import static org.lwjgl.opengl.GL11.GL_RGBA;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.glTexImage2D;
+import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT0;
+import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT1;
 import static org.lwjgl.opengl.GL30.GL_DEPTH_COMPONENT32F;
 import static org.lwjgl.opengl.GL30.GL_RGBA16F;
 
@@ -12,6 +14,7 @@ import java.awt.Canvas;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 
 import javax.imageio.ImageIO;
 
@@ -24,7 +27,9 @@ import org.newdawn.slick.opengl.ImageIOImageData;
 
 import engine.buffers.Framebuffer;
 import engine.textures.Texture2D;
+import engine.utils.BufferUtil;
 import engine.utils.Constants;
+
 
 public class Window {
 	
@@ -33,6 +38,7 @@ public class Window {
 	private Framebuffer multisampledFbo;
 	private Framebuffer fbo;
 	private Texture2D sceneTexture;
+	private Texture2D blackScene4LightScatteringTexture;
 	private Texture2D sceneDepthmap;
 
 	
@@ -47,10 +53,17 @@ public class Window {
 	
 	public void init(){
 		
+		IntBuffer drawBuffers = BufferUtil.createIntBuffer(2);
+		drawBuffers.put(GL_COLOR_ATTACHMENT0);
+		drawBuffers.put(GL_COLOR_ATTACHMENT1);
+		drawBuffers.flip();
+		
 		multisampledFbo = new Framebuffer();
 		multisampledFbo.bind();
-		multisampledFbo.createColorBufferMultisampleAttachment(Constants.MULTISAMPLES);
+		multisampledFbo.createColorBufferMultisampleAttachment(Constants.MULTISAMPLES, 0);
+		multisampledFbo.createColorBufferMultisampleAttachment(Constants.MULTISAMPLES, 1);
 		multisampledFbo.createDepthBufferMultisampleAttachment(Constants.MULTISAMPLES);
+		multisampledFbo.setDrawBuffers(drawBuffers);
 		multisampledFbo.checkStatus();
 		multisampledFbo.unbind();
 		
@@ -60,6 +73,13 @@ public class Window {
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, getWidth(), getHeight(), 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
 		getSceneTexture().bilinearFilter();
 		getSceneTexture().clampToEdge();
+		
+		blackScene4LightScatteringTexture = new Texture2D();
+		getBlackScene4LightScatteringTexture().generate();
+		getBlackScene4LightScatteringTexture().bind();
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, getWidth(), getHeight(), 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
+		getBlackScene4LightScatteringTexture().bilinearFilter();
+		getBlackScene4LightScatteringTexture().clampToEdge();
 		
 		sceneDepthmap = new Texture2D();
 		getSceneDepthmap().generate();
@@ -71,6 +91,7 @@ public class Window {
 		fbo = new Framebuffer();
 		fbo.bind();
 		fbo.createColorTextureAttachment(getSceneTexture().getId(),0);
+		fbo.createColorTextureAttachment(getBlackScene4LightScatteringTexture().getId(),1);
 		fbo.createDepthTextureAttachment(getSceneDepthmap().getId());
 		fbo.checkStatus();
 		fbo.unbind();
@@ -133,8 +154,8 @@ public class Window {
 		Mouse.destroy();
 	}
 	
-	public void blitMultisampledFBO(){
-		multisampledFbo.blitFrameBuffer(fbo.getId());
+	public void blitMultisampledFBO(int dest, int src){
+		multisampledFbo.blitFrameBuffer(dest,src,fbo.getId());
 	}
 	
 	public boolean isCloseRequested()
@@ -171,5 +192,13 @@ public class Window {
 
 	public Framebuffer getMultisampledFbo() {
 		return multisampledFbo;
+	}
+
+	public Texture2D getBlackScene4LightScatteringTexture() {
+		return blackScene4LightScatteringTexture;
+	}
+
+	public void setBlackScene4LightScatteringTexture(Texture2D texture) {
+		this.blackScene4LightScatteringTexture = texture;
 	}
 }

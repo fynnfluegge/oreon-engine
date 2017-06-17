@@ -42,5 +42,12 @@ public class Rock02ClusterGroup extends InstancingObject{
 		addChild(new Rock02Cluster(8,new Vec3f(1759,0,-1225),getObjectData()));
 		addChild(new Rock02Cluster(8,new Vec3f(765,0,162),getObjectData()));
 		addChild(new Rock02Cluster(8,new Vec3f(654,0,907),getObjectData()));
+		addChild(new Rock02Cluster(8,new Vec3f(960,0,-840),getObjectData()));
+	}
+
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -25,7 +25,6 @@ public class CoreEngine{
 	private static float frameTime = 1.0f/framerate;
 	private boolean isRunning;
 	private static boolean shareGLContext = false;
-	private static boolean glContextfree = false;
 	private static Lock glContextLock = new ReentrantLock();
 	private static Condition holdGLContext = glContextLock.newCondition();
 	private RenderingEngine renderingEngine;
@@ -73,31 +72,30 @@ public class CoreEngine{
 			if(shareGLContext)
 			{
 				glContextLock.lock();
+				System.out.println("CoreEngine lock");
 				try{
-					try {
-						Display.releaseContext();
-						glContextfree = true;
-						holdGLContext.signalAll();
-					} catch (LWJGLException e1) {
-						e1.printStackTrace();
-					}
+
+					Display.releaseContext();
+					System.out.println("CoreEngine signal");
+					holdGLContext.signalAll();
+				} catch (LWJGLException e1) {
+					e1.printStackTrace();
 				}
 				finally{
+					System.out.println("CoreEngine unlock");
 					glContextLock.unlock();
 				}
 				
 				glContextLock.lock();
+				System.out.println("CoreEngine lock");
 				try{
-		    		while(CoreEngine.isGlContextfree())
-		    		{
-		    			try {
-		    				holdGLContext.await();
-		    			} catch (InterruptedException e) {
-		    				e.printStackTrace();
-		    			}
-		    		}
+    				System.out.println("CoreEngine await");
+    				holdGLContext.await();
+		    	} catch (InterruptedException e) {
+		    		e.printStackTrace();
 		    	}
 		    	finally{
+					System.out.println("CoreEngine unlock");
 		    		glContextLock.unlock();
 		    	}
 				
@@ -213,13 +211,5 @@ public class CoreEngine{
 
 	public static Condition getHoldGLContext() {
 		return holdGLContext;
-	}
-
-	public static boolean isGlContextfree() {
-		return glContextfree;
-	}
-
-	public static void setGlContextfree(boolean glContextfree) {
-		CoreEngine.glContextfree = glContextfree;
 	}
 }

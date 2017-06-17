@@ -7,6 +7,9 @@ in vec4 viewSpacePos;
 in vec3 tangent_FS;
 in vec3 bitangent_FS;
 
+layout(location = 0) out vec4 outputColor;
+layout(location = 1) out vec4 blackColor;
+
 struct Material
 {
 	sampler2D diffusemap;
@@ -146,7 +149,7 @@ void main()
 	
 	specularFactor = specular(directional_light.direction, normal, eyeDirection);
 	
-	diffuseLight = directional_light.ambient + directional_light.color * diffuseFactor;// * shadow(position_FS);
+	diffuseLight = directional_light.ambient + directional_light.color * diffuseFactor * shadow(position_FS);
 	specularLight = directional_light.color * specularFactor;
 	
 	vec3 diffuseColor = texture(material.diffusemap, texCoord_FS * vec2(20,4)).rgb;
@@ -161,5 +164,6 @@ void main()
 	float alpha = texture(material.diffusemap, texCoord_FS).a;
 	alpha *= alphaDistanceFactor(dist);
 	
-	gl_FragColor = vec4(rgb,alpha);
+	outputColor = vec4(rgb,alpha);
+	blackColor = vec4(0,0,0,alpha);
 }

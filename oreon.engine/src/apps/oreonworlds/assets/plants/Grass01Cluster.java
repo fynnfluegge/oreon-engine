@@ -7,14 +7,13 @@ import apps.oreonworlds.shaders.InstancingGridShader;
 import apps.oreonworlds.shaders.plants.GrassShader;
 import engine.buffers.MeshVAO;
 import engine.buffers.UBO;
-import engine.core.Camera;
 import engine.core.RenderingEngine;
 import engine.math.Vec3f;
 import engine.scenegraph.GameObject;
 import engine.scenegraph.Node;
 import engine.scenegraph.components.Renderer;
 import engine.scenegraph.components.TransformsInstanced;
-import engine.utils.BufferAllocation;
+import engine.utils.BufferUtil;
 import modules.instancing.InstancedDataObject;
 import modules.instancing.InstancingCluster;
 import modules.terrain.Terrain;
@@ -56,12 +55,12 @@ public class Grass01Cluster extends InstancingCluster{
 		 */
 		int size = Float.BYTES * 16 * instances;
 		
-		FloatBuffer worldMatricesFloatBuffer = BufferAllocation.createFloatBuffer(size);
-		FloatBuffer modelMatricesFloatBuffer = BufferAllocation.createFloatBuffer(size);
+		FloatBuffer worldMatricesFloatBuffer = BufferUtil.createFloatBuffer(size);
+		FloatBuffer modelMatricesFloatBuffer = BufferUtil.createFloatBuffer(size);
 		
 		for(TransformsInstanced matrix : getInstancingTransforms()){
-			worldMatricesFloatBuffer.put(BufferAllocation.createFlippedBuffer(matrix.getWorldMatrix()));
-			modelMatricesFloatBuffer.put(BufferAllocation.createFlippedBuffer(matrix.getModelMatrix()));
+			worldMatricesFloatBuffer.put(BufferUtil.createFlippedBuffer(matrix.getWorldMatrix()));
+			modelMatricesFloatBuffer.put(BufferUtil.createFlippedBuffer(matrix.getModelMatrix()));
 		}
 		
 		getWorldMatricesBuffer().updateData(worldMatricesFloatBuffer, size);
@@ -96,8 +95,6 @@ public class Grass01Cluster extends InstancingCluster{
 	}
 	
 	public void render(){
-		if (getCenter().sub(Camera.getInstance().getPosition()).length() < 600){
 			super.render();
-		}
 	}
 }

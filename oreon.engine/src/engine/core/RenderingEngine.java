@@ -5,15 +5,19 @@ import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glViewport;
 
 import modules.gui.GUI;
-import modules.gui.elements.FullScreenTexturePanel;
-import modules.instancing.InstancingThreadHandler;
+import modules.gui.elements.TexturePanel;
+import modules.instancing.InstancingObjectHandler;
 import modules.lighting.DirectionalLight;
+import modules.lighting.LightHandler;
 import modules.mousePicking.TerrainPicking;
 import modules.postProcessingEffects.DepthOfFieldBlur;
 import modules.postProcessingEffects.Bloom;
 import modules.postProcessingEffects.MotionBlur;
+import modules.postProcessingEffects.SunLightScattering;
+import modules.postProcessingEffects.lensFlare.LensFlare;
 import modules.shadowmapping.directionalLight.ShadowMaps;
 import modules.terrain.Terrain;
+import modules.water.UnderWater;
 import engine.configs.RenderConfig;
 import engine.math.Quaternion;
 import engine.scenegraph.Scenegraph;
@@ -23,31 +27,37 @@ import engine.utils.Constants;
 public class RenderingEngine {
 
 	private Window window;
-	private FullScreenTexturePanel screenTexture;
+	private TexturePanel fullScreenTexture;
 	private Texture2D postProcessingTexture;
 	
 	private static Quaternion clipplane;
 	private static boolean grid;
 	
 	private Scenegraph scenegraph;
-	private static InstancingThreadHandler instancingThreadHandler;
+	private InstancingObjectHandler instancingObjectHandler;
 	private static ShadowMaps shadowMaps;
 	private GUI gui;
 	
 	private MotionBlur motionBlur;
 	private DepthOfFieldBlur dofBlur;
 	private Bloom bloom;
+	private SunLightScattering sunlightScattering;
+	private LensFlare lensFlare;
+	private UnderWater underWater;
 	
 	private static boolean motionBlurEnabled = true;
 	private static boolean depthOfFieldBlurEnabled = true;
 	private static boolean bloomEnabled = true;
+	private static boolean lightScatteringEnabled = true;
 	private static boolean waterReflection = false;
 	private static boolean waterRefraction = false;
-	
+	private static boolean cameraUnderWater = false;
+	private static float t_causticsDistortion = 0;
 	
 	public RenderingEngine(Scenegraph scenegraph, GUI gui)
 	{
 		window = Window.getInstance();
+		instancingObjectHandler = InstancingObjectHandler.getInstance();
 		this.scenegraph = scenegraph;
 		this.gui = gui;
 	}
@@ -57,19 +67,31 @@ public class RenderingEngine {
 		window.init();
 		gui.init();
 		
-		instancingThreadHandler = new InstancingThreadHandler();
 		shadowMaps = new ShadowMaps();
-		screenTexture = new FullScreenTexturePanel();
+		fullScreenTexture = new TexturePanel();
 		motionBlur = new MotionBlur();
 		dofBlur = new DepthOfFieldBlur();
 		bloom = new Bloom();
+		sunlightScattering = new SunLightScattering();
+		lensFlare = new LensFlare();
+		underWater = UnderWater.getInstance();
 	}
 	
 	public void render()
-	{		
+	{	
+		Input.update();
+		Camera.getInstance().update();
+		
+		DirectionalLight.getInstance().update();
+		if (Camera.getInstance().isCameraMoved()){
+			if (scenegraph.terrainExists()){
+				((Terrain) scenegraph.getTerrain()).updateQuadtree();
+			}
+		}
+		
 		setClipplane(Constants.PLANE0);
 		RenderConfig.clearScreen();
-
+		
 		// render shadow maps
 		shadowMaps.getFBO().bind();
 		glClear(GL_DEPTH_BUFFER_BIT);
@@ -79,16 +101,42 @@ public class RenderingEngine {
 		// render scene/deferred maps
 		window.getMultisampledFbo().bind();
 		RenderConfig.clearScreen();
-		scenegraph.render();	
+		scenegraph.render();
 		window.getMultisampledFbo().unbind();
+		
 		window.getFBO().bind();
 		RenderConfig.clearScreen();
 		window.getFBO().unbind();
-		window.blitMultisampledFBO();
+		// blit SceneTexture
+		window.blitMultisampledFBO(0,0);
+		// blit light Scattering SceneTexture
+		window.blitMultisampledFBO(1,1);
+		
+		// start Threads to update instancing objects
+		instancingObjectHandler.update();
+		
+		// start Thread to update Terrain Quadtree
+		//TODO Context Sharing
+		/*if (Camera.getInstance().isCameraMoved()){
+			if (scenegraph.terrainExists()){
+				((Terrain) scenegraph.getTerrain()).getLock().lock();;
+				try{
+					((Terrain) scenegraph.getTerrain()).getCondition().signalAll();
+				}
+				finally{
+					((Terrain) scenegraph.getTerrain()).getLock().unlock();
+				}
+			}
+		}*/
+		
+		// post processing effects
 		
 		postProcessingTexture = new Texture2D(window.getSceneTexture());
 		
-		// post processing effects
+		if (isCameraUnderWater()){
+			underWater.render(postProcessingTexture, window.getSceneDepthmap());
+			postProcessingTexture = underWater.getUnderwaterSceneTexture();
+		}
 		
 		// HDR Bloom
 		if (isBloomEnabled()) {
@@ -101,9 +149,9 @@ public class RenderingEngine {
 			
 			// copy scene texture into low-resolution texture
 			dofBlur.getLowResFbo().bind();
-			screenTexture.setTexture(postProcessingTexture);
+			fullScreenTexture.setTexture(postProcessingTexture);
 			glViewport(0,0,(int)(window.getWidth()/1.4f),(int)(window.getHeight()/1.4f));
-			screenTexture.render();
+			fullScreenTexture.render();
 			dofBlur.getLowResFbo().unbind();
 			glViewport(0,0,window.getWidth(),window.getHeight());
 			
@@ -113,35 +161,41 @@ public class RenderingEngine {
 		
 		// Motion Blur
 		if (isMotionBlurEnabled()){
-			if (Camera.getInstance().getPreviousPosition().sub(Camera.getInstance().getPosition()).length() > 0.001f ||
+			if (Camera.getInstance().getPreviousPosition().sub(Camera.getInstance().getPosition()).length() > 0.1f ||
 				Camera.getInstance().getForward().sub(Camera.getInstance().getPreviousForward()).length() > 0.01f){
 				motionBlur.render(window.getSceneDepthmap(), postProcessingTexture);
 				postProcessingTexture = motionBlur.getMotionBlurSceneTexture();
 			}
 		}
 		
+		if (isLightScatteringEnabled() && !isGrid()){
+			sunlightScattering.render(postProcessingTexture,window.getBlackScene4LightScatteringTexture());
+			postProcessingTexture = sunlightScattering.getSunLightScatteringSceneTexture();
+		}
+
 		// final scene texture
-		screenTexture.setTexture(postProcessingTexture);	
+		fullScreenTexture.setTexture(postProcessingTexture);	
 
+		fullScreenTexture.render();
+		
+		window.getFBO().bind();
+		LightHandler.doOcclusionQueries();
+		window.getFBO().unbind();
+		
+		lensFlare.render();
+		
 		gui.render();
-		screenTexture.render();
-
+		
+		// draw into OpenGL window
 		window.render();
 	}
 	
 	public void update()
 	{
-//		instancingThreadHandler.update();
-		
 		Input.update();
 		Camera.getInstance().update();
 		gui.update();
-		scenegraph.update();
-		if (Camera.getInstance().isCameraMoved()){
-			if (scenegraph.terrainExists())
-				((Terrain) scenegraph.getTerrain()).updateQuadtree();
-		}
-		DirectionalLight.getInstance().update();
+		
 		TerrainPicking.getInstance().getTerrainPosition();
 	}
 	
@@ -222,13 +276,23 @@ public class RenderingEngine {
 		RenderingEngine.waterRefraction = waterRefraction;
 	}
 
-	public static InstancingThreadHandler getInstancingThreadHandler() {
-		return instancingThreadHandler;
+	public static boolean isLightScatteringEnabled() {
+		return lightScatteringEnabled;
 	}
 
-	public static void setInstancingThreadHandler(InstancingThreadHandler instancingThreadHandler) {
-		RenderingEngine.instancingThreadHandler = instancingThreadHandler;
+	public static void setLightScatteringEnabled(boolean lightScatteringEnabled) {
+		RenderingEngine.lightScatteringEnabled = lightScatteringEnabled;
+	}
+	
+	public static boolean isCameraUnderWater() {
+		return cameraUnderWater;
 	}
 
+	public static void setCameraUnderWater(boolean underWater) {
+		RenderingEngine.cameraUnderWater = underWater;
+	}
 
+	public static float getT_causticsDistortion() {
+		return t_causticsDistortion;
+	}
 }

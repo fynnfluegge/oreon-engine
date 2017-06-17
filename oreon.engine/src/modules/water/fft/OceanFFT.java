@@ -9,8 +9,8 @@ import static org.lwjgl.opengl.GL43.glDispatchCompute;
 import static org.lwjgl.opengl.GL11.glFinish;
 
 import engine.core.Input;
-import engine.shader.computing.FFTButterflyShader;
-import engine.shader.computing.FFTInversionShader;
+import engine.shaders.computing.FFTButterflyShader;
+import engine.shaders.computing.FFTInversionShader;
 import engine.textures.Texture2D;
 import modules.gpgpu.fft.FastFourierTransform;
 

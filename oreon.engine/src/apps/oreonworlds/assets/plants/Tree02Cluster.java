@@ -16,7 +16,7 @@ import engine.scenegraph.GameObject;
 import engine.scenegraph.Node;
 import engine.scenegraph.components.Renderer;
 import engine.scenegraph.components.TransformsInstanced;
-import engine.utils.BufferAllocation;
+import engine.utils.BufferUtil;
 import modules.instancing.InstancedDataObject;
 import modules.instancing.InstancingCluster;
 import modules.terrain.Terrain;
@@ -58,12 +58,12 @@ public class Tree02Cluster extends InstancingCluster{
 		 */
 		int size = Float.BYTES * 16 * instances;
 		
-		FloatBuffer worldMatricesFloatBuffer = BufferAllocation.createFloatBuffer(size);
-		FloatBuffer modelMatricesFloatBuffer = BufferAllocation.createFloatBuffer(size);
+		FloatBuffer worldMatricesFloatBuffer = BufferUtil.createFloatBuffer(size);
+		FloatBuffer modelMatricesFloatBuffer = BufferUtil.createFloatBuffer(size);
 		
 		for(TransformsInstanced matrix : getInstancingTransforms()){
-			worldMatricesFloatBuffer.put(BufferAllocation.createFlippedBuffer(matrix.getWorldMatrix()));
-			modelMatricesFloatBuffer.put(BufferAllocation.createFlippedBuffer(matrix.getModelMatrix()));
+			worldMatricesFloatBuffer.put(BufferUtil.createFlippedBuffer(matrix.getWorldMatrix()));
+			modelMatricesFloatBuffer.put(BufferUtil.createFlippedBuffer(matrix.getModelMatrix()));
 		}
 		
 		getWorldMatricesBuffer().updateData(worldMatricesFloatBuffer, size);
@@ -79,35 +79,9 @@ public class Tree02Cluster extends InstancingCluster{
 			object.addComponent("Renderer", renderer);
 			addChild(object);
 		}
-		
-		updateUBOs();
-	}
-
-	public void update()
-	{	
-		super.update();
-		
-		if (getCenter().sub(Camera.getInstance().getPosition()).length() < 800){
-			
-			updateUBOs();
-		}
-		else if(getHighPolyIndices().size() > 0){
-			System.out.println(getCenter().sub(Camera.getInstance().getPosition()).length());
-			System.out.println(getHighPolyIndices().size());
-		}
-		
-		if (RenderingEngine.isGrid()){
-			for (Node child : getChildren()){
-				((GameObject) child).getRenderInfo().setShader(InstancingGridShader.getInstance());
-			}
-		}
-		else{
-			((GameObject) getChildren().get(0)).getRenderInfo().setShader(TreeTrunkShader.getInstance());
-			((GameObject) getChildren().get(1)).getRenderInfo().setShader(TreeLeavesShader.getInstance());
-			((GameObject) getChildren().get(2)).getRenderInfo().setShader(TreeBillboardShader.getInstance());
-		}
 	}
 	
+	@Override
 	public void updateUBOs(){
 		
 		getHighPolyIndices().clear();
@@ -125,6 +99,22 @@ public class Tree02Cluster extends InstancingCluster{
 		((MeshVAO) ((Renderer) ((GameObject) getChildren().get(1)).getComponent("Renderer")).getVao()).setInstances(getHighPolyIndices().size());
 		
 		((MeshVAO) ((Renderer) ((GameObject) getChildren().get(2)).getComponent("Renderer")).getVao()).setInstances(getLowPolyIndices().size());
+	}
+
+	public void update()
+	{	
+		super.update();
+		
+		if (RenderingEngine.isGrid()){
+			for (Node child : getChildren()){
+				((GameObject) child).getRenderInfo().setShader(InstancingGridShader.getInstance());
+			}
+		}
+		else{
+			((GameObject) getChildren().get(0)).getRenderInfo().setShader(TreeTrunkShader.getInstance());
+			((GameObject) getChildren().get(1)).getRenderInfo().setShader(TreeLeavesShader.getInstance());
+			((GameObject) getChildren().get(2)).getRenderInfo().setShader(TreeBillboardShader.getInstance());
+		}
 	}
 	
 	public void renderShadows(){

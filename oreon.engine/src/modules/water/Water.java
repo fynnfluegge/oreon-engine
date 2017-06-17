@@ -10,8 +10,9 @@ import modules.terrain.Terrain;
 import modules.water.fft.OceanFFT;
 import engine.buffers.Framebuffer;
 import engine.buffers.PatchVAO;
-import engine.configs.Default;
+import engine.configs.AlphaTestCullFaceDisable;
 import engine.configs.RenderConfig;
+import engine.core.Camera;
 import engine.core.Input;
 import engine.core.Window;
 import engine.core.RenderingEngine;
@@ -21,7 +22,7 @@ import engine.scenegraph.GameObject;
 import engine.scenegraph.Scenegraph;
 import engine.scenegraph.components.RenderInfo;
 import engine.scenegraph.components.Renderer;
-import engine.shader.water.OceanBRDFShader;
+import engine.shaders.water.OceanBRDFShader;
 import engine.textures.Texture2D;
 import engine.utils.Constants;
 import engine.utils.Util;
@@ -64,6 +65,7 @@ public class Water extends GameObject{
 	private float kReflection;
 	private float kRefraction;	
 	private Texture2D dudv;
+	private Texture2D caustics;
 	private Texture2D reflectionTexture;
 	private Texture2D refractionTexture;
 	private Texture2D refractionDepthTexture;
@@ -72,14 +74,13 @@ public class Water extends GameObject{
 	
 	private OceanFFT fft;
 	private NormalMapRenderer normalmapRenderer;
-	
-	private Scenegraph scenegraph;
-	
+	private boolean cameraUnderwater;
+
 	public Water(int patches, int fftResolution)
 	{		
 		PatchVAO meshBuffer = new PatchVAO();
 		meshBuffer.addData(generatePatch2D4x4(patches),16);
-		setRenderInfo(new RenderInfo(new Default(), OceanBRDFShader.getInstance()));
+		setRenderInfo(new RenderInfo(new AlphaTestCullFaceDisable(0.1f), OceanBRDFShader.getInstance()));
 		Renderer renderer = new Renderer(OceanBRDFShader.getInstance(), meshBuffer);
 		
 		dudv = new Texture2D("./res/textures/water/dudv/dudv1.jpg");
@@ -127,6 +128,7 @@ public class Water extends GameObject{
 	
 	public void update()
 	{
+		setCameraUnderwater(Camera.getInstance().getPosition().getY() < (getTransform().getTranslation().getY())); 
 //		if (Input.getHoldingKey(Keyboard.KEY_G))
 //		{
 //			getRenderInfo().setShader(OceanGridShader.getInstance());
@@ -140,8 +142,15 @@ public class Water extends GameObject{
 	
 	public void render()
 	{
-		glEnable(GL_CLIP_DISTANCE6);
-		
+		// TODO underwater clipping
+		if (!isCameraUnderwater()){
+			glEnable(GL_CLIP_DISTANCE6);
+			RenderingEngine.setCameraUnderWater(false);
+		}
+		else {
+			RenderingEngine.setCameraUnderWater(true);
+		}
+			
 		if (!Input.isPause()){
 			distortion += getDistortionOffset();
 			motion += getMotionOffset();
@@ -159,13 +168,11 @@ public class Water extends GameObject{
 //		scenegraph.getTransform().getTranslation().setY(RenderingEngine.getClipplane().getW() - 
 //				(scenegraph.getTransform().getTranslation().getY() - RenderingEngine.getClipplane().getW()));
 			
-			if (scenegraph.terrainExists()){
-				synchronized(Terrain.getLock()){
-					Terrain terrain = (Terrain) scenegraph.getTerrain();
-					terrain.getLowPolyConfiguration().setScaleY(terrain.getLowPolyConfiguration().getScaleY() * -1f);
-					terrain.getLowPolyConfiguration().setWaterReflectionShift((int) (getClipplane().getW() * 2f));
-				}
-			}
+		if (scenegraph.terrainExists()){
+				Terrain terrain = (Terrain) scenegraph.getTerrain();
+				terrain.getLowPolyConfiguration().setScaleY(terrain.getLowPolyConfiguration().getScaleY() * -1f);
+				terrain.getLowPolyConfiguration().setWaterReflectionShift((int) (getClipplane().getW() * 2f));
+		}
 		
 		scenegraph.update();
 		
@@ -177,11 +184,16 @@ public class Water extends GameObject{
 		this.getReflectionFBO().bind();
 		RenderConfig.clearScreenDeepOceanReflection();
 		glFrontFace(GL_CCW);
-		scenegraph.getRoot().render();
-		if (scenegraph.terrainExists()){
-			((Terrain) scenegraph.getTerrain()).renderLowPoly();
+		
+		if (!isCameraUnderwater()){
+			scenegraph.getRoot().render();
+			if (scenegraph.terrainExists()){
+				((Terrain) scenegraph.getTerrain()).renderLowPoly();
+			}
 		}
-		glFinish(); //important, prevent conflicts with following compute shaders
+		
+		// glFinish() important, to prevent conflicts with following compute shaders
+		glFinish(); 
 		glFrontFace(GL_CW);
 		this.getReflectionFBO().unbind();
 		RenderingEngine.setWaterReflection(false);
@@ -195,11 +207,9 @@ public class Water extends GameObject{
 //				(scenegraph.getTransform().getTranslation().getY() - RenderingEngine.getClipplane().getW()));
 
 		if (scenegraph.terrainExists()){
-			synchronized(Terrain.getLock()){
 				Terrain terrain = (Terrain) scenegraph.getTerrain();
 				terrain.getLowPolyConfiguration().setScaleY(terrain.getLowPolyConfiguration().getScaleY() / -1f);
 				terrain.getLowPolyConfiguration().setWaterReflectionShift(0);
-			}
 		}
 
 		scenegraph.update();
@@ -207,12 +217,18 @@ public class Water extends GameObject{
 		// render to refraction texture
 		RenderingEngine.setWaterRefraction(true);
 		this.getRefractionFBO().bind();
-		RenderConfig.clearScreenDeepOceanRefraction();
+		if (isCameraUnderwater()){
+			RenderConfig.clearScreenDeepOceanReflection();
+		} else {
+			RenderConfig.clearScreenDeepOceanRefraction();
+		}
 		scenegraph.getRoot().render();
 		if (scenegraph.terrainExists()){
 			((Terrain) scenegraph.getTerrain()).renderLowPoly();
 		}
-		glFinish(); //important, prevent conflicts with following compute shaders
+		
+		// glFinish() important, to prevent conflicts with following compute shaders
+		glFinish();
 		this.getRefractionFBO().unbind();
 		RenderingEngine.setWaterRefraction(false);
 		
@@ -225,11 +241,14 @@ public class Water extends GameObject{
 		normalmapRenderer.render(fft.getDy());
 		
 		Window.getInstance().getMultisampledFbo().bind();
+		getRenderInfo().getConfig().enable();
 		getComponents().get("Renderer").render();
-		glFinish(); //important, prevent conflicts with following compute shaders
+		getRenderInfo().getConfig().disable();
+		// glFinish() important, to prevent conflicts with following compute shaders
+		glFinish();
 		Window.getInstance().getMultisampledFbo().unbind();
 	}
-	
+		
 	public void loadSettingsFile(String file)
 	{
 		BufferedReader reader = null;
@@ -417,7 +436,7 @@ public class Water extends GameObject{
 		return distortionOffset;
 	}
 	
-	public float getDistorion() {
+	public float getDistortion() {
 		return distortion;
 	}
 
@@ -537,19 +556,27 @@ public class Water extends GameObject{
 		this.normalmapRenderer = normalmapRenderer;
 	}
 
-	public Scenegraph getScenegraph() {
-		return scenegraph;
-	}
-
-	public void setScenegraph(Scenegraph scenegraph) {
-		this.scenegraph = scenegraph;
-	}
-
 	public Texture2D getRefractionDepthTexture() {
 		return refractionDepthTexture;
 	}
 
 	public void setRefractionDepthTexture(Texture2D refractionDepthTexture) {
 		this.refractionDepthTexture = refractionDepthTexture;
+	}
+	
+	public void setCameraUnderwater(boolean cameraUnderwater) {
+		this.cameraUnderwater = cameraUnderwater;
+	}
+
+	public boolean isCameraUnderwater() {
+		return cameraUnderwater;
+	}
+	
+	public Texture2D getCaustics() {
+		return caustics;
+	}
+
+	public void setCaustics(Texture2D caustics) {
+		this.caustics = caustics;
 	}
 }

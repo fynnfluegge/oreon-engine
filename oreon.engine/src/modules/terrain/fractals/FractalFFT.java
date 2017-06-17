@@ -8,8 +8,8 @@ import static org.lwjgl.opengl.GL42.glBindImageTexture;
 import static org.lwjgl.opengl.GL42.glTexStorage2D;
 import static org.lwjgl.opengl.GL43.glDispatchCompute;
 import engine.math.Vec2f;
-import engine.shader.computing.FFTButterflyShader;
-import engine.shader.computing.FFTInversionShader;
+import engine.shaders.computing.FFTButterflyShader;
+import engine.shaders.computing.FFTInversionShader;
 import engine.textures.Texture2D;
 import modules.gpgpu.fft.FastFourierTransform;
 

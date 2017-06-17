@@ -1,6 +1,5 @@
 package modules.gui.elements;
 
-import modules.gui.Button;
 import engine.core.Window;
 import engine.core.RenderingEngine;
 import engine.math.Vec2f;
