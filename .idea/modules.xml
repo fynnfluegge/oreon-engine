@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/org.oreon.engine.iml" filepath="$PROJECT_DIR$/.idea/org.oreon.engine.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.oreon.engine.core/org.oreon.engine.core.iml" filepath="$PROJECT_DIR$/org.oreon.engine.core/org.oreon.engine.core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.oreon.engine.parent/org.oreon.engine.parent.iml" filepath="$PROJECT_DIR$/org.oreon.engine.parent/org.oreon.engine.parent.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org.oreon.engine.plugin/org.oreon.engine.plugin.iml" filepath="$PROJECT_DIR$/org.oreon.engine.plugin/org.oreon.engine.plugin.iml" />
+    </modules>
+  </component>
+</project>

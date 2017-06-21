@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.oreon.engine</groupId>
+    <artifactId>org.oreon.engine</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0-SNAPSHOT</version>
+
+    <parent>
+        <artifactId>org.oreon.engine.parent</artifactId>
+        <groupId>org.oreon.engine</groupId>
+        <version>1.0-SNAPSHOT</version>
+        <relativePath>org.oreon.engine.parent</relativePath>
+    </parent>
+
+    <modules>
+        <module>org.oreon.engine.core</module>
+        <module>org.oreon.engine.plugin</module>
+    </modules>
+
+    <properties>
+        <skipTests>true</skipTests>
+        <maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
+        <buildTimestamp>${maven.build.timestamp}</buildTimestamp>
+        <!-- <buildId>${buildType}${buildTimestamp}</buildId> -->
+    </properties>
+
+</project>

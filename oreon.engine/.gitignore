@@ -1,7 +1,0 @@
-bin/cdk/
-bin/engine/
-bin/modules/
-bin/simulations/
-.project
-.classpath
-/bin/

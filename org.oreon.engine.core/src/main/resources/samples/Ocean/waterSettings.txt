@@ -1,0 +1,17 @@
+
+choppy 0
+delta_T 0.04
+displacementScale 2.5
+choppiness 12.0
+distortion 1.0E-3
+wavemotion 0.00002
+texDetail 25
+tessellationFactor 2000
+tessellationSlope 1.6
+tessellationShift -0.02
+detailRange 1800
+shininess 160.0
+emission 2.0
+kReflection 0.018
+kRefraction 0.01
+normalStrength 0.5

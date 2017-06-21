@@ -1,0 +1,10 @@
+# author Fynn Flügge
+o pssm panel
+
+v 0 0 0
+v 0 1 0
+v 1 0 0
+v 1 1 0
+
+f 2 3 1
+f 3 2 4
