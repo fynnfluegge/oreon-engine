@@ -38,12 +38,28 @@
                 <version>1.0.1</version>
             </dependency>
 
-
         </dependencies>
     </dependencyManagement>
+
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>nexus-snapshots</id>
+            <url>http://nexus.archenroot.org:50001/nexus/content/repositories/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
     <build>
         <pluginManagement>
             <plugins>
+
+                <!--
+                Apache Maven Compiler Plugin
+
+                The Compiler Plugin is used to compile the sources of your project. Since 3.0, the default compiler
+                is javax.tools.JavaCompiler (if you are using java 1.6) and is used to compile Java sources. If you want
+                 to force the plugin using javac, you must configure the plugin option forceJavacCompilerUse.
+                -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
@@ -53,19 +69,271 @@
                         <target>${java.version}</target>
                     </configuration>
                 </plugin>
+
+                <!--
+                Apache Maven SureFire Plugin
+
+                The Surefire Plugin is used during the test phase of the build lifecycle to execute the unit tests of
+                an application. It generates reports in two different file formats:
+                    - Plain text files (*.txt)
+                    - XML files (*.xml)
+                -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.20-PAXEXAM-PATCH</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.apache.maven.surefire</groupId>
+                            <artifactId>surefire-junit47</artifactId>
+                            <version>2.14.1</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+
+                <!--
+                Apache Maven Shade Plugin
+
+                This plugin provides the capability to package the artifact in an uber-jar, including its dependencies
+                and to shade - i.e. rename - the packages of some of the dependencies.
+
+                Hint: this plugin is used when you need UBER JAR to be generated and provides more precise configuration
+                than assembly plugin
+                -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-shade-plugin</artifactId>
+                    <version>2.4.3</version>
+                    <configuration>
+                        <!-- put your configurations here -->
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>shade</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+
+                <!--
+                Apache Maven Dependency Plugin
+
+                The dependency plugin provides the capability to manipulate artifacts. It can copy and/or unpack
+                artifacts from local or remote repositories to a specified location.
+                -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <version>3.0.1</version>
+                    <executions>
+                        <execution>
+                            <id>copy</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>copy</goal>
+                            </goals>
+                            <configuration>
+                                <artifactItems>
+                                    <artifactItem>
+                                        <groupId>[ groupId ]</groupId>
+                                        <artifactId>[ artifactId ]</artifactId>
+                                        <version>[ version ]</version>
+                                        <type>[ packaging ]</type>
+                                        <classifier> [classifier - optional] </classifier>
+                                        <overWrite>[ true or false ]</overWrite>
+                                        <outputDirectory>[ output directory ]</outputDirectory>
+                                        <destFileName>[ filename ]</destFileName>
+                                    </artifactItem>
+                                </artifactItems>
+                                <!-- other configurations here -->
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+
+                <!--
+                Apache Maven Jar Plugin
+
+                This plugin provides the capability to build jars. If you like to sign jars please use the
+                Maven Jarsigner Plugin.
+                -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
-                    <version>2.4</version>
+                    <version>3.0.2</version>
                     <configuration>
                         <archive>
                             <manifest>
-                                <mainClass>com.mkyong.core.App</mainClass>
+                                <!-- <addClasspath>TBC - OpenGL libs</addClasspath> -->
+                                <mainClass>TBC</mainClass>
                             </manifest>
                         </archive>
                     </configuration>
                 </plugin>
+
+                <!--
+                Nexus Staging Maven Plugin
+
+                The Nexus Staging Maven plugin is a specific and more powerful replacement for the Maven Deploy
+                plugin with a number of features specifically geared towards usage with the staging suite.
+                -->
+                <plugin>
+                    <groupId>org.sonatype.plugins</groupId>
+                    <artifactId>nexus-staging-maven-plugin</artifactId>
+                    <version>1.6.6</version>
+                    <extensions>true</extensions>
+                    <configuration>
+                        <serverId>nexus</serverId>
+                        <nexusUrl>http://nexus.archenroot.org:50001/nexus/</nexusUrl>
+                    </configuration>
+                </plugin>
+
+                <!--
+                Apache Maven Resource Plugin
+
+                The Resources Plugin handles the copying of project resources to the output directory.
+                There are two different kinds of resources: main resources and test resources.
+                The difference is that the main resources are the resources associated to the main source code
+                while the test resources are associated to the test source code.
+                -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>3.0.2</version>
+                    <configuration>
+                        <encoding>UTF-8</encoding>
+                    </configuration>
+                </plugin>
+
+                <!--
+                Apache Maven Enforcer Plugin
+
+                The Enforcer plugin provides goals to control certain environmental constraints such as Maven version,
+                JDK version and OS family along with many more standard rules and user created rules.
+                -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <version>1.4.1</version>
+                    <executions>
+                        <execution>
+                            <id>enforce-versions</id>
+                            <goals>
+                                <goal>enforce</goal>
+                            </goals>
+                            <configuration>
+                                <rules>
+                                    <bannedPlugins>
+                                        <!-- will only display a warning but does not fail the build. -->
+                                        <level>WARN</level>
+                                        <excludes>
+                                            <exclude>org.apache.maven.plugins:maven-verifier-plugin</exclude>
+                                        </excludes>
+                                        <message>Please consider using the maven-invoker-plugin (http://maven.apache.org/plugins/maven-invoker-plugin/)!</message>
+                                    </bannedPlugins>
+                                    <requireMavenVersion>
+                                        <version>2.0.6</version>
+                                    </requireMavenVersion>
+                                    <requireJavaVersion>
+                                        <version>1.8</version>
+                                    </requireJavaVersion>
+                                    <requireOS>
+                                        <family>unix</family>
+                                    </requireOS>
+                                </rules>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+
+                <!--
+                Apache Maven Javadoc Plugin
+
+                The Javadoc Plugin uses the Javadoc tool to generate javadocs for the specified project.
+                -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>2.10.4</version>
+                    <configuration>
+                        <show>private</show>
+                        <nohelp>true</nohelp>
+                    </configuration>
+                </plugin>
+                <!-- NOTE: Alternative to standard javadoc plugin above
+                Sphinx Maven Plugin
+
+                The sphinx-maven-plugin is a Maven site plugin that uses Sphinx to generate the main documentation.
+                Sphinx itself was originally created by the Python community for the new Python documentation.
+                It uses a plain text format called reStructured Text which it then compiles into a variety of
+                documentation formats such as HTML, LaTeX (for PDF), epub. reStructured Text is similar to Markdown
+                but - at least via Sphinx - has better support for multi-page documentation.
+                -->
+                <plugin>
+                    <groupId>kr.motd.maven</groupId>
+                    <artifactId>sphinx-maven-plugin</artifactId>
+                    <version>1.5.3.Final</version>
+                    <configuration>
+                        <outputDirectory>${project.build.directory}/docs</outputDirectory>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>generate</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
             </plugins>
         </pluginManagement>
     </build>
+
+    <reporting>
+        <plugins>
+            <!--
+            Apache Maven Javadoc Plugin
+
+            NOTE: Site generation
+            -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.10.4</version>
+                <configuration>
+                    <stylesheetfile>${basedir}/src/main/javadoc/stylesheet.css</stylesheetfile>
+                    <show>public</show>
+                </configuration>
+            </plugin>
+            <!--
+            Sphinx Maven Plugin
+
+            NOTE: Site generation
+            -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>2.9</version>
+                <reportSets>
+                    <reportSet>
+                        <reports />
+                    </reportSet>
+                </reportSets>
+            </plugin>
+            <plugin>
+                <groupId>kr.motd.maven</groupId>
+                <artifactId>sphinx-maven-plugin</artifactId>
+                <version>1.5.3.Final</version>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>generate</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+        </plugins>
+    </reporting>
 </project>

@@ -3,6 +3,11 @@
   <component name="issues">
     <option name="index">
       <map>
+        <entry key="/Dummy.txt">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$APPLICATION_CONFIG_DIR$/consoles/graphdb-parameters/Oreon.Engine-OpenGL-Java_archenrootNeo4jGraphDbConsoleParametersPanel.json">
           <value>
             <set />
