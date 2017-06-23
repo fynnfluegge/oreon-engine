@@ -10,8 +10,7 @@ import modules.terrain.Terrain;
 import modules.water.fft.OceanFFT;
 import engine.buffers.Framebuffer;
 import engine.buffers.PatchVAO;
-import engine.configs.AlphaTestCullFaceDisable;
-import engine.configs.RenderConfig;
+import engine.configs.WaterConfig;
 import engine.core.Camera;
 import engine.core.Input;
 import engine.core.Window;
@@ -75,12 +74,17 @@ public class Water extends GameObject{
 	private OceanFFT fft;
 	private NormalMapRenderer normalmapRenderer;
 	private boolean cameraUnderwater;
+	
+	private WaterConfig config;
 
 	public Water(int patches, int fftResolution)
 	{		
 		PatchVAO meshBuffer = new PatchVAO();
 		meshBuffer.addData(generatePatch2D4x4(patches),16);
-		setRenderInfo(new RenderInfo(new AlphaTestCullFaceDisable(0.1f), OceanBRDFShader.getInstance()));
+		
+		config = new WaterConfig();
+		
+		setRenderInfo(new RenderInfo(config, OceanBRDFShader.getInstance()));
 		Renderer renderer = new Renderer(OceanBRDFShader.getInstance(), meshBuffer);
 		
 		dudv = new Texture2D("./res/textures/water/dudv/dudv1.jpg");
@@ -182,7 +186,7 @@ public class Water extends GameObject{
 		RenderingEngine.setWaterReflection(true);
 		
 		this.getReflectionFBO().bind();
-		RenderConfig.clearScreenDeepOceanReflection();
+		config.clearScreenDeepOceanReflection();
 		glFrontFace(GL_CCW);
 		
 		if (!isCameraUnderwater()){
@@ -217,11 +221,9 @@ public class Water extends GameObject{
 		// render to refraction texture
 		RenderingEngine.setWaterRefraction(true);
 		this.getRefractionFBO().bind();
-		if (isCameraUnderwater()){
-			RenderConfig.clearScreenDeepOceanReflection();
-		} else {
-			RenderConfig.clearScreenDeepOceanRefraction();
-		}
+		
+		config.clearScreenDeepOceanRefraction();
+	
 		scenegraph.getRoot().render();
 		if (scenegraph.terrainExists()){
 			((Terrain) scenegraph.getTerrain()).renderLowPoly();

@@ -19,7 +19,6 @@ public class Engine implements Runnable{
 		OpenGLCanvas = canvas;
 	}
 
-	@Override
 	public void run() {
 		
 		Game game = new Game();

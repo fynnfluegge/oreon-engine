@@ -63,7 +63,6 @@ public class Palm01ClusterGroup extends InstancingObject{
 		addChild(new Palm01Cluster(4,new Vec3f(1111,0,561),getObjectData()));
 	}
 
-	@Override
 	public void run() {
 		// TODO Auto-generated method stub
 		

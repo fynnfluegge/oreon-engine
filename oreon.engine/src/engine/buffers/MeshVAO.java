@@ -111,7 +111,6 @@ public class MeshVAO implements VAO{
 			glBindVertexArray(0);
 	}
 
-	@Override
 	public void delete() {
 		glBindVertexArray(vaoId);
 		glDeleteBuffers(vbo);

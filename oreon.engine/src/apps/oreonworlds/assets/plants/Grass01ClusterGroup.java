@@ -151,7 +151,6 @@ public class Grass01ClusterGroup extends InstancingObject{
 		getThread().start();
 	}
 	
-	@Override
 	public void run(){
 		
 		while(true){

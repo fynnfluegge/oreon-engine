@@ -89,7 +89,6 @@ public class Tree01ClusterGroup extends InstancingObject{
 //		addChild(new Tree01Cluster(10,new Vec3f(1375,0,1609),getObjectData()));
 	}
 
-	@Override
 	public void run() {
 		// TODO Auto-generated method stub
 		
