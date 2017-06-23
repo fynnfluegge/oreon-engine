@@ -5,3 +5,5 @@ bin/simulations/
 .project
 .classpath
 /bin/
+/target/
+.settings

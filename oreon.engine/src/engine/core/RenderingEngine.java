@@ -18,7 +18,7 @@ import modules.postProcessingEffects.lensFlare.LensFlare;
 import modules.shadowmapping.directionalLight.ShadowMaps;
 import modules.terrain.Terrain;
 import modules.water.UnderWater;
-import engine.configs.RenderConfig;
+import engine.configs.Default;
 import engine.math.Quaternion;
 import engine.scenegraph.Scenegraph;
 import engine.textures.Texture2D;
@@ -90,7 +90,7 @@ public class RenderingEngine {
 		}
 		
 		setClipplane(Constants.PLANE0);
-		RenderConfig.clearScreen();
+		Default.clearScreen();
 		
 		// render shadow maps
 		shadowMaps.getFBO().bind();
@@ -100,12 +100,12 @@ public class RenderingEngine {
 		
 		// render scene/deferred maps
 		window.getMultisampledFbo().bind();
-		RenderConfig.clearScreen();
+		Default.clearScreen();
 		scenegraph.render();
 		window.getMultisampledFbo().unbind();
 		
 		window.getFBO().bind();
-		RenderConfig.clearScreen();
+		Default.clearScreen();
 		window.getFBO().unbind();
 		// blit SceneTexture
 		window.blitMultisampledFBO(0,0);

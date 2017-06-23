@@ -51,7 +51,6 @@ public class Terrain extends Node implements Runnable{
 		getThread().start();
 	}
 	
-	@Override
 	public void run() {
 		while(true){
 			lock.lock();

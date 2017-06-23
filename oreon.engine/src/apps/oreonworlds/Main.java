@@ -44,6 +44,7 @@ public class Main {
 		game.getScenegraph().getRoot().addChild(new Bush01ClusterGroup());
 		game.getScenegraph().setWater(new Ocean());
 		game.launch();
+		
 	}
 
 }

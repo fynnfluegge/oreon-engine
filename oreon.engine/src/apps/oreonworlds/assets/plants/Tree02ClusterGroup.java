@@ -115,7 +115,6 @@ public class Tree02ClusterGroup extends InstancingObject{
 		getThread().start();
 	}
 	
-	@Override
 	public void run(){
 		
 		while(true){

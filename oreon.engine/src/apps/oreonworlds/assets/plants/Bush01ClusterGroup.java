@@ -80,7 +80,6 @@ public class Bush01ClusterGroup extends InstancingObject{
 		addChild(new Bush01Cluster(12,new Vec3f(1577,0,-1236),getObjectData()));
 	}
 
-	@Override
 	public void run() {
 		// TODO Auto-generated method stub
 		

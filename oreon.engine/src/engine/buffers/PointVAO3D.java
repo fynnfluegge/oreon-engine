@@ -59,7 +59,7 @@ public class PointVAO3D implements VAO{
 			
 			glBindVertexArray(0);
 	}
-	@Override
+
 	public void delete() {
 		glBindVertexArray(vaoId);
 		glDeleteBuffers(vbo);

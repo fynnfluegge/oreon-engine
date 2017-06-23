@@ -13,7 +13,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL31;
 import org.lwjgl.opengl.GL40;
 
-import engine.configs.RenderConfig;
+import engine.configs.Default;
 import engine.scenegraph.Scenegraph;
 import engine.utils.Constants;
 
@@ -43,7 +43,7 @@ public class CoreEngine{
 	
 	public void init(Scenegraph scenegraph, GUI gui)
 	{
-		RenderConfig.init();
+		Default.init();
 		renderingEngine = new RenderingEngine(scenegraph, gui);
 		renderingEngine.init();
 	}
