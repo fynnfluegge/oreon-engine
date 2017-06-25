@@ -12,9 +12,7 @@ import apps.oreonworlds.gui.GUI;
 import apps.oreonworlds.shaders.terrain.TerrainGridShader;
 import apps.oreonworlds.shaders.terrain.TerrainShader;
 import apps.oreonworlds.water.Ocean;
-import apps.worldgenerator.tools.terrainEditor.TerrainShadowShader;
 import engine.core.Game;
-import engine.textures.ImageLoader;
 import modules.atmosphere.SkySphere;
 import modules.atmosphere.Sun;
 import modules.terrain.Terrain;
@@ -32,7 +30,7 @@ public class Main {
 								   "./res/oreonworlds/terrain/terrain_settings_LowPoly.txt",
 								   TerrainShader.getInstance(),
 								   TerrainGridShader.getInstance(), 
-								   TerrainShadowShader.getInstance());
+								   null);
 		game.getScenegraph().addObject(new SkySphere());	
 		game.getScenegraph().addObject(new Sun());
 //		game.getScenegraph().getRoot().addChild(new Palm01ClusterGroup());
@@ -43,7 +41,7 @@ public class Main {
 //		game.getScenegraph().getRoot().addChild(new Rock01ClusterGroup());
 //		game.getScenegraph().getRoot().addChild(new Rock02ClusterGroup());
 //		game.getScenegraph().getRoot().addChild(new Bush01ClusterGroup());
-		game.getScenegraph().setWater(new Ocean());
+//		game.getScenegraph().setWater(new Ocean());
 		game.launch();
 	}
 

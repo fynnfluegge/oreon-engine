@@ -12,7 +12,7 @@ public class LensFlareTexturePanel extends TexturePanel{
 	
 	public LensFlareTexturePanel() {
 		super();
-		setConfig(new Default());
+		setConfig(new AdditiveBlending(0.0f));
 		setShader(LensFlareShader.getInstance());
 	}
 	

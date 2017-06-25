@@ -180,10 +180,10 @@ public class RenderingEngine {
 		LightHandler.doOcclusionQueries();
 		window.getFBO().unbind();
 		
+		fullScreenTexture.render();
+		
 		lensFlare.render();
 		
-		fullScreenTexture.render();
-//		
 //		gui.render();
 		
 		// draw into OpenGL window

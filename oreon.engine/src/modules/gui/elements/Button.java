@@ -2,8 +2,18 @@ package modules.gui.elements;
 
 import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
+
+import java.nio.DoubleBuffer;
+
+import org.lwjgl.BufferUtils;
+
 import engine.configs.AlphaBlending;
-import engine.core.Input;
+import engine.core.Window;
+import static org.lwjgl.glfw.GLFW.glfwGetMouseButton;
+import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
+import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
+import static org.lwjgl.glfw.GLFW.glfwGetCursorPos;
+
 import engine.geometry.Mesh;
 import engine.math.Matrix4f;
 import engine.math.Quaternion;
@@ -68,7 +78,7 @@ public abstract class Button extends GUIElement{
 	
 	public void update()
 	{
-		if(Input.isButtonDown(0))
+		if(glfwGetMouseButton(Window.getInstance().getWidth(),0) == GLFW_PRESS)
 		{
 			if(onClick())
 			{
@@ -76,13 +86,16 @@ public abstract class Button extends GUIElement{
 				onClickActionPerformed();
 			}
 		}
-		if(Input.isButtonreleased(0))
+		if(glfwGetMouseButton(Window.getInstance().getWidth(),0) == GLFW_RELEASE)
 			onClick = false;
 	}
 	
 	public boolean onClick()
 	{
-		Vec2f mousePos = Input.getMousePos(); 
+		DoubleBuffer xPos = BufferUtils.createDoubleBuffer(1);
+		DoubleBuffer yPos = BufferUtils.createDoubleBuffer(1);
+		glfwGetCursorPos(Window.getInstance().getWindow(), xPos, yPos);
+		Vec2f mousePos = new Vec2f((float) xPos.get(),(float) yPos.get());
 		
 		if(pos[0].getX() < mousePos.getX() && pos[1].getX() < mousePos.getX() && pos[2].getX() > mousePos.getX() && pos[3].getX() > mousePos.getX()
 			&& pos[0].getY() < mousePos.getY() && pos[3].getY() < mousePos.getY() && pos[1].getY() > mousePos.getY() && pos[2].getY() > mousePos.getY())

@@ -10,5 +10,5 @@ uniform float transparency;
 void main()
 {
 	outputColor = texture2D(texture, texCoord1);
-	outputColor.a = 1;
+	outputColor.a *= transparency;
 }
