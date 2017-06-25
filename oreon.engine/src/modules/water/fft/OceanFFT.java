@@ -8,7 +8,6 @@ import static org.lwjgl.opengl.GL42.glTexStorage2D;
 import static org.lwjgl.opengl.GL43.glDispatchCompute;
 import static org.lwjgl.opengl.GL11.glFinish;
 
-import engine.core.Input;
 import engine.shaders.computing.FFTButterflyShader;
 import engine.shaders.computing.FFTInversionShader;
 import engine.textures.Texture2D;
@@ -169,8 +168,7 @@ public class OceanFFT extends FastFourierTransform{
 			glFinish();
 		}
 			
-		if(!Input.isPause())
-			t += t_delta;
+		t += t_delta;
 	}
 
 	public Texture2D getDy() {

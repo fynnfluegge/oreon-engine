@@ -1,6 +1,6 @@
 package engine.shaders.lensFlare;
 
-import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import engine.math.Matrix4f;
@@ -31,7 +31,7 @@ public class LensFlareShader extends Shader{
 		
 		addUniform("orthographicMatrix");
 		addUniform("texture");
-		addUniform("transparency");
+//		addUniform("transparency");
 	}
 	
 	public void updateUniforms(Matrix4f orthographicMatrix)
@@ -41,9 +41,9 @@ public class LensFlareShader extends Shader{
 	
 	public void updateUniforms(Texture2D texture, float transparency)
 	{
-		glActiveTexture(GL_TEXTURE0);
+		glActiveTexture(GL_TEXTURE1);
 		texture.bind();
-		setUniformi("texture", 0);
-		setUniformf("transparency", transparency);
+		setUniformi("texture", 1);
+//		setUniformf("transparency", transparency);
 	}
 }

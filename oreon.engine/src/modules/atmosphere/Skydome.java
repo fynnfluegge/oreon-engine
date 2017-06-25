@@ -31,11 +31,11 @@ public class Skydome extends GameObject{
 	}
 	
 	public void render() {
-		if (RenderingEngine.isWaterRefraction() && !RenderingEngine.isCameraUnderWater()){
-			return;
-		}
-		else {
+//		if (RenderingEngine.isWaterRefraction() && !RenderingEngine.isCameraUnderWater()){
+//			return;
+//		}
+//		else {
 			super.render();
-		}
+//		}
 	}
 }

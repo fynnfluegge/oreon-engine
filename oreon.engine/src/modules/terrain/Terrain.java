@@ -47,8 +47,8 @@ public class Terrain extends Node implements Runnable{
 		addChild(new TerrainQuadtree(configuration));
 		addChild(new TerrainQuadtree(lowPolyConfiguration));
 		
-		setThread(new Thread(this));
-		getThread().start();
+//		setThread(new Thread(this));
+//		getThread().start();
 	}
 	
 	public void run() {

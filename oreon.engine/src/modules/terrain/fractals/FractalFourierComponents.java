@@ -20,10 +20,10 @@ public class FractalFourierComponents extends FourierComponents{
 	public FractalFourierComponents(int N, int L, float A, float v, Vec2f w, float l) {
 		
 		super(N,L);
+		
 		FractalSpectrum spectrum = new FractalSpectrum(N,L,A,v,w,l);
 		setSpectrum(spectrum);
 		setShader(FractalFourierComponentsShader.getInstance());
-		
 		fourierComponents = new Texture2D();
 		fourierComponents.generate();
 		fourierComponents.bind();

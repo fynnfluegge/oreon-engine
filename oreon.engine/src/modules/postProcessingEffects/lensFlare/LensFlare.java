@@ -16,6 +16,7 @@ public class LensFlare {
 	private Vec2f windowMidPos = new Vec2f(Window.getInstance().getWidth()/2f, Window.getInstance().getHeight()/2f);
 	
 	public LensFlare(){
+		
 		LensFlareTexturePanel texturePanel0 = new LensFlareTexturePanel();
 		texturePanel0.setTexture(new Texture2D("./res/textures/lens_flare/tex4.png"));
 		texturePanel0.getOrthoTransform().setScaling(200,200,0);
@@ -88,6 +89,7 @@ public class LensFlare {
 	}
 	
 	public void render(){
+		
 		for (Light light : LightHandler.getLights()){
 			
 			Vec2f lightScreenSpacePos = light.getScreenSpacePosition();
@@ -102,6 +104,7 @@ public class LensFlare {
 			brightness *= 0.5f;
 			
 			for (LensFlareTexturePanel lensFlareTexture : lensFlareTexturePanels){
+				
 				lensFlareTexture.getOrthoTransform().getTranslation().setX(
 						light.getScreenSpacePosition().getX() + (sunToWindowCenter.getX() * lensFlareTexture.getSpacing()) 
 						- lensFlareTexture.getOrthoTransform().getScaling().getX()/2f);

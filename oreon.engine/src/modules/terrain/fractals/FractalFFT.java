@@ -20,7 +20,7 @@ public class FractalFFT extends FastFourierTransform{
 	public FractalFFT(int N, int L, float A, float v, Vec2f w, float l) {
 			
 		super(N);
-
+		
 		setFourierComponents(new FractalFourierComponents(N, L, A, v, w, l));
 		setButterflyShader(FFTButterflyShader.getInstance());
 		setInversionShader(FFTInversionShader.getInstance());
@@ -33,7 +33,7 @@ public class FractalFFT extends FastFourierTransform{
 		setPingpongTexture(new Texture2D());
 		getPingpongTexture().generate();
 		getPingpongTexture().bind();
-		glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA32F, N, N);
+		glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA32F, N, N);	
 	}
 
 	public void render()

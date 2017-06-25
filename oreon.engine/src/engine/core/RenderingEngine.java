@@ -57,7 +57,7 @@ public class RenderingEngine {
 	public RenderingEngine(Scenegraph scenegraph, GUI gui)
 	{
 		window = Window.getInstance();
-		instancingObjectHandler = InstancingObjectHandler.getInstance();
+//		instancingObjectHandler = InstancingObjectHandler.getInstance();
 		this.scenegraph = scenegraph;
 		this.gui = gui;
 	}
@@ -65,7 +65,7 @@ public class RenderingEngine {
 	public void init()
 	{
 		window.init();
-		gui.init();
+//		gui.init();
 		
 		shadowMaps = new ShadowMaps();
 		fullScreenTexture = new TexturePanel();
@@ -74,12 +74,11 @@ public class RenderingEngine {
 		bloom = new Bloom();
 		sunlightScattering = new SunLightScattering();
 		lensFlare = new LensFlare();
-		underWater = UnderWater.getInstance();
+//		underWater = UnderWater.getInstance();
 	}
 	
 	public void render()
 	{	
-		Input.update();
 		Camera.getInstance().update();
 		
 		DirectionalLight.getInstance().update();
@@ -92,12 +91,12 @@ public class RenderingEngine {
 		setClipplane(Constants.PLANE0);
 		Default.clearScreen();
 		
-		// render shadow maps
+		//render shadow maps
 		shadowMaps.getFBO().bind();
 		glClear(GL_DEPTH_BUFFER_BIT);
 		scenegraph.renderShadows();
 		shadowMaps.getFBO().unbind();
-		
+//		
 		// render scene/deferred maps
 		window.getMultisampledFbo().bind();
 		Default.clearScreen();
@@ -113,7 +112,7 @@ public class RenderingEngine {
 		window.blitMultisampledFBO(1,1);
 		
 		// start Threads to update instancing objects
-		instancingObjectHandler.update();
+//		instancingObjectHandler.update();
 		
 		// start Thread to update Terrain Quadtree
 		//TODO Context Sharing
@@ -133,10 +132,10 @@ public class RenderingEngine {
 		
 		postProcessingTexture = new Texture2D(window.getSceneTexture());
 		
-		if (isCameraUnderWater()){
-			underWater.render(postProcessingTexture, window.getSceneDepthmap());
-			postProcessingTexture = underWater.getUnderwaterSceneTexture();
-		}
+//		if (isCameraUnderWater()){
+//			underWater.render(postProcessingTexture, window.getSceneDepthmap());
+//			postProcessingTexture = underWater.getUnderwaterSceneTexture();
+//		}
 		
 		// HDR Bloom
 		if (isBloomEnabled()) {
@@ -163,6 +162,7 @@ public class RenderingEngine {
 		if (isMotionBlurEnabled()){
 			if (Camera.getInstance().getPreviousPosition().sub(Camera.getInstance().getPosition()).length() > 0.1f ||
 				Camera.getInstance().getForward().sub(Camera.getInstance().getPreviousForward()).length() > 0.01f){
+				System.out.println("Motion Blur enabled");
 				motionBlur.render(window.getSceneDepthmap(), postProcessingTexture);
 				postProcessingTexture = motionBlur.getMotionBlurSceneTexture();
 			}
@@ -175,8 +175,6 @@ public class RenderingEngine {
 
 		// final scene texture
 		fullScreenTexture.setTexture(postProcessingTexture);	
-
-		fullScreenTexture.render();
 		
 		window.getFBO().bind();
 		LightHandler.doOcclusionQueries();
@@ -184,7 +182,9 @@ public class RenderingEngine {
 		
 		lensFlare.render();
 		
-		gui.render();
+		fullScreenTexture.render();
+//		
+//		gui.render();
 		
 		// draw into OpenGL window
 		window.render();
@@ -192,11 +192,9 @@ public class RenderingEngine {
 	
 	public void update()
 	{
-		Input.update();
-		Camera.getInstance().update();
-		gui.update();
-		
-		TerrainPicking.getInstance().getTerrainPosition();
+		scenegraph.update();
+//		gui.update();
+//		TerrainPicking.getInstance().getTerrainPosition();
 	}
 	
 	public void shutdown()

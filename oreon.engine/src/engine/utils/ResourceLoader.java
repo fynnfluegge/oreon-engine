@@ -1,46 +1,14 @@
 package engine.utils;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.newdawn.slick.opengl.TextureLoader;
 
 import engine.math.Matrix4f;
 import engine.math.Vec3f;
 
 public class ResourceLoader {
-	
-	public static int loadTexture(String fileName)
-	{
-		String[] splitArray = fileName.split("\\.");
-		String ext = splitArray[splitArray.length -1 ];
-		
-		try
-		{
-			File image = new File(fileName);
-			FileInputStream stream = new FileInputStream(image);
-			int id = TextureLoader.getTexture(ext, stream).getTextureID();
-			
-			// always power of two formats
-//			System.out.println(TextureLoader.getTexture(ext, stream).getImageWidth());
-//			System.out.println(TextureLoader.getTexture(ext, stream).getTextureWidth());
-			
-			return id;
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-			System.exit(1);
-		}
-		
-		return 0;
-	}
-	
-
 
 	public static String loadShader(String fileName)
 	{

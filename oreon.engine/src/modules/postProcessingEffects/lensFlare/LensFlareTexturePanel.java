@@ -1,6 +1,7 @@
 package modules.postProcessingEffects.lensFlare;
 
 import engine.configs.AdditiveBlending;
+import engine.configs.Default;
 import engine.shaders.lensFlare.LensFlareShader;
 import modules.gui.elements.TexturePanel;
 
@@ -11,11 +12,12 @@ public class LensFlareTexturePanel extends TexturePanel{
 	
 	public LensFlareTexturePanel() {
 		super();
-		setConfig(new AdditiveBlending(0.0f));
+		setConfig(new Default());
 		setShader(LensFlareShader.getInstance());
 	}
 	
 	public void render() {
+		
 		getConfig().enable();
 		getShader().bind();
 		getShader().updateUniforms(getOrthographicMatrix());

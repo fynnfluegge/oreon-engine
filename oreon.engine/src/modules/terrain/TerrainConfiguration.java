@@ -327,7 +327,7 @@ public class TerrainConfiguration {
 	}
 	
 	private void loadFractalMap(BufferedReader reader){
-
+		
 		String line;
 		String[] tokens;
 		

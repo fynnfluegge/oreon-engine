@@ -19,7 +19,7 @@ import static org.lwjgl.opengl.GL12.GL_CLAMP_TO_EDGE;
 import static org.lwjgl.opengl.GL30.GL_TEXTURE_2D_ARRAY;
 import static org.lwjgl.opengl.GL30.glGenerateMipmap;
 
-import org.lwjgl.opengl.GLContext;
+import org.lwjgl.opengl.GL;
 
 public class Texture2DArray {
 
@@ -71,7 +71,7 @@ public class Texture2DArray {
 	
 	public void anisotropicFilter()
 	{
-		if (GLContext.getCapabilities().GL_EXT_texture_filter_anisotropic){
+		if (GL.getCapabilities().GL_EXT_texture_filter_anisotropic){
 			float maxfilterLevel = glGetFloat(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT);
 			glTexParameterf(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAX_ANISOTROPY_EXT, maxfilterLevel);
 		}

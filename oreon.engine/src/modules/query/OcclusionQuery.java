@@ -5,7 +5,7 @@ import static org.lwjgl.opengl.GL11.glFinish;
 import static org.lwjgl.opengl.GL15.GL_SAMPLES_PASSED;
 import static org.lwjgl.opengl.GL15.glGenQueries;
 import static org.lwjgl.opengl.GL15.glEndQuery;
-import static org.lwjgl.opengl.GL15.glGetQueryObject;
+import static org.lwjgl.opengl.GL15.glGetQueryObjectiv;
 import static org.lwjgl.opengl.GL15.glGetQueryObjectui;
 import static org.lwjgl.opengl.GL11.glColorMask;
 import static org.lwjgl.opengl.GL11.glDepthMask;
@@ -47,7 +47,7 @@ public class OcclusionQuery {
         	querystate = glGetQueryObjectui(id, GL_QUERY_RESULT_AVAILABLE);
         }
         glFinish();
-        glGetQueryObject(id, GL_QUERY_RESULT, buffer);
+        glGetQueryObjectiv(id, GL_QUERY_RESULT, buffer);
     	
         occlusionFactor = buffer.get(0);
         
@@ -74,7 +74,7 @@ public class OcclusionQuery {
         	querystate = glGetQueryObjectui(id, GL_QUERY_RESULT_AVAILABLE);
         }
         glFinish();
-        glGetQueryObject(id, GL_QUERY_RESULT, buffer);
+        glGetQueryObjectiv(id, GL_QUERY_RESULT, buffer);
     	
         occlusionFactor = buffer.get(0);
         

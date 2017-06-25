@@ -12,7 +12,6 @@ import engine.buffers.Framebuffer;
 import engine.buffers.PatchVAO;
 import engine.configs.WaterConfig;
 import engine.core.Camera;
-import engine.core.Input;
 import engine.core.Window;
 import engine.core.RenderingEngine;
 import engine.math.Quaternion;
@@ -155,10 +154,8 @@ public class Water extends GameObject{
 			RenderingEngine.setCameraUnderWater(true);
 		}
 			
-		if (!Input.isPause()){
-			distortion += getDistortionOffset();
-			motion += getMotionOffset();
-		}
+		distortion += getDistortionOffset();
+		motion += getMotionOffset();
 		
 		Scenegraph scenegraph = ((Scenegraph) getParent());
 		
