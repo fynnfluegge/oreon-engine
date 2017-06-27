@@ -41,7 +41,6 @@ public class LensFlareShader extends Shader{
 	
 	public void updateUniforms(Texture2D texture, float transparency)
 	{
-		System.out.println(texture.getWidth());
 		glActiveTexture(GL_TEXTURE0);
 		texture.bind();
 		setUniformi("texture", 0);

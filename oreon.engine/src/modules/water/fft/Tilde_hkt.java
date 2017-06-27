@@ -21,6 +21,7 @@ public class Tilde_hkt extends FourierComponents{
 	public Tilde_hkt(int N, int L) {
 		
 		super(N, L);
+		
 		setSpectrum(new Tilde_h0(N,L));
 		setShader(Tilde_hktShader.getInstance());
 		

@@ -65,7 +65,7 @@ public class RenderingEngine {
 	public void init()
 	{
 		window.init();
-//		gui.init();
+		gui.init();
 		
 		shadowMaps = new ShadowMaps();
 		fullScreenTexture = new TexturePanel();
@@ -162,7 +162,6 @@ public class RenderingEngine {
 		if (isMotionBlurEnabled()){
 			if (Camera.getInstance().getPreviousPosition().sub(Camera.getInstance().getPosition()).length() > 0.1f ||
 				Camera.getInstance().getForward().sub(Camera.getInstance().getPreviousForward()).length() > 0.01f){
-				System.out.println("Motion Blur enabled");
 				motionBlur.render(window.getSceneDepthmap(), postProcessingTexture);
 				postProcessingTexture = motionBlur.getMotionBlurSceneTexture();
 			}
@@ -184,7 +183,7 @@ public class RenderingEngine {
 		
 		lensFlare.render();
 		
-//		gui.render();
+		gui.render();
 		
 		// draw into OpenGL window
 		window.render();
@@ -193,7 +192,7 @@ public class RenderingEngine {
 	public void update()
 	{
 		scenegraph.update();
-//		gui.update();
+		gui.update();
 //		TerrainPicking.getInstance().getTerrainPosition();
 	}
 	

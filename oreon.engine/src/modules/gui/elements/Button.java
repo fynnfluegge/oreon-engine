@@ -7,9 +7,13 @@ import java.nio.DoubleBuffer;
 
 import org.lwjgl.BufferUtils;
 
+import engine.configs.AdditiveBlending;
 import engine.configs.AlphaBlending;
+import engine.configs.AlphaTest;
+import engine.configs.Default;
 import engine.core.Window;
 import static org.lwjgl.glfw.GLFW.glfwGetMouseButton;
+import static org.lwjgl.glfw.GLFW.glfwPollEvents;
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
 import static org.lwjgl.glfw.GLFW.glfwGetCursorPos;
@@ -41,7 +45,7 @@ public abstract class Button extends GUIElement{
 	{
 		setShader(GuiShader.getInstance());
 		setVao(new GUIVAO());
-		setConfig(new AlphaBlending(0.0f));
+		setConfig(new AdditiveBlending(0.0f));
 		Mesh buttonMesh = GUIObjectLoader.load("button.gui");
 		getVao().addData(buttonMesh);
 		getVao().update(texCoords);
@@ -78,14 +82,18 @@ public abstract class Button extends GUIElement{
 	
 	public void update()
 	{
+		glfwPollEvents();
+			
 		if(glfwGetMouseButton(Window.getInstance().getWidth(),0) == GLFW_PRESS)
 		{
+			System.out.println("saf");
 			if(onClick())
 			{
 				onClick = true;
 				onClickActionPerformed();
 			}
 		}
+		
 		if(glfwGetMouseButton(Window.getInstance().getWidth(),0) == GLFW_RELEASE)
 			onClick = false;
 	}

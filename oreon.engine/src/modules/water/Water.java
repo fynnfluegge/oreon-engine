@@ -124,7 +124,7 @@ public class Water extends GameObject{
 		refractionFBO.createColorTextureAttachment(refractionTexture.getId(), 0);
 		refractionFBO.createDepthbufferAttachment(Window.getInstance().getWidth()/2, Window.getInstance().getHeight()/2);
 		refractionFBO.checkStatus();
-		refractionFBO.unbind();		
+		refractionFBO.unbind();	
 	}
 	
 	

@@ -36,6 +36,8 @@ public class OceanFFT extends FastFourierTransform{
 		Dy.bind();
 		glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA32F, N, N);
 		
+		
+		
 		Dx = new Texture2D();
 		Dx.generate();
 		Dx.bind();

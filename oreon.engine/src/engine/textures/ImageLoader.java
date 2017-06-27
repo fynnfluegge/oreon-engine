@@ -44,7 +44,7 @@ public class ImageLoader {
         if (!stbi_info_from_memory(imageBuffer, w, h, c)) {
             throw new RuntimeException("Failed to read image information: " + stbi_failure_reason());
         }
-
+  
 //        System.out.println("Image width: " + w.get(0));
 //        System.out.println("Image height: " + h.get(0));
 //        System.out.println("Image components: " + c.get(0));
@@ -55,7 +55,7 @@ public class ImageLoader {
         if (image == null) {
             throw new RuntimeException("Failed to load image: " + stbi_failure_reason());
         }
-        
+       
         int width = w.get(0);
         int height = h.get(0);
         int comp = c.get(0);
@@ -70,6 +70,7 @@ public class ImageLoader {
             }
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
         } else {
+        	System.out.println("saf");
         	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
         }
         

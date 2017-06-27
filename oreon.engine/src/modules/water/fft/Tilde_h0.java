@@ -47,16 +47,16 @@ public class Tilde_h0 extends FourierSpectrum{
 		h0kminus.noFilter();
 		glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA32F, N, N);
 		
-		noise0 = new Texture2D("./res/textures/Noise/Noise" + N + "_0.jpg");
+		noise0 = new Texture2D("./res/textures/Noise/Noise256_0.jpg");
 		noise0.bind();
 		noise0.noFilter();
-		noise1 = new Texture2D("./res/textures/Noise/Noise" + N + "_1.jpg");
+		noise1 = new Texture2D("./res/textures/Noise/Noise256_1.jpg");
 		noise1.bind();
 		noise1.noFilter();
-		noise2 = new Texture2D("./res/textures/Noise/Noise" + N + "_2.jpg");
+		noise2 = new Texture2D("./res/textures/Noise/Noise256_2.jpg");
 		noise2.bind();
 		noise2.noFilter();
-		noise3 = new Texture2D("./res/textures/Noise/Noise" + N + "_3.jpg");
+		noise3 = new Texture2D("./res/textures/Noise/Noise256_3.jpg");
 		noise3.bind();
 		noise3.noFilter();
 	}

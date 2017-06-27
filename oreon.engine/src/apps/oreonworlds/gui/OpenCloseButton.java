@@ -12,7 +12,11 @@ public class OpenCloseButton extends Button{
 	public OpenCloseButton()
 	{
 		buttonMap = new Texture2D("./res/gui/tex/open_arrow.png");
+		buttonMap.bind();
+		buttonMap.trilinearFilter();
 		buttonClickMap = new Texture2D("./res/gui/tex/open_arrow.png");
+		buttonClickMap.bind();
+		buttonClickMap.trilinearFilter();
 		getOrthoTransform().setTranslation(5, Window.getInstance().getHeight()-25, 0);
 		getOrthoTransform().setScaling(15,30,0);
 		Vec2f[] texCoords = new Vec2f[4];
@@ -26,16 +30,16 @@ public class OpenCloseButton extends Button{
 	@Override
 	public void onClickActionPerformed()
 	{
-		if (isClosed){
-			buttonMap = new Texture2D("./res/gui/tex/close_arrow.png");
-			buttonClickMap = new Texture2D("./res/gui/tex/close_arrow.png");
-			isClosed = false;
-		}
-		else{
-			buttonMap = new Texture2D("./res/gui/tex/open_arrow.png");
-			buttonClickMap = new Texture2D("./res/gui/tex/open_arrow.png");
-			isClosed = true;
-		}
+//		if (isClosed){
+//			buttonMap = new Texture2D("./res/gui/tex/close_arrow.png");
+//			buttonClickMap = new Texture2D("./res/gui/tex/close_arrow.png");
+//			isClosed = false;
+//		}
+//		else{
+//			buttonMap = new Texture2D("./res/gui/tex/open_arrow.png");
+//			buttonClickMap = new Texture2D("./res/gui/tex/open_arrow.png");
+//			isClosed = true;
+//		}
 	}
 
 	public boolean isClosed() {

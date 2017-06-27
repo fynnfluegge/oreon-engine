@@ -105,7 +105,7 @@ public class OceanBRDFShader extends Shader{
 		setUniform("sunlight.color", DirectionalLight.getInstance().getColor());
 		setUniform("sunlight.direction", DirectionalLight.getInstance().getDirection());	
 		
-		setUniformf("sightRangeFactor", Terrain.getInstance().getConfiguration().getSightRangeFactor());
+		setUniformf("sightRangeFactor", 2);//Terrain.getInstance().getConfiguration().getSightRangeFactor());
 		
 		for (int i=0; i<6; i++)
 		{

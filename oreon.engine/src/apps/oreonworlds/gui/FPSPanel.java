@@ -5,7 +5,7 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 import modules.gui.GUIElement;
 import modules.gui.GUIObjectLoader;
 import modules.gui.GUIVAO;
-import engine.configs.AlphaBlending;
+import engine.configs.AdditiveBlending;
 import engine.core.CoreEngine;
 import engine.core.Window;
 import engine.math.Matrix4f;
@@ -23,16 +23,17 @@ public class FPSPanel extends GUIElement{
 	
 	@Override
 	public void init() {
-		// TODO Auto-generated method stub
 	}
 	
 	public FPSPanel(){
 		texture = new Texture2D("./res/gui/tex/Fonts.png");
+		texture.bind();
+		texture.trilinearFilter();
 		texCoords = new Vec2f[24];
 		fps = new Vec2f[24];
 		setShader(GuiShader.getInstance());
 		setVao(new GUIVAO());
-		setConfig(new AlphaBlending(0.3f));
+		setConfig(new AdditiveBlending(0.1f));
 		getVao().addData(GUIObjectLoader.load("fpsPanel.gui"));
 		int size = 20;
 		setOrthoTransform(new Transform());
