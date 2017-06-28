@@ -16,7 +16,6 @@ import engine.core.Game;
 import engine.textures.ProceduralTexturing;
 import modules.atmosphere.SkySphere;
 import modules.atmosphere.Sun;
-import modules.gui.GUIs.VoidGUI;
 import modules.terrain.Terrain;
 
 public class Main {
@@ -24,7 +23,7 @@ public class Main {
 	public static void main(String[] args) {
 		
 		Game game = new Game();
-		game.setGui(new VoidGUI());
+		game.setGui(new GUI());
 		game.getEngine().createWindow(1280, 720, "oreon worlds");
 		game.init();
 		game.getScenegraph().setTerrain(Terrain.getInstance());

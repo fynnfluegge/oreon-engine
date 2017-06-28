@@ -11,10 +11,10 @@ public class GUI extends modules.gui.GUI{
 	@Override
 	public void init() {
 		Screen screen0 = new Screen();
-		screen0.setElements(new GUIElement[1]);
+		screen0.setElements(new GUIElement[2]);
 		openCloseButton =  new OpenCloseButton();
 		screen0.getElements()[0] = new FPSPanel();
-//		screen0.getElements()[1] = openCloseButton;
+		screen0.getElements()[1] = openCloseButton;
 		screen0.init();
 		getScreens().add(screen0);
 		

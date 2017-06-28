@@ -74,7 +74,7 @@ public class RenderingEngine {
 		bloom = new Bloom();
 		sunlightScattering = new SunLightScattering();
 		lensFlare = new LensFlare();
-//		underWater = UnderWater.getInstance();
+		underWater = UnderWater.getInstance();
 	}
 	
 	public void render()
@@ -132,10 +132,10 @@ public class RenderingEngine {
 		
 		postProcessingTexture = new Texture2D(window.getSceneTexture());
 		
-//		if (isCameraUnderWater()){
-//			underWater.render(postProcessingTexture, window.getSceneDepthmap());
-//			postProcessingTexture = underWater.getUnderwaterSceneTexture();
-//		}
+		if (isCameraUnderWater()){
+			underWater.render(postProcessingTexture, window.getSceneDepthmap());
+			postProcessingTexture = underWater.getUnderwaterSceneTexture();
+		}
 		
 		// HDR Bloom
 		if (isBloomEnabled()) {

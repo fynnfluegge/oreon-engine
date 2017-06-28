@@ -5,17 +5,10 @@ import java.nio.FloatBuffer;
 import engine.buffers.UBO;
 import engine.math.Matrix4f;
 import engine.math.Quaternion;
-import engine.math.Vec2f;
 import engine.math.Vec3f;
 import engine.utils.BufferUtil;
 import engine.utils.Constants;
 import engine.utils.Util;
-import org.lwjgl.glfw.GLFWKeyCallback;
-import org.lwjgl.glfw.GLFWMouseButtonCallback;
-import org.lwjgl.glfw.GLFWCursorPosCallback;
-import static org.lwjgl.glfw.GLFW.glfwSetKeyCallback;
-import static org.lwjgl.glfw.GLFW.glfwSetMouseButtonCallback;
-import static org.lwjgl.glfw.GLFW.glfwSetCursorPosCallback;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_W;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_S;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_A;
@@ -24,14 +17,8 @@ import static org.lwjgl.glfw.GLFW.GLFW_KEY_RIGHT;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_LEFT;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_UP;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_DOWN;
-import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
-import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
 import static org.lwjgl.glfw.GLFW.glfwPollEvents;
 import static org.lwjgl.glfw.GLFW.glfwSetCursorPos;
-import static org.lwjgl.glfw.GLFW.glfwSetInputMode;
-import static org.lwjgl.glfw.GLFW.GLFW_CURSOR;
-import static org.lwjgl.glfw.GLFW.GLFW_CURSOR_HIDDEN;
-import static org.lwjgl.glfw.GLFW.GLFW_CURSOR_NORMAL;
 
 public class Camera {
 	
@@ -62,9 +49,7 @@ public class Camera {
 	private float width;
 	private float height;
 	private float fovY;
-	
-	private Vec2f lockedMousePosition;
-	private Vec2f currentMousePosition;
+
 	private float rotYstride;
 	private float rotYamt;
 	private float rotYcounter;
@@ -77,25 +62,6 @@ public class Camera {
 	
 	private Quaternion[] frustumPlanes = new Quaternion[6];
 	private Vec3f[] frustumCorners = new Vec3f[8];
-	
-	@SuppressWarnings("unused")
-	private GLFWKeyCallback keyCallback;
-	 
-	@SuppressWarnings("unused")
-	private GLFWCursorPosCallback cursorPosCallback;
-	
-	@SuppressWarnings("unused")
-	private GLFWMouseButtonCallback mouseButtonCallback;
-	
-	private boolean KEY_W_DOWN;
-	private boolean KEY_A_DOWN;
-	private boolean KEY_S_DOWN;
-	private boolean KEY_D_DOWN;
-	private boolean KEY_UP_DOWN;
-	private boolean KEY_LEFT_DOWN;
-	private boolean KEY_DOWN_DOWN;
-	private boolean KEY_RIGHT_DOWN;
-	private boolean MOUSE_BUTTON2_DOWN;
 	  
 	public static Camera getInstance() 
 	{
@@ -113,7 +79,6 @@ public class Camera {
 		setViewMatrix(new Matrix4f().View(this.getForward(), this.getUp()).mul(
 				new Matrix4f().Translation(this.getPosition().mul(-1))));
 		initfrustumPlanes();
-		currentMousePosition = new Vec2f();
 		previousViewMatrix = new Matrix4f().Zero();
 		viewProjectionMatrix = new Matrix4f().Zero();
 		previousViewProjectionMatrix = new Matrix4f().Zero();
@@ -122,92 +87,6 @@ public class Camera {
 		ubo.bindBufferBase();
 		ubo.allocate(bufferSize);
 		floatBuffer = BufferUtil.createFloatBuffer(bufferSize);
-		
-		glfwSetKeyCallback(Window.getInstance().getWindow(), (keyCallback = new GLFWKeyCallback() {
-
-            @Override
-            public void invoke(long window, int key, int scancode, int action, int mods) {
-            	 if(key == GLFW_KEY_W && action == GLFW_PRESS) {
-            		 setKEY_W_DOWN(true);
-            	 }
-            	 if(key == GLFW_KEY_A && action == GLFW_PRESS) {
-            		 setKEY_A_DOWN(true);
-            	 }
-            	 if(key == GLFW_KEY_S && action == GLFW_PRESS) {
-            		 setKEY_S_DOWN(true);
-            	 }
-            	 if(key == GLFW_KEY_D && action == GLFW_PRESS) {
-            		 setKEY_D_DOWN(true);
-            	 }
-            	 
-            	 if(key == GLFW_KEY_W && action == GLFW_RELEASE) {
-            		 setKEY_W_DOWN(false);
-            	 }
-            	 if(key == GLFW_KEY_A && action == GLFW_RELEASE) {
-            		 setKEY_A_DOWN(false);
-            	 }
-            	 if(key == GLFW_KEY_S && action == GLFW_RELEASE) {
-            		 setKEY_S_DOWN(false);
-            	 }
-            	 if(key == GLFW_KEY_D && action == GLFW_RELEASE) {
-            		 setKEY_D_DOWN(false);
-            	 }
-            	 
-            	 if(key == GLFW_KEY_UP && action == GLFW_PRESS) {
-            		 setKEY_UP_DOWN(true);
-            	 }
-            	 if(key == GLFW_KEY_LEFT && action == GLFW_PRESS) {
-            		 setKEY_LEFT_DOWN(true);
-            	 }
-            	 if(key == GLFW_KEY_DOWN && action == GLFW_PRESS) {
-            		 setKEY_DOWN_DOWN(true);
-            	 }
-            	 if(key == GLFW_KEY_RIGHT && action == GLFW_PRESS) {
-            		 setKEY_RIGHT_DOWN(true);
-            	 }
-            	 
-            	 if(key == GLFW_KEY_UP && action == GLFW_RELEASE) {
-            		 setKEY_UP_DOWN(false);
-            	 }
-            	 if(key == GLFW_KEY_LEFT && action == GLFW_RELEASE) {
-            		 setKEY_LEFT_DOWN(false);
-            	 }
-            	 if(key == GLFW_KEY_DOWN && action == GLFW_RELEASE) {
-            		 setKEY_DOWN_DOWN(false);
-            	 }
-            	 if(key == GLFW_KEY_RIGHT && action == GLFW_RELEASE) {
-            		 setKEY_RIGHT_DOWN(false);
-            	 }
-            }
-        }));
-		
-		glfwSetMouseButtonCallback(Window.getInstance().getWindow(), (mouseButtonCallback = new GLFWMouseButtonCallback() {
-
-            @Override
-            public void invoke(long window, int button, int action, int mods) {
-                if(button == 2 && action == GLFW_PRESS) {
-                	setMOUSE_BUTTON2_DOWN(true);
-                	lockedMousePosition = new Vec2f(currentMousePosition);
-                	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
-                }
-
-                if(button == 2 && action == GLFW_RELEASE) {
-                	setMOUSE_BUTTON2_DOWN(false);
-                	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-                }
-            }
-		}));
-		
-		glfwSetCursorPosCallback(Window.getInstance().getWindow(), (cursorPosCallback = new GLFWCursorPosCallback() {
-
-            @Override
-            public void invoke(long window, double xpos, double ypos) {
-                currentMousePosition.setX((float) xpos);
-                currentMousePosition.setY((float) ypos);
-            }
-
-		}));
-		
 	}
 	
 	private Camera(Vec3f position, Vec3f forward, Vec3f up)
@@ -232,29 +111,29 @@ public class Camera {
 		movAmt = scaleFactor * 0.001f;
 		rotAmt = 8 * scaleFactor * 0.001f; 
 		
-		if(isKEY_W_DOWN())
+		if(Input.getInstance().isKeyPushed(GLFW_KEY_W))
 			move(getForward(), movAmt);
-		if(isKEY_S_DOWN())
+		if(Input.getInstance().isKeyPushed(GLFW_KEY_S))
 			move(getForward(), -movAmt);
-		if(isKEY_A_DOWN())
+		if(Input.getInstance().isKeyPushed(GLFW_KEY_A))
 			move(getLeft(), movAmt);
-		if(isKEY_D_DOWN())
+		if(Input.getInstance().isKeyPushed(GLFW_KEY_D))
 			move(getRight(), movAmt);
 				
-		if(isKEY_UP_DOWN())
+		if(Input.getInstance().isKeyPushed(GLFW_KEY_UP))
 			rotateX(-rotAmt/8f);
-		if(isKEY_DOWN_DOWN())
+		if(Input.getInstance().isKeyPushed(GLFW_KEY_DOWN))
 			rotateX(rotAmt/8f);
-		if(isKEY_LEFT_DOWN())
+		if(Input.getInstance().isKeyPushed(GLFW_KEY_LEFT))
 			rotateY(-rotAmt/8f);
-		if(isKEY_RIGHT_DOWN())
+		if(Input.getInstance().isKeyPushed(GLFW_KEY_RIGHT))
 			rotateY(rotAmt/8f);
 		
 		// free mouse rotation
-		if(isMOUSE_BUTTON2_DOWN())
+		if(Input.getInstance().isButtonPushed(2))
 		{
-			float dy = lockedMousePosition.getY() - currentMousePosition.getY();
-			float dx = lockedMousePosition.getX() - currentMousePosition.getX();
+			float dy = Input.getInstance().getLockedCursorPosition().getY() - Input.getInstance().getCursorPosition().getY();
+			float dx = Input.getInstance().getLockedCursorPosition().getX() - Input.getInstance().getCursorPosition().getX();
 			
 			// y-axxis rotation
 			
@@ -318,8 +197,8 @@ public class Camera {
 			}
 			
 			glfwSetCursorPos(Window.getInstance().getWindow(),
-					 lockedMousePosition.getX(),
-					 lockedMousePosition.getY());
+					 Input.getInstance().getLockedCursorPosition().getX(),
+					 Input.getInstance().getLockedCursorPosition().getY());
 		}
 		
 		if (!position.equals(previousPosition)){
@@ -571,77 +450,4 @@ public class Camera {
 	private void setPreviousForward(Vec3f previousForward) {
 		this.previousForward = previousForward;
 	}
-
-	private boolean isKEY_W_DOWN() {
-		return KEY_W_DOWN;
-	}
-
-	private void setKEY_W_DOWN(boolean kEY_W_DOWN) {
-		KEY_W_DOWN = kEY_W_DOWN;
-	}
-
-	private boolean isKEY_A_DOWN() {
-		return KEY_A_DOWN;
-	}
-
-	private void setKEY_A_DOWN(boolean kEY_A_DOWN) {
-		KEY_A_DOWN = kEY_A_DOWN;
-	}
-
-	private boolean isKEY_S_DOWN() {
-		return KEY_S_DOWN;
-	}
-
-	private void setKEY_S_DOWN(boolean kEY_S_DOWN) {
-		KEY_S_DOWN = kEY_S_DOWN;
-	}
-
-	private boolean isKEY_D_DOWN() {
-		return KEY_D_DOWN;
-	}
-
-	private void setKEY_D_DOWN(boolean kEY_D_DOWN) {
-		KEY_D_DOWN = kEY_D_DOWN;
-	}
-
-	private boolean isMOUSE_BUTTON2_DOWN() {
-		return MOUSE_BUTTON2_DOWN;
-	}
-
-	private void setMOUSE_BUTTON2_DOWN(boolean mOUSE_BUTTON2_DOWN) {
-		MOUSE_BUTTON2_DOWN = mOUSE_BUTTON2_DOWN;
-	}
-
-	private boolean isKEY_UP_DOWN() {
-		return KEY_UP_DOWN;
-	}
-
-	private void setKEY_UP_DOWN(boolean kEY_UP_DOWN) {
-		KEY_UP_DOWN = kEY_UP_DOWN;
-	}
-
-	private boolean isKEY_LEFT_DOWN() {
-		return KEY_LEFT_DOWN;
-	}
-
-	private void setKEY_LEFT_DOWN(boolean kEY_LEFT_DOWN) {
-		KEY_LEFT_DOWN = kEY_LEFT_DOWN;
-	}
-
-	private boolean isKEY_DOWN_DOWN() {
-		return KEY_DOWN_DOWN;
-	}
-
-	private void setKEY_DOWN_DOWN(boolean kEY_DOWN_DOWN) {
-		KEY_DOWN_DOWN = kEY_DOWN_DOWN;
-	}
-
-	private boolean isKEY_RIGHT_DOWN() {
-		return KEY_RIGHT_DOWN;
-	}
-
-	private void setKEY_RIGHT_DOWN(boolean kEY_RIGHT_DOWN) {
-		KEY_RIGHT_DOWN = kEY_RIGHT_DOWN;
-	}
-
 }

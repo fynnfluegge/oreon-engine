@@ -82,20 +82,18 @@ public abstract class Button extends GUIElement{
 	
 	public void update()
 	{
-		glfwPollEvents();
-			
-		if(glfwGetMouseButton(Window.getInstance().getWidth(),0) == GLFW_PRESS)
-		{
-			System.out.println("saf");
-			if(onClick())
-			{
-				onClick = true;
-				onClickActionPerformed();
-			}
-		}
-		
-		if(glfwGetMouseButton(Window.getInstance().getWidth(),0) == GLFW_RELEASE)
-			onClick = false;
+//		if(glfwGetMouseButton(Window.getInstance().getWidth(),0) == GLFW_PRESS)
+//		{
+//			System.out.println("saf");
+//			if(onClick())
+//			{
+//				onClick = true;
+//				onClickActionPerformed();
+//			}
+//		}
+//		
+//		if(glfwGetMouseButton(Window.getInstance().getWidth(),0) == GLFW_RELEASE)
+//			onClick = false;
 	}
 	
 	public boolean onClick()
