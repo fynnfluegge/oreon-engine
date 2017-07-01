@@ -36,9 +36,9 @@ public class ProceduralTexturing{
 		{
 			int resolution = 512;
 			
-			BufferedImage image = new BufferedImage(resolution, resolution, BufferedImage.TYPE_BYTE_GRAY);
+			BufferedImage image = new BufferedImage(resolution, resolution, BufferedImage.TYPE_INT_RGB);
 			WritableRaster raster = image.getRaster();
-			File output = new File("./" + "Noise512_0" + ".jpg");
+			File output = new File("./" + "Noise512_3" + ".jpg");
 			
 			Random rnd = new Random();
 			
@@ -47,7 +47,10 @@ public class ProceduralTexturing{
 			{
 				for(int j=0; j<resolution; j++)
 				{	
-					raster.setSample(j, i, 0, (byte) rnd.nextInt(255));
+					int noise = ((int) rnd.nextInt(Integer.MAX_VALUE));
+					raster.setSample(j, i, 0, noise); 
+					raster.setSample(j, i, 1, noise);
+					raster.setSample(j, i, 2, noise);
 				}
 			}
 			try {

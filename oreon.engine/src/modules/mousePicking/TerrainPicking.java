@@ -4,10 +4,16 @@ import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.glGetTexImage;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_COMPONENT;
+import static org.lwjgl.glfw.GLFW.glfwGetMouseButton;
+import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
+import static org.lwjgl.glfw.GLFW.glfwGetCursorPos;
+
+import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 
+import org.lwjgl.BufferUtils;
+
 import engine.core.Camera;
-import engine.core.Input;
 import engine.core.Window;
 import engine.math.Quaternion;
 import engine.math.Vec2f;
@@ -36,9 +42,13 @@ public class TerrainPicking {
 	
 	public void getTerrainPosition(){
 		
-		if (isActive() && Input.isButtonDown(0)){
+		if (isActive() && glfwGetMouseButton(Window.getInstance().getWindow(),2) == GLFW_PRESS){
 			Vec3f pos = new Vec3f(0,0,0);
-			Vec2f screenPos = Input.getMousePos();
+			DoubleBuffer xPos = BufferUtils.createDoubleBuffer(1);
+			DoubleBuffer yPos = BufferUtils.createDoubleBuffer(1);
+			glfwGetCursorPos(Window.getInstance().getWindow(), xPos, yPos);
+			Vec2f screenPos = new Vec2f((float) xPos.get(),(float) yPos.get());
+			System.out.println("TerrainPicking: " + screenPos);
 			Window.getInstance().getSceneDepthmap().bind();
 			glGetTexImage(GL_TEXTURE_2D,0,GL_DEPTH_COMPONENT,GL_FLOAT,depthmapBuffer);
 			float depth = depthmapBuffer.get((int) (Window.getInstance().getWidth() * screenPos.getY() + screenPos.getX()));
@@ -58,7 +68,7 @@ public class TerrainPicking {
 			pos.setY(worldPos.getY());
 			pos.setZ(worldPos.getZ());
 			
-			System.out.println(pos);
+			System.out.println("TerrainPicking: " + pos);
 		}
 	}
 

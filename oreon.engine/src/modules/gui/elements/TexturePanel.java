@@ -4,7 +4,7 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 import modules.gui.GUIElement;
 import modules.gui.GUIVAO;
-import engine.configs.AlphaTestCullFaceDisable;
+import engine.configs.Default;
 import engine.core.Window;
 import engine.geometry.Geometrics;
 import engine.math.Matrix4f;
@@ -27,7 +27,7 @@ public class TexturePanel extends GUIElement{
 		setOrthographicMatrix(getOrthographicMatrix().mul(getOrthoTransform().getWorldMatrix()));
 		
 		setShader(GuiShader.getInstance());
-		setConfig(new AlphaTestCullFaceDisable(0.0f));
+		setConfig(new Default());
 		setVao(new GUIVAO());
 		getVao().addData(Geometrics.Quad2D());
 	}

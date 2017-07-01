@@ -1,6 +1,7 @@
 package engine.core;
 
 import static org.lwjgl.opengl.GL11.GL_DEPTH_COMPONENT;
+import static org.lwjgl.opengl.GL11.GL_TRUE;
 import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import static org.lwjgl.opengl.GL11.GL_RGBA;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
@@ -9,21 +10,23 @@ import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT0;
 import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT1;
 import static org.lwjgl.opengl.GL30.GL_DEPTH_COMPONENT32F;
 import static org.lwjgl.opengl.GL30.GL_RGBA16F;
+import static org.lwjgl.glfw.GLFW.glfwWindowHint;
+import static org.lwjgl.glfw.GLFW.glfwCreateWindow;
+import static org.lwjgl.glfw.GLFW.GLFW_RESIZABLE;
+import static org.lwjgl.glfw.GLFW.GLFW_CONTEXT_VERSION_MAJOR;
+import static org.lwjgl.glfw.GLFW.GLFW_CONTEXT_VERSION_MINOR;
+import static org.lwjgl.glfw.GLFW.GLFW_OPENGL_PROFILE;
+import static org.lwjgl.glfw.GLFW.GLFW_OPENGL_CORE_PROFILE;
+import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
+import static org.lwjgl.glfw.GLFW.glfwShowWindow;
+import static org.lwjgl.glfw.GLFW.glfwDestroyWindow;
+import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
+import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
 
-import java.awt.Canvas;
-import java.io.File;
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
-import javax.imageio.ImageIO;
-
-import org.lwjgl.LWJGLException;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.DisplayMode;
-import org.newdawn.slick.opengl.ImageIOImageData;
+import org.lwjgl.opengl.GL;
 
 import engine.buffers.Framebuffer;
 import engine.textures.Texture2D;
@@ -40,7 +43,10 @@ public class Window {
 	private Texture2D sceneTexture;
 	private Texture2D blackScene4LightScatteringTexture;
 	private Texture2D sceneDepthmap;
-
+	
+	private long window;
+	private int width;
+	private int height;
 	
 	public static Window getInstance() 
 	{
@@ -99,59 +105,48 @@ public class Window {
 	
 	public void create(int width, int height, String title)
 	{
-		Display.setTitle(title);
-		try {
-			DisplayMode displayMode = null;
-	        DisplayMode[] modes = Display.getAvailableDisplayModes();
-
-	         for (int i = 0; i < modes.length; i++)
-	         {
-	             if (modes[i].getWidth() == width
-	            	&& modes[i].getHeight() == height
-	            	&& modes[i].isFullscreenCapable())
-	             {
-	            	 	displayMode = modes[i];
-	             }
-	         }
-	       
-			Display.setDisplayMode(displayMode);
-			Display.setIcon(new ByteBuffer[] {
-					new ImageIOImageData().imageToByteBuffer(ImageIO.read(new File("res/logo/oreon_lwjgl_icon16.png")), false, false, null),
-                    new ImageIOImageData().imageToByteBuffer(ImageIO.read(new File("res/logo/oreon_lwjgl_icon32.png")), false, false, null)
-                    });
-			Display.create();
-			Keyboard.create();
-			Mouse.create();
-		} catch (LWJGLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+		setWidth(width);
+		setHeight(height);
+		
+		glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);	
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);	
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);	
+		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);	
+		
+		window = glfwCreateWindow(width, height, "oreon engine", 0, 0);
+		
+		if(window == 0) {
+		    throw new RuntimeException("Failed to create window");
 		}
+		
+		glfwMakeContextCurrent(window);
+		GL.createCapabilities();
+		glfwShowWindow(window);
 	}
 	
-	public void embed(int width, int height, Canvas canvas)
-	{
-		try {
-			Display.setParent(canvas);
-			Display.setDisplayMode(new DisplayMode(width, height));
-			Display.create();
-			Keyboard.create();
-			Mouse.create();
-		} catch (LWJGLException e) {
-			e.printStackTrace();
-		}
-	}
+//	public void embed(int width, int height, Canvas canvas)
+//	{
+//		try {
+//			Display.setParent(canvas);
+//			Display.setDisplayMode(new DisplayMode(width, height));
+//			Display.create();
+//			Keyboard.create();
+//			Mouse.create();
+//		} catch (LWJGLException e) {
+//			e.printStackTrace();
+//		}
+//	}
 	
 	public void render()
 	{
-		Display.update();
+		glfwSwapBuffers(window);
 	}
 	
 	public void dispose()
 	{
-		Display.destroy();
-		Keyboard.destroy();
-		Mouse.destroy();
+		glfwDestroyWindow(window);
+//		Keyboard.destroy();
+//		Mouse.destroy();
 	}
 	
 	public void blitMultisampledFBO(int dest, int src){
@@ -160,23 +155,27 @@ public class Window {
 	
 	public boolean isCloseRequested()
 	{
-		return Display.isCloseRequested();
+		return glfwWindowShouldClose(window);
 	}
 	
 	public int getWidth()
 	{
-		return Display.getDisplayMode().getWidth();
+		return width;
+	}
+	
+	public void setWidth(int width) {
+		this.width = width;
 	}
 	
 	public int getHeight()
 	{
-		return Display.getDisplayMode().getHeight();
+		return height;
 	}
 	
-	public String getTitle()
-	{
-		return Display.getTitle();
+	public void setHeight(int height) {
+		this.height = height;
 	}
+
 	
 	public Texture2D getSceneTexture() {
 		return sceneTexture;
@@ -200,5 +199,13 @@ public class Window {
 
 	public void setBlackScene4LightScatteringTexture(Texture2D texture) {
 		this.blackScene4LightScatteringTexture = texture;
+	}
+	
+	public long getWindow() {
+		return window;
+	}
+
+	public void setWindow(long window) {
+		this.window = window;
 	}
 }

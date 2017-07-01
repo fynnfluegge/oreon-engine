@@ -9,7 +9,6 @@ import modules.gui.elements.TexturePanel;
 import modules.instancing.InstancingObjectHandler;
 import modules.lighting.DirectionalLight;
 import modules.lighting.LightHandler;
-import modules.mousePicking.TerrainPicking;
 import modules.postProcessingEffects.DepthOfFieldBlur;
 import modules.postProcessingEffects.Bloom;
 import modules.postProcessingEffects.MotionBlur;
@@ -53,6 +52,7 @@ public class RenderingEngine {
 	private static boolean waterRefraction = false;
 	private static boolean cameraUnderWater = false;
 	private static float t_causticsDistortion = 0;
+	private static float sightRangeFactor = 1;
 	
 	public RenderingEngine(Scenegraph scenegraph, GUI gui)
 	{
@@ -79,7 +79,6 @@ public class RenderingEngine {
 	
 	public void render()
 	{	
-		Input.update();
 		Camera.getInstance().update();
 		
 		DirectionalLight.getInstance().update();
@@ -92,7 +91,7 @@ public class RenderingEngine {
 		setClipplane(Constants.PLANE0);
 		Default.clearScreen();
 		
-		// render shadow maps
+		//render shadow maps
 		shadowMaps.getFBO().bind();
 		glClear(GL_DEPTH_BUFFER_BIT);
 		scenegraph.renderShadows();
@@ -113,7 +112,7 @@ public class RenderingEngine {
 		window.blitMultisampledFBO(1,1);
 		
 		// start Threads to update instancing objects
-		instancingObjectHandler.update();
+		instancingObjectHandler.signalAll();
 		
 		// start Thread to update Terrain Quadtree
 		//TODO Context Sharing
@@ -161,7 +160,7 @@ public class RenderingEngine {
 		
 		// Motion Blur
 		if (isMotionBlurEnabled()){
-			if (Camera.getInstance().getPreviousPosition().sub(Camera.getInstance().getPosition()).length() > 0.1f ||
+			if (Camera.getInstance().getPreviousPosition().sub(Camera.getInstance().getPosition()).length() > 0.04f ||
 				Camera.getInstance().getForward().sub(Camera.getInstance().getPreviousForward()).length() > 0.01f){
 				motionBlur.render(window.getSceneDepthmap(), postProcessingTexture);
 				postProcessingTexture = motionBlur.getMotionBlurSceneTexture();
@@ -175,7 +174,7 @@ public class RenderingEngine {
 
 		// final scene texture
 		fullScreenTexture.setTexture(postProcessingTexture);	
-
+		
 		fullScreenTexture.render();
 		
 		window.getFBO().bind();
@@ -192,16 +191,18 @@ public class RenderingEngine {
 	
 	public void update()
 	{
-		Input.update();
-		Camera.getInstance().update();
+		scenegraph.update();
 		gui.update();
 		
-		TerrainPicking.getInstance().getTerrainPosition();
+		if (scenegraph.terrainExists()){
+			//TerrainPicking.getInstance().getTerrainPosition();
+		}
 	}
 	
 	public void shutdown()
 	{
 		scenegraph.shutdown();
+		instancingObjectHandler.signalAll();
 	}
 
 	public static Quaternion getClipplane() {
@@ -294,5 +295,13 @@ public class RenderingEngine {
 
 	public static float getT_causticsDistortion() {
 		return t_causticsDistortion;
+	}
+
+	public static float getSightRangeFactor() {
+		return sightRangeFactor;
+	}
+
+	public static void setSightRangeFactor(float sightRangeFactor) {
+		RenderingEngine.sightRangeFactor = sightRangeFactor;
 	}
 }

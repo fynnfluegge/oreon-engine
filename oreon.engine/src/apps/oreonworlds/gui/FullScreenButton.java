@@ -1,8 +1,5 @@
 package apps.oreonworlds.gui;
 
-import org.lwjgl.LWJGLException;
-import org.lwjgl.opengl.Display;
-
 import engine.core.Window;
 import engine.math.Vec2f;
 import engine.textures.Texture2D;
@@ -11,6 +8,8 @@ import modules.gui.elements.Button;
 public class FullScreenButton  extends Button{
 
 	private boolean isFullScreenMode = false;
+	
+	
 	
 	public FullScreenButton()
 	{
@@ -32,21 +31,13 @@ public class FullScreenButton  extends Button{
 		if (!isFullScreenMode){
 			buttonMap = new Texture2D("./res/gui/tex/minimize.png");
 			buttonClickMap = new Texture2D("./res/gui/tex/minimize.png");
-			try {
-				Display.setFullscreen(true);
-			} catch (LWJGLException e) {
-				e.printStackTrace();
-			}
+//			Display.setFullscreen(true);
 			isFullScreenMode = true;
 		}
 		else {
 			buttonMap = new Texture2D("./res/gui/tex/maximize.png");
 			buttonClickMap = new Texture2D("./res/gui/tex/maximize.png");
-			try {
-				Display.setFullscreen(false);
-			} catch (LWJGLException e) {
-				e.printStackTrace();
-			}
+//			Display.setFullscreen(false);
 			isFullScreenMode = true;
 			isFullScreenMode = false;
 		}

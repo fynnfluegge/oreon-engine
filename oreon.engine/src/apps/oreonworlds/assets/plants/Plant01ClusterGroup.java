@@ -2,7 +2,7 @@ package apps.oreonworlds.assets.plants;
 
 import apps.oreonworlds.shaders.plants.GrassShader;
 import engine.buffers.MeshVAO;
-import engine.configs.AlphaTestCullFaceDisable;
+import engine.configs.CullFaceDisable;
 import engine.math.Vec3f;
 import engine.scenegraph.components.RenderInfo;
 import modules.instancing.InstancedDataObject;
@@ -25,7 +25,7 @@ public class Plant01ClusterGroup extends InstancingObject{
 			
 			meshBuffer.addData(model.getMesh());
 
-			object.setRenderInfo(new RenderInfo(new AlphaTestCullFaceDisable(0.6f), GrassShader.getInstance()));
+			object.setRenderInfo(new RenderInfo(new CullFaceDisable(), GrassShader.getInstance()));
 				
 			object.setMaterial(model.getMaterial());
 			object.setVao(meshBuffer);

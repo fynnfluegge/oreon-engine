@@ -9,6 +9,8 @@ import static org.lwjgl.opengl.GL40.GL_TESS_EVALUATION_SHADER;
 import static org.lwjgl.opengl.GL43.GL_COMPUTE_SHADER;
 import static org.lwjgl.opengl.GL30.glBindFragDataLocation;
 
+
+
 import java.util.HashMap;
 
 import engine.math.Matrix4f;
@@ -193,7 +195,7 @@ public abstract class Shader {
 	}
 	public void setUniform(String uniformName, Matrix4f value)
 	{
-		glUniformMatrix4(uniforms.get(uniformName), true, BufferUtil.createFlippedBuffer(value));
+		glUniformMatrix4fv(uniforms.get(uniformName), true, BufferUtil.createFlippedBuffer(value));
 	}
 	
 	public void bindUniformBlock(String uniformBlockName, int uniformBlockBinding )

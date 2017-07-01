@@ -11,7 +11,12 @@ public abstract class InstancingObject extends Node implements Runnable{
 	private List<InstancingCluster> clusters = new ArrayList<InstancingCluster>();
 	
 	private Thread thread;
-
+	private boolean isRunning = true;
+	
+	public void shutdown() {
+		setRunning(false);
+	}
+	
 	public List<InstancedDataObject> getObjectData() {
 		return objectData;
 	}
@@ -38,5 +43,13 @@ public abstract class InstancingObject extends Node implements Runnable{
 	
 	public void addCluster(InstancingCluster cluster){
 		getClusters().add(cluster);
+	}
+
+	public boolean isRunning() {
+		return isRunning;
+	}
+
+	public void setRunning(boolean isRunning) {
+		this.isRunning = isRunning;
 	}
 }

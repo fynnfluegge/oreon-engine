@@ -1,137 +1,213 @@
 package engine.core;
 
+import static org.lwjgl.glfw.GLFW.GLFW_CURSOR;
+import static org.lwjgl.glfw.GLFW.GLFW_CURSOR_HIDDEN;
+import static org.lwjgl.glfw.GLFW.GLFW_CURSOR_NORMAL;
+import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
+import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
+import static org.lwjgl.glfw.GLFW.glfwPollEvents;
+import static org.lwjgl.glfw.GLFW.glfwSetCursorPos;
+import static org.lwjgl.glfw.GLFW.glfwSetCursorPosCallback;
+import static org.lwjgl.glfw.GLFW.glfwSetScrollCallback;
+import static org.lwjgl.glfw.GLFW.glfwSetInputMode;
+import static org.lwjgl.glfw.GLFW.glfwSetKeyCallback;
+import static org.lwjgl.glfw.GLFW.glfwSetMouseButtonCallback;
+
 import java.util.ArrayList;
 
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
+import org.lwjgl.glfw.GLFWCursorPosCallback;
+import org.lwjgl.glfw.GLFWKeyCallback;
+import org.lwjgl.glfw.GLFWMouseButtonCallback;
+import org.lwjgl.glfw.GLFWScrollCallback;
 
 import engine.math.Vec2f;
 
 public class Input {
 	
-	private static ArrayList<Integer> pushedKeys = new ArrayList<Integer>();
-	private static ArrayList<Integer> releasedKeys = new ArrayList<Integer>();
-	private static ArrayList<Integer> keysHolding = new ArrayList<Integer>();
+	private static Input instance = null;
+
+	private ArrayList<Integer> pushedKeys = new ArrayList<Integer>();
+	private ArrayList<Integer> releasedKeys = new ArrayList<Integer>();
 	
-	private static ArrayList<Integer> holdButtons = new ArrayList<Integer>();
-	private static ArrayList<Integer> releasedButtons = new ArrayList<Integer>();
+	private ArrayList<Integer> pushedButtons = new ArrayList<Integer>();
+	private ArrayList<Integer> buttonsHolding = new ArrayList<Integer>();
+	private ArrayList<Integer> releasedButtons = new ArrayList<Integer>();
 	
-	private static boolean pause = false;
+	private Vec2f cursorPosition;
+	private Vec2f lockedCursorPosition;
+	private float scrollOffset;
 	
-	public static void update()
+	private boolean pause = false;
+	
+	@SuppressWarnings("unused")
+	private GLFWKeyCallback keyCallback;
+	 
+	@SuppressWarnings("unused")
+	private GLFWCursorPosCallback cursorPosCallback;
+	
+	@SuppressWarnings("unused")
+	private GLFWMouseButtonCallback mouseButtonCallback;
+	
+	@SuppressWarnings("unused")
+	private GLFWScrollCallback scrollCallback;
+	
+	public static Input getInstance() 
 	{
-		clear();
-		Integer key;
-		Integer button;
-		boolean hold = false;
-		
-		while(Keyboard.next())
-		{
-			key = getKey();
-			hold = Keyboard.getEventKeyState();
-			if(hold && !pushedKeys.contains(key))
-			{	
-				pushedKeys.add(key);
-				keysHolding.add(key);
-			}
-			if(!hold)
-			{	
-				pushedKeys.remove(key);
-				keysHolding.remove(key);
-				releasedKeys.add(key);
-			}
-			if (Keyboard.KEY_P == key && !pushedKeys.contains(key))
-			{
-				if (!pause) pause = true;
-				else pause = false;
-			}
-		}
-		
-		while(Mouse.next())
-		{	
-			button = getButton();
-			hold = Mouse.getEventButtonState();
-			if(hold && !holdButtons.contains(button))
-			{	
-				holdButtons.add(button);
-			}
-			if(!hold)
-			{	
-				holdButtons.remove(button);
-				releasedButtons.add(button);
-			}
-		}
+	    if(instance == null) 
+	    {
+	    	instance = new Input();
+	    }
+	      return instance;
 	}
 	
-	public static void clear()
+	protected Input()
 	{
-		releasedKeys.clear();
-		pushedKeys.clear();
+		cursorPosition = new Vec2f();
+		
+		glfwSetKeyCallback(Window.getInstance().getWindow(), (keyCallback = new GLFWKeyCallback() {
+
+            @Override
+            public void invoke(long window, int key, int scancode, int action, int mods) {
+            	if (action == GLFW_PRESS){
+            		if (!pushedKeys.contains(key)){
+            			pushedKeys.add(key);
+            		}
+                }
+            	
+                if (action == GLFW_RELEASE){
+                	pushedKeys.remove(new Integer(key));
+                }
+            }
+        }));
+		
+		glfwSetMouseButtonCallback(Window.getInstance().getWindow(), (mouseButtonCallback = new GLFWMouseButtonCallback() {
+
+            @Override
+            public void invoke(long window, int button, int action, int mods) {
+                if(button == 2 && action == GLFW_PRESS) {
+                	lockedCursorPosition = new Vec2f(cursorPosition);
+                	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+                }
+
+                if(button == 2 && action == GLFW_RELEASE) {
+                	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+                }
+                
+                if (action == GLFW_PRESS){
+                	if (!pushedButtons.contains(button)){
+                		pushedButtons.add(button);
+                		buttonsHolding.add(button);
+                	}
+                }
+                
+                if (action == GLFW_RELEASE){
+                	releasedButtons.add(button);
+                	buttonsHolding.remove(new Integer(button));
+                }
+            }
+		}));
+		
+		glfwSetCursorPosCallback(Window.getInstance().getWindow(), (cursorPosCallback = new GLFWCursorPosCallback() {
+
+            @Override
+            public void invoke(long window, double xpos, double ypos) {
+            	cursorPosition.setX((float) xpos);
+            	cursorPosition.setY((float) ypos);
+            }
+
+		}));
+		
+		glfwSetScrollCallback(Window.getInstance().getWindow(), (scrollCallback = new GLFWScrollCallback() {
+			
+			@Override
+			public void invoke(long window, double xoffset, double yoffset) {
+				setScrollOffset((float) yoffset);
+			}
+		}));
+	}
+	
+	public void update() {
+		setScrollOffset(0);
+		pushedButtons.clear();
 		releasedButtons.clear();
-		holdButtons.clear();
+		
+		glfwPollEvents();
 	}
 	
-	public static int getKey()
-	{	
-		return Keyboard.getEventKey();
-	}
-	
-	public static boolean getKeyDown(int key)
+	public boolean isKeyPushed(int key)
 	{
 		return pushedKeys.contains(key);
 	}
 	
-	public static boolean getKeyreleased(int key)
+	public boolean isKeyReleased(int key)
 	{
 		return releasedKeys.contains(key);
 	}
 	
-	public static boolean getHoldingKey(int key)
+	public boolean isButtonPushed(int key)
 	{
-		return keysHolding.contains(key);
+		return pushedButtons.contains(key);
 	}
 	
-	public static ArrayList<Integer> getHoldingKeys()
-	{
-		return keysHolding;
-	}
-	
-	public static int getButton()
-	{	
-		return Mouse.getEventButton();
-	}
-	
-	public static boolean isButtonDown(int key)
-	{
-		return holdButtons.contains(key);
-	}
-	
-	public static boolean isButtonreleased(int key)
+	public boolean isButtonreleased(int key)
 	{
 		return releasedButtons.contains(key);
 	}
 	
-	public static Vec2f getMousePos(){
-		return  new Vec2f(Mouse.getX(), Mouse.getY());
-	}
-	
-	public static void setMousePosition(Vec2f pos)
+	public boolean isButtonHolding(int key)
 	{
-		Mouse.setCursorPosition((int) pos.getX(), (int) pos.getY());
-	}
-	
-	public static void setCursor(boolean enabled)
-	{
-		Mouse.setGrabbed(!enabled);
+		return buttonsHolding.contains(key);
 	}
 
-	public static boolean isPause() {
+	public boolean isPause() {
 		return pause;
 	}
 
-	public static void setPause(boolean pause) {
-		Input.pause = pause;
+	public void setPause(boolean pause) {
+		this.pause = pause;
 	}
 	
+	public Vec2f getCursorPosition() {
+		return cursorPosition;
+	}
+
+	public void setCursorPosition(Vec2f cursorPosition) {
+		this.cursorPosition = cursorPosition;
+		
+		glfwSetCursorPos(Window.getInstance().getWindow(),
+				cursorPosition.getX(),
+				cursorPosition.getY());
+	}
+
+	public Vec2f getLockedCursorPosition() {
+		return lockedCursorPosition;
+	}
+
+	public void setLockedCursorPosition(Vec2f lockedCursorPosition) {
+		this.lockedCursorPosition = lockedCursorPosition;
+	}
 	
+	public ArrayList<Integer> getPushedKeys() {
+		return pushedKeys;
+	}
+
+	public void setPushedKeys(ArrayList<Integer> pushedKeys) {
+		this.pushedKeys = pushedKeys;
+	}
+
+	public ArrayList<Integer> getButtonsHolding() {
+		return buttonsHolding;
+	}
+
+	public void setButtonsHolding(ArrayList<Integer> buttonsHolding) {
+		this.buttonsHolding = buttonsHolding;
+	}
+
+	public float getScrollOffset() {
+		return scrollOffset;
+	}
+
+	public void setScrollOffset(float scrollOffset) {
+		this.scrollOffset = scrollOffset;
+	}
 }

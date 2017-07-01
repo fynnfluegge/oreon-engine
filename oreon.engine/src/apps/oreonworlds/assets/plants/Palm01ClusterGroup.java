@@ -5,7 +5,6 @@ import apps.oreonworlds.shaders.plants.PalmBillboardShadowShader;
 import apps.oreonworlds.shaders.plants.PalmShader;
 import apps.oreonworlds.shaders.plants.PalmShadowShader;
 import engine.buffers.MeshVAO;
-import engine.configs.AlphaTestCullFaceDisable;
 import engine.configs.CullFaceDisable;
 import engine.geometry.Vertex;
 import engine.math.Vec3f;
@@ -50,7 +49,7 @@ public class Palm01ClusterGroup extends InstancingObject{
 			
 			meshBuffer.addData(billboard.getMesh());
 	
-			object.setRenderInfo(new RenderInfo(new AlphaTestCullFaceDisable(0.4f), PalmBillboardShader.getInstance(), PalmBillboardShadowShader.getInstance()));
+			object.setRenderInfo(new RenderInfo(new CullFaceDisable(), PalmBillboardShader.getInstance(), PalmBillboardShadowShader.getInstance()));
 			
 			object.setMaterial(billboard.getMaterial());
 			object.setVao(meshBuffer);

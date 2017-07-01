@@ -1,18 +1,18 @@
 package engine.core;
 
-import java.awt.Canvas;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import modules.gui.GUI;
 
-import org.lwjgl.LWJGLException;
-import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL31;
 import org.lwjgl.opengl.GL40;
-
+import static org.lwjgl.glfw.GLFW.glfwInit;
+import static org.lwjgl.glfw.GLFW.glfwTerminate;
+import static org.lwjgl.glfw.GLFW.glfwSetErrorCallback;
+import org.lwjgl.glfw.GLFWErrorCallback;
 import engine.configs.Default;
 import engine.scenegraph.Scenegraph;
 import engine.utils.Constants;
@@ -29,15 +29,16 @@ public class CoreEngine{
 	private static Condition holdGLContext = glContextLock.newCondition();
 	private RenderingEngine renderingEngine;
 	
+	@SuppressWarnings("unused")
+	private GLFWErrorCallback errorCallback;
+	
 	public void createWindow(int width, int height, String title)
 	{
+		glfwInit();
+		
+		glfwSetErrorCallback(errorCallback = GLFWErrorCallback.createPrint(System.err));
+		
 		Window.getInstance().create(width, height, title);
-		getDeviceProperties();
-	}
-	
-	public void embedWindow(int width, int height, Canvas canvas)
-	{
-		Window.getInstance().embed(width, height, canvas);
 		getDeviceProperties();
 	}
 	
@@ -71,40 +72,41 @@ public class CoreEngine{
 		{
 			if(shareGLContext)
 			{
-				glContextLock.lock();
-				System.out.println("CoreEngine lock");
-				try{
-
-					Display.releaseContext();
-					System.out.println("CoreEngine signal");
-					holdGLContext.signalAll();
-				} catch (LWJGLException e1) {
-					e1.printStackTrace();
-				}
-				finally{
-					System.out.println("CoreEngine unlock");
-					glContextLock.unlock();
-				}
-				
-				glContextLock.lock();
-				System.out.println("CoreEngine lock");
-				try{
-    				System.out.println("CoreEngine await");
-    				holdGLContext.await();
-		    	} catch (InterruptedException e) {
-		    		e.printStackTrace();
-		    	}
-		    	finally{
-					System.out.println("CoreEngine unlock");
-		    		glContextLock.unlock();
-		    	}
-				
-				try {
-					Display.makeCurrent();
-				} catch (LWJGLException e) {
-					e.printStackTrace();
-				}
-				shareGLContext = false;
+				// TODO lwjgl 3 support
+//				glContextLock.lock();
+//				System.out.println("CoreEngine lock");
+//				try{
+//
+//					Display.releaseContext();
+//					System.out.println("CoreEngine signal");
+//					holdGLContext.signalAll();
+//				} catch (LWJGLException e1) {
+//					e1.printStackTrace();
+//				}
+//				finally{
+//					System.out.println("CoreEngine unlock");
+//					glContextLock.unlock();
+//				}
+//				
+//				glContextLock.lock();
+//				System.out.println("CoreEngine lock");
+//				try{
+//    				System.out.println("CoreEngine await");
+//    				holdGLContext.await();
+//		    	} catch (InterruptedException e) {
+//		    		e.printStackTrace();
+//		    	}
+//		    	finally{
+//					System.out.println("CoreEngine unlock");
+//		    		glContextLock.unlock();
+//		    	}
+//				
+//				try {
+//					Display.makeCurrent();
+//				} catch (LWJGLException e) {
+//					e.printStackTrace();
+//				}
+//				shareGLContext = false;
 			}
 			
 			boolean render = false;
@@ -168,6 +170,9 @@ public class CoreEngine{
 	
 	private void update()
 	{
+		Input.getInstance().update();
+		Camera.getInstance().update();
+		
 		renderingEngine.update();
 	}
 	
@@ -175,6 +180,7 @@ public class CoreEngine{
 	{
 		renderingEngine.shutdown();
 		Window.getInstance().dispose();
+		glfwTerminate();
 	}
 	
 	private void getDeviceProperties(){

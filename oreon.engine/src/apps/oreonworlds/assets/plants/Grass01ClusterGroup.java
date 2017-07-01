@@ -2,7 +2,7 @@ package apps.oreonworlds.assets.plants;
 
 import apps.oreonworlds.shaders.plants.GrassShader;
 import engine.buffers.MeshVAO;
-import engine.configs.AlphaTestCullFaceDisable;
+import engine.configs.CullFaceDisable;
 import engine.core.Camera;
 import engine.math.Vec3f;
 import engine.scenegraph.components.RenderInfo;
@@ -14,7 +14,7 @@ import modules.modelLoader.obj.Model;
 import modules.modelLoader.obj.OBJLoader;
 
 public class Grass01ClusterGroup extends InstancingObject{
-
+	
 	public Grass01ClusterGroup(){
 		
 		Model[] models = new OBJLoader().load("./res/oreonworlds/assets/plants/Grass_01","grassmodel.obj","grassmodel.mtl");
@@ -29,7 +29,7 @@ public class Grass01ClusterGroup extends InstancingObject{
 			
 			meshBuffer.addData(model.getMesh());
 
-			object.setRenderInfo(new RenderInfo(new AlphaTestCullFaceDisable(0.1f), GrassShader.getInstance()));
+			object.setRenderInfo(new RenderInfo(new CullFaceDisable(), GrassShader.getInstance()));
 				
 			object.setMaterial(model.getMaterial());
 			object.setVao(meshBuffer);
@@ -153,8 +153,8 @@ public class Grass01ClusterGroup extends InstancingObject{
 	
 	public void run(){
 		
-		while(true){
-		
+		while(isRunning()){
+			
 			InstancingObjectHandler.getInstance().getLock().lock();
 			try {
 				InstancingObjectHandler.getInstance().getCondition().await();
@@ -176,10 +176,5 @@ public class Grass01ClusterGroup extends InstancingObject{
 				}
 			}
 		}
-	}
-	
-	public void update(){
-	
-		super.update();
 	}
 }

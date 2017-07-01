@@ -6,8 +6,7 @@ import apps.oreonworlds.shaders.plants.TreeLeavesShader;
 import apps.oreonworlds.shaders.plants.TreeShadowShader;
 import apps.oreonworlds.shaders.plants.TreeTrunkShader;
 import engine.buffers.MeshVAO;
-import engine.configs.AlphaTest;
-import engine.configs.AlphaTestCullFaceDisable;
+import engine.configs.CullFaceDisable;
 import engine.configs.Default;
 import engine.core.Camera;
 import engine.geometry.Vertex;
@@ -51,7 +50,7 @@ public class Tree02ClusterGroup extends InstancingObject{
 			if (model.equals(models[0]))
 				object.setRenderInfo(new RenderInfo(new Default(), TreeTrunkShader.getInstance(), TreeShadowShader.getInstance()));
 			else
-				object.setRenderInfo(new RenderInfo(new AlphaTest(0.6f), TreeLeavesShader.getInstance(), TreeShadowShader.getInstance()));
+				object.setRenderInfo(new RenderInfo(new Default(), TreeLeavesShader.getInstance(), TreeShadowShader.getInstance()));
 				
 			object.setMaterial(model.getMaterial());
 			object.setVao(meshBuffer);
@@ -74,7 +73,7 @@ public class Tree02ClusterGroup extends InstancingObject{
 			
 			meshBuffer.addData(billboard.getMesh());
 	
-			object.setRenderInfo(new RenderInfo(new AlphaTestCullFaceDisable(0.4f), TreeBillboardShader.getInstance(), TreeBillboardShadowShader.getInstance()));
+			object.setRenderInfo(new RenderInfo(new CullFaceDisable(), TreeBillboardShader.getInstance(), TreeBillboardShadowShader.getInstance()));
 			
 			object.setMaterial(billboard.getMaterial());
 			object.setVao(meshBuffer);
@@ -117,7 +116,7 @@ public class Tree02ClusterGroup extends InstancingObject{
 	
 	public void run(){
 		
-		while(true){
+		while(isRunning()){
 		
 			InstancingObjectHandler.getInstance().getLock().lock();
 			try {
@@ -140,13 +139,5 @@ public class Tree02ClusterGroup extends InstancingObject{
 				}
 			}
 		}
-	}
-	
-	public void render(){
-			super.render();
-	}
-	
-	public void update(){
-		super.update();
 	}
 }

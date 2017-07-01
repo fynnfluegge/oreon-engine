@@ -9,10 +9,28 @@ public class OpenCloseButton extends Button{
 	
 	private boolean isClosed = true;
 	
+	private Texture2D openArrow;
+	private Texture2D openArrowClicked;
+	private Texture2D closeArrow;
+	private Texture2D closeArrowClicked;
+	
 	public OpenCloseButton()
 	{
-		buttonMap = new Texture2D("./res/gui/tex/open_arrow.png");
-		buttonClickMap = new Texture2D("./res/gui/tex/open_arrow.png");
+		openArrow = new Texture2D("./res/gui/tex/open_arrow.png");
+		openArrow.bind();
+		openArrow.bilinearFilter();
+		openArrowClicked = new Texture2D("./res/gui/tex/open_arrow.png");
+		openArrowClicked.bind();
+		openArrowClicked.bilinearFilter();
+		closeArrow = new Texture2D("./res/gui/tex/close_arrow.png");
+		closeArrow.bind();
+		closeArrow.bilinearFilter();
+		closeArrowClicked = new Texture2D("./res/gui/tex/close_arrow.png");
+		closeArrowClicked.bind();
+		closeArrowClicked.bilinearFilter();
+		
+		buttonMap = openArrow;
+		buttonClickMap = openArrowClicked;
 		getOrthoTransform().setTranslation(5, Window.getInstance().getHeight()-25, 0);
 		getOrthoTransform().setScaling(15,30,0);
 		Vec2f[] texCoords = new Vec2f[4];
@@ -27,13 +45,13 @@ public class OpenCloseButton extends Button{
 	public void onClickActionPerformed()
 	{
 		if (isClosed){
-			buttonMap = new Texture2D("./res/gui/tex/close_arrow.png");
-			buttonClickMap = new Texture2D("./res/gui/tex/close_arrow.png");
+			buttonMap = closeArrow;
+			buttonClickMap = closeArrowClicked;
 			isClosed = false;
 		}
 		else{
-			buttonMap = new Texture2D("./res/gui/tex/open_arrow.png");
-			buttonClickMap = new Texture2D("./res/gui/tex/open_arrow.png");
+			buttonMap = openArrow;
+			buttonClickMap = openArrowClicked; 
 			isClosed = true;
 		}
 	}

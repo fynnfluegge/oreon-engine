@@ -55,7 +55,7 @@ public class UnderWater {
 		dudvMap.bind();
 		dudvMap.trilinearFilter();
 		
-		causticsMap = new Texture2D("./res/textures/water/caustics/caustics.png");
+		causticsMap = new Texture2D("./res/textures/water/caustics/caustics.jpg");
 		causticsMap.bind();
 		causticsMap.trilinearFilter();
 	}

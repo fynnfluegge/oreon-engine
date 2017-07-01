@@ -11,10 +11,7 @@ import static org.lwjgl.opengl.GL11.glEnable;
 
 public class AdditiveBlending implements RenderConfig{
 	
-	private float alpha;
-	
-	public AdditiveBlending(float alpha){
-		this.setAlpha(alpha);
+	public AdditiveBlending(){
 	}
 	
 	public void enable(){
@@ -26,13 +23,5 @@ public class AdditiveBlending implements RenderConfig{
 	public void disable(){
 		glEnable(GL_DEPTH_TEST);
 		glDisable(GL_BLEND);
-	}
-	
-	public float getAlpha() {
-		return alpha;
-	}
-
-	public void setAlpha(float alpha) {
-		this.alpha = alpha;
 	}
 }

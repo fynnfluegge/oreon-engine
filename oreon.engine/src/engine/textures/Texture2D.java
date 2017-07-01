@@ -17,12 +17,9 @@ import static org.lwjgl.opengl.GL11.glTexParameterf;
 import static org.lwjgl.opengl.GL12.GL_CLAMP_TO_EDGE;
 import static org.lwjgl.opengl.GL11.GL_REPEAT;
 import static org.lwjgl.opengl.GL30.glGenerateMipmap;
+import org.lwjgl.opengl.GL;
 import static org.lwjgl.opengl.EXTTextureFilterAnisotropic.GL_TEXTURE_MAX_ANISOTROPY_EXT;
 import static org.lwjgl.opengl.EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT;
-
-import org.lwjgl.opengl.GLContext;
-
-import engine.utils.ResourceLoader;
 
 
 public class Texture2D {
@@ -42,7 +39,7 @@ public class Texture2D {
 	
 	public Texture2D(String file)
 	{
-		id = ResourceLoader.loadTexture(file);
+		id = ImageLoader.loadImage(file);
 	}
 	
 	public void bind()
@@ -86,7 +83,7 @@ public class Texture2D {
 	
 	public void anisotropicFilter()
 	{
-		if (GLContext.getCapabilities().GL_EXT_texture_filter_anisotropic){
+		if (GL.getCapabilities().GL_EXT_texture_filter_anisotropic){
 			float maxfilterLevel = glGetFloat(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT);
 			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, maxfilterLevel);
 		}

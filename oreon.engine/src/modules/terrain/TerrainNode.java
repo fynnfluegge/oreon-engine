@@ -2,11 +2,9 @@ package modules.terrain;
 
 import static org.lwjgl.opengl.GL11.glViewport;
 
-import org.lwjgl.input.Keyboard;
-
 import engine.buffers.PatchVAO;
+import engine.configs.Default;
 import engine.core.Camera;
-import engine.core.Input;
 import engine.core.Window;
 import engine.core.RenderingEngine;
 import engine.math.Vec2f;
@@ -29,7 +27,7 @@ public class TerrainNode extends GameObject{
 	
 	
 	public TerrainNode(TerrainConfiguration terrConfig, Vec2f location, int lod, Vec2f index){
-
+		
 		this.isleaf = true;
 		this.index = index;
 		this.lod = lod;
@@ -39,9 +37,9 @@ public class TerrainNode extends GameObject{
 		PatchVAO meshBuffer = new PatchVAO();
 		meshBuffer.addData(generatePatch(),16);
 		
-		setRenderInfo(new RenderInfo(new engine.configs.Default(),terrConfig.getShader()));
+		setRenderInfo(new RenderInfo(new Default(),terrConfig.getShader()));
 
-		if (RenderingEngine.isGrid() || Input.getHoldingKey(Keyboard.KEY_G))
+		if (RenderingEngine.isGrid())
 			getRenderInfo().setShader(terrConfig.getGridShader());
 		else if (!RenderingEngine.isGrid())
 			getRenderInfo().setShader(terrConfig.getShader());
@@ -63,7 +61,7 @@ public class TerrainNode extends GameObject{
 	
 	public void update()
 	{
-			if (RenderingEngine.isGrid() || Input.getHoldingKey(Keyboard.KEY_G))
+			if (RenderingEngine.isGrid())
 				getRenderInfo().setShader(terrConfig.getGridShader());
 			else if (!RenderingEngine.isGrid())
 				getRenderInfo().setShader(terrConfig.getShader());

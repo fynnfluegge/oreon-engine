@@ -2,8 +2,12 @@ package modules.gui.elements;
 
 import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
-import engine.configs.AlphaBlending;
+import java.nio.DoubleBuffer;
+import org.lwjgl.BufferUtils;
+import engine.configs.Default;
 import engine.core.Input;
+import engine.core.Window;
+import static org.lwjgl.glfw.GLFW.glfwGetCursorPos;
 import engine.geometry.Mesh;
 import engine.math.Matrix4f;
 import engine.math.Quaternion;
@@ -31,7 +35,7 @@ public abstract class Button extends GUIElement{
 	{
 		setShader(GuiShader.getInstance());
 		setVao(new GUIVAO());
-		setConfig(new AlphaBlending(0.0f));
+		setConfig(new Default());
 		Mesh buttonMesh = GUIObjectLoader.load("button.gui");
 		getVao().addData(buttonMesh);
 		getVao().update(texCoords);
@@ -68,7 +72,7 @@ public abstract class Button extends GUIElement{
 	
 	public void update()
 	{
-		if(Input.isButtonDown(0))
+		if(Input.getInstance().isButtonPushed(0))
 		{
 			if(onClick())
 			{
@@ -76,17 +80,32 @@ public abstract class Button extends GUIElement{
 				onClickActionPerformed();
 			}
 		}
-		if(Input.isButtonreleased(0))
+		
+		if(Input.getInstance().isButtonreleased(0)){
 			onClick = false;
+		}
 	}
 	
 	public boolean onClick()
 	{
-		Vec2f mousePos = Input.getMousePos(); 
+		DoubleBuffer xPos = BufferUtils.createDoubleBuffer(1);
+		DoubleBuffer yPos = BufferUtils.createDoubleBuffer(1);
 		
-		if(pos[0].getX() < mousePos.getX() && pos[1].getX() < mousePos.getX() && pos[2].getX() > mousePos.getX() && pos[3].getX() > mousePos.getX()
-			&& pos[0].getY() < mousePos.getY() && pos[3].getY() < mousePos.getY() && pos[1].getY() > mousePos.getY() && pos[2].getY() > mousePos.getY())
+		glfwGetCursorPos(Window.getInstance().getWindow(), xPos, yPos);
+		
+		Vec2f mousePos = new Vec2f((float) xPos.get(),(float) yPos.get());
+		
+		if(pos[0].getX() < mousePos.getX() && 
+		   pos[1].getX() < mousePos.getX() && 
+		   pos[2].getX() > mousePos.getX() && 
+		   pos[3].getX() > mousePos.getX() &&
+		   pos[0].getY() < Window.getInstance().getHeight() - mousePos.getY() && 
+		   pos[3].getY() < Window.getInstance().getHeight() - mousePos.getY() && 
+		   pos[1].getY() > Window.getInstance().getHeight() - mousePos.getY() && 
+		   pos[2].getY() > Window.getInstance().getHeight() - mousePos.getY()) {
+			
 			return true;
+		}
 		else
 			return false;
 	}

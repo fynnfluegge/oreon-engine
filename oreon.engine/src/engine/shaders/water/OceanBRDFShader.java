@@ -11,7 +11,6 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE7;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE8;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 import modules.lighting.DirectionalLight;
-import modules.terrain.Terrain;
 import modules.water.UnderWater;
 import modules.water.Water;
 import engine.core.Camera;
@@ -105,7 +104,7 @@ public class OceanBRDFShader extends Shader{
 		setUniform("sunlight.color", DirectionalLight.getInstance().getColor());
 		setUniform("sunlight.direction", DirectionalLight.getInstance().getDirection());	
 		
-		setUniformf("sightRangeFactor", Terrain.getInstance().getConfiguration().getSightRangeFactor());
+		setUniformf("sightRangeFactor", RenderingEngine.getSightRangeFactor());
 		
 		for (int i=0; i<6; i++)
 		{

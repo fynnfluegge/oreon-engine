@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import modules.terrain.fractals.FractalMaps;
+import engine.core.RenderingEngine;
 import engine.scenegraph.components.Material;
 import engine.shaders.Shader;
 import engine.textures.Texture2D;
@@ -254,6 +255,7 @@ public class TerrainConfiguration {
 					}
 					if(tokens[0].equals("sightRangeFactor")){
 						sightRangeFactor = Float.valueOf(tokens[1]);
+						RenderingEngine.setSightRangeFactor(sightRangeFactor);
 					}
 					if(tokens[0].equals("bezier")){
 						setBezíer(Integer.valueOf(tokens[1]));
@@ -327,7 +329,7 @@ public class TerrainConfiguration {
 	}
 	
 	private void loadFractalMap(BufferedReader reader){
-
+		
 		String line;
 		String[] tokens;
 		

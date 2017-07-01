@@ -1,18 +1,23 @@
 package engine.core;
 
 import java.nio.FloatBuffer;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.Display;
 
 import engine.buffers.UBO;
 import engine.math.Matrix4f;
 import engine.math.Quaternion;
-import engine.math.Vec2f;
 import engine.math.Vec3f;
 import engine.utils.BufferUtil;
 import engine.utils.Constants;
 import engine.utils.Util;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_W;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_S;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_A;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_D;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_RIGHT;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_LEFT;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_UP;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_DOWN;
+import static org.lwjgl.glfw.GLFW.glfwSetCursorPos;
 
 public class Camera {
 	
@@ -25,9 +30,8 @@ public class Camera {
 	private Vec3f forward;
 	private Vec3f previousForward;
 	private Vec3f up;
-	private int scaleFactor;
-	private float movAmt;
-	private float rotAmt;
+	private float movAmt = 0.1f;
+	private float rotAmt = 0.8f;
 	private Matrix4f viewMatrix;
 	private Matrix4f projectionMatrix;
 	private Matrix4f viewProjectionMatrix;
@@ -43,10 +47,7 @@ public class Camera {
 	private float width;
 	private float height;
 	private float fovY;
-	
-	private boolean mouselocked;
-	private Vec2f lockedMousePosition;
-	private Vec2f currentMousePosition;
+
 	private float rotYstride;
 	private float rotYamt;
 	private float rotYcounter;
@@ -91,66 +92,49 @@ public class Camera {
 		setPosition(position);
 		setForward(forward);
 		setUp(up);
-		setScaleFactor(1);
 		up.normalize();
 		forward.normalize();
 	}
 	
 	public void update()
 	{
-		previousPosition = new Vec3f(position);
-		previousForward = new Vec3f(forward);
+		setPreviousPosition(new Vec3f(position));
+		setPreviousForward(new Vec3f(forward));
 		cameraMoved = false;
 		cameraRotated = false;
 		
-		setScaleFactor(Math.max(1, scaleFactor + Mouse.getDWheel()/10));
-		movAmt = scaleFactor * 0.001f;
-		rotAmt = 4 * scaleFactor * 0.001f; 
+		movAmt += (0.01f * Input.getInstance().getScrollOffset());
+		movAmt = Math.max(0.02f, movAmt);
 		
-		if(Input.isButtonDown(2))
-		{
-			Input.setCursor(false);
-			lockedMousePosition = Input.getMousePos();
-			mouselocked = true;
-		}
-		
-		if(Input.isButtonreleased(2))
-		{
-			Input.setCursor(true);
-			mouselocked = false;
-		}	
-		
-		if(Input.getHoldingKey(Keyboard.KEY_W))
+		if(Input.getInstance().isKeyPushed(GLFW_KEY_W))
 			move(getForward(), movAmt);
-		if(Input.getHoldingKey(Keyboard.KEY_S))
+		if(Input.getInstance().isKeyPushed(GLFW_KEY_S))
 			move(getForward(), -movAmt);
-		if(Input.getHoldingKey(Keyboard.KEY_A))
+		if(Input.getInstance().isKeyPushed(GLFW_KEY_A))
 			move(getLeft(), movAmt);
-		if(Input.getHoldingKey(Keyboard.KEY_D))
+		if(Input.getInstance().isKeyPushed(GLFW_KEY_D))
 			move(getRight(), movAmt);
-		
-		if(Input.getHoldingKey(Keyboard.KEY_UP))
+				
+		if(Input.getInstance().isKeyPushed(GLFW_KEY_UP))
 			rotateX(-rotAmt/8f);
-		if(Input.getHoldingKey(Keyboard.KEY_DOWN))
+		if(Input.getInstance().isKeyPushed(GLFW_KEY_DOWN))
 			rotateX(rotAmt/8f);
-		if(Input.getHoldingKey(Keyboard.KEY_LEFT))
+		if(Input.getInstance().isKeyPushed(GLFW_KEY_LEFT))
 			rotateY(-rotAmt/8f);
-		if(Input.getHoldingKey(Keyboard.KEY_RIGHT))
+		if(Input.getInstance().isKeyPushed(GLFW_KEY_RIGHT))
 			rotateY(rotAmt/8f);
 		
 		// free mouse rotation
-		if(mouselocked)
+		if(Input.getInstance().isButtonHolding(2))
 		{
-			currentMousePosition = Input.getMousePos();
-			
-			float dy = lockedMousePosition.getY() - currentMousePosition.getY();
-			float dx = lockedMousePosition.getX() - currentMousePosition.getX();
+			float dy = Input.getInstance().getLockedCursorPosition().getY() - Input.getInstance().getCursorPosition().getY();
+			float dx = Input.getInstance().getLockedCursorPosition().getX() - Input.getInstance().getCursorPosition().getX();
 			
 			// y-axxis rotation
 			
 			if (dy != 0){
 				rotYstride = Math.abs(dy * 0.01f);
-				rotYamt = dy;
+				rotYamt = -dy;
 				rotYcounter = 0;
 				rotYInitiated = true;
 			}
@@ -162,7 +146,7 @@ public class Camera {
 					if (rotYcounter > rotYamt){
 						rotateX(-rotYstride * mouseSensitivity);
 						rotYcounter -= rotYstride;
-						rotYstride *= 0.96;
+						rotYstride *= 0.98;
 					}
 					else rotYInitiated = false;
 				}
@@ -171,7 +155,7 @@ public class Camera {
 					if (rotYcounter < rotYamt){
 						rotateX(rotYstride * mouseSensitivity);
 						rotYcounter += rotYstride;
-						rotYstride *= 0.96;
+						rotYstride *= 0.98;
 					}
 					else rotYInitiated = false;
 				}
@@ -206,9 +190,11 @@ public class Camera {
 					else rotXInitiated = false;
 				}
 			}
+			
+			glfwSetCursorPos(Window.getInstance().getWindow(),
+					 Input.getInstance().getLockedCursorPosition().getX(),
+					 Input.getInstance().getLockedCursorPosition().getY());
 		}
-		
-		if(mouselocked) Input.setMousePosition(lockedMousePosition);
 		
 		if (!position.equals(previousPosition)){
 			cameraMoved = true;	
@@ -249,7 +235,7 @@ public class Camera {
 		
 		//left plane
 		Quaternion leftPlane = new Quaternion(
-				this.projectionMatrix.get(3, 0) + this.projectionMatrix.get(0, 0) * (float) ((Math.tan(Math.toRadians(this.fovY/2)) * ((double) Display.getWidth()/ (double) Display.getHeight()))),
+				this.projectionMatrix.get(3, 0) + this.projectionMatrix.get(0, 0) * (float) ((Math.tan(Math.toRadians(this.fovY/2)) * ((double) Window.getInstance().getWidth()/ (double) Window.getInstance().getHeight()))),
 				this.projectionMatrix.get(3, 1) + this.projectionMatrix.get(0, 1),
 				this.projectionMatrix.get(3, 2) + this.projectionMatrix.get(0, 2),
 				this.projectionMatrix.get(3, 3) + this.projectionMatrix.get(0, 3));
@@ -258,7 +244,7 @@ public class Camera {
 		
 		//right plane
 		Quaternion rightPlane = new Quaternion(
-				this.projectionMatrix.get(3, 0) - this.projectionMatrix.get(0, 0) * (float) ((Math.tan(Math.toRadians(this.fovY/2)) * ((double) Display.getWidth()/ (double) Display.getHeight()))),
+				this.projectionMatrix.get(3, 0) - this.projectionMatrix.get(0, 0) * (float) ((Math.tan(Math.toRadians(this.fovY/2)) * ((double) Window.getInstance().getWidth()/ (double) Window.getInstance().getHeight()))),
 				this.projectionMatrix.get(3, 1) - this.projectionMatrix.get(0, 1),
 				this.projectionMatrix.get(3, 2) - this.projectionMatrix.get(0, 2),
 				this.projectionMatrix.get(3, 3) - this.projectionMatrix.get(0, 3));
@@ -332,14 +318,6 @@ public class Camera {
 		Vec3f right = up.cross(forward);
 		right.normalize();
 		return right;
-	}
-
-	public int getScaleFactor() {
-		return this.scaleFactor;
-	}
-
-	public void setScaleFactor(int scaleFactor) {
-		this.scaleFactor = scaleFactor;
 	}
 
 	public Matrix4f getProjectionMatrix() {
@@ -456,8 +434,7 @@ public class Camera {
 		return previousForward;
 	}
 
-	public void setPreviousForward(Vec3f previousForward) {
+	private void setPreviousForward(Vec3f previousForward) {
 		this.previousForward = previousForward;
 	}
-
 }
