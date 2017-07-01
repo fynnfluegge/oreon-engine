@@ -9,7 +9,6 @@ import modules.gui.elements.TexturePanel;
 import modules.instancing.InstancingObjectHandler;
 import modules.lighting.DirectionalLight;
 import modules.lighting.LightHandler;
-import modules.mousePicking.TerrainPicking;
 import modules.postProcessingEffects.DepthOfFieldBlur;
 import modules.postProcessingEffects.Bloom;
 import modules.postProcessingEffects.MotionBlur;
@@ -113,7 +112,7 @@ public class RenderingEngine {
 		window.blitMultisampledFBO(1,1);
 		
 		// start Threads to update instancing objects
-		instancingObjectHandler.update();
+		instancingObjectHandler.signalAll();
 		
 		// start Thread to update Terrain Quadtree
 		//TODO Context Sharing
@@ -196,13 +195,14 @@ public class RenderingEngine {
 		gui.update();
 		
 		if (scenegraph.terrainExists()){
-			TerrainPicking.getInstance().getTerrainPosition();
+			//TerrainPicking.getInstance().getTerrainPosition();
 		}
 	}
 	
 	public void shutdown()
 	{
 		scenegraph.shutdown();
+		instancingObjectHandler.signalAll();
 	}
 
 	public static Quaternion getClipplane() {

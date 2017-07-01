@@ -30,9 +30,8 @@ public class Camera {
 	private Vec3f forward;
 	private Vec3f previousForward;
 	private Vec3f up;
-	private int scaleFactor;
-	private float movAmt;
-	private float rotAmt;
+	private float movAmt = 0.1f;
+	private float rotAmt = 0.8f;
 	private Matrix4f viewMatrix;
 	private Matrix4f projectionMatrix;
 	private Matrix4f viewProjectionMatrix;
@@ -104,9 +103,8 @@ public class Camera {
 		cameraMoved = false;
 		cameraRotated = false;
 		
-		setScaleFactor(100);
-		movAmt = scaleFactor * 0.001f;
-		rotAmt = 8 * scaleFactor * 0.001f; 
+		movAmt += (0.01f * Input.getInstance().getScrollOffset());
+		movAmt = Math.max(0.02f, movAmt);
 		
 		if(Input.getInstance().isKeyPushed(GLFW_KEY_W))
 			move(getForward(), movAmt);
@@ -320,14 +318,6 @@ public class Camera {
 		Vec3f right = up.cross(forward);
 		right.normalize();
 		return right;
-	}
-
-	public int getScaleFactor() {
-		return this.scaleFactor;
-	}
-
-	public void setScaleFactor(int scaleFactor) {
-		this.scaleFactor = scaleFactor;
 	}
 
 	public Matrix4f getProjectionMatrix() {

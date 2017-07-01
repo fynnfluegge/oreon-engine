@@ -8,6 +8,7 @@ import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
 import static org.lwjgl.glfw.GLFW.glfwPollEvents;
 import static org.lwjgl.glfw.GLFW.glfwSetCursorPos;
 import static org.lwjgl.glfw.GLFW.glfwSetCursorPosCallback;
+import static org.lwjgl.glfw.GLFW.glfwSetScrollCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetInputMode;
 import static org.lwjgl.glfw.GLFW.glfwSetKeyCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetMouseButtonCallback;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 import org.lwjgl.glfw.GLFWCursorPosCallback;
 import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWMouseButtonCallback;
+import org.lwjgl.glfw.GLFWScrollCallback;
 
 import engine.math.Vec2f;
 
@@ -33,6 +35,7 @@ public class Input {
 	
 	private Vec2f cursorPosition;
 	private Vec2f lockedCursorPosition;
+	private float scrollOffset;
 	
 	private boolean pause = false;
 	
@@ -44,6 +47,9 @@ public class Input {
 	
 	@SuppressWarnings("unused")
 	private GLFWMouseButtonCallback mouseButtonCallback;
+	
+	@SuppressWarnings("unused")
+	private GLFWScrollCallback scrollCallback;
 	
 	public static Input getInstance() 
 	{
@@ -110,9 +116,18 @@ public class Input {
             }
 
 		}));
+		
+		glfwSetScrollCallback(Window.getInstance().getWindow(), (scrollCallback = new GLFWScrollCallback() {
+			
+			@Override
+			public void invoke(long window, double xoffset, double yoffset) {
+				setScrollOffset((float) yoffset);
+			}
+		}));
 	}
 	
 	public void update() {
+		setScrollOffset(0);
 		pushedButtons.clear();
 		releasedButtons.clear();
 		
@@ -186,5 +201,13 @@ public class Input {
 
 	public void setButtonsHolding(ArrayList<Integer> buttonsHolding) {
 		this.buttonsHolding = buttonsHolding;
+	}
+
+	public float getScrollOffset() {
+		return scrollOffset;
+	}
+
+	public void setScrollOffset(float scrollOffset) {
+		this.scrollOffset = scrollOffset;
 	}
 }

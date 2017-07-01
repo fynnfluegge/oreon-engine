@@ -116,7 +116,7 @@ public class Tree02ClusterGroup extends InstancingObject{
 	
 	public void run(){
 		
-		while(true){
+		while(isRunning()){
 		
 			InstancingObjectHandler.getInstance().getLock().lock();
 			try {
@@ -139,13 +139,5 @@ public class Tree02ClusterGroup extends InstancingObject{
 				}
 			}
 		}
-	}
-	
-	public void render(){
-			super.render();
-	}
-	
-	public void update(){
-		super.update();
 	}
 }

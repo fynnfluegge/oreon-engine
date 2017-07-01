@@ -23,7 +23,7 @@ public class InstancingObjectHandler {
 	protected InstancingObjectHandler(){
 	}
 	
-	public void update(){
+	public void signalAll(){
 		lock.lock();
 		try{
 			condition.signalAll();

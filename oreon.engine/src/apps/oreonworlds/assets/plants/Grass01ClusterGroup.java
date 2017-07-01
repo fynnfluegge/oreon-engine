@@ -14,7 +14,7 @@ import modules.modelLoader.obj.Model;
 import modules.modelLoader.obj.OBJLoader;
 
 public class Grass01ClusterGroup extends InstancingObject{
-
+	
 	public Grass01ClusterGroup(){
 		
 		Model[] models = new OBJLoader().load("./res/oreonworlds/assets/plants/Grass_01","grassmodel.obj","grassmodel.mtl");
@@ -153,8 +153,8 @@ public class Grass01ClusterGroup extends InstancingObject{
 	
 	public void run(){
 		
-		while(true){
-		
+		while(isRunning()){
+			
 			InstancingObjectHandler.getInstance().getLock().lock();
 			try {
 				InstancingObjectHandler.getInstance().getCondition().await();
@@ -176,10 +176,5 @@ public class Grass01ClusterGroup extends InstancingObject{
 				}
 			}
 		}
-	}
-	
-	public void update(){
-	
-		super.update();
 	}
 }

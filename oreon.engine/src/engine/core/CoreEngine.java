@@ -72,6 +72,7 @@ public class CoreEngine{
 		{
 			if(shareGLContext)
 			{
+				// TODO lwjgl 3 support
 //				glContextLock.lock();
 //				System.out.println("CoreEngine lock");
 //				try{
