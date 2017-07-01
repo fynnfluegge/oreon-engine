@@ -249,11 +249,11 @@ void main()
 	
 	// caustics
 	if (isCameraUnderWater == 1 && isRefraction == 0){
-		vec2 causticsTexCoord = position.xz / 80;
+		vec2 causticsTexCoord = position.xz / 100;
 		vec2 causticDistortion = texture(dudvCaustics, causticsTexCoord*0.2 + distortionCaustics*0.6).rb * 0.18;
 		vec3 causticsColor = texture(caustics, causticsTexCoord + causticDistortion).rbg;
 		
-		fragColor += (causticsColor/4);
+		fragColor += (causticsColor/5);
 	}
 	float fogFactor = -0.0005/sightRangeFactor*(dist-zfar/5*sightRangeFactor);
 

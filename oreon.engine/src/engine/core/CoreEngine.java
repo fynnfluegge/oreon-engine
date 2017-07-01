@@ -10,7 +10,6 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL31;
 import org.lwjgl.opengl.GL40;
 import static org.lwjgl.glfw.GLFW.glfwInit;
-import static org.lwjgl.glfw.GLFW.glfwPollEvents;
 import static org.lwjgl.glfw.GLFW.glfwTerminate;
 import static org.lwjgl.glfw.GLFW.glfwSetErrorCallback;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -170,7 +169,7 @@ public class CoreEngine{
 	
 	private void update()
 	{
-		glfwPollEvents();
+		Input.getInstance().update();
 		Camera.getInstance().update();
 		
 		renderingEngine.update();
@@ -178,7 +177,7 @@ public class CoreEngine{
 	
 	private void cleanUp()
 	{
-		//renderingEngine.shutdown();
+		renderingEngine.shutdown();
 		Window.getInstance().dispose();
 		glfwTerminate();
 	}

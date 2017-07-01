@@ -5,7 +5,7 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 import modules.gui.GUIElement;
 import modules.gui.GUIObjectLoader;
 import modules.gui.GUIVAO;
-import engine.configs.AlphaBlending;
+import engine.configs.Default;
 import engine.core.CoreEngine;
 import engine.core.Window;
 import engine.math.Matrix4f;
@@ -27,7 +27,7 @@ public class FPSPanel extends GUIElement{
 		fps = new Vec2f[24];
 		setShader(GuiShader.getInstance());
 		setVao(new GUIVAO());
-		setConfig(new AlphaBlending(0.3f));
+		setConfig(new Default());
 		getVao().addData(GUIObjectLoader.load("fpsPanel.gui"));
 		int size = 20;
 		setOrthoTransform(new Transform());

@@ -9,6 +9,8 @@ public class FullScreenButton  extends Button{
 
 	private boolean isFullScreenMode = false;
 	
+	
+	
 	public FullScreenButton()
 	{
 		buttonMap = new Texture2D("./res/gui/tex/maximize.png");

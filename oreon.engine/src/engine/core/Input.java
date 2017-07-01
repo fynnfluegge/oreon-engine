@@ -5,6 +5,7 @@ import static org.lwjgl.glfw.GLFW.GLFW_CURSOR_HIDDEN;
 import static org.lwjgl.glfw.GLFW.GLFW_CURSOR_NORMAL;
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
+import static org.lwjgl.glfw.GLFW.glfwPollEvents;
 import static org.lwjgl.glfw.GLFW.glfwSetCursorPos;
 import static org.lwjgl.glfw.GLFW.glfwSetCursorPosCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetInputMode;
@@ -27,6 +28,7 @@ public class Input {
 	private ArrayList<Integer> releasedKeys = new ArrayList<Integer>();
 	
 	private ArrayList<Integer> pushedButtons = new ArrayList<Integer>();
+	private ArrayList<Integer> buttonsHolding = new ArrayList<Integer>();
 	private ArrayList<Integer> releasedButtons = new ArrayList<Integer>();
 	
 	private Vec2f cursorPosition;
@@ -88,11 +90,13 @@ public class Input {
                 if (action == GLFW_PRESS){
                 	if (!pushedButtons.contains(button)){
                 		pushedButtons.add(button);
+                		buttonsHolding.add(button);
                 	}
                 }
                 
                 if (action == GLFW_RELEASE){
-                	pushedButtons.remove(new Integer(button));
+                	releasedButtons.add(button);
+                	buttonsHolding.remove(new Integer(button));
                 }
             }
 		}));
@@ -106,6 +110,13 @@ public class Input {
             }
 
 		}));
+	}
+	
+	public void update() {
+		pushedButtons.clear();
+		releasedButtons.clear();
+		
+		glfwPollEvents();
 	}
 	
 	public boolean isKeyPushed(int key)
@@ -126,6 +137,11 @@ public class Input {
 	public boolean isButtonreleased(int key)
 	{
 		return releasedButtons.contains(key);
+	}
+	
+	public boolean isButtonHolding(int key)
+	{
+		return buttonsHolding.contains(key);
 	}
 
 	public boolean isPause() {
@@ -162,5 +178,13 @@ public class Input {
 
 	public void setPushedKeys(ArrayList<Integer> pushedKeys) {
 		this.pushedKeys = pushedKeys;
+	}
+
+	public ArrayList<Integer> getButtonsHolding() {
+		return buttonsHolding;
+	}
+
+	public void setButtonsHolding(ArrayList<Integer> buttonsHolding) {
+		this.buttonsHolding = buttonsHolding;
 	}
 }

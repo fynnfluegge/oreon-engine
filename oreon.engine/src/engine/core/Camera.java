@@ -17,7 +17,6 @@ import static org.lwjgl.glfw.GLFW.GLFW_KEY_RIGHT;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_LEFT;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_UP;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_DOWN;
-import static org.lwjgl.glfw.GLFW.glfwPollEvents;
 import static org.lwjgl.glfw.GLFW.glfwSetCursorPos;
 
 public class Camera {
@@ -100,14 +99,12 @@ public class Camera {
 	
 	public void update()
 	{
-		glfwPollEvents();
-		
 		setPreviousPosition(new Vec3f(position));
 		setPreviousForward(new Vec3f(forward));
 		cameraMoved = false;
 		cameraRotated = false;
 		
-		setScaleFactor(400);
+		setScaleFactor(100);
 		movAmt = scaleFactor * 0.001f;
 		rotAmt = 8 * scaleFactor * 0.001f; 
 		
@@ -130,7 +127,7 @@ public class Camera {
 			rotateY(rotAmt/8f);
 		
 		// free mouse rotation
-		if(Input.getInstance().isButtonPushed(2))
+		if(Input.getInstance().isButtonHolding(2))
 		{
 			float dy = Input.getInstance().getLockedCursorPosition().getY() - Input.getInstance().getCursorPosition().getY();
 			float dx = Input.getInstance().getLockedCursorPosition().getX() - Input.getInstance().getCursorPosition().getX();
@@ -138,7 +135,7 @@ public class Camera {
 			// y-axxis rotation
 			
 			if (dy != 0){
-				rotYstride = Math.abs(dy * 0.04f);
+				rotYstride = Math.abs(dy * 0.01f);
 				rotYamt = -dy;
 				rotYcounter = 0;
 				rotYInitiated = true;
@@ -168,7 +165,7 @@ public class Camera {
 			
 			// x-axxis rotation
 			if (dx != 0){
-				rotXstride = Math.abs(dx * 0.04f);
+				rotXstride = Math.abs(dx * 0.01f);
 				rotXamt = dx;
 				rotXcounter = 0;
 				rotXInitiated = true;

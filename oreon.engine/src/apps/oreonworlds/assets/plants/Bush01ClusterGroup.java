@@ -3,7 +3,7 @@ package apps.oreonworlds.assets.plants;
 import apps.oreonworlds.shaders.plants.BushShader;
 import apps.oreonworlds.shaders.plants.BushShadowShader;
 import engine.buffers.MeshVAO;
-import engine.configs.AlphaTestCullFaceDisable;
+import engine.configs.CullFaceDisable;
 import engine.math.Vec3f;
 import engine.scenegraph.components.RenderInfo;
 import modules.instancing.InstancedDataObject;
@@ -25,7 +25,7 @@ public class Bush01ClusterGroup extends InstancingObject{
 			model.getMesh().setInstanced(true);
 			meshBuffer.addData(model.getMesh());
 
-			object.setRenderInfo(new RenderInfo(new AlphaTestCullFaceDisable(0.1f), BushShader.getInstance(), BushShadowShader.getInstance()));
+			object.setRenderInfo(new RenderInfo(new CullFaceDisable(), BushShader.getInstance(), BushShadowShader.getInstance()));
 
 			object.setMaterial(model.getMaterial());
 			object.setVao(meshBuffer);

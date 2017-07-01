@@ -21,8 +21,8 @@ public class GuiShader extends Shader{
 	{
 		super();
 
-		addVertexShader(ResourceLoader.loadShader("shaders/gui/Vertex.glsl"));
-		addFragmentShader(ResourceLoader.loadShader("shaders/gui/Fragment.glsl"));
+		addVertexShader(ResourceLoader.loadShader("shaders/gui/gui_VS.glsl"));
+		addFragmentShader(ResourceLoader.loadShader("shaders/gui/gui_FS.glsl"));
 		compileShader();
 		
 		addUniform("orthographicMatrix");

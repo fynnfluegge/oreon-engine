@@ -53,11 +53,12 @@ public class RenderingEngine {
 	private static boolean waterRefraction = false;
 	private static boolean cameraUnderWater = false;
 	private static float t_causticsDistortion = 0;
+	private static float sightRangeFactor = 1;
 	
 	public RenderingEngine(Scenegraph scenegraph, GUI gui)
 	{
 		window = Window.getInstance();
-//		instancingObjectHandler = InstancingObjectHandler.getInstance();
+		instancingObjectHandler = InstancingObjectHandler.getInstance();
 		this.scenegraph = scenegraph;
 		this.gui = gui;
 	}
@@ -96,7 +97,7 @@ public class RenderingEngine {
 		glClear(GL_DEPTH_BUFFER_BIT);
 		scenegraph.renderShadows();
 		shadowMaps.getFBO().unbind();
-//		
+		
 		// render scene/deferred maps
 		window.getMultisampledFbo().bind();
 		Default.clearScreen();
@@ -112,7 +113,7 @@ public class RenderingEngine {
 		window.blitMultisampledFBO(1,1);
 		
 		// start Threads to update instancing objects
-//		instancingObjectHandler.update();
+		instancingObjectHandler.update();
 		
 		// start Thread to update Terrain Quadtree
 		//TODO Context Sharing
@@ -160,7 +161,7 @@ public class RenderingEngine {
 		
 		// Motion Blur
 		if (isMotionBlurEnabled()){
-			if (Camera.getInstance().getPreviousPosition().sub(Camera.getInstance().getPosition()).length() > 0.1f ||
+			if (Camera.getInstance().getPreviousPosition().sub(Camera.getInstance().getPosition()).length() > 0.04f ||
 				Camera.getInstance().getForward().sub(Camera.getInstance().getPreviousForward()).length() > 0.01f){
 				motionBlur.render(window.getSceneDepthmap(), postProcessingTexture);
 				postProcessingTexture = motionBlur.getMotionBlurSceneTexture();
@@ -175,11 +176,11 @@ public class RenderingEngine {
 		// final scene texture
 		fullScreenTexture.setTexture(postProcessingTexture);	
 		
+		fullScreenTexture.render();
+		
 		window.getFBO().bind();
 		LightHandler.doOcclusionQueries();
 		window.getFBO().unbind();
-		
-		fullScreenTexture.render();
 		
 		lensFlare.render();
 		
@@ -193,7 +194,10 @@ public class RenderingEngine {
 	{
 		scenegraph.update();
 		gui.update();
-//		TerrainPicking.getInstance().getTerrainPosition();
+		
+		if (scenegraph.terrainExists()){
+			TerrainPicking.getInstance().getTerrainPosition();
+		}
 	}
 	
 	public void shutdown()
@@ -291,5 +295,13 @@ public class RenderingEngine {
 
 	public static float getT_causticsDistortion() {
 		return t_causticsDistortion;
+	}
+
+	public static float getSightRangeFactor() {
+		return sightRangeFactor;
+	}
+
+	public static void setSightRangeFactor(float sightRangeFactor) {
+		RenderingEngine.sightRangeFactor = sightRangeFactor;
 	}
 }
