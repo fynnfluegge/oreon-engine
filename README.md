@@ -13,5 +13,7 @@ Eclipse: http://oreon3d.github.io/Oreon.Engine-OpenGL-Java/_navigation/Getting_S
 Eclipse-Tutorial: http://oreon3d.github.io/Oreon.Engine-OpenGL-Java/_navigation/Getting_Started.html
 
 ## Camera Control
-#### Moving: W,A,S,D
+Moving: W,A,S,D
+Rotating: Hold Mouse Button 2/Middle Button and Move Mouse
+Accelerate Moving: Scroll Mouse
 
