@@ -86,20 +86,22 @@ Clone the repository and import the project into Eclipse
 - Set a project name
 - Deselect 'Use default location'
 	- Choose the project path of your local repository as location
-- click Next>
 
-.. image:: /_images/newProject2.png
+.. image:: /_images/newProject2.png	
 
-- Finally make sure that lwjgl.jar and slick.jar exists ind the libraries build path
-	- if not, add them via Add JARs... (lib folder)
 - click Finish
-	
-.. image:: /_images/libraries.png
+- Now you see the project in your project explorer with a lot of errors, because there is one last thing to do. Since the project uses Maven-dependencies it has to be converted to a Maven-project.
 
-- Congratulations! You are done!
-- You will see the project in your Eclipse package Explorer
+.. image:: /_images/errors.png
 
-.. image:: /_images/Project_Setup_Finished.png
+- Right click on the project in project explorer -> go to 'Configure' and click on 'convert to maven project'
+
+Congratulations! You are done!
+You will see the project in your Eclipse package Explorer as a Maven-project without missing dependencies. 
+Good luck and have fun with the project!
+
+.. image:: /_images/project_setup_finished.png
+
 
 
 
