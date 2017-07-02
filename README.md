@@ -7,13 +7,13 @@ Official website https://www.oreonengine.com
 Documentation: http://oreon3d.github.io/Oreon.Engine-OpenGL-Java
 
 ## Build Manual
-Eclipse: http://oreon3d.github.io/Oreon.Engine-OpenGL-Java/_navigation/Getting_Started.html
-
-## Running Oreonworlds Open World Simulation
 Eclipse-Tutorial: http://oreon3d.github.io/Oreon.Engine-OpenGL-Java/_navigation/Getting_Started.html
 
+## Running Oreonworlds Open World Simulation
+* run apps.oreonworlds.Main as Java Application
+
 ## Camera Control
-Moving: W,A,S,D
-Rotating: Hold Mouse Button 2/Middle Button and Move Mouse
-Accelerate Moving: Scroll Mouse
+* Move: W,A,S,D
+* Rotate: Hold the middle mouse button while moving the mouse
+* Accelerate Movespeed: Scroll mouse
 
