@@ -45,6 +45,8 @@ height displacement and Choppy displacement
 ### 2x - 8x Multisample Anti-Aliasing
 ### Tessellation
 ### Normal- /Displacement-Mapping
+<img src="docs/_images/Normalmapping.png" height="200px">
+
 ### Instanced Rendering
 ### Post-Processing Effects
 #### Motion Blur
