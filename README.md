@@ -12,7 +12,7 @@ Eclipse-Tutorial: http://oreon3d.github.io/Oreon.Engine-OpenGL-Java/_navigation/
 ## Running Oreonworlds Open World Simulation
 * Run apps.oreonworlds.Main as Java Application
 
-[![IMAGE ALT TEXT HERE](http://img.youtube.com/vi/watch?v=eC8dZm4fkUE/0.jpg)](https://www.youtube.com/watch?v=eC8dZm4fkUE)
+[![IMAGE ALT TEXT HERE](http://img.youtube.com/vi/eC8dZm4fkUE/0.jpg)](https://www.youtube.com/watch?v=eC8dZm4fkUE)
 
 ## Camera Control
 * Move: W, A, S, D
