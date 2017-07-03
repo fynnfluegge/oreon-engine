@@ -38,7 +38,6 @@ height displacement and Choppy displacement
 <img src="docs/_images/sun.png" height="200px">
 
 ### Parallel Split Shadow Mapping
-<img src="docs/_images/PSSM.png" height="200px" align="left">
 <img src="docs/_images/Shadows.png" height="200px">
 
 ### Variance Shadows
