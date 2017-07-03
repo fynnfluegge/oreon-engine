@@ -49,10 +49,14 @@ height displacement and Choppy displacement
 
 ### Instanced Rendering
 ### Post-Processing Effects
+<img src="docs/_images/Blur.png" height="200px">
+
 #### Motion Blur
 #### Depth of Field Blur
 #### Bloom
 #### Light Scattering
 #### Lens Flare
+<img src="docs/_images/LightScattering_LensFlare.png" height="200px">
+
 ### GUI
 ## Credits
