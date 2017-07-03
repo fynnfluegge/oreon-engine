@@ -12,7 +12,8 @@ Documentation: http://oreon3d.github.io/Oreon.Engine-OpenGL-Java
 <img src="docs/_images/Windows_logo.png" height="72px" align="left"> 
 <img src="docs/_images/MacOS-Logo.png" height="72px" align="left"> 
 
-> Eclipse-Tutorial: http://oreon3d.github.io/Oreon.Engine-OpenGL-Java/_navigation/Getting_Started.html
+> Eclipse-Tutorial: http://oreon3d.github.io/Oreon.Engine-OpenGL-Java/_navigation/Getting_Started.html  
+
 
 ## Running Oreonworlds Open World Simulation
 * Run apps.oreonworlds.Main as Java Application
