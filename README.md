@@ -7,15 +7,17 @@ Official website https://www.oreonengine.com
 
 Documentation: http://oreon3d.github.io/Oreon.Engine-OpenGL-Java
 
-## <img src="docs/_images/linux-logo.jpg" height="72px" align="left">
-   <img src="docs/_images/lWindows_logo.png" height="72px" align="left"> Build Manual
+## 
+<img src="docs/_images/linux-logo.jpg" height="72px" align="left">
+<img src="docs/_images/Windows_logo.png" height="72px" align="left"> 
+Build Manual
  
 Eclipse-Tutorial: http://oreon3d.github.io/Oreon.Engine-OpenGL-Java/_navigation/Getting_Started.html
 
 ## Running Oreonworlds Open World Simulation
 * Run apps.oreonworlds.Main as Java Application
 
-[![IMAGE ALT TEXT HERE](docs/_images/thumbnail4.png)](https://www.youtube.com/watch?v=eC8dZm4fkUE)
+[![IMAGE ALT TEXT HERE](docs/_images/thumbnail4.png) height="20px"](https://www.youtube.com/watch?v=eC8dZm4fkUE)
 
 ## Camera Control
 * Move: W, A, S, D
