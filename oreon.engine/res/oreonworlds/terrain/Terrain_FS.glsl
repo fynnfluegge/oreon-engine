@@ -95,10 +95,23 @@ float linearizeDepth(float depth)
 	return (2 * znear) / (zfar + znear - depth * (zfar - znear));
 }
 
+float percentageCloserShadows(vec3 projCoords, int split, float shadowFactor){
+
+	float currentDepth = projCoords.z;
+	float shadowMapDepth = texture(shadowMaps, vec3(projCoords.xy,split)).r;
+	
+	float dist = linearizeDepth(shadowMapDepth) - linearizeDepth(currentDepth);
+		
+	if (dist < 0)
+		return 0;
+	else 
+		return 1;
+}
+
 float varianceShadow(vec3 projCoords, int split, int kernels){
 	
 	float shadowFactor = 1.0;
-	float texelSize = 1.0/ 2048.0;
+	float texelSize = 1.0/ 4096.0;
 	float currentDepth = projCoords.z;
 	float reduceFactor = 1/ pow(kernels*2+1,2);
 	

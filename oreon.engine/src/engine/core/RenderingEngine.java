@@ -9,6 +9,7 @@ import modules.gui.elements.TexturePanel;
 import modules.instancing.InstancingObjectHandler;
 import modules.lighting.DirectionalLight;
 import modules.lighting.LightHandler;
+import modules.mousePicking.TerrainPicking;
 import modules.postProcessingEffects.DepthOfFieldBlur;
 import modules.postProcessingEffects.Bloom;
 import modules.postProcessingEffects.MotionBlur;
@@ -93,8 +94,10 @@ public class RenderingEngine {
 		
 		//render shadow maps
 		shadowMaps.getFBO().bind();
+		shadowMaps.getConfig().enable();
 		glClear(GL_DEPTH_BUFFER_BIT);
 		scenegraph.renderShadows();
+		shadowMaps.getConfig().disable();
 		shadowMaps.getFBO().unbind();
 		
 		// render scene/deferred maps
@@ -195,7 +198,7 @@ public class RenderingEngine {
 		gui.update();
 		
 		if (scenegraph.terrainExists()){
-			//TerrainPicking.getInstance().getTerrainPosition();
+			TerrainPicking.getInstance().getTerrainPosition();
 		}
 	}
 	

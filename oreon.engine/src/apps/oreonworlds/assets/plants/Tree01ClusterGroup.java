@@ -81,7 +81,7 @@ public class Tree01ClusterGroup extends InstancingObject{
 		addChild(new Tree01Cluster(10,new Vec3f(1012,0,-1154),getObjectData()));
 		addChild(new Tree01Cluster(10,new Vec3f(812,0,-1084),getObjectData()));
 		addChild(new Tree01Cluster(10,new Vec3f(909,0,-1187),getObjectData()));
-//		addChild(new Tree01Cluster(10,new Vec3f(1463,0,1589),getObjectData()));
+		addChild(new Tree01Cluster(10,new Vec3f(467,0,-1083),getObjectData()));
 //		addChild(new Tree01Cluster(10,new Vec3f(-662,0,-11),getObjectData()));
 //		addChild(new Tree01Cluster(10,new Vec3f(1240,0,1664),getObjectData()));
 //		addChild(new Tree01Cluster(10,new Vec3f(-702,0,306),getObjectData()));

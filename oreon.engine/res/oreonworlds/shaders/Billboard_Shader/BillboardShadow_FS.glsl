@@ -13,6 +13,6 @@ void main()
 {
 	float alpha = texture(material.diffusemap, texCoord_FS).a;
 	if (alpha < 0.2)
-		gl_FragDepth = 1;
+		discard;
 	gl_FragColor = vec4(0.1,0.9,0.1,1.0);
 }

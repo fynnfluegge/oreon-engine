@@ -131,13 +131,23 @@ public class Tree02ClusterGroup extends InstancingObject{
 			getChildren().clear();
 			
 			synchronized (getChildren()) {
+				
+//				long time = System.currentTimeMillis();
+				
 				for (InstancingCluster cluster : getClusters()){
 					if (cluster.getCenter().sub(Camera.getInstance().getPosition()).length() < 1000){
 						cluster.updateUBOs();
 						addChild(cluster);
 					}
 				}
+				
+//				System.out.println("############## " + (System.currentTimeMillis() - time));
 			}
 		}
+	}
+	
+	public void render() {
+		
+		super.render();
 	}
 }

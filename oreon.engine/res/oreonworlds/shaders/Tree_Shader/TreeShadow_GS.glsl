@@ -24,6 +24,7 @@ layout (std140, row_major) uniform LightViewProjections{
 	mat4 m_lightViewProjection[6];
 };
 
+uniform vec4 clipplane;
 uniform int matrixIndices[100];
 
 void main()
@@ -31,7 +32,15 @@ void main()
 		for (int i = 0; i < gl_in.length(); ++i)
 		{
 			gl_Layer = gl_InvocationID;
-			gl_Position = m_lightViewProjection[ gl_InvocationID ] * m_World[matrixIndices[instanceID_GS[i]]] * gl_in[i].gl_Position;
+			vec4 worldPos = m_World[matrixIndices[instanceID_GS[i]]] * gl_in[i].gl_Position;
+			gl_Position = m_lightViewProjection[ gl_InvocationID ] * worldPos;
+			gl_ClipDistance[0] = dot(gl_Position,frustumPlanes[0]);
+			gl_ClipDistance[1] = dot(gl_Position,frustumPlanes[1]);
+			gl_ClipDistance[2] = dot(gl_Position,frustumPlanes[2]);
+			gl_ClipDistance[3] = dot(gl_Position,frustumPlanes[3]);
+			gl_ClipDistance[4] = dot(gl_Position,frustumPlanes[4]);
+			gl_ClipDistance[5] = dot(gl_Position,frustumPlanes[5]);
+			gl_ClipDistance[6] = dot(worldPos,clipplane);
 			texCoord_FS = texCoord_GS[i];
 			EmitVertex();
 		}	

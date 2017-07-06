@@ -2,13 +2,14 @@ package modules.instancing;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import engine.scenegraph.Node;
 
 public abstract class InstancingObject extends Node implements Runnable{
 	
 	private List<InstancedDataObject> objectData = new ArrayList<InstancedDataObject>();
-	
 	private List<InstancingCluster> clusters = new ArrayList<InstancingCluster>();
+	
 	
 	private Thread thread;
 	private boolean isRunning = true;

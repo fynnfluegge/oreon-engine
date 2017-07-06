@@ -76,7 +76,7 @@ float varianceShadow(vec3 projCoords, int split){
 		for (int j=-1; j<=1; j++){
 			float shadowMapDepth = texture(shadowMaps, vec3(projCoords.xy,split)
 													   + vec3(i,j,0) * texelSize).r; 
-			if (linearize(currentDepth) > linearize(shadowMapDepth) + 0.00001)
+			if (linearize(currentDepth) > linearize(shadowMapDepth) + 0.000001)
 				shadowFactor -= 0.1;
 		}
 	}
@@ -153,7 +153,6 @@ void main()
 	specularLight = directional_light.color * specularFactor;
 	
 	vec3 diffuseColor = texture(material.diffusemap, texCoord_FS * vec2(20,4)).rgb;
-	
 		
 	vec3 fragColor = diffuseColor * diffuseLight;// + specularLight;
 	

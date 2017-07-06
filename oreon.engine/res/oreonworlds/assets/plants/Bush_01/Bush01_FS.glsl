@@ -42,6 +42,10 @@ const float zfar = 10000.0;
 const float znear = 0.1;
 const vec3 fogColor = vec3(0.62,0.85,0.95);
 
+float linearize(float depth)
+{
+	return (2 * znear) / (zfar + znear - depth * (zfar - znear));
+}
 
 float diffuse(vec3 lightDir, vec3 normal, float intensity)
 {
@@ -69,7 +73,7 @@ float varianceShadow(vec3 projCoords, int split){
 		for (int j=-1; j<=1; j++){
 			float shadowMapDepth = texture(shadowMaps, vec3(projCoords.xy,split)
 													   + vec3(i,j,0) * texelSize).r; 
-			if (currentDepth - 0.002 > shadowMapDepth)
+			if (linearize(currentDepth) > linearize(shadowMapDepth)  + 0.00001)
 				shadowFactor -= 0.1;
 		}
 	}

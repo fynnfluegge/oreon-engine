@@ -146,13 +146,12 @@ void main()
 	specularLight = directional_light.color * specularFactor;
 	
 	vec3 diffuseColor = texture(material.diffusemap, texCoord_FS).rgb;
-	
 		
 	vec3 fragColor = diffuseColor * diffuseLight;// + specularLight;
 	
 	// prevent shadows on faces backfacing lightsource
-	// if (dot(normal_FS, -directional_light.direction) > 0.0)
-		// fragColor *= shadow(position_FS);
+	if (dot(normal_FS, -directional_light.direction) > 0.0)
+		fragColor *= shadow(position_FS);
 	
 	float fogFactor = -0.0005/sightRangeFactor*(dist-zFar/5*sightRangeFactor);
 	

@@ -9,6 +9,8 @@ import static org.lwjgl.opengl.GL30.GL_FRAMEBUFFER;
 import static org.lwjgl.opengl.GL30.GL_TEXTURE_2D_ARRAY;
 import static org.lwjgl.opengl.GL32.glFramebufferTexture;
 import engine.buffers.Framebuffer;
+import engine.configs.RenderConfig;
+import engine.configs.ShadowConfig;
 import engine.textures.Texture2DArray;
 import engine.utils.Constants;
 
@@ -16,8 +18,12 @@ public class ShadowMaps {
 
 	private Framebuffer fbo;
 	private Texture2DArray depthMaps;
+	private RenderConfig config;
 	
 	public ShadowMaps(){
+		
+		config = new ShadowConfig();
+		
 		depthMaps = new Texture2DArray();
 		depthMaps.generate();
 		depthMaps.bind();
@@ -48,5 +54,9 @@ public class ShadowMaps {
 	}
 	public Texture2DArray getDepthMaps(){
 		return depthMaps;
+	}
+
+	public RenderConfig getConfig() {
+		return config;
 	}
 }

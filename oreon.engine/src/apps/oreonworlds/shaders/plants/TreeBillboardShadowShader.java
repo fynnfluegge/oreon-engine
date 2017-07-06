@@ -31,7 +31,7 @@ public class TreeBillboardShadowShader extends Shader{
 		
 		addVertexShader(ResourceLoader.loadShader("oreonworlds/shaders/Billboard_Shader/Billboard_VS.glsl"));
 		addGeometryShader(ResourceLoader.loadShader("oreonworlds/shaders/Billboard_Shader/BillboardShadow_GS.glsl"));
-		addFragmentShader(ResourceLoader.loadShader("oreonworlds/shaders/Billboard_Shader/BillboardShadow_FS.glsl"));
+		addFragmentShader(ResourceLoader.loadShader("oreonworlds/shaders/Billboard_Shader/TreeBillboardShadow_FS.glsl"));
 		compileShader();
 		
 		addUniformBlock("InstancedMatrices");

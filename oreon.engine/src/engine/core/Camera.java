@@ -72,7 +72,7 @@ public class Camera {
 	
 	protected Camera()
 	{
-		this(new Vec3f(1060,20,-830), new Vec3f(0,0,1), new Vec3f(0,1,0));
+		this(new Vec3f(-2149,60,2870), new Vec3f(0,0,1), new Vec3f(0,1,0));
 		setProjection(70, Window.getInstance().getWidth(), Window.getInstance().getHeight());
 		setViewMatrix(new Matrix4f().View(this.getForward(), this.getUp()).mul(
 				new Matrix4f().Translation(this.getPosition().mul(-1))));
@@ -103,7 +103,7 @@ public class Camera {
 		cameraMoved = false;
 		cameraRotated = false;
 		
-		movAmt += (0.01f * Input.getInstance().getScrollOffset());
+		movAmt += (0.04f * Input.getInstance().getScrollOffset());
 		movAmt = Math.max(0.02f, movAmt);
 		
 		if(Input.getInstance().isKeyPushed(GLFW_KEY_W))
