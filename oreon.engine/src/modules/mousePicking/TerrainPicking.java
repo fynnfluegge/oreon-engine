@@ -42,13 +42,13 @@ public class TerrainPicking {
 	
 	public void getTerrainPosition(){
 		
-		if (isActive() && glfwGetMouseButton(Window.getInstance().getWindow(),2) == GLFW_PRESS){
+		if (isActive() && glfwGetMouseButton(Window.getInstance().getWindow(),1) == GLFW_PRESS){
 			Vec3f pos = new Vec3f(0,0,0);
 			DoubleBuffer xPos = BufferUtils.createDoubleBuffer(1);
 			DoubleBuffer yPos = BufferUtils.createDoubleBuffer(1);
 			glfwGetCursorPos(Window.getInstance().getWindow(), xPos, yPos);
 			Vec2f screenPos = new Vec2f((float) xPos.get(),(float) yPos.get());
-			System.out.println("TerrainPicking: " + screenPos);
+			
 			Window.getInstance().getSceneDepthmap().bind();
 			glGetTexImage(GL_TEXTURE_2D,0,GL_DEPTH_COMPONENT,GL_FLOAT,depthmapBuffer);
 			float depth = depthmapBuffer.get((int) (Window.getInstance().getWidth() * screenPos.getY() + screenPos.getX()));

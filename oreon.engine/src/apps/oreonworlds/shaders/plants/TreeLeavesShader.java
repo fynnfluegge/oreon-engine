@@ -1,6 +1,7 @@
 package apps.oreonworlds.shaders.plants;
 
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import java.util.List;
@@ -48,7 +49,7 @@ public class TreeLeavesShader extends Shader{
 		addUniformBlock("modelMatrices");
 		addUniformBlock("LightViewProjections");
 		addUniformBlock("Camera");
-//		addUniform("shadowMaps");
+		addUniform("shadowMaps");
 		
 		for (int i=0; i<100; i++)
 		{
@@ -78,9 +79,9 @@ public class TreeLeavesShader extends Shader{
 		material.getDiffusemap().bind();
 		setUniformi("material.diffusemap", 0);
 		
-//		glActiveTexture(GL_TEXTURE1);
-//		RenderingEngine.getShadowMaps().getDepthMaps().bind();
-//		setUniformi("shadowMaps", 1);
+		glActiveTexture(GL_TEXTURE1);
+		RenderingEngine.getShadowMaps().getDepthMaps().bind();
+		setUniformi("shadowMaps", 1);
 		
 		List<Integer> indices = ((InstancingCluster) object.getParent()).getHighPolyIndices();
 					

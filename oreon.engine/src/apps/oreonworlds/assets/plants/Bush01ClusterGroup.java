@@ -32,10 +32,13 @@ public class Bush01ClusterGroup extends InstancingObject{
 			getObjectData().add(object);
 		}
 		
-		addChild(new Bush01Cluster(12,new Vec3f(1218,0,-503),getObjectData()));
-//		addChild(new Bush01Cluster(12,new Vec3f(925,0,-1022),getObjectData()));
-		addChild(new Bush01Cluster(12,new Vec3f(861,0,-1035),getObjectData()));
-		addChild(new Bush01Cluster(12,new Vec3f(797,0,-1048),getObjectData()));
+		addChild(new Bush01Cluster(40,new Vec3f(-2179,0,2918),getObjectData()));
+		addChild(new Bush01Cluster(40,new Vec3f(-2163,0,2894),getObjectData()));
+		
+		addChild(new Bush01Cluster(12,new Vec3f(2494,0,2492),getObjectData()));
+		addChild(new Bush01Cluster(12,new Vec3f(2590,0,-2217),getObjectData()));
+		
+		
 		addChild(new Bush01Cluster(12,new Vec3f(1147,0,-469),getObjectData()));
 		addChild(new Bush01Cluster(20,new Vec3f(1224,0,-279),getObjectData()));
 		addChild(new Bush01Cluster(12,new Vec3f(1303,0,-191),getObjectData()));

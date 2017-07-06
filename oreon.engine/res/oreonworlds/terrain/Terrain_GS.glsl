@@ -98,18 +98,18 @@ void main() {
 	
 	for (int i = 0; i < gl_in.length(); ++i)
 	{
-		vec4 vertexPos = gl_in[i].gl_Position + displacement[i];
-		gl_Position = m_ViewProjection * vertexPos;
+		vec4 worldPos = gl_in[i].gl_Position + displacement[i];
+		gl_Position = m_ViewProjection * worldPos;
 		gl_ClipDistance[0] = dot(gl_Position ,frustumPlanes[0]);
 		gl_ClipDistance[1] = dot(gl_Position ,frustumPlanes[1]);
 		gl_ClipDistance[2] = dot(gl_Position ,frustumPlanes[2]);
 		gl_ClipDistance[3] = dot(gl_Position ,frustumPlanes[3]);
 		gl_ClipDistance[4] = dot(gl_Position ,frustumPlanes[4]);
 		gl_ClipDistance[5] = dot(gl_Position ,frustumPlanes[5]);
-		gl_ClipDistance[6] = dot(vertexPos ,clipplane);
+		gl_ClipDistance[6] = dot(worldPos ,clipplane);
 		texCoordF = texCoordG[i];
-		viewSpacePos = m_View * vertexPos;
-		position = (vertexPos).xyz;
+		viewSpacePos = m_View * worldPos;
+		position = (worldPos).xyz;
 		tangent = Tangent;
 		EmitVertex();
 	}

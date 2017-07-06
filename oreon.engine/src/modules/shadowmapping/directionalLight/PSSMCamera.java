@@ -49,27 +49,34 @@ public class PSSMCamera {
 	
 	public float[] getBoundaries(Vec3f[] frustumCorners){
 		
-		float xMin = Float.MAX_VALUE;
-		float xMax = Float.MIN_VALUE;
-		float yMin = Float.MAX_VALUE;
-		float yMax = Float.MIN_VALUE;
-		float zMin = Float.MAX_VALUE;
-		float zMax = Float.MIN_VALUE;
+		float xMin = 1000000f;
+		float xMax = -1000000f;
+		float yMin = 1000000f;
+		float yMax = -1000000f;
+		float zMin = 1000000f;
+		float zMax = -1000000f;
 		
 		for(Vec3f corner : frustumCorners){
-			if (corner.getX() < xMin)
+			if (corner.getX() < xMin){
 				xMin = corner.getX();
-			if (corner.getX() > xMax)
+			}
+			if (corner.getX() > xMax){
 				xMax = corner.getX();
-			if (corner.getY() < yMin)
+			}
+			if (corner.getY() < yMin){
 				yMin = corner.getY();
-			if (corner.getY() > yMax)
+			}
+			if (corner.getY() > yMax){
 				yMax = corner.getY();
-			if (corner.getZ() < zMin)
+			}
+			if (corner.getZ() < zMin){
 				zMin = corner.getZ();
-			if (corner.getZ() > zMax)
+			}
+			if (corner.getZ() > zMax){
 				zMax = corner.getZ();
+			}
 		}
+		
 		float[] boundaries = {xMin,xMax,yMin,yMax,zMin,zMax};
 		return boundaries;
 	}
