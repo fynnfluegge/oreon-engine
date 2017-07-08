@@ -27,7 +27,7 @@ import engine.utils.Constants;
 public class RenderingEngine {
 
 	private Window window;
-	private TexturePanel fullScreenTexture;
+	private static TexturePanel fullScreenTexture;
 	private Texture2D postProcessingTexture;
 	
 	private static Quaternion clipplane;
@@ -53,7 +53,7 @@ public class RenderingEngine {
 	private static boolean waterRefraction = false;
 	private static boolean cameraUnderWater = false;
 	private static float t_causticsDistortion = 0;
-	private static float sightRangeFactor = 1;
+	private static float sightRangeFactor = 1.4f;
 	
 	public RenderingEngine(Scenegraph scenegraph, GUI gui)
 	{
@@ -307,4 +307,9 @@ public class RenderingEngine {
 	public static void setSightRangeFactor(float sightRangeFactor) {
 		RenderingEngine.sightRangeFactor = sightRangeFactor;
 	}
+	
+	public static TexturePanel getFullScreenTexture() {
+		return fullScreenTexture;
+	}
+
 }

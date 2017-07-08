@@ -56,19 +56,7 @@ public class Palm01ClusterGroup extends InstancingObject{
 			getObjectData().add(object);
 		}
 	
-		addChild(new Palm01Cluster(4,new Vec3f(1272,0,409),getObjectData()));
-		addChild(new Palm01Cluster(4,new Vec3f(961,0,503),getObjectData()));
-		addChild(new Palm01Cluster(4,new Vec3f(1189,0,530),getObjectData()));
-		addChild(new Palm01Cluster(4,new Vec3f(1111,0,561),getObjectData()));
-		addChild(new Palm01Cluster(6,new Vec3f(-2168,0,2754),getObjectData()));
-		addChild(new Palm01Cluster(6,new Vec3f(2492,0,-2091),getObjectData()));
-		addChild(new Palm01Cluster(6,new Vec3f(-897,0,-1241),getObjectData()));
-		addChild(new Palm01Cluster(6,new Vec3f(-2608,0,-2601),getObjectData()));
-		addChild(new Palm01Cluster(6,new Vec3f(-379,0,2467),getObjectData()));
-		addChild(new Palm01Cluster(6,new Vec3f(233,0,2361),getObjectData()));
-		addChild(new Palm01Cluster(6,new Vec3f(707,0,2121),getObjectData()));
-		addChild(new Palm01Cluster(6,new Vec3f(2287,0,2722),getObjectData()));
-		addChild(new Palm01Cluster(6,new Vec3f(-1581,0,2335),getObjectData()));
+		addChild(new Palm01Cluster(8,new Vec3f(-2086,0,2729),getObjectData()));
 	}
 
 	public void run() {

@@ -12,6 +12,7 @@ import static org.lwjgl.glfw.GLFW.glfwSetScrollCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetInputMode;
 import static org.lwjgl.glfw.GLFW.glfwSetKeyCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetMouseButtonCallback;
+import static org.lwjgl.glfw.GLFW.glfwSetFramebufferSizeCallback;
 
 import java.util.ArrayList;
 
@@ -19,6 +20,7 @@ import org.lwjgl.glfw.GLFWCursorPosCallback;
 import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWMouseButtonCallback;
 import org.lwjgl.glfw.GLFWScrollCallback;
+import org.lwjgl.glfw.GLFWFramebufferSizeCallback;
 
 import engine.math.Vec2f;
 
@@ -51,6 +53,9 @@ public class Input {
 	@SuppressWarnings("unused")
 	private GLFWScrollCallback scrollCallback;
 	
+	@SuppressWarnings("unused")
+	private GLFWFramebufferSizeCallback framebufferSizeCallback;
+	
 	public static Input getInstance() 
 	{
 	    if(instance == null) 
@@ -63,6 +68,13 @@ public class Input {
 	protected Input()
 	{
 		cursorPosition = new Vec2f();
+		
+		glfwSetFramebufferSizeCallback(Window.getInstance().getWindow(), (framebufferSizeCallback = new GLFWFramebufferSizeCallback() {
+		    @Override
+		    public void invoke(long window, int width, int height) {
+		        Window.getInstance().setWindowSize(width, height);
+		    }
+		}));
 		
 		glfwSetKeyCallback(Window.getInstance().getWindow(), (keyCallback = new GLFWKeyCallback() {
 

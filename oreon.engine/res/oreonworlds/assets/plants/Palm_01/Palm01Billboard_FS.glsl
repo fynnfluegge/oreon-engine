@@ -39,7 +39,7 @@ float diffuse(vec3 direction, vec3 normal, float intensity)
 
 float alphaDistanceFactor(float dist)
 {
-	return 0.01f * (dist-120);
+	return 0.04f * (dist-250);
 }
 
 void main()

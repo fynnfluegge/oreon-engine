@@ -116,7 +116,7 @@ public class Palm01Cluster extends InstancingCluster{
 		int index = 0;
 		
 		for (TransformsInstanced transform : getInstancingTransforms()){
-			if (transform.getTranslation().sub(Camera.getInstance().getPosition()).length() < 400){
+			if (transform.getTranslation().sub(Camera.getInstance().getPosition()).length() < 500){
 				getHighPolyIndices().add(index);
 			}
 

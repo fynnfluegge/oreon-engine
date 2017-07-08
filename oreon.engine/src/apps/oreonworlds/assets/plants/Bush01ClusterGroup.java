@@ -32,55 +32,9 @@ public class Bush01ClusterGroup extends InstancingObject{
 			getObjectData().add(object);
 		}
 		
-		addChild(new Bush01Cluster(40,new Vec3f(-2179,0,2918),getObjectData()));
-		addChild(new Bush01Cluster(40,new Vec3f(-2163,0,2894),getObjectData()));
-		
-		addChild(new Bush01Cluster(12,new Vec3f(2494,0,2492),getObjectData()));
-		addChild(new Bush01Cluster(12,new Vec3f(2590,0,-2217),getObjectData()));
-		
-		
-		addChild(new Bush01Cluster(12,new Vec3f(1147,0,-469),getObjectData()));
-		addChild(new Bush01Cluster(20,new Vec3f(1224,0,-279),getObjectData()));
-		addChild(new Bush01Cluster(12,new Vec3f(1303,0,-191),getObjectData()));
-		addChild(new Bush01Cluster(12,new Vec3f(1066,0,-1120),getObjectData()));
-		addChild(new Bush01Cluster(12,new Vec3f(1266,0,-1146),getObjectData()));
-		addChild(new Bush01Cluster(12,new Vec3f(1549,0,-1264),getObjectData()));
-		addChild(new Bush01Cluster(12,new Vec3f(1867,0,-1190),getObjectData()));
-		addChild(new Bush01Cluster(12,new Vec3f(1773,0,-1089),getObjectData()));
-		addChild(new Bush01Cluster(12,new Vec3f(1117,0,-737),getObjectData()));
-		addChild(new Bush01Cluster(12,new Vec3f(1162,0,-739),getObjectData()));
-		addChild(new Bush01Cluster(12,new Vec3f(1129,0,-697),getObjectData()));
-		addChild(new Bush01Cluster(12,new Vec3f(976,0,-348),getObjectData()));
-		addChild(new Bush01Cluster(12,new Vec3f(894,0,-94),getObjectData()));
-		addChild(new Bush01Cluster(12,new Vec3f(836,0,-92),getObjectData()));
-		addChild(new Bush01Cluster(12,new Vec3f(807,0,-195),getObjectData()));
-		addChild(new Bush01Cluster(12,new Vec3f(755,0,208),getObjectData()));
-		addChild(new Bush01Cluster(12,new Vec3f(930,0,293),getObjectData()));
-		addChild(new Bush01Cluster(12,new Vec3f(920,0,231),getObjectData()));
-		addChild(new Bush01Cluster(12,new Vec3f(611,0,997),getObjectData()));
-		addChild(new Bush01Cluster(12,new Vec3f(555,0,1231),getObjectData()));
-		addChild(new Bush01Cluster(12,new Vec3f(965,0,546),getObjectData()));
-		addChild(new Bush01Cluster(12,new Vec3f(900,0,649),getObjectData()));
-		addChild(new Bush01Cluster(12,new Vec3f(561,0,1406),getObjectData()));
-		addChild(new Bush01Cluster(12,new Vec3f(1181,0,-646),getObjectData()));
-		addChild(new Bush01Cluster(12,new Vec3f(561,0,1406),getObjectData()));
-		addChild(new Bush01Cluster(12,new Vec3f(988,0,-53),getObjectData()));
-		addChild(new Bush01Cluster(12,new Vec3f(1297,0,484),getObjectData()));
-		addChild(new Bush01Cluster(12,new Vec3f(757,0,752),getObjectData()));
-		addChild(new Bush01Cluster(12,new Vec3f(678,0,834),getObjectData()));
-		addChild(new Bush01Cluster(20,new Vec3f(1607,0,-1256),getObjectData()));
-		addChild(new Bush01Cluster(20,new Vec3f(1306,0,-1172),getObjectData()));
-		addChild(new Bush01Cluster(20,new Vec3f(962,0,-1088),getObjectData()));
-		addChild(new Bush01Cluster(20,new Vec3f(1093,0,-423),getObjectData()));
-		addChild(new Bush01Cluster(20,new Vec3f(885,0,89),getObjectData()));
-		addChild(new Bush01Cluster(12,new Vec3f(816,0,131),getObjectData()));
-		addChild(new Bush01Cluster(12,new Vec3f(763,0,155),getObjectData()));
-		addChild(new Bush01Cluster(12,new Vec3f(645,0,1010),getObjectData()));
-		addChild(new Bush01Cluster(12,new Vec3f(438,0,1330),getObjectData()));
-		addChild(new Bush01Cluster(12,new Vec3f(1728,0,-1214),getObjectData()));
-		addChild(new Bush01Cluster(12,new Vec3f(1017,0,-984),getObjectData()));
-		addChild(new Bush01Cluster(12,new Vec3f(1548,0,-1234),getObjectData()));
-		addChild(new Bush01Cluster(12,new Vec3f(1577,0,-1236),getObjectData()));
+		addChild(new Bush01Cluster(20,new Vec3f(-2082,0,2881),getObjectData()));
+		addChild(new Bush01Cluster(40,new Vec3f(-2125,0,2891),getObjectData()));
+		addChild(new Bush01Cluster(20,new Vec3f(-2188,0,2894),getObjectData()));
 	}
 
 	public void run() {

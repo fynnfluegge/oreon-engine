@@ -40,7 +40,6 @@ public class ImageLoader {
         IntBuffer c = BufferUtils.createIntBuffer(1);
 
         // Use info to read image metadata without decoding the entire image.
-        // We don't need this for this demo, just testing the API.
         if (!stbi_info_from_memory(imageBuffer, w, h, c)) {
             throw new RuntimeException("Failed to read image information: " + stbi_failure_reason());
         }
@@ -76,6 +75,37 @@ public class ImageLoader {
         stbi_image_free(image);
         
 		return texId;
+	}
+	
+	public static ByteBuffer loadImageToByteBuffer(String file){
+		ByteBuffer imageBuffer;
+        try {
+            imageBuffer = ioResourceToByteBuffer(file, 128 * 128);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        
+        IntBuffer w    = BufferUtils.createIntBuffer(1);
+        IntBuffer h    = BufferUtils.createIntBuffer(1);
+        IntBuffer c = BufferUtils.createIntBuffer(1);
+
+        // Use info to read image metadata without decoding the entire image.
+        if (!stbi_info_from_memory(imageBuffer, w, h, c)) {
+            throw new RuntimeException("Failed to read image information: " + stbi_failure_reason());
+        }
+  
+//        System.out.println("Image width: " + w.get(0));
+//        System.out.println("Image height: " + h.get(0));
+//        System.out.println("Image components: " + c.get(0));
+//        System.out.println("Image HDR: " + stbi_is_hdr_from_memory(imageBuffer));
+
+        // Decode the image
+        ByteBuffer image = stbi_load_from_memory(imageBuffer, w, h, c, 0);
+        if (image == null) {
+            throw new RuntimeException("Failed to load image: " + stbi_failure_reason());
+        }
+        
+        return image;
 	}
 	
 	public static ByteBuffer ioResourceToByteBuffer(String resource, int bufferSize) throws IOException {

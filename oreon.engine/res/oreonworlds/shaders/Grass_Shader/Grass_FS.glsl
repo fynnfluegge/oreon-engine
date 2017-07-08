@@ -60,7 +60,7 @@ float varianceShadow(vec3 projCoords, int split){
 		for (int j=-1; j<=1; j++){
 			float shadowMapDepth = texture(shadowMaps, vec3(projCoords.xy,split)
 													   + vec3(i,j,0) * texelSize).r; 
-			if (linearize(currentDepth) > linearize(shadowMapDepth))
+			if (linearize(currentDepth) > linearize(shadowMapDepth) + 0.00001)
 				shadowFactor -= 0.1;
 		}
 	}
@@ -140,6 +140,9 @@ void main()
 	float fogFactor = -0.0005/sightRangeFactor*(dist-zFar/5*sightRangeFactor);
 	
     vec3 rgb = mix(fogColor, fragColor, clamp(fogFactor,0,1));
+	
+	if (alpha < 0.6)
+		discard;
 	
 	alpha *= alphaDistanceFactor(dist);
 

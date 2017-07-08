@@ -12,6 +12,7 @@ import static org.lwjgl.opengl.GL30.GL_DEPTH_COMPONENT32F;
 import static org.lwjgl.opengl.GL30.GL_RGBA16F;
 import static org.lwjgl.glfw.GLFW.glfwWindowHint;
 import static org.lwjgl.glfw.GLFW.glfwCreateWindow;
+import static org.lwjgl.glfw.GLFW.glfwSetWindowSize;
 import static org.lwjgl.glfw.GLFW.GLFW_RESIZABLE;
 import static org.lwjgl.glfw.GLFW.GLFW_CONTEXT_VERSION_MAJOR;
 import static org.lwjgl.glfw.GLFW.GLFW_CONTEXT_VERSION_MINOR;
@@ -22,13 +23,16 @@ import static org.lwjgl.glfw.GLFW.glfwShowWindow;
 import static org.lwjgl.glfw.GLFW.glfwDestroyWindow;
 import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
 import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
+import static org.lwjgl.glfw.GLFW.glfwSetWindowIcon;
 
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
+import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.opengl.GL;
 
 import engine.buffers.Framebuffer;
+import engine.textures.ImageLoader;
 import engine.textures.Texture2D;
 import engine.utils.BufferUtil;
 import engine.utils.Constants;
@@ -113,29 +117,27 @@ public class Window {
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);	
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);	
 		
-		window = glfwCreateWindow(width, height, "oreon engine", 0, 0);
+		window = glfwCreateWindow(width, height, "OE2.1", 0, 0);
 		
 		if(window == 0) {
 		    throw new RuntimeException("Failed to create window");
 		}
 		
+		ByteBuffer bufferedImage = ImageLoader.loadImageToByteBuffer("./res/textures/logo/oreon_lwjgl_icon32.png");
+		
+		GLFWImage image = GLFWImage.malloc();
+		
+		image.set(32, 32, bufferedImage);
+		
+		GLFWImage.Buffer images = GLFWImage.malloc(1);
+        images.put(0, image);
+		
+		glfwSetWindowIcon(window, images);
+		
 		glfwMakeContextCurrent(window);
 		GL.createCapabilities();
 		glfwShowWindow(window);
 	}
-	
-//	public void embed(int width, int height, Canvas canvas)
-//	{
-//		try {
-//			Display.setParent(canvas);
-//			Display.setDisplayMode(new DisplayMode(width, height));
-//			Display.create();
-//			Keyboard.create();
-//			Mouse.create();
-//		} catch (LWJGLException e) {
-//			e.printStackTrace();
-//		}
-//	}
 	
 	public void render()
 	{
@@ -145,8 +147,6 @@ public class Window {
 	public void dispose()
 	{
 		glfwDestroyWindow(window);
-//		Keyboard.destroy();
-//		Mouse.destroy();
 	}
 	
 	public void blitMultisampledFBO(int dest, int src){
@@ -156,6 +156,13 @@ public class Window {
 	public boolean isCloseRequested()
 	{
 		return glfwWindowShouldClose(window);
+	}
+	
+	public void setWindowSize(int x, int y){
+		glfwSetWindowSize(window, x, y);
+		setHeight(y);
+		setWidth(x);
+		Camera.getInstance().setProjection(70, x, y);
 	}
 	
 	public int getWidth()

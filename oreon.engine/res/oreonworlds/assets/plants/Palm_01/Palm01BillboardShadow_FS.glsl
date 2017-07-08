@@ -19,15 +19,15 @@ uniform Material material;
 
 float alphaDistanceFactor(float dist)
 {
-	return 0.01f * (dist-300);
+	return 0.04f * (dist-250);
 }
 
 void main()
 {
 	float dist = length(eyePosition - position_FS);
 	float alpha = texture(material.diffusemap, texCoord_FS).a;
-	alpha *= alphaDistanceFactor(dist);
 	if (alpha < 0.2)
-		gl_FragDepth = 1;
-	gl_FragColor = vec4(0.1,0.9,0.1,1.0);
+		discard;
+	alpha *= alphaDistanceFactor(dist);
+	gl_FragColor = vec4(0.1,0.9,0.1,alpha);
 }

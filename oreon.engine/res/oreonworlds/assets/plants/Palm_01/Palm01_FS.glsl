@@ -122,7 +122,7 @@ float shadow(vec3 worldPos)
 
 float alphaDistanceFactor(float dist)
 {
-	return clamp(0.005f * (-dist+400),0,1);
+	return clamp(0.004f * (-dist+500),0,1);
 }
 
 void main()

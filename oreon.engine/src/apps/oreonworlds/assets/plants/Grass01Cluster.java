@@ -30,7 +30,7 @@ public class Grass01Cluster extends InstancingCluster{
 			float terrainHeight = Terrain.getInstance().getTerrainHeight(translation.getX(),translation.getZ());
 			terrainHeight -= 1;
 			translation.setY(terrainHeight);
-			float s = (float)(Math.random()*2 + 6);
+			float s = (float)(Math.random()*2 + 5);
 			Vec3f scaling = new Vec3f(s,s,s);
 			Vec3f rotation = new Vec3f(0,(float) Math.random()*360f,0);
 			
