@@ -43,11 +43,11 @@ public class TerrainShader extends Shader{
 	{
 		super();
 
-		addVertexShader(ResourceLoader.loadShader("oreonworlds/terrain/Terrain_VS.glsl"));
-		addTessellationControlShader(ResourceLoader.loadShader("oreonworlds/terrain/Terrain_TC.glsl"));
-		addTessellationEvaluationShader(ResourceLoader.loadShader("oreonworlds/terrain/Terrain_TE.glsl"));
-		addGeometryShader(ResourceLoader.loadShader("oreonworlds/terrain/Terrain_GS.glsl"));
-		addFragmentShader(ResourceLoader.loadShader("oreonworlds/terrain/Terrain_FS.glsl"));
+		addVertexShader(ResourceLoader.loadShader("oreonworlds/shaders/Terrain_Shader/Terrain_VS.glsl"));
+		addTessellationControlShader(ResourceLoader.loadShader("oreonworlds/shaders/Terrain_Shader/Terrain_TC.glsl"));
+		addTessellationEvaluationShader(ResourceLoader.loadShader("oreonworlds/shaders/Terrain_Shader/Terrain_TE.glsl"));
+		addGeometryShader(ResourceLoader.loadShader("oreonworlds/shaders/Terrain_Shader/Terrain_GS.glsl"));
+		addFragmentShader(ResourceLoader.loadShader("oreonworlds/shaders/Terrain_Shader/Terrain_FS.glsl"));
 		compileShader();
 		
 		addUniform("worldMatrix");
@@ -163,7 +163,7 @@ public class TerrainShader extends Shader{
 		setUniformf("scaleY", terrConfig.getScaleY());
 		setUniformf("scaleXZ", terrConfig.getScaleXZ());
 		setUniformf("sightRangeFactor", terrConfig.getSightRangeFactor());
-		setUniformi("bezier", terrConfig.getBezíer());
+		setUniformi("bezier", terrConfig.getBezier());
 		setUniformi("tessFactor", terrConfig.getTessellationFactor());
 		setUniformf("tessSlope", terrConfig.getTessellationSlope());
 		setUniformf("tessShift", terrConfig.getTessellationShift());
