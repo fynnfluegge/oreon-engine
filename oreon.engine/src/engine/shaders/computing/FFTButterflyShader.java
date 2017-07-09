@@ -20,7 +20,7 @@ public class FFTButterflyShader extends Shader{
 	{
 		super();
 			
-		addComputeShader(ResourceLoader.loadShader("shaders/computing/fastFourierTransform/Butterfly.glsl"));
+		addComputeShader(ResourceLoader.loadShader("shaders/computing/FastFourierTransform/Butterfly.glsl"));
 		compileShader();
 		
 		addUniform("direction");
