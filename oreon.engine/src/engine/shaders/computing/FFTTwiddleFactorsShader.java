@@ -20,7 +20,7 @@ public class FFTTwiddleFactorsShader extends Shader{
 	{
 		super();
 		
-		addComputeShader(ResourceLoader.loadShader("shaders/computing/fastFourierTransform/TwiddleFactors.glsl"));
+		addComputeShader(ResourceLoader.loadShader("shaders/computing/FastFourierTransform/TwiddleFactors.glsl"));
 		compileShader();
 		
 		addUniform("N");

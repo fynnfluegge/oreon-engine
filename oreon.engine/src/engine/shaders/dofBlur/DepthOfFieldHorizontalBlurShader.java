@@ -25,7 +25,7 @@ public class DepthOfFieldHorizontalBlurShader extends Shader{
 	{
 		super();
 		
-		addComputeShader(ResourceLoader.loadShader("shaders/computing/depthOfFieldBlur/horizontalGaussianDoF_CS.glsl"));
+		addComputeShader(ResourceLoader.loadShader("shaders/computing/DepthOfFieldBlur/horizontalGaussianDoF_CS.glsl"));
 		
 		compileShader();
 		
