@@ -84,7 +84,7 @@ private static TerrainShadowShader instance = null;
 		}
 		
 		setUniformf("scaleY", terrConfig.getScaleY());
-		setUniformi("bezier", terrConfig.getBezíer());
+		setUniformi("bezier", terrConfig.getBezier());
 		setUniformi("tessFactor", terrConfig.getTessellationFactor());
 		setUniformf("tessSlope", terrConfig.getTessellationSlope());
 		setUniformf("tessShift", terrConfig.getTessellationShift());

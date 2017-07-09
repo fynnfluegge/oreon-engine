@@ -21,7 +21,7 @@ public class TerrainConfiguration {
 
 	private float scaleY;
 	private float scaleXZ;
-	private int bezíer;
+	private int bezier;
 	private int waterReflectionShift;
 	private float sightRangeFactor;
 	private float texDetail;
@@ -258,7 +258,7 @@ public class TerrainConfiguration {
 						RenderingEngine.setSightRangeFactor(sightRangeFactor);
 					}
 					if(tokens[0].equals("bezier")){
-						setBezíer(Integer.valueOf(tokens[1]));
+						setBezier(Integer.valueOf(tokens[1]));
 					}
 					if(tokens[0].equals("detailRange")){
 						setDetailRange(Integer.valueOf(tokens[1]));
@@ -459,11 +459,11 @@ public class TerrainConfiguration {
 	public void setScaleXZ(float scaleXZ) {
 		this.scaleXZ = scaleXZ;
 	}
-	public int getBezíer() {
-		return bezíer;
+	public int getBezier() {
+		return bezier;
 	}
-	public void setBezíer(int bezíer) {
-		this.bezíer = bezíer;
+	public void setBezier(int bezier) {
+		this.bezier = bezier;
 	}
 	public float getSightRangeFactor() {
 		return sightRangeFactor;
