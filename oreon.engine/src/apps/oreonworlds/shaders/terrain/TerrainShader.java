@@ -163,7 +163,7 @@ public class TerrainShader extends Shader{
 		setUniformf("scaleY", terrConfig.getScaleY());
 		setUniformf("scaleXZ", terrConfig.getScaleXZ());
 		setUniformf("sightRangeFactor", terrConfig.getSightRangeFactor());
-		setUniformi("bezier", terrConfig.getBezíer());
+		setUniformi("bezier", terrConfig.getBezier());
 		setUniformi("tessFactor", terrConfig.getTessellationFactor());
 		setUniformf("tessSlope", terrConfig.getTessellationSlope());
 		setUniformf("tessShift", terrConfig.getTessellationShift());

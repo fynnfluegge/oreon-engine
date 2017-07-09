@@ -87,7 +87,7 @@ public class TerrainGridShader extends Shader{
 		}
 		
 		setUniformf("scaleY", terrConfig.getScaleY());
-		setUniformi("bezier", terrConfig.getBezíer());
+		setUniformi("bezier", terrConfig.getBezier());
 		setUniformi("tessFactor", terrConfig.getTessellationFactor());
 		setUniformf("tessSlope", terrConfig.getTessellationSlope());
 		setUniformf("tessShift", terrConfig.getTessellationShift());
