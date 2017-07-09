@@ -27,9 +27,9 @@ public class BushShadowShader extends Shader{
 	{
 		super();
 		
-		addVertexShader(ResourceLoader.loadShader("oreonworlds/assets/plants/Palm_01/Palm01_VS.glsl"));
-		addGeometryShader(ResourceLoader.loadShader("oreonworlds/assets/plants/Palm_01/Palm01Shadow_GS.glsl"));
-		addFragmentShader(ResourceLoader.loadShader("oreonworlds/assets/plants/Palm_01/Palm01Shadow_FS.glsl"));
+		addVertexShader(ResourceLoader.loadShader("oreonworlds/shaders/Bush_Shader/Bush01_VS.glsl"));
+		addGeometryShader(ResourceLoader.loadShader("oreonworlds/shaders/Bush_Shader/Bush01Shadow_GS.glsl"));
+		addFragmentShader(ResourceLoader.loadShader("oreonworlds/shaders/Bush_Shader/Bush01Shadow_FS.glsl"));
 		compileShader();
 		
 		addUniform("clipplane");

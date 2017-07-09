@@ -34,9 +34,9 @@ private static BushShader instance = null;
 	{
 		super();
 
-		addVertexShader(ResourceLoader.loadShader("oreonworlds/assets/plants/Bush_01/Bush01_VS.glsl"));
-		addGeometryShader(ResourceLoader.loadShader("oreonworlds/assets/plants/Bush_01/Bush01_GS.glsl"));
-		addFragmentShader(ResourceLoader.loadShader("oreonworlds/assets/plants/Bush_01/Bush01_FS.glsl"));
+		addVertexShader(ResourceLoader.loadShader("oreonworlds/shaders/Bush_Shader/Bush01_VS.glsl"));
+		addGeometryShader(ResourceLoader.loadShader("oreonworlds/shaders/Bush_Shader/Bush01_GS.glsl"));
+		addFragmentShader(ResourceLoader.loadShader("oreonworlds/shaders/Bush_Shader/Bush01_FS.glsl"));
 		compileShader();
 		
 		addUniform("sightRangeFactor");
