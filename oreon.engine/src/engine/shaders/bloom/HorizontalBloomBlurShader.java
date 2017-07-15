@@ -24,7 +24,7 @@ public class HorizontalBloomBlurShader extends Shader{
 	{
 		super();
 		
-		addComputeShader(ResourceLoader.loadShader("shaders/computing/bloom/horizontalGaussianBloom_CS.glsl"));
+		addComputeShader(ResourceLoader.loadShader("shaders/computing/Bloom/horizontalGaussianBloom_CS.glsl"));
 		
 		compileShader();
 		

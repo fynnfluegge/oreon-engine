@@ -20,7 +20,7 @@ public class BloomBlurSceneShader extends Shader{
 	{
 		super();
 		
-		addComputeShader(ResourceLoader.loadShader("shaders/computing/bloom/BloomBlurScene_CS.glsl"));
+		addComputeShader(ResourceLoader.loadShader("shaders/computing/Bloom/BloomBlurScene_CS.glsl"));
 		
 		compileShader();
 	}

@@ -20,7 +20,7 @@ public class MotionBlurShader extends Shader{
 	{
 		super();
 		
-		addComputeShader(ResourceLoader.loadShader("shaders/computing/motionBlur/MotionBlur.glsl"));
+		addComputeShader(ResourceLoader.loadShader("shaders/computing/MotionBlur/MotionBlur.glsl"));
 		
 		compileShader();
 		

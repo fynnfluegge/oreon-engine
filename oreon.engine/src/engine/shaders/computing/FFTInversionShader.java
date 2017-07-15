@@ -20,7 +20,7 @@ public class FFTInversionShader extends Shader{
 	{
 		super();
 			
-		addComputeShader(ResourceLoader.loadShader("shaders/computing/fastFourierTransform/Inversion.glsl"));
+		addComputeShader(ResourceLoader.loadShader("shaders/computing/FastFourierTransform/Inversion.glsl"));
 		compileShader();
 			
 		addUniform("pingpong");
