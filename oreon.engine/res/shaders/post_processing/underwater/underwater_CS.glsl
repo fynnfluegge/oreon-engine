@@ -13,7 +13,7 @@ uniform float windowHeight;
 const float zfar = 10000.0f;
 const float znear = 0.1f;
 
-const vec3 waterRefractionColor = vec3(0.015,0.022,0.06);
+const vec3 waterRefractionColor = vec3(0.1,0.125,0.19);
 
 float linearize(float depth)
 {

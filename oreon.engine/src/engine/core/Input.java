@@ -29,6 +29,7 @@ public class Input {
 	private static Input instance = null;
 
 	private ArrayList<Integer> pushedKeys = new ArrayList<Integer>();
+	private ArrayList<Integer> keysHolding = new ArrayList<Integer>();
 	private ArrayList<Integer> releasedKeys = new ArrayList<Integer>();
 	
 	private ArrayList<Integer> pushedButtons = new ArrayList<Integer>();
@@ -83,11 +84,13 @@ public class Input {
             	if (action == GLFW_PRESS){
             		if (!pushedKeys.contains(key)){
             			pushedKeys.add(key);
+            			keysHolding.add(key);
             		}
                 }
             	
                 if (action == GLFW_RELEASE){
-                	pushedKeys.remove(new Integer(key));
+                	keysHolding.remove(new Integer(key));
+                	releasedKeys.add(key);
                 }
             }
         }));
@@ -140,6 +143,8 @@ public class Input {
 	
 	public void update() {
 		setScrollOffset(0);
+		pushedKeys.clear();
+		releasedKeys.clear();
 		pushedButtons.clear();
 		releasedButtons.clear();
 		
@@ -154,6 +159,11 @@ public class Input {
 	public boolean isKeyReleased(int key)
 	{
 		return releasedKeys.contains(key);
+	}
+	
+	public boolean isKeyHold(int key)
+	{
+		return keysHolding.contains(key);
 	}
 	
 	public boolean isButtonPushed(int key)
@@ -203,16 +213,8 @@ public class Input {
 		return pushedKeys;
 	}
 
-	public void setPushedKeys(ArrayList<Integer> pushedKeys) {
-		this.pushedKeys = pushedKeys;
-	}
-
 	public ArrayList<Integer> getButtonsHolding() {
 		return buttonsHolding;
-	}
-
-	public void setButtonsHolding(ArrayList<Integer> buttonsHolding) {
-		this.buttonsHolding = buttonsHolding;
 	}
 
 	public float getScrollOffset() {
@@ -221,5 +223,13 @@ public class Input {
 
 	public void setScrollOffset(float scrollOffset) {
 		this.scrollOffset = scrollOffset;
+	}
+
+	public ArrayList<Integer> getKeysHolding() {
+		return keysHolding;
+	}
+
+	public ArrayList<Integer> getPushedButtons() {
+		return pushedButtons;
 	}
 }

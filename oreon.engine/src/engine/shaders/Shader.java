@@ -57,6 +57,8 @@ public abstract class Shader {
 	public void updateUniforms(int value){};
 	
 	public void updateUniforms(float value){};
+
+	public void updateUniforms(float value0, float value1){};
 	
 	public void updateUniforms(GameObject object){};
 	

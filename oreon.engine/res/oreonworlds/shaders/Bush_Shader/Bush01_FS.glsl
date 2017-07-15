@@ -37,10 +37,19 @@ layout (std140, row_major) uniform LightViewProjections{
 uniform sampler2DArray shadowMaps;
 uniform Material material;
 uniform float sightRangeFactor;
+uniform int isCameraUnderWater;
+uniform int isRefraction;
+uniform vec4 clipplane;
 
 const float zfar = 10000.0;
 const float znear = 0.1;
 const vec3 fogColor = vec3(0.62,0.85,0.95);
+const vec3 waterRefractionColor = vec3(0.1,0.125,0.19);
+
+float distancePointPlane(vec3 point, vec4 plane){
+	return abs(plane.x*point.x + plane.y*point.y + plane.z*point.z + plane.w) / 
+		   abs(sqrt(plane.x * plane.x + plane.y * plane.y + plane.z * plane.z));
+}
 
 float linearize(float depth)
 {
@@ -49,7 +58,7 @@ float linearize(float depth)
 
 float diffuse(vec3 lightDir, vec3 normal, float intensity)
 {
-	return max(0.0, dot(normal, -lightDir) * intensity);
+	return max(0.1, dot(normal, -lightDir) * intensity);
 }
 
 float specular(vec3 lightDir, vec3 normal, vec3 eyeDir)
@@ -78,7 +87,7 @@ float varianceShadow(vec3 projCoords, int split){
 		}
 	}
 	
-	return shadowFactor;
+	return max(0.1,shadowFactor);
 }
 
 float shadow(vec3 worldPos)
@@ -142,16 +151,12 @@ void main()
 	
 	specularFactor = specular(directional_light.direction, normal_FS, eyeDirection);
 	
-	diffuseLight = directional_light.ambient + directional_light.color * diffuseFactor;
+	diffuseLight = directional_light.ambient + directional_light.color * max(0.1, diffuseFactor * shadow(position_FS));
 	specularLight = directional_light.color * specularFactor;
 	
 	vec3 diffuseColor = texture(material.diffusemap, texCoord_FS).rgb;
 	
 	vec3 fragColor = diffuseColor * diffuseLight;// + specularLight;
-	
-	// prevent shadows on faces backfacing lightsource
-	if (dot(normal_FS, -directional_light.direction) > 0.0)
-		fragColor *= shadow(position_FS);
 	
 	float fogFactor = -0.0005/sightRangeFactor*(dist-zfar/5*sightRangeFactor);
 	
@@ -160,6 +165,14 @@ void main()
 	float alpha = texture(material.diffusemap, texCoord_FS).a;
 	
 	alpha *= alphaDistanceFactor(dist);
+	
+	if (isRefraction == 1 && isCameraUnderWater == 0){
+		
+		float distToWaterSurace = distancePointPlane(position_FS,clipplane);
+		float refractionFactor = clamp(0.02 * distToWaterSurace,0,1);
+		
+		rgb = mix(rgb, waterRefractionColor, refractionFactor); 
+	}
 	
 	outputColor = vec4(rgb,alpha);
 	blackColor = vec4(0,0,0,alpha);

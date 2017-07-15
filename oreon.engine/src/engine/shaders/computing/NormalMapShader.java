@@ -9,7 +9,7 @@ import engine.utils.ResourceLoader;
 
 public class NormalMapShader extends Shader{
 
-private static NormalMapShader instance = null;
+	private static NormalMapShader instance = null;
 
 	public static NormalMapShader getInstance() 
 	{

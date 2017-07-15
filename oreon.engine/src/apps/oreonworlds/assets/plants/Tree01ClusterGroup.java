@@ -8,12 +8,15 @@ import apps.oreonworlds.shaders.plants.TreeTrunkShader;
 import engine.buffers.MeshVAO;
 import engine.configs.CullFaceDisable;
 import engine.configs.Default;
+import engine.core.Camera;
 import engine.geometry.Vertex;
 import engine.math.Vec3f;
 import engine.scenegraph.components.RenderInfo;
 import engine.utils.Util;
 import modules.instancing.InstancedDataObject;
+import modules.instancing.InstancingCluster;
 import modules.instancing.InstancingObject;
+import modules.instancing.InstancingObjectHandler;
 import modules.modelLoader.obj.Model;
 import modules.modelLoader.obj.OBJLoader;
 
@@ -76,20 +79,44 @@ public class Tree01ClusterGroup extends InstancingObject{
 			getObjectData().add(object);
 		}
 	
-		addChild(new Tree01Cluster(10,new Vec3f(1116,0,-1119),getObjectData()));
-		addChild(new Tree01Cluster(10,new Vec3f(930, 0,-1041),getObjectData()));
-		addChild(new Tree01Cluster(10,new Vec3f(1012,0,-1154),getObjectData()));
-		addChild(new Tree01Cluster(10,new Vec3f(812,0,-1084),getObjectData()));
-		addChild(new Tree01Cluster(10,new Vec3f(909,0,-1187),getObjectData()));
-		addChild(new Tree01Cluster(10,new Vec3f(467,0,-1083),getObjectData()));
-//		addChild(new Tree01Cluster(10,new Vec3f(-662,0,-11),getObjectData()));
-//		addChild(new Tree01Cluster(10,new Vec3f(1240,0,1664),getObjectData()));
-//		addChild(new Tree01Cluster(10,new Vec3f(-702,0,306),getObjectData()));
-//		addChild(new Tree01Cluster(10,new Vec3f(1375,0,1609),getObjectData()));
+		addCluster(new Tree01Cluster(10,new Vec3f(-1002,0,1550),getObjectData()));
+		addCluster(new Tree01Cluster(10,new Vec3f(-1085,0,1536),getObjectData()));
+		addCluster(new Tree01Cluster(10,new Vec3f(-1121,0,1473),getObjectData()));
+		addCluster(new Tree01Cluster(10,new Vec3f(-1114,0,1423),getObjectData()));
+		addCluster(new Tree01Cluster(10,new Vec3f(-1074,0,1378),getObjectData()));
+		addCluster(new Tree01Cluster(10,new Vec3f(-1138,0,1345),getObjectData()));
+		addCluster(new Tree01Cluster(10,new Vec3f(-1039,0,1129),getObjectData()));
+		addCluster(new Tree01Cluster(10,new Vec3f(-1011,0,1042),getObjectData()));
+		
+		setThread(new Thread(this));
+		getThread().start();
 	}
 
 	public void run() {
-		// TODO Auto-generated method stub
-		
+		while(isRunning()){
+			
+			InstancingObjectHandler.getInstance().getLock().lock();
+			try {
+				InstancingObjectHandler.getInstance().getCondition().await();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			finally{
+				InstancingObjectHandler.getInstance().getLock().unlock();
+			}
+			
+			getChildren().clear();
+			
+			synchronized (getChildren()) {
+				
+				for (InstancingCluster cluster : getClusters()){
+					if (cluster.getCenter().sub(Camera.getInstance().getPosition()).length() < 1000){
+						cluster.updateUBOs();
+						addChild(cluster);
+					}
+				}
+				
+			}
+		}
 	}
 }

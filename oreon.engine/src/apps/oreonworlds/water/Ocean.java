@@ -15,6 +15,6 @@ public class Ocean extends Water{
 		setClip_offset(2);
 		setClipplane(new Quaternion(0,-1,0,getTransform().getTranslation().getY() + getClip_offset()));
 
-		this.loadSettingsFile("./res/samples/Ocean/waterSettings.txt");
+		this.loadSettingsFile("./res/oreonworlds/water/waterSettings.txt");
 	}
 }

@@ -18,15 +18,9 @@ public class WaterConfig implements RenderConfig{
 		glEnable(GL_CULL_FACE);
 	}
 
-	public void clearScreenDeepOceanRefraction()
+	public void clearScreenDeepOcean()
 	{
-		glClearColor(0.015f,0.022f,0.04f,1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	}
-	
-	public void clearScreenDeepOceanReflection()
-	{
-		glClearColor(0.2994f,0.4417f,0.6870f,1.0f);
+		glClearColor(0.1f,0.125f,0.19f,1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 }

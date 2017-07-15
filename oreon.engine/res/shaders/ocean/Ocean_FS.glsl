@@ -40,12 +40,11 @@ uniform float sightRangeFactor;
 uniform int isCameraUnderWater;
 
 vec2 wind = vec2(1,0);
-const vec3 refractionColor = vec3(0.015,0.022,0.04);
-const vec3 reflectionColor = vec3(0.2994,0.4417,0.6870);
+const vec3 deepOceanColor = vec3(0.1,0.125,0.19);
 const float zFar = 10000;
 
 const float R = 0.0403207622; 
-const vec3 fogColor = vec3(0.62,0.85,0.95);
+const vec3 fogColor = vec3(0.62,0.8,0.98);
 const float zfar = 10000;
 const float znear = 0.1;
 float SigmaSqX;
@@ -150,7 +149,7 @@ void main(void)
 	}
 	
 	// BRDF lighting, high performance
-	//float F = fresnel(normal, tangent, bitangent);
+	// float F = fresnel(normal, tangent, bitangent);
 	// Fresnel Term approximation
 	float F = fresnelApproximated(normal);
 	
@@ -161,7 +160,7 @@ void main(void)
     // Reflection //
 	vec2 reflecCoords = projCoord.xy + dudvCoord.rb * kReflection;
 	reflecCoords = clamp(reflecCoords, kReflection, 1-kReflection);
-    vec3 reflection = mix(texture(waterReflection, reflecCoords).rgb, refractionColor,  0.25);
+    vec3 reflection = mix(texture(waterReflection, reflecCoords).rgb, deepOceanColor,  0.2);
     reflection *= F;
  
     // Refraction //
@@ -176,7 +175,7 @@ void main(void)
 		refraction = texture(waterRefraction, refracCoords).rgb;
 	}
 	else {
-		refraction = mix(texture(waterRefraction, refracCoords).rgb, refractionColor, 0.1);
+		refraction = mix(texture(waterRefraction, refracCoords).rgb, deepOceanColor, 0.1);
 		refraction *= 1-F;
 	}
 	
@@ -200,7 +199,7 @@ void main(void)
 		fragColor += (causticsColor/4);
 	}
 	
-	float fogFactor = -0.0005/sightRangeFactor*(dist-zfar/5*sightRangeFactor);
+	float fogFactor = clamp(-0.0005/sightRangeFactor*((dist+100)-zfar/5*sightRangeFactor), 0.1, 1.0);
 	
     vec3 rgb = mix(fogColor, fragColor, clamp(fogFactor,0,1));
 	

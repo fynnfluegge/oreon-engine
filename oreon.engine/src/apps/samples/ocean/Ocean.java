@@ -9,7 +9,7 @@ public class Ocean extends Water{
 	TexturePanel texture;
 
 	public Ocean() {
-		super(256,512);
+		super(256,256);
 		
 		getTransform().setScaling(Constants.ZFAR,1,Constants.ZFAR);
 		getTransform().setTranslation(-Constants.ZFAR/2,0,-Constants.ZFAR/2);

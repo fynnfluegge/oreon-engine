@@ -26,8 +26,8 @@ void main()
 {
 	float dist = length(eyePosition - position_FS);
 	float alpha = texture(material.diffusemap, texCoord_FS).a;
+	alpha *= alphaDistanceFactor(dist);
 	if (alpha < 0.2)
 		discard;
-	alpha *= alphaDistanceFactor(dist);
 	gl_FragColor = vec4(0.1,0.9,0.1,alpha);
 }

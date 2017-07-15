@@ -44,6 +44,8 @@ private static BushShader instance = null;
 		addUniform("clipplane");
 		addUniform("scalingMatrix");
 		addUniform("isReflection");
+		addUniform("isRefraction");
+		addUniform("isCameraUnderWater");
 		
 		addUniformBlock("DirectionalLight");
 		addUniformBlock("worldMatrices");
@@ -64,6 +66,8 @@ private static BushShader instance = null;
 		bindUniformBlock("DirectionalLight", Constants.DirectionalLightUniformBlockBinding);
 		bindUniformBlock("LightViewProjections",Constants.LightMatricesUniformBlockBinding);
 		setUniformi("isReflection", RenderingEngine.isWaterReflection() ? 1 : 0);
+		setUniformi("isRefraction", RenderingEngine.isWaterRefraction() ? 1 : 0);
+		setUniformi("isCameraUnderWater", RenderingEngine.isCameraUnderWater() ? 1 : 0);	
 		
 		((InstancingCluster) object.getParent()).getWorldMatricesBuffer().bindBufferBase(0);
 		bindUniformBlock("worldMatrices", 0);

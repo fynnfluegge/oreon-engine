@@ -22,6 +22,9 @@ public abstract class InstancingCluster extends Node{
 	
 	public void updateUBOs(){};
 	
+	public void placeObject(){};
+	
+	
 	public List<Integer> getHighPolyIndices(){
 		return highPolyIndices;
 	}

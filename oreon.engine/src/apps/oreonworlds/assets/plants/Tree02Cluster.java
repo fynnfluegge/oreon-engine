@@ -89,7 +89,7 @@ public class Tree02Cluster extends InstancingCluster{
 		int index = 0;
 		
 		for (TransformsInstanced transform : getInstancingTransforms()){
-			if (transform.getTranslation().sub(Camera.getInstance().getPosition()).length() < 200){
+			if (transform.getTranslation().sub(Camera.getInstance().getPosition()).length() < 220){
 				getHighPolyIndices().add(index);
 			}
 			index++;

@@ -52,7 +52,7 @@ uniform float distortionCaustics;
 const float zFar = 10000;
 const float zNear = 0.1;
 const vec3 fogColor = vec3(0.62,0.85,0.95);
-const vec3 waterRefractionColor = vec3(0.015,0.022,0.04);
+const vec3 waterRefractionColor = vec3(0.1,0.125,0.19);
 
 float distancePointPlane(vec3 point, vec4 plane){
 	return abs(plane.x*point.x + plane.y*point.y + plane.z*point.z + plane.w) / 
@@ -61,7 +61,7 @@ float distancePointPlane(vec3 point, vec4 plane){
 
 float diffuse(vec3 lightDir, vec3 normal, float intensity)
 {
-	return max(0.0, dot(normal, -lightDir) * intensity);
+	return max(0.1, dot(normal, -lightDir) * intensity);
 }
 
 float specular(vec3 lightDir, vec3 normal, vec3 eyeDir)
@@ -95,7 +95,7 @@ float varianceShadow(vec3 projCoords, int split){
 		}
 	}
 	
-	return shadowFactor;
+	return max(0.1,shadowFactor);
 }
 
 float shadow(vec3 worldPos)
@@ -162,7 +162,7 @@ void main()
 	if (isReflection == 0 && isRefraction == 0){
 		shadowFactor = shadow(position_FS);
 	}
-	diffuseLight = directional_light.ambient + directional_light.color * diffuseFactor * shadowFactor;
+	diffuseLight = directional_light.ambient + directional_light.color * max(0.1, diffuseFactor * shadow(position_FS));
 	specularLight = directional_light.color * specularFactor * shadowFactor;
 	
 	vec3 diffuseColor = texture(material.diffusemap, texCoord_FS*4).rgb;

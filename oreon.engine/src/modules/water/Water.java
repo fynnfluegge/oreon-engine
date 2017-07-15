@@ -183,7 +183,7 @@ public class Water extends GameObject{
 		RenderingEngine.setWaterReflection(true);
 		
 		this.getReflectionFBO().bind();
-		config.clearScreenDeepOceanReflection();
+		config.clearScreenDeepOcean();
 		glFrontFace(GL_CCW);
 		
 		if (!isCameraUnderwater()){
@@ -219,7 +219,7 @@ public class Water extends GameObject{
 		RenderingEngine.setWaterRefraction(true);
 		this.getRefractionFBO().bind();
 		
-		config.clearScreenDeepOceanRefraction();
+		config.clearScreenDeepOcean();
 	
 		scenegraph.getRoot().render();
 		if (scenegraph.terrainExists()){

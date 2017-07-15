@@ -35,10 +35,15 @@ public class Bush01ClusterGroup extends InstancingObject{
 		addChild(new Bush01Cluster(20,new Vec3f(-2082,0,2881),getObjectData()));
 		addChild(new Bush01Cluster(40,new Vec3f(-2125,0,2891),getObjectData()));
 		addChild(new Bush01Cluster(20,new Vec3f(-2188,0,2894),getObjectData()));
+		addChild(new Bush01Cluster(10,new Vec3f(-1288,0,1627),getObjectData()));
+		addChild(new Bush01Cluster(10,new Vec3f(-1319,0,1679),getObjectData()));
+		addChild(new Bush01Cluster(10,new Vec3f(-1255,0,1581),getObjectData()));
+		addChild(new Bush01Cluster(10,new Vec3f(-1460,0,1325),getObjectData()));
+		addChild(new Bush01Cluster(10,new Vec3f(-2173,0,2752),getObjectData()));
+		addChild(new Bush01Cluster(10,new Vec3f(-2104,0,2722),getObjectData()));
 	}
 
+	@Override
 	public void run() {
-		// TODO Auto-generated method stub
-		
 	}
 }

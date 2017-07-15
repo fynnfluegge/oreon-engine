@@ -1,15 +1,15 @@
 package apps.samples.ocean;
 
-import apps.samples.ocean.gui.GUI;
 import engine.core.Game;
 import modules.atmosphere.SkySphere;
 import modules.atmosphere.Sun;
+import modules.gui.GUIs.VoidGUI;
 
-public class OceanSimulation {
+public class Main {
 
 	public static void main(String[] args) {
 		Game game = new Game();
-		game.setGui(new GUI());
+		game.setGui(new VoidGUI());
 		game.getEngine().createWindow(1920, 1080, "Ocean");
 		game.init();
 		game.getScenegraph().addObject(new SkySphere());

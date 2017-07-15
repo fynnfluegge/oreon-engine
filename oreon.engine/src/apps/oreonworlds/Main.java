@@ -33,14 +33,18 @@ public class Main {
 								   null);
 		game.getScenegraph().addObject(new SkySphere());	
 		game.getScenegraph().addObject(new Sun());
-		game.getScenegraph().getRoot().addChild(new Palm01ClusterGroup());
-//		game.getScenegraph().getRoot().addChild(new Plant01ClusterGroup());
+		
 		game.getScenegraph().getRoot().addChild(new Grass01ClusterGroup());
-//		game.getScenegraph().getRoot().addChild(new Tree01ClusterGroup());
-//		game.getScenegraph().getRoot().addChild(new Tree02ClusterGroup());
-		game.getScenegraph().getRoot().addChild(new Rock01ClusterGroup());
-//		game.getScenegraph().getRoot().addChild(new Rock02ClusterGroup());
+		game.getScenegraph().getRoot().addChild(new Plant01ClusterGroup());
 		game.getScenegraph().getRoot().addChild(new Bush01ClusterGroup());
+		
+		game.getScenegraph().getRoot().addChild(new Palm01ClusterGroup());
+		game.getScenegraph().getRoot().addChild(new Tree01ClusterGroup());
+		game.getScenegraph().getRoot().addChild(new Tree02ClusterGroup());
+		
+		game.getScenegraph().getRoot().addChild(new Rock01ClusterGroup());
+		game.getScenegraph().getRoot().addChild(new Rock02ClusterGroup());
+		
 		game.getScenegraph().setWater(new Ocean());
 		game.launch();
 	}

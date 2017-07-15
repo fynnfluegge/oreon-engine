@@ -41,7 +41,7 @@ float diffuse(vec3 direction, vec3 normal, float intensity)
 
 float alphaDistanceFactor(float dist)
 {
-	return 0.01f * (dist-120);
+	return 0.01f * (dist-40);
 }
 
 
@@ -56,6 +56,9 @@ void main()
 	vec3 fragColor = texture(material.diffusemap, texCoord_FS).rgb * (directional_light.ambient + diffuseLight);
 	
 	float alpha = texture(material.diffusemap, texCoord_FS).a;
+	
+	if (alpha < 0.2)
+		discard;
 	
 	if (isReflection == 0 && isRefraction == 0){
 		alpha *= alphaDistanceFactor(dist);

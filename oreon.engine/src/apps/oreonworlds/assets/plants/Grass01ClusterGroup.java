@@ -41,6 +41,11 @@ public class Grass01ClusterGroup extends InstancingObject{
 		addCluster(new Grass01Cluster(200,new Vec3f(-2160,0,2827),getObjectData()));
 		addCluster(new Grass01Cluster(200,new Vec3f(-2134,0,2817),getObjectData()));
 		addCluster(new Grass01Cluster(200,new Vec3f(-2172,0,2800),getObjectData()));
+		addCluster(new Grass01Cluster(200,new Vec3f(-2191,0,2804),getObjectData()));
+		addCluster(new Grass01Cluster(200,new Vec3f(-2194,0,2753),getObjectData()));
+		addCluster(new Grass01Cluster(200,new Vec3f(-2176,0,2727),getObjectData()));
+		addCluster(new Grass01Cluster(250,new Vec3f(-1979,0,2635),getObjectData()));
+		addCluster(new Grass01Cluster(250,new Vec3f(-1926,0,2626),getObjectData()));
 	
 		setThread(new Thread(this));
 		getThread().start();

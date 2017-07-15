@@ -36,13 +36,6 @@ public class Rock02ClusterGroup extends InstancingObject{
 		}
 		
 		addChild(new Rock02Cluster(10,new Vec3f(954,0,-30),getObjectData()));
-		addChild(new Rock02Cluster(10,new Vec3f(1240,0,-292),getObjectData()));
-		addChild(new Rock02Cluster(8,new Vec3f(1062,0,446),getObjectData()));
-		addChild(new Rock02Cluster(8,new Vec3f(1123,0,494),getObjectData()));
-		addChild(new Rock02Cluster(8,new Vec3f(1759,0,-1225),getObjectData()));
-		addChild(new Rock02Cluster(8,new Vec3f(765,0,162),getObjectData()));
-		addChild(new Rock02Cluster(8,new Vec3f(654,0,907),getObjectData()));
-		addChild(new Rock02Cluster(8,new Vec3f(960,0,-840),getObjectData()));
 	}
 
 	public void run() {

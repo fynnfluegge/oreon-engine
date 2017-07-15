@@ -52,7 +52,7 @@ float linearize(float depth)
 
 float diffuse(vec3 lightDir, vec3 normal, float intensity)
 {
-	return max(0.0, dot(normal, -lightDir) * intensity);
+	return max(0.1, dot(normal, -lightDir) * intensity);
 }
 
 float specular(vec3 lightDir, vec3 normal, vec3 eyeDir)
@@ -81,7 +81,7 @@ float varianceShadow(vec3 projCoords, int split){
 		}
 	}
 	
-	return shadowFactor;
+	return max(0.1,shadowFactor);
 }
 
 float shadow(vec3 worldPos)
@@ -127,7 +127,7 @@ float shadow(vec3 worldPos)
 
 float alphaDistanceFactor(float dist)
 {
-	return clamp(0.005f * (-dist+400),0,1);
+	return clamp(0.01f * (-dist+220),0,1);
 }
 
 void main()
@@ -145,12 +145,14 @@ void main()
 
 	vec3 eyeDirection = normalize(eyePosition - position_FS);
 	
+	specularFactor = specular(directional_light.direction, normal, eyeDirection);
+	specularLight = directional_light.color * specularFactor;
+	
 	diffuseFactor = diffuse(directional_light.direction, normal, directional_light.intensity);
 	
-	specularFactor = specular(directional_light.direction, normal, eyeDirection);
-	
-	diffuseLight = directional_light.ambient + directional_light.color * diffuseFactor * shadow(position_FS);
-	specularLight = directional_light.color * specularFactor;
+	// prevent shadows on faces backfacing lightsource
+	//if (dot(normal_FS, -directional_light.direction) > 0.0)
+		diffuseLight = directional_light.ambient + directional_light.color * max(0.1, diffuseFactor * shadow(position_FS));
 	
 	vec3 diffuseColor = texture(material.diffusemap, texCoord_FS * vec2(20,4)).rgb;
 		

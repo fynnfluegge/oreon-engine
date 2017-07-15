@@ -87,15 +87,6 @@ public class Tree01Cluster extends InstancingCluster{
 	{	
 		super.update();
 		
-		if (getCenter().sub(Camera.getInstance().getPosition()).length() < 800){
-			
-			updateUBOs();
-		}
-		else if(getHighPolyIndices().size() > 0){
-			System.out.println(getCenter().sub(Camera.getInstance().getPosition()).length());
-			System.out.println(getHighPolyIndices().size());
-		}
-		
 		if (RenderingEngine.isGrid()){
 			for (Node child : getChildren()){
 				((GameObject) child).getRenderInfo().setShader(InstancingGridShader.getInstance());
@@ -115,7 +106,7 @@ public class Tree01Cluster extends InstancingCluster{
 		int index = 0;
 		
 		for (TransformsInstanced transform : getInstancingTransforms()){
-			if (transform.getTranslation().sub(Camera.getInstance().getPosition()).length() < 400){
+			if (transform.getTranslation().sub(Camera.getInstance().getPosition()).length() < 220){
 				getHighPolyIndices().add(index);
 			}
 			

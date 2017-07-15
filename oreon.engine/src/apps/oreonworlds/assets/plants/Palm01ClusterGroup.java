@@ -6,11 +6,14 @@ import apps.oreonworlds.shaders.plants.PalmShader;
 import apps.oreonworlds.shaders.plants.PalmShadowShader;
 import engine.buffers.MeshVAO;
 import engine.configs.CullFaceDisable;
+import engine.core.Camera;
 import engine.geometry.Vertex;
 import engine.math.Vec3f;
 import engine.scenegraph.components.RenderInfo;
 import modules.instancing.InstancedDataObject;
+import modules.instancing.InstancingCluster;
 import modules.instancing.InstancingObject;
+import modules.instancing.InstancingObjectHandler;
 import modules.modelLoader.obj.Model;
 import modules.modelLoader.obj.OBJLoader;
 
@@ -56,11 +59,40 @@ public class Palm01ClusterGroup extends InstancingObject{
 			getObjectData().add(object);
 		}
 	
-		addChild(new Palm01Cluster(8,new Vec3f(-2086,0,2729),getObjectData()));
+		addCluster(new Palm01Cluster(8,new Vec3f(-2086,0,2729),getObjectData()));
+		addCluster(new Palm01Cluster(10,new Vec3f(-720,0,-395),getObjectData()));
+		addCluster(new Palm01Cluster(10,new Vec3f(-577,0,-454),getObjectData()));
+		addCluster(new Palm01Cluster(10,new Vec3f(-401,0,-571),getObjectData()));
+		addCluster(new Palm01Cluster(10,new Vec3f(-334,0,-667),getObjectData()));
+		
+		setThread(new Thread(this));
+		getThread().start();
 	}
 
 	public void run() {
-		// TODO Auto-generated method stub
-		
+		while(isRunning()){
+			
+			InstancingObjectHandler.getInstance().getLock().lock();
+			try {
+				InstancingObjectHandler.getInstance().getCondition().await();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			finally{
+				InstancingObjectHandler.getInstance().getLock().unlock();
+			}
+			
+			getChildren().clear();
+			
+			synchronized (getChildren()) {
+				
+				for (InstancingCluster cluster : getClusters()){
+					if (cluster.getCenter().sub(Camera.getInstance().getPosition()).length() < 800){
+						cluster.updateUBOs();
+						addChild(cluster);
+					}
+				}
+			}
+		}
 	}
 }

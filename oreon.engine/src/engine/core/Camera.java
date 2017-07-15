@@ -72,7 +72,7 @@ public class Camera {
 	
 	protected Camera()
 	{
-		this(new Vec3f(-2149,60,2870), new Vec3f(0,0,1), new Vec3f(0,1,0));
+		this(new Vec3f(-2169,-15,2937), new Vec3f(1,0,-1).normalize(), new Vec3f(0,1,0));
 		setProjection(70, Window.getInstance().getWidth(), Window.getInstance().getHeight());
 		setViewMatrix(new Matrix4f().View(this.getForward(), this.getUp()).mul(
 				new Matrix4f().Translation(this.getPosition().mul(-1))));
@@ -106,22 +106,22 @@ public class Camera {
 		movAmt += (0.04f * Input.getInstance().getScrollOffset());
 		movAmt = Math.max(0.02f, movAmt);
 		
-		if(Input.getInstance().isKeyPushed(GLFW_KEY_W))
+		if(Input.getInstance().isKeyHold(GLFW_KEY_W))
 			move(getForward(), movAmt);
-		if(Input.getInstance().isKeyPushed(GLFW_KEY_S))
+		if(Input.getInstance().isKeyHold(GLFW_KEY_S))
 			move(getForward(), -movAmt);
-		if(Input.getInstance().isKeyPushed(GLFW_KEY_A))
+		if(Input.getInstance().isKeyHold(GLFW_KEY_A))
 			move(getLeft(), movAmt);
-		if(Input.getInstance().isKeyPushed(GLFW_KEY_D))
+		if(Input.getInstance().isKeyHold(GLFW_KEY_D))
 			move(getRight(), movAmt);
 				
-		if(Input.getInstance().isKeyPushed(GLFW_KEY_UP))
+		if(Input.getInstance().isKeyHold(GLFW_KEY_UP))
 			rotateX(-rotAmt/8f);
-		if(Input.getInstance().isKeyPushed(GLFW_KEY_DOWN))
+		if(Input.getInstance().isKeyHold(GLFW_KEY_DOWN))
 			rotateX(rotAmt/8f);
-		if(Input.getInstance().isKeyPushed(GLFW_KEY_LEFT))
+		if(Input.getInstance().isKeyHold(GLFW_KEY_LEFT))
 			rotateY(-rotAmt/8f);
-		if(Input.getInstance().isKeyPushed(GLFW_KEY_RIGHT))
+		if(Input.getInstance().isKeyHold(GLFW_KEY_RIGHT))
 			rotateY(rotAmt/8f);
 		
 		// free mouse rotation

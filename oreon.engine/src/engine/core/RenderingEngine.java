@@ -4,6 +4,7 @@ import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glViewport;
 
+import modules.gpgpu.ContrastController;
 import modules.gui.GUI;
 import modules.gui.elements.TexturePanel;
 import modules.instancing.InstancingObjectHandler;
@@ -44,6 +45,7 @@ public class RenderingEngine {
 	private SunLightScattering sunlightScattering;
 	private LensFlare lensFlare;
 	private UnderWater underWater;
+	private ContrastController contrastController;
 	
 	private static boolean motionBlurEnabled = true;
 	private static boolean depthOfFieldBlurEnabled = true;
@@ -75,6 +77,7 @@ public class RenderingEngine {
 		bloom = new Bloom();
 		sunlightScattering = new SunLightScattering();
 		lensFlare = new LensFlare();
+		contrastController = new ContrastController();
 		underWater = UnderWater.getInstance();
 	}
 	
@@ -174,9 +177,11 @@ public class RenderingEngine {
 			sunlightScattering.render(postProcessingTexture,window.getBlackScene4LightScatteringTexture());
 			postProcessingTexture = sunlightScattering.getSunLightScatteringSceneTexture();
 		}
+		
+		contrastController.render(postProcessingTexture);
 
 		// final scene texture
-		fullScreenTexture.setTexture(postProcessingTexture);	
+		fullScreenTexture.setTexture(contrastController.getContrastTexture());	
 		
 		fullScreenTexture.render();
 		
@@ -196,6 +201,7 @@ public class RenderingEngine {
 	{
 		scenegraph.update();
 		gui.update();
+		contrastController.update();
 		
 		if (scenegraph.terrainExists()){
 			TerrainPicking.getInstance().getTerrainPosition();

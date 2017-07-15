@@ -65,7 +65,7 @@ uniform float distortionCaustics;
 const float zfar = 10000;
 const float znear = 0.1;
 const vec3 fogColor = vec3(0.62,0.85,0.95);
-const vec3 waterRefractionColor = vec3(0.015,0.022,0.04);
+const vec3 waterRefractionColor = vec3(0.1,0.125,0.19);
 
 float emission;
 float shininess;
@@ -77,7 +77,7 @@ float distancePointPlane(vec3 point, vec4 plane){
 
 float diffuse(vec3 direction, vec3 normal, float intensity)
 {
-	return max(0.0, dot(normal, -direction) * intensity);
+	return max(0.1, dot(normal, -direction) * intensity);
 }
 
 float specular(vec3 direction, vec3 normal, vec3 eyePosition, vec3 vertexPosition)
@@ -124,7 +124,7 @@ float varianceShadow(vec3 projCoords, int split, int kernels){
 		}
 	}
 	
-	return max(0.2,shadowFactor);
+	return max(0.1,shadowFactor);
 }
 
 
@@ -241,8 +241,17 @@ void main()
 	
 	float diffuse = diffuse(directional_light.direction, bumpNormal, directional_light.intensity);
 	float specular = specular(directional_light.direction, bumpNormal, eyePosition, position);
-	vec3 diffuseLight = directional_light.ambient + directional_light.color * diffuse;
+	
 	vec3 specularLight = directional_light.color * specular;
+	vec3 diffuseLight = vec3(0,0,0);
+	
+	if (isReflection == 1){
+		diffuseLight = directional_light.ambient + directional_light.color * diffuse;
+	}
+	else {
+		diffuseLight = directional_light.ambient + directional_light.color * max(0.1, diffuse * shadow(position));
+	}
+	
 	
 	vec3 fragColor = mix(texture(sand.diffusemap, texCoordF).rgb, texture(rock0.diffusemap, texCoordF).rgb, rock0Blend);
 	
@@ -256,9 +265,6 @@ void main()
 	
 	fragColor *= diffuseLight;
 	fragColor += specularLight;
-	if (isReflection == 0){
-		fragColor *= shadow(position);
-	}
 	
 	// caustics
 	if (isCameraUnderWater == 1 && isRefraction == 0){
