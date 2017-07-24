@@ -47,7 +47,7 @@ float linearize(float depth)
 
 float diffuse(vec3 direction, vec3 normal, float intensity)
 {
-	return max(0.1, dot(normal, -direction) * intensity);
+	return max(0.0, dot(normal, -direction) * intensity);
 }
 
 float varianceShadow(vec3 projCoords, int split){
@@ -60,12 +60,12 @@ float varianceShadow(vec3 projCoords, int split){
 		for (int j=-1; j<=1; j++){
 			float shadowMapDepth = texture(shadowMaps, vec3(projCoords.xy,split)
 													   + vec3(i,j,0) * texelSize).r; 
-			if (linearize(currentDepth) > linearize(shadowMapDepth) + 0.00001)
+			if (linearize(currentDepth) > linearize(shadowMapDepth) + 0.0000)
 				shadowFactor -= 0.1;
 		}
 	}
 
-	return max(0.1, shadowFactor);
+	return max(0.0, shadowFactor);
 }
 
 float shadow(vec3 worldPos)
@@ -128,7 +128,7 @@ void main()
 
 	float diffuseFactor = diffuse(directional_light.direction, vec3(0,1,0), directional_light.intensity);
 	
-	vec3 diffuseLight = directional_light.color * max(0.1,diffuseFactor * shadow(position_FS));
+	vec3 diffuseLight = directional_light.color * max(0.0,diffuseFactor * shadow(position_FS));
 	
 	vec3 fragColor = texture(material.diffusemap, texCoord_FS).rgb * (directional_light.ambient + diffuseLight);
 	

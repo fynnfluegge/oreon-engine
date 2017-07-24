@@ -37,6 +37,8 @@ public class Plant01ClusterGroup extends InstancingObject{
 		}
 		
 		addCluster(new Plant01Cluster(40,new Vec3f(-2171,0,2776),getObjectData()));
+		addCluster(new Plant01Cluster(20,new Vec3f(-1125,0,1448),getObjectData()));
+		addCluster(new Plant01Cluster(20,new Vec3f(-1174,0,1612),getObjectData()));
 		
 		setThread(new Thread(this));
 		getThread().start();

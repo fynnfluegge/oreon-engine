@@ -39,7 +39,7 @@ public class DirectionalLight extends Light{
 	}
 	
 	protected DirectionalLight(){
-		this(new Vec3f(1,-1,1).normalize(),new Vec3f(0.04f,0.04f,0.04f),new Vec3f(1,0.95f,0.87f),1.2f);
+		this(new Vec3f(1,-1,1).normalize(),new Vec3f(0.12f,0.12f,0.12f),new Vec3f(1,0.95f,0.87f),1.2f);
 	}
 	
 	private DirectionalLight(Vec3f direction, Vec3f ambient, Vec3f color, float intensity) {

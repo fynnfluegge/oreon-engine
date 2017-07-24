@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.nio.ByteBuffer;
 
+import org.lwjgl.glfw.GLFW;
+
 import modules.gpgpu.NormalMapRenderer;
 import modules.terrain.Terrain;
 import modules.water.fft.OceanFFT;
@@ -12,6 +14,7 @@ import engine.buffers.Framebuffer;
 import engine.buffers.PatchVAO;
 import engine.configs.WaterConfig;
 import engine.core.Camera;
+import engine.core.Input;
 import engine.core.Window;
 import engine.core.RenderingEngine;
 import engine.math.Quaternion;
@@ -21,6 +24,7 @@ import engine.scenegraph.Scenegraph;
 import engine.scenegraph.components.RenderInfo;
 import engine.scenegraph.components.Renderer;
 import engine.shaders.water.OceanBRDFShader;
+import engine.shaders.water.OceanGridShader;
 import engine.textures.Texture2D;
 import engine.utils.Constants;
 import engine.utils.Util;
@@ -132,15 +136,15 @@ public class Water extends GameObject{
 	public void update()
 	{
 		setCameraUnderwater(Camera.getInstance().getPosition().getY() < (getTransform().getTranslation().getY())); 
-//		if (Input.getHoldingKey(Keyboard.KEY_G))
-//		{
-//			getRenderInfo().setShader(OceanGridShader.getInstance());
-//		}
-//		else
-//		{
-//			getRenderInfo().setShader(OceanBRDFShader.getInstance());
-//		}
-//		getComponents().get("Renderer").setShader(getRenderInfo().getShader());
+		if (Input.getInstance().isKeyHold(GLFW.GLFW_KEY_G))
+		{
+			getRenderInfo().setShader(OceanGridShader.getInstance());
+		}
+		else
+		{
+			getRenderInfo().setShader(OceanBRDFShader.getInstance());
+		}
+		getComponents().get("Renderer").setShader(getRenderInfo().getShader());
 	}
 	
 	public void render()

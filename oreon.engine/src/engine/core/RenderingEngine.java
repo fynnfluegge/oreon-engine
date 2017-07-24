@@ -47,7 +47,7 @@ public class RenderingEngine {
 	private UnderWater underWater;
 	private ContrastController contrastController;
 	
-	private static boolean motionBlurEnabled = true;
+	private static boolean motionBlurEnabled = false;
 	private static boolean depthOfFieldBlurEnabled = true;
 	private static boolean bloomEnabled = true;
 	private static boolean lightScatteringEnabled = true;
@@ -83,7 +83,7 @@ public class RenderingEngine {
 	
 	public void render()
 	{	
-		Camera.getInstance().update();
+//		Camera.getInstance().mouseRotation();
 		
 		DirectionalLight.getInstance().update();
 		if (Camera.getInstance().isCameraMoved()){

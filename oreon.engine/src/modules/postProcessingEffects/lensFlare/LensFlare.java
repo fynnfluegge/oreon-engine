@@ -15,6 +15,9 @@ public class LensFlare {
 	private List<LensFlareTexturePanel> lensFlareTexturePanels = new ArrayList<LensFlareTexturePanel>();
 	private Vec2f windowMidPos = new Vec2f(Window.getInstance().getWidth()/2f, Window.getInstance().getHeight()/2f);
 	
+	private float strengthFactor = 0.6f;
+	private float occlusionThreshold = 80000f;
+	
 	public LensFlare(){
 		
 		LensFlareTexturePanel texturePanel0 = new LensFlareTexturePanel();
@@ -121,7 +124,7 @@ public class LensFlare {
 			Vec2f sunToWindowCenter = windowMidPos.sub(lightScreenSpacePos);
 			
 			float brightness = 1 - sunToWindowCenter.div(new Vec2f(Window.getInstance().getWidth(), Window.getInstance().getHeight())).length();
-			brightness *= 0.5f;
+			brightness *= strengthFactor;
 			
 			for (LensFlareTexturePanel lensFlareTexture : lensFlareTexturePanels){
 				
@@ -135,7 +138,7 @@ public class LensFlare {
 					new Matrix4f().Orthographic2D().mul(lensFlareTexture.getOrthoTransform().getWorldMatrix()));
 			
 				
-				lensFlareTexture.setTransparency((light.getOcclusionQuery().getOcclusionFactor()/80000f) * brightness);
+				lensFlareTexture.setTransparency((light.getOcclusionQuery().getOcclusionFactor()/occlusionThreshold) * brightness);
 				lensFlareTexture.render();
 			}
 		}

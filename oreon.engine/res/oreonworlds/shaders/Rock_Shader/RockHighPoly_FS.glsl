@@ -61,7 +61,7 @@ float distancePointPlane(vec3 point, vec4 plane){
 
 float diffuse(vec3 lightDir, vec3 normal, float intensity)
 {
-	return max(0.1, dot(normal, -lightDir) * intensity);
+	return max(0.0, dot(normal, -lightDir) * intensity);
 }
 
 float specular(vec3 lightDir, vec3 normal, vec3 eyeDir)
@@ -90,12 +90,12 @@ float varianceShadow(vec3 projCoords, int split){
 		for (int j=-1; j<=1; j++){
 			float shadowMapDepth = texture(shadowMaps, vec3(projCoords.xy,split)
 													   + vec3(i,j,0) * texelSize).r; 
-			if (linearize(currentDepth) > linearize(shadowMapDepth) + 0.00001)
+			if (linearize(currentDepth) > linearize(shadowMapDepth) + 0.000001)
 				shadowFactor -= 0.1;
 		}
 	}
 	
-	return max(0.1,shadowFactor);
+	return max(0.0,shadowFactor);
 }
 
 float shadow(vec3 worldPos)
@@ -162,7 +162,7 @@ void main()
 	if (isReflection == 0 && isRefraction == 0){
 		shadowFactor = shadow(position_FS);
 	}
-	diffuseLight = directional_light.ambient + directional_light.color * max(0.1, diffuseFactor * shadow(position_FS));
+	diffuseLight = directional_light.ambient + directional_light.color * (diffuseFactor * shadow(position_FS));
 	specularLight = directional_light.color * specularFactor * shadowFactor;
 	
 	vec3 diffuseColor = texture(material.diffusemap, texCoord_FS*4).rgb;

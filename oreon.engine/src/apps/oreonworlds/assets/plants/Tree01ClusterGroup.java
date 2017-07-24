@@ -87,6 +87,9 @@ public class Tree01ClusterGroup extends InstancingObject{
 		addCluster(new Tree01Cluster(10,new Vec3f(-1138,0,1345),getObjectData()));
 		addCluster(new Tree01Cluster(10,new Vec3f(-1039,0,1129),getObjectData()));
 		addCluster(new Tree01Cluster(10,new Vec3f(-1011,0,1042),getObjectData()));
+		addCluster(new Tree01Cluster(6,new Vec3f(-1181,0,1346),getObjectData()));
+		addCluster(new Tree01Cluster(6,new Vec3f(-1210,0,1348),getObjectData()));
+		addCluster(new Tree01Cluster(6,new Vec3f(-1211,0,1392),getObjectData()));
 		
 		setThread(new Thread(this));
 		getThread().start();
@@ -110,7 +113,7 @@ public class Tree01ClusterGroup extends InstancingObject{
 			synchronized (getChildren()) {
 				
 				for (InstancingCluster cluster : getClusters()){
-					if (cluster.getCenter().sub(Camera.getInstance().getPosition()).length() < 1000){
+					if (cluster.getCenter().sub(Camera.getInstance().getPosition()).length() < 2000){
 						cluster.updateUBOs();
 						addChild(cluster);
 					}

@@ -64,6 +64,9 @@ public class Palm01ClusterGroup extends InstancingObject{
 		addCluster(new Palm01Cluster(10,new Vec3f(-577,0,-454),getObjectData()));
 		addCluster(new Palm01Cluster(10,new Vec3f(-401,0,-571),getObjectData()));
 		addCluster(new Palm01Cluster(10,new Vec3f(-334,0,-667),getObjectData()));
+		addCluster(new Palm01Cluster(6,new Vec3f(-2049,0,2883),getObjectData()));
+		addCluster(new Palm01Cluster(4,new Vec3f(-355,0,-259),getObjectData()));
+		addCluster(new Palm01Cluster(4,new Vec3f(-160,0,-318),getObjectData()));
 		
 		setThread(new Thread(this));
 		getThread().start();
@@ -87,7 +90,7 @@ public class Palm01ClusterGroup extends InstancingObject{
 			synchronized (getChildren()) {
 				
 				for (InstancingCluster cluster : getClusters()){
-					if (cluster.getCenter().sub(Camera.getInstance().getPosition()).length() < 800){
+					if (cluster.getCenter().sub(Camera.getInstance().getPosition()).length() < 2000){
 						cluster.updateUBOs();
 						addChild(cluster);
 					}

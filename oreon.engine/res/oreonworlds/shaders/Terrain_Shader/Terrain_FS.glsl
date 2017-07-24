@@ -77,7 +77,7 @@ float distancePointPlane(vec3 point, vec4 plane){
 
 float diffuse(vec3 direction, vec3 normal, float intensity)
 {
-	return max(0.1, dot(normal, -direction) * intensity);
+	return max(0.0, dot(normal, -direction) * intensity);
 }
 
 float specular(vec3 direction, vec3 normal, vec3 eyePosition, vec3 vertexPosition)
@@ -124,7 +124,7 @@ float varianceShadow(vec3 projCoords, int split, int kernels){
 		}
 	}
 	
-	return max(0.1,shadowFactor);
+	return max(0.0,shadowFactor);
 }
 
 
@@ -249,7 +249,7 @@ void main()
 		diffuseLight = directional_light.ambient + directional_light.color * diffuse;
 	}
 	else {
-		diffuseLight = directional_light.ambient + directional_light.color * max(0.1, diffuse * shadow(position));
+		diffuseLight = directional_light.ambient + directional_light.color * (diffuse * shadow(position));
 	}
 	
 	

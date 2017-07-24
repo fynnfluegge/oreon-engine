@@ -48,7 +48,7 @@ float linearize(float depth)
 
 float diffuse(vec3 direction, vec3 normal, float intensity)
 {
-	return max(0.1, dot(normal, -direction) * intensity);
+	return max(0.0, dot(normal, -direction) * intensity);
 }
 
 float specular(vec3 direction, vec3 normal, vec3 eyePosition, vec3 vertexPosition)
@@ -76,7 +76,7 @@ float varianceShadow(vec3 projCoords, int split){
 		}
 	}
 	
-	return max(0.1,shadowFactor);
+	return max(0.0,shadowFactor);
 }
 
 float shadow(vec3 worldPos)
@@ -135,7 +135,7 @@ void main()
 	if (diffuseFactor > 0.0)
 		specularFactor = specular(directional_light.direction, normal_FS, eyePosition, position_FS);
 	
-	vec3 diffuseLight = directional_light.color * max(0.1, diffuseFactor * shadow(position_FS));
+	vec3 diffuseLight = directional_light.color * (diffuseFactor * shadow(position_FS));
 	vec3 specularLight = directional_light.color * specularFactor;
 	
 	vec3 fragColor = material.color * (directional_light.ambient + diffuseLight);// + specularLight;

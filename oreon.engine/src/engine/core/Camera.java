@@ -31,7 +31,7 @@ public class Camera {
 	private Vec3f previousForward;
 	private Vec3f up;
 	private float movAmt = 0.1f;
-	private float rotAmt = 0.8f;
+	private float rotAmt = 1.0f;
 	private Matrix4f viewMatrix;
 	private Matrix4f projectionMatrix;
 	private Matrix4f viewProjectionMatrix;
@@ -49,11 +49,11 @@ public class Camera {
 	private float fovY;
 
 	private float rotYstride;
-	private float rotYamt;
+	private float rotYamt = 0;
 	private float rotYcounter;
 	private boolean rotYInitiated = false;
 	private float rotXstride;
-	private float rotXamt;
+	private float rotXamt = 0;
 	private float rotXcounter;
 	private boolean rotXInitiated = false;
 	private float mouseSensitivity = 0.8f;
@@ -72,7 +72,7 @@ public class Camera {
 	
 	protected Camera()
 	{
-		this(new Vec3f(-2169,-15,2937), new Vec3f(1,0,-1).normalize(), new Vec3f(0,1,0));
+		this(new Vec3f(-200,20,-20), new Vec3f(1,0,-1).normalize(), new Vec3f(0,1,0));
 		setProjection(70, Window.getInstance().getWidth(), Window.getInstance().getHeight());
 		setViewMatrix(new Matrix4f().View(this.getForward(), this.getUp()).mul(
 				new Matrix4f().Translation(this.getPosition().mul(-1))));
@@ -127,14 +127,18 @@ public class Camera {
 		// free mouse rotation
 		if(Input.getInstance().isButtonHolding(2))
 		{
+			System.out.println(rotYamt);
+			// fps dependent amount
 			float dy = Input.getInstance().getLockedCursorPosition().getY() - Input.getInstance().getCursorPosition().getY();
 			float dx = Input.getInstance().getLockedCursorPosition().getX() - Input.getInstance().getCursorPosition().getX();
+			
+			rotXamt += dx;
+			rotYamt -= dy;
 			
 			// y-axxis rotation
 			
 			if (dy != 0){
-				rotYstride = Math.abs(dy * 0.01f);
-				rotYamt = -dy;
+				rotYstride = Math.abs(rotYamt * 0.002f);
 				rotYcounter = 0;
 				rotYInitiated = true;
 			}
@@ -147,6 +151,7 @@ public class Camera {
 						rotateX(-rotYstride * mouseSensitivity);
 						rotYcounter -= rotYstride;
 						rotYstride *= 0.98;
+						rotYamt += 10;
 					}
 					else rotYInitiated = false;
 				}
@@ -156,6 +161,7 @@ public class Camera {
 						rotateX(rotYstride * mouseSensitivity);
 						rotYcounter += rotYstride;
 						rotYstride *= 0.98;
+						rotYamt -= 10;
 					}
 					else rotYInitiated = false;
 				}
@@ -163,8 +169,7 @@ public class Camera {
 			
 			// x-axxis rotation
 			if (dx != 0){
-				rotXstride = Math.abs(dx * 0.01f);
-				rotXamt = dx;
+				rotXstride = Math.abs(rotXamt * 0.002f);
 				rotXcounter = 0;
 				rotXInitiated = true;
 			}
@@ -176,7 +181,8 @@ public class Camera {
 					if (rotXcounter > rotXamt){
 						rotateY(rotXstride * mouseSensitivity);
 						rotXcounter -= rotXstride;
-						rotXstride *= 0.96;
+						rotXstride *= 0.98;
+						rotXamt += 1;
 					}
 					else rotXInitiated = false;
 				}
@@ -185,7 +191,8 @@ public class Camera {
 					if (rotXcounter < rotXamt){
 						rotateY(-rotXstride * mouseSensitivity);
 						rotXcounter += rotXstride;
-						rotXstride *= 0.96;
+						rotXstride *= 0.98;
+						rotXamt -= 1;
 					}
 					else rotXInitiated = false;
 				}
@@ -211,12 +218,49 @@ public class Camera {
 		setViewProjectionMatrix(projectionMatrix.mul(viewMatrix));
 		
 		updateUBO();
+//		mouseRotation();
 	}
 	
 	public void move(Vec3f dir, float amount)
 	{
 		Vec3f newPos = position.add(dir.mul(amount));	
 		setPosition(newPos);
+	}
+	
+	public void mouseRotation(){
+		
+		System.out.println(rotXamt);
+		
+		float rotationXAmount = 0;
+		float rotationYAmount = 0;
+		if (CoreEngine.getFps() > 0) {
+			rotationXAmount = rotXamt/ (float) CoreEngine.getFps();
+			rotationYAmount = rotYamt/ (float) CoreEngine.getFps();
+		}
+//		System.out.println(rotationXAmount);
+//		System.out.println(rotationYAmount);
+		
+		if (rotXamt > 0){
+			if (rotXamt < 10)
+				rotXamt = 0;
+			else
+				rotXamt -= 10;
+		}
+		if (rotXamt < 0){
+			if (rotXamt > -10)
+				rotXamt = 0;
+			else
+				rotXamt += 10;
+		}
+			
+		rotYamt = 0;
+		
+		rotateY(rotationXAmount * -1f);
+		rotateX(rotationYAmount * 1f);
+	}
+	
+	public float roationDecreasingFunction(float x) {
+		return 0;
 	}
 	
 	private void updateUBO(){

@@ -80,22 +80,23 @@ public class Tree02ClusterGroup extends InstancingObject{
 			getObjectData().add(object);
 		}
 	
-		addCluster(new Tree02Cluster(8,new Vec3f(-1441,0,2678),getObjectData()));
-		addCluster(new Tree02Cluster(8,new Vec3f(-1499,0,2719),getObjectData()));
-		addCluster(new Tree02Cluster(8,new Vec3f(-1551,0,2524),getObjectData()));
-		addCluster(new Tree02Cluster(8,new Vec3f(-1331,0,2649),getObjectData()));
-		addCluster(new Tree02Cluster(8,new Vec3f(-1462,0,2502),getObjectData()));
-		addCluster(new Tree02Cluster(8,new Vec3f(-1462,0,2502),getObjectData()));
-		addCluster(new Tree02Cluster(8,new Vec3f(-1154,0,2606),getObjectData()));
+		addCluster(new Tree02Cluster(6,new Vec3f(-1441,0,2678),getObjectData()));
+		addCluster(new Tree02Cluster(6,new Vec3f(-1499,0,2719),getObjectData()));
+		addCluster(new Tree02Cluster(6,new Vec3f(-1331,0,2649),getObjectData()));
+		addCluster(new Tree02Cluster(6,new Vec3f(-1462,0,2502),getObjectData()));
+		addCluster(new Tree02Cluster(6,new Vec3f(-1462,0,2502),getObjectData()));
+		addCluster(new Tree02Cluster(6,new Vec3f(-1154,0,2606),getObjectData()));
 		addCluster(new Tree02Cluster(6,new Vec3f(-1167,0,1198),getObjectData()));
 		addCluster(new Tree02Cluster(6,new Vec3f(-1119,0,1189),getObjectData()));
 		addCluster(new Tree02Cluster(4,new Vec3f(-1293,0,1159),getObjectData()));
-		addCluster(new Tree02Cluster(8,new Vec3f(-528,0,874),getObjectData()));
+		addCluster(new Tree02Cluster(6,new Vec3f(-528,0,874),getObjectData()));
 		addCluster(new Tree02Cluster(6,new Vec3f(-696,0,932),getObjectData()));
 		addCluster(new Tree02Cluster(6,new Vec3f(-765,0,976),getObjectData()));
 		addCluster(new Tree02Cluster(6,new Vec3f(-820,0,1035),getObjectData()));
-		addCluster(new Tree02Cluster(8,new Vec3f(-595,0,624),getObjectData()));
+		addCluster(new Tree02Cluster(6,new Vec3f(-595,0,624),getObjectData()));
 		addCluster(new Tree02Cluster(6,new Vec3f(-462,0,597),getObjectData()));
+		addCluster(new Tree02Cluster(6,new Vec3f(-1275,0,2549),getObjectData()));
+		addCluster(new Tree02Cluster(6,new Vec3f(-1397,0,1198),getObjectData()));
 		
 		setThread(new Thread(this));
 		getThread().start();
@@ -122,7 +123,7 @@ public class Tree02ClusterGroup extends InstancingObject{
 //				long time = System.currentTimeMillis();
 				
 				for (InstancingCluster cluster : getClusters()){
-					if (cluster.getCenter().sub(Camera.getInstance().getPosition()).length() < 1000){
+					if (cluster.getCenter().sub(Camera.getInstance().getPosition()).length() < 2000){
 						cluster.updateUBOs();
 						addChild(cluster);
 					}
