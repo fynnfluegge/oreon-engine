@@ -13,7 +13,7 @@ uniform mat4 previousViewProjectionMatrix;
 
 const float zfar = 10000.0f;
 const float znear = 0.1f;
-const int blurFactor = 280; 
+const int blurFactor = 200; 
 
 float linearize(float depth)
 {
@@ -44,7 +44,7 @@ void main(void){
 	//window space velocity
 	vec2 velocity = (previousPos.xy - N.xy).xy * blurFactor;
 	
-	if (length(velocity) < 0.4){
+	if (length(velocity) < 0.2){
 		velocity = vec2(0,0);
 	}
 	

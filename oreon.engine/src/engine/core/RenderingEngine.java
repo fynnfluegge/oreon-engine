@@ -47,7 +47,7 @@ public class RenderingEngine {
 	private UnderWater underWater;
 	private ContrastController contrastController;
 	
-	private static boolean motionBlurEnabled = false;
+	private static boolean motionBlurEnabled = true;
 	private static boolean depthOfFieldBlurEnabled = true;
 	private static boolean bloomEnabled = true;
 	private static boolean lightScatteringEnabled = true;

@@ -50,13 +50,9 @@ public class Camera {
 
 	private float rotYstride;
 	private float rotYamt = 0;
-	private float rotYcounter;
-	private boolean rotYInitiated = false;
 	private float rotXstride;
 	private float rotXamt = 0;
-	private float rotXcounter;
-	private boolean rotXInitiated = false;
-	private float mouseSensitivity = 0.8f;
+	private float mouseSensitivity = 0.1f;
 	
 	private Quaternion[] frustumPlanes = new Quaternion[6];
 	private Vec3f[] frustumCorners = new Vec3f[8];
@@ -127,74 +123,59 @@ public class Camera {
 		// free mouse rotation
 		if(Input.getInstance().isButtonHolding(2))
 		{
-			System.out.println(rotYamt);
-			// fps dependent amount
 			float dy = Input.getInstance().getLockedCursorPosition().getY() - Input.getInstance().getCursorPosition().getY();
 			float dx = Input.getInstance().getLockedCursorPosition().getX() - Input.getInstance().getCursorPosition().getX();
-			
-			rotXamt += dx;
-			rotYamt -= dy;
 			
 			// y-axxis rotation
 			
 			if (dy != 0){
-				rotYstride = Math.abs(rotYamt * 0.002f);
-				rotYcounter = 0;
-				rotYInitiated = true;
+				rotYamt -= dy;
+				rotYstride = Math.abs(rotYamt * 0.1f);
 			}
 			
-			if (rotYInitiated ){
+			if (rotYamt != 0){
 				
 				// up-rotation
 				if (rotYamt < 0){
-					if (rotYcounter > rotYamt){
-						rotateX(-rotYstride * mouseSensitivity);
-						rotYcounter -= rotYstride;
-						rotYstride *= 0.98;
-						rotYamt += 10;
-					}
-					else rotYInitiated = false;
+					rotateX(-rotYstride * mouseSensitivity);
+					rotYstride *= 0.98f;
+					rotYamt += rotYstride;
+					if (rotYamt > 0)
+						rotYamt = 0;
 				}
 				// down-rotation
-				else if (rotYamt > 0){
-					if (rotYcounter < rotYamt){
-						rotateX(rotYstride * mouseSensitivity);
-						rotYcounter += rotYstride;
-						rotYstride *= 0.98;
-						rotYamt -= 10;
-					}
-					else rotYInitiated = false;
+				if (rotYamt > 0){
+					rotateX(rotYstride * mouseSensitivity);
+					rotYstride *= 0.98f;
+					rotYamt -= rotYstride;
+					if (rotYamt < 0)
+						rotYamt = 0;
 				}
 			}
 			
 			// x-axxis rotation
 			if (dx != 0){
-				rotXstride = Math.abs(rotXamt * 0.002f);
-				rotXcounter = 0;
-				rotXInitiated = true;
+				rotXamt += dx;
+				rotXstride = Math.abs(rotXamt * 0.1f);
 			}
 			
-			if (rotXInitiated){
+			if (rotXamt != 0){
 				
 				// up-rotation
 				if (rotXamt < 0){
-					if (rotXcounter > rotXamt){
-						rotateY(rotXstride * mouseSensitivity);
-						rotXcounter -= rotXstride;
-						rotXstride *= 0.98;
-						rotXamt += 1;
-					}
-					else rotXInitiated = false;
+					rotateY(rotXstride * mouseSensitivity);
+					rotXstride *= 0.98f;
+					rotXamt += rotXstride;
+					if (rotXamt > 0)
+						rotXamt = 0;
 				}
 				// down-rotation
 				else if (rotXamt > 0){
-					if (rotXcounter < rotXamt){
-						rotateY(-rotXstride * mouseSensitivity);
-						rotXcounter += rotXstride;
-						rotXstride *= 0.98;
-						rotXamt -= 1;
-					}
-					else rotXInitiated = false;
+					rotateY(-rotXstride * mouseSensitivity);
+					rotXstride *= 0.98f;
+					rotXamt -= rotXstride;
+					if (rotXamt < 0)
+						rotXamt = 0;
 				}
 			}
 			
