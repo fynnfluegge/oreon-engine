@@ -231,6 +231,10 @@ public class Matrix4f {
 		return invM;
 	}
 	
+	public Vec3f getTranslation(){
+		return new Vec3f(m[0][3],m[1][3],m[2][3]);
+	}
+	
 	public boolean equals(Matrix4f m){
 		if (this.m[0][0] == m.getM()[0][0] && this.m[0][1] == m.getM()[0][1] &&
 			this.m[0][2] == m.getM()[0][2] && this.m[0][3] == m.getM()[0][3] &&

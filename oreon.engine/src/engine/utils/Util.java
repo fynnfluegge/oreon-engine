@@ -3,8 +3,8 @@ package engine.utils;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
-import engine.geometry.Mesh;
-import engine.geometry.Vertex;
+import engine.components.model.Mesh;
+import engine.components.model.Vertex;
 import engine.math.Quaternion;
 import engine.math.Vec2f;
 import engine.math.Vec3f;

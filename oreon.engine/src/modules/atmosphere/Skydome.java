@@ -1,12 +1,12 @@
 package modules.atmosphere;
 
-import engine.buffers.MeshVAO;
+import engine.buffers.MeshVBO;
+import engine.components.model.Mesh;
+import engine.components.renderer.RenderInfo;
+import engine.components.renderer.Renderer;
 import engine.configs.CullFaceDisable;
 import engine.core.RenderingEngine;
-import engine.geometry.Mesh;
-import engine.scenegraph.GameObject;
-import engine.scenegraph.components.RenderInfo;
-import engine.scenegraph.components.Renderer;
+import engine.scene.GameObject;
 import engine.textures.ProceduralTexturing;
 import modules.modelLoader.obj.OBJLoader;
 
@@ -16,10 +16,10 @@ public class Skydome extends GameObject{
 	{
 		Mesh mesh = new OBJLoader().load("./res/models/obj/dome", "dome.obj", null)[0].getMesh();
 		ProceduralTexturing.dome(mesh);
-		MeshVAO meshBuffer = new MeshVAO();
+		MeshVBO meshBuffer = new MeshVBO();
 		meshBuffer.addData(mesh);
-		setRenderInfo(new RenderInfo(new CullFaceDisable(),AtmosphereShader.getInstance()));
-		Renderer renderer = new Renderer(AtmosphereShader.getInstance(), meshBuffer);
+		Renderer renderer = new Renderer(meshBuffer);
+		renderer.setRenderInfo(new RenderInfo(new CullFaceDisable(),AtmosphereShader.getInstance()));
 		addComponent("Renderer", renderer);
 	}
 	

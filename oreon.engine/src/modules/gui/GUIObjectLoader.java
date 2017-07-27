@@ -4,8 +4,8 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
 
-import engine.geometry.Mesh;
-import engine.geometry.Vertex;
+import engine.components.model.Mesh;
+import engine.components.model.Vertex;
 import engine.math.Vec3f;
 import engine.utils.Util;
 

@@ -1,14 +1,15 @@
 package modules.instancing;
 
-import engine.buffers.VAO;
-import engine.scenegraph.components.Material;
-import engine.scenegraph.components.RenderInfo;
+import engine.buffers.VBO;
+import engine.components.model.Material;
+import engine.components.renderer.RenderInfo;
 
 public class InstancedDataObject {
 
-	private VAO vao;
+	private VBO vao;
 	private Material material;
 	private RenderInfo renderInfo;
+	private RenderInfo shadowRenderInfo;
 
 	public Material getMaterial() {
 		return material;
@@ -26,11 +27,19 @@ public class InstancedDataObject {
 		this.renderInfo = renderInfo;
 	}
 
-	public VAO getVao() {
+	public VBO getVao() {
 		return vao;
 	}
 
-	public void setVao(VAO vao) {
+	public void setVao(VBO vao) {
 		this.vao = vao;
+	}
+
+	public RenderInfo getShadowRenderInfo() {
+		return shadowRenderInfo;
+	}
+
+	public void setShadowRenderInfo(RenderInfo shadowRenderInfo) {
+		this.shadowRenderInfo = shadowRenderInfo;
 	}
 }

@@ -9,13 +9,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
-import modules.terrain.fractals.FractalMaps;
+import engine.components.model.Material;
 import engine.core.RenderingEngine;
-import engine.scenegraph.components.Material;
 import engine.shaders.Shader;
 import engine.textures.Texture2D;
 import engine.utils.Constants;
 import engine.utils.Util;
+import modules.terrain.fractals.FractalMaps;
 
 public class TerrainConfiguration {
 

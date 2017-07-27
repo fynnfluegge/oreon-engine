@@ -2,7 +2,7 @@ package modules.modelLoader.obj;
 
 import java.util.ArrayList;
 
-import engine.geometry.Vertex;
+import engine.components.model.Vertex;
 
 public class Polygon {
 

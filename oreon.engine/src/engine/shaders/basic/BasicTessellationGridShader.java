@@ -2,10 +2,11 @@ package engine.shaders.basic;
 
 import static org.lwjgl.opengl.GL13.GL_TEXTURE3;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
+
+import engine.components.model.Material;
 import engine.core.Camera;
 import engine.core.RenderingEngine;
-import engine.scenegraph.GameObject;
-import engine.scenegraph.components.Material;
+import engine.scene.GameObject;
 import engine.shaders.Shader;
 import engine.utils.ResourceLoader;
 

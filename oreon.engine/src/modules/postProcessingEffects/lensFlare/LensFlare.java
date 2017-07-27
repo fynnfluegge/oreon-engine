@@ -3,12 +3,12 @@ package modules.postProcessingEffects.lensFlare;
 import java.util.ArrayList;
 import java.util.List;
 
+import engine.components.light.Light;
+import engine.components.light.LightHandler;
 import engine.core.Window;
 import engine.math.Matrix4f;
 import engine.math.Vec2f;
 import engine.textures.Texture2D;
-import modules.lighting.Light;
-import modules.lighting.LightHandler;
 
 public class LensFlare {
 	

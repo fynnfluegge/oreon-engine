@@ -6,11 +6,13 @@ import static org.lwjgl.opengl.GL30.GL_RGBA32F;
 import static org.lwjgl.opengl.GL42.glBindImageTexture;
 import static org.lwjgl.opengl.GL42.glTexStorage2D;
 import static org.lwjgl.opengl.GL43.glDispatchCompute;
-import static org.lwjgl.opengl.GL11.glFinish;
 
 import engine.shaders.computing.FFTButterflyShader;
 import engine.shaders.computing.FFTInversionShader;
 import engine.textures.Texture2D;
+
+import static org.lwjgl.opengl.GL11.glFinish;
+
 import modules.gpgpu.fft.FastFourierTransform;
 
 

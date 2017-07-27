@@ -1,18 +1,16 @@
 package modules.terrain;
 
-import static org.lwjgl.opengl.GL11.glViewport;
 
-import engine.buffers.PatchVAO;
+import engine.buffers.PatchVBO;
+import engine.components.renderer.RenderInfo;
+import engine.components.renderer.Renderer;
 import engine.configs.Default;
 import engine.core.Camera;
-import engine.core.Window;
 import engine.core.RenderingEngine;
 import engine.math.Vec2f;
 import engine.math.Vec3f;
-import engine.scenegraph.GameObject;
-import engine.scenegraph.Node;
-import engine.scenegraph.components.RenderInfo;
-import engine.scenegraph.components.Renderer;
+import engine.scene.GameObject;
+import engine.scene.Node;
 import engine.utils.Constants;
 
 public class TerrainNode extends GameObject{
@@ -34,17 +32,17 @@ public class TerrainNode extends GameObject{
 		this.location = location;
 		this.terrConfig = terrConfig;
 		this.gap = 1f/(TerrainQuadtree.getRootPatches() * (float)(Math.pow(2, lod)));
-		PatchVAO meshBuffer = new PatchVAO();
+		PatchVBO meshBuffer = new PatchVBO();
 		meshBuffer.addData(generatePatch(),16);
-		
-		setRenderInfo(new RenderInfo(new Default(),terrConfig.getShader()));
 
-		if (RenderingEngine.isGrid())
-			getRenderInfo().setShader(terrConfig.getGridShader());
-		else if (!RenderingEngine.isGrid())
-			getRenderInfo().setShader(terrConfig.getShader());
+		Renderer renderer = new Renderer(meshBuffer);
+		renderer.setRenderInfo(new RenderInfo(new Default(),terrConfig.getShader()));
 		
-		Renderer renderer = new Renderer(getRenderInfo().getShader(), meshBuffer);
+		if (RenderingEngine.isGrid())
+			renderer.getRenderInfo().setShader(terrConfig.getGridShader());
+		else if (!RenderingEngine.isGrid())
+			renderer.getRenderInfo().setShader(terrConfig.getShader());
+		
 		addComponent("Renderer", renderer);
 		
 		getTransform().setLocalScaling(terrConfig.getScaleXZ(), terrConfig.getScaleY(), terrConfig.getScaleXZ());
@@ -62,12 +60,10 @@ public class TerrainNode extends GameObject{
 	public void update()
 	{
 			if (RenderingEngine.isGrid())
-				getRenderInfo().setShader(terrConfig.getGridShader());
+				((Renderer) getComponents().get("Renderer")).getRenderInfo().setShader(terrConfig.getGridShader());
 			else if (!RenderingEngine.isGrid())
-				getRenderInfo().setShader(terrConfig.getShader());
+				((Renderer) getComponents().get("Renderer")).getRenderInfo().setShader(terrConfig.getShader());
 			
-			getComponents().get("Renderer").setShader(getRenderInfo().getShader());
-					
 			getTransform().setScaling(getTransform().getLocalScaling());
 			
 			for(Node child: getChildren())
@@ -78,9 +74,7 @@ public class TerrainNode extends GameObject{
 	{
 		if (isleaf)
 		{	
-			getRenderInfo().getConfig().enable();
-			getComponents().get("Renderer").render();
-			getRenderInfo().getConfig().disable();
+			getComponents().get(Constants.RENDERER).render();
 		}
 		for(Node child: getChildren())
 			child.render();
@@ -88,16 +82,11 @@ public class TerrainNode extends GameObject{
 	
 	public void renderShadows()
 	{
-		if (getRenderInfo().isShadowCaster() && isleaf){
-			getComponents().get("Renderer").setShader(getRenderInfo().getShadowShader());
-			getRenderInfo().getConfig().enable();
-			glViewport(0,0,Constants.PSSM_SHADOWMAP_RESOLUTION,Constants.PSSM_SHADOWMAP_RESOLUTION);
-			
-			getComponents().get("Renderer").render();
-			
-			glViewport(0,0,Window.getInstance().getWidth(), Window.getInstance().getHeight());
-			getRenderInfo().getConfig().disable();
-			getComponents().get("Renderer").setShader(getRenderInfo().getShader());
+		if (isleaf){
+			if (getComponents().containsKey(Constants.SHADOW_RENDERER)){
+				getComponents().get(Constants.SHADOW_RENDERER).render();
+			}
+
 		}
 		for(Node child: getChildren())
 			child.renderShadows();
@@ -185,7 +174,7 @@ public class TerrainNode extends GameObject{
 		
 		if (isleaf){
 			isleaf = false;
-			((Renderer) getComponent("Renderer")).getVao().delete();
+			((Renderer) getComponent("Renderer")).getVbo().delete();
 		}
 		if(getChildren().size() == 0){
 			for (int i=0; i<2; i++){
@@ -200,19 +189,23 @@ public class TerrainNode extends GameObject{
 		
 		if (!isleaf){
 			isleaf = true;
-			PatchVAO meshBuffer = new PatchVAO();
+			PatchVBO meshBuffer = new PatchVBO();
 			meshBuffer.addData(generatePatch(),16);
-			Renderer renderer;
+			
+			Renderer renderer = new Renderer(meshBuffer);
+			renderer.setRenderInfo(new RenderInfo(new Default(),terrConfig.getShader()));
+
 			if (RenderingEngine.isGrid())
-				renderer = new Renderer(terrConfig.getGridShader(), meshBuffer);
-			else
-				renderer = new Renderer(terrConfig.getShader(), meshBuffer);
+				renderer.getRenderInfo().setShader(terrConfig.getGridShader());
+			else if (!RenderingEngine.isGrid())
+				renderer.getRenderInfo().setShader(terrConfig.getShader());
+			
 			addComponent("Renderer", renderer);
 		}
 		if(getChildren().size() != 0){
 			
 			for(Node child: getChildren()){
-				((Renderer) ((GameObject) child).getComponent("Renderer")).getVao().delete();
+				((Renderer) ((GameObject) child).getComponent("Renderer")).getVbo().delete();
 			}	
 			getChildren().clear();
 		}

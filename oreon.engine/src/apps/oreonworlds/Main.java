@@ -41,12 +41,14 @@ public class Main {
 		game.getScenegraph().getRoot().addChild(new Palm01ClusterGroup());
 		game.getScenegraph().getRoot().addChild(new Tree01ClusterGroup());
 		game.getScenegraph().getRoot().addChild(new Tree02ClusterGroup());
-		
+//		
 		game.getScenegraph().getRoot().addChild(new Rock01ClusterGroup());
 		game.getScenegraph().getRoot().addChild(new Rock02ClusterGroup());
 		
 		game.getScenegraph().setWater(new Ocean());
 		game.launch();
+		
+		
 	}
 
 }

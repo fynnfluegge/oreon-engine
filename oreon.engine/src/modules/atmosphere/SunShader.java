@@ -1,12 +1,13 @@
 package modules.atmosphere;
 
-import engine.scenegraph.GameObject;
-import engine.scenegraph.components.Material;
-import engine.shaders.Shader;
-import engine.utils.ResourceLoader;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
+
+import engine.components.model.Material;
+import engine.scene.GameObject;
+import engine.shaders.Shader;
+import engine.utils.ResourceLoader;
 
 public class SunShader extends Shader{
 	

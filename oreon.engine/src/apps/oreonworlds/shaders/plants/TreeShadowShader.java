@@ -5,9 +5,9 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import java.util.List;
 
+import engine.components.model.Material;
 import engine.core.RenderingEngine;
-import engine.scenegraph.GameObject;
-import engine.scenegraph.components.Material;
+import engine.scene.GameObject;
 import engine.shaders.Shader;
 import engine.utils.Constants;
 import engine.utils.ResourceLoader;

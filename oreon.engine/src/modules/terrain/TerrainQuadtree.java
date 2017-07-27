@@ -1,7 +1,7 @@
 package modules.terrain;
 
 import engine.math.Vec2f;
-import engine.scenegraph.Node;
+import engine.scene.Node;
 
 public class TerrainQuadtree extends Node{
 	

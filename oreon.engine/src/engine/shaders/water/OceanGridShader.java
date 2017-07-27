@@ -4,11 +4,12 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE2;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
-import modules.water.Water;
+
 import engine.core.Camera;
-import engine.scenegraph.GameObject;
+import engine.scene.GameObject;
 import engine.shaders.Shader;
 import engine.utils.ResourceLoader;
+import modules.water.Water;
 
 public class OceanGridShader extends Shader{
 

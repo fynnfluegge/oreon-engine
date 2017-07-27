@@ -5,11 +5,11 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import engine.configs.Default;
 import engine.core.Window;
-import engine.geometry.Geometrics;
 import engine.math.Matrix4f;
-import engine.scenegraph.components.Transform;
+import engine.scene.Transform;
 import engine.shaders.gui.GuiShader;
 import engine.textures.Texture2D;
+import engine.utils.MeshGenerator;
 import modules.gui.GUIElement;
 import modules.gui.GUIVAO;
 
@@ -30,7 +30,7 @@ public class MotionBlurFonts extends GUIElement{
 		getOrthoTransform().setScaling(160, 40, 0);
 		setOrthographicMatrix(getOrthographicMatrix().mul(getOrthoTransform().getWorldMatrix()));
 		setVao(new GUIVAO());
-		getVao().addData(Geometrics.Quad2D());
+		getVao().addData(MeshGenerator.Quad2D());
 	}
 
 	@Override

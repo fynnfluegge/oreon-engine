@@ -1,9 +1,9 @@
 package engine.shaders.lightScattering;
 
+import engine.components.light.DirectionalLight;
 import engine.math.Matrix4f;
 import engine.shaders.Shader;
 import engine.utils.ResourceLoader;
-import modules.lighting.DirectionalLight;
 
 public class SunLightScatteringShader extends Shader{
 	

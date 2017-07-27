@@ -1,10 +1,10 @@
 package engine.shaders.particles;
 
-import engine.shaders.Shader;
-import engine.utils.ResourceLoader;
-
 import static org.lwjgl.opengl.GL30.GL_INTERLEAVED_ATTRIBS;
 import static org.lwjgl.opengl.GL30.glTransformFeedbackVaryings;
+
+import engine.shaders.Shader;
+import engine.utils.ResourceLoader;
 
 public class ParticleShader extends Shader {
 	

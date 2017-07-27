@@ -1,6 +1,6 @@
 package modules.atmosphere;
 
-import engine.scenegraph.GameObject;
+import engine.scene.GameObject;
 import engine.shaders.Shader;
 import engine.utils.ResourceLoader;
 

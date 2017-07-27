@@ -4,17 +4,17 @@ import apps.oreonworlds.shaders.plants.PalmBillboardShader;
 import apps.oreonworlds.shaders.plants.PalmBillboardShadowShader;
 import apps.oreonworlds.shaders.plants.PalmShader;
 import apps.oreonworlds.shaders.plants.PalmShadowShader;
-import engine.buffers.MeshVAO;
+import engine.buffers.MeshVBO;
+import engine.components.model.Model;
+import engine.components.model.Vertex;
+import engine.components.renderer.RenderInfo;
 import engine.configs.CullFaceDisable;
 import engine.core.Camera;
-import engine.geometry.Vertex;
 import engine.math.Vec3f;
-import engine.scenegraph.components.RenderInfo;
 import modules.instancing.InstancedDataObject;
 import modules.instancing.InstancingCluster;
 import modules.instancing.InstancingObject;
 import modules.instancing.InstancingObjectHandler;
-import modules.modelLoader.obj.Model;
 import modules.modelLoader.obj.OBJLoader;
 
 public class Palm01ClusterGroup extends InstancingObject{
@@ -27,12 +27,13 @@ public class Palm01ClusterGroup extends InstancingObject{
 		for (Model model : models){
 			
 			InstancedDataObject object = new InstancedDataObject();
-			MeshVAO meshBuffer = new MeshVAO();
+			MeshVBO meshBuffer = new MeshVBO();
 			model.getMesh().setTangentSpace(false);
 			model.getMesh().setInstanced(true);
 			meshBuffer.addData(model.getMesh());
 
-			object.setRenderInfo(new RenderInfo(new CullFaceDisable(), PalmShader.getInstance(), PalmShadowShader.getInstance()));
+			object.setRenderInfo(new RenderInfo(new CullFaceDisable(), PalmShader.getInstance()));
+			object.setShadowRenderInfo(new RenderInfo(new CullFaceDisable(), PalmShadowShader.getInstance()));
 
 			object.setMaterial(model.getMaterial());
 			object.setVao(meshBuffer);
@@ -40,7 +41,7 @@ public class Palm01ClusterGroup extends InstancingObject{
 		}
 		for (Model billboard : billboards){	
 			InstancedDataObject object = new InstancedDataObject();
-			MeshVAO meshBuffer = new MeshVAO();
+			MeshVBO meshBuffer = new MeshVBO();
 			billboard.getMesh().setTangentSpace(false);
 			billboard.getMesh().setInstanced(true);
 			
@@ -52,7 +53,8 @@ public class Palm01ClusterGroup extends InstancingObject{
 			
 			meshBuffer.addData(billboard.getMesh());
 	
-			object.setRenderInfo(new RenderInfo(new CullFaceDisable(), PalmBillboardShader.getInstance(), PalmBillboardShadowShader.getInstance()));
+			object.setRenderInfo(new RenderInfo(new CullFaceDisable(), PalmBillboardShader.getInstance()));
+			object.setShadowRenderInfo(new RenderInfo(new CullFaceDisable(), PalmBillboardShadowShader.getInstance()));
 			
 			object.setMaterial(billboard.getMaterial());
 			object.setVao(meshBuffer);
@@ -85,9 +87,9 @@ public class Palm01ClusterGroup extends InstancingObject{
 				InstancingObjectHandler.getInstance().getLock().unlock();
 			}
 			
-			getChildren().clear();
-			
 			synchronized (getChildren()) {
+				
+				getChildren().clear();
 				
 				for (InstancingCluster cluster : getClusters()){
 					if (cluster.getCenter().sub(Camera.getInstance().getPosition()).length() < 2000){

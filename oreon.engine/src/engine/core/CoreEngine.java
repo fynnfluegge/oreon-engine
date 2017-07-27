@@ -11,13 +11,14 @@ import org.lwjgl.opengl.GL31;
 import org.lwjgl.opengl.GL40;
 import org.lwjgl.opengl.GL43;
 
+import engine.configs.Default;
+import engine.scene.Scenegraph;
+import engine.utils.Constants;
+
 import static org.lwjgl.glfw.GLFW.glfwInit;
 import static org.lwjgl.glfw.GLFW.glfwTerminate;
 import static org.lwjgl.glfw.GLFW.glfwSetErrorCallback;
 import org.lwjgl.glfw.GLFWErrorCallback;
-import engine.configs.Default;
-import engine.scenegraph.Scenegraph;
-import engine.utils.Constants;
 
 
 public class CoreEngine{

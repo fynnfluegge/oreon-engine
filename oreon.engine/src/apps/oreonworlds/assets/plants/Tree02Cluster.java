@@ -7,16 +7,18 @@ import apps.oreonworlds.shaders.InstancingGridShader;
 import apps.oreonworlds.shaders.plants.TreeBillboardShader;
 import apps.oreonworlds.shaders.plants.TreeLeavesShader;
 import apps.oreonworlds.shaders.plants.TreeTrunkShader;
-import engine.buffers.MeshVAO;
+import engine.buffers.MeshVBO;
 import engine.buffers.UBO;
+import engine.components.renderer.Renderer;
 import engine.core.Camera;
 import engine.core.RenderingEngine;
+import engine.math.Matrix4f;
 import engine.math.Vec3f;
-import engine.scenegraph.GameObject;
-import engine.scenegraph.Node;
-import engine.scenegraph.components.Renderer;
-import engine.scenegraph.components.TransformsInstanced;
+import engine.scene.GameObject;
+import engine.scene.Node;
 import engine.utils.BufferUtil;
+import engine.utils.Constants;
+import engine.utils.IntegerReference;
 import modules.instancing.InstancedDataObject;
 import modules.instancing.InstancingCluster;
 import modules.terrain.Terrain;
@@ -26,24 +28,27 @@ public class Tree02Cluster extends InstancingCluster{
 	public Tree02Cluster(int instances, Vec3f pos, List<InstancedDataObject> objects){
 		
 		setCenter(pos);
+		setHighPolyInstances(new IntegerReference(0));
+		setLowPolyInstances(new IntegerReference(instances));
 		int buffersize = Float.BYTES * 16 * instances;
 		
 		for (int i=0; i<instances; i++){
-			Vec3f translation = new Vec3f((float)(Math.random()*100)-50 + getCenter().getX(), 0, (float)(Math.random()*100)-50 + getCenter().getZ());
-			float terrainHeight = Terrain.getInstance().getTerrainHeight(translation.getX(),translation.getZ());
-			terrainHeight -= 1;
-			translation.setY(terrainHeight);
+			
 			float s = (float)(Math.random()*6 + 26);
+			Vec3f translation = new Vec3f((float)(Math.random()*100)-50 + getCenter().getX(), 0, (float)(Math.random()*100)-50 + getCenter().getZ());
 			Vec3f scaling = new Vec3f(s,s,s);
 			Vec3f rotation = new Vec3f(0,(float) Math.random()*360f,0);
 			
-			TransformsInstanced transform = new TransformsInstanced();
-			transform.setTranslation(translation);
-			transform.setScaling(scaling);
-			transform.setRotation(rotation);
-			transform.setLocalRotation(rotation);
-			transform.initMatrices();
-			getInstancingTransforms().add(transform);
+			float terrainHeight = Terrain.getInstance().getTerrainHeight(translation.getX(),translation.getZ());
+			terrainHeight -= 1;
+			translation.setY(terrainHeight);
+			
+			Matrix4f translationMatrix = new Matrix4f().Translation(translation);
+			Matrix4f rotationMatrix = new Matrix4f().Rotation(rotation);
+			Matrix4f scalingMatrix = new Matrix4f().Scaling(scaling);
+			
+			getWorldMatrices().add(translationMatrix.mul(scalingMatrix.mul(rotationMatrix)));
+			getModelMatrices().add(rotationMatrix);
 			getLowPolyIndices().add(i);
 		}
 		
@@ -61,9 +66,11 @@ public class Tree02Cluster extends InstancingCluster{
 		FloatBuffer worldMatricesFloatBuffer = BufferUtil.createFloatBuffer(size);
 		FloatBuffer modelMatricesFloatBuffer = BufferUtil.createFloatBuffer(size);
 		
-		for(TransformsInstanced matrix : getInstancingTransforms()){
-			worldMatricesFloatBuffer.put(BufferUtil.createFlippedBuffer(matrix.getWorldMatrix()));
-			modelMatricesFloatBuffer.put(BufferUtil.createFlippedBuffer(matrix.getModelMatrix()));
+		for(Matrix4f matrix : getWorldMatrices()){
+			worldMatricesFloatBuffer.put(BufferUtil.createFlippedBuffer(matrix));
+		}
+		for(Matrix4f matrix : getModelMatrices()){
+			modelMatricesFloatBuffer.put(BufferUtil.createFlippedBuffer(matrix));
 		}
 		
 		getWorldMatricesBuffer().updateData(worldMatricesFloatBuffer, size);
@@ -71,14 +78,26 @@ public class Tree02Cluster extends InstancingCluster{
 		
 		for (InstancedDataObject dataObject : objects){
 			GameObject object = new GameObject();
-			MeshVAO vao = new MeshVAO((MeshVAO) dataObject.getVao());
-			vao.setInstances(instances);
-			Renderer renderer = new Renderer(dataObject.getRenderInfo().getShader(), vao);
-			object.setRenderInfo(dataObject.getRenderInfo());
+			MeshVBO vao = new MeshVBO((MeshVBO) dataObject.getVao());
+			vao.setInstances(new IntegerReference(instances));
+			
+			Renderer renderer = new Renderer(vao);
+			renderer.setRenderInfo(dataObject.getRenderInfo());
+			
+			Renderer shadowRenderer = new Renderer(vao);
+			shadowRenderer.setRenderInfo(dataObject.getShadowRenderInfo());
+			
 			object.addComponent("Material", dataObject.getMaterial());
-			object.addComponent("Renderer", renderer);
+			object.addComponent(Constants.RENDERER, renderer);
+			object.addComponent(Constants.SHADOW_RENDERER, shadowRenderer);
+
 			addChild(object);
 		}
+		
+		((MeshVBO) ((Renderer) ((GameObject) getChildren().get(0)).getComponent("Renderer")).getVbo()).setInstances(getHighPolyInstances());
+		((MeshVBO) ((Renderer) ((GameObject) getChildren().get(1)).getComponent("Renderer")).getVbo()).setInstances(getHighPolyInstances());
+		
+		((MeshVBO) ((Renderer) ((GameObject) getChildren().get(2)).getComponent("Renderer")).getVbo()).setInstances(getLowPolyInstances());
 	}
 	
 	@Override
@@ -88,17 +107,14 @@ public class Tree02Cluster extends InstancingCluster{
 		
 		int index = 0;
 		
-		for (TransformsInstanced transform : getInstancingTransforms()){
+		for (Matrix4f transform : getWorldMatrices()){
 			if (transform.getTranslation().sub(Camera.getInstance().getPosition()).length() < 220){
 				getHighPolyIndices().add(index);
 			}
+
 			index++;
 		}
-		
-		((MeshVAO) ((Renderer) ((GameObject) getChildren().get(0)).getComponent("Renderer")).getVao()).setInstances(getHighPolyIndices().size());
-		((MeshVAO) ((Renderer) ((GameObject) getChildren().get(1)).getComponent("Renderer")).getVao()).setInstances(getHighPolyIndices().size());
-		
-		((MeshVAO) ((Renderer) ((GameObject) getChildren().get(2)).getComponent("Renderer")).getVao()).setInstances(getLowPolyIndices().size());
+		getHighPolyInstances().setValue(getHighPolyIndices().size());
 	}
 
 	public void update()
@@ -107,27 +123,23 @@ public class Tree02Cluster extends InstancingCluster{
 		
 		if (RenderingEngine.isGrid()){
 			for (Node child : getChildren()){
-				((GameObject) child).getRenderInfo().setShader(InstancingGridShader.getInstance());
+				((Renderer) ((GameObject) child).getComponent("Renderer")).getRenderInfo().setShader(InstancingGridShader.getInstance());
 			}
 		}
 		else{
-			((GameObject) getChildren().get(0)).getRenderInfo().setShader(TreeTrunkShader.getInstance());
-			((GameObject) getChildren().get(1)).getRenderInfo().setShader(TreeLeavesShader.getInstance());
-			((GameObject) getChildren().get(2)).getRenderInfo().setShader(TreeBillboardShader.getInstance());
+			((Renderer) ((GameObject) getChildren().get(0)).getComponent("Renderer")).getRenderInfo().setShader(TreeTrunkShader.getInstance());
+			((Renderer) ((GameObject) getChildren().get(1)).getComponent("Renderer")).getRenderInfo().setShader(TreeLeavesShader.getInstance());
+			((Renderer) ((GameObject) getChildren().get(2)).getComponent("Renderer")).getRenderInfo().setShader(TreeBillboardShader.getInstance());
 		}
 	}
 	
 	public void renderShadows(){
 		
-		((MeshVAO) ((Renderer) ((GameObject) getChildren().get(0)).getComponent("Renderer")).getVao()).setInstances(0);
-		((MeshVAO) ((Renderer) ((GameObject) getChildren().get(1)).getComponent("Renderer")).getVao()).setInstances(0);
-	
-		((MeshVAO) ((Renderer) ((GameObject) getChildren().get(2)).getComponent("Renderer")).getVao()).setInstances(getLowPolyIndices().size());
+		getHighPolyInstances().setValue(0);
 	
 		super.renderShadows();
 	
-		((MeshVAO) ((Renderer) ((GameObject) getChildren().get(0)).getComponent("Renderer")).getVao()).setInstances(getHighPolyIndices().size());
-		((MeshVAO) ((Renderer) ((GameObject) getChildren().get(1)).getComponent("Renderer")).getVao()).setInstances(getHighPolyIndices().size());
+		getHighPolyInstances().setValue(getHighPolyIndices().size());
 	}
 	
 	public void render(){

@@ -2,17 +2,19 @@ package modules.shadowmapping.directionalLight;
 
 import static org.lwjgl.opengl.GL11.GL_NONE;
 import static org.lwjgl.opengl.GL42.glTexStorage3D;
+
+import engine.buffers.Framebuffer;
+import engine.configs.RenderConfig;
+import engine.configs.ShadowConfig;
+import engine.textures.Texture2DArray;
+import engine.utils.Constants;
+
 import static org.lwjgl.opengl.GL20.glDrawBuffers;
 import static org.lwjgl.opengl.GL30.GL_DEPTH_ATTACHMENT;
 import static org.lwjgl.opengl.GL30.GL_DEPTH_COMPONENT32F;
 import static org.lwjgl.opengl.GL30.GL_FRAMEBUFFER;
 import static org.lwjgl.opengl.GL30.GL_TEXTURE_2D_ARRAY;
 import static org.lwjgl.opengl.GL32.glFramebufferTexture;
-import engine.buffers.Framebuffer;
-import engine.configs.RenderConfig;
-import engine.configs.ShadowConfig;
-import engine.textures.Texture2DArray;
-import engine.utils.Constants;
 
 public class ShadowMaps {
 

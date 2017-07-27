@@ -4,17 +4,20 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 import java.nio.DoubleBuffer;
 import org.lwjgl.BufferUtils;
+
+import engine.components.model.Mesh;
 import engine.configs.Default;
 import engine.core.Input;
 import engine.core.Window;
-import static org.lwjgl.glfw.GLFW.glfwGetCursorPos;
-import engine.geometry.Mesh;
 import engine.math.Matrix4f;
 import engine.math.Quaternion;
 import engine.math.Vec2f;
-import engine.scenegraph.components.Transform;
+import engine.scene.Transform;
 import engine.shaders.gui.GuiShader;
 import engine.textures.Texture2D;
+
+import static org.lwjgl.glfw.GLFW.glfwGetCursorPos;
+
 import modules.gui.GUIElement;
 import modules.gui.GUIObjectLoader;
 import modules.gui.GUIVAO;

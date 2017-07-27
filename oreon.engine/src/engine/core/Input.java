@@ -20,9 +20,10 @@ import org.lwjgl.glfw.GLFWCursorPosCallback;
 import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWMouseButtonCallback;
 import org.lwjgl.glfw.GLFWScrollCallback;
-import org.lwjgl.glfw.GLFWFramebufferSizeCallback;
 
 import engine.math.Vec2f;
+
+import org.lwjgl.glfw.GLFWFramebufferSizeCallback;
 
 public class Input {
 	

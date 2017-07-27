@@ -7,11 +7,12 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashMap;
 
-import engine.geometry.Mesh;
-import engine.geometry.Vertex;
+import engine.components.model.Material;
+import engine.components.model.Mesh;
+import engine.components.model.Model;
+import engine.components.model.Vertex;
 import engine.math.Vec2f;
 import engine.math.Vec3f;
-import engine.scenegraph.components.Material;
 import engine.textures.Texture2D;
 import engine.utils.Util;
 
@@ -511,7 +512,8 @@ public class OBJLoader {
 		polygon.getIndices().toArray(objectArray);
 		int[] indexData = Util.toIntArray(objectArray);
 	
-		Model model = new Model(new Mesh(vertexData, indexData));
+		Model model = new Model();
+		model.setMesh(new Mesh(vertexData, indexData));
 		model.setMaterial(materials.get(polygon.getMaterial()));
 		
 		return model;

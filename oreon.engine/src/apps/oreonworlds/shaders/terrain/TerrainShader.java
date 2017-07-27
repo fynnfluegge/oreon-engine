@@ -16,15 +16,16 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE9;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE2;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE3;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
-import modules.terrain.TerrainConfiguration;
-import modules.terrain.TerrainNode;
-import modules.water.UnderWater;
+
 import engine.core.RenderingEngine;
 import engine.math.Vec2f;
-import engine.scenegraph.GameObject;
+import engine.scene.GameObject;
 import engine.shaders.Shader;
 import engine.utils.Constants;
 import engine.utils.ResourceLoader;
+import modules.terrain.TerrainConfiguration;
+import modules.terrain.TerrainNode;
+import modules.water.UnderWater;
 
 public class TerrainShader extends Shader{
 	

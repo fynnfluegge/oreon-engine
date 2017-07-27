@@ -9,6 +9,7 @@ import engine.math.Vec3f;
 import engine.utils.BufferUtil;
 import engine.utils.Constants;
 import engine.utils.Util;
+
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_W;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_S;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_A;
@@ -133,12 +134,11 @@ public class Camera {
 				rotYstride = Math.abs(rotYamt * 0.1f);
 			}
 			
-			if (rotYamt != 0){
+			if (rotYamt != 0 && rotYstride != 0){
 				
 				// up-rotation
 				if (rotYamt < 0){
 					rotateX(-rotYstride * mouseSensitivity);
-					rotYstride *= 0.98f;
 					rotYamt += rotYstride;
 					if (rotYamt > 0)
 						rotYamt = 0;
@@ -146,10 +146,16 @@ public class Camera {
 				// down-rotation
 				if (rotYamt > 0){
 					rotateX(rotYstride * mouseSensitivity);
-					rotYstride *= 0.98f;
 					rotYamt -= rotYstride;
 					if (rotYamt < 0)
 						rotYamt = 0;
+				}
+				
+				if (rotYamt == 0){
+					rotYstride *= 0.99;
+					rotateX(rotYstride * mouseSensitivity);
+					if (rotYstride < 0.0001f)
+						rotYstride = 0;
 				}
 			}
 			
@@ -159,7 +165,7 @@ public class Camera {
 				rotXstride = Math.abs(rotXamt * 0.1f);
 			}
 			
-			if (rotXamt != 0){
+			if (rotXamt != 0 && rotXstride != 0){
 				
 				// up-rotation
 				if (rotXamt < 0){
@@ -170,12 +176,19 @@ public class Camera {
 						rotXamt = 0;
 				}
 				// down-rotation
-				else if (rotXamt > 0){
+				if (rotXamt > 0){
 					rotateY(-rotXstride * mouseSensitivity);
 					rotXstride *= 0.98f;
 					rotXamt -= rotXstride;
 					if (rotXamt < 0)
 						rotXamt = 0;
+				}
+				
+				if (rotXamt == 0){
+					rotXstride *= 0.99;
+					rotateX(rotXstride * mouseSensitivity);
+					if (rotYstride < 0.0001f)
+						rotYstride = 0;
 				}
 			}
 			

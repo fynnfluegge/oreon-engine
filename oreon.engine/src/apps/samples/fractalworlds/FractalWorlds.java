@@ -19,7 +19,6 @@ public class FractalWorlds {
 				TerrainGridShader.getInstance(),
 				TerrainShadowShader.getInstance());
 		game.getScenegraph().addObject(new SkySphere());
-		game.getScenegraph().getRoot().addChild(new TestObject());
 		game.launch();
 	}
 }

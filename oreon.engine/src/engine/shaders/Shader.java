@@ -17,7 +17,7 @@ import engine.math.Matrix4f;
 import engine.math.Quaternion;
 import engine.math.Vec2f;
 import engine.math.Vec3f;
-import engine.scenegraph.GameObject;
+import engine.scene.GameObject;
 import engine.textures.Texture2D;
 import engine.utils.BufferUtil;
 

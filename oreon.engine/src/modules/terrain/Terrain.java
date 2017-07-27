@@ -6,7 +6,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import engine.core.Camera;
 import engine.math.Vec2f;
-import engine.scenegraph.Node;
+import engine.scene.Node;
 import engine.shaders.Shader;
 import engine.utils.Constants;
 

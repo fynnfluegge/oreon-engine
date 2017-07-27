@@ -1,7 +1,7 @@
 package engine.shaders.basic;
 
 import engine.math.Vec3f;
-import engine.scenegraph.GameObject;
+import engine.scene.GameObject;
 import engine.shaders.Shader;
 import engine.utils.ResourceLoader;
 

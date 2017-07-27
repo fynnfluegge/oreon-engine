@@ -8,8 +8,8 @@ import java.util.Random;
 
 import javax.imageio.ImageIO;
 
-import engine.geometry.Mesh;
-import engine.geometry.Vertex;
+import engine.components.model.Mesh;
+import engine.components.model.Vertex;
 import engine.math.Vec2f;
 
 public class ProceduralTexturing{

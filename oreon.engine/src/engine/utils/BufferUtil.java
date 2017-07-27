@@ -6,12 +6,12 @@ import java.nio.IntBuffer;
 
 import org.lwjgl.BufferUtils;
 
-import engine.geometry.Particle;
-import engine.geometry.Vertex;
+import engine.components.model.Vertex;
 import engine.math.Matrix4f;
 import engine.math.Quaternion;
 import engine.math.Vec2f;
 import engine.math.Vec3f;
+import modules.particleSystem.Particle;
 
 public class BufferUtil {
 

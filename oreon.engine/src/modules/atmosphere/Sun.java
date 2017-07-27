@@ -1,17 +1,17 @@
 package modules.atmosphere;
 
-import engine.buffers.PointVAO3D;
+import engine.buffers.PointVBO3D;
+import engine.components.light.DirectionalLight;
+import engine.components.light.Light;
+import engine.components.light.LightHandler;
+import engine.components.model.Material;
+import engine.components.renderer.RenderInfo;
+import engine.components.renderer.Renderer;
 import engine.configs.Default;
 import engine.core.RenderingEngine;
 import engine.math.Vec3f;
-import engine.scenegraph.GameObject;
-import engine.scenegraph.components.Material;
-import engine.scenegraph.components.RenderInfo;
-import engine.scenegraph.components.Renderer;
+import engine.scene.GameObject;
 import engine.textures.Texture2D;
-import modules.lighting.DirectionalLight;
-import modules.lighting.Light;
-import modules.lighting.LightHandler;
 
 public class Sun extends GameObject{
 	
@@ -22,7 +22,7 @@ public class Sun extends GameObject{
 		Vec3f[] array = new Vec3f[1];
 		array[0] = origin;
 		
-		PointVAO3D buffer = new PointVAO3D();
+		PointVBO3D buffer = new PointVBO3D();
 		buffer.addData(array);
 		
 		Material material1 = new Material();
@@ -35,8 +35,8 @@ public class Sun extends GameObject{
 		material2.getDiffusemap().bind();
 		material2.getDiffusemap().trilinearFilter();
 		
-		setRenderInfo(new RenderInfo(new Default(),SunShader.getInstance()));
-		Renderer renderer = new Renderer(SunShader.getInstance(), buffer);
+		Renderer renderer = new Renderer(buffer);
+		renderer.setRenderInfo(new RenderInfo(new Default(),SunShader.getInstance()));
 		addComponent("Renderer", renderer);
 		addComponent("Material1", material1);
 		addComponent("Material2", material2);

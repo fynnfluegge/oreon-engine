@@ -3,7 +3,7 @@ package apps.oreonworlds.shaders.rocks;
 
 import java.util.List;
 
-import engine.scenegraph.GameObject;
+import engine.scene.GameObject;
 import engine.shaders.Shader;
 import engine.utils.Constants;
 import engine.utils.ResourceLoader;

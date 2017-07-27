@@ -2,15 +2,16 @@ package modules.gui.elements;
 
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
-import modules.gui.GUIElement;
-import modules.gui.GUIVAO;
+
 import engine.configs.Default;
 import engine.core.Window;
-import engine.geometry.Geometrics;
 import engine.math.Matrix4f;
-import engine.scenegraph.components.Transform;
+import engine.scene.Transform;
 import engine.shaders.gui.GuiShader;
 import engine.textures.Texture2D;
+import engine.utils.MeshGenerator;
+import modules.gui.GUIElement;
+import modules.gui.GUIVAO;
 
 public class TexturePanel extends GUIElement{
 	
@@ -29,7 +30,7 @@ public class TexturePanel extends GUIElement{
 		setShader(GuiShader.getInstance());
 		setConfig(new Default());
 		setVao(new GUIVAO());
-		getVao().addData(Geometrics.Quad2D());
+		getVao().addData(MeshGenerator.Quad2D());
 	}
 	
 	

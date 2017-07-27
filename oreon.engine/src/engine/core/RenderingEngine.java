@@ -4,26 +4,26 @@ import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glViewport;
 
+import engine.components.light.DirectionalLight;
+import engine.components.light.LightHandler;
+import engine.configs.Default;
+import engine.math.Quaternion;
+import engine.scene.Scenegraph;
+import engine.textures.Texture2D;
+import engine.utils.Constants;
 import modules.gpgpu.ContrastController;
 import modules.gui.GUI;
 import modules.gui.elements.TexturePanel;
 import modules.instancing.InstancingObjectHandler;
-import modules.lighting.DirectionalLight;
-import modules.lighting.LightHandler;
 import modules.mousePicking.TerrainPicking;
-import modules.postProcessingEffects.DepthOfFieldBlur;
 import modules.postProcessingEffects.Bloom;
+import modules.postProcessingEffects.DepthOfFieldBlur;
 import modules.postProcessingEffects.MotionBlur;
 import modules.postProcessingEffects.SunLightScattering;
 import modules.postProcessingEffects.lensFlare.LensFlare;
 import modules.shadowmapping.directionalLight.ShadowMaps;
 import modules.terrain.Terrain;
 import modules.water.UnderWater;
-import engine.configs.Default;
-import engine.math.Quaternion;
-import engine.scenegraph.Scenegraph;
-import engine.textures.Texture2D;
-import engine.utils.Constants;
 
 public class RenderingEngine {
 

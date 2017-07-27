@@ -1,6 +1,6 @@
 package modules.atmosphere;
 
-import engine.scenegraph.Node;
+import engine.scene.Node;
 import engine.utils.Constants;
 
 public class SkySphere extends Node{

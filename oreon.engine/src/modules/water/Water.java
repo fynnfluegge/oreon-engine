@@ -7,27 +7,27 @@ import java.nio.ByteBuffer;
 
 import org.lwjgl.glfw.GLFW;
 
-import modules.gpgpu.NormalMapRenderer;
-import modules.terrain.Terrain;
-import modules.water.fft.OceanFFT;
 import engine.buffers.Framebuffer;
-import engine.buffers.PatchVAO;
+import engine.buffers.PatchVBO;
+import engine.components.renderer.RenderInfo;
+import engine.components.renderer.Renderer;
 import engine.configs.WaterConfig;
 import engine.core.Camera;
 import engine.core.Input;
-import engine.core.Window;
 import engine.core.RenderingEngine;
+import engine.core.Window;
 import engine.math.Quaternion;
 import engine.math.Vec2f;
-import engine.scenegraph.GameObject;
-import engine.scenegraph.Scenegraph;
-import engine.scenegraph.components.RenderInfo;
-import engine.scenegraph.components.Renderer;
+import engine.scene.GameObject;
+import engine.scene.Scenegraph;
 import engine.shaders.water.OceanBRDFShader;
 import engine.shaders.water.OceanGridShader;
 import engine.textures.Texture2D;
 import engine.utils.Constants;
 import engine.utils.Util;
+import modules.gpgpu.NormalMapRenderer;
+import modules.terrain.Terrain;
+import modules.water.fft.OceanFFT;
 
 import static org.lwjgl.opengl.GL11.glTexImage2D;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
@@ -82,13 +82,13 @@ public class Water extends GameObject{
 
 	public Water(int patches, int fftResolution)
 	{		
-		PatchVAO meshBuffer = new PatchVAO();
+		PatchVBO meshBuffer = new PatchVBO();
 		meshBuffer.addData(generatePatch2D4x4(patches),16);
 		
 		config = new WaterConfig();
 		
-		setRenderInfo(new RenderInfo(config, OceanBRDFShader.getInstance()));
-		Renderer renderer = new Renderer(OceanBRDFShader.getInstance(), meshBuffer);
+		Renderer renderer = new Renderer(meshBuffer);
+		renderer.setRenderInfo(new RenderInfo(config, OceanBRDFShader.getInstance()));
 		
 		dudv = new Texture2D("./res/textures/water/dudv/dudv1.jpg");
 		dudv.bind();
@@ -138,18 +138,16 @@ public class Water extends GameObject{
 		setCameraUnderwater(Camera.getInstance().getPosition().getY() < (getTransform().getTranslation().getY())); 
 		if (Input.getInstance().isKeyHold(GLFW.GLFW_KEY_G))
 		{
-			getRenderInfo().setShader(OceanGridShader.getInstance());
+			((Renderer) getComponent("Renderer")).getRenderInfo().setShader(OceanGridShader.getInstance());
 		}
 		else
 		{
-			getRenderInfo().setShader(OceanBRDFShader.getInstance());
+			((Renderer) getComponent("Renderer")).getRenderInfo().setShader(OceanBRDFShader.getInstance());
 		}
-		getComponents().get("Renderer").setShader(getRenderInfo().getShader());
 	}
 	
 	public void render()
 	{
-		// TODO underwater clipping
 		if (!isCameraUnderwater()){
 			glEnable(GL_CLIP_DISTANCE6);
 			RenderingEngine.setCameraUnderWater(false);
@@ -174,6 +172,7 @@ public class Water extends GameObject{
 //				(scenegraph.getTransform().getTranslation().getY() - RenderingEngine.getClipplane().getW()));
 			
 		if (scenegraph.terrainExists()){
+				
 				Terrain terrain = (Terrain) scenegraph.getTerrain();
 				terrain.getLowPolyConfiguration().setScaleY(terrain.getLowPolyConfiguration().getScaleY() * -1f);
 				terrain.getLowPolyConfiguration().setWaterReflectionShift((int) (getClipplane().getW() * 2f));
@@ -184,6 +183,7 @@ public class Water extends GameObject{
 		//render reflection to texture
 
 		glViewport(0,0,Window.getInstance().getWidth()/2, Window.getInstance().getHeight()/2);
+		
 		RenderingEngine.setWaterReflection(true);
 		
 		this.getReflectionFBO().bind();
@@ -244,9 +244,8 @@ public class Water extends GameObject{
 		normalmapRenderer.render(fft.getDy());
 		
 		Window.getInstance().getMultisampledFbo().bind();
-		getRenderInfo().getConfig().enable();
+		
 		getComponents().get("Renderer").render();
-		getRenderInfo().getConfig().disable();
 		// glFinish() important, to prevent conflicts with following compute shaders
 		glFinish();
 		Window.getInstance().getMultisampledFbo().unbind();

@@ -2,16 +2,16 @@ package apps.oreonworlds.assets.plants;
 
 import apps.oreonworlds.shaders.plants.GrassShader;
 import apps.oreonworlds.shaders.plants.GrassShadowShader;
-import engine.buffers.MeshVAO;
+import engine.buffers.MeshVBO;
+import engine.components.model.Model;
+import engine.components.renderer.RenderInfo;
 import engine.configs.CullFaceDisable;
 import engine.core.Camera;
 import engine.math.Vec3f;
-import engine.scenegraph.components.RenderInfo;
 import modules.instancing.InstancedDataObject;
 import modules.instancing.InstancingCluster;
 import modules.instancing.InstancingObject;
 import modules.instancing.InstancingObjectHandler;
-import modules.modelLoader.obj.Model;
 import modules.modelLoader.obj.OBJLoader;
 
 public class Plant01ClusterGroup extends InstancingObject{
@@ -23,13 +23,14 @@ public class Plant01ClusterGroup extends InstancingObject{
 		for (Model model : models){
 			
 			InstancedDataObject object = new InstancedDataObject();
-			MeshVAO meshBuffer = new MeshVAO();
+			MeshVBO meshBuffer = new MeshVBO();
 			model.getMesh().setTangentSpace(false);
 			model.getMesh().setInstanced(true);
 			
 			meshBuffer.addData(model.getMesh());
 
-			object.setRenderInfo(new RenderInfo(new CullFaceDisable(), GrassShader.getInstance(), GrassShadowShader.getInstance()));
+			object.setRenderInfo(new RenderInfo(new CullFaceDisable(), GrassShader.getInstance()));
+			object.setShadowRenderInfo(new RenderInfo(new CullFaceDisable(), GrassShadowShader.getInstance()));
 				
 			object.setMaterial(model.getMaterial());
 			object.setVao(meshBuffer);
@@ -57,9 +58,9 @@ public class Plant01ClusterGroup extends InstancingObject{
 				InstancingObjectHandler.getInstance().getLock().unlock();
 			}
 			
-			getChildren().clear();
-
 			synchronized (getChildren()) {
+				
+				getChildren().clear();
 		
 				for (InstancingCluster cluster : getClusters()){
 					if (cluster.getCenter().sub(Camera.getInstance().getPosition()).length() < 600){

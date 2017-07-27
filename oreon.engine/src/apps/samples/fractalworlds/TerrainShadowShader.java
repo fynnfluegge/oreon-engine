@@ -2,13 +2,14 @@ package apps.samples.fractalworlds;
 
 import static org.lwjgl.opengl.GL13.GL_TEXTURE15;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
-import modules.terrain.TerrainConfiguration;
-import modules.terrain.TerrainNode;
+
 import engine.math.Vec2f;
-import engine.scenegraph.GameObject;
+import engine.scene.GameObject;
 import engine.shaders.Shader;
 import engine.utils.Constants;
 import engine.utils.ResourceLoader;
+import modules.terrain.TerrainConfiguration;
+import modules.terrain.TerrainNode;
 
 public class TerrainShadowShader extends Shader{
 	

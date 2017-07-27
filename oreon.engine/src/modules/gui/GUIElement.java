@@ -3,7 +3,7 @@ package modules.gui;
 import engine.configs.RenderConfig;
 import engine.math.Matrix4f;
 import engine.math.Vec2f;
-import engine.scenegraph.components.Transform;
+import engine.scene.Transform;
 import engine.shaders.Shader;
 
 public abstract class GUIElement {

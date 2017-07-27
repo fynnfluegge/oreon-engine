@@ -10,15 +10,16 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE6;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE7;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE8;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
-import modules.lighting.DirectionalLight;
-import modules.water.UnderWater;
-import modules.water.Water;
+
+import engine.components.light.DirectionalLight;
 import engine.core.Camera;
 import engine.core.RenderingEngine;
 import engine.core.Window;
-import engine.scenegraph.GameObject;
+import engine.scene.GameObject;
 import engine.shaders.Shader;
 import engine.utils.ResourceLoader;
+import modules.water.UnderWater;
+import modules.water.Water;
 
 public class OceanBRDFShader extends Shader{
 

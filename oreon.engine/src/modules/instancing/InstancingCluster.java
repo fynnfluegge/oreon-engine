@@ -4,19 +4,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 import engine.buffers.UBO;
+import engine.math.Matrix4f;
 import engine.math.Vec3f;
-import engine.scenegraph.Node;
-import engine.scenegraph.components.TransformsInstanced;
+import engine.scene.Node;
+import engine.utils.IntegerReference;
 
 public abstract class InstancingCluster extends Node{
 	
-	private List<TransformsInstanced> instancingTransforms = new ArrayList<TransformsInstanced>();
+	private List<Matrix4f> worldMatrices = new ArrayList<Matrix4f>();
+	private List<Matrix4f> modelMatrices = new ArrayList<Matrix4f>();
 	
 	private UBO modelMatricesBuffer;
 	private UBO worldMatricesBuffer;
 	
 	private List<Integer> highPolyIndices = new ArrayList<Integer>();
 	private List<Integer> lowPolyIndices = new ArrayList<Integer>();
+	
+	private IntegerReference highPolyInstances;
+	private IntegerReference lowPolyInstances;
 	
 	private Vec3f center;
 	
@@ -41,12 +46,12 @@ public abstract class InstancingCluster extends Node{
 		this.lowPolyIndices = lowPolyIndices;
 	}
 
-	public List<TransformsInstanced> getInstancingTransforms() {
-		return instancingTransforms;
+	public List<Matrix4f> getWorldMatrices() {
+		return worldMatrices;
 	}
 
-	public void setInstancingTransforms(List<TransformsInstanced> transforms) {
-		this.instancingTransforms = transforms;
+	public void setWorldMatrices(List<Matrix4f> matrices) {
+		this.worldMatrices = matrices;
 	}
 
 	public UBO getModelMatricesBuffer() {
@@ -71,5 +76,29 @@ public abstract class InstancingCluster extends Node{
 
 	public void setCenter(Vec3f center) {
 		this.center = center;
+	}
+
+	public IntegerReference getHighPolyInstances() {
+		return highPolyInstances;
+	}
+
+	public void setHighPolyInstances(IntegerReference instances) {
+		this.highPolyInstances = instances;
+	}
+
+	public IntegerReference getLowPolyInstances() {
+		return lowPolyInstances;
+	}
+
+	public void setLowPolyInstances(IntegerReference lowPolyInstances) {
+		this.lowPolyInstances = lowPolyInstances;
+	}
+
+	public List<Matrix4f> getModelMatrices() {
+		return modelMatrices;
+	}
+
+	public void setModelMatrices(List<Matrix4f> modelMatrices) {
+		this.modelMatrices = modelMatrices;
 	}
 }

@@ -5,19 +5,19 @@ import apps.oreonworlds.shaders.plants.TreeBillboardShadowShader;
 import apps.oreonworlds.shaders.plants.TreeLeavesShader;
 import apps.oreonworlds.shaders.plants.TreeShadowShader;
 import apps.oreonworlds.shaders.plants.TreeTrunkShader;
-import engine.buffers.MeshVAO;
+import engine.buffers.MeshVBO;
+import engine.components.model.Model;
+import engine.components.model.Vertex;
+import engine.components.renderer.RenderInfo;
 import engine.configs.CullFaceDisable;
 import engine.configs.Default;
 import engine.core.Camera;
-import engine.geometry.Vertex;
 import engine.math.Vec3f;
-import engine.scenegraph.components.RenderInfo;
 import engine.utils.Util;
 import modules.instancing.InstancedDataObject;
 import modules.instancing.InstancingCluster;
 import modules.instancing.InstancingObject;
 import modules.instancing.InstancingObjectHandler;
-import modules.modelLoader.obj.Model;
 import modules.modelLoader.obj.OBJLoader;
 
 public class Tree01ClusterGroup extends InstancingObject{
@@ -30,7 +30,7 @@ public class Tree01ClusterGroup extends InstancingObject{
 		for (Model model : models){
 			
 			InstancedDataObject object = new InstancedDataObject();
-			MeshVAO meshBuffer = new MeshVAO();
+			MeshVBO meshBuffer = new MeshVBO();
 			
 			if (model.equals(models[0])){
 				model.getMesh().setTangentSpace(true);
@@ -47,11 +47,15 @@ public class Tree01ClusterGroup extends InstancingObject{
 			
 			meshBuffer.addData(model.getMesh());
 
-			if (model.equals(models[0]))
-				object.setRenderInfo(new RenderInfo(new Default(), TreeTrunkShader.getInstance(), TreeShadowShader.getInstance()));
-			else
-				object.setRenderInfo(new RenderInfo(new Default(), TreeLeavesShader.getInstance(), TreeShadowShader.getInstance()));
-							
+			if (model.equals(models[0])){
+				object.setRenderInfo(new RenderInfo(new Default(), TreeTrunkShader.getInstance()));
+				object.setShadowRenderInfo(new RenderInfo(new Default(), TreeShadowShader.getInstance()));
+			}
+			else{
+				object.setRenderInfo(new RenderInfo(new Default(), TreeLeavesShader.getInstance()));
+				object.setShadowRenderInfo(new RenderInfo(new Default(), TreeShadowShader.getInstance()));
+			}
+			
 			object.setMaterial(model.getMaterial());
 			object.setVao(meshBuffer);
 			getObjectData().add(object);
@@ -59,7 +63,7 @@ public class Tree01ClusterGroup extends InstancingObject{
 		
 		for (Model billboard : billboards){	
 			InstancedDataObject object = new InstancedDataObject();
-			MeshVAO meshBuffer = new MeshVAO();
+			MeshVBO meshBuffer = new MeshVBO();
 			
 			billboard.getMesh().setTangentSpace(false);
 			billboard.getMesh().setInstanced(true);
@@ -72,7 +76,8 @@ public class Tree01ClusterGroup extends InstancingObject{
 			
 			meshBuffer.addData(billboard.getMesh());
 	
-			object.setRenderInfo(new RenderInfo(new CullFaceDisable(), TreeBillboardShader.getInstance(), TreeBillboardShadowShader.getInstance()));
+			object.setRenderInfo(new RenderInfo(new CullFaceDisable(), TreeBillboardShader.getInstance()));
+			object.setShadowRenderInfo(new RenderInfo(new CullFaceDisable(), TreeBillboardShadowShader.getInstance()));
 			
 			object.setMaterial(billboard.getMaterial());
 			object.setVao(meshBuffer);
@@ -108,9 +113,9 @@ public class Tree01ClusterGroup extends InstancingObject{
 				InstancingObjectHandler.getInstance().getLock().unlock();
 			}
 			
-			getChildren().clear();
-			
 			synchronized (getChildren()) {
+				
+				getChildren().clear();
 				
 				for (InstancingCluster cluster : getClusters()){
 					if (cluster.getCenter().sub(Camera.getInstance().getPosition()).length() < 2000){

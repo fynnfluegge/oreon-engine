@@ -17,11 +17,17 @@ public class Constants {
 													0.01f,0.04f,
 													0.02f,0.06f,
 													0.05f,0.16f};
+	
 	public static final int TERRAIN_FRACTALS_RESOLUTION = 512;
 	public static final int PSSM_SHADOWMAP_RESOLUTION = 4096;
-	public static final float[] PSSM_SHADOWMAPARRAY_INDICES = {0.0f,1f,2f,3f,4f,5f};
 	public static final int MULTISAMPLES = 8;
 	
+	// Component keys
+	public static final String RENDERER = "Renderer";
+	public static final String SHADOW_RENDERER = "ShadowRenderer";
+	
+	
+	// Motion Blur settings
 	
 	// Global Uniform Block Bindings
 	public static final int CameraUniformBlockBinding = 51;

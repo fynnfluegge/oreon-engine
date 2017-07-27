@@ -2,14 +2,14 @@ package apps.oreonworlds.assets.rocks;
 
 import apps.oreonworlds.shaders.rocks.RockHighPolyShader;
 import apps.oreonworlds.shaders.rocks.RockShadowShader;
-import engine.buffers.MeshVAO;
+import engine.buffers.MeshVBO;
+import engine.components.model.Model;
+import engine.components.renderer.RenderInfo;
 import engine.configs.Default;
 import engine.math.Vec3f;
-import engine.scenegraph.components.RenderInfo;
 import engine.utils.Util;
 import modules.instancing.InstancedDataObject;
 import modules.instancing.InstancingObject;
-import modules.modelLoader.obj.Model;
 import modules.modelLoader.obj.OBJLoader;
 
 public class Rock02ClusterGroup extends InstancingObject{
@@ -21,14 +21,15 @@ public class Rock02ClusterGroup extends InstancingObject{
 		for (Model model : models){
 			
 			InstancedDataObject object = new InstancedDataObject();
-			MeshVAO meshBuffer = new MeshVAO();
+			MeshVBO meshBuffer = new MeshVBO();
 			model.getMesh().setTangentSpace(true);
 			Util.generateTangentsBitangents(model.getMesh());
 			model.getMesh().setInstanced(true);
 			
 			meshBuffer.addData(model.getMesh());
 
-			object.setRenderInfo(new RenderInfo(new Default(),RockHighPolyShader.getInstance(), RockShadowShader.getInstance()));
+			object.setRenderInfo(new RenderInfo(new Default(),RockHighPolyShader.getInstance()));
+			object.setShadowRenderInfo(new RenderInfo(new Default(), RockShadowShader.getInstance()));
 				
 			object.setMaterial(model.getMaterial());
 			object.setVao(meshBuffer);
@@ -38,8 +39,5 @@ public class Rock02ClusterGroup extends InstancingObject{
 		addChild(new Rock02Cluster(10,new Vec3f(954,0,-30),getObjectData()));
 	}
 
-	public void run() {
-		// TODO Auto-generated method stub
-		
-	}
+	public void run() {}
 }

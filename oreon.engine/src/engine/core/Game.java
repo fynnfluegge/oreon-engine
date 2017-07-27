@@ -1,6 +1,6 @@
 package engine.core;
 
-import engine.scenegraph.Scenegraph;
+import engine.scene.Scenegraph;
 import modules.gui.GUI;
 
 public class Game {

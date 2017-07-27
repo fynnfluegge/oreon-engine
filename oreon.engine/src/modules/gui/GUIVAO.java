@@ -18,7 +18,7 @@ import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
-import engine.geometry.Mesh;
+import engine.components.model.Mesh;
 import engine.math.Vec2f;
 import engine.utils.BufferUtil;
 

@@ -15,9 +15,6 @@ import java.nio.FloatBuffer;
 
 /**
  * Uniform Buffer Object
- * 
- * @author Fynn
- *
  */
 
 public class UBO {

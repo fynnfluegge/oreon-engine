@@ -18,6 +18,7 @@ import static org.lwjgl.opengl.GL32.glFramebufferTexture;
 import java.nio.IntBuffer;
 
 import engine.core.Window;
+
 import static org.lwjgl.opengl.GL30.glGenFramebuffers;
 import static org.lwjgl.opengl.GL30.glBindFramebuffer;
 import static org.lwjgl.opengl.GL30.GL_FRAMEBUFFER;

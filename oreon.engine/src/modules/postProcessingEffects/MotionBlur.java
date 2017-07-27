@@ -9,6 +9,7 @@ import static org.lwjgl.opengl.GL30.GL_RGBA32F;
 import static org.lwjgl.opengl.GL42.glBindImageTexture;
 import static org.lwjgl.opengl.GL42.glTexStorage2D;
 import static org.lwjgl.opengl.GL43.glDispatchCompute;
+
 import engine.core.Camera;
 import engine.core.Window;
 import engine.shaders.motionblur.MotionBlurShader;
