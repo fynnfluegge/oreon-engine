@@ -53,7 +53,11 @@ public class Camera {
 	private float rotYamt = 0;
 	private float rotXstride;
 	private float rotXamt = 0;
-	private float mouseSensitivity = 0.1f;
+	private float mouseSensitivity = 0.08f;
+	private boolean isUpRotation;
+	private boolean isDownRotation;	
+	private boolean isLeftRotation;	
+	private boolean isRightRotation;	
 	
 	private Quaternion[] frustumPlanes = new Quaternion[6];
 	private Vec3f[] frustumCorners = new Vec3f[8];
@@ -134,10 +138,12 @@ public class Camera {
 				rotYstride = Math.abs(rotYamt * 0.1f);
 			}
 			
-			if (rotYamt != 0 && rotYstride != 0){
+			if (rotYamt != 0 || rotYstride != 0){
 				
 				// up-rotation
 				if (rotYamt < 0){
+					isUpRotation = true;
+					isDownRotation = false;
 					rotateX(-rotYstride * mouseSensitivity);
 					rotYamt += rotYstride;
 					if (rotYamt > 0)
@@ -145,16 +151,21 @@ public class Camera {
 				}
 				// down-rotation
 				if (rotYamt > 0){
+					isUpRotation = false;
+					isDownRotation = true;
 					rotateX(rotYstride * mouseSensitivity);
 					rotYamt -= rotYstride;
 					if (rotYamt < 0)
 						rotYamt = 0;
 				}
-				
+				// smooth-stop
 				if (rotYamt == 0){
-					rotYstride *= 0.99;
-					rotateX(rotYstride * mouseSensitivity);
-					if (rotYstride < 0.0001f)
+					rotYstride *= 0.95;
+					if (isUpRotation)
+						rotateX(-rotYstride * mouseSensitivity);
+					if (isDownRotation)
+						rotateX(rotYstride * mouseSensitivity);
+					if (rotYstride < 0.001f)
 						rotYstride = 0;
 				}
 			}
@@ -165,30 +176,35 @@ public class Camera {
 				rotXstride = Math.abs(rotXamt * 0.1f);
 			}
 			
-			if (rotXamt != 0 && rotXstride != 0){
+			if (rotXamt != 0 || rotXstride != 0){
 				
-				// up-rotation
+				// right-rotation
 				if (rotXamt < 0){
+					isRightRotation = true;
+					isLeftRotation = false;
 					rotateY(rotXstride * mouseSensitivity);
-					rotXstride *= 0.98f;
 					rotXamt += rotXstride;
 					if (rotXamt > 0)
 						rotXamt = 0;
 				}
-				// down-rotation
+				// left-rotation
 				if (rotXamt > 0){
+					isRightRotation = false;
+					isLeftRotation = true;
 					rotateY(-rotXstride * mouseSensitivity);
-					rotXstride *= 0.98f;
 					rotXamt -= rotXstride;
 					if (rotXamt < 0)
 						rotXamt = 0;
 				}
-				
+				// smooth-stop
 				if (rotXamt == 0){
-					rotXstride *= 0.99;
-					rotateX(rotXstride * mouseSensitivity);
-					if (rotYstride < 0.0001f)
-						rotYstride = 0;
+					rotXstride *= 0.96;
+					if (isRightRotation)
+						rotateY(rotXstride * mouseSensitivity);
+					if (isLeftRotation)
+						rotateY(-rotXstride * mouseSensitivity);
+					if (rotXstride < 0.001f)
+						rotXstride = 0;
 				}
 			}
 			
