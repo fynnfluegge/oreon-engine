@@ -1,4 +1,4 @@
-package org.oreon.demo.samples.ocean;
+package org.oreon.demo.ocean;
 
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;

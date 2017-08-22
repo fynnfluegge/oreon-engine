@@ -1,4 +1,4 @@
-package org.oreon.demo.samples.ocean;
+package org.oreon.demo.ocean;
 
 import org.oreon.core.math.Quaternion;
 import org.oreon.core.utils.Constants;

@@ -26,10 +26,10 @@ vec4 gaussRND()
 {	
 	vec2 texCoord = vec2(gl_GlobalInvocationID.xy)/float(N);
 	
-	float noise00 = clamp(texture2D(noise_r0, texCoord).r, 0.001, 1.0);
-	float noise01 = clamp(texture2D(noise_i0, texCoord).r, 0.001, 1.0);
-	float noise02 = clamp(texture2D(noise_r1, texCoord).r, 0.001, 1.0);
-	float noise03 = clamp(texture2D(noise_i1, texCoord).r, 0.001, 1.0);
+	float noise00 = clamp(texture(noise_r0, texCoord).r, 0.001, 1.0);
+	float noise01 = clamp(texture(noise_i0, texCoord).r, 0.001, 1.0);
+	float noise02 = clamp(texture(noise_r1, texCoord).r, 0.001, 1.0);
+	float noise03 = clamp(texture(noise_i1, texCoord).r, 0.001, 1.0);
 	
 	float u0 = 2.0*M_PI*noise00;
 	float v0 = sqrt(-2.0 * log(noise01));
