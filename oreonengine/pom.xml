@@ -1,21 +1,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.oreon</groupId>
-  <artifactId>opengl-engine</artifactId>
+  <artifactId>oe-main</artifactId>
+  <packaging>pom</packaging>
   <version>2.1.0</version>
-  <build>
-    <sourceDirectory>src</sourceDirectory>
-    <plugins>
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.3</version>
-        <configuration>
-          <source/>
-          <target/>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
   
   <properties>
 	<maven.compiler.source>1.8</maven.compiler.source>
@@ -139,5 +127,12 @@
 		</properties>
 	</profile>
   </profiles>
+  
+  <modules>
+  		<module>oe-core</module>
+  		<module>oe-demo</module>
+  		<module>oe-core-opengl</module>
+  		<module>oe-system-desktop</module>
+  </modules>
 
 </project>
