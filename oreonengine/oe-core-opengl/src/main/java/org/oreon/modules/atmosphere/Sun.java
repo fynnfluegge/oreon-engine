@@ -47,7 +47,7 @@ public class Sun extends GameObject{
 	}
 	
 	public void render() {
-		if (!CoreSystem.getInstance().getRenderingEngine().isCameraUnderWater()){
+		if (!CoreSystem.getInstance().getRenderingEngine().isCameraUnderWater() && !CoreSystem.getInstance().getRenderingEngine().isGrid()){
 			super.render();
 		}
 	}

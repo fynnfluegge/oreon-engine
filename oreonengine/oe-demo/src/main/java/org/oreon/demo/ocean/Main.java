@@ -4,7 +4,6 @@ import org.oreon.core.gl.scene.GLCamera;
 import org.oreon.core.system.CoreEngine;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.system.Window;
-import org.oreon.demo.oreonworlds.gui.GUI;
 import org.oreon.modules.atmosphere.SkySphere;
 import org.oreon.modules.atmosphere.Sun;
 import org.oreon.system.desktop.GLFWInput;

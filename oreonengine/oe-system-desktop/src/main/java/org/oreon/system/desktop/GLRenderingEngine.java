@@ -16,6 +16,7 @@ import static org.lwjgl.opengl.GL30.GL_RGBA16F;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
+import org.lwjgl.glfw.GLFW;
 import org.oreon.core.buffers.Framebuffer;
 import org.oreon.core.configs.Default;
 import org.oreon.core.texture.Texture2D;
@@ -70,7 +71,7 @@ public class GLRenderingEngine implements RenderingEngine{
 	private ContrastController contrastController;
 	
 	private static boolean motionBlurEnabled = true;
-	private static boolean depthOfFieldBlurEnabled = true;
+	private static boolean depthOfFieldBlurEnabled = false;
 	private static boolean bloomEnabled = true;
 	private static boolean lightScatteringEnabled = true;
 	private static boolean waterReflection = false;
@@ -268,6 +269,21 @@ public class GLRenderingEngine implements RenderingEngine{
 	
 	public void update()
 	{
+		if (CoreSystem.getInstance().getInput().isKeyPushed(GLFW.GLFW_KEY_G)){
+			if (isGrid())
+				setGrid(false);
+			else
+				setGrid(true);
+		}
+		
+		if (isGrid()){
+			setDepthOfFieldBlurEnabled(false);
+			setBloomEnabled(false);
+		}
+		else{
+			setDepthOfFieldBlurEnabled(true);
+			setBloomEnabled(true);
+		}
 		CoreSystem.getInstance().getScenegraph().update();
 		gui.update();
 		contrastController.update();

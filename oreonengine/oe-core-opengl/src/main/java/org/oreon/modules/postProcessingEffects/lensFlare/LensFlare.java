@@ -113,6 +113,9 @@ public class LensFlare {
 	
 	public void render(){
 		
+		if (CoreSystem.getInstance().getRenderingEngine().isGrid())
+			return;
+		
 		for (Light light : LightHandler.getLights()){
 			
 			Vec2f lightScreenSpacePos = light.getScreenSpacePosition();

@@ -50,8 +50,8 @@ uniform float scaleY;
 uniform float scaleXZ;
 uniform Material sand;
 uniform Material grass;
-uniform Material rock0;
-uniform Material rock1;
+uniform Material rock;
+uniform Material cliff;
 uniform float sightRangeFactor;
 uniform int largeDetailedRange;
 uniform int isReflection;
@@ -64,7 +64,7 @@ uniform float distortionCaustics;
 
 const float zfar = 10000;
 const float znear = 0.1;
-const vec3 fogColor = vec3(0.62,0.85,0.95);
+const vec3 fogColor = vec3(0.65,0.85,0.9);
 const vec3 waterRefractionColor = vec3(0.1,0.125,0.19);
 
 float emission;
@@ -77,7 +77,7 @@ float distancePointPlane(vec3 point, vec4 plane){
 
 float diffuse(vec3 direction, vec3 normal, float intensity)
 {
-	return max(0.0, dot(normal, -direction) * intensity);
+	return max(0.1, dot(normal, -direction) * intensity);
 }
 
 float specular(vec3 direction, vec3 normal, vec3 eyePosition, vec3 vertexPosition)
@@ -195,29 +195,43 @@ void main()
 
 	vec3 normal = vec3(0,0,0);
 	vec3 bumpNormal = vec3(0,0,0);
+	vec3 blendNormal = vec3(0,0,0);
 	
-	normal += (2*(texture(fractals1[0].normalmap, mapCoords*fractals1[0].scaling).rbg)-1);
-	normal += (2*(texture(fractals1[1].normalmap, mapCoords*fractals1[1].scaling).rbg)-1);
-	normal += (2*(texture(fractals1[2].normalmap, mapCoords*fractals1[2].scaling).rbg)-1);
-	normal += (2*(texture(fractals1[3].normalmap, mapCoords*fractals1[3].scaling).rbg)-1);
+	blendNormal += (2*(texture(fractals1[0].normalmap, mapCoords*fractals1[0].scaling).rbg)-1);
+	blendNormal += (2*(texture(fractals1[1].normalmap, mapCoords*fractals1[1].scaling).rbg)-1);
+	blendNormal += (2*(texture(fractals1[2].normalmap, mapCoords*fractals1[2].scaling).rbg)-1);
+	blendNormal += (2*(texture(fractals1[3].normalmap, mapCoords*fractals1[3].scaling).rbg)-1);
+	normal = blendNormal;
 	normal += (2*(texture(fractals1[4].normalmap, mapCoords*fractals1[4].scaling).rbg)-1);
 	normal += (2*(texture(fractals1[5].normalmap, mapCoords*fractals1[5].scaling).rbg)-1);
 	normal += (2*(texture(fractals1[6].normalmap, mapCoords*fractals1[6].scaling).rbg)-1);
 	normal = normalize(normal);
+	blendNormal = normalize(blendNormal);
 	bumpNormal = normal;
 	
-	float rock1Blend  = clamp(height/200,0,1);
-	float rock0Blend  = clamp((height+200)/200,0,1) - rock1Blend;
+	float grassBlend = 0;
+	float cliffBlend = 0;
+	float rockBlend  = clamp((height+200)/200,0,1);
 	float sandBlend   = clamp(-height/200,0,1);
-	float slopeFactor = 0;
-	if (normal.y < 0.95){
-		slopeFactor = 1-pow(normal.y+0.05,4);
-		rock1Blend += slopeFactor;
-		rock1Blend = clamp(rock1Blend,0,1);
-		rock0Blend -= slopeFactor;
-		rock0Blend = clamp(rock0Blend,0,1);
-		sandBlend -= slopeFactor;
-		sandBlend = clamp(sandBlend,0,1);
+	float cliffSlopeFactor = 0;
+	
+	// cliff Blending
+	cliffSlopeFactor = 1-pow(blendNormal.y+0.01,12);
+	cliffBlend += cliffSlopeFactor;
+	cliffBlend = clamp(cliffBlend,0,1);
+	rockBlend -= cliffSlopeFactor;
+	rockBlend = clamp(rockBlend,0,1);
+	sandBlend -= cliffSlopeFactor;
+	sandBlend = clamp(sandBlend,0,1);
+	
+	// grass Blending
+	if (blendNormal.y > 0.95){
+		grassBlend = clamp(100*(blendNormal.y-0.95),0,1);
+		
+		rockBlend -= grassBlend;
+		rockBlend = clamp(rockBlend,0.1,1.0);
+		sandBlend -= grassBlend;
+		sandBlend = clamp(sandBlend,0.1,1.0);
 	}
 	
 	if (dist < largeDetailedRange-20 && isReflection == 0)
@@ -228,16 +242,17 @@ void main()
 		mat3 TBN = mat3(tangent,normal,bitangent);
 		
 		bumpNormal = normalize((2*(texture(sand.normalmap, texCoordF).rbg) - 1) * sandBlend
-								 +  (2*(texture(rock0.normalmap, texCoordF).rbg) - 1) * rock0Blend
-								 +  (2*(texture(rock1.normalmap, texCoordF/4).rbg) - 1) * rock1Blend);
+								 +  (2*(texture(rock.normalmap, texCoordF/20).rbg) - 1) * rockBlend
+								 +  (2*(texture(cliff.normalmap, texCoordF/20).rbg) - 1) * cliffBlend
+								 +  ((2*(texture(grass.normalmap, texCoordF).rbg) - 1) * vec3(1,10,1)) * grassBlend);
 		
 		bumpNormal.xz *= attenuation;
 		
 		bumpNormal = normalize(TBN * bumpNormal);
 	}
 	
-	emission  = sandBlend * sand.emission + rock0Blend * rock0.emission + rock1Blend * rock1.emission;
-	shininess = sandBlend * sand.shininess + rock0Blend * rock0.shininess + rock1Blend * rock1.shininess;
+	emission  = sandBlend * sand.emission + rockBlend * rock.emission + cliffBlend * cliff.emission;
+	shininess = sandBlend * sand.shininess + rockBlend * rock.shininess + cliffBlend * cliff.shininess;
 	
 	float diffuse = diffuse(directional_light.direction, bumpNormal, directional_light.intensity);
 	float specular = specular(directional_light.direction, bumpNormal, eyePosition, position);
@@ -253,14 +268,14 @@ void main()
 	}
 	
 	
-	vec3 fragColor = mix(texture(sand.diffusemap, texCoordF).rgb, texture(rock0.diffusemap, texCoordF).rgb, rock0Blend);
+	vec3 fragColor = mix(texture(sand.diffusemap, texCoordF).rgb, texture(rock.diffusemap, texCoordF/20).rgb, rockBlend);
 	
-	fragColor = mix(fragColor, texture(rock1.diffusemap,texCoordF/4).rgb, rock1Blend);
-	if (normal.y > 0.95){
-		fragColor = mix(fragColor,texture(grass.diffusemap,texCoordF).rgb,12*(normal.y-0.95)* clamp(-(height-100)/200,0,1));
+	fragColor = mix(fragColor, texture(cliff.diffusemap,texCoordF/20).rgb, cliffBlend);
+	if (blendNormal.y > 0.95){
+		fragColor = mix(fragColor,texture(grass.diffusemap,texCoordF).rgb,grassBlend);// * clamp(-(height-400)/200,0,1));
 	}
-	if (normal.y < 0.95){
-		fragColor = mix(fragColor,texture(rock1.diffusemap,texCoordF/4).rgb,slopeFactor);
+	if (blendNormal.y < 0.99){
+		fragColor = mix(fragColor,texture(cliff.diffusemap,texCoordF/20).rgb,cliffSlopeFactor);
 	}
 	
 	fragColor *= diffuseLight;
@@ -274,7 +289,7 @@ void main()
 		
 		fragColor += (causticsColor/5);
 	}
-	float fogFactor = -0.0005/sightRangeFactor*(dist-zfar/5*sightRangeFactor);
+	float fogFactor = -0.0002/sightRangeFactor*(dist-(zfar)/10*sightRangeFactor) + 1;
 
     vec3 rgb = mix(fogColor, fragColor, clamp(fogFactor,0,1));
 	

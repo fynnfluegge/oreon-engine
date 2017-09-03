@@ -14,7 +14,7 @@ import org.oreon.modules.gui.GUIVAO;
 
 public class TexturePanel extends GUIElement{
 
-	static Texture2D texture;
+	private static Texture2D texture;
 	
 	public TexturePanel() {
 		texture = new Texture2D();
@@ -27,10 +27,6 @@ public class TexturePanel extends GUIElement{
 		setOrthographicMatrix(getOrthographicMatrix().mul(getOrthoTransform().getWorldMatrix()));
 		setVao(new GUIVAO());
 		getVao().addData(MeshGenerator.Quad2D());
-	}
-	
-	public void init(){
-	
 	}
 	
 	public void render()
@@ -47,5 +43,9 @@ public class TexturePanel extends GUIElement{
 
 	public Texture2D getTexture() {
 		return texture;
+	}
+
+	public static void setTexture(Texture2D texture) {
+		TexturePanel.texture = texture;
 	}
 }

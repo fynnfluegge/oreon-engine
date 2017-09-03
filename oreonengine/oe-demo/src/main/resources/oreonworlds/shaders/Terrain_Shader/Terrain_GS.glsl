@@ -6,6 +6,12 @@ layout(triangle_strip, max_vertices = 3) out;
 
 in vec2 texCoordG[];
 
+struct Fractal
+{
+	sampler2D normalmap;
+	int scaling;
+};
+
 struct Material
 {
 	sampler2D diffusemap;
@@ -29,12 +35,14 @@ layout (std140, row_major) uniform Camera{
 };
 
 uniform Material sand;
-uniform Material rock0;
-uniform Material rock1;
+uniform Material rock;
+uniform Material cliff;
 uniform int largeDetailedRange;
 uniform vec4 clipplane;
 uniform int isReflection;
 uniform int isRefraction;
+uniform Fractal fractals1[7];
+uniform float scaleXZ;
 
 vec3 Tangent;
 
@@ -75,17 +83,45 @@ void main() {
 		if (isRefraction == 0){
 			for(int k=0; k<gl_in.length(); k++){
 				
+				vec2 mapCoords = (gl_in[k].gl_Position.xz + scaleXZ/2)/scaleXZ; 
+				
 				displacement[k] = vec4(0,1,0,0);
 				
 				float height = gl_in[k].gl_Position.y;
+				
+				vec3 blendNormal = vec3(0,0,0);
+				blendNormal += (2*(texture(fractals1[0].normalmap, mapCoords*fractals1[0].scaling).rbg)-1);
+				blendNormal += (2*(texture(fractals1[1].normalmap, mapCoords*fractals1[1].scaling).rbg)-1);
+				blendNormal += (2*(texture(fractals1[2].normalmap, mapCoords*fractals1[2].scaling).rbg)-1);
+				blendNormal += (2*(texture(fractals1[3].normalmap, mapCoords*fractals1[3].scaling).rbg)-1);
+				blendNormal = normalize(blendNormal);
 					
-				float rock1Blend  = clamp(height/200,0,1);
-				float rock0Blend  = clamp((height+200)/200,0,1) - rock1Blend;
+				float grassBlend = 0;
+				float cliffBlend = 0;
+				float rockBlend  = clamp((height+200)/200,0,1);
 				float sandBlend   = clamp(-height/200,0,1);
+				float cliffSlopeFactor = 0;
+				
+				cliffSlopeFactor = 1-pow(blendNormal.y+0.01,12);
+				cliffBlend += cliffSlopeFactor;
+				cliffBlend = clamp(cliffBlend,0,1);
+				rockBlend -= cliffSlopeFactor;
+				rockBlend = clamp(rockBlend,0,1);
+				sandBlend -= cliffSlopeFactor;
+				sandBlend = clamp(sandBlend,0,1);
+				
+				// grass Blending
+				if (blendNormal.y > 0.95){
+					grassBlend = clamp(40*(blendNormal.y-0.95),0,1);
+					rockBlend -= grassBlend;
+					rockBlend = clamp(rockBlend,0.0,1.0);
+					sandBlend -= grassBlend;
+					sandBlend = clamp(sandBlend,0.0,1.0);
+				}
 				
 				float scale = texture(sand.heightmap, texCoordG[k]).r * sandBlend * sand.displaceScale
-							+ texture(rock0.heightmap, texCoordG[k]).r * rock0Blend * rock0.displaceScale
-							+ texture(rock1.heightmap, texCoordG[k]/4).r * rock1Blend * rock1.displaceScale;
+							+ texture(rock.heightmap, texCoordG[k]/20).r * rockBlend * rock.displaceScale
+							+ texture(cliff.heightmap, texCoordG[k]/20).r * cliffBlend * cliff.displaceScale;
 							
 				scale *= (- distance(gl_in[k].gl_Position.xyz, eyePosition)/(largeDetailedRange) + 1);
 

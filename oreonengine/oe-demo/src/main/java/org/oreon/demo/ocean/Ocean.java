@@ -16,11 +16,11 @@ public class Ocean extends Water{
 		
 		setClipplane(new Quaternion(0,-1,0,getWorldTransform().getTranslation().getY()));
 
-		this.loadSettingsFile("./res/samples/Ocean/waterSettings.txt");
+		this.loadSettingsFile("src/main/resources/ocean/waterSettings.txt");
 	}
 	
 	public void render(){
 		super.render();
-		TexturePanel.texture = getFft().getDy();
+//		TexturePanel.setTexture(getFft().getFourierComponents().getSpectrum());
 	}
 }
