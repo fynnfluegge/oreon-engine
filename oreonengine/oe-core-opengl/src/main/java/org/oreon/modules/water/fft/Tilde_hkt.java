@@ -48,7 +48,7 @@ public class Tilde_hkt extends FourierComponents{
 	public void update(float t) {
 		
 		getShader().bind();
-		getShader().updateUniforms(L,t);
+		getShader().updateUniforms(L,N,t);
 		glBindImageTexture(0, dyComponents.getId(), 0, false, 0, GL_READ_WRITE, GL_RGBA32F);
 		glBindImageTexture(1, dxComponents.getId(), 0, false, 0, GL_READ_WRITE, GL_RGBA32F);
 		glBindImageTexture(2, dzComponents.getId(), 0, false, 0, GL_READ_WRITE, GL_RGBA32F);

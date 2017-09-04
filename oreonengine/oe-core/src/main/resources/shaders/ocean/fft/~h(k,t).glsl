@@ -13,6 +13,7 @@ layout (binding = 3, rgba32f) readonly uniform image2D tilde_h0k;
 
 layout (binding = 4, rgba32f) readonly uniform image2D tilde_h0minusk;
 
+uniform int N;
 uniform int L;
 uniform float t;
 
@@ -47,7 +48,7 @@ complex conj(complex c)
 
 void main(void)
 {
-	vec2 x = ivec2(gl_GlobalInvocationID.xy) - float(N)/2;
+	vec2 x = ivec2(gl_GlobalInvocationID.xy) - float(N)/2.0;
 	
 	vec2 k = vec2(2.0 * M_PI * x.x/L, 2.0 * M_PI * x.y/L);
 	
@@ -56,12 +57,12 @@ void main(void)
 	
 	float w = sqrt(9.81 * magnitude);
 	
-	complex tilde_h0k 	 	 = complex(imageLoad(tilde_h0k, ivec2(gl_GlobalInvocationID.xy)).r, 
+	complex fourier_amp 	 	 = complex(imageLoad(tilde_h0k, ivec2(gl_GlobalInvocationID.xy)).r, 
 							imageLoad(tilde_h0k, ivec2(gl_GlobalInvocationID.xy)).g);
 							
 	ivec2 x_inv = ivec2(gl_GlobalInvocationID.xy);
 	
-	complex tilde_h0minuskconj   = conj(complex(imageLoad(tilde_h0minusk, x_inv).r, 
+	complex fourier_amp_conj   = conj(complex(imageLoad(tilde_h0minusk, x_inv).r, 
 								imageLoad(tilde_h0minusk, x_inv).g));
 		
 	float cosinus = cos(w*t);
@@ -72,7 +73,7 @@ void main(void)
 	complex exp_iwt_inv = complex(cosinus, -sinus);
 	
 	// dy
-	complex h_k_t_dy = add(mul(tilde_h0k, exp_iwt), (mul(tilde_h0minuskconj, exp_iwt_inv)));
+	complex h_k_t_dy = add(mul(fourier_amp, exp_iwt), (mul(fourier_amp_conj, exp_iwt_inv)));
 	
 	// dx
 	complex dx = complex(0.0,-k.x/magnitude);

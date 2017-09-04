@@ -23,7 +23,7 @@ public class TexturePanel extends GUIElement{
 		setOrthographicMatrix(new Matrix4f().Orthographic2D());
 		setOrthoTransform(new Transform());
 		getOrthoTransform().setTranslation(0, 0, 0);
-		getOrthoTransform().setScaling(200, 200, 0);
+		getOrthoTransform().setScaling(512, 512, 0);
 		setOrthographicMatrix(getOrthographicMatrix().mul(getOrthoTransform().getWorldMatrix()));
 		setVao(new GUIVAO());
 		getVao().addData(MeshGenerator.Quad2D());

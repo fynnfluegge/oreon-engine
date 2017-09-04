@@ -44,7 +44,7 @@ vec4 gaussRND()
 
 void main(void)
 {
-	vec2 x = vec2(gl_GlobalInvocationID.xy) - float(N)/2;
+	vec2 x = vec2(gl_GlobalInvocationID.xy) - float(N)/2.0;
 	
 	vec2 k = vec2(2.0 * M_PI * x.x/L, 2.0 * M_PI * x.y/L);
 

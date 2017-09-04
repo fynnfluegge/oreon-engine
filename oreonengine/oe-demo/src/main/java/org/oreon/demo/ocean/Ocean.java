@@ -3,6 +3,8 @@ package org.oreon.demo.ocean;
 import org.oreon.core.math.Quaternion;
 import org.oreon.core.utils.Constants;
 import org.oreon.modules.water.Water;
+import org.oreon.modules.water.fft.Tilde_h0;
+import org.oreon.modules.water.fft.Tilde_hkt;
 
 public class Ocean extends Water{
 	
@@ -21,6 +23,7 @@ public class Ocean extends Water{
 	
 	public void render(){
 		super.render();
-//		TexturePanel.setTexture(getFft().getFourierComponents().getSpectrum());
+		TexturePanel.setTexture(((Tilde_h0) getFft().getFourierComponents().getSpectrum()).geth0kminus());
+//		TexturePanel.setTexture(((Tilde_hkt) getFft().getFourierComponents()).getDyComponents());
 	}
 }
