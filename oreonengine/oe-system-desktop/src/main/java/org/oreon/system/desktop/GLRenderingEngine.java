@@ -17,14 +17,15 @@ import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
 import org.lwjgl.glfw.GLFW;
-import org.oreon.core.buffers.Framebuffer;
-import org.oreon.core.configs.Default;
+import org.oreon.core.gl.buffers.GLFramebuffer;
+import org.oreon.core.gl.config.Default;
+import org.oreon.core.gl.light.GLDirectionalLight;
+import org.oreon.core.gl.shadow.ShadowMaps;
 import org.oreon.core.texture.Texture2D;
 import org.oreon.core.instancing.InstancingObjectHandler;
 import org.oreon.core.light.DirectionalLight;
 import org.oreon.core.light.LightHandler;
 import org.oreon.core.math.Quaternion;
-import org.oreon.core.shadow.ShadowMaps;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.system.RenderingEngine;
 import org.oreon.core.system.Window;
@@ -49,8 +50,8 @@ public class GLRenderingEngine implements RenderingEngine{
 	private TexturePanel fullScreenTexture;
 	private Texture2D postProcessingTexture;
 
-	private Framebuffer fbo;
-	private Framebuffer multisampledFbo;
+	private GLFramebuffer fbo;
+	private GLFramebuffer multisampledFbo;
 	private Texture2D sceneTexture;
 	private Texture2D blackScene4LightScatteringTexture;
 	private Texture2D sceneDepthmap;
@@ -112,7 +113,7 @@ public class GLRenderingEngine implements RenderingEngine{
 		drawBuffers.put(GL_COLOR_ATTACHMENT1);
 		drawBuffers.flip();
 		
-		multisampledFbo = new Framebuffer();
+		multisampledFbo = new GLFramebuffer();
 		multisampledFbo.bind();
 		multisampledFbo.createColorBufferMultisampleAttachment(Constants.MULTISAMPLES, 0);
 		multisampledFbo.createColorBufferMultisampleAttachment(Constants.MULTISAMPLES, 1);
@@ -142,7 +143,7 @@ public class GLRenderingEngine implements RenderingEngine{
 		sceneDepthmap.bilinearFilter();
 		sceneDepthmap.clampToEdge();
 		
-		fbo = new Framebuffer();
+		fbo = new GLFramebuffer();
 		fbo.bind();
 		fbo.createColorTextureAttachment(sceneTexture.getId(),0);
 		fbo.createColorTextureAttachment(blackScene4LightScatteringTexture.getId(),1);
@@ -153,7 +154,7 @@ public class GLRenderingEngine implements RenderingEngine{
 	
 	public void render()
 	{	
-		DirectionalLight.getInstance().update();
+		GLDirectionalLight.getInstance().update();
 		if (CoreSystem.getInstance().getScenegraph().getCamera().isCameraMoved()){
 			if (CoreSystem.getInstance().getScenegraph().terrainExists()){
 				((Terrain) CoreSystem.getInstance().getScenegraph().getTerrain()).updateQuadtree();
@@ -411,11 +412,11 @@ public class GLRenderingEngine implements RenderingEngine{
 		this.sceneDepthmap = sceneDepthmap;
 	}
 
-	public Framebuffer getMultisampledFbo() {
+	public GLFramebuffer getMultisampledFbo() {
 		return multisampledFbo;
 	}
 
-	public void setMultisampledFbo(Framebuffer multisampledFbo) {
+	public void setMultisampledFbo(GLFramebuffer multisampledFbo) {
 		this.multisampledFbo = multisampledFbo;
 	}
 

@@ -9,8 +9,8 @@ import static org.lwjgl.opengl.GL42.glTexStorage2D;
 import static org.lwjgl.opengl.GL43.glDispatchCompute;
 
 import org.oreon.core.texture.Texture2D;
+import org.oreon.core.gl.shaders.terrain.fractals.FractalFourierComponentsShader;
 import org.oreon.core.math.Vec2f;
-import org.oreon.core.shaders.terrain.fractals.FractalFourierComponentsShader;
 import org.oreon.modules.gpgpu.fft.FourierComponents;
 
 public class FractalFourierComponents extends FourierComponents{

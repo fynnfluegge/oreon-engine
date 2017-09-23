@@ -14,10 +14,10 @@ import static org.lwjgl.opengl.GL43.glDispatchCompute;
 
 import java.nio.ByteBuffer;
 
-import org.oreon.core.buffers.Framebuffer;
 import org.oreon.core.texture.Texture2D;
-import org.oreon.core.shaders.dofBlur.DepthOfFieldHorizontalBlurShader;
-import org.oreon.core.shaders.dofBlur.DepthOfFieldVerticalBlurShader;
+import org.oreon.core.gl.buffers.GLFramebuffer;
+import org.oreon.core.gl.shaders.dofBlur.DepthOfFieldHorizontalBlurShader;
+import org.oreon.core.gl.shaders.dofBlur.DepthOfFieldVerticalBlurShader;
 import org.oreon.core.system.CoreSystem;
 
 public class DepthOfFieldBlur {
@@ -27,7 +27,7 @@ public class DepthOfFieldBlur {
 	private DepthOfFieldHorizontalBlurShader horizontalBlurShader;
 	private DepthOfFieldVerticalBlurShader verticalBlurShader;
 	
-	private Framebuffer lowResFbo;
+	private GLFramebuffer lowResFbo;
 	private Texture2D lowResSceneSampler;
 		
 	public DepthOfFieldBlur() {
@@ -55,7 +55,7 @@ public class DepthOfFieldBlur {
 		lowResSceneSampler.bilinearFilter();
 		lowResSceneSampler.clampToEdge();
 		
-		lowResFbo = new Framebuffer();
+		lowResFbo = new GLFramebuffer();
 		lowResFbo.bind();
 		lowResFbo.createColorTextureAttachment(lowResSceneSampler.getId(), 0);
 		lowResFbo.checkStatus();
@@ -84,7 +84,7 @@ public class DepthOfFieldBlur {
 		return verticalBlurSceneTexture;
 	}
 
-	public Framebuffer getLowResFbo() {
+	public GLFramebuffer getLowResFbo() {
 		return lowResFbo;
 	}
 }

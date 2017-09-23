@@ -1,9 +1,9 @@
 package org.oreon.core.light;
 
+import org.oreon.core.query.OcclusionQuery;
 import org.oreon.core.math.Quaternion;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.math.Vec3f;
-import org.oreon.core.query.OcclusionQuery;
 import org.oreon.core.scene.Component;
 import org.oreon.core.system.CoreSystem;
 
@@ -17,11 +17,9 @@ public class Light extends Component{
 	{
 		this.color = color;
 		this.intensity = intensity;
-		occlusionQuery = new OcclusionQuery();
 	}
 	
 	public Light() {
-		occlusionQuery = new OcclusionQuery();
 	}
 	
 	public Vec2f getScreenSpacePosition(){

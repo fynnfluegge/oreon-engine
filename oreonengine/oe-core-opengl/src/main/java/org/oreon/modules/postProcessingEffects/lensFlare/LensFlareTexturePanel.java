@@ -1,7 +1,7 @@
 package org.oreon.modules.postProcessingEffects.lensFlare;
 
-import org.oreon.core.configs.AdditiveBlending;
-import org.oreon.core.shaders.lensFlare.LensFlareShader;
+import org.oreon.core.gl.config.AdditiveBlending;
+import org.oreon.core.gl.shaders.lensFlare.LensFlareShader;
 import org.oreon.modules.gui.elements.TexturePanel;
 
 public class LensFlareTexturePanel extends TexturePanel{

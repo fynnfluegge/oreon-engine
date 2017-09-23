@@ -10,39 +10,29 @@ import org.oreon.core.system.CoreSystem;
 import org.oreon.core.utils.BufferUtil;
 import org.oreon.core.utils.Constants;
 
-public class DirectionalLight extends Light{
+public abstract class DirectionalLight extends Light{
 
-	private static DirectionalLight instance = null;
-	
 	private Vec3f direction;
 	private Vec3f ambient;
 	private Matrix4f m_View;
 	private Vec3f right;
 	private Vec3f up;
-	private PSSMCamera[] lightCameras;
+	private PSSMCamera[] splitLightCameras;
 	
 	private UBO ubo_light;
 	private UBO ubo_matrices;
 	private FloatBuffer floatBufferLight;
 	private FloatBuffer floatBufferMatrices;
 	private final int lightBufferSize = Float.BYTES * 12;
+
 	private final int matricesBufferSize = Float.BYTES * 96
 										 + Float.BYTES * 24;
-
-	
-	public static DirectionalLight getInstance(){
-		if(instance == null) 
-	    {
-	    	instance = new DirectionalLight();
-	    }
-	      return instance;
-	}
 	
 	protected DirectionalLight(){
 		this(new Vec3f(1,-1,1).normalize(),new Vec3f(0.12f,0.12f,0.12f),new Vec3f(1,0.95f,0.87f),1f);
 	}
 	
-	private DirectionalLight(Vec3f direction, Vec3f ambient, Vec3f color, float intensity) {
+	protected DirectionalLight(Vec3f direction, Vec3f ambient, Vec3f color, float intensity) {
 		
 		super(color, intensity);
 		this.direction = direction;
@@ -54,32 +44,15 @@ public class DirectionalLight extends Light{
 		right = up.cross(getDirection()).normalize();
 		m_View = new Matrix4f().View(getDirection(), up);	
 		
-		ubo_light = new UBO();
-		ubo_light.setBinding_point_index(Constants.DirectionalLightUniformBlockBinding);
-		ubo_light.bindBufferBase();
-		ubo_light.allocate(lightBufferSize);
-		floatBufferLight = BufferUtil.createFloatBuffer(lightBufferSize);
-		floatBufferLight.put(BufferUtil.createFlippedBuffer(direction));
-		floatBufferLight.put(intensity);
-		floatBufferLight.put(BufferUtil.createFlippedBuffer(ambient));
-		floatBufferLight.put(0);
-		floatBufferLight.put(BufferUtil.createFlippedBuffer(color));
-		floatBufferLight.put(0);
-		ubo_light.updateData(floatBufferLight, lightBufferSize);
-		
-		ubo_matrices = new UBO();
-		ubo_matrices.setBinding_point_index(Constants.LightMatricesUniformBlockBinding);
-		ubo_matrices.bindBufferBase();
-		ubo_matrices.allocate(matricesBufferSize);
 		floatBufferMatrices = BufferUtil.createFloatBuffer(matricesBufferSize);
 		
-		lightCameras = new PSSMCamera[Constants.PSSM_SPLITS];
+		splitLightCameras = new PSSMCamera[Constants.PSSM_SPLITS];
 		
 		for (int i = 0; i<Constants.PSSM_SPLITS*2; i += 2){
-			lightCameras[i/2] = new PSSMCamera(Constants.PSSM_SPLIT_SHEME[i]*Constants.ZFAR,
+			splitLightCameras[i/2] = new PSSMCamera(Constants.PSSM_SPLIT_SHEME[i]*Constants.ZFAR,
 											 Constants.PSSM_SPLIT_SHEME[i+1]*Constants.ZFAR);
-			lightCameras[i/2].update(m_View, up, right);
-			floatBufferMatrices.put(BufferUtil.createFlippedBuffer(lightCameras[i/2].getM_orthographicViewProjection()));
+			splitLightCameras[i/2].update(m_View, up, right);
+			floatBufferMatrices.put(BufferUtil.createFlippedBuffer(splitLightCameras[i/2].getM_orthographicViewProjection()));
 		}
 		for (int i = 1; i<Constants.PSSM_SPLITS*2; i += 2){
 			floatBufferMatrices.put(Constants.PSSM_SPLIT_SHEME[i]);
@@ -87,7 +60,6 @@ public class DirectionalLight extends Light{
 			floatBufferMatrices.put(0);
 			floatBufferMatrices.put(0);
 		}
-		ubo_matrices.updateData(floatBufferMatrices, matricesBufferSize);
 	}
 	
 	public void update(){
@@ -95,7 +67,7 @@ public class DirectionalLight extends Light{
 		if (CoreSystem.getInstance().getScenegraph().getCamera().isCameraRotated() || 
 				CoreSystem.getInstance().getScenegraph().getCamera().isCameraMoved()){
 			floatBufferMatrices.clear();
-			for (PSSMCamera lightCamera : lightCameras){
+			for (PSSMCamera lightCamera : splitLightCameras){
 				lightCamera.update(m_View, up, right);
 				floatBufferMatrices.put(BufferUtil.createFlippedBuffer(lightCamera.getM_orthographicViewProjection()));
 			}
@@ -110,6 +82,22 @@ public class DirectionalLight extends Light{
 	public void setDirection(Vec3f direction) {
 		this.direction = direction;
 		// TODO update up, right, m_View;
+	}
+
+	public Vec3f getUp() {
+		return up;
+	}
+
+	public void setUp(Vec3f up) {
+		this.up = up;
+	}
+
+	public Vec3f getRight() {
+		return right;
+	}
+
+	public void setRight(Vec3f right) {
+		this.right = right;
 	}
 
 	public Vec3f getAmbient() {
@@ -129,6 +117,46 @@ public class DirectionalLight extends Light{
 	}
 
 	public PSSMCamera[] getSplitLightCameras() {
-		return lightCameras;
+		return splitLightCameras;
+	}
+
+	public UBO getUbo_light() {
+		return ubo_light;
+	}
+
+	public void setUbo_light(UBO ubo_light) {
+		this.ubo_light = ubo_light;
+	}
+
+	public UBO getUbo_matrices() {
+		return ubo_matrices;
+	}
+
+	public void setUbo_matrices(UBO ubo_matrices) {
+		this.ubo_matrices = ubo_matrices;
+	}
+	
+	public int getLightBufferSize() {
+		return lightBufferSize;
+	}
+	
+	public int getMatricesBufferSize() {
+		return matricesBufferSize;
+	}
+
+	public FloatBuffer getFloatBufferLight() {
+		return floatBufferLight;
+	}
+
+	public void setFloatBufferLight(FloatBuffer floatBufferLight) {
+		this.floatBufferLight = floatBufferLight;
+	}
+
+	public FloatBuffer getFloatBufferMatrices() {
+		return floatBufferMatrices;
+	}
+
+	public void setFloatBufferMatrices(FloatBuffer floatBufferMatrices) {
+		this.floatBufferMatrices = floatBufferMatrices;
 	}
 }

@@ -1,7 +1,7 @@
 package org.oreon.modules.terrain;
 
-import org.oreon.core.buffers.PatchVBO;
-import org.oreon.core.configs.Default;
+import org.oreon.core.gl.buffers.GLPatchVBO;
+import org.oreon.core.gl.config.Default;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.math.Vec3f;
 import org.oreon.core.renderer.RenderInfo;
@@ -13,7 +13,7 @@ import org.oreon.core.utils.Constants;
 
 public class TerrainNode extends GameObject{
 	
-	private PatchVBO buffer;
+	private GLPatchVBO buffer;
 	private boolean isleaf;
 	private TerrainConfiguration terrConfig;
 	private int lod;
@@ -23,7 +23,7 @@ public class TerrainNode extends GameObject{
 	private float gap;
 	
 	
-	public TerrainNode(PatchVBO buffer, TerrainConfiguration terrConfig, Vec2f location, int lod, Vec2f index){
+	public TerrainNode(GLPatchVBO buffer, TerrainConfiguration terrConfig, Vec2f location, int lod, Vec2f index){
 		
 		this.buffer = buffer;
 		this.isleaf = true;

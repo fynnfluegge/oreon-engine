@@ -1,6 +1,6 @@
 package org.oreon.modules.terrain;
 
-import org.oreon.core.buffers.PatchVBO;
+import org.oreon.core.gl.buffers.GLPatchVBO;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.scene.Node;
 
@@ -10,7 +10,7 @@ public class TerrainQuadtree extends Node{
 		
 	public TerrainQuadtree(TerrainConfiguration terrConfig){
 		
-		PatchVBO buffer  = new PatchVBO();
+		GLPatchVBO buffer  = new GLPatchVBO();
 		buffer.addData(generatePatch(),16);
 		
 		for (int i=0; i<rootPatches; i++){

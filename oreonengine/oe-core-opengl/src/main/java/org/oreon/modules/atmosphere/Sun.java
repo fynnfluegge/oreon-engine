@@ -1,7 +1,9 @@
 package org.oreon.modules.atmosphere;
 
-import org.oreon.core.buffers.PointVBO3D;
-import org.oreon.core.configs.Default;
+import org.oreon.core.gl.buffers.GLPointVBO3D;
+import org.oreon.core.gl.config.Default;
+import org.oreon.core.gl.light.GLDirectionalLight;
+import org.oreon.core.gl.query.GLOcclusionQuery;
 import org.oreon.core.texture.Texture2D;
 import org.oreon.core.light.DirectionalLight;
 import org.oreon.core.light.Light;
@@ -17,12 +19,12 @@ public class Sun extends GameObject{
 	
 	public Sun(){
 		
-		getWorldTransform().setLocalTranslation(DirectionalLight.getInstance().getDirection().mul(-2800));
+		getWorldTransform().setLocalTranslation(GLDirectionalLight.getInstance().getDirection().mul(-2800));
 		Vec3f origin = new Vec3f(0,0,0);
 		Vec3f[] array = new Vec3f[1];
 		array[0] = origin;
 		
-		PointVBO3D buffer = new PointVBO3D();
+		GLPointVBO3D buffer = new GLPointVBO3D();
 		buffer.addData(array);
 		
 		Material material1 = new Material();
@@ -42,6 +44,7 @@ public class Sun extends GameObject{
 		addComponent("Material2", material2);
 		
 		Light light = new Light();
+		light.setOcclusionQuery(new GLOcclusionQuery());
 		addComponent("Light", light);
 		LightHandler.getLights().add(light);
 	}

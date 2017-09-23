@@ -11,6 +11,7 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE7;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE8;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
+import org.oreon.core.gl.light.GLDirectionalLight;
 import org.oreon.core.light.DirectionalLight;
 import org.oreon.core.scene.GameObject;
 import org.oreon.core.shaders.Shader;
@@ -98,10 +99,10 @@ public class OceanBRDFShader extends Shader{
 		setUniformi("windowWidth", CoreSystem.getInstance().getWindow().getWidth());
 		setUniformi("windowHeight", CoreSystem.getInstance().getWindow().getHeight());
 		
-		setUniform("sunlight.ambient", DirectionalLight.getInstance().getAmbient());
-		setUniformf("sunlight.intensity", DirectionalLight.getInstance().getIntensity());
-		setUniform("sunlight.color", DirectionalLight.getInstance().getColor());
-		setUniform("sunlight.direction", DirectionalLight.getInstance().getDirection());	
+		setUniform("sunlight.ambient", GLDirectionalLight.getInstance().getAmbient());
+		setUniformf("sunlight.intensity", GLDirectionalLight.getInstance().getIntensity());
+		setUniform("sunlight.color", GLDirectionalLight.getInstance().getColor());
+		setUniform("sunlight.direction", GLDirectionalLight.getInstance().getDirection());	
 		
 		setUniformf("sightRangeFactor", CoreSystem.getInstance().getRenderingEngine().getSightRangeFactor());
 		

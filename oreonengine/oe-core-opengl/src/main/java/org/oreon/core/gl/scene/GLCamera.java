@@ -12,7 +12,7 @@ import static org.lwjgl.glfw.GLFW.glfwSetCursorPos;
 
 import java.nio.FloatBuffer;
 
-import org.oreon.core.buffers.UBO;
+import org.oreon.core.gl.buffers.GLUBO;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.math.Vec3f;
 import org.oreon.core.scene.Camera;
@@ -22,7 +22,7 @@ import org.oreon.core.utils.Constants;
 
 public class GLCamera extends Camera{
 
-	private UBO ubo;
+	private GLUBO ubo;
 	private FloatBuffer floatBuffer;
 	private final int bufferSize = Float.BYTES * (4+16+(6*4));
 	
@@ -33,7 +33,7 @@ public class GLCamera extends Camera{
 	
 	public void init(){
 
-		ubo = new UBO();
+		ubo = new GLUBO();
 		ubo.setBinding_point_index(Constants.CameraUniformBlockBinding);
 		ubo.bindBufferBase();
 		ubo.allocate(bufferSize);

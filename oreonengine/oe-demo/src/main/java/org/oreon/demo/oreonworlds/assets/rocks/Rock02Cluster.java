@@ -3,8 +3,8 @@ package org.oreon.demo.oreonworlds.assets.rocks;
 import java.nio.FloatBuffer;
 import java.util.List;
 
-import org.oreon.core.buffers.MeshVBO;
-import org.oreon.core.buffers.UBO;
+import org.oreon.core.gl.buffers.GLMeshVBO;
+import org.oreon.core.gl.buffers.GLUBO;
 import org.oreon.core.instancing.InstancedDataObject;
 import org.oreon.core.instancing.InstancingCluster;
 import org.oreon.core.math.Matrix4f;
@@ -47,10 +47,10 @@ public class Rock02Cluster extends InstancingCluster{
 			getHighPolyIndices().add(i);
 		}
 		
-		setModelMatricesBuffer(new UBO());
+		setModelMatricesBuffer(new GLUBO());
 		getModelMatricesBuffer().allocate(buffersize);
 		
-		setWorldMatricesBuffer(new UBO());
+		setWorldMatricesBuffer(new GLUBO());
 		getWorldMatricesBuffer().allocate(buffersize);	
 		
 		/**
@@ -73,7 +73,7 @@ public class Rock02Cluster extends InstancingCluster{
 		
 		for (InstancedDataObject dataObject : objects){
 			GameObject object = new GameObject();
-			MeshVBO vao = new MeshVBO((MeshVBO) dataObject.getVao());
+			GLMeshVBO vao = new GLMeshVBO((GLMeshVBO) dataObject.getVao());
 			vao.setInstances(new IntegerReference(instances));
 			
 			Renderer renderer = new Renderer(vao);

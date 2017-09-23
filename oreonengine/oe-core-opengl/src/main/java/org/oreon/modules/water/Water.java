@@ -6,9 +6,9 @@ import java.io.FileReader;
 import java.nio.ByteBuffer;
 
 import org.lwjgl.glfw.GLFW;
-import org.oreon.core.buffers.Framebuffer;
-import org.oreon.core.buffers.PatchVBO;
-import org.oreon.core.configs.WaterConfig;
+import org.oreon.core.gl.buffers.GLFramebuffer;
+import org.oreon.core.gl.buffers.GLPatchVBO;
+import org.oreon.core.gl.config.WaterConfig;
 import org.oreon.core.gl.shaders.water.OceanBRDFShader;
 import org.oreon.core.gl.shaders.water.OceanGridShader;
 import org.oreon.core.texture.Texture2D;
@@ -68,8 +68,8 @@ public class Water extends GameObject{
 	private Texture2D reflectionTexture;
 	private Texture2D refractionTexture;
 	private Texture2D refractionDepthTexture;
-	private Framebuffer reflectionFBO;
-	private Framebuffer refractionFBO;
+	private GLFramebuffer reflectionFBO;
+	private GLFramebuffer refractionFBO;
 	
 	private OceanFFT fft;
 	private NormalMapRenderer normalmapRenderer;
@@ -79,7 +79,7 @@ public class Water extends GameObject{
 
 	public Water(int patches, int fftResolution)
 	{		
-		PatchVBO meshBuffer = new PatchVBO();
+		GLPatchVBO meshBuffer = new GLPatchVBO();
 		meshBuffer.addData(generatePatch2D4x4(patches),16);
 		
 		config = new WaterConfig();
@@ -104,7 +104,7 @@ public class Water extends GameObject{
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		
-		reflectionFBO = new Framebuffer();
+		reflectionFBO = new GLFramebuffer();
 		reflectionFBO.bind();
 		reflectionFBO.setDrawBuffer(0);
 		reflectionFBO.createColorTextureAttachment(reflectionTexture.getId(), 0);
@@ -119,7 +119,7 @@ public class Water extends GameObject{
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	
-		refractionFBO = new Framebuffer();
+		refractionFBO = new GLFramebuffer();
 		refractionFBO.bind();
 		refractionFBO.setDrawBuffer(0);
 		refractionFBO.createColorTextureAttachment(refractionTexture.getId(), 0);
@@ -483,19 +483,19 @@ public class Water extends GameObject{
 		this.choppiness = choppiness;
 	}
 
-	public Framebuffer getReflectionFBO() {
+	public GLFramebuffer getReflectionFBO() {
 		return reflectionFBO;
 	}
 
-	public void setReflectionFBO(Framebuffer reflectionFBO) {
+	public void setReflectionFBO(GLFramebuffer reflectionFBO) {
 		this.reflectionFBO = reflectionFBO;
 	}
 
-	public Framebuffer getRefractionFBO() {
+	public GLFramebuffer getRefractionFBO() {
 		return refractionFBO;
 	}
 
-	public void setRefractionFBO(Framebuffer refractionFBO) {
+	public void setRefractionFBO(GLFramebuffer refractionFBO) {
 		this.refractionFBO = refractionFBO;
 	}
 

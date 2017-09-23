@@ -1,7 +1,7 @@
 package org.oreon.modules.atmosphere;
 
-import org.oreon.core.buffers.MeshVBO;
-import org.oreon.core.configs.CullFaceDisable;
+import org.oreon.core.gl.buffers.GLMeshVBO;
+import org.oreon.core.gl.config.CullFaceDisable;
 import org.oreon.core.model.Mesh;
 import org.oreon.core.renderer.RenderInfo;
 import org.oreon.core.renderer.Renderer;
@@ -16,7 +16,7 @@ public class Skydome extends GameObject{
 	{
 		Mesh mesh = new OBJLoader().load("models/obj/dome", "dome.obj", null)[0].getMesh();
 		ProceduralTexturing.dome(mesh);
-		MeshVBO meshBuffer = new MeshVBO();
+		GLMeshVBO meshBuffer = new GLMeshVBO();
 		meshBuffer.addData(mesh);
 		Renderer renderer = new Renderer(meshBuffer);
 		renderer.setRenderInfo(new RenderInfo(new CullFaceDisable(),AtmosphereShader.getInstance()));

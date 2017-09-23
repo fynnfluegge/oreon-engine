@@ -1,7 +1,7 @@
 package org.oreon.demo.oreonworlds.assets.rocks;
 
-import org.oreon.core.buffers.MeshVBO;
-import org.oreon.core.configs.Default;
+import org.oreon.core.gl.buffers.GLMeshVBO;
+import org.oreon.core.gl.config.Default;
 import org.oreon.core.instancing.InstancedDataObject;
 import org.oreon.core.instancing.InstancingObject;
 import org.oreon.core.math.Vec3f;
@@ -21,7 +21,7 @@ public class Rock02ClusterGroup extends InstancingObject{
 		for (Model model : models){
 			
 			InstancedDataObject object = new InstancedDataObject();
-			MeshVBO meshBuffer = new MeshVBO();
+			GLMeshVBO meshBuffer = new GLMeshVBO();
 			model.getMesh().setTangentSpace(true);
 			Util.generateTangentsBitangents(model.getMesh());
 			model.getMesh().setInstanced(true);

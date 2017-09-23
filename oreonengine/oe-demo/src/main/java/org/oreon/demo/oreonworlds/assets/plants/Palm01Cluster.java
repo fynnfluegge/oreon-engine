@@ -3,8 +3,8 @@ package org.oreon.demo.oreonworlds.assets.plants;
 import java.nio.FloatBuffer;
 import java.util.List;
 
-import org.oreon.core.buffers.MeshVBO;
-import org.oreon.core.buffers.UBO;
+import org.oreon.core.gl.buffers.GLMeshVBO;
+import org.oreon.core.gl.buffers.GLUBO;
 import org.oreon.core.instancing.InstancedDataObject;
 import org.oreon.core.instancing.InstancingCluster;
 import org.oreon.core.math.Matrix4f;
@@ -50,10 +50,10 @@ public class Palm01Cluster extends InstancingCluster{
 			getLowPolyIndices().add(i);
 		}
 		
-		setModelMatricesBuffer(new UBO());
+		setModelMatricesBuffer(new GLUBO());
 		getModelMatricesBuffer().allocate(buffersize);
 		
-		setWorldMatricesBuffer(new UBO());
+		setWorldMatricesBuffer(new GLUBO());
 		getWorldMatricesBuffer().allocate(buffersize);	
 		
 		/**
@@ -76,7 +76,7 @@ public class Palm01Cluster extends InstancingCluster{
 		
 		for (InstancedDataObject dataObject : objects){
 			GameObject object = new GameObject();
-			MeshVBO vao = new MeshVBO((MeshVBO) dataObject.getVao());
+			GLMeshVBO vao = new GLMeshVBO((GLMeshVBO) dataObject.getVao());
 			
 			Renderer renderer = new Renderer(vao);
 			renderer.setRenderInfo(dataObject.getRenderInfo());
@@ -90,12 +90,12 @@ public class Palm01Cluster extends InstancingCluster{
 			addChild(object);
 		}
 		
-		((MeshVBO) ((Renderer) ((GameObject) getChildren().get(0)).getComponent("Renderer")).getVbo()).setInstances(getHighPolyInstances());
-		((MeshVBO) ((Renderer) ((GameObject) getChildren().get(1)).getComponent("Renderer")).getVbo()).setInstances(getHighPolyInstances());
-		((MeshVBO) ((Renderer) ((GameObject) getChildren().get(2)).getComponent("Renderer")).getVbo()).setInstances(getHighPolyInstances());
-		((MeshVBO) ((Renderer) ((GameObject) getChildren().get(3)).getComponent("Renderer")).getVbo()).setInstances(getHighPolyInstances());
+		((GLMeshVBO) ((Renderer) ((GameObject) getChildren().get(0)).getComponent("Renderer")).getVbo()).setInstances(getHighPolyInstances());
+		((GLMeshVBO) ((Renderer) ((GameObject) getChildren().get(1)).getComponent("Renderer")).getVbo()).setInstances(getHighPolyInstances());
+		((GLMeshVBO) ((Renderer) ((GameObject) getChildren().get(2)).getComponent("Renderer")).getVbo()).setInstances(getHighPolyInstances());
+		((GLMeshVBO) ((Renderer) ((GameObject) getChildren().get(3)).getComponent("Renderer")).getVbo()).setInstances(getHighPolyInstances());
 		
-		((MeshVBO) ((Renderer) ((GameObject) getChildren().get(4)).getComponent("Renderer")).getVbo()).setInstances(getLowPolyInstances());
+		((GLMeshVBO) ((Renderer) ((GameObject) getChildren().get(4)).getComponent("Renderer")).getVbo()).setInstances(getLowPolyInstances());
 	}
 
 	public void update()

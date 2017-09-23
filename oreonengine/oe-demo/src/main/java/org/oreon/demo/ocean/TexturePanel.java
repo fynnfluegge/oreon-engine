@@ -3,10 +3,10 @@ package org.oreon.demo.ocean;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
-import org.oreon.core.configs.Default;
+import org.oreon.core.gl.config.Default;
+import org.oreon.core.gl.shaders.gui.GuiShader;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.math.Transform;
-import org.oreon.core.shaders.gui.GuiShader;
 import org.oreon.core.texture.Texture2D;
 import org.oreon.core.utils.MeshGenerator;
 import org.oreon.modules.gui.GUIElement;

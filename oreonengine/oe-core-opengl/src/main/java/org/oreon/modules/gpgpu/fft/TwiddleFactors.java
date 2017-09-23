@@ -7,23 +7,23 @@ import static org.lwjgl.opengl.GL42.glBindImageTexture;
 import static org.lwjgl.opengl.GL42.glTexStorage2D;
 import static org.lwjgl.opengl.GL43.glDispatchCompute;
 
-import org.oreon.core.buffers.SSBO;
 import org.oreon.core.texture.Texture2D;
-import org.oreon.core.shaders.computing.FFTTwiddleFactorsShader;
+import org.oreon.core.gl.buffers.GLSSBO;
+import org.oreon.core.gl.shaders.computing.FFTTwiddleFactorsShader;
 
 public class TwiddleFactors {
 
 	private int N;
 	private int log_2_N;
 	private FFTTwiddleFactorsShader shader;
-	private SSBO bitReversedSSBO;
+	private GLSSBO bitReversedSSBO;
 	private Texture2D texture;
 	
 	public TwiddleFactors(int N)
 	{
 		this.N = N;
 		
-		bitReversedSSBO = new SSBO();
+		bitReversedSSBO = new GLSSBO();
 		bitReversedSSBO.addData(initBitReversedIndices());
 		
 		log_2_N = (int) (Math.log(N)/Math.log(2));

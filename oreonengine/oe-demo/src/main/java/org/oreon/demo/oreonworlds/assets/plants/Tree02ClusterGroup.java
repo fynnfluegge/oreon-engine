@@ -1,8 +1,8 @@
 package org.oreon.demo.oreonworlds.assets.plants;
 
-import org.oreon.core.buffers.MeshVBO;
-import org.oreon.core.configs.CullFaceDisable;
-import org.oreon.core.configs.Default;
+import org.oreon.core.gl.buffers.GLMeshVBO;
+import org.oreon.core.gl.config.CullFaceDisable;
+import org.oreon.core.gl.config.Default;
 import org.oreon.core.instancing.InstancedDataObject;
 import org.oreon.core.instancing.InstancingCluster;
 import org.oreon.core.instancing.InstancingObject;
@@ -30,7 +30,7 @@ public class Tree02ClusterGroup extends InstancingObject{
 		for (Model model : models){
 			
 			InstancedDataObject object = new InstancedDataObject();
-			MeshVBO meshBuffer = new MeshVBO();
+			GLMeshVBO meshBuffer = new GLMeshVBO();
 			
 			if (model.equals(models[0])){
 				model.getMesh().setTangentSpace(true);
@@ -63,7 +63,7 @@ public class Tree02ClusterGroup extends InstancingObject{
 		
 		for (Model billboard : billboards){	
 			InstancedDataObject object = new InstancedDataObject();
-			MeshVBO meshBuffer = new MeshVBO();
+			GLMeshVBO meshBuffer = new GLMeshVBO();
 			
 			billboard.getMesh().setTangentSpace(false);
 			billboard.getMesh().setInstanced(true);

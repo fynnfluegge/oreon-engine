@@ -15,8 +15,8 @@ import java.nio.ByteBuffer;
 
 import org.lwjgl.glfw.GLFW;
 import org.oreon.core.texture.Texture2D;
+import org.oreon.core.gl.shaders.computing.ContrastShader;
 import org.oreon.core.shaders.Shader;
-import org.oreon.core.shaders.computing.ContrastShader;
 import org.oreon.core.system.CoreSystem;
 
 public class ContrastController {
