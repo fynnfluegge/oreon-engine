@@ -3,12 +3,10 @@
 Welcome to the Cross-Platform 3D OpenGL Engine.
 As OpenGL Binding for Java the [LWJGL 3](https://www.lwjgl.org/) API is used.
 
-Official website https://www.oreonengine.com
-
-Documentation: http://oreon3d.github.io/Oreon.Engine-OpenGL-Java
+Documentation: http://oreonengine.github.io/oreon-engine
 
 ## Build Manual
-Eclipse-Tutorial: http://oreon3d.github.io/Oreon.Engine-OpenGL-Java/_navigation/Getting_Started.html  
+Eclipse-Tutorial: http://oreonengine.github.io/oreon-engine/_navigation/Getting_Started.html
 
 
 ## Running Oreonworlds Open World Simulation
