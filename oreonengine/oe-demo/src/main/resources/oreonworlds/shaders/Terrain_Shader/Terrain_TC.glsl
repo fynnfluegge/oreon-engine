@@ -34,10 +34,18 @@ void main()
 
 	if(gl_InvocationID == 0)
 	{
-			vec3 abMid = vec3((gl_in[0].gl_Position.x + gl_in[3].gl_Position.x)/2, (gl_in[0].gl_Position.y + gl_in[3].gl_Position.y)/2, (gl_in[0].gl_Position.z + gl_in[3].gl_Position.z)/2);
-			vec3 bcMid = vec3((gl_in[3].gl_Position.x + gl_in[15].gl_Position.x)/2, (gl_in[3].gl_Position.y + gl_in[15].gl_Position.y)/2, (gl_in[3].gl_Position.z + gl_in[15].gl_Position.z)/2);
-			vec3 cdMid = vec3((gl_in[15].gl_Position.x + gl_in[12].gl_Position.x)/2, (gl_in[15].gl_Position.y + gl_in[12].gl_Position.y)/2, (gl_in[15].gl_Position.z + gl_in[12].gl_Position.z)/2);
-			vec3 daMid = vec3((gl_in[12].gl_Position.x + gl_in[0].gl_Position.x)/2, (gl_in[12].gl_Position.y + gl_in[0].gl_Position.y)/2, (gl_in[12].gl_Position.z + gl_in[0].gl_Position.z)/2);
+			vec3 abMid = vec3((gl_in[0].gl_Position.x + gl_in[3].gl_Position.x)/2, 
+							  (gl_in[0].gl_Position.y + gl_in[3].gl_Position.y)/2, 
+							  (gl_in[0].gl_Position.z + gl_in[3].gl_Position.z)/2);
+			vec3 bcMid = vec3((gl_in[3].gl_Position.x + gl_in[15].gl_Position.x)/2,
+							  (gl_in[3].gl_Position.y + gl_in[15].gl_Position.y)/2,
+							  (gl_in[3].gl_Position.z + gl_in[15].gl_Position.z)/2);
+			vec3 cdMid = vec3((gl_in[15].gl_Position.x + gl_in[12].gl_Position.x)/2,
+							  (gl_in[15].gl_Position.y + gl_in[12].gl_Position.y)/2,
+							  (gl_in[15].gl_Position.z + gl_in[12].gl_Position.z)/2);
+			vec3 daMid = vec3((gl_in[12].gl_Position.x + gl_in[0].gl_Position.x)/2, 
+							  (gl_in[12].gl_Position.y + gl_in[0].gl_Position.y)/2, 
+							  (gl_in[12].gl_Position.z + gl_in[0].gl_Position.z)/2);
 	
 			float distanceAB = distance(abMid, eyePosition);
 			float distanceBC = distance(bcMid, eyePosition);

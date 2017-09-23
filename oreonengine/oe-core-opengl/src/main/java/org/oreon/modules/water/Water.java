@@ -19,6 +19,7 @@ import org.oreon.core.renderer.Renderer;
 import org.oreon.core.scene.GameObject;
 import org.oreon.core.scene.Scenegraph;
 import org.oreon.core.system.CoreSystem;
+import org.oreon.core.system.RenderingEngine;
 import org.oreon.core.utils.Constants;
 import org.oreon.core.utils.Util;
 import org.oreon.modules.gpgpu.NormalMapRenderer;
@@ -132,7 +133,7 @@ public class Water extends GameObject{
 	public void update()
 	{
 		setCameraUnderwater(CoreSystem.getInstance().getScenegraph().getCamera().getPosition().getY() < (getWorldTransform().getTranslation().getY())); 
-		if (CoreSystem.getInstance().getInput().isKeyHolding(GLFW.GLFW_KEY_G))
+		if (CoreSystem.getInstance().getRenderingEngine().isGrid())
 		{
 			((Renderer) getComponent("Renderer")).getRenderInfo().setShader(OceanGridShader.getInstance());
 		}

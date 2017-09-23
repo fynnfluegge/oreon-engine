@@ -23,7 +23,7 @@ public class Ocean extends Water{
 	
 	public void render(){
 		super.render();
-		TexturePanel.setTexture(((Tilde_h0) getFft().getFourierComponents().getSpectrum()).geth0kminus());
-//		TexturePanel.setTexture(((Tilde_hkt) getFft().getFourierComponents()).getDyComponents());
+//		TexturePanel.setTexture(((Tilde_h0) getFft().getFourierComponents().getSpectrum()).geth0kminus());
+		TexturePanel.setTexture(getFft().getDy());
 	}
 }

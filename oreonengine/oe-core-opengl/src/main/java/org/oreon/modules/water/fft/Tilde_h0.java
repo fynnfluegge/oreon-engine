@@ -7,6 +7,7 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE2;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE3;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 import static org.lwjgl.opengl.GL15.GL_READ_WRITE;
+import static org.lwjgl.opengl.GL15.GL_WRITE_ONLY;
 import static org.lwjgl.opengl.GL30.GL_RGBA32F;
 import static org.lwjgl.opengl.GL42.glBindImageTexture;
 import static org.lwjgl.opengl.GL42.glTexStorage2D;
@@ -81,9 +82,9 @@ public class Tilde_h0 extends FourierSpectrum{
 		
 		getShader().updateUniforms(0, 1, 2, 3);
 		
-		glBindImageTexture(0, h0k.getId(), 0, false, 0, GL_READ_WRITE, GL_RGBA32F);
+		glBindImageTexture(0, h0k.getId(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA32F);
 		
-		glBindImageTexture(1, h0kminus.getId(), 0, false, 0, GL_READ_WRITE, GL_RGBA32F);
+		glBindImageTexture(1, h0kminus.getId(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA32F);
 		
 		glDispatchCompute(getN()/16,getN()/16,1);		
 	}

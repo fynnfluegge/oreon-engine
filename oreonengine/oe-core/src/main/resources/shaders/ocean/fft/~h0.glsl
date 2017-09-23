@@ -12,11 +12,11 @@ uniform sampler2D noise_i0;
 uniform sampler2D noise_r1;
 uniform sampler2D noise_i1;
 
-uniform int N; // 256
-uniform int L; //1000
-uniform float A; //20
-uniform vec2 w; //(1,0)
-uniform float windspeed; //26
+uniform int N;
+uniform int L;
+uniform float A;
+uniform vec2 w;
+uniform float windspeed;
 
 const float g = 9.81;
 
@@ -54,10 +54,10 @@ void main(void)
 	float magSq = mag * mag;
 	
 	//sqrt(Ph(k))/sqrt(2)
-	double h0k = clamp(sqrt((A/(magSq*magSq)) * pow(dot(normalize(k), normalize(w)), 2.0) * exp(-(1.0/(magSq * L_ * L_))) * exp(-magSq*pow(L/2000.0,2.0)))/ sqrt(2.0), 0.0, float(L));
+	float h0k = clamp(sqrt((A/(magSq*magSq)) * pow(dot(normalize(k), normalize(w)), 2.0) * exp(-(1.0/(magSq * L_ * L_))) * exp(-magSq*pow(L/2000.0,2.0)))/ sqrt(2.0), -4000.0, 4000.0);
 	
 	//sqrt(Ph(-k))/sqrt(2)
-	double h0minusk = clamp(sqrt((A/(magSq*magSq)) * pow(dot(normalize(-k), normalize(w)), 2.0) * exp(-(1.0/(magSq * L_ * L_))) * exp(-magSq*pow(L/2000.0,2.0)))/ sqrt(2.0), 0.0, float(L));
+	float h0minusk = clamp(sqrt((A/(magSq*magSq)) * pow(dot(normalize(-k), normalize(w)), 2.0) * exp(-(1.0/(magSq * L_ * L_))) * exp(-magSq*pow(L/2000.0,2.0)))/ sqrt(2.0), -4000.0, 4000.0);
 	
 	vec4 gauss_random = gaussRND();
 	

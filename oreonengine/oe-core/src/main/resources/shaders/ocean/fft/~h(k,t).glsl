@@ -59,11 +59,9 @@ void main(void)
 	
 	complex fourier_amp 	 	 = complex(imageLoad(tilde_h0k, ivec2(gl_GlobalInvocationID.xy)).r, 
 							imageLoad(tilde_h0k, ivec2(gl_GlobalInvocationID.xy)).g);
-							
-	ivec2 x_inv = ivec2(gl_GlobalInvocationID.xy);
 	
-	complex fourier_amp_conj   = conj(complex(imageLoad(tilde_h0minusk, x_inv).r, 
-								imageLoad(tilde_h0minusk, x_inv).g));
+	complex fourier_amp_conj   = conj(complex(imageLoad(tilde_h0minusk, ivec2(gl_GlobalInvocationID.xy)).r, 
+								imageLoad(tilde_h0minusk, ivec2(gl_GlobalInvocationID.xy)).g));
 		
 	float cosinus = cos(w*t);
 	float sinus   = sin(w*t);
