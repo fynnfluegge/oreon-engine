@@ -23,7 +23,6 @@ import org.oreon.core.gl.light.GLDirectionalLight;
 import org.oreon.core.gl.shadow.ShadowMaps;
 import org.oreon.core.texture.Texture2D;
 import org.oreon.core.instancing.InstancingObjectHandler;
-import org.oreon.core.light.DirectionalLight;
 import org.oreon.core.light.LightHandler;
 import org.oreon.core.math.Quaternion;
 import org.oreon.core.system.CoreSystem;

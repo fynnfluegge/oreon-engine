@@ -23,12 +23,14 @@ private static FractalFourierComponentsShader instance = null;
 		addComputeShader(ResourceLoader.loadShader("shaders/terrain/fractals/FractalFourierComponents.glsl"));
 		compileShader();
 		
+		addUniform("N");
 		addUniform("L");
 		addUniform("t");
 	}
 	
-	public void updateUniforms(int L, float t)
+	public void updateUniforms(int N, int L, float t)
 	{
+		setUniformi("N", N);
 		setUniformi("L", L);
 		setUniformf("t", t);
 	}

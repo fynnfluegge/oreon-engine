@@ -1,7 +1,6 @@
 package org.oreon.core.gl.shaders.blinnphong;
 
 import org.oreon.core.gl.light.GLDirectionalLight;
-import org.oreon.core.light.DirectionalLight;
 import org.oreon.core.model.Material;
 import org.oreon.core.scene.GameObject;
 import org.oreon.core.shaders.Shader;

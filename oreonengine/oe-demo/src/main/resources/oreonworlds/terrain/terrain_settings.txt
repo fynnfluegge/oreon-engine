@@ -24,6 +24,9 @@ material3_displaceScale 6.0
 material3_emission 0.0
 material3_shininess 20.0
 
+#maps
+heightmap 
+
 #terrain mesh settings
 scaleXZ 6000.0
 scaleY 1200.0
@@ -44,11 +47,12 @@ lod6_range 50
 lod7_range 0
 lod8_range 0
 
+#fractals
 fractal_stage0
 amp 8.0
 l 12.0
 scaling 1
-strength 8.0
+strength 1.0
 normalStrength 256
 random 589
 
@@ -56,7 +60,7 @@ fractal_stage1
 amp 2.0
 l 20.0
 scaling 2
-strength 2
+strength 1
 normalStrength 128
 random 558
 

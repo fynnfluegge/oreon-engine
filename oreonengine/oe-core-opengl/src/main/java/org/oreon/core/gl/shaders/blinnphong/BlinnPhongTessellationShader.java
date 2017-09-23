@@ -7,7 +7,6 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE3;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import org.oreon.core.gl.light.GLDirectionalLight;
-import org.oreon.core.light.DirectionalLight;
 import org.oreon.core.model.Material;
 import org.oreon.core.scene.GameObject;
 import org.oreon.core.shaders.Shader;

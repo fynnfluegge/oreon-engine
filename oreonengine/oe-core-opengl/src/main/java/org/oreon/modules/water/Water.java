@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.nio.ByteBuffer;
 
-import org.lwjgl.glfw.GLFW;
 import org.oreon.core.gl.buffers.GLFramebuffer;
 import org.oreon.core.gl.buffers.GLPatchVBO;
 import org.oreon.core.gl.config.WaterConfig;
@@ -19,7 +18,6 @@ import org.oreon.core.renderer.Renderer;
 import org.oreon.core.scene.GameObject;
 import org.oreon.core.scene.Scenegraph;
 import org.oreon.core.system.CoreSystem;
-import org.oreon.core.system.RenderingEngine;
 import org.oreon.core.utils.Constants;
 import org.oreon.core.utils.Util;
 import org.oreon.modules.gpgpu.NormalMapRenderer;

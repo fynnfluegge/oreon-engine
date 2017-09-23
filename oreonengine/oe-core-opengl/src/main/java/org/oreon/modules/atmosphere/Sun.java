@@ -5,7 +5,6 @@ import org.oreon.core.gl.config.Default;
 import org.oreon.core.gl.light.GLDirectionalLight;
 import org.oreon.core.gl.query.GLOcclusionQuery;
 import org.oreon.core.texture.Texture2D;
-import org.oreon.core.light.DirectionalLight;
 import org.oreon.core.light.Light;
 import org.oreon.core.light.LightHandler;
 import org.oreon.core.math.Vec3f;

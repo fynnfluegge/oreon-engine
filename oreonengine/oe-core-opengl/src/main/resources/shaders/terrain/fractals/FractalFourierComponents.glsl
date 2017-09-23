@@ -9,6 +9,7 @@ layout (binding = 3, rgba32f) uniform image2D h0k;
 
 layout (binding = 4, rgba32f) uniform image2D h0kminus;
 
+uniform int N;
 uniform int L;
 uniform float t;
 
@@ -43,7 +44,7 @@ complex conj(complex c)
 
 void main(void)
 {
-	vec2 x = ivec2(gl_GlobalInvocationID.xy);
+	vec2 x = ivec2(gl_GlobalInvocationID.xy) - float(N)/2.0;
 	
 	vec2 k = vec2(2.0 * M_PI * x.x/L, 2.0 * M_PI * x.y/L);
 	

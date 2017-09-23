@@ -35,7 +35,7 @@ public class FractalFourierComponents extends FourierComponents{
 	public void update(float t) {
 		
 		getShader().bind();
-		getShader().updateUniforms(L,t);
+		getShader().updateUniforms(N,L,t);
 		glBindImageTexture(0, fourierComponents.getId(), 0, false, 0, GL_READ_WRITE, GL_RGBA32F);
 		glBindImageTexture(3, ((FractalSpectrum)getSpectrum()).geth0k().getId(), 0, false, 0, GL_READ_WRITE, GL_RGBA32F);
 		glBindImageTexture(4,  ((FractalSpectrum)getSpectrum()).geth0kminus().getId(), 0, false, 0, GL_READ_WRITE, GL_RGBA32F);

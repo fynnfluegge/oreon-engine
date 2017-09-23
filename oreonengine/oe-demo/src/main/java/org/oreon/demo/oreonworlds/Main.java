@@ -53,17 +53,17 @@ public class Main {
 		coreSystem.getScenegraph().addObject(new SkySphere());	
 		coreSystem.getScenegraph().addObject(new Sun());
 		
-//		coreSystem.getScenegraph().getRoot().addChild(new Grass01ClusterGroup());
-//		coreSystem.getScenegraph().getRoot().addChild(new Plant01ClusterGroup());
-//		coreSystem.getScenegraph().getRoot().addChild(new Bush01ClusterGroup());
-//		
-//		coreSystem.getScenegraph().getRoot().addChild(new Palm01ClusterGroup());
-//		coreSystem.getScenegraph().getRoot().addChild(new Tree01ClusterGroup());
-//		coreSystem.getScenegraph().getRoot().addChild(new Tree02ClusterGroup());
-//		
-//		coreSystem.getScenegraph().getRoot().addChild(new Rock01ClusterGroup());
-//		coreSystem.getScenegraph().getRoot().addChild(new Rock02ClusterGroup());
-//		
+		coreSystem.getScenegraph().getRoot().addChild(new Grass01ClusterGroup());
+		coreSystem.getScenegraph().getRoot().addChild(new Plant01ClusterGroup());
+		coreSystem.getScenegraph().getRoot().addChild(new Bush01ClusterGroup());
+		
+		coreSystem.getScenegraph().getRoot().addChild(new Palm01ClusterGroup());
+		coreSystem.getScenegraph().getRoot().addChild(new Tree01ClusterGroup());
+		coreSystem.getScenegraph().getRoot().addChild(new Tree02ClusterGroup());
+		
+		coreSystem.getScenegraph().getRoot().addChild(new Rock01ClusterGroup());
+		coreSystem.getScenegraph().getRoot().addChild(new Rock02ClusterGroup());
+		
 //		coreSystem.getScenegraph().setWater(new Ocean());
 		
 		coreEngine.start();
