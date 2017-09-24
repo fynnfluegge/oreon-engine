@@ -1,10 +1,10 @@
 package org.oreon.core.gl.shaders.gui;
 
+import org.oreon.core.gl.shaders.GLShader;
 import org.oreon.core.math.Matrix4f;
-import org.oreon.core.shaders.Shader;
-import org.oreon.core.utils.ResourceLoader;
+import org.oreon.core.util.ResourceLoader;
 
-public class GuiShader extends Shader{
+public class GuiShader extends GLShader{
 
 	private static GuiShader instance = null;
 	

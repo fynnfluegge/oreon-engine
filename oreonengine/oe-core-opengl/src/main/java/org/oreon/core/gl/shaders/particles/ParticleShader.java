@@ -3,10 +3,10 @@ package org.oreon.core.gl.shaders.particles;
 import static org.lwjgl.opengl.GL30.GL_INTERLEAVED_ATTRIBS;
 import static org.lwjgl.opengl.GL30.glTransformFeedbackVaryings;
 
-import org.oreon.core.shaders.Shader;
-import org.oreon.core.utils.ResourceLoader;
+import org.oreon.core.gl.shaders.GLShader;
+import org.oreon.core.util.ResourceLoader;
 
-public class ParticleShader extends Shader {
+public class ParticleShader extends GLShader {
 	
 	private static ParticleShader instance = null;
 	

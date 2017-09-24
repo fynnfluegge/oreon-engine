@@ -1,13 +1,13 @@
 package org.oreon.core.gl.shaders.blinnphong;
 
 import org.oreon.core.gl.light.GLDirectionalLight;
+import org.oreon.core.gl.shaders.GLShader;
 import org.oreon.core.model.Material;
 import org.oreon.core.scene.GameObject;
-import org.oreon.core.shaders.Shader;
 import org.oreon.core.system.CoreSystem;
-import org.oreon.core.utils.ResourceLoader;
+import org.oreon.core.util.ResourceLoader;
 
-public class BlinnPhongRGBAShader extends Shader{
+public class BlinnPhongRGBAShader extends GLShader{
 	
 	private static BlinnPhongRGBAShader instance;
 

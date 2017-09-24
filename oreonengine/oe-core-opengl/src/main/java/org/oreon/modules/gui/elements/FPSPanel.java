@@ -3,15 +3,15 @@ package org.oreon.modules.gui.elements;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
-import org.oreon.core.texture.Texture2D;
 import org.oreon.core.gl.config.Default;
 import org.oreon.core.gl.shaders.gui.GuiShader;
+import org.oreon.core.gl.texture.Texture2D;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.math.Transform;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.system.CoreEngine;
 import org.oreon.core.system.CoreSystem;
-import org.oreon.core.utils.Util;
+import org.oreon.core.util.Util;
 import org.oreon.modules.gui.GUIElement;
 import org.oreon.modules.gui.GUIObjectLoader;
 import org.oreon.modules.gui.GUIVAO;

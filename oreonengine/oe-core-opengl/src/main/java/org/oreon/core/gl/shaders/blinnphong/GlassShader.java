@@ -1,13 +1,13 @@
 package org.oreon.core.gl.shaders.blinnphong;
 
 import org.oreon.core.gl.light.GLDirectionalLight;
+import org.oreon.core.gl.shaders.GLShader;
 import org.oreon.core.model.Material;
 import org.oreon.core.scene.GameObject;
-import org.oreon.core.shaders.Shader;
 import org.oreon.core.system.CoreSystem;
-import org.oreon.core.utils.ResourceLoader;
+import org.oreon.core.util.ResourceLoader;
 
-public class GlassShader extends Shader{
+public class GlassShader extends GLShader{
 	
 	private static GlassShader instance;
 

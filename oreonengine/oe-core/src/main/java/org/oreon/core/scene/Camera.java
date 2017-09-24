@@ -4,8 +4,8 @@ import org.oreon.core.math.Matrix4f;
 import org.oreon.core.math.Quaternion;
 import org.oreon.core.math.Vec3f;
 import org.oreon.core.system.CoreSystem;
-import org.oreon.core.utils.Constants;
-import org.oreon.core.utils.Util;
+import org.oreon.core.util.Constants;
+import org.oreon.core.util.Util;
 
 
 public abstract class Camera {

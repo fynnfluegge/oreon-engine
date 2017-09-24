@@ -20,7 +20,7 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.model.Mesh;
-import org.oreon.core.utils.BufferUtil;
+import org.oreon.core.util.BufferUtil;
 
 public class GUIVAO {
 

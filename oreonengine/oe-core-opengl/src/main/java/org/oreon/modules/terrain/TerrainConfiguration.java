@@ -11,12 +11,12 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Random;
 
-import org.oreon.core.texture.Texture2D;
+import org.oreon.core.gl.shaders.GLShader;
+import org.oreon.core.gl.texture.Texture2D;
 import org.oreon.core.model.Material;
-import org.oreon.core.shaders.Shader;
 import org.oreon.core.system.CoreSystem;
-import org.oreon.core.utils.Constants;
-import org.oreon.core.utils.Util;
+import org.oreon.core.util.Constants;
+import org.oreon.core.util.Util;
 import org.oreon.modules.terrain.fractals.FractalMaps;
 
 public class TerrainConfiguration {
@@ -44,9 +44,9 @@ public class TerrainConfiguration {
 	private int[] lod_range = new int[8];
 	private int[] lod_morphing_area = new int[8];
 	
-	private Shader shader;
-	private Shader gridShader;
-	private Shader shadowShader;
+	private GLShader shader;
+	private GLShader gridShader;
+	private GLShader shadowShader;
 	
 	public void saveToFile()
 	{
@@ -540,11 +540,11 @@ public class TerrainConfiguration {
 		return fractals;
 	}
 
-	public Shader getGridShader() {
+	public GLShader getGridShader() {
 		return gridShader;
 	}
 
-	public void setGridShader(Shader gridShader) {
+	public void setGridShader(GLShader gridShader) {
 		this.gridShader = gridShader;
 	}
 
@@ -557,19 +557,19 @@ public class TerrainConfiguration {
 		return lod_morphing_area;
 	}
 
-	public Shader getShadowShader() {
+	public GLShader getShadowShader() {
 		return shadowShader;
 	}
 
-	public void setShadowShader(Shader shadowShader) {
+	public void setShadowShader(GLShader shadowShader) {
 		this.shadowShader = shadowShader;
 	}
 
-	public Shader getShader() {
+	public GLShader getShader() {
 		return shader;
 	}
 
-	public void setShader(Shader shader) {
+	public void setShader(GLShader shader) {
 		this.shader = shader;
 	}
 

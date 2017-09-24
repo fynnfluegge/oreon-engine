@@ -1,10 +1,10 @@
-package org.oreon.core.gl.shaders.water;
+package org.oreon.modules.water.shader;
 
+import org.oreon.core.gl.shaders.GLShader;
 import org.oreon.core.math.Vec2f;
-import org.oreon.core.shaders.Shader;
-import org.oreon.core.utils.ResourceLoader;
+import org.oreon.core.util.ResourceLoader;
 
-public class Tilde_h0Shader extends Shader{
+public class Tilde_h0Shader extends GLShader{
 
 	private static Tilde_h0Shader instance = null;
 	

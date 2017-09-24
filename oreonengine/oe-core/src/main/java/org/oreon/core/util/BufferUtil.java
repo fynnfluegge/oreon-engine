@@ -1,4 +1,4 @@
-package org.oreon.core.utils;
+package org.oreon.core.util;
 
 import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;

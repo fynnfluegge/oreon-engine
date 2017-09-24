@@ -5,12 +5,9 @@ import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.IOException;
 import java.util.Random;
-
 import javax.imageio.ImageIO;
-
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.model.Mesh;
-import org.oreon.core.model.Vertex;
 
 public class ProceduralTexturing{
 
@@ -57,15 +54,6 @@ public class ProceduralTexturing{
 				ImageIO.write(image, "jpg", output);
 			} catch (IOException e) {
 				e.printStackTrace();
-			}
-		}
-		
-		public static void mapCoordsToTextureFormat(Vertex[] vertices, Texture2D texture){
-			
-			float div = texture.getHeight()/texture.getWidth();
-			
-			for(Vertex vertex : vertices){
-				vertex.getTextureCoord().mul(div);
 			}
 		}
 }

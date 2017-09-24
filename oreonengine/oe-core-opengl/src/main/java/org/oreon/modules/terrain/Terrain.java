@@ -4,11 +4,11 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.oreon.core.gl.shaders.GLShader;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.scene.Node;
-import org.oreon.core.shaders.Shader;
 import org.oreon.core.system.CoreSystem;
-import org.oreon.core.utils.Constants;
+import org.oreon.core.util.Constants;
 
 
 public class Terrain extends Node implements Runnable{
@@ -30,7 +30,7 @@ public class Terrain extends Node implements Runnable{
 	      return instance;
 	}
 		
-	public void init (String config, String lowPolyConfig, Shader shader, Shader grid, Shader shadow)
+	public void init (String config, String lowPolyConfig, GLShader shader, GLShader grid, GLShader shadow)
 	{
 		configuration = new TerrainConfiguration();
 		configuration.loadFile(config);

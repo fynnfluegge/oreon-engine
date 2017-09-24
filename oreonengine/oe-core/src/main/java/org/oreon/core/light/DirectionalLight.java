@@ -7,8 +7,8 @@ import org.oreon.core.math.Matrix4f;
 import org.oreon.core.math.Vec3f;
 import org.oreon.core.shadow.PSSMCamera;
 import org.oreon.core.system.CoreSystem;
-import org.oreon.core.utils.BufferUtil;
-import org.oreon.core.utils.Constants;
+import org.oreon.core.util.BufferUtil;
+import org.oreon.core.util.Constants;
 
 public abstract class DirectionalLight extends Light{
 

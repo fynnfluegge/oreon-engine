@@ -3,15 +3,15 @@ package org.oreon.demo.oreonworlds.shaders.terrain;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE15;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
+import org.oreon.core.gl.shaders.GLShader;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.scene.GameObject;
-import org.oreon.core.shaders.Shader;
-import org.oreon.core.utils.Constants;
-import org.oreon.core.utils.ResourceLoader;
+import org.oreon.core.util.Constants;
+import org.oreon.core.util.ResourceLoader;
 import org.oreon.modules.terrain.TerrainConfiguration;
 import org.oreon.modules.terrain.TerrainNode;
 
-public class TerrainShadowShader extends Shader{
+public class TerrainShadowShader extends GLShader{
 	
 	private static TerrainShadowShader instance = null;
 	

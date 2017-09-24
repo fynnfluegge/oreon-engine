@@ -7,8 +7,8 @@ import org.oreon.core.instancing.InstancingObject;
 import org.oreon.core.math.Vec3f;
 import org.oreon.core.model.Model;
 import org.oreon.core.renderer.RenderInfo;
-import org.oreon.core.utils.Util;
-import org.oreon.core.utils.modelLoader.obj.OBJLoader;
+import org.oreon.core.util.Util;
+import org.oreon.core.util.modelLoader.obj.OBJLoader;
 import org.oreon.demo.oreonworlds.shaders.rocks.RockHighPolyShader;
 import org.oreon.demo.oreonworlds.shaders.rocks.RockShadowShader;
 

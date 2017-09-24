@@ -8,15 +8,15 @@ import static org.lwjgl.opengl.GL42.glBindImageTexture;
 import static org.lwjgl.opengl.GL42.glTexStorage2D;
 import static org.lwjgl.opengl.GL43.glDispatchCompute;
 
-import org.oreon.core.texture.Texture2D;
+import org.oreon.core.gl.shaders.GLShader;
 import org.oreon.core.gl.shaders.computing.NormalMapShader;
-import org.oreon.core.shaders.Shader;
+import org.oreon.core.gl.texture.Texture2D;
 
 public class NormalMapRenderer {
 
 	private float strength;
 	private Texture2D normalmap;
-	private Shader computeShader;
+	private GLShader computeShader;
 	private int N;
 	
 	public NormalMapRenderer(int N){

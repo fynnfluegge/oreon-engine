@@ -1,7 +1,7 @@
 package org.oreon.modules.atmosphere;
 
 import org.oreon.core.scene.Node;
-import org.oreon.core.utils.Constants;
+import org.oreon.core.util.Constants;
 
 public class SkySphere extends Node{
 

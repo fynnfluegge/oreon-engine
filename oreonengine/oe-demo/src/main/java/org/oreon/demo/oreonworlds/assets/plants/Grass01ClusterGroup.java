@@ -10,7 +10,7 @@ import org.oreon.core.math.Vec3f;
 import org.oreon.core.model.Model;
 import org.oreon.core.renderer.RenderInfo;
 import org.oreon.core.system.CoreSystem;
-import org.oreon.core.utils.modelLoader.obj.OBJLoader;
+import org.oreon.core.util.modelLoader.obj.OBJLoader;
 import org.oreon.demo.oreonworlds.shaders.plants.GrassShader;
 import org.oreon.demo.oreonworlds.shaders.plants.GrassShadowShader;
 

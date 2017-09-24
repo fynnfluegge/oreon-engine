@@ -1,9 +1,9 @@
 package org.oreon.core.gl.shaders.computing;
 
-import org.oreon.core.shaders.Shader;
-import org.oreon.core.utils.ResourceLoader;
+import org.oreon.core.gl.shaders.GLShader;
+import org.oreon.core.util.ResourceLoader;
 
-public class ContrastShader extends Shader{
+public class ContrastShader extends GLShader{
 
 	private static ContrastShader instance = null;
 

@@ -1,16 +1,16 @@
 package org.oreon.modules.gui;
 
 import org.oreon.core.configs.RenderConfig;
+import org.oreon.core.gl.shaders.GLShader;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.math.Transform;
 import org.oreon.core.math.Vec2f;
-import org.oreon.core.shaders.Shader;
 
 public abstract class GUIElement {
 
 	private Transform orthoTransform;
 	private Matrix4f orthographicMatrix;
-	private Shader shader;
+	private GLShader shader;
 	private GUIVAO vao;
 	private RenderConfig config;
 	protected Vec2f[] texCoords;
@@ -37,11 +37,11 @@ public abstract class GUIElement {
 		this.orthographicMatrix = orthographicMatrix;
 	}
 
-	public Shader getShader() {
+	public GLShader getShader() {
 		return shader;
 	}
 
-	public void setShader(Shader shader) {
+	public void setShader(GLShader shader) {
 		this.shader = shader;
 	}
 

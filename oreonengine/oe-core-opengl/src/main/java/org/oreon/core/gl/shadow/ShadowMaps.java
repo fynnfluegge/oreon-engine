@@ -6,8 +6,8 @@ import static org.lwjgl.opengl.GL42.glTexStorage3D;
 import org.oreon.core.configs.RenderConfig;
 import org.oreon.core.gl.buffers.GLFramebuffer;
 import org.oreon.core.gl.config.ShadowConfig;
-import org.oreon.core.texture.Texture2DArray;
-import org.oreon.core.utils.Constants;
+import org.oreon.core.gl.texture.Texture2DArray;
+import org.oreon.core.util.Constants;
 
 import static org.lwjgl.opengl.GL20.glDrawBuffers;
 import static org.lwjgl.opengl.GL30.GL_DEPTH_ATTACHMENT;

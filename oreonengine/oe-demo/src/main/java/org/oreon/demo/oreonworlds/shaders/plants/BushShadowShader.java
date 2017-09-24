@@ -2,15 +2,15 @@ package org.oreon.demo.oreonworlds.shaders.plants;
 
 import java.util.List;
 
+import org.oreon.core.gl.shaders.GLShader;
 import org.oreon.core.instancing.InstancingCluster;
 import org.oreon.core.scene.GameObject;
-import org.oreon.core.shaders.Shader;
 import org.oreon.core.system.CoreSystem;
-import org.oreon.core.utils.Constants;
-import org.oreon.core.utils.ResourceLoader;
+import org.oreon.core.util.Constants;
+import org.oreon.core.util.ResourceLoader;
 import org.oreon.demo.oreonworlds.assets.plants.Bush01Cluster;
 
-public class BushShadowShader extends Shader{
+public class BushShadowShader extends GLShader{
 	
 	private static BushShadowShader instance;
 

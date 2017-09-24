@@ -1,10 +1,10 @@
 package org.oreon.modules.atmosphere;
 
+import org.oreon.core.gl.shaders.GLShader;
 import org.oreon.core.scene.GameObject;
-import org.oreon.core.shaders.Shader;
-import org.oreon.core.utils.ResourceLoader;
+import org.oreon.core.util.ResourceLoader;
 
-public class AtmosphereShader extends Shader{
+public class AtmosphereShader extends GLShader{
 
 	private static AtmosphereShader instance = null;
 	

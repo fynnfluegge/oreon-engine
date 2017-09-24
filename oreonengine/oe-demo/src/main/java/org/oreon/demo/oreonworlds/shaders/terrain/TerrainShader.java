@@ -18,18 +18,18 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE2;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE3;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
+import org.oreon.core.gl.shaders.GLShader;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.scene.GameObject;
-import org.oreon.core.shaders.Shader;
 import org.oreon.core.system.CoreSystem;
-import org.oreon.core.utils.Constants;
-import org.oreon.core.utils.ResourceLoader;
+import org.oreon.core.util.Constants;
+import org.oreon.core.util.ResourceLoader;
 import org.oreon.modules.terrain.TerrainConfiguration;
 import org.oreon.modules.terrain.TerrainNode;
 import org.oreon.modules.water.UnderWater;
 import org.oreon.system.desktop.GLRenderingEngine;
 
-public class TerrainShader extends Shader{
+public class TerrainShader extends GLShader{
 	
 	private static TerrainShader instance = null;
 	

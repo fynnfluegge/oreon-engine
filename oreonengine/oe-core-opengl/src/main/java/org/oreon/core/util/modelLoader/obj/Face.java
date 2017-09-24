@@ -1,4 +1,4 @@
-package org.oreon.core.utils.modelLoader.obj;
+package org.oreon.core.util.modelLoader.obj;
 
 public class Face {
 

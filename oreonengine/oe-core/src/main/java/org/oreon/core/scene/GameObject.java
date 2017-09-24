@@ -5,7 +5,7 @@ import static org.lwjgl.opengl.GL11.glViewport;
 import java.util.HashMap;
 
 import org.oreon.core.system.CoreSystem;
-import org.oreon.core.utils.Constants;
+import org.oreon.core.util.Constants;
 
 public class GameObject extends Node{
 

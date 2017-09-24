@@ -1,4 +1,4 @@
-package org.oreon.core.utils.modelLoader.obj;
+package org.oreon.core.util.modelLoader.obj;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -8,14 +8,15 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashMap;
 
-import org.oreon.core.texture.Texture2D;
+import org.oreon.core.gl.texture.Texture2D;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.math.Vec3f;
 import org.oreon.core.model.Material;
 import org.oreon.core.model.Mesh;
 import org.oreon.core.model.Model;
 import org.oreon.core.model.Vertex;
-import org.oreon.core.utils.Util;
+import org.oreon.core.util.GLUtil;
+import org.oreon.core.util.Util;
 
 public class OBJLoader {
 
@@ -200,9 +201,9 @@ public class OBJLoader {
 						for (PolygonGroup polygonGroup : object.getPolygonGroups()){
 							for (Integer key : polygonGroup.getSmoothingGroups().keySet()){
 								if (frontface == Frontface.CW)
-									Util.generateNormalsCW(polygonGroup.getSmoothingGroups().get(key));
+									GLUtil.generateNormalsCW(polygonGroup.getSmoothingGroups().get(key));
 								else
-									Util.generateNormalsCCW(polygonGroup.getSmoothingGroups().get(key));
+									GLUtil.generateNormalsCCW(polygonGroup.getSmoothingGroups().get(key));
 							}
 						}
 					}

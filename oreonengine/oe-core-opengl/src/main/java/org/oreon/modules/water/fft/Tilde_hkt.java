@@ -9,9 +9,9 @@ import static org.lwjgl.opengl.GL15.GL_READ_ONLY;
 import static org.lwjgl.opengl.GL42.glBindImageTexture;
 import static org.lwjgl.opengl.GL43.glDispatchCompute;
 
-import org.oreon.core.gl.shaders.water.Tilde_hktShader;
-import org.oreon.core.texture.Texture2D;
+import org.oreon.core.gl.texture.Texture2D;
 import org.oreon.modules.gpgpu.fft.FourierComponents;
+import org.oreon.modules.water.shader.Tilde_hktShader;
 
 public class Tilde_hkt extends FourierComponents{
 	

@@ -1,4 +1,4 @@
-package org.oreon.core.gl.shaders.water;
+package org.oreon.modules.water.shader;
 
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
@@ -12,14 +12,14 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE8;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import org.oreon.core.gl.light.GLDirectionalLight;
+import org.oreon.core.gl.shaders.GLShader;
 import org.oreon.core.scene.GameObject;
-import org.oreon.core.shaders.Shader;
 import org.oreon.core.system.CoreSystem;
-import org.oreon.core.utils.ResourceLoader;
+import org.oreon.core.util.ResourceLoader;
 import org.oreon.modules.water.UnderWater;
 import org.oreon.modules.water.Water;
 
-public class OceanBRDFShader extends Shader{
+public class OceanBRDFShader extends GLShader{
 
 	private static OceanBRDFShader instance = null;
 

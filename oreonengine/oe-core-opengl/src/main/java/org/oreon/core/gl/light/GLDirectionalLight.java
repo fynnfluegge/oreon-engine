@@ -4,8 +4,8 @@ import org.oreon.core.gl.buffers.GLUBO;
 import org.oreon.core.light.DirectionalLight;
 import org.oreon.core.shadow.PSSMCamera;
 import org.oreon.core.system.CoreSystem;
-import org.oreon.core.utils.BufferUtil;
-import org.oreon.core.utils.Constants;
+import org.oreon.core.util.BufferUtil;
+import org.oreon.core.util.Constants;
 
 public class GLDirectionalLight extends DirectionalLight{
 

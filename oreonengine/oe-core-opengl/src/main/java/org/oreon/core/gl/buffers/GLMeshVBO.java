@@ -9,8 +9,8 @@ import static org.lwjgl.opengl.GL31.glDrawElementsInstanced;
 import org.oreon.core.buffers.VBO;
 import org.oreon.core.model.Mesh;
 import org.oreon.core.model.Vertex;
-import org.oreon.core.utils.BufferUtil;
-import org.oreon.core.utils.IntegerReference;
+import org.oreon.core.util.BufferUtil;
+import org.oreon.core.util.IntegerReference;
 
 import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
 import static org.lwjgl.opengl.GL15.GL_ELEMENT_ARRAY_BUFFER;

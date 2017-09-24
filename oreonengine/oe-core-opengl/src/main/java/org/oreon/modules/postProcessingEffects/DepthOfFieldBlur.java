@@ -14,10 +14,10 @@ import static org.lwjgl.opengl.GL43.glDispatchCompute;
 
 import java.nio.ByteBuffer;
 
-import org.oreon.core.texture.Texture2D;
 import org.oreon.core.gl.buffers.GLFramebuffer;
 import org.oreon.core.gl.shaders.dofBlur.DepthOfFieldHorizontalBlurShader;
 import org.oreon.core.gl.shaders.dofBlur.DepthOfFieldVerticalBlurShader;
+import org.oreon.core.gl.texture.Texture2D;
 import org.oreon.core.system.CoreSystem;
 
 public class DepthOfFieldBlur {

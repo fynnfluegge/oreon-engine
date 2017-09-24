@@ -19,7 +19,7 @@ import static org.lwjgl.opengl.GL40.glPatchParameteri;
 import org.oreon.core.buffers.VBO;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.math.Vec3f;
-import org.oreon.core.utils.BufferUtil;
+import org.oreon.core.util.BufferUtil;
 
 import static org.lwjgl.opengl.GL40.GL_PATCHES;
 import static org.lwjgl.opengl.GL11.glDrawArrays;

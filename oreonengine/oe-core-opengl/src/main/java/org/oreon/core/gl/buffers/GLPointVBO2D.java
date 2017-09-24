@@ -18,7 +18,7 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
 import org.oreon.core.buffers.VBO;
 import org.oreon.core.math.Vec2f;
-import org.oreon.core.utils.BufferUtil;
+import org.oreon.core.util.BufferUtil;
 
 public class GLPointVBO2D implements VBO{
 

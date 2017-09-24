@@ -1,4 +1,4 @@
-package org.oreon.core.utils;
+package org.oreon.core.util;
 
 public class IntegerReference {
 

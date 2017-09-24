@@ -7,14 +7,14 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE3;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import org.oreon.core.gl.light.GLDirectionalLight;
+import org.oreon.core.gl.shaders.GLShader;
 import org.oreon.core.model.Material;
 import org.oreon.core.scene.GameObject;
-import org.oreon.core.shaders.Shader;
 import org.oreon.core.system.CoreSystem;
-import org.oreon.core.utils.ResourceLoader;
+import org.oreon.core.util.ResourceLoader;
 
 
-public class BlinnPhongTessellationShader extends Shader{
+public class BlinnPhongTessellationShader extends GLShader{
 	
 	private static BlinnPhongTessellationShader instance = null;
 	

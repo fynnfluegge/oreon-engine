@@ -13,12 +13,12 @@ import static org.lwjgl.opengl.GL15.GL_WRITE_ONLY;
 
 import java.nio.ByteBuffer;
 
-import org.oreon.core.texture.Texture2D;
 import org.oreon.core.gl.shaders.bloom.BloomBlurAdditiveBlendShader;
 import org.oreon.core.gl.shaders.bloom.BloomBlurSceneShader;
 import org.oreon.core.gl.shaders.bloom.BloomShader;
 import org.oreon.core.gl.shaders.bloom.HorizontalBloomBlurShader;
 import org.oreon.core.gl.shaders.bloom.VerticalBloomBlurShader;
+import org.oreon.core.gl.texture.Texture2D;
 import org.oreon.core.system.CoreSystem;
 
 public class Bloom {

@@ -11,7 +11,7 @@ import org.oreon.core.model.Model;
 import org.oreon.core.model.Vertex;
 import org.oreon.core.renderer.RenderInfo;
 import org.oreon.core.system.CoreSystem;
-import org.oreon.core.utils.modelLoader.obj.OBJLoader;
+import org.oreon.core.util.modelLoader.obj.OBJLoader;
 import org.oreon.demo.oreonworlds.shaders.plants.PalmBillboardShader;
 import org.oreon.demo.oreonworlds.shaders.plants.PalmBillboardShadowShader;
 import org.oreon.demo.oreonworlds.shaders.plants.PalmShader;

@@ -1,4 +1,4 @@
-package org.oreon.core.utils;
+package org.oreon.core.util;
 
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.math.Vec3f;

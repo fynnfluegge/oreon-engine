@@ -8,7 +8,7 @@ import org.oreon.core.renderer.Renderer;
 import org.oreon.core.scene.GameObject;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.texture.ProceduralTexturing;
-import org.oreon.core.utils.modelLoader.obj.OBJLoader;
+import org.oreon.core.util.modelLoader.obj.OBJLoader;
 
 public class Skydome extends GameObject{
 	

@@ -3,7 +3,7 @@ package org.oreon.modules.postProcessingEffects.lensFlare;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.oreon.core.texture.Texture2D;
+import org.oreon.core.gl.texture.Texture2D;
 import org.oreon.core.light.Light;
 import org.oreon.core.light.LightHandler;
 import org.oreon.core.math.Matrix4f;

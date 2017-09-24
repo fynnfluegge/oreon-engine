@@ -1,8 +1,8 @@
 package org.oreon.demo.oreonworlds.gui;
 
+import org.oreon.core.gl.texture.Texture2D;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.system.CoreSystem;
-import org.oreon.core.texture.Texture2D;
 import org.oreon.modules.gui.elements.Button;
 
 public class OpenCloseButton extends Button{

@@ -1,9 +1,9 @@
 package org.oreon.core.gl.shaders.motionblur;
 
-import org.oreon.core.shaders.Shader;
-import org.oreon.core.utils.ResourceLoader;
+import org.oreon.core.gl.shaders.GLShader;
+import org.oreon.core.util.ResourceLoader;
 
-public class MotionBlurShader extends Shader{
+public class MotionBlurShader extends GLShader{
 	
 	private static MotionBlurShader instance = null;
 	

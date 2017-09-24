@@ -1,9 +1,9 @@
 package org.oreon.core.gl.shaders.lightScattering;
 
-import org.oreon.core.shaders.Shader;
-import org.oreon.core.utils.ResourceLoader;
+import org.oreon.core.gl.shaders.GLShader;
+import org.oreon.core.util.ResourceLoader;
 
-public class SunLightScatteringAdditiveBlendShader extends Shader{
+public class SunLightScatteringAdditiveBlendShader extends GLShader{
 
 	private static SunLightScatteringAdditiveBlendShader instance = null;
 	

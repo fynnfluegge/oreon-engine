@@ -20,7 +20,7 @@ import java.nio.ByteBuffer;
 
 import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.opengl.GL;
-import org.oreon.core.texture.ImageLoader;
+import org.oreon.core.gl.texture.ImageLoader;
 import org.oreon.core.system.Window;
 
 public class GLWindow extends Window{

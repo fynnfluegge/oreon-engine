@@ -1,9 +1,9 @@
-package org.oreon.core.gl.shaders.water;
+package org.oreon.modules.water.shader;
 
-import org.oreon.core.shaders.Shader;
-import org.oreon.core.utils.ResourceLoader;
+import org.oreon.core.gl.shaders.GLShader;
+import org.oreon.core.util.ResourceLoader;
 
-public class Tilde_hktShader extends Shader{
+public class Tilde_hktShader extends GLShader{
 
 	private static Tilde_hktShader instance = null;
 	

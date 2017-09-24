@@ -17,8 +17,8 @@ import org.oreon.core.math.Matrix4f;
 import org.oreon.core.math.Vec3f;
 import org.oreon.core.scene.Camera;
 import org.oreon.core.system.CoreSystem;
-import org.oreon.core.utils.BufferUtil;
-import org.oreon.core.utils.Constants;
+import org.oreon.core.util.BufferUtil;
+import org.oreon.core.util.Constants;
 
 public class GLCamera extends Camera{
 

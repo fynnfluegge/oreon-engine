@@ -9,7 +9,7 @@ import org.oreon.core.renderer.Renderer;
 import org.oreon.core.scene.GameObject;
 import org.oreon.core.scene.Node;
 import org.oreon.core.system.CoreSystem;
-import org.oreon.core.utils.Constants;
+import org.oreon.core.util.Constants;
 
 public class TerrainNode extends GameObject{
 	

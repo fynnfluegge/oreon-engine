@@ -7,7 +7,7 @@ import org.oreon.core.buffers.UBO;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.math.Vec3f;
 import org.oreon.core.scene.Node;
-import org.oreon.core.utils.IntegerReference;
+import org.oreon.core.util.IntegerReference;
 
 public abstract class InstancingCluster extends Node{
 	

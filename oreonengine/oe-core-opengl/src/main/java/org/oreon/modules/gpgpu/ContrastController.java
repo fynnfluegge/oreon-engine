@@ -14,15 +14,15 @@ import static org.lwjgl.opengl.GL43.glDispatchCompute;
 import java.nio.ByteBuffer;
 
 import org.lwjgl.glfw.GLFW;
-import org.oreon.core.texture.Texture2D;
+import org.oreon.core.gl.shaders.GLShader;
 import org.oreon.core.gl.shaders.computing.ContrastShader;
-import org.oreon.core.shaders.Shader;
+import org.oreon.core.gl.texture.Texture2D;
 import org.oreon.core.system.CoreSystem;
 
 public class ContrastController {
 
 	private Texture2D contrastTexture;
-	private Shader contrastShader;
+	private GLShader contrastShader;
 	
 	private float contrastFactor = 1.11f;
 	private float brightnessFactor = 2.0f;

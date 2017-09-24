@@ -1,4 +1,4 @@
-package org.oreon.core.texture;
+package org.oreon.core.gl.texture;
 
 import java.io.IOException;
 import java.io.InputStream;

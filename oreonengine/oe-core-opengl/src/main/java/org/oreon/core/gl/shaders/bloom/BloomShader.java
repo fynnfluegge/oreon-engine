@@ -1,9 +1,9 @@
 package org.oreon.core.gl.shaders.bloom;
 
-import org.oreon.core.shaders.Shader;
-import org.oreon.core.utils.ResourceLoader;
+import org.oreon.core.gl.shaders.GLShader;
+import org.oreon.core.util.ResourceLoader;
 
-public class BloomShader extends Shader{
+public class BloomShader extends GLShader{
 	
 	private static BloomShader instance = null;
 	

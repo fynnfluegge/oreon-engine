@@ -1,7 +1,7 @@
 package org.oreon.demo.ocean;
 
 import org.oreon.core.math.Quaternion;
-import org.oreon.core.utils.Constants;
+import org.oreon.core.util.Constants;
 import org.oreon.modules.water.Water;
 import org.oreon.modules.water.fft.Tilde_h0;
 import org.oreon.modules.water.fft.Tilde_hkt;

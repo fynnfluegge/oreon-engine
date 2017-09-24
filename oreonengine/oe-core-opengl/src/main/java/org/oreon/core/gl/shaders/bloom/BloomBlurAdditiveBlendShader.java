@@ -6,11 +6,11 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE2;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE3;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
-import org.oreon.core.texture.Texture2D;
-import org.oreon.core.shaders.Shader;
-import org.oreon.core.utils.ResourceLoader;
+import org.oreon.core.gl.shaders.GLShader;
+import org.oreon.core.gl.texture.Texture2D;
+import org.oreon.core.util.ResourceLoader;
 
-public class BloomBlurAdditiveBlendShader extends Shader{
+public class BloomBlurAdditiveBlendShader extends GLShader{
 
 	private static BloomBlurAdditiveBlendShader instance = null;
 	

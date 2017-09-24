@@ -1,6 +1,6 @@
 package org.oreon.modules.gui.elements;
 
-import org.oreon.core.texture.Texture2D;
+import org.oreon.core.gl.texture.Texture2D;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.system.CoreSystem;
 

@@ -1,9 +1,9 @@
 package org.oreon.core.gl.shaders.computing;
 
-import org.oreon.core.shaders.Shader;
-import org.oreon.core.utils.ResourceLoader;
+import org.oreon.core.gl.shaders.GLShader;
+import org.oreon.core.util.ResourceLoader;
 
-public class FFTButterflyShader extends Shader{
+public class FFTButterflyShader extends GLShader{
 
 	private static FFTButterflyShader instance = null;
 	

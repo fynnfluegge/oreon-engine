@@ -8,7 +8,7 @@ import static org.lwjgl.opengl.GL30.glBindBufferBase;
 import static org.lwjgl.opengl.GL43.GL_SHADER_STORAGE_BUFFER;
 
 import org.oreon.core.math.Vec2f;
-import org.oreon.core.utils.BufferUtil;
+import org.oreon.core.util.BufferUtil;
 
 /**
  * Shader Storage Buffer Object

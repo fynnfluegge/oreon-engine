@@ -6,18 +6,18 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import java.util.List;
 
+import org.oreon.core.gl.shaders.GLShader;
 import org.oreon.core.instancing.InstancingCluster;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.model.Material;
 import org.oreon.core.scene.GameObject;
-import org.oreon.core.shaders.Shader;
 import org.oreon.core.system.CoreSystem;
-import org.oreon.core.utils.Constants;
-import org.oreon.core.utils.ResourceLoader;
+import org.oreon.core.util.Constants;
+import org.oreon.core.util.ResourceLoader;
 import org.oreon.modules.terrain.Terrain;
 import org.oreon.system.desktop.GLRenderingEngine;
 
-public class GrassShader extends Shader{
+public class GrassShader extends GLShader{
 
 	private static GrassShader instance = null;
 

@@ -7,10 +7,10 @@ import static org.lwjgl.opengl.GL11.GL_BLUE;
 import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import java.nio.FloatBuffer;
 
-import org.oreon.core.texture.Texture2D;
+import org.oreon.core.gl.texture.Texture2D;
 import org.oreon.core.math.Vec2f;
-import org.oreon.core.utils.BufferUtil;
-import org.oreon.core.utils.Constants;
+import org.oreon.core.util.BufferUtil;
+import org.oreon.core.util.Constants;
 import org.oreon.modules.gpgpu.NormalMapRenderer;
 
 public class FractalMaps {

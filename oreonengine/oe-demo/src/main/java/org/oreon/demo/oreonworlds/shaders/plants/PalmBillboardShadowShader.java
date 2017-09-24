@@ -5,14 +5,14 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import java.util.List;
 
+import org.oreon.core.gl.shaders.GLShader;
 import org.oreon.core.instancing.InstancingCluster;
 import org.oreon.core.model.Material;
 import org.oreon.core.scene.GameObject;
-import org.oreon.core.shaders.Shader;
-import org.oreon.core.utils.Constants;
-import org.oreon.core.utils.ResourceLoader;
+import org.oreon.core.util.Constants;
+import org.oreon.core.util.ResourceLoader;
 
-public class PalmBillboardShadowShader extends Shader{
+public class PalmBillboardShadowShader extends GLShader{
 
 	private static PalmBillboardShadowShader instance = null;
 	

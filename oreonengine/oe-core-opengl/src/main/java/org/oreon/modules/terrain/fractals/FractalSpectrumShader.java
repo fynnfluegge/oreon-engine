@@ -1,11 +1,11 @@
-package org.oreon.core.gl.shaders.terrain.fractals;
+package org.oreon.modules.terrain.fractals;
 
+import org.oreon.core.gl.shaders.GLShader;
 import org.oreon.core.math.Vec2f;
-import org.oreon.core.shaders.Shader;
-import org.oreon.core.utils.ResourceLoader;
+import org.oreon.core.util.ResourceLoader;
 
 
-public class FractalSpectrumShader extends Shader{
+public class FractalSpectrumShader extends GLShader{
 
 private static FractalSpectrumShader instance = null;
 	

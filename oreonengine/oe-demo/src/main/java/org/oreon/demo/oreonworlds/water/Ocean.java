@@ -1,7 +1,7 @@
 package org.oreon.demo.oreonworlds.water;
 
 import org.oreon.core.math.Quaternion;
-import org.oreon.core.utils.Constants;
+import org.oreon.core.util.Constants;
 import org.oreon.modules.water.Water;
 
 public class Ocean extends Water{

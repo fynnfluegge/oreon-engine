@@ -1,9 +1,9 @@
 package org.oreon.core.gl.shaders.computing;
 
-import org.oreon.core.shaders.Shader;
-import org.oreon.core.utils.ResourceLoader;
+import org.oreon.core.gl.shaders.GLShader;
+import org.oreon.core.util.ResourceLoader;
 
-public class FFTInversionShader extends Shader{
+public class FFTInversionShader extends GLShader{
 
 	private static FFTInversionShader instance = null;
 	

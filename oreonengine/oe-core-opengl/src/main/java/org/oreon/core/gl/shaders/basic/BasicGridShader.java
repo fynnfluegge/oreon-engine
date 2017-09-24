@@ -1,11 +1,11 @@
 package org.oreon.core.gl.shaders.basic;
 
+import org.oreon.core.gl.shaders.GLShader;
 import org.oreon.core.math.Vec3f;
 import org.oreon.core.scene.GameObject;
-import org.oreon.core.shaders.Shader;
-import org.oreon.core.utils.ResourceLoader;
+import org.oreon.core.util.ResourceLoader;
 
-public class BasicGridShader extends Shader{
+public class BasicGridShader extends GLShader{
 
 	private static BasicGridShader instance = null;
 	

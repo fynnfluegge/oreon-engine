@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import org.oreon.core.math.Vec3f;
 import org.oreon.core.model.Mesh;
 import org.oreon.core.model.Vertex;
-import org.oreon.core.utils.Util;
+import org.oreon.core.util.Util;
 
 public class GUIObjectLoader {
 
