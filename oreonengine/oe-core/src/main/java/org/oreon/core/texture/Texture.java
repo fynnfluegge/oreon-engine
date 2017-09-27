@@ -1,7 +1,19 @@
 package org.oreon.core.texture;
 
-public interface Texture {
+public class Texture {
 
-	public void bind();
-	public void trilinearFilter();
+	private String path;
+	
+	public void bind() {
+	}
+	
+	public void trilinearFilter() {
+	}
+	
+	public String getPath() {
+		return path;
+	}
+	public void setPath(String path) {
+		this.path = path;
+	}
 }

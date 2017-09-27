@@ -119,19 +119,19 @@ public class TerrainGridShader extends GLShader{
 		}
 
 		glActiveTexture(GL_TEXTURE1);
-		terrConfig.getMaterial1().getDisplacemap().bind();
+		terrConfig.getMaterial1().getHeightmap().bind();
 		setUniformi("sand.heightmap", 1);
-		setUniformf("sand.displaceScale", terrConfig.getMaterial1().getDisplaceScale());
+		setUniformf("sand.displaceScale", terrConfig.getMaterial1().getDisplacementScale());
 		
 		glActiveTexture(GL_TEXTURE2);
-		terrConfig.getMaterial2().getDisplacemap().bind();
+		terrConfig.getMaterial2().getHeightmap().bind();
 		setUniformi("rock.heightmap", 2);
-		setUniformf("rock.displaceScale", terrConfig.getMaterial2().getDisplaceScale());
+		setUniformf("rock.displaceScale", terrConfig.getMaterial2().getDisplacementScale());
 		
 		glActiveTexture(GL_TEXTURE3);
-		terrConfig.getMaterial3().getDisplacemap().bind();
+		terrConfig.getMaterial3().getHeightmap().bind();
 		setUniformi("cliff.heightmap", 3);
-		setUniformf("cliff.displaceScale", terrConfig.getMaterial3().getDisplaceScale());
+		setUniformf("cliff.displaceScale", terrConfig.getMaterial3().getDisplacementScale());
 		
 		setUniformi("largeDetailedRange", terrConfig.getDetailRange());
 		setUniformf("texDetail", terrConfig.getTexDetail());

@@ -8,7 +8,7 @@ public class Vertex {
 	public static final int BYTES = 14 * Float.BYTES;
 	public static final int FLOATS = 14;
 	
-	private Vec3f pos;
+	private Vec3f position;
 	private Vec3f normal;
 	private Vec2f textureCoord;
 	private Vec3f tangent;
@@ -19,24 +19,24 @@ public class Vertex {
 	
 	public Vertex(Vec3f pos)
 	{
-		this.setPos(pos);
+		this.setPosition(pos);
 		this.setTextureCoord(new Vec2f(0,0));
 		this.setNormal(new Vec3f(0,0,0));
 	}
 	
 	public Vertex(Vec3f pos, Vec2f texture)
 	{
-		this.setPos(pos);
+		this.setPosition(pos);
 		this.setTextureCoord(texture);
 		this.setNormal(new Vec3f(0,0,0));
 	}
 
-	public Vec3f getPos() {
-		return pos;
+	public Vec3f getPosition() {
+		return position;
 	}
 
-	public void setPos(Vec3f pos) {
-		this.pos = pos;
+	public void setPosition(Vec3f pos) {
+		this.position = pos;
 	}
 
 	public Vec2f getTextureCoord() {

@@ -11,9 +11,9 @@ public class GLUtil {
 	{
 	    for (Face face : smoothingGroup.getFaces())
 	    {
-	    	Vec3f v0 = smoothingGroup.getVertices().get(face.getIndices()[0]).getPos();
-	    	Vec3f v1 = smoothingGroup.getVertices().get(face.getIndices()[1]).getPos();
-	    	Vec3f v2 = smoothingGroup.getVertices().get(face.getIndices()[2]).getPos();
+	    	Vec3f v0 = smoothingGroup.getVertices().get(face.getIndices()[0]).getPosition();
+	    	Vec3f v1 = smoothingGroup.getVertices().get(face.getIndices()[1]).getPosition();
+	    	Vec3f v2 = smoothingGroup.getVertices().get(face.getIndices()[2]).getPosition();
 	        
 	    	Vec3f normal = v1.sub(v0).cross(v2.sub(v0)).normalize();
 	        
@@ -35,9 +35,9 @@ public class GLUtil {
 	{
 		  for (Face face : smoothingGroup.getFaces())
 		    {
-		    	Vec3f v0 = smoothingGroup.getVertices().get(face.getIndices()[0]).getPos();
-		    	Vec3f v1 = smoothingGroup.getVertices().get(face.getIndices()[1]).getPos();
-		    	Vec3f v2 = smoothingGroup.getVertices().get(face.getIndices()[2]).getPos();
+		    	Vec3f v0 = smoothingGroup.getVertices().get(face.getIndices()[0]).getPosition();
+		    	Vec3f v1 = smoothingGroup.getVertices().get(face.getIndices()[1]).getPosition();
+		    	Vec3f v2 = smoothingGroup.getVertices().get(face.getIndices()[2]).getPosition();
 		        
 		    	Vec3f normal = v2.sub(v0).cross(v1.sub(v0)).normalize();
 		        

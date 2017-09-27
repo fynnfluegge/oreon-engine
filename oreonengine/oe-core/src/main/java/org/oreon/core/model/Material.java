@@ -10,13 +10,13 @@ public class Material extends Component{
 	private String name;
 	private Texture diffusemap;
 	private Texture normalmap;
-	private Texture displacemap;
+	private Texture heightmap;
 	private Texture ambientmap;
 	private Texture specularmap;
 	private Texture alphamap;
 	private Vec3f color;
 	private float alpha;
-	private float displaceScale;
+	private float displacementScale;
 	private float emission;
 	private float shininess;
 	
@@ -32,11 +32,11 @@ public class Material extends Component{
 	public void setNormalmap(Texture normalmap) {
 		this.normalmap = normalmap;
 	}
-	public Texture getDisplacemap() {
-		return displacemap;
+	public Texture getHeightmap() {
+		return heightmap;
 	}
-	public void setDisplacemap(Texture displacemap) {
-		this.displacemap = displacemap;
+	public void setHeightemap(Texture heightmap) {
+		this.heightmap = heightmap;
 	}
 	public Texture getAmbientmap() {
 		return ambientmap;
@@ -68,11 +68,11 @@ public class Material extends Component{
 	public void setAlpha(float alpha) {
 		this.alpha = alpha;
 	}
-	public float getDisplaceScale() {
-		return displaceScale;
+	public float getDisplacementScale() {
+		return displacementScale;
 	}
-	public void setDisplaceScale(float displaceScale) {
-		this.displaceScale = displaceScale;
+	public void setDisplacementScale(float displaceScale) {
+		this.displacementScale = displaceScale;
 	}
 	public float getEmission() {
 		return emission;

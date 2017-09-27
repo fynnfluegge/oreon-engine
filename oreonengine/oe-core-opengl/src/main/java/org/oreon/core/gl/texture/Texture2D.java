@@ -24,14 +24,13 @@ import static org.lwjgl.opengl.EXTTextureFilterAnisotropic.GL_TEXTURE_MAX_ANISOT
 import static org.lwjgl.opengl.EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT;
 
 
-public class Texture2D implements Texture{
+public class Texture2D extends Texture{
 	
 	private int id;
 	private int width;
 	private int height;
 	
-	public Texture2D(){
-	}
+	public Texture2D(){}
 	
 	public Texture2D(Texture2D texture){
 		id = texture.getId();
@@ -41,7 +40,12 @@ public class Texture2D implements Texture{
 	
 	public Texture2D(String file)
 	{
+		setPath(file);
 		id = ImageLoader.loadImage(file);
+	}
+	
+	public void load(){
+		id = ImageLoader.loadImage(getPath());
 	}
 	
 	public void bind()

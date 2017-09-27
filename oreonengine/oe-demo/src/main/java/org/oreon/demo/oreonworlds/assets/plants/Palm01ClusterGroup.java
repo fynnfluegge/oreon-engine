@@ -46,9 +46,9 @@ public class Palm01ClusterGroup extends InstancingObject{
 			billboard.getMesh().setInstanced(true);
 			
 			for (Vertex vertex : billboard.getMesh().getVertices()){
-				vertex.setPos(vertex.getPos().mul(135));
-				vertex.getPos().setX(vertex.getPos().getX()*1.1f);
-				vertex.getPos().setZ(vertex.getPos().getZ()*1.1f);
+				vertex.setPosition(vertex.getPosition().mul(135));
+				vertex.getPosition().setX(vertex.getPosition().getX()*1.1f);
+				vertex.getPosition().setZ(vertex.getPosition().getZ()*1.1f);
 			}
 			
 			meshBuffer.addData(billboard.getMesh());

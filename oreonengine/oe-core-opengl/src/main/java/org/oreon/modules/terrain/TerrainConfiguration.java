@@ -154,12 +154,12 @@ public class TerrainConfiguration {
 						getMaterial0().getNormalmap().trilinearFilter();
 					}
 					if(tokens[0].equals("material0_DISP")){
-						getMaterial0().setDisplacemap(new Texture2D(tokens[1]));
-						getMaterial0().getDisplacemap().bind();
-						getMaterial0().getDisplacemap().trilinearFilter();
+						getMaterial0().setHeightemap(new Texture2D(tokens[1]));
+						getMaterial0().getHeightmap().bind();
+						getMaterial0().getHeightmap().trilinearFilter();
 					}
 					if(tokens[0].equals("material0_displaceScale")){
-						getMaterial0().setDisplaceScale(Float.valueOf(tokens[1]));
+						getMaterial0().setDisplacementScale(Float.valueOf(tokens[1]));
 					}
 					if(tokens[0].equals("material0_emission")){
 						getMaterial0().setEmission(Float.valueOf(tokens[1]));
@@ -179,12 +179,12 @@ public class TerrainConfiguration {
 						getMaterial1().getNormalmap().trilinearFilter();
 					}
 					if(tokens[0].equals("material1_DISP")){
-						getMaterial1().setDisplacemap(new Texture2D(tokens[1]));
-						getMaterial1().getDisplacemap().bind();
-						getMaterial1().getDisplacemap().trilinearFilter();
+						getMaterial1().setHeightemap(new Texture2D(tokens[1]));
+						getMaterial1().getHeightmap().bind();
+						getMaterial1().getHeightmap().trilinearFilter();
 					}
 					if(tokens[0].equals("material1_displaceScale")){
-						getMaterial1().setDisplaceScale(Float.valueOf(tokens[1]));
+						getMaterial1().setDisplacementScale(Float.valueOf(tokens[1]));
 					}
 					if(tokens[0].equals("material1_emission")){
 						getMaterial1().setEmission(Float.valueOf(tokens[1]));
@@ -204,12 +204,12 @@ public class TerrainConfiguration {
 						getMaterial2().getNormalmap().trilinearFilter();
 					}
 					if(tokens[0].equals("material2_DISP")){
-						getMaterial2().setDisplacemap(new Texture2D(tokens[1]));
-						getMaterial2().getDisplacemap().bind();
-						getMaterial2().getDisplacemap().trilinearFilter();
+						getMaterial2().setHeightemap(new Texture2D(tokens[1]));
+						getMaterial2().getHeightmap().bind();
+						getMaterial2().getHeightmap().trilinearFilter();
 					}
 					if(tokens[0].equals("material2_displaceScale")){
-						getMaterial2().setDisplaceScale(Float.valueOf(tokens[1]));
+						getMaterial2().setDisplacementScale(Float.valueOf(tokens[1]));
 					}
 					if(tokens[0].equals("material2_emission")){
 						getMaterial2().setEmission(Float.valueOf(tokens[1]));
@@ -229,12 +229,12 @@ public class TerrainConfiguration {
 						getMaterial3().getNormalmap().trilinearFilter();
 					}
 					if(tokens[0].equals("material3_DISP")){
-						getMaterial3().setDisplacemap(new Texture2D(tokens[1]));
-						getMaterial3().getDisplacemap().bind();
-						getMaterial3().getDisplacemap().trilinearFilter();
+						getMaterial3().setHeightemap(new Texture2D(tokens[1]));
+						getMaterial3().getHeightmap().bind();
+						getMaterial3().getHeightmap().trilinearFilter();
 					}
 					if(tokens[0].equals("material3_displaceScale")){
-						getMaterial3().setDisplaceScale(Float.valueOf(tokens[1]));
+						getMaterial3().setDisplacementScale(Float.valueOf(tokens[1]));
 					}
 					if(tokens[0].equals("material3_emission")){
 						getMaterial3().setEmission(Float.valueOf(tokens[1]));

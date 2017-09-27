@@ -2,6 +2,7 @@ package org.oreon.core.util;
 
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.oreon.core.math.Quaternion;
 import org.oreon.core.math.Vec2f;
@@ -35,6 +36,16 @@ public class Util {
 		return result;
 	}
 	
+	public static int[] toIntArray(List<Integer> data)
+	{
+		int[] result = new int[data.size()];
+		
+		for(int i=0; i < data.size(); i++)
+			result[i] = data.get(i).intValue();
+		
+		return result;
+	}
+	
 	public static Vertex[] toVertexArray(FloatBuffer data)
 	{
 		Vertex[] vertices = new Vertex[data.limit() / Vertex.FLOATS];
@@ -42,7 +53,7 @@ public class Util {
 		for(int i=0; i<vertices.length; i++)
 		{
 			vertices[i] = new Vertex();
-			vertices[i].setPos(new Vec3f(data.get(),data.get(),data.get()));
+			vertices[i].setPosition(new Vec3f(data.get(),data.get(),data.get()));
 			vertices[i].setTextureCoord(new Vec2f(data.get(),data.get()));
 			vertices[i].setNormal(new Vec3f(data.get(),data.get(),data.get()));
 		}
@@ -50,16 +61,18 @@ public class Util {
 		return vertices;
 	}
 	
-	public static Vertex[] toVertexArray(ArrayList<Vertex> data)
+	public static Vertex[] toVertexArray(List<Vertex> data)
 	{
 		Vertex[] vertices = new Vertex[data.size()];
 		
 		for(int i=0; i<vertices.length; i++)
 		{
 			vertices[i] = new Vertex();
-			vertices[i].setPos(data.get(i).getPos());
+			vertices[i].setPosition(data.get(i).getPosition());
 			vertices[i].setTextureCoord(data.get(i).getTextureCoord());
 			vertices[i].setNormal(data.get(i).getNormal());
+			vertices[i].setTangent(data.get(i).getTangent());
+			vertices[i].setBitangent(data.get(i).getBitangent());
 		}
 		
 		return vertices;
@@ -69,9 +82,9 @@ public class Util {
 	{
 	    for ( int i = 0; i < indices.length; i += 3 )
 	    {
-	    	Vec3f v0 = vertices[indices[i    ]].getPos();
-	    	Vec3f v1 = vertices[indices[i + 1]].getPos();
-	    	Vec3f v2 = vertices[indices[i + 2]].getPos();
+	    	Vec3f v0 = vertices[indices[i    ]].getPosition();
+	    	Vec3f v1 = vertices[indices[i + 1]].getPosition();
+	    	Vec3f v2 = vertices[indices[i + 2]].getPosition();
 	        
 	    	Vec3f normal = v1.sub(v0).cross(v2.sub(v0)).normalize();
 	        
@@ -90,9 +103,9 @@ public class Util {
 	{
 	    for ( int i = 0; i < indices.length; i += 3 )
 	    {
-	    	Vec3f v0 = vertices[indices[i    ]].getPos();
-	    	Vec3f v1 = vertices[indices[i + 1]].getPos();
-	    	Vec3f v2 = vertices[indices[i + 2]].getPos();
+	    	Vec3f v0 = vertices[indices[i    ]].getPosition();
+	    	Vec3f v1 = vertices[indices[i + 1]].getPosition();
+	    	Vec3f v2 = vertices[indices[i + 2]].getPosition();
 	        
 	    	Vec3f normal = v2.sub(v0).cross(v1.sub(v0)).normalize();
 	        
@@ -111,9 +124,9 @@ public class Util {
 	{
 	    for ( int i = 0; i < indices.size(); i += 3 )
 	    {
-	    	Vec3f v0 = vertices.get(indices.get(i)).getPos();
-	    	Vec3f v1 = vertices.get(indices.get(i+1)).getPos();
-	    	Vec3f v2 = vertices.get(indices.get(i+2)).getPos();
+	    	Vec3f v0 = vertices.get(indices.get(i)).getPosition();
+	    	Vec3f v1 = vertices.get(indices.get(i+1)).getPosition();
+	    	Vec3f v2 = vertices.get(indices.get(i+2)).getPosition();
 	        
 	    	Vec3f normal = v1.sub(v0).cross(v2.sub(v0)).normalize();
 	        
@@ -132,9 +145,9 @@ public class Util {
 	{
 	    for ( int i = 0; i < indices.size(); i += 3 )
 	    {
-	    	Vec3f v0 = vertices.get(indices.get(i)).getPos();
-	    	Vec3f v1 = vertices.get(indices.get(i+1)).getPos();
-	    	Vec3f v2 = vertices.get(indices.get(i+2)).getPos();
+	    	Vec3f v0 = vertices.get(indices.get(i)).getPosition();
+	    	Vec3f v1 = vertices.get(indices.get(i+1)).getPosition();
+	    	Vec3f v2 = vertices.get(indices.get(i+2)).getPosition();
 	        
 	    	Vec3f normal = v2.sub(v0).cross(v1.sub(v0)).normalize();
 	        
@@ -153,9 +166,9 @@ public class Util {
 	{
 		for ( int i = 0; i < mesh.getIndices().length; i += 3 )
 		{
-		    	Vec3f v0 = mesh.getVertices()[mesh.getIndices()[i]].getPos();
-		    	Vec3f v1 = mesh.getVertices()[mesh.getIndices()[i+1]].getPos();
-		    	Vec3f v2 = mesh.getVertices()[mesh.getIndices()[i+2]].getPos();
+		    	Vec3f v0 = mesh.getVertices()[mesh.getIndices()[i]].getPosition();
+		    	Vec3f v1 = mesh.getVertices()[mesh.getIndices()[i+1]].getPosition();
+		    	Vec3f v2 = mesh.getVertices()[mesh.getIndices()[i+2]].getPosition();
 		        
 		    	Vec2f uv0 = mesh.getVertices()[mesh.getIndices()[i]].getTextureCoord();
 		    	Vec2f uv1 = mesh.getVertices()[mesh.getIndices()[i+1]].getTextureCoord();

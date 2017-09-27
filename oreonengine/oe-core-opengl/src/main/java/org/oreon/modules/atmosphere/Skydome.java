@@ -1,20 +1,23 @@
 package org.oreon.modules.atmosphere;
 
+import java.io.InputStream;
+import java.net.URISyntaxException;
+
 import org.oreon.core.gl.buffers.GLMeshVBO;
 import org.oreon.core.gl.config.CullFaceDisable;
+import org.oreon.core.model.AssimpStaticModelLoader;
 import org.oreon.core.model.Mesh;
 import org.oreon.core.renderer.RenderInfo;
 import org.oreon.core.renderer.Renderer;
 import org.oreon.core.scene.GameObject;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.texture.ProceduralTexturing;
-import org.oreon.core.util.modelLoader.obj.OBJLoader;
 
 public class Skydome extends GameObject{
 	
 	public Skydome()
 	{
-		Mesh mesh = new OBJLoader().load("models/obj/dome", "dome.obj", null)[0].getMesh();
+		Mesh mesh = AssimpStaticModelLoader.loadModel("models/obj/dome", "dome.obj").get(0).getMesh();
 		ProceduralTexturing.dome(mesh);
 		GLMeshVBO meshBuffer = new GLMeshVBO();
 		meshBuffer.addData(mesh);

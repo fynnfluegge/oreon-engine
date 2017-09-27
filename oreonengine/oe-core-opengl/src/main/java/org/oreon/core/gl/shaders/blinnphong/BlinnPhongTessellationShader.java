@@ -123,12 +123,12 @@ public class BlinnPhongTessellationShader extends GLShader{
 		else
 			setUniformi("specularmap", 0);
 			
-		if (material.getDisplacemap() != null){
+		if (material.getHeightmap() != null){
 			setUniformi("displacement", 1);
 			glActiveTexture(GL_TEXTURE3);
-			material.getDisplacemap().bind();
+			material.getHeightmap().bind();
 			setUniformi("material.displacemap", 3);
-			setUniformf("material.displaceScale", material.getDisplaceScale());
+			setUniformf("material.displaceScale", material.getDisplacementScale());
 		}
 		else
 			setUniformi("displacement", 0);

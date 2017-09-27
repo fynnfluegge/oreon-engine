@@ -41,8 +41,8 @@ public class Tree02ClusterGroup extends InstancingObject{
 			model.getMesh().setInstanced(true);
 			
 			for (Vertex vertex : model.getMesh().getVertices()){
-				vertex.getPos().setX(vertex.getPos().getX()*1.2f);
-				vertex.getPos().setZ(vertex.getPos().getZ()*1.2f);
+				vertex.getPosition().setX(vertex.getPosition().getX()*1.2f);
+				vertex.getPosition().setZ(vertex.getPosition().getZ()*1.2f);
 			}
 			
 			meshBuffer.addData(model.getMesh());
@@ -70,9 +70,9 @@ public class Tree02ClusterGroup extends InstancingObject{
 			billboard.getMesh().setInstances(0);
 			
 			for (Vertex vertex : billboard.getMesh().getVertices()){
-				vertex.setPos(vertex.getPos().mul(2.4f));
-				vertex.getPos().setX(vertex.getPos().getX()*1f);
-				vertex.getPos().setZ(vertex.getPos().getZ()*1f);
+				vertex.setPosition(vertex.getPosition().mul(2.4f));
+				vertex.getPosition().setX(vertex.getPosition().getX()*1f);
+				vertex.getPosition().setZ(vertex.getPosition().getZ()*1f);
 			}
 			
 			meshBuffer.addData(billboard.getMesh());
