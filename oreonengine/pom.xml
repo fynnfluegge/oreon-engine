@@ -131,6 +131,7 @@
   <modules>
   		<module>oe-core</module>
   		<module>oe-gl-demo</module>
+  		<module>oe-gl-modules</module>
   		<module>oe-core-opengl</module>
   		<module>oe-system-desktop</module>
   </modules>
