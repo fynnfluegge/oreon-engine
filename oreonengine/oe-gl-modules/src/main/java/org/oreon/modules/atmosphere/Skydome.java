@@ -1,8 +1,5 @@
 package org.oreon.modules.atmosphere;
 
-import java.io.InputStream;
-import java.net.URISyntaxException;
-
 import org.oreon.core.gl.buffers.GLMeshVBO;
 import org.oreon.core.gl.config.CullFaceDisable;
 import org.oreon.core.model.AssimpStaticModelLoader;

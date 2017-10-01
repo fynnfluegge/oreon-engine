@@ -54,6 +54,11 @@
 			<version>2.1.0</version>
 		</dependency>
 		<dependency>
+			<groupId>org.oreon.module</groupId>
+			<artifactId>oe-gl-modules</artifactId>
+			<version>2.1.0</version>
+		</dependency>
+		<dependency>
 			<groupId>org.oreon.system</groupId>
 			<artifactId>oe-system-desktop</artifactId>
 			<version>2.1.0</version>

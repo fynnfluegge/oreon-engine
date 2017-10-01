@@ -12,7 +12,6 @@ import org.oreon.demo.oreonworlds.assets.plants.Tree01ClusterGroup;
 import org.oreon.demo.oreonworlds.assets.plants.Tree02ClusterGroup;
 import org.oreon.demo.oreonworlds.assets.rocks.Rock01ClusterGroup;
 import org.oreon.demo.oreonworlds.assets.rocks.Rock02ClusterGroup;
-import org.oreon.demo.oreonworlds.gui.GUI;
 import org.oreon.demo.oreonworlds.shaders.terrain.TerrainGridShader;
 import org.oreon.demo.oreonworlds.shaders.terrain.TerrainShader;
 import org.oreon.demo.oreonworlds.water.Ocean;
@@ -64,7 +63,7 @@ public class Main {
 		coreSystem.getScenegraph().getRoot().addChild(new Rock01ClusterGroup());
 		coreSystem.getScenegraph().getRoot().addChild(new Rock02ClusterGroup());
 		
-//		coreSystem.getScenegraph().setWater(new Ocean());
+		coreSystem.getScenegraph().setWater(new Ocean());
 		
 		coreEngine.start();
 	}
