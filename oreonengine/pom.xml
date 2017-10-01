@@ -130,7 +130,7 @@
   
   <modules>
   		<module>oe-core</module>
-  		<module>oe-demo</module>
+  		<module>oe-gl-demo</module>
   		<module>oe-core-opengl</module>
   		<module>oe-system-desktop</module>
   </modules>

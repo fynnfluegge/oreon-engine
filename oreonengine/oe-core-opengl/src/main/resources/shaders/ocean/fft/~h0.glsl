@@ -54,10 +54,10 @@ void main(void)
 	float magSq = mag * mag;
 	
 	//sqrt(Ph(k))/sqrt(2)
-	float h0k = clamp(sqrt((A/(magSq*magSq)) * pow(dot(normalize(k), normalize(w)), 2.0) * exp(-(1.0/(magSq * L_ * L_))) * exp(-magSq*pow(L/2000.0,2.0)))/ sqrt(2.0), -4000.0, 4000.0);
+	float h0k = clamp(sqrt((A/(magSq*magSq)) * pow(dot(normalize(k), normalize(w)), 8.0) * exp(-(1.0/(magSq * L_ * L_))) * exp(-magSq*pow(L/2000.0,2.0)))/ sqrt(2.0), -4000.0, 4000.0);
 	
 	//sqrt(Ph(-k))/sqrt(2)
-	float h0minusk = clamp(sqrt((A/(magSq*magSq)) * pow(dot(normalize(-k), normalize(w)), 2.0) * exp(-(1.0/(magSq * L_ * L_))) * exp(-magSq*pow(L/2000.0,2.0)))/ sqrt(2.0), -4000.0, 4000.0);
+	float h0minusk = clamp(sqrt((A/(magSq*magSq)) * pow(dot(normalize(-k), normalize(w)), 8.0) * exp(-(1.0/(magSq * L_ * L_))) * exp(-magSq*pow(L/2000.0,2.0)))/ sqrt(2.0), -4000.0, 4000.0);
 	
 	vec4 gauss_random = gaussRND();
 	
