@@ -60,7 +60,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.oreon.system</groupId>
-			<artifactId>oe-system-desktop</artifactId>
+			<artifactId>oe-gl-system</artifactId>
 			<version>2.1.0</version>
 		</dependency>
 	</dependencies>
