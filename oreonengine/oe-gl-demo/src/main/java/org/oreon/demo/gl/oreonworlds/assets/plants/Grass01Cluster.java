@@ -18,7 +18,7 @@ import org.oreon.core.util.Constants;
 import org.oreon.core.util.IntegerReference;
 import org.oreon.demo.gl.oreonworlds.shaders.InstancingGridShader;
 import org.oreon.demo.gl.oreonworlds.shaders.plants.GrassShader;
-import org.oreon.modules.terrain.Terrain;
+import org.oreon.modules.gl.terrain.Terrain;
 
 public class Grass01Cluster extends InstancingCluster{
 

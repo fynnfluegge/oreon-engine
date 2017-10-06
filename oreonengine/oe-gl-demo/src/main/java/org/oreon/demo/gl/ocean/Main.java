@@ -4,10 +4,10 @@ import org.oreon.core.gl.scene.GLCamera;
 import org.oreon.core.system.CoreEngine;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.system.Window;
-import org.oreon.modules.atmosphere.SkySphere;
-import org.oreon.modules.atmosphere.Sun;
+import org.oreon.modules.gl.atmosphere.SkySphere;
+import org.oreon.modules.gl.atmosphere.Sun;
 import org.oreon.system.gl.desktop.GLFWInput;
-import org.oreon.system.gl.desktop.GLRenderingEngine;
+import org.oreon.system.gl.desktop.GLForwardRenderer;
 import org.oreon.system.gl.desktop.GLWindow;
 
 public class Main {
@@ -16,7 +16,7 @@ public class Main {
 		
 		CoreEngine coreEngine = new CoreEngine();
 		CoreSystem coreSystem = CoreSystem.getInstance();
-		GLRenderingEngine renderingengine = new GLRenderingEngine();
+		GLForwardRenderer renderingengine = new GLForwardRenderer();
 		Window window = new GLWindow();
 		
 		renderingengine.setGui(new GUI());

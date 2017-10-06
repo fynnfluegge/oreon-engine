@@ -15,12 +15,12 @@ import org.oreon.demo.gl.oreonworlds.assets.rocks.Rock02ClusterGroup;
 import org.oreon.demo.gl.oreonworlds.shaders.terrain.TerrainGridShader;
 import org.oreon.demo.gl.oreonworlds.shaders.terrain.TerrainShader;
 import org.oreon.demo.gl.oreonworlds.water.Ocean;
-import org.oreon.modules.atmosphere.SkySphere;
-import org.oreon.modules.atmosphere.Sun;
-import org.oreon.modules.gui.GUIs.VoidGUI;
-import org.oreon.modules.terrain.Terrain;
+import org.oreon.modules.gl.atmosphere.SkySphere;
+import org.oreon.modules.gl.atmosphere.Sun;
+import org.oreon.modules.gl.gui.GUIs.VoidGUI;
+import org.oreon.modules.gl.terrain.Terrain;
 import org.oreon.system.gl.desktop.GLFWInput;
-import org.oreon.system.gl.desktop.GLRenderingEngine;
+import org.oreon.system.gl.desktop.GLForwardRenderer;
 import org.oreon.system.gl.desktop.GLWindow;
 
 public class Main {
@@ -29,7 +29,7 @@ public class Main {
 		
 		CoreEngine coreEngine = new CoreEngine();
 		CoreSystem coreSystem = CoreSystem.getInstance();
-		GLRenderingEngine renderingengine = new GLRenderingEngine();
+		GLForwardRenderer renderingengine = new GLForwardRenderer();
 		Window window = new GLWindow();
 		
 		renderingengine.setGui(new VoidGUI());

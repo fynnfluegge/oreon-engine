@@ -9,8 +9,8 @@ import org.oreon.core.gl.texture.Texture2D;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.math.Transform;
 import org.oreon.core.util.MeshGenerator;
-import org.oreon.modules.gui.GUIElement;
-import org.oreon.modules.gui.GUIVAO;
+import org.oreon.modules.gl.gui.GUIElement;
+import org.oreon.modules.gl.gui.GUIVAO;
 
 public class TexturePanel extends GUIElement{
 

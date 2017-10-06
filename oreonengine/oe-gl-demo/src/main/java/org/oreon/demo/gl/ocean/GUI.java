@@ -1,6 +1,6 @@
 package org.oreon.demo.gl.ocean;
 
-public class GUI extends org.oreon.modules.gui.GUI{
+public class GUI extends org.oreon.modules.gl.gui.GUI{
 	
 	@Override
 	public void init() {

@@ -20,7 +20,7 @@ import org.oreon.demo.gl.oreonworlds.shaders.InstancingGridShader;
 import org.oreon.demo.gl.oreonworlds.shaders.plants.TreeBillboardShader;
 import org.oreon.demo.gl.oreonworlds.shaders.plants.TreeLeavesShader;
 import org.oreon.demo.gl.oreonworlds.shaders.plants.TreeTrunkShader;
-import org.oreon.modules.terrain.Terrain;
+import org.oreon.modules.gl.terrain.Terrain;
 
 public class Tree01Cluster extends InstancingCluster{
 	

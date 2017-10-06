@@ -13,8 +13,8 @@ import org.oreon.core.scene.GameObject;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.Constants;
 import org.oreon.core.util.ResourceLoader;
-import org.oreon.modules.terrain.TerrainConfiguration;
-import org.oreon.modules.terrain.TerrainNode;
+import org.oreon.modules.gl.terrain.TerrainConfiguration;
+import org.oreon.modules.gl.terrain.TerrainNode;
 
 public class TerrainGridShader extends GLShader{
 	

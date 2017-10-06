@@ -17,9 +17,9 @@ import org.oreon.core.scene.GameObject;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.Constants;
 import org.oreon.core.util.ResourceLoader;
-import org.oreon.modules.terrain.Terrain;
-import org.oreon.modules.water.UnderWater;
-import org.oreon.system.gl.desktop.GLRenderingEngine;
+import org.oreon.modules.gl.terrain.Terrain;
+import org.oreon.modules.gl.water.UnderWater;
+import org.oreon.system.gl.desktop.GLForwardRenderer;
 
 public class RockHighPolyShader extends GLShader{
 
@@ -104,7 +104,7 @@ public class RockHighPolyShader extends GLShader{
 		setUniformf("material.emission", material.getEmission());
 		
 		glActiveTexture(GL_TEXTURE2);
-		GLRenderingEngine.getShadowMaps().getDepthMaps().bind();
+		GLForwardRenderer.getShadowMaps().getDepthMaps().bind();
 		setUniformi("shadowMaps", 2);
 
 		setUniformf("distortionCaustics", UnderWater.getInstance().getDistortion());

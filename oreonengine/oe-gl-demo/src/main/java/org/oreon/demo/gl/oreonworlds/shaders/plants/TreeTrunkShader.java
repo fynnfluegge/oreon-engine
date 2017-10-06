@@ -15,8 +15,8 @@ import org.oreon.core.scene.GameObject;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.Constants;
 import org.oreon.core.util.ResourceLoader;
-import org.oreon.modules.terrain.Terrain;
-import org.oreon.system.gl.desktop.GLRenderingEngine;
+import org.oreon.modules.gl.terrain.Terrain;
+import org.oreon.system.gl.desktop.GLForwardRenderer;
 
 public class TreeTrunkShader extends GLShader{
 
@@ -87,7 +87,7 @@ public class TreeTrunkShader extends GLShader{
 		setUniformi("material.normalmap", 1);
 		
 		glActiveTexture(GL_TEXTURE2);
-		GLRenderingEngine.getShadowMaps().getDepthMaps().bind();
+		GLForwardRenderer.getShadowMaps().getDepthMaps().bind();
 		setUniformi("shadowMaps", 2);
 		
 		List<Integer> indices = ((InstancingCluster) object.getParent()).getHighPolyIndices();

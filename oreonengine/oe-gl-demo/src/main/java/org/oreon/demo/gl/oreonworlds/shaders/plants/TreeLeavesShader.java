@@ -14,8 +14,8 @@ import org.oreon.core.scene.GameObject;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.Constants;
 import org.oreon.core.util.ResourceLoader;
-import org.oreon.modules.terrain.Terrain;
-import org.oreon.system.gl.desktop.GLRenderingEngine;
+import org.oreon.modules.gl.terrain.Terrain;
+import org.oreon.system.gl.desktop.GLForwardRenderer;
 
 public class TreeLeavesShader extends GLShader{
 	
@@ -81,7 +81,7 @@ public class TreeLeavesShader extends GLShader{
 		setUniformi("material.diffusemap", 0);
 		
 		glActiveTexture(GL_TEXTURE1);
-		GLRenderingEngine.getShadowMaps().getDepthMaps().bind();
+		GLForwardRenderer.getShadowMaps().getDepthMaps().bind();
 		setUniformi("shadowMaps", 1);
 		
 		List<Integer> indices = ((InstancingCluster) object.getParent()).getHighPolyIndices();

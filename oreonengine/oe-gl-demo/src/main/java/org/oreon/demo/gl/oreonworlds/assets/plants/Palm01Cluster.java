@@ -19,7 +19,7 @@ import org.oreon.core.util.IntegerReference;
 import org.oreon.demo.gl.oreonworlds.shaders.InstancingGridShader;
 import org.oreon.demo.gl.oreonworlds.shaders.plants.PalmBillboardShader;
 import org.oreon.demo.gl.oreonworlds.shaders.plants.PalmShader;
-import org.oreon.modules.terrain.Terrain;
+import org.oreon.modules.gl.terrain.Terrain;
 
 public class Palm01Cluster extends InstancingCluster{
 

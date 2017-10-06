@@ -3,7 +3,7 @@ package org.oreon.demo.gl.oreonworlds.gui;
 import org.oreon.core.gl.texture.Texture2D;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.system.CoreSystem;
-import org.oreon.modules.gui.elements.Button;
+import org.oreon.modules.gl.gui.elements.Button;
 
 public class FullScreenButton  extends Button{
 

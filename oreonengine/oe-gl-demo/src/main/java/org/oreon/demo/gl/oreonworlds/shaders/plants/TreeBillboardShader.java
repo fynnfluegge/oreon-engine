@@ -13,7 +13,7 @@ import org.oreon.core.scene.GameObject;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.Constants;
 import org.oreon.core.util.ResourceLoader;
-import org.oreon.modules.terrain.Terrain;
+import org.oreon.modules.gl.terrain.Terrain;
 
 public class TreeBillboardShader extends GLShader{
 

@@ -12,9 +12,9 @@ import org.oreon.core.math.Vec2f;
 import org.oreon.core.system.CoreEngine;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.Util;
-import org.oreon.modules.gui.GUIElement;
-import org.oreon.modules.gui.GUIObjectLoader;
-import org.oreon.modules.gui.GUIVAO;
+import org.oreon.modules.gl.gui.GUIElement;
+import org.oreon.modules.gl.gui.GUIObjectLoader;
+import org.oreon.modules.gl.gui.GUIVAO;
 
 
 public class FPSPanel extends GUIElement{
