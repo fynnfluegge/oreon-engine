@@ -19,7 +19,7 @@ public class Main {
 		GLForwardRenderer renderingengine = new GLForwardRenderer();
 		Window window = new GLWindow();
 		
-		renderingengine.setGui(new GUI());
+//		renderingengine.setGui(new GUI());
 		window.setWidth(1280);
 		window.setHeight(720);
 		window.setTitle("OREON ENGINE ocean");

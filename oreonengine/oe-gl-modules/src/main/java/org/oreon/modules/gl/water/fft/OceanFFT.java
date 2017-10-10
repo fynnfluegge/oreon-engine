@@ -7,9 +7,9 @@ import static org.lwjgl.opengl.GL42.glBindImageTexture;
 import static org.lwjgl.opengl.GL42.glTexStorage2D;
 import static org.lwjgl.opengl.GL43.glDispatchCompute;
 
-import org.oreon.core.gl.shaders.computing.FFTButterflyShader;
-import org.oreon.core.gl.shaders.computing.FFTInversionShader;
 import org.oreon.core.gl.texture.Texture2D;
+import org.oreon.modules.gl.gpgpu.fft.FFTButterflyShader;
+import org.oreon.modules.gl.gpgpu.fft.FFTInversionShader;
 import org.oreon.modules.gl.gpgpu.fft.FastFourierTransform;
 
 import static org.lwjgl.opengl.GL11.glFinish;

@@ -35,11 +35,11 @@ import org.oreon.modules.gl.gui.GUI;
 import org.oreon.modules.gl.gui.GUIs.VoidGUI;
 import org.oreon.modules.gl.gui.elements.TexturePanel;
 import org.oreon.modules.gl.mousePicking.TerrainPicking;
-import org.oreon.modules.gl.postProcessingEffects.Bloom;
-import org.oreon.modules.gl.postProcessingEffects.DepthOfFieldBlur;
-import org.oreon.modules.gl.postProcessingEffects.MotionBlur;
-import org.oreon.modules.gl.postProcessingEffects.SunLightScattering;
-import org.oreon.modules.gl.postProcessingEffects.lensFlare.LensFlare;
+import org.oreon.modules.gl.postprocessfilter.bloom.Bloom;
+import org.oreon.modules.gl.postprocessfilter.dofblur.DepthOfFieldBlur;
+import org.oreon.modules.gl.postprocessfilter.lensflare.LensFlare;
+import org.oreon.modules.gl.postprocessfilter.lightscattering.SunLightScattering;
+import org.oreon.modules.gl.postprocessfilter.motionblur.MotionBlur;
 import org.oreon.modules.gl.terrain.Terrain;
 import org.oreon.modules.gl.water.UnderWater;
 

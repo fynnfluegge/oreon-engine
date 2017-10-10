@@ -15,7 +15,6 @@ import java.nio.ByteBuffer;
 
 import org.lwjgl.glfw.GLFW;
 import org.oreon.core.gl.shaders.GLShader;
-import org.oreon.core.gl.shaders.computing.ContrastShader;
 import org.oreon.core.gl.texture.Texture2D;
 import org.oreon.core.system.CoreSystem;
 

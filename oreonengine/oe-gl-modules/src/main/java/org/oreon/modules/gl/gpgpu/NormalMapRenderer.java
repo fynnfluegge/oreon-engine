@@ -9,7 +9,6 @@ import static org.lwjgl.opengl.GL42.glTexStorage2D;
 import static org.lwjgl.opengl.GL43.glDispatchCompute;
 
 import org.oreon.core.gl.shaders.GLShader;
-import org.oreon.core.gl.shaders.computing.NormalMapShader;
 import org.oreon.core.gl.texture.Texture2D;
 
 public class NormalMapRenderer {

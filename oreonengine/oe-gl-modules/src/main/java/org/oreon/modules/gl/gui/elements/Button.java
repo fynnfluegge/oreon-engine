@@ -5,7 +5,6 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 import java.nio.DoubleBuffer;
 import org.lwjgl.BufferUtils;
 import org.oreon.core.gl.config.Default;
-import org.oreon.core.gl.shaders.gui.GuiShader;
 import org.oreon.core.gl.texture.Texture2D;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.math.Quaternion;
@@ -16,6 +15,7 @@ import org.oreon.core.system.CoreSystem;
 import org.oreon.modules.gl.gui.GUIElement;
 import org.oreon.modules.gl.gui.GUIObjectLoader;
 import org.oreon.modules.gl.gui.GUIVAO;
+import org.oreon.modules.gl.gui.GuiShader;
 
 import static org.lwjgl.glfw.GLFW.glfwGetCursorPos;
 

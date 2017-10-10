@@ -169,6 +169,6 @@ public class AssimpStaticModelLoader {
 	
 	public static void main(String[] args) {
 		
-		List<Model> models = loadModel("models/obj/Nanosuit", "nanosuit.obj");
+//		List<Model> models = loadModel("models/obj/Nanosuit", "nanosuit.obj");
 	}
 }
