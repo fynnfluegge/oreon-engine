@@ -7,6 +7,9 @@ public class Texture {
 	public void bind() {
 	}
 	
+	public void unbind() {
+	}
+	
 	public void trilinearFilter() {
 	}
 	

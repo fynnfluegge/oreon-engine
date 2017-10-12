@@ -4,13 +4,6 @@ layout (location = 0) in vec2 position0;
 
 out vec2 texCoord1;
 
-struct Fractal
-{
-	sampler2D heightmap;
-	int scaling;
-	float strength;
-};
-
 layout (std140, row_major) uniform Camera{
 	vec3 eyePosition;
 	mat4 m_View;
@@ -18,7 +11,6 @@ layout (std140, row_major) uniform Camera{
 	vec4 frustumPlanes[6];
 };
 
-uniform Fractal fractals0[7];
 uniform float scaleY;
 uniform int lod;
 uniform vec2 index;
@@ -131,22 +123,10 @@ void main()
 {
 	vec2 localPosition = (localMatrix * vec4(position0.x,0,position0.y,1)).xz;
 	
-	switch (lod){
-		case 1: localPosition += morph(localPosition,lod_morph_area[0]);break;
-		case 2: localPosition += morph(localPosition,lod_morph_area[1]);break;
-		case 3: localPosition += morph(localPosition,lod_morph_area[2]);break;
-		case 4: localPosition += morph(localPosition,lod_morph_area[3]);break;
-		case 5: localPosition += morph(localPosition,lod_morph_area[4]);break;
-		case 6: localPosition += morph(localPosition,lod_morph_area[5]);break;
-		case 7: localPosition += morph(localPosition,lod_morph_area[6]);break;
-		case 8: localPosition += morph(localPosition,lod_morph_area[7]);break;
-	}
+	localPosition += morph(localPosition,lod_morph_area[lod-1]);
 	
 	texCoord1 = localPosition;
 	float height = 0;
-	for (int i=0; i<7; i++){
-		height += texture(fractals0[i].heightmap, texCoord1*fractals0[i].scaling).r * fractals0[i].strength;
-	}
 					
 	gl_Position = worldMatrix * vec4(localPosition.x,height,localPosition.y,1);
 }

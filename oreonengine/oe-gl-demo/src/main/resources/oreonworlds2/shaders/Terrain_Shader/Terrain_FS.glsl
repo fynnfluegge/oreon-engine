@@ -18,12 +18,6 @@ struct Material
 	float emission;
 };
 
-struct Fractal
-{
-	sampler2D normalmap;
-	int scaling;
-};
-
 layout (std140, row_major) uniform Camera{
 	vec3 eyePosition;
 	mat4 m_View;
@@ -44,8 +38,6 @@ layout (std140, row_major) uniform LightViewProjections{
 };
 
 uniform sampler2DArray shadowMaps;
-uniform Fractal fractals1[7];
-uniform sampler2D splatmap;
 uniform float scaleY;
 uniform float scaleXZ;
 uniform Material sand;
@@ -193,22 +185,10 @@ void main()
 	// normalmap/occlusionmap/splatmap coords
 	vec2 mapCoords = (position.xz + scaleXZ/2)/scaleXZ; 
 
-	vec3 normal = vec3(0,0,0);
-	vec3 bumpNormal = vec3(0,0,0);
-	vec3 blendNormal = vec3(0,0,0);
-	
-	blendNormal += (2*(texture(fractals1[0].normalmap, mapCoords*fractals1[0].scaling).rbg)-1);
-	blendNormal += (2*(texture(fractals1[1].normalmap, mapCoords*fractals1[1].scaling).rbg)-1);
-	blendNormal += (2*(texture(fractals1[2].normalmap, mapCoords*fractals1[2].scaling).rbg)-1);
-	blendNormal += (2*(texture(fractals1[3].normalmap, mapCoords*fractals1[3].scaling).rbg)-1);
-	normal = blendNormal;
-	normal += (2*(texture(fractals1[4].normalmap, mapCoords*fractals1[4].scaling).rbg)-1);
-	normal += (2*(texture(fractals1[5].normalmap, mapCoords*fractals1[5].scaling).rbg)-1);
-	normal += (2*(texture(fractals1[6].normalmap, mapCoords*fractals1[6].scaling).rbg)-1);
-	normal = normalize(normal);
-	blendNormal = normalize(blendNormal);
-	bumpNormal = normal;
-	
+	vec3 normal = vec3(0,1,0);
+	vec3 bumpNormal = vec3(0,1,0);
+	vec3 blendNormal = vec3(0,1,0);
+
 	float grassBlend = 0;
 	float cliffBlend = 0;
 	float rockBlend  = clamp((height+200)/200,0,1);
