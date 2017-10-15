@@ -8,8 +8,8 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE13;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE14;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE15;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE22;
-import static org.lwjgl.opengl.GL13.GL_TEXTURE31;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE4;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE5;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE6;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE7;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE8;
@@ -197,9 +197,9 @@ public class TerrainShader extends GLShader{
 		glActiveTexture(GL_TEXTURE4);
 		terrConfig.getMaterial0().getDiffusemap().bind();
 		setUniformi("grass.diffusemap", 4);
-		glActiveTexture(GL_TEXTURE31);
+		glActiveTexture(GL_TEXTURE5);
 		terrConfig.getMaterial1().getNormalmap().bind();
-		setUniformi("grass.normalmap", 7);
+		setUniformi("grass.normalmap", 5);
 		
 		glActiveTexture(GL_TEXTURE6);
 		terrConfig.getMaterial1().getDiffusemap().bind();

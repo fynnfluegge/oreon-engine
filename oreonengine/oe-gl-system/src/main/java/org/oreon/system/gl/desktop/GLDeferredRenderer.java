@@ -24,6 +24,8 @@ import org.oreon.core.util.BufferUtil;
 import org.oreon.core.util.Constants;
 import org.oreon.modules.gl.gui.elements.TexturePanel;
 import org.oreon.modules.gl.terrain.Terrain;
+import static org.lwjgl.opengl.GL30.GL_RGBA32F;
+import static org.lwjgl.opengl.GL11.GL_RGBA8;
 
 public class GLDeferredRenderer implements RenderingEngine{
 
@@ -34,14 +36,16 @@ public class GLDeferredRenderer implements RenderingEngine{
 	private GLFramebuffer multisampledFbo;
 	private GBuffer gbuffer;
 	
+	private Quaternion clipplane;
 	private static ShadowMaps shadowMaps;
-	
 	
 	@Override
 	public void init() {
+		
 		Default.init();
 		window = CoreSystem.getInstance().getWindow();
 		fullScreenTexture = new TexturePanel();
+		shadowMaps = new ShadowMaps();
 		
 		IntBuffer drawBuffers = BufferUtil.createIntBuffer(4);
 		drawBuffers.put(GL_COLOR_ATTACHMENT0);
@@ -52,16 +56,14 @@ public class GLDeferredRenderer implements RenderingEngine{
 		
 		multisampledFbo = new GLFramebuffer();
 		multisampledFbo.bind();
-		multisampledFbo.createColorBufferMultisampleAttachment(Constants.MULTISAMPLES, 0);
-		multisampledFbo.createColorBufferMultisampleAttachment(Constants.MULTISAMPLES, 1);
-		multisampledFbo.createColorBufferMultisampleAttachment(Constants.MULTISAMPLES, 2);
-		multisampledFbo.createColorBufferMultisampleAttachment(Constants.MULTISAMPLES, 3);
-		multisampledFbo.createDepthBufferMultisampleAttachment(Constants.MULTISAMPLES);
+		multisampledFbo.createColorBufferMultisampleAttachment(Constants.MULTISAMPLES, 0, window.getWidth(), window.getHeight(), GL_RGBA8);
+		multisampledFbo.createColorBufferMultisampleAttachment(Constants.MULTISAMPLES, 1, window.getWidth(), window.getHeight(), GL_RGBA32F);
+		multisampledFbo.createColorBufferMultisampleAttachment(Constants.MULTISAMPLES, 2, window.getWidth(), window.getHeight(), GL_RGBA32F);
+		multisampledFbo.createColorBufferMultisampleAttachment(Constants.MULTISAMPLES, 3, window.getWidth(), window.getHeight(), GL_RGBA8);
+		multisampledFbo.createDepthBufferMultisampleAttachment(Constants.MULTISAMPLES, window.getWidth(), window.getHeight());
 		multisampledFbo.setDrawBuffers(drawBuffers);
 		multisampledFbo.checkStatus();
 		multisampledFbo.unbind();
-		
-		System.out.print("mfbo");
 		
 		gbuffer = new GBuffer(window.getWidth(), window.getHeight());
 		
@@ -74,8 +76,6 @@ public class GLDeferredRenderer implements RenderingEngine{
 		fbo.createDepthTextureAttachment(gbuffer.getSceneDepthmap().getId());
 		fbo.checkStatus();
 		fbo.unbind();
-		
-		System.out.print("fbo");
 	}
 	@Override
 	public void render() {
@@ -107,10 +107,13 @@ public class GLDeferredRenderer implements RenderingEngine{
 		fbo.bind();
 		Default.clearScreen();
 		fbo.unbind();
-		// blit albedoTexture
-		multisampledFbo.blitFrameBuffer(0,0,fbo.getId());
-		// blit light Scattering SceneTexture
-		multisampledFbo.blitFrameBuffer(1,1,fbo.getId());
+
+		multisampledFbo.blitFrameBuffer(0,0,fbo.getId(), window.getWidth(), window.getHeight());
+		multisampledFbo.blitFrameBuffer(1,1,fbo.getId(), window.getWidth(), window.getHeight());
+		multisampledFbo.blitFrameBuffer(2,2,fbo.getId(), window.getWidth(), window.getHeight());
+		multisampledFbo.blitFrameBuffer(3,3,fbo.getId(), window.getWidth(), window.getHeight());
+		
+		fullScreenTexture.setTexture(gbuffer.getWorldPositionTexture());
 		
 		fullScreenTexture.render();
 		
@@ -161,20 +164,11 @@ public class GLDeferredRenderer implements RenderingEngine{
 		return null;
 	}
 	@Override
-	public Quaternion getClipplane() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	@Override
 	public float getSightRangeFactor() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
-	@Override
-	public void setClipplane(Quaternion plane) {
-		// TODO Auto-generated method stub
-		
-	}
+
 	@Override
 	public void setGrid(boolean flag) {
 		// TODO Auto-generated method stub
@@ -200,4 +194,18 @@ public class GLDeferredRenderer implements RenderingEngine{
 		// TODO Auto-generated method stub
 		
 	}
+	public static ShadowMaps getShadowMaps() {
+		return shadowMaps;
+	}
+	public static void setShadowMaps(ShadowMaps shadowMaps) {
+		GLDeferredRenderer.shadowMaps = shadowMaps;
+	}
+	
+	public Quaternion getClipplane() {
+		return clipplane;
+	}
+
+	public void setClipplane(Quaternion clipplane) {
+		this.clipplane = clipplane;
+	} 
 }

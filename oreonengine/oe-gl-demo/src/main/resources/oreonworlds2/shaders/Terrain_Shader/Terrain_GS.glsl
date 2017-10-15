@@ -6,6 +6,12 @@ layout(triangle_strip, max_vertices = 3) out;
 
 in vec2 texCoordG[];
 
+struct Fractal
+{
+	sampler2D normalmap;
+	int scaling;
+};
+
 struct Material
 {
 	sampler2D diffusemap;
@@ -28,6 +34,7 @@ layout (std140, row_major) uniform Camera{
 	vec4 frustumPlanes[6];
 };
 
+uniform sampler2D normalmap;
 uniform Material sand;
 uniform Material rock;
 uniform Material cliff;
@@ -35,6 +42,7 @@ uniform int largeDetailedRange;
 uniform vec4 clipplane;
 uniform int isReflection;
 uniform int isRefraction;
+uniform Fractal fractals1[1];
 uniform float scaleXZ;
 
 vec3 Tangent;
@@ -82,7 +90,9 @@ void main() {
 				
 				float height = gl_in[k].gl_Position.y;
 				
-				vec3 blendNormal = vec3(0,1,0);
+				vec3 blendNormal = texture(normalmap, mapCoords).rbg;
+				blendNormal += texture(fractals1[0].normalmap, mapCoords*fractals1[0].scaling).rbg;
+				blendNormal = normalize(blendNormal);
 					
 				float grassBlend = 0;
 				float cliffBlend = 0;

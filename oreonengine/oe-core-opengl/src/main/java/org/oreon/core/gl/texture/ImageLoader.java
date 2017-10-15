@@ -26,7 +26,7 @@ import static org.lwjgl.opengl.GL11.glBindTexture;
 
 public class ImageLoader {
 	
-	public static int loadImage(String file) {
+	public static int[] loadImage(String file) {
 		
 		ByteBuffer imageBuffer;
         try {
@@ -74,7 +74,9 @@ public class ImageLoader {
         
         stbi_image_free(image);
         
-		return texId;
+        int[] data = {texId, w.get(), h.get()};
+        
+		return data;
 	}
 	
 	public static ByteBuffer loadImageToByteBuffer(String file){

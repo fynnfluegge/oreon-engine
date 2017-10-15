@@ -41,11 +41,17 @@ public class Texture2D extends Texture{
 	public Texture2D(String file)
 	{
 		setPath(file);
-		id = ImageLoader.loadImage(file);
+		int[] data = ImageLoader.loadImage(file);
+		id = data[0];
+		width = data[1];
+		width = data[2];
 	}
 	
 	public void load(){
-		id = ImageLoader.loadImage(getPath());
+		int[] data = ImageLoader.loadImage(getPath());
+		id = data[0];
+		width = data[1];
+		width = data[2];
 	}
 	
 	public void bind()

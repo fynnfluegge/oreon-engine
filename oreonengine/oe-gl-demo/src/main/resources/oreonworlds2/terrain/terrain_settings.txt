@@ -25,11 +25,11 @@ material3_emission 0.0
 material3_shininess 20.0
 
 #maps
-heightmap 
+heightmap oreonworlds2/terrain/heightmap/hm0.bmp
 
 #terrain mesh settings
 scaleXZ 6000.0
-scaleY 1200.0
+scaleY 600.0
 texDetail 1000.0
 tessellationFactor 600
 tessellationSlope 1.8

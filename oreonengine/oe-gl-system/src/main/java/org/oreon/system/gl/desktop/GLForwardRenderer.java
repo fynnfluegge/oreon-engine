@@ -4,6 +4,7 @@ import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_COMPONENT;
 import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import static org.lwjgl.opengl.GL11.GL_RGBA;
+import static org.lwjgl.opengl.GL11.GL_RGBA8;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glTexImage2D;
@@ -12,6 +13,7 @@ import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT0;
 import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT1;
 import static org.lwjgl.opengl.GL30.GL_DEPTH_COMPONENT32F;
 import static org.lwjgl.opengl.GL30.GL_RGBA16F;
+import static org.lwjgl.opengl.GL30.GL_RGBA32F;
 
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
@@ -114,9 +116,9 @@ public class GLForwardRenderer implements RenderingEngine{
 		
 		multisampledFbo = new GLFramebuffer();
 		multisampledFbo.bind();
-		multisampledFbo.createColorBufferMultisampleAttachment(Constants.MULTISAMPLES, 0);
-		multisampledFbo.createColorBufferMultisampleAttachment(Constants.MULTISAMPLES, 1);
-		multisampledFbo.createDepthBufferMultisampleAttachment(Constants.MULTISAMPLES);
+		multisampledFbo.createColorBufferMultisampleAttachment(Constants.MULTISAMPLES, 0, window.getWidth(), window.getHeight(), GL_RGBA8);
+		multisampledFbo.createColorBufferMultisampleAttachment(Constants.MULTISAMPLES, 1, window.getWidth(), window.getHeight(), GL_RGBA32F);
+		multisampledFbo.createDepthBufferMultisampleAttachment(Constants.MULTISAMPLES, window.getWidth(), window.getHeight());
 		multisampledFbo.setDrawBuffers(drawBuffers);
 		multisampledFbo.checkStatus();
 		multisampledFbo.unbind();
@@ -180,10 +182,12 @@ public class GLForwardRenderer implements RenderingEngine{
 		fbo.bind();
 		Default.clearScreen();
 		fbo.unbind();
+		
 		// blit SceneTexture
-		multisampledFbo.blitFrameBuffer(0,0,fbo.getId());
+		multisampledFbo.blitFrameBuffer(0,0,fbo.getId(), window.getWidth(), window.getHeight());
+		
 		// blit light Scattering SceneTexture
-		multisampledFbo.blitFrameBuffer(1,1,fbo.getId());
+		multisampledFbo.blitFrameBuffer(1,1,fbo.getId(), window.getWidth(), window.getHeight());
 		
 		// start Threads to update instancing objects
 		instancingObjectHandler.signalAll();

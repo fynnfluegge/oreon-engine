@@ -6,6 +6,15 @@ in vec2 texCoord2[];
 
 out vec2 texCoordG;
 
+struct Fractal
+{
+	sampler2D heightmap;
+	int scaling;
+	float strength;
+};
+
+uniform sampler2D heightmap;
+uniform Fractal fractals0[1];
 uniform float scaleY;
 uniform int bezier;
 uniform float texDetail;
@@ -75,8 +84,8 @@ void main(){
 	u * v * texCoord2[3] +
 	(1 - u) * v * texCoord2[15]);
 	
-	float height = 0;
-
+	float height = texture(fractals0[0].heightmap, texCoord*fractals0[0].scaling).r * fractals0[0].strength;
+	height += texture(heightmap, texCoord).r;
 	height *= scaleY;
 					
 	position.y = height;

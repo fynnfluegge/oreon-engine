@@ -1,32 +1,35 @@
 #textures
-material0_DIF oreonworlds/terrain/materials/grass0_DIF.jpg
-material0_NRM oreonworlds/terrain/materials/grass0_NRM.jpg
-material0_DISP oreonworlds/terrain/materials/grass0_DISP.jpg
+material0_DIF oreonworlds2/terrain/materials/grass0_DIF.jpg
+material0_NRM oreonworlds2/terrain/materials/grass0_NRM.jpg
+material0_DISP oreonworlds2/terrain/materials/grass0_DISP.jpg
 material0_displaceScale 0.0
 material0_emission 0.0
 material0_shininess 200.0
-material1_DIF oreonworlds/terrain/materials/Ground_11_DIF.jpg
-material1_NRM oreonworlds/terrain/materials/Ground_11_NRM.jpg
-material1_DISP oreonworlds/terrain/materials/Ground_11_DISP.jpg
+material1_DIF oreonworlds2/terrain/materials/Ground_11_DIF.jpg
+material1_NRM oreonworlds2/terrain/materials/Ground_11_NRM.jpg
+material1_DISP oreonworlds2/terrain/materials/Ground_11_DISP.jpg
 material1_displaceScale 0.0
 material1_emission 0.0
 material1_shininess 200.0
-material2_DIF oreonworlds/terrain/materials/Ground_11_DIF.jpg
-material2_NRM oreonworlds/terrain/materials/Ground_11_NRM.jpg
-material2_DISP oreonworlds/terrain/materials/Ground_11_DISP.jpg
+material2_DIF oreonworlds2/terrain/materials/Ground_11_DIF.jpg
+material2_NRM oreonworlds2/terrain/materials/Ground_11_NRM.jpg
+material2_DISP oreonworlds2/terrain/materials/Ground_11_DISP.jpg
 material2_displaceScale 0.0
 material2_emission 0.0
 material2_shininess 20.0
-material3_DIF oreonworlds/terrain/materials/Ground_21_DIF.jpg
-material3_NRM oreonworlds/terrain/materials/Ground_21_NRM.jpg
-material3_DISP oreonworlds/terrain/materials/Ground_21_DISP.jpg
+material3_DIF oreonworlds2/terrain/materials/Ground_21_DIF.jpg
+material3_NRM oreonworlds2/terrain/materials/Ground_21_NRM.jpg
+material3_DISP oreonworlds2/terrain/materials/Ground_21_DISP.jpg
 material3_displaceScale 0.0
 material3_emission 0.0
 material3_shininess 20.0
 
+#maps
+heightmap oreonworlds2/terrain/heightmap/hm0.bmp
+
 #terrain mesh settings
 scaleXZ 6000.0
-scaleY 1200.0
+scaleY 600.0
 texDetail 400.0
 tessellationFactor 600
 tessellationSlope 1.8

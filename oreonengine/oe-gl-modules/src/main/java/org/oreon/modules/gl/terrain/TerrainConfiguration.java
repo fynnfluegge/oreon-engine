@@ -17,6 +17,7 @@ import org.oreon.core.model.Material;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.Constants;
 import org.oreon.core.util.Util;
+import org.oreon.modules.gl.gpgpu.NormalMapRenderer;
 import org.oreon.modules.gl.terrain.fractals.FractalMaps;
 
 public class TerrainConfiguration {
@@ -126,6 +127,16 @@ public class TerrainConfiguration {
 					}
 					if(tokens[0].equals("scaleXZ")){
 						setScaleXZ(Float.valueOf(tokens[1]));
+					}
+					if(tokens[0].equals("heightmap")){
+						setHeightmap(new Texture2D(tokens[1]));
+						getHeightmap().bind();
+						getHeightmap().bilinearFilter();
+						
+						NormalMapRenderer normalRenderer = new NormalMapRenderer(getHeightmap().getWidth());
+						normalRenderer.setStrength(8);
+						normalRenderer.render(getHeightmap());
+						setNormalmap(normalRenderer.getNormalmap());
 					}
 					if(tokens[0].equals("normalmap")){
 						setNormalmap(new Texture2D(tokens[1]));

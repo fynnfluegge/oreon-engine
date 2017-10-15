@@ -6,8 +6,8 @@ import static org.lwjgl.opengl.GL11.GL_RGBA;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.glTexImage2D;
 import static org.lwjgl.opengl.GL30.GL_DEPTH_COMPONENT32F;
-import static org.lwjgl.opengl.GL30.GL_RGBA16F;
 import static org.lwjgl.opengl.GL30.GL_RGBA32F;
+import static org.lwjgl.opengl.GL11.GL_RGBA8;
 
 import java.nio.ByteBuffer;
 
@@ -21,12 +21,12 @@ public class GBuffer {
 	private Texture2D SpecularEmissionTexture;
 	private Texture2D sceneDepthmap;
 	
-	public GBuffer(int height, int width) {
+	public GBuffer(int width, int height) {
 		
 		albedoTexture = new Texture2D();
 		albedoTexture.generate();
 		albedoTexture.bind();
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
 		albedoTexture.bilinearFilter();
 		albedoTexture.clampToEdge();
 		
@@ -47,7 +47,7 @@ public class GBuffer {
 		SpecularEmissionTexture = new Texture2D();
 		SpecularEmissionTexture.generate();
 		SpecularEmissionTexture.bind();
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
 		SpecularEmissionTexture.bilinearFilter();
 		SpecularEmissionTexture.clampToEdge();
 		

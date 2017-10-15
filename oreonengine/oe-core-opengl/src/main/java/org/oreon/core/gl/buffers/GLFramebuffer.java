@@ -4,8 +4,6 @@ import static org.lwjgl.opengl.GL11.GL_NEAREST;
 import static org.lwjgl.opengl.GL11.glReadBuffer;
 import static org.lwjgl.opengl.GL20.glDrawBuffers;
 import static org.lwjgl.opengl.GL11.glDrawBuffer;
-import static org.lwjgl.opengl.GL11.GL_RGBA8;
-import static org.lwjgl.opengl.GL30.GL_RGBA32F;
 import static org.lwjgl.opengl.GL30.glBlitFramebuffer;
 import static org.lwjgl.opengl.GL30.GL_DEPTH_COMPONENT32F;
 import static org.lwjgl.opengl.GL30.GL_RENDERBUFFER;
@@ -18,7 +16,6 @@ import static org.lwjgl.opengl.GL32.glFramebufferTexture;
 import java.nio.IntBuffer;
 
 import org.oreon.core.buffers.Framebuffer;
-import org.oreon.core.system.CoreSystem;
 
 import static org.lwjgl.opengl.GL30.glGenFramebuffers;
 import static org.lwjgl.opengl.GL30.glBindFramebuffer;
@@ -60,11 +57,11 @@ public class GLFramebuffer implements Framebuffer{
 		glDrawBuffer(GL_COLOR_ATTACHMENT0 + i);
 	}
 	
-	public void createColorBufferAttachment(int x, int y, int i)
+	public void createColorBufferAttachment(int x, int y, int i, int internalformat)
 	{
 		int colorbuffer = glGenRenderbuffers();
 		glBindRenderbuffer(GL_RENDERBUFFER, colorbuffer);
-		glRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA32F, x, y);
+		glRenderbufferStorage(GL_RENDERBUFFER, internalformat, x, y);
 		glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_RENDERBUFFER, colorbuffer);
 	}
 	
@@ -87,33 +84,28 @@ public class GLFramebuffer implements Framebuffer{
 		glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, texture, 0);
 	}
 	
-	public void createColorBufferMultisampleAttachment(int samples, int attachment){
+	public void createColorBufferMultisampleAttachment(int samples, int attachment, int width, int height, int internalformat){
 		int colorBuffer = glGenRenderbuffers();
 		glBindRenderbuffer(GL_RENDERBUFFER, colorBuffer);
-		glRenderbufferStorageMultisample(GL_RENDERBUFFER, samples, GL_RGBA8, 
-									       		CoreSystem.getInstance().getWindow().getWidth(), 
-									       		CoreSystem.getInstance().getWindow().getHeight());
+		glRenderbufferStorageMultisample(GL_RENDERBUFFER, samples, internalformat, width, height); 
 		glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER,GL_COLOR_ATTACHMENT0 + attachment,
 									GL_RENDERBUFFER,colorBuffer);
 	}
 	
-	public void createDepthBufferMultisampleAttachment(int samples){
+	public void createDepthBufferMultisampleAttachment(int samples, int width, int height){
 		int depthBuffer = glGenRenderbuffers();
 		glBindRenderbuffer(GL_RENDERBUFFER, depthBuffer);
-		glRenderbufferStorageMultisample(GL_RENDERBUFFER, samples, GL_DEPTH_COMPONENT32F, 
-									       		CoreSystem.getInstance().getWindow().getWidth(), 
-									       		CoreSystem.getInstance().getWindow().getHeight());
+		glRenderbufferStorageMultisample(GL_RENDERBUFFER, samples, GL_DEPTH_COMPONENT32F, width, height);
 		glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER,GL_DEPTH_ATTACHMENT,
 									GL_RENDERBUFFER,depthBuffer);
 	}
 	
-	public void blitFrameBuffer(int sourceAttachment, int destinationAttachment, int writeFBO){
+	public void blitFrameBuffer(int sourceAttachment, int destinationAttachment, int writeFBO, int width, int height){
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, writeFBO);
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, id);
 		glReadBuffer(GL_COLOR_ATTACHMENT0 + sourceAttachment);
 		glDrawBuffer(GL_COLOR_ATTACHMENT0 + destinationAttachment);
-		glBlitFramebuffer(0,0,CoreSystem.getInstance().getWindow().getWidth(),CoreSystem.getInstance().getWindow().getHeight(),
-						  0,0,CoreSystem.getInstance().getWindow().getWidth(),CoreSystem.getInstance().getWindow().getHeight(),
+		glBlitFramebuffer(0,0,width,height,0,0,width,height,
 						  GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, GL_NEAREST);
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
