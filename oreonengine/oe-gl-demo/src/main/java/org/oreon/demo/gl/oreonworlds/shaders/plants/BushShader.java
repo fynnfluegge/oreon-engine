@@ -16,7 +16,7 @@ import org.oreon.core.util.Constants;
 import org.oreon.core.util.ResourceLoader;
 import org.oreon.demo.gl.oreonworlds.assets.plants.Bush01Cluster;
 import org.oreon.modules.gl.terrain.Terrain;
-import org.oreon.system.gl.desktop.GLForwardRenderer;
+import org.oreon.system.gl.desktop.GLForwardRenderingEngine;
 
 public class BushShader extends GLShader{
 	
@@ -85,7 +85,7 @@ private static BushShader instance = null;
 		setUniformi("material.diffusemap", 0);
 		
 		glActiveTexture(GL_TEXTURE1);
-		GLForwardRenderer.getShadowMaps().getDepthMaps().bind();
+		GLForwardRenderingEngine.getShadowMaps().getDepthMaps().bind();
 		setUniformi("shadowMaps", 1);
 		
 		List<Integer> indices = ((Bush01Cluster) object.getParent()).getHighPolyIndices();

@@ -22,7 +22,7 @@ import org.lwjgl.glfw.GLFW;
 import org.oreon.core.gl.buffers.GLFramebuffer;
 import org.oreon.core.gl.config.Default;
 import org.oreon.core.gl.light.GLDirectionalLight;
-import org.oreon.core.gl.shadow.ShadowMaps;
+import org.oreon.core.gl.shadow.ParallelSplitShadowMaps;
 import org.oreon.core.gl.texture.Texture2D;
 import org.oreon.core.instancing.InstancingObjectHandler;
 import org.oreon.core.light.LightHandler;
@@ -45,7 +45,7 @@ import org.oreon.modules.gl.postprocessfilter.motionblur.MotionBlur;
 import org.oreon.modules.gl.terrain.Terrain;
 import org.oreon.modules.gl.water.UnderWater;
 
-public class GLForwardRenderer implements RenderingEngine{
+public class GLForwardRenderingEngine implements RenderingEngine{
 
 	private Window window;
 	private TexturePanel fullScreenTexture;
@@ -61,7 +61,7 @@ public class GLForwardRenderer implements RenderingEngine{
 	private boolean grid;
 	
 	private InstancingObjectHandler instancingObjectHandler;
-	private static ShadowMaps shadowMaps;
+	private static ParallelSplitShadowMaps shadowMaps;
 	private GUI gui;
 	
 	private MotionBlur motionBlur;
@@ -82,7 +82,7 @@ public class GLForwardRenderer implements RenderingEngine{
 	private static float t_causticsDistortion = 0;
 	private static float sightRangeFactor = 1.4f;
 	
-	public GLForwardRenderer()
+	public GLForwardRenderingEngine()
 	{
 		instancingObjectHandler = InstancingObjectHandler.getInstance();
 	}
@@ -99,7 +99,7 @@ public class GLForwardRenderer implements RenderingEngine{
 			gui = new VoidGUI();
 		}
 		
-		shadowMaps = new ShadowMaps();
+		shadowMaps = new ParallelSplitShadowMaps();
 		fullScreenTexture = new TexturePanel();
 		motionBlur = new MotionBlur();
 		dofBlur = new DepthOfFieldBlur();
@@ -319,12 +319,12 @@ public class GLForwardRenderer implements RenderingEngine{
 		this.grid = grid;
 	}
 	
-	public static ShadowMaps getShadowMaps() {
+	public static ParallelSplitShadowMaps getShadowMaps() {
 		return shadowMaps;
 	}
 
-	public void setShadowMaps(ShadowMaps shadowMaps) {
-		GLForwardRenderer.shadowMaps = shadowMaps;
+	public void setShadowMaps(ParallelSplitShadowMaps shadowMaps) {
+		GLForwardRenderingEngine.shadowMaps = shadowMaps;
 	}
 
 	public static boolean isMotionBlurEnabled() {
@@ -332,7 +332,7 @@ public class GLForwardRenderer implements RenderingEngine{
 	}
 
 	public static void setMotionBlurEnabled(boolean motionBlurEnabled) {
-		GLForwardRenderer.motionBlurEnabled = motionBlurEnabled;
+		GLForwardRenderingEngine.motionBlurEnabled = motionBlurEnabled;
 	}
 
 	public static boolean isDepthOfFieldBlurEnabled() {
@@ -340,7 +340,7 @@ public class GLForwardRenderer implements RenderingEngine{
 	}
 
 	public static void setDepthOfFieldBlurEnabled(boolean depthOfFieldBlurEnabled) {
-		GLForwardRenderer.depthOfFieldBlurEnabled = depthOfFieldBlurEnabled;
+		GLForwardRenderingEngine.depthOfFieldBlurEnabled = depthOfFieldBlurEnabled;
 	}
 
 	public boolean isBloomEnabled() {
@@ -348,7 +348,7 @@ public class GLForwardRenderer implements RenderingEngine{
 	}
 
 	public void setBloomEnabled(boolean enabled) {
-		GLForwardRenderer.bloomEnabled = enabled;
+		GLForwardRenderingEngine.bloomEnabled = enabled;
 	}
 
 	public boolean isWaterReflection() {
@@ -356,7 +356,7 @@ public class GLForwardRenderer implements RenderingEngine{
 	}
 
 	public void setWaterReflection(boolean isReflection) {
-		GLForwardRenderer.waterReflection = isReflection;
+		GLForwardRenderingEngine.waterReflection = isReflection;
 	}
 
 	public boolean isWaterRefraction() {
@@ -364,7 +364,7 @@ public class GLForwardRenderer implements RenderingEngine{
 	}
 
 	public void setWaterRefraction(boolean waterRefraction) {
-		GLForwardRenderer.waterRefraction = waterRefraction;
+		GLForwardRenderingEngine.waterRefraction = waterRefraction;
 	}
 
 	public static boolean isLightScatteringEnabled() {
@@ -372,7 +372,7 @@ public class GLForwardRenderer implements RenderingEngine{
 	}
 
 	public void setLightScatteringEnabled(boolean lightScatteringEnabled) {
-		GLForwardRenderer.lightScatteringEnabled = lightScatteringEnabled;
+		GLForwardRenderingEngine.lightScatteringEnabled = lightScatteringEnabled;
 	}
 	
 	public boolean isCameraUnderWater() {
@@ -380,7 +380,7 @@ public class GLForwardRenderer implements RenderingEngine{
 	}
 
 	public void setCameraUnderWater(boolean underWater) {
-		GLForwardRenderer.cameraUnderWater = underWater;
+		GLForwardRenderingEngine.cameraUnderWater = underWater;
 	}
 
 	public float getT_causticsDistortion() {
@@ -392,7 +392,7 @@ public class GLForwardRenderer implements RenderingEngine{
 	}
 
 	public void setSightRangeFactor(float sightRangeFactor) {
-		GLForwardRenderer.sightRangeFactor = sightRangeFactor;
+		GLForwardRenderingEngine.sightRangeFactor = sightRangeFactor;
 	}
 	
 	public TexturePanel getFullScreenTexture() {

@@ -79,7 +79,7 @@ void main() {
 
 	float dist = (distance(gl_in[0].gl_Position.xyz, eyePosition) + distance(gl_in[1].gl_Position.xyz, eyePosition) + distance(gl_in[2].gl_Position.xyz, eyePosition))/3;
 	
-	if (dist < largeDetailedRange && isReflection == 0){
+	if (dist < (largeDetailedRange - 20) && isReflection == 0){
 	
 		if (isRefraction == 0){
 			for(int k=0; k<gl_in.length(); k++){
@@ -91,7 +91,6 @@ void main() {
 				float height = gl_in[k].gl_Position.y;
 				
 				vec3 blendNormal = texture(normalmap, mapCoords).rbg;
-				blendNormal += texture(fractals1[0].normalmap, mapCoords*fractals1[0].scaling).rbg;
 				blendNormal = normalize(blendNormal);
 					
 				float grassBlend = 0;
@@ -121,9 +120,9 @@ void main() {
 							+ texture(rock.heightmap, texCoordG[k]/20).r * rockBlend * rock.displaceScale
 							+ texture(cliff.heightmap, texCoordG[k]/20).r * cliffBlend * cliff.displaceScale;
 							
-				scale *= (- distance(gl_in[k].gl_Position.xyz, eyePosition)/(largeDetailedRange) + 1);
+				float attenuation = clamp(-dist/(largeDetailedRange-20) + 1,0.0,1.0);
 
-				displacement[k] *= scale;
+				displacement[k] *= attenuation;
 			}	
 		}
 		

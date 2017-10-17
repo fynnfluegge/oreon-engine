@@ -9,12 +9,13 @@ import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT3;
 
 import java.nio.IntBuffer;
 
+import org.lwjgl.glfw.GLFW;
 import org.oreon.core.buffers.Framebuffer;
 import org.oreon.core.gl.buffers.GLFramebuffer;
 import org.oreon.core.gl.config.Default;
-import org.oreon.core.gl.deferred.GBuffer;
+import org.oreon.core.gl.deferred.DeferredRenderer;
 import org.oreon.core.gl.light.GLDirectionalLight;
-import org.oreon.core.gl.shadow.ShadowMaps;
+import org.oreon.core.gl.shadow.ParallelSplitShadowMaps;
 import org.oreon.core.math.Quaternion;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.system.RenderingEngine;
@@ -22,30 +23,44 @@ import org.oreon.core.system.Window;
 import org.oreon.core.texture.Texture;
 import org.oreon.core.util.BufferUtil;
 import org.oreon.core.util.Constants;
+import org.oreon.modules.gl.gui.GUI;
+import org.oreon.modules.gl.gui.GUIs.VoidGUI;
 import org.oreon.modules.gl.gui.elements.TexturePanel;
 import org.oreon.modules.gl.terrain.Terrain;
 import static org.lwjgl.opengl.GL30.GL_RGBA32F;
 import static org.lwjgl.opengl.GL11.GL_RGBA8;
 
-public class GLDeferredRenderer implements RenderingEngine{
+public class GLDeferredRenderingEngine implements RenderingEngine{
 
 	private Window window;
 	private TexturePanel fullScreenTexture;
 	
 	private GLFramebuffer fbo;
 	private GLFramebuffer multisampledFbo;
-	private GBuffer gbuffer;
+	private DeferredRenderer deferredRenderer;
+	private GUI gui;
+	
+	private boolean grid;
 	
 	private Quaternion clipplane;
-	private static ShadowMaps shadowMaps;
+	private static ParallelSplitShadowMaps shadowMaps;
 	
 	@Override
 	public void init() {
 		
 		Default.init();
 		window = CoreSystem.getInstance().getWindow();
+		
+		if (gui != null){
+			gui.init();
+		}
+		else {
+			gui = new VoidGUI();
+		}
+		
+		
 		fullScreenTexture = new TexturePanel();
-		shadowMaps = new ShadowMaps();
+		shadowMaps = new ParallelSplitShadowMaps();
 		
 		IntBuffer drawBuffers = BufferUtil.createIntBuffer(4);
 		drawBuffers.put(GL_COLOR_ATTACHMENT0);
@@ -65,15 +80,15 @@ public class GLDeferredRenderer implements RenderingEngine{
 		multisampledFbo.checkStatus();
 		multisampledFbo.unbind();
 		
-		gbuffer = new GBuffer(window.getWidth(), window.getHeight());
+		deferredRenderer = new DeferredRenderer(window.getWidth(), window.getHeight());
 		
 		fbo = new GLFramebuffer();
 		fbo.bind();
-		fbo.createColorTextureAttachment(gbuffer.getAlbedoTexture().getId(),0);
-		fbo.createColorTextureAttachment(gbuffer.getWorldPositionTexture().getId(),1);
-		fbo.createColorTextureAttachment(gbuffer.getNormalTexture().getId(),2);
-		fbo.createColorTextureAttachment(gbuffer.getSpecularEmissionTexture().getId(),3);
-		fbo.createDepthTextureAttachment(gbuffer.getSceneDepthmap().getId());
+		fbo.createColorTextureAttachment(deferredRenderer.getGbuffer().getAlbedoTexture().getId(),0);
+		fbo.createColorTextureAttachment(deferredRenderer.getGbuffer().getWorldPositionTexture().getId(),1);
+		fbo.createColorTextureAttachment(deferredRenderer.getGbuffer().getNormalTexture().getId(),2);
+		fbo.createColorTextureAttachment(deferredRenderer.getGbuffer().getSpecularEmissionTexture().getId(),3);
+		fbo.createDepthTextureAttachment(deferredRenderer.getGbuffer().getSceneDepthmap().getId());
 		fbo.checkStatus();
 		fbo.unbind();
 	}
@@ -113,15 +128,27 @@ public class GLDeferredRenderer implements RenderingEngine{
 		multisampledFbo.blitFrameBuffer(2,2,fbo.getId(), window.getWidth(), window.getHeight());
 		multisampledFbo.blitFrameBuffer(3,3,fbo.getId(), window.getWidth(), window.getHeight());
 		
-		fullScreenTexture.setTexture(gbuffer.getWorldPositionTexture());
+		deferredRenderer.render();
+		
+		fullScreenTexture.setTexture(deferredRenderer.getDeferredSceneTexture());
 		
 		fullScreenTexture.render();
+		
+		gui.render();
 		
 		// draw into OpenGL window
 		window.draw();
 	}
 	@Override
 	public void update() {
+		
+		if (CoreSystem.getInstance().getInput().isKeyPushed(GLFW.GLFW_KEY_G)){
+			if (isGrid())
+				setGrid(false);
+			else
+				setGrid(true);
+		}
+		
 		CoreSystem.getInstance().getScenegraph().update();		
 	}
 	@Override
@@ -130,8 +157,8 @@ public class GLDeferredRenderer implements RenderingEngine{
 	}
 	@Override
 	public boolean isGrid() {
-		// TODO Auto-generated method stub
-		return false;
+		
+		return grid;
 	}
 	@Override
 	public boolean isCameraUnderWater() {
@@ -171,8 +198,8 @@ public class GLDeferredRenderer implements RenderingEngine{
 
 	@Override
 	public void setGrid(boolean flag) {
-		// TODO Auto-generated method stub
-		
+
+		grid = flag;
 	}
 	@Override
 	public void setWaterRefraction(boolean flag) {
@@ -194,11 +221,11 @@ public class GLDeferredRenderer implements RenderingEngine{
 		// TODO Auto-generated method stub
 		
 	}
-	public static ShadowMaps getShadowMaps() {
+	public static ParallelSplitShadowMaps getShadowMaps() {
 		return shadowMaps;
 	}
-	public static void setShadowMaps(ShadowMaps shadowMaps) {
-		GLDeferredRenderer.shadowMaps = shadowMaps;
+	public static void setShadowMaps(ParallelSplitShadowMaps shadowMaps) {
+		GLDeferredRenderingEngine.shadowMaps = shadowMaps;
 	}
 	
 	public Quaternion getClipplane() {
@@ -207,5 +234,11 @@ public class GLDeferredRenderer implements RenderingEngine{
 
 	public void setClipplane(Quaternion clipplane) {
 		this.clipplane = clipplane;
+	}
+	public GUI getGui() {
+		return gui;
+	}
+	public void setGui(GUI gui) {
+		this.gui = gui;
 	} 
 }

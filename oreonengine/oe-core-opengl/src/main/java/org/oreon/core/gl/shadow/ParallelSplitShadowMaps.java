@@ -16,13 +16,13 @@ import static org.lwjgl.opengl.GL30.GL_FRAMEBUFFER;
 import static org.lwjgl.opengl.GL30.GL_TEXTURE_2D_ARRAY;
 import static org.lwjgl.opengl.GL32.glFramebufferTexture;
 
-public class ShadowMaps {
+public class ParallelSplitShadowMaps {
 
 	private GLFramebuffer fbo;
 	private Texture2DArray depthMaps;
 	private RenderConfig config;
 
-	public ShadowMaps(){
+	public ParallelSplitShadowMaps(){
 		
 		config = new ShadowConfig();
 		

@@ -27,7 +27,7 @@ import org.oreon.core.util.ResourceLoader;
 import org.oreon.modules.gl.terrain.TerrainConfiguration;
 import org.oreon.modules.gl.terrain.TerrainNode;
 import org.oreon.modules.gl.water.UnderWater;
-import org.oreon.system.gl.desktop.GLForwardRenderer;
+import org.oreon.system.gl.desktop.GLForwardRenderingEngine;
 
 public class TerrainShader extends GLShader{
 	
@@ -132,7 +132,7 @@ public class TerrainShader extends GLShader{
 		bindUniformBlock("LightViewProjections",Constants.LightMatricesUniformBlockBinding);
 		
 		glActiveTexture(GL_TEXTURE0);
-		GLForwardRenderer.getShadowMaps().getDepthMaps().bind();
+		GLForwardRenderingEngine.getShadowMaps().getDepthMaps().bind();
 		setUniformi("shadowMaps", 0);
 		
 		setUniform("clipplane", CoreSystem.getInstance().getRenderingEngine().getClipplane());

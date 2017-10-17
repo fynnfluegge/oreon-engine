@@ -15,7 +15,7 @@ import org.oreon.core.util.Constants;
 import org.oreon.core.util.ResourceLoader;
 import org.oreon.demo.gl.oreonworlds.assets.plants.Palm01Cluster;
 import org.oreon.modules.gl.terrain.Terrain;
-import org.oreon.system.gl.desktop.GLForwardRenderer;
+import org.oreon.system.gl.desktop.GLForwardRenderingEngine;
 
 public class PalmShader extends GLShader{
 
@@ -82,7 +82,7 @@ public class PalmShader extends GLShader{
 //		setUniformf("material.shininess", material.getShininess());
 		
 		glActiveTexture(GL_TEXTURE1);
-		GLForwardRenderer.getShadowMaps().getDepthMaps().bind();
+		GLForwardRenderingEngine.getShadowMaps().getDepthMaps().bind();
 		setUniformi("shadowMaps", 1);
 		
 		List<Integer> indices = ((Palm01Cluster) object.getParent()).getHighPolyIndices();
