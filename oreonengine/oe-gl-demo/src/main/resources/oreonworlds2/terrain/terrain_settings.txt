@@ -25,7 +25,7 @@ material3_emission 0.0
 material3_shininess 20.0
 
 #maps
-heightmap oreonworlds2/terrain/heightmap/hm0.bmp
+heightmap oreonworlds2/terrain/heightmap/hm0.bmp 20
 
 #terrain mesh settings
 scaleXZ 6000.0
@@ -101,5 +101,5 @@ amp 4.0
 l 400.0
 scaling 100
 strength 0.002
-normalStrength 20
+normalStrength 1
 random 35

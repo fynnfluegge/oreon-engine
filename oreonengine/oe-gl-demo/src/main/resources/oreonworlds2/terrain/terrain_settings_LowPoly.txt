@@ -25,7 +25,7 @@ material3_emission 0.0
 material3_shininess 20.0
 
 #maps
-heightmap oreonworlds2/terrain/heightmap/hm0.bmp
+heightmap oreonworlds2/terrain/heightmap/hm0.bmp 20
 
 #terrain mesh settings
 scaleXZ 6000.0
@@ -47,44 +47,45 @@ lod6_range 0
 lod7_range 0
 lod8_range 0
 
+#fractals
 fractal_stage0
-amp 2.0
-l 20.0
+amp 8.0
+l 12.0
 scaling 1
-strength 4.0
-normalStrength 1
-random 941
+strength 1.0
+normalStrength 256
+random 589
 
 fractal_stage1
 amp 2.0
-l 30.0
+l 20.0
 scaling 2
-strength 2.5
-normalStrength 512
+strength 1
+normalStrength 128
 random 558
 
 fractal_stage2
 amp 4.0
 l 100.0
 scaling 4
-strength 0.2
-normalStrength 64
+strength 0.15
+normalStrength 25
 random 812
 
 fractal_stage3
 amp 4.0
 l 100.0
 scaling 6
-strength 0.1
-normalStrength 64
+strength 0.04
+normalStrength 15
 random 470
 
 fractal_stage4
 amp 4.0
 l 200.0
 scaling 10
-strength 0.03
-normalStrength 32
+strength 0.02
+normalStrength 20
 random 158
 
 fractal_stage5
@@ -92,13 +93,13 @@ amp 6.0
 l 400.0
 scaling 20
 strength 0.01
-normalStrength 32
+normalStrength 20
 random 789
 
 fractal_stage6
-amp 6.0
+amp 4.0
 l 400.0
-scaling 22
-strength 0.01
-normalStrength 1 32
+scaling 100
+strength 0.002
+normalStrength 2
 random 35

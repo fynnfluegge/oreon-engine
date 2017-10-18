@@ -130,7 +130,7 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		
 		deferredRenderer.render();
 		
-		fullScreenTexture.setTexture(deferredRenderer.getGbuffer().getNormalTexture());
+		fullScreenTexture.setTexture(deferredRenderer.getDeferredSceneTexture());
 		
 		fullScreenTexture.render();
 		

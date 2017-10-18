@@ -73,13 +73,11 @@ void main()
 	// normalmap/occlusionmap/splatmap coords
 	vec2 mapCoords = (position.xz + scaleXZ/2)/scaleXZ; 
 
-	vec3 normal = vec3(0,0,0);
 	vec3 bumpNormal = vec3(0,0,0);
-	vec3 blendNormal = vec3(0,0,0);
 	
-	blendNormal += (2*(texture(normalmap, mapCoords).rbg) - 1);
-	normal = blendNormal;
-	normal += (texture(fractals1[0].normalmap, mapCoords*fractals1[0].scaling).rbg);
+	vec3 normal = texture(normalmap, mapCoords).rgb;
+	normal.xy += texture(fractals1[0].normalmap, mapCoords*fractals1[0].scaling).rg;
+	vec3 blendNormal = normal.rbg * 2.0 - 1.0;
 	normal = normalize(normal);
 	blendNormal = normalize(blendNormal);
 	bumpNormal = normal;
@@ -160,8 +158,8 @@ void main()
 		rgb = mix(rgb, waterRefractionColor, refractionFactor); 
 	}
 	
-	albedoSampler = vec4(rgb,1);
+	albedoSampler = vec4(0.1,1.0,0.1,1);
 	worldPositionSampler = vec4(position,1);
-	normalSampler = vec4(bumpNormal.xzy,1);
+	normalSampler = vec4(normal,1);
 	specularEmissionSampler = vec4(emission,shininess,0,1);
 }

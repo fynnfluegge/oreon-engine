@@ -79,7 +79,7 @@ void main() {
 
 	float dist = (distance(gl_in[0].gl_Position.xyz, eyePosition) + distance(gl_in[1].gl_Position.xyz, eyePosition) + distance(gl_in[2].gl_Position.xyz, eyePosition))/3;
 	
-	if (dist < (largeDetailedRange - 20) && isReflection == 0){
+	if (dist < (largeDetailedRange) && isReflection == 0){
 	
 		if (isRefraction == 0){
 			for(int k=0; k<gl_in.length(); k++){

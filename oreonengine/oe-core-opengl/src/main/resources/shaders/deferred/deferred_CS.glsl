@@ -33,8 +33,11 @@ layout (std140, row_major) uniform LightViewProjections{
 
 float diffuse(vec3 direction, vec3 normal, float intensity)
 {
-	return max(0.1, dot(normal, -direction) * intensity);
+	return max(0.01, dot(normal, -direction) * intensity);
 }
+
+const vec3 direction = vec3(0.1,-1,0.1);
+const float intensity = 1.2;
 
 void main(void){
 
@@ -42,14 +45,16 @@ void main(void){
 	
 	vec3 albedo = imageLoad(albedoSceneSampler, computeCoord).rgb; 
 	vec3 position = imageLoad(worldPositionSampler, computeCoord).rgb;
-	vec3 normal = imageLoad(normalSampler, computeCoord).rbg;
+	vec3 normal = imageLoad(normalSampler, computeCoord).rgb;
 	vec2 specular_emission = imageLoad(specularEmissionSampler, computeCoord).rg;
 	
 	// float dist = length(eyePosition - position);
 	
-	float diff = diffuse(directional_light.direction, normal, directional_light.intensity);
+	float diff = diffuse(direction, normal, intensity);
 	
-	vec3 finalColor = albedo * diff;
+	vec3 diffuseLight = directional_light.ambient + directional_light.color * diff;
+	
+	vec3 finalColor = albedo * diffuseLight;
 		
 	imageStore(defferedSceneSampler, computeCoord, vec4(finalColor,1.0));
 }

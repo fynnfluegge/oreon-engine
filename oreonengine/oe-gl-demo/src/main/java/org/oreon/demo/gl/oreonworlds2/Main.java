@@ -7,7 +7,6 @@ import org.oreon.core.system.Window;
 import org.oreon.demo.gl.oreonworlds.gui.GUI;
 import org.oreon.demo.gl.oreonworlds2.shaders.TerrainShader;
 import org.oreon.modules.gl.atmosphere.SkySphere;
-import org.oreon.modules.gl.gui.GUIs.VoidGUI;
 import org.oreon.modules.gl.terrain.Terrain;
 import org.oreon.system.gl.desktop.GLDeferredRenderingEngine;
 import org.oreon.system.gl.desktop.GLFWInput;

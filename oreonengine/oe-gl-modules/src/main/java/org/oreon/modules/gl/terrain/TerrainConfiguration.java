@@ -131,10 +131,10 @@ public class TerrainConfiguration {
 					if(tokens[0].equals("heightmap")){
 						setHeightmap(new Texture2D(tokens[1]));
 						getHeightmap().bind();
-						getHeightmap().bilinearFilter();
+						getHeightmap().trilinearFilter();
 						
 						NormalMapRenderer normalRenderer = new NormalMapRenderer(getHeightmap().getWidth());
-						normalRenderer.setStrength(8);
+						normalRenderer.setStrength(Integer.valueOf(tokens[2]));
 						normalRenderer.render(getHeightmap());
 						setNormalmap(normalRenderer.getNormalmap());
 					}

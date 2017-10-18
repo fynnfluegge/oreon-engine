@@ -113,12 +113,12 @@ private static TerrainShader instance = null;
 		addUniform("cliff.shininess");
 		addUniform("cliff.emission");
 		
-//		addUniform("sand.heightmap");
-//		addUniform("sand.displaceScale");
-//		addUniform("rock.heightmap");
-//		addUniform("rock.displaceScale");
-//		addUniform("cliff.heightmap");
-//		addUniform("cliff.displaceScale");
+		addUniform("sand.heightmap");
+		addUniform("sand.displaceScale");
+		addUniform("rock.heightmap");
+		addUniform("rock.displaceScale");
+		addUniform("cliff.heightmap");
+		addUniform("cliff.displaceScale");
 		
 		addUniform("clipplane");
 		
@@ -156,16 +156,16 @@ private static TerrainShader instance = null;
 			glActiveTexture(GL_TEXTURE15 + i);
 			terrConfig.getFractals().get(i).getHeightmap().bind();
 			setUniformi("fractals0[" + i +"].heightmap", 15+i);	
-			setUniformi("fractals0[" + i +"].scaling", terrConfig.getFractals().get(i).getScaling());
-			setUniformf("fractals0[" + i +"].strength", terrConfig.getFractals().get(i).getStrength());
+			setUniformi("fractals0[" + i +"].scaling", terrConfig.getFractals().get(i+6).getScaling());
+			setUniformf("fractals0[" + i +"].strength", terrConfig.getFractals().get(i+6).getStrength());
 		}
 		
 		for (int i=0; i<1; i++)
 		{
 			glActiveTexture(GL_TEXTURE22 + i);
-			terrConfig.getFractals().get(i).getNormalmap().bind();
+			terrConfig.getFractals().get(i+6).getNormalmap().bind();
 			setUniformi("fractals1[" + i +"].normalmap", 22+i);	
-			setUniformi("fractals1[" + i +"].scaling", terrConfig.getFractals().get(i).getScaling());
+			setUniformi("fractals1[" + i +"].scaling", terrConfig.getFractals().get(i+6).getScaling());
 		}
 		
 		setUniformf("scaleY", terrConfig.getScaleY());
