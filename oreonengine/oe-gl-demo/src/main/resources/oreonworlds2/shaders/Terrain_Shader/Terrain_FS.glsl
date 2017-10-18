@@ -111,7 +111,7 @@ void main()
 	
 	if (dist < largeDetailedRange-20 && isReflection == 0)
 	{
-		float attenuation = clamp(-dist/(largeDetailedRange-20) + 1,0.0,1.0);
+		float attenuation = clamp(-dist/(largeDetailedRange-50) + 1,0.0,1.0);
 		
 		vec3 bitangent = normalize(cross(tangent, normal));
 		mat3 TBN = mat3(tangent,normal,bitangent);
@@ -162,6 +162,6 @@ void main()
 	
 	albedoSampler = vec4(rgb,1);
 	worldPositionSampler = vec4(position,1);
-	normalSampler = vec4(bumpNormal.rbg,1);
+	normalSampler = vec4(bumpNormal.xzy,1);
 	specularEmissionSampler = vec4(emission,shininess,0,1);
 }

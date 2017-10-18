@@ -25,7 +25,6 @@ material3_emission 0.0
 material3_shininess 20.0
 
 #maps
-heightmap 
 
 #terrain mesh settings
 scaleXZ 6000.0

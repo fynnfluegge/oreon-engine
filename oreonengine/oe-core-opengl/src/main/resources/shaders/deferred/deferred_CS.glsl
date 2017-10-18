@@ -1,10 +1,10 @@
 #version 430 core
 
-layout (local_size_x = 32, local_size_y = 32) in;
+layout (local_size_x = 16, local_size_y = 16) in;
 
-layout (binding = 0, rgba8) uniform writeonly image2D defferedSceneSampler;
+layout (binding = 0, rgba16f) uniform writeonly image2D defferedSceneSampler;
 
-layout (binding = 1, rgba8) uniform readonly image2D albedoSceneSampler;
+layout (binding = 1, rgba32f) uniform readonly image2D albedoSceneSampler;
 
 layout (binding = 2, rgba32f) uniform readonly image2D worldPositionSampler;
 
@@ -42,12 +42,14 @@ void main(void){
 	
 	vec3 albedo = imageLoad(albedoSceneSampler, computeCoord).rgb; 
 	vec3 position = imageLoad(worldPositionSampler, computeCoord).rgb;
-	vec3 normal = imageLoad(normalSampler, computeCoord).rgb;
+	vec3 normal = imageLoad(normalSampler, computeCoord).rbg;
 	vec2 specular_emission = imageLoad(specularEmissionSampler, computeCoord).rg;
 	
-	float dist = length(eyePosition - position);
+	// float dist = length(eyePosition - position);
 	
-	vec3 finalColor = vec3(1,0,0) * dist;
+	float diff = diffuse(directional_light.direction, normal, directional_light.intensity);
+	
+	vec3 finalColor = albedo * diff;
 		
-	imageStore(defferedSceneSampler, computeCoord, vec4(finalColor, 1.0));
+	imageStore(defferedSceneSampler, computeCoord, vec4(finalColor,1.0));
 }

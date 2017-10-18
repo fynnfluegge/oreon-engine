@@ -26,7 +26,7 @@ public class GBuffer {
 		albedoTexture = new Texture2D();
 		albedoTexture.generate();
 		albedoTexture.bind();
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, width, height, 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
 		albedoTexture.bilinearFilter();
 		albedoTexture.clampToEdge();
 		

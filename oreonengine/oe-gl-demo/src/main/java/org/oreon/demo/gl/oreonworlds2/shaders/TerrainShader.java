@@ -113,12 +113,12 @@ private static TerrainShader instance = null;
 		addUniform("cliff.shininess");
 		addUniform("cliff.emission");
 		
-		addUniform("sand.heightmap");
-		addUniform("sand.displaceScale");
-		addUniform("rock.heightmap");
-		addUniform("rock.displaceScale");
-		addUniform("cliff.heightmap");
-		addUniform("cliff.displaceScale");
+//		addUniform("sand.heightmap");
+//		addUniform("sand.displaceScale");
+//		addUniform("rock.heightmap");
+//		addUniform("rock.displaceScale");
+//		addUniform("cliff.heightmap");
+//		addUniform("cliff.displaceScale");
 		
 		addUniform("clipplane");
 		
@@ -233,19 +233,19 @@ private static TerrainShader instance = null;
 		setUniformf("cliff.shininess", terrConfig.getMaterial3().getShininess());
 		setUniformf("cliff.emission", terrConfig.getMaterial3().getEmission());
 		
-		glActiveTexture(GL_TEXTURE12);
-		terrConfig.getMaterial1().getHeightmap().bind();
-		setUniformi("sand.heightmap", 12);
-		setUniformf("sand.displaceScale", terrConfig.getMaterial1().getDisplacementScale());
-		
-		glActiveTexture(GL_TEXTURE13);
-		terrConfig.getMaterial2().getHeightmap().bind();
-		setUniformi("rock.heightmap", 13);
-		setUniformf("rock.displaceScale", terrConfig.getMaterial2().getDisplacementScale());
-		
-		glActiveTexture(GL_TEXTURE14);
-		terrConfig.getMaterial3().getHeightmap().bind();
-		setUniformi("cliff.heightmap", 14);
-		setUniformf("cliff.displaceScale", terrConfig.getMaterial3().getDisplacementScale());
+//		glActiveTexture(GL_TEXTURE12);
+//		terrConfig.getMaterial1().getHeightmap().bind();
+//		setUniformi("sand.heightmap", 12);
+//		setUniformf("sand.displaceScale", terrConfig.getMaterial1().getDisplacementScale());
+//		
+//		glActiveTexture(GL_TEXTURE13);
+//		terrConfig.getMaterial2().getHeightmap().bind();
+//		setUniformi("rock.heightmap", 13);
+//		setUniformf("rock.displaceScale", terrConfig.getMaterial2().getDisplacementScale());
+//		
+//		glActiveTexture(GL_TEXTURE14);
+//		terrConfig.getMaterial3().getHeightmap().bind();
+//		setUniformi("cliff.heightmap", 14);
+//		setUniformf("cliff.displaceScale", terrConfig.getMaterial3().getDisplacementScale());
 	}
 }

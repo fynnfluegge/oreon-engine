@@ -120,9 +120,10 @@ void main() {
 							+ texture(rock.heightmap, texCoordG[k]/20).r * rockBlend * rock.displaceScale
 							+ texture(cliff.heightmap, texCoordG[k]/20).r * cliffBlend * cliff.displaceScale;
 							
-				float attenuation = clamp(-dist/(largeDetailedRange-20) + 1,0.0,1.0);
+				float attenuation = clamp(-dist/(largeDetailedRange-50) + 1,0.0,1.0);
+				scale *= attenuation;
 
-				displacement[k] *= attenuation;
+				displacement[k] *= 0;
 			}	
 		}
 		

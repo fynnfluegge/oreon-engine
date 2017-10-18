@@ -8,19 +8,19 @@ material0_shininess 200.0
 material1_DIF oreonworlds/terrain/materials/Ground_11_DIF.jpg
 material1_NRM oreonworlds/terrain/materials/Ground_11_NRM.jpg
 material1_DISP oreonworlds/terrain/materials/Ground_11_DISP.jpg
-material1_displaceScale 12.0
+material1_displaceScale 0.0
 material1_emission 0.0
 material1_shininess 200.0
 material2_DIF oreonworlds/terrain/materials/Ground_17_DIF.jpg
 material2_NRM oreonworlds/terrain/materials/Ground_17_NRM.jpg
 material2_DISP oreonworlds/terrain/materials/Ground_17_DISP.jpg
-material2_displaceScale 12.0
+material2_displaceScale 0.0
 material2_emission 0.0
 material2_shininess 20.0
 material3_DIF oreonworlds/terrain/materials/Ground_21_DIF.jpg
 material3_NRM oreonworlds/terrain/materials/Ground_21_NRM.jpg
 material3_DISP oreonworlds/terrain/materials/Ground_21_DISP.jpg
-material3_displaceScale 12.0
+material3_displaceScale 0.0
 material3_emission 0.0
 material3_shininess 20.0
 
@@ -34,7 +34,7 @@ texDetail 1000.0
 tessellationFactor 600
 tessellationSlope 1.8
 tessellationShift -0.3
-detailRange 50
+detailRange 150
 sightRangeFactor 1.0
 
 #lod_ranges

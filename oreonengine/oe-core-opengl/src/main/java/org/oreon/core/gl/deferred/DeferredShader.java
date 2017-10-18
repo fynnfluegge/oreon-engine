@@ -29,7 +29,7 @@ private static DeferredShader instance = null;
 		addUniformBlock("LightViewProjections");
 	}
 	
-	public void updateUniforms(GBuffer gbuffer){
+	public void updateUniforms(){
 		
 		bindUniformBlock("Camera", Constants.CameraUniformBlockBinding);
 		bindUniformBlock("DirectionalLight", Constants.DirectionalLightUniformBlockBinding);	
