@@ -31,9 +31,11 @@ layout (std140, row_major) uniform LightViewProjections{
 	float splitRange[6];
 };
 
+vec3 direction = vec3(1.0,-1.0,1.0);
+
 float diffuse(vec3 direction, vec3 normal, float intensity)
 {
-	return max(0.01, dot(normal, -direction) * intensity);
+	return max(0.0, dot(normal, -direction) * intensity);
 }
 
 float specular(vec3 direction, vec3 normal, vec3 eyePosition, vec3 vertexPosition, float specularFactor, float emissionFactor)
@@ -41,7 +43,7 @@ float specular(vec3 direction, vec3 normal, vec3 eyePosition, vec3 vertexPositio
 	vec3 reflectionVector = normalize(reflect(direction, normal));
 	vec3 vertexToEye = normalize(eyePosition - vertexPosition);
 	
-	float specular = max(0, dot(vertexToEye, reflectionVector));
+	float specular = max(0.0, dot(vertexToEye, reflectionVector));
 	
 	return pow(specular, specularFactor) * emissionFactor;
 }
@@ -52,7 +54,7 @@ void main(void){
 	
 	vec3 albedo = imageLoad(albedoSceneSampler, computeCoord).rgb; 
 	vec3 position = imageLoad(worldPositionSampler, computeCoord).rgb;
-	vec3 normal = (imageLoad(normalSampler, computeCoord).rgb);
+	vec3 normal = imageLoad(normalSampler, computeCoord).rbg;
 	vec2 specular_emission = imageLoad(specularEmissionSampler, computeCoord).rg;
 	
 	vec3 finalColor = albedo;
@@ -60,11 +62,13 @@ void main(void){
 	// prevent lighting sky
 	if (imageLoad(normalSampler, computeCoord).a != 0.0){
 	
-		float diff = diffuse(direction, normal, intensity);
+		float diff = diffuse(directional_light.direction, normal, directional_light.intensity);
+		float spec = specular(directional_light.direction, normal, eyePosition, position, specular_emission.r, specular_emission.g);
 
-		vec3 diffuseLight = color * diff;
+		vec3 diffuseLight = directional_light.ambient + directional_light.color * diff;
+		vec3 specularLight = directional_light.color * spec;
 
-		finalColor = albedo * diffuseLight;
+		finalColor = albedo * diffuseLight + specularLight;
 	}
 		
 	imageStore(defferedSceneSampler, computeCoord, vec4(finalColor,1.0));

@@ -72,8 +72,8 @@ void main()
 
 	vec3 bumpNormal = vec3(0,0,0);
 	
-	vec3 normal = (texture(normalmap, mapCoords).rgb);
-	normal.xyz += (texture(fractals1[0].normalmap, mapCoords*fractals1[0].scaling).rgb);
+	vec3 normal = 2*(texture(normalmap, mapCoords).rgb)-1;
+	normal.xyz += 2*(texture(fractals1[0].normalmap, mapCoords*fractals1[0].scaling).rgb)-1;
 	normal = normalize(normal);
 	
 	float grassBlend = texture(grass.splatmap, mapCoords).r;
@@ -93,7 +93,7 @@ void main()
 		vec3 bitangent = normalize(cross(tangent, normal));
 		mat3 TBN = mat3(tangent,bitangent,normal);
 		
-		vec3 bumpNormal = normalize((2*(texture(grass.normalmap, texCoordF).rgb) - 1) * vec3(1,1,6) * grassBlend
+		vec3 bumpNormal = normalize((2*(texture(grass.normalmap, texCoordF).rgb) - 1) * vec3(1,1,2) * grassBlend
 								 +  (2*(texture(sand.normalmap, texCoordF/2).rgb) - 1) * sandBlend
 								 +  (2*(texture(rock.normalmap, texCoordF/20).rgb) - 1) * vec3(1,1,2) * rockBlend
 								 +  (2*(texture(cliff.normalmap, texCoordF/20).rgb) - 1) * vec3(1,1,2) * cliffBlend);
