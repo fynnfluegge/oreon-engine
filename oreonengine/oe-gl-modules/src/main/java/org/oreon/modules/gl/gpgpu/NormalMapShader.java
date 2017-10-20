@@ -27,7 +27,7 @@ public class NormalMapShader extends GLShader{
 		addComputeShader(ResourceLoader.loadShader("shaders/computing/NormalMap_Generation/NormalMap.glsl"));
 		compileShader();
 	
-		addUniform("displacementmap");
+		addUniform("heightmap");
 		addUniform("N");
 		addUniform("normalStrength");
 	}
@@ -36,7 +36,7 @@ public class NormalMapShader extends GLShader{
 	{
 		glActiveTexture(GL_TEXTURE0);
 		heightmap.bind();
-		setUniformi("displacementmap", 0);
+		setUniformi("heightmap", 0);
 		setUniformi("N", N);
 		setUniformf("normalStrength", strength);
 	}

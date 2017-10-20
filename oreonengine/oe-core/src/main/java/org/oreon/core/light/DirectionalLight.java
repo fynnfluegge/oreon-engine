@@ -29,7 +29,7 @@ public abstract class DirectionalLight extends Light{
 										 + Float.BYTES * 24;
 	
 	protected DirectionalLight(){
-		this(new Vec3f(1,-1,1).normalize(),new Vec3f(0.12f,0.12f,0.12f),new Vec3f(1,0.95f,0.87f),1f);
+		this(new Vec3f(1,-1,1).normalize(),new Vec3f(0.12f,0.12f,0.12f),new Vec3f(1,0.95f,0.87f),2f);
 	}
 	
 	protected DirectionalLight(Vec3f direction, Vec3f ambient, Vec3f color, float intensity) {

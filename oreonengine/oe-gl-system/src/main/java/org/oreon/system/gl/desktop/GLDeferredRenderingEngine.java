@@ -96,6 +96,7 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 	public void render() {
 
 		GLDirectionalLight.getInstance().update();
+		
 		if (CoreSystem.getInstance().getScenegraph().getCamera().isCameraMoved()){
 			if (CoreSystem.getInstance().getScenegraph().terrainExists()){
 				((Terrain) CoreSystem.getInstance().getScenegraph().getTerrain()).updateQuadtree();

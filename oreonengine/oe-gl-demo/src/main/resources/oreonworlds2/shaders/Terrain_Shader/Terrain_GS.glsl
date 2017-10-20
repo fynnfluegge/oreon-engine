@@ -17,6 +17,7 @@ struct Material
 	sampler2D diffusemap;
 	sampler2D normalmap;
 	sampler2D heightmap;
+	sampler2D splatmap;
 	float displaceScale;
 	float shininess;
 	float emission;
@@ -90,40 +91,18 @@ void main() {
 				
 				float height = gl_in[k].gl_Position.y;
 				
-				vec3 blendNormal = texture(normalmap, mapCoords).rbg;
-				blendNormal = normalize(blendNormal);
-					
-				float grassBlend = 0;
-				float cliffBlend = 0;
-				float rockBlend  = clamp((height+200)/200,0,1);
-				float sandBlend   = clamp(-height/200,0,1);
-				float cliffSlopeFactor = 0;
+				float sandBlend = texture(sand.splatmap, mapCoords).r;
+				float rockBlend = texture(rock.splatmap, mapCoords).r;
+				float cliffBlend = texture(cliff.splatmap, mapCoords).r;
 				
-				cliffSlopeFactor = 1-pow(blendNormal.y+0.01,12);
-				cliffBlend += cliffSlopeFactor;
-				cliffBlend = clamp(cliffBlend,0,1);
-				rockBlend -= cliffSlopeFactor;
-				rockBlend = clamp(rockBlend,0,1);
-				sandBlend -= cliffSlopeFactor;
-				sandBlend = clamp(sandBlend,0,1);
-				
-				// grass Blending
-				if (blendNormal.y > 0.95){
-					grassBlend = clamp(40*(blendNormal.y-0.95),0,1);
-					rockBlend -= grassBlend;
-					rockBlend = clamp(rockBlend,0.0,1.0);
-					sandBlend -= grassBlend;
-					sandBlend = clamp(sandBlend,0.0,1.0);
-				}
-				
-				float scale = texture(sand.heightmap, texCoordG[k]).r * sandBlend * sand.displaceScale
+				float scale = texture(sand.heightmap, texCoordG[k]/2).r * sandBlend * sand.displaceScale
 							+ texture(rock.heightmap, texCoordG[k]/20).r * rockBlend * rock.displaceScale
 							+ texture(cliff.heightmap, texCoordG[k]/20).r * cliffBlend * cliff.displaceScale;
 							
 				float attenuation = clamp(-dist/(largeDetailedRange-50) + 1,0.0,1.0);
 				scale *= attenuation;
 
-				displacement[k] *= 0;
+				displacement[k] *= scale;
 			}	
 		}
 		

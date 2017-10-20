@@ -132,7 +132,8 @@ void main()
 {
 	vec2 localPosition = (localMatrix * vec4(position0.x,0,position0.y,1)).xz;
 	
-	localPosition += morph(localPosition,lod_morph_area[lod-1]);
+	if (lod > 0)
+		localPosition += morph(localPosition,lod_morph_area[lod-1]);
 	
 	texCoord1 = localPosition;
 	float height = 0;

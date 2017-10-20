@@ -8,7 +8,12 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE12;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE13;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE14;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE15;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE16;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE17;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE18;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE22;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE20;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE28;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE4;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE5;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE6;
@@ -27,7 +32,6 @@ import org.oreon.core.util.Constants;
 import org.oreon.core.util.ResourceLoader;
 import org.oreon.modules.gl.terrain.TerrainConfiguration;
 import org.oreon.modules.gl.terrain.TerrainNode;
-import org.oreon.modules.gl.water.UnderWater;
 
 public class TerrainShader extends GLShader{
 	
@@ -57,7 +61,7 @@ private static TerrainShader instance = null;
 		addUniform("worldMatrix");
 		addUniform("scaleY");
 		addUniform("scaleXZ");
-//		addUniform("sightRangeFactor");
+		addUniform("sightRangeFactor");
 		
 		addUniform("bezier");
 		addUniform("tessFactor");
@@ -68,7 +72,7 @@ private static TerrainShader instance = null;
 		addUniform("gap");
 		addUniform("lod");
 		addUniform("location");
-//		addUniform("texDetail");
+		addUniform("texDetail");
 		addUniform("waterReflectionShift");
 		addUniform("isReflection");
 		addUniform("isRefraction");
@@ -83,13 +87,6 @@ private static TerrainShader instance = null;
 		
 		for (int i=0; i<1; i++)
 		{
-			addUniform("fractals0[" + i + "].heightmap");
-			addUniform("fractals0[" + i + "].scaling");
-			addUniform("fractals0[" + i + "].strength");
-		}
-		
-		for (int i=0; i<1; i++)
-		{
 			addUniform("fractals1[" + i + "].normalmap");
 			addUniform("fractals1[" + i + "].scaling");
 		}
@@ -98,27 +95,33 @@ private static TerrainShader instance = null;
 			addUniform("lod_morph_area[" + i + "]");
 		}
 
-//		addUniform("grass.diffusemap");
-//		addUniform("grass.normalmap");
-//		addUniform("sand.diffusemap");
-//		addUniform("sand.normalmap");
-//		addUniform("sand.shininess");
-//		addUniform("sand.emission");
-//		addUniform("rock.diffusemap");
-//		addUniform("rock.normalmap");
-//		addUniform("rock.shininess");
-//		addUniform("rock.emission");
-//		addUniform("cliff.diffusemap");
-//		addUniform("cliff.normalmap");
-//		addUniform("cliff.shininess");
-//		addUniform("cliff.emission");
+		addUniform("grass.diffusemap");
+		addUniform("grass.splatmap");
+		addUniform("grass.normalmap");
 		
-//		addUniform("sand.heightmap");
-//		addUniform("sand.displaceScale");
-//		addUniform("rock.heightmap");
-//		addUniform("rock.displaceScale");
-//		addUniform("cliff.heightmap");
-//		addUniform("cliff.displaceScale");
+		addUniform("sand.diffusemap");
+		addUniform("sand.splatmap");
+		addUniform("sand.normalmap");
+		addUniform("sand.heightmap");
+		addUniform("sand.displaceScale");
+		addUniform("sand.shininess");
+		addUniform("sand.emission");
+		
+		addUniform("rock.diffusemap");
+		addUniform("rock.splatmap");
+		addUniform("rock.normalmap");
+		addUniform("rock.heightmap");
+		addUniform("rock.displaceScale");
+		addUniform("rock.shininess");
+		addUniform("rock.emission");
+		
+		addUniform("cliff.diffusemap");
+		addUniform("cliff.splatmap");
+		addUniform("cliff.normalmap");
+		addUniform("cliff.heightmap");
+		addUniform("cliff.displaceScale");
+		addUniform("cliff.shininess");
+		addUniform("cliff.emission");
 		
 		addUniform("clipplane");
 		
@@ -153,30 +156,21 @@ private static TerrainShader instance = null;
 		
 		for (int i=0; i<1; i++)
 		{
-			glActiveTexture(GL_TEXTURE15 + i);
-			terrConfig.getFractals().get(i).getHeightmap().bind();
-			setUniformi("fractals0[" + i +"].heightmap", 15+i);	
-			setUniformi("fractals0[" + i +"].scaling", terrConfig.getFractals().get(i+6).getScaling());
-			setUniformf("fractals0[" + i +"].strength", terrConfig.getFractals().get(i+6).getStrength());
-		}
-		
-		for (int i=0; i<1; i++)
-		{
-			glActiveTexture(GL_TEXTURE22 + i);
+			glActiveTexture(GL_TEXTURE28 + i);
 			terrConfig.getFractals().get(i+6).getNormalmap().bind();
-			setUniformi("fractals1[" + i +"].normalmap", 22+i);	
+			setUniformi("fractals1[" + i +"].normalmap", 28+i);	
 			setUniformi("fractals1[" + i +"].scaling", terrConfig.getFractals().get(i+6).getScaling());
 		}
 		
 		setUniformf("scaleY", terrConfig.getScaleY());
 		setUniformf("scaleXZ", terrConfig.getScaleXZ());
-//		setUniformf("sightRangeFactor", terrConfig.getSightRangeFactor());
+		setUniformf("sightRangeFactor", terrConfig.getSightRangeFactor());
 		setUniformi("bezier", terrConfig.getBezier());
 		setUniformi("tessFactor", terrConfig.getTessellationFactor());
 		setUniformf("tessSlope", terrConfig.getTessellationSlope());
 		setUniformf("tessShift", terrConfig.getTessellationShift());
 		setUniformi("largeDetailedRange", terrConfig.getDetailRange());
-//		setUniformf("texDetail", terrConfig.getTexDetail());
+		setUniformf("texDetail", terrConfig.getTexDetail());
 		setUniformi("lod", lod);
 		setUniform("index", index);
 		setUniformf("gap", gap);
@@ -196,56 +190,82 @@ private static TerrainShader instance = null;
 			setUniformi("lod_morph_area[" + i + "]", terrConfig.getLod_morphing_area()[i]);
 		}
 		
-//		glActiveTexture(GL_TEXTURE4);
-//		terrConfig.getMaterial0().getDiffusemap().bind();
-//		setUniformi("grass.diffusemap", 4);
-//		glActiveTexture(GL_TEXTURE5);
-//		terrConfig.getMaterial1().getNormalmap().bind();
-//		setUniformi("grass.normalmap", 5);
+		// grass material
+		glActiveTexture(GL_TEXTURE4);
+		terrConfig.getMaterial0().getDiffusemap().bind();
+		setUniformi("grass.diffusemap", 4);
 		
-//		glActiveTexture(GL_TEXTURE6);
-//		terrConfig.getMaterial1().getDiffusemap().bind();
-//		setUniformi("sand.diffusemap", 6);
-//		glActiveTexture(GL_TEXTURE7);
-//		terrConfig.getMaterial1().getNormalmap().bind();
-//		setUniformi("sand.normalmap", 7);
+		glActiveTexture(GL_TEXTURE5);
+		terrConfig.getSplatmaps().get(0).bind();
+		setUniformi("grass.splatmap", 5);
+		
+		glActiveTexture(GL_TEXTURE6);
+		terrConfig.getMaterial1().getNormalmap().bind();
+		setUniformi("grass.normalmap", 6);
+		
+		
+		// sand material
+		glActiveTexture(GL_TEXTURE7);
+		terrConfig.getMaterial1().getDiffusemap().bind();
+		setUniformi("sand.diffusemap", 7);
+		
+		glActiveTexture(GL_TEXTURE8);
+		terrConfig.getSplatmaps().get(1).bind();
+		setUniformi("sand.splatmap", 8);
+		
+		glActiveTexture(GL_TEXTURE9);
+		terrConfig.getMaterial1().getNormalmap().bind();
+		setUniformi("sand.normalmap", 9);	
+		
+		glActiveTexture(GL_TEXTURE10);
+		terrConfig.getMaterial1().getHeightmap().bind();
+		setUniformi("sand.heightmap", 10);
+		setUniformf("sand.displaceScale", terrConfig.getMaterial1().getDisplacementScale());
 
-//		setUniformf("sand.shininess", terrConfig.getMaterial1().getShininess());
-//		setUniformf("sand.emission", terrConfig.getMaterial1().getEmission());
+		setUniformf("sand.shininess", terrConfig.getMaterial1().getShininess());
+		setUniformf("sand.emission", terrConfig.getMaterial1().getEmission());
 		
-//		glActiveTexture(GL_TEXTURE8);
-//		terrConfig.getMaterial2().getDiffusemap().bind();
-//		setUniformi("rock.diffusemap", 8);
-//		glActiveTexture(GL_TEXTURE9);
-//		terrConfig.getMaterial2().getNormalmap().bind();
-//		setUniformi("rock.normalmap", 9);
+		
+		// rock material
+		glActiveTexture(GL_TEXTURE11);
+		terrConfig.getMaterial2().getDiffusemap().bind();
+		setUniformi("rock.diffusemap", 11);
+		
+		glActiveTexture(GL_TEXTURE12);
+		terrConfig.getSplatmaps().get(2).bind();
+		setUniformi("rock.splatmap", 12);
+		
+		glActiveTexture(GL_TEXTURE13);
+		terrConfig.getMaterial2().getNormalmap().bind();
+		setUniformi("rock.normalmap", 13);
+		
+		glActiveTexture(GL_TEXTURE14);
+		terrConfig.getMaterial2().getHeightmap().bind();
+		setUniformi("rock.heightmap", 14);
+		setUniformf("rock.displaceScale", terrConfig.getMaterial2().getDisplacementScale());
 
-//		setUniformf("rock.shininess", terrConfig.getMaterial2().getShininess());
-//		setUniformf("rock.emission", terrConfig.getMaterial2().getEmission());
+		setUniformf("rock.shininess", terrConfig.getMaterial2().getShininess());
+		setUniformf("rock.emission", terrConfig.getMaterial2().getEmission());
 		
-//		glActiveTexture(GL_TEXTURE10);
-//		terrConfig.getMaterial3().getDiffusemap().bind();
-//		setUniformi("cliff.diffusemap", 10);
-//		glActiveTexture(GL_TEXTURE11);
-//		terrConfig.getMaterial3().getNormalmap().bind();
-//		setUniformi("cliff.normalmap", 11);
+		// cliff material
+		glActiveTexture(GL_TEXTURE15);
+		terrConfig.getMaterial3().getDiffusemap().bind();
+		setUniformi("cliff.diffusemap", 15);
+		
+		glActiveTexture(GL_TEXTURE16);
+		terrConfig.getSplatmaps().get(3).bind();
+		setUniformi("cliff.splatmap", 16);
+		
+		glActiveTexture(GL_TEXTURE17);
+		terrConfig.getMaterial3().getNormalmap().bind();
+		setUniformi("cliff.normalmap", 17);
+		
+		glActiveTexture(GL_TEXTURE18);
+		terrConfig.getMaterial3().getHeightmap().bind();
+		setUniformi("cliff.heightmap", 18);
+		setUniformf("cliff.displaceScale", terrConfig.getMaterial3().getDisplacementScale());
 
-//		setUniformf("cliff.shininess", terrConfig.getMaterial3().getShininess());
-//		setUniformf("cliff.emission", terrConfig.getMaterial3().getEmission());
-		
-//		glActiveTexture(GL_TEXTURE12);
-//		terrConfig.getMaterial1().getHeightmap().bind();
-//		setUniformi("sand.heightmap", 12);
-//		setUniformf("sand.displaceScale", terrConfig.getMaterial1().getDisplacementScale());
-//		
-//		glActiveTexture(GL_TEXTURE13);
-//		terrConfig.getMaterial2().getHeightmap().bind();
-//		setUniformi("rock.heightmap", 13);
-//		setUniformf("rock.displaceScale", terrConfig.getMaterial2().getDisplacementScale());
-//		
-//		glActiveTexture(GL_TEXTURE14);
-//		terrConfig.getMaterial3().getHeightmap().bind();
-//		setUniformi("cliff.heightmap", 14);
-//		setUniformf("cliff.displaceScale", terrConfig.getMaterial3().getDisplacementScale());
+		setUniformf("cliff.shininess", terrConfig.getMaterial3().getShininess());
+		setUniformf("cliff.emission", terrConfig.getMaterial3().getEmission());
 	}
 }

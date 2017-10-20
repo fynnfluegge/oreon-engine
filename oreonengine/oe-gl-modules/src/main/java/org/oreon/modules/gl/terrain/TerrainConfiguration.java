@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import org.oreon.core.gl.shaders.GLShader;
@@ -40,7 +41,8 @@ public class TerrainConfiguration {
 	private Material material1;
 	private Material material2;
 	private Material material3;
-	private ArrayList<FractalMaps> fractals = new ArrayList<FractalMaps>();
+	private List<Texture2D> splatmaps = new ArrayList<>();
+	private List<FractalMaps> fractals = new ArrayList<>();
 	
 	private int[] lod_range = new int[8];
 	private int[] lod_morphing_area = new int[8];
@@ -137,6 +139,12 @@ public class TerrainConfiguration {
 						normalRenderer.setStrength(Integer.valueOf(tokens[2]));
 						normalRenderer.render(getHeightmap());
 						setNormalmap(normalRenderer.getNormalmap());
+					}
+					if(tokens[0].equals("splatmap")){
+						Texture2D splatmap = new Texture2D(tokens[1]);
+						splatmap.bind();
+						splatmap.trilinearFilter();
+						getSplatmaps().add(splatmap);
 					}
 					if(tokens[0].equals("normalmap")){
 						setNormalmap(new Texture2D(tokens[1]));
@@ -547,7 +555,7 @@ public class TerrainConfiguration {
 		this.material3 = material3;
 	}
 
-	public ArrayList<FractalMaps> getFractals() {
+	public List<FractalMaps> getFractals() {
 		return fractals;
 	}
 
@@ -602,5 +610,13 @@ public class TerrainConfiguration {
 
 	public void setWaterReflectionShift(int waterReflectionShift) {
 		this.waterReflectionShift = waterReflectionShift;
+	}
+
+	public List<Texture2D> getSplatmaps() {
+		return splatmaps;
+	}
+
+	public void setSplatmaps(List<Texture2D> splatmaps) {
+		this.splatmaps = splatmaps;
 	}
 }
