@@ -4,7 +4,7 @@ layout (local_size_x = 16, local_size_y = 16) in;
 
 layout (binding = 0, rgba16f) uniform writeonly image2D defferedSceneSampler;
 
-layout (binding = 1, rgba32f) uniform readonly image2D albedoSceneSampler;
+layout (binding = 1, rgba8) uniform readonly image2D albedoSceneSampler;
 
 layout (binding = 2, rgba32f) uniform readonly image2D worldPositionSampler;
 
@@ -30,8 +30,6 @@ layout (std140, row_major) uniform LightViewProjections{
 	mat4 m_lightViewProjection[6];
 	float splitRange[6];
 };
-
-vec3 direction = vec3(1.0,-1.0,1.0);
 
 float diffuse(vec3 direction, vec3 normal, float intensity)
 {

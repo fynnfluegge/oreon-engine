@@ -147,7 +147,7 @@ public class GLForwardRenderingEngine implements RenderingEngine{
 		fbo = new GLFramebuffer();
 		fbo.bind();
 		fbo.createColorTextureAttachment(sceneTexture.getId(),0);
-		fbo.createColorTextureAttachment(blackScene4LightScatteringTexture.getId(),1);
+		fbo.createColorTextureAttachment(blackScene4LightScatteringTexture.getId(),4);
 		fbo.createDepthTextureAttachment(sceneDepthmap.getId());
 		fbo.checkStatus();
 		fbo.unbind();

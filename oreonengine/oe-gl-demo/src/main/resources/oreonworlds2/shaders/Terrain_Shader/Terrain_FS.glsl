@@ -17,8 +17,6 @@ struct Material
 	sampler2D heightmap;
 	sampler2D splatmap;
 	float displaceScale;
-	float shininess;
-	float emission;
 };
 
 struct Fractal
@@ -72,8 +70,8 @@ void main()
 
 	vec3 bumpNormal = vec3(0,0,0);
 	
-	vec3 normal = 2*(texture(normalmap, mapCoords).rgb)-1;
-	normal.xyz += 2*(texture(fractals1[0].normalmap, mapCoords*fractals1[0].scaling).rgb)-1;
+	vec3 normal = texture(normalmap, mapCoords).rgb;
+	// normal.xy += (texture(fractals1[0].normalmap, mapCoords*fractals1[0].scaling).rg);
 	normal = normalize(normal);
 	
 	float grassBlend = texture(grass.splatmap, mapCoords).r;
@@ -93,18 +91,15 @@ void main()
 		vec3 bitangent = normalize(cross(tangent, normal));
 		mat3 TBN = mat3(tangent,bitangent,normal);
 		
-		vec3 bumpNormal = normalize((2*(texture(grass.normalmap, texCoordF).rgb) - 1) * vec3(1,1,2) * grassBlend
-								 +  (2*(texture(sand.normalmap, texCoordF/2).rgb) - 1) * sandBlend
-								 +  (2*(texture(rock.normalmap, texCoordF/20).rgb) - 1) * vec3(1,1,2) * rockBlend
-								 +  (2*(texture(cliff.normalmap, texCoordF/20).rgb) - 1) * vec3(1,1,2) * cliffBlend);
+		vec3 bumpnormal = normalize((2*(texture(grass.normalmap, texCoordF).rgb) - 1) * vec3(1,1,4) * grassBlend
+								 +  (2*(texture(sand.normalmap, texCoordF/2).rgb) - 1) * vec3(1,1,1) * sandBlend
+								 +  (2*(texture(rock.normalmap, texCoordF/10).rgb) - 1) * vec3(1,1,1) * rockBlend
+								 +  (2*(texture(cliff.normalmap, texCoordF/10).rgb) - 1) * vec3(1,1,1) * cliffBlend);
 		
-		bumpNormal.xy *= attenuation;
+		bumpnormal.xy *= attenuation;
 		
-		normal = normalize(TBN * bumpNormal);
+		normal = normalize(TBN * bumpnormal);
 	}
-	
-	float specularFactor = sandBlend * sand.shininess + rockBlend * rock.shininess + cliffBlend * cliff.shininess;
-	float emissionFactor  = sandBlend * sand.emission + rockBlend * rock.emission + cliffBlend * cliff.emission;
 	
 	vec3 fragColor = grassColor * grassBlend + 
 				     sandColor * sandBlend + 
@@ -135,5 +130,5 @@ void main()
 	albedoSampler = vec4(rgb,1);
 	worldPositionSampler = vec4(position,1);
 	normalSampler = vec4(normal,1);
-	specularEmissionSampler = vec4(specularFactor,emissionFactor,0,1);
+	specularEmissionSampler = vec4(1,0,0,1);
 }
