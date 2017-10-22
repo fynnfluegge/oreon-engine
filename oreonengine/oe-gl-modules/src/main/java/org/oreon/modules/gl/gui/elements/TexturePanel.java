@@ -1,6 +1,7 @@
 package org.oreon.modules.gl.gui.elements;
 
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
+import static org.lwjgl.opengl.GL32.GL_TEXTURE_2D_MULTISAMPLE;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import org.oreon.core.gl.config.Default;

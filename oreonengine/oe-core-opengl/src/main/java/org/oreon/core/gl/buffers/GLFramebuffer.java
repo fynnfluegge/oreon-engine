@@ -31,6 +31,7 @@ import static org.lwjgl.opengl.GL30.GL_FRAMEBUFFER_COMPLETE;
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL32.GL_TEXTURE_2D_MULTISAMPLE;;
 
 
 public class GLFramebuffer implements Framebuffer{
@@ -82,6 +83,10 @@ public class GLFramebuffer implements Framebuffer{
 	public void createDepthTextureAttachment(int texture)
 	{
 		glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, texture, 0);
+	}
+	
+	public void createColorTextureMultisampleAttachment(int texture, int i){
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D_MULTISAMPLE, texture, 0 );
 	}
 	
 	public void createColorBufferMultisampleAttachment(int samples, int attachment, int width, int height, int internalformat){

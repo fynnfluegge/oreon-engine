@@ -1,7 +1,6 @@
 package org.oreon.core.gl.deferred;
 
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
-import static org.lwjgl.opengl.GL11.glBindTexture;
 import static org.lwjgl.opengl.GL11.glFinish;
 import static org.lwjgl.opengl.GL11.glTexImage2D;
 import static org.lwjgl.opengl.GL15.GL_WRITE_ONLY;
@@ -12,7 +11,6 @@ import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import static org.lwjgl.opengl.GL11.GL_RGBA;
 import static org.lwjgl.opengl.GL11.GL_RGBA8;
 import static org.lwjgl.opengl.GL42.glBindImageTexture;
-import static org.lwjgl.opengl.GL42.glTexStorage2D;
 import static org.lwjgl.opengl.GL43.glDispatchCompute;
 
 import java.nio.ByteBuffer;
@@ -39,7 +37,10 @@ public class DeferredRenderer {
 		deferredSceneTexture = new Texture2D();
 		deferredSceneTexture.generate();
 		deferredSceneTexture.bind();
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F,
+				width,
+				height,
+				0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
 		deferredSceneTexture.bilinearFilter();
 		deferredSceneTexture.clampToEdge();
 	}
@@ -55,8 +56,8 @@ public class DeferredRenderer {
 		shader.updateUniforms();
 		glDispatchCompute(CoreSystem.getInstance().getWindow().getWidth()/16, CoreSystem.getInstance().getWindow().getHeight()/16,1);
 		glFinish();
-		deferredSceneTexture.bind();
-		deferredSceneTexture.bilinearFilter();
+//		deferredSceneTexture.bind();
+//		deferredSceneTexture.bilinearFilter();
 	}
 
 	public GBuffer getGbuffer() {

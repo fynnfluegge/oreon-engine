@@ -29,6 +29,7 @@ public class Texture2D extends Texture{
 	private int id;
 	private int width;
 	private int height;
+	private int target;
 	
 	public Texture2D(){}
 	
@@ -57,6 +58,11 @@ public class Texture2D extends Texture{
 	public void bind()
 	{
 		glBindTexture(GL_TEXTURE_2D, id);
+	}
+	
+	public void bind(int target)
+	{
+		glBindTexture(target, id);
 	}
 	
 	public void generate()
@@ -126,5 +132,13 @@ public class Texture2D extends Texture{
 
 	public int getHeight() {
 		return height;
+	}
+	
+	public int getTarget() {
+		return target;
+	}
+
+	public void setTarget(int target) {
+		this.target = target;
 	}
 }

@@ -22,7 +22,7 @@ public class Main {
 		GLDeferredRenderingEngine renderingengine = new GLDeferredRenderingEngine();
 		Window window = new GLWindow();
 		
-//		renderingengine.setGui(new GUI());
+		renderingengine.setGui(new GUI());
 		window.setWidth(1280);
 		window.setHeight(720);
 		window.setTitle("OREON ENGINE oreonworlds 2.0");
