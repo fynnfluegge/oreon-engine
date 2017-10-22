@@ -152,8 +152,18 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		
 		deferredRenderer.render();
 		
-		
+		multisampleFbo.bind();
 		fullScreenTexture.setTexture(deferredRenderer.getDeferredSceneTexture());
+		fullScreenTexture.render();
+		multisampleFbo.unbind();
+		
+		finalSceneFbo.bind();
+		Default.clearScreen();
+		finalSceneFbo.unbind();
+		
+//		multisampleFbo.blitFrameBuffer(0,0,finalSceneFbo.getId(), window.getWidth(), window.getHeight());
+		
+		fullScreenTexture.setTexture(sceneTexture);
 		fullScreenTexture.render();
 		
 		gui.render();
