@@ -80,7 +80,6 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		drawBuffers.put(GL_COLOR_ATTACHMENT1);
 		drawBuffers.put(GL_COLOR_ATTACHMENT2);
 		drawBuffers.put(GL_COLOR_ATTACHMENT3);
-		drawBuffers.put(GL_COLOR_ATTACHMENT4);
 		drawBuffers.flip();
 		
 		deferredRenderer = new DeferredRenderer(window.getWidth(), window.getHeight());
@@ -91,7 +90,6 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		gBufferFbo.createColorTextureMultisampleAttachment(deferredRenderer.getGbuffer().getWorldPositionTexture().getId(),1);
 		gBufferFbo.createColorTextureMultisampleAttachment(deferredRenderer.getGbuffer().getNormalTexture().getId(),2);
 		gBufferFbo.createColorTextureMultisampleAttachment(deferredRenderer.getGbuffer().getSpecularEmissionTexture().getId(),3);
-		gBufferFbo.createColorTextureMultisampleAttachment(deferredRenderer.getGbuffer().getSampleCoverageMaskTexture().getId(),4);
 		gBufferFbo.createDepthBufferMultisampleAttachment(Constants.MULTISAMPLES, window.getWidth(), window.getHeight());
 		gBufferFbo.setDrawBuffers(drawBuffers);
 		gBufferFbo.checkStatus();
@@ -167,7 +165,7 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 //		
 //		multisampleFbo.blitFrameBuffer(0,0,finalSceneFbo.getId(), window.getWidth(), window.getHeight());
 		
-		fullScreenMSQuad.setTexture(deferredRenderer.getGbuffer().getSampleCoverageMaskTexture());
+		fullScreenMSQuad.setTexture(deferredRenderer.getGbuffer().getAlbedoTexture());
 		fullScreenMSQuad.render();
 
 //		fullScreenQuad.setTexture(deferredRenderer.getDeferredSceneTexture());

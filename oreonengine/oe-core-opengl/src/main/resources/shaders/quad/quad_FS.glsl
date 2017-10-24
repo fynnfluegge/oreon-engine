@@ -8,7 +8,7 @@ uniform sampler2D texture;
 
 void main()
 {
-	vec4 rgba = texture(texture, texCoord1);
+	vec4 rgba = texture2D(texture, texCoord1);
 	
 	if (rgba.a < 1.0){
 		discard;

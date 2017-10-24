@@ -15,7 +15,6 @@ public class GBuffer {
 	private Texture2DMultisample normalTexture;
 	private Texture2DMultisample worldPositionTexture;
 	private Texture2DMultisample SpecularEmissionTexture;
-	private Texture2DMultisample sampleCoverageMaskTexture;
 	
 	public GBuffer(int width, int height) {
 		
@@ -37,11 +36,6 @@ public class GBuffer {
 		SpecularEmissionTexture = new Texture2DMultisample();
 		SpecularEmissionTexture.generate();
 		SpecularEmissionTexture.bind();
-		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, Constants.MULTISAMPLES, GL_RGBA8, width, height, true);
-		
-		sampleCoverageMaskTexture = new Texture2DMultisample();
-		sampleCoverageMaskTexture.generate();
-		sampleCoverageMaskTexture.bind();
 		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, Constants.MULTISAMPLES, GL_RGBA8, width, height, true);		
 	}
 		
@@ -68,13 +62,5 @@ public class GBuffer {
 	}
 	public void setWorldPositionTexture(Texture2DMultisample worldPositionTexture) {
 		this.worldPositionTexture = worldPositionTexture;
-	}
-
-	public Texture2DMultisample getSampleCoverageMaskTexture() {
-		return sampleCoverageMaskTexture;
-	}
-
-	public void setSampleCoverageMaskTexture(Texture2DMultisample sampleCoverageMaskTexture) {
-		this.sampleCoverageMaskTexture = sampleCoverageMaskTexture;
 	}
 }
