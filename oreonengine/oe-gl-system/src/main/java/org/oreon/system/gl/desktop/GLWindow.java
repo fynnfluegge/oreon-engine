@@ -47,7 +47,7 @@ public class GLWindow extends Window{
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);	
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);	
 		
-		setId(glfwCreateWindow(getWidth(), getHeight(), "OE2.1", 0, 0));
+		setId(glfwCreateWindow(getWidth(), getHeight(), "OE3", 0, 0));
 		
 		if(getId() == 0) {
 		    throw new RuntimeException("Failed to create window");

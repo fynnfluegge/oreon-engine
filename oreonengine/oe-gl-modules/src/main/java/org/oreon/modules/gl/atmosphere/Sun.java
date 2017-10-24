@@ -1,5 +1,4 @@
 package org.oreon.modules.gl.atmosphere;
-
 import org.oreon.core.gl.buffers.GLPointVBO3D;
 import org.oreon.core.gl.config.Default;
 import org.oreon.core.gl.light.GLDirectionalLight;

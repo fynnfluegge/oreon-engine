@@ -1,9 +1,9 @@
 package org.oreon.modules.gl.postprocessfilter.lensflare;
 
 import org.oreon.core.gl.config.AdditiveBlending;
-import org.oreon.modules.gl.gui.elements.TexturePanel;
+import org.oreon.core.gl.scene.FullScreenQuad;
 
-public class LensFlareTexturePanel extends TexturePanel{
+public class LensFlareTexturePanel extends FullScreenQuad{
 
 	private float spacing;
 	private float transparency;

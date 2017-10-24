@@ -7,5 +7,4 @@ public class VoidGUI extends GUI{
 	public void init() {
 	}
 
-	
 }

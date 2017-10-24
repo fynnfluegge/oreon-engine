@@ -5,10 +5,11 @@ in vec4 viewSpacePos;
 in vec3 position;
 in vec3 tangent;
 
-layout(location = 0) out vec4 albedoSampler;
-layout(location = 1) out vec4 worldPositionSampler;
-layout(location = 2) out vec4 normalSampler;
-layout(location = 3) out vec4 specularEmissionSampler;
+layout(location = 0) out vec4 albedo_out;
+layout(location = 1) out vec4 worldPosition_out;
+layout(location = 2) out vec4 normal_out;
+layout(location = 3) out vec4 specularEmission_out;
+layout(location = 4) out vec4 sampleCoverageMask_out;
 
 struct Material
 {
@@ -127,8 +128,42 @@ void main()
 		rgb = mix(rgb, waterRefractionColor, refractionFactor); 
 	}
 	
-	albedoSampler = vec4(rgb,1);
-	worldPositionSampler = vec4(position,1);
-	normalSampler = vec4(normal,1);
-	specularEmissionSampler = vec4(1,0,0,1);
+	int sampleCoverage = 0;
+	
+	for (int i=0; i<8; i++){
+		// if (gl_SampleMaskIn[i] == 0x1){
+			// sampleCoverage++;
+		// }
+		// if (gl_SampleMaskIn[i] == 0x2){
+			// sampleCoverage++;
+		// }
+		// if (gl_SampleMaskIn[i] == 0x3){
+			// sampleCoverage++;
+		// }
+		// if (gl_SampleMaskIn[i] == 0x4){
+			// sampleCoverage++;
+		// }
+		// if (gl_SampleMaskIn[i] == 0x5){
+			// sampleCoverage++;
+		// }
+		// if (gl_SampleMaskIn[i] == 0x6){
+			// sampleCoverage++;
+		// }
+		// if (gl_SampleMaskIn[i] == 0x7){
+			// sampleCoverage++;
+		// }
+		// if (gl_SampleMaskIn[i] == 0x8){
+			// sampleCoverage++;
+		// }
+		
+		if (gl_SampleMaskIn[i] == 0x0){
+			sampleCoverage++;
+		}
+	}
+	
+	albedo_out = vec4(rgb,1);
+	worldPosition_out = vec4(position,1);
+	normal_out = vec4(normal,1);
+	specularEmission_out = vec4(1,0,0,1);
+	sampleCoverageMask_out = vec4(sampleCoverage,0,0,1);
 }

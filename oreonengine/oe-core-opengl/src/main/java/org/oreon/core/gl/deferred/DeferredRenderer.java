@@ -15,6 +15,7 @@ import static org.lwjgl.opengl.GL43.glDispatchCompute;
 
 import java.nio.ByteBuffer;
 
+import org.oreon.core.gl.shaders.DeferredShader;
 import org.oreon.core.gl.texture.Texture2D;
 import org.oreon.core.system.CoreSystem;
 
@@ -53,11 +54,12 @@ public class DeferredRenderer {
 		glBindImageTexture(2, gbuffer.getWorldPositionTexture().getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA32F);
 		glBindImageTexture(3, gbuffer.getNormalTexture().getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA32F);
 		glBindImageTexture(4, gbuffer.getSpecularEmissionTexture().getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA8);
+		glBindImageTexture(5, gbuffer.getSampleCoverageMaskTexture().getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA8);
 		shader.updateUniforms();
 		glDispatchCompute(CoreSystem.getInstance().getWindow().getWidth()/16, CoreSystem.getInstance().getWindow().getHeight()/16,1);
 		glFinish();
-//		deferredSceneTexture.bind();
-//		deferredSceneTexture.bilinearFilter();
+		deferredSceneTexture.bind();
+		deferredSceneTexture.bilinearFilter();
 	}
 
 	public GBuffer getGbuffer() {

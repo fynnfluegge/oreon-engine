@@ -5,8 +5,8 @@ public class Mesh{
 	private Vertex[] vertices;
 	private int[] indices;
 	private int instances;
-	private boolean tangentSpace;
-	private boolean instanced;
+	private boolean tangentSpace = false;
+	private boolean instanced = false;
 	
 	public Mesh(Vertex[] vertices, int[] indices)
 	{

@@ -7,7 +7,6 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashMap;
-
 import org.oreon.core.gl.texture.Texture2D;
 import org.oreon.core.gl.util.GLUtil;
 import org.oreon.core.math.Vec2f;

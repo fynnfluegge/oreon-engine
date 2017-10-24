@@ -10,6 +10,10 @@ public class Texture {
 	public void unbind() {
 	}
 	
+	public void bilinearFilter() {
+		
+	}
+	
 	public void trilinearFilter() {
 	}
 	

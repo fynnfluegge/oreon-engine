@@ -4,8 +4,8 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import org.oreon.core.gl.shaders.GLShader;
-import org.oreon.core.gl.texture.Texture2D;
 import org.oreon.core.math.Matrix4f;
+import org.oreon.core.texture.Texture;
 import org.oreon.core.util.ResourceLoader;
 
 public class LensFlareShader extends GLShader{
@@ -39,7 +39,7 @@ public class LensFlareShader extends GLShader{
 		setUniform("orthographicMatrix", orthographicMatrix);
 	}
 	
-	public void updateUniforms(Texture2D texture, float transparency)
+	public void updateUniforms(Texture texture, float transparency)
 	{
 		glActiveTexture(GL_TEXTURE0);
 		texture.bind();

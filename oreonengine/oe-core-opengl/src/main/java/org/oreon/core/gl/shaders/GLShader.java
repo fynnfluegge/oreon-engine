@@ -18,6 +18,7 @@ import org.oreon.core.math.Vec2f;
 import org.oreon.core.math.Vec3f;
 import org.oreon.core.scene.GameObject;
 import org.oreon.core.shaders.Shader;
+import org.oreon.core.texture.Texture;
 import org.oreon.core.util.BufferUtil;
 
 public abstract class GLShader implements Shader{
@@ -49,6 +50,12 @@ public abstract class GLShader implements Shader{
 	public void updateUniforms(Texture2D texture, int i, float j){};
 	
 	public void updateUniforms(Texture2D texture, float j){};
+	
+	public void updateUniforms(Texture2D texture){};
+	
+	public void updateUniforms(Texture texture, float j){};
+	
+	public void updateUniforms(Texture texture){};
 	
 	public void updateUniforms(Matrix4f matrix0, Matrix4f matrix1){};
 	

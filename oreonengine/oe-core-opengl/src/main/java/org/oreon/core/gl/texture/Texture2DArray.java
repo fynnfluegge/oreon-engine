@@ -20,8 +20,9 @@ import static org.lwjgl.opengl.GL30.GL_TEXTURE_2D_ARRAY;
 import static org.lwjgl.opengl.GL30.glGenerateMipmap;
 
 import org.lwjgl.opengl.GL;
+import org.oreon.core.texture.Texture;
 
-public class Texture2DArray {
+public class Texture2DArray extends Texture{
 
 	private int id;
 	private int width;

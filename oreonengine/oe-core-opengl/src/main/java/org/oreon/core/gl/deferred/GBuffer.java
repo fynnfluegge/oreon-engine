@@ -1,92 +1,80 @@
 package org.oreon.core.gl.deferred;
 
-import static org.lwjgl.opengl.GL11.GL_DEPTH_COMPONENT;
-import static org.lwjgl.opengl.GL11.GL_FLOAT;
-import static org.lwjgl.opengl.GL11.GL_RGBA;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
-import static org.lwjgl.opengl.GL11.glTexImage2D;
-import static org.lwjgl.opengl.GL30.GL_DEPTH_COMPONENT32F;
-import static org.lwjgl.opengl.GL30.GL_RGBA32F;
 import static org.lwjgl.opengl.GL11.GL_RGBA8;
+import static org.lwjgl.opengl.GL32.GL_TEXTURE_2D_MULTISAMPLE;
+import static org.lwjgl.opengl.GL32.glTexImage2DMultisample;
+import static org.lwjgl.opengl.GL30.GL_RGBA32F;
+import static org.lwjgl.opengl.GL30.GL_RGBA32UI;
 
-import java.nio.ByteBuffer;
-
-import org.oreon.core.gl.texture.Texture2D;
+import org.oreon.core.gl.texture.Texture2DMultisample;
+import org.oreon.core.util.Constants;
 
 public class GBuffer {
 
-	private Texture2D albedoTexture;
-	private Texture2D normalTexture;
-	private Texture2D worldPositionTexture;
-	private Texture2D SpecularEmissionTexture;
-	private Texture2D sceneDepthmap;
+	private Texture2DMultisample albedoTexture;
+	private Texture2DMultisample normalTexture;
+	private Texture2DMultisample worldPositionTexture;
+	private Texture2DMultisample SpecularEmissionTexture;
+	private Texture2DMultisample sampleCoverageMaskTexture;
 	
 	public GBuffer(int width, int height) {
 		
-		albedoTexture = new Texture2D();
+		albedoTexture = new Texture2DMultisample();
 		albedoTexture.generate();
 		albedoTexture.bind();
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
-		albedoTexture.bilinearFilter();
-		albedoTexture.clampToEdge();
+		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, Constants.MULTISAMPLES, GL_RGBA8, width, height, true);
 		
-		normalTexture = new Texture2D();
-		normalTexture.generate();
-		normalTexture.bind();
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, width, height, 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
-		normalTexture.bilinearFilter();
-		normalTexture.clampToEdge();
-		
-		worldPositionTexture = new Texture2D();
+		worldPositionTexture = new Texture2DMultisample();
 		worldPositionTexture.generate();
 		worldPositionTexture.bind();
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, width, height, 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
-		worldPositionTexture.bilinearFilter();
-		worldPositionTexture.clampToEdge();
+		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, Constants.MULTISAMPLES, GL_RGBA32F, width, height, true);
 		
-		SpecularEmissionTexture = new Texture2D();
+		normalTexture = new Texture2DMultisample();
+		normalTexture.generate();
+		normalTexture.bind();
+		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, Constants.MULTISAMPLES, GL_RGBA32F, width, height, true);
+		
+		SpecularEmissionTexture = new Texture2DMultisample();
 		SpecularEmissionTexture.generate();
 		SpecularEmissionTexture.bind();
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
-		SpecularEmissionTexture.bilinearFilter();
-		SpecularEmissionTexture.clampToEdge();
+		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, Constants.MULTISAMPLES, GL_RGBA8, width, height, true);
 		
-		sceneDepthmap = new Texture2D();
-		sceneDepthmap.generate();
-		sceneDepthmap.bind();
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32F, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, (ByteBuffer) null);
-		sceneDepthmap.bilinearFilter();
-		sceneDepthmap.clampToEdge();
+		sampleCoverageMaskTexture = new Texture2DMultisample();
+		sampleCoverageMaskTexture.generate();
+		sampleCoverageMaskTexture.bind();
+		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, Constants.MULTISAMPLES, GL_RGBA8, width, height, true);		
 	}
 		
-	public Texture2D getAlbedoTexture() {
+	public Texture2DMultisample getAlbedoTexture() {
 		return albedoTexture;
 	}
-	public void setAlbedoTexture(Texture2D colorTexture) {
+	public void setAlbedoTexture(Texture2DMultisample colorTexture) {
 		this.albedoTexture = colorTexture;
 	}
-	public Texture2D getNormalTexture() {
+	public Texture2DMultisample getNormalTexture() {
 		return normalTexture;
 	}
-	public void setNormalTexture(Texture2D normalTexture) {
+	public void setNormalTexture(Texture2DMultisample normalTexture) {
 		this.normalTexture = normalTexture;
 	}
-	public Texture2D getSpecularEmissionTexture() {
+	public Texture2DMultisample getSpecularEmissionTexture() {
 		return SpecularEmissionTexture;
 	}
-	public void setSpecularEmissionTexture(Texture2D specularEmissionTexture) {
+	public void setSpecularEmissionTexture(Texture2DMultisample specularEmissionTexture) {
 		SpecularEmissionTexture = specularEmissionTexture;
 	}
-	public Texture2D getSceneDepthmap() {
-		return sceneDepthmap;
-	}
-	public void setSceneDepthmap(Texture2D sceneDepthmap) {
-		this.sceneDepthmap = sceneDepthmap;
-	}
-	public Texture2D getWorldPositionTexture() {
+	public Texture2DMultisample getWorldPositionTexture() {
 		return worldPositionTexture;
 	}
-	public void setWorldPositionTexture(Texture2D worldPositionTexture) {
+	public void setWorldPositionTexture(Texture2DMultisample worldPositionTexture) {
 		this.worldPositionTexture = worldPositionTexture;
+	}
+
+	public Texture2DMultisample getSampleCoverageMaskTexture() {
+		return sampleCoverageMaskTexture;
+	}
+
+	public void setSampleCoverageMaskTexture(Texture2DMultisample sampleCoverageMaskTexture) {
+		this.sampleCoverageMaskTexture = sampleCoverageMaskTexture;
 	}
 }

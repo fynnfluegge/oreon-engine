@@ -23,6 +23,7 @@ import org.oreon.core.gl.buffers.GLFramebuffer;
 import org.oreon.core.gl.config.Default;
 import org.oreon.core.gl.light.GLDirectionalLight;
 import org.oreon.core.gl.picking.TerrainPicking;
+import org.oreon.core.gl.scene.FullScreenQuad;
 import org.oreon.core.gl.shadow.ParallelSplitShadowMaps;
 import org.oreon.core.gl.texture.Texture2D;
 import org.oreon.core.instancing.InstancingObjectHandler;
@@ -36,7 +37,6 @@ import org.oreon.core.util.Constants;
 import org.oreon.modules.gl.gpgpu.ContrastController;
 import org.oreon.modules.gl.gui.GUI;
 import org.oreon.modules.gl.gui.GUIs.VoidGUI;
-import org.oreon.modules.gl.gui.elements.TexturePanel;
 import org.oreon.modules.gl.postprocessfilter.bloom.Bloom;
 import org.oreon.modules.gl.postprocessfilter.dofblur.DepthOfFieldBlur;
 import org.oreon.modules.gl.postprocessfilter.lensflare.LensFlare;
@@ -48,7 +48,7 @@ import org.oreon.modules.gl.water.UnderWater;
 public class GLForwardRenderingEngine implements RenderingEngine{
 
 	private Window window;
-	private TexturePanel fullScreenTexture;
+	private FullScreenQuad fullScreenQuad;
 	private Texture2D postProcessingTexture;
 
 	private GLFramebuffer fbo;
@@ -73,9 +73,9 @@ public class GLForwardRenderingEngine implements RenderingEngine{
 	private ContrastController contrastController;
 	
 	private static boolean motionBlurEnabled = true;
-	private static boolean depthOfFieldBlurEnabled = false;
-	private static boolean bloomEnabled = true;
-	private static boolean lightScatteringEnabled = true;
+	private static boolean depthOfFieldBlurEnabled = true;
+	private static boolean bloomEnabled = false;
+	private static boolean lightScatteringEnabled = false;
 	private static boolean waterReflection = false;
 	private static boolean waterRefraction = false;
 	private static boolean cameraUnderWater = false;
@@ -100,7 +100,7 @@ public class GLForwardRenderingEngine implements RenderingEngine{
 		}
 		
 		shadowMaps = new ParallelSplitShadowMaps();
-		fullScreenTexture = new TexturePanel();
+		fullScreenQuad = new FullScreenQuad();
 		motionBlur = new MotionBlur();
 		dofBlur = new DepthOfFieldBlur();
 		bloom = new Bloom();
@@ -226,9 +226,9 @@ public class GLForwardRenderingEngine implements RenderingEngine{
 			
 			// copy scene texture into low-resolution texture
 			dofBlur.getLowResFbo().bind();
-			fullScreenTexture.setTexture(postProcessingTexture);
+			fullScreenQuad.setTexture(postProcessingTexture);
 			glViewport(0,0,(int)(window.getWidth()/1.4f),(int)(window.getHeight()/1.4f));
-			fullScreenTexture.render();
+			fullScreenQuad.render();
 			dofBlur.getLowResFbo().unbind();
 			glViewport(0,0, window.getWidth(), window.getHeight());
 			
@@ -255,9 +255,9 @@ public class GLForwardRenderingEngine implements RenderingEngine{
 		contrastController.render(postProcessingTexture);
 
 		// final scene texture
-		fullScreenTexture.setTexture(contrastController.getContrastTexture());	
+		fullScreenQuad.setTexture(contrastController.getContrastTexture());	
 		
-		fullScreenTexture.render();
+		fullScreenQuad.render();
 		
 		fbo.bind();
 		LightHandler.doOcclusionQueries();
@@ -395,8 +395,8 @@ public class GLForwardRenderingEngine implements RenderingEngine{
 		GLForwardRenderingEngine.sightRangeFactor = sightRangeFactor;
 	}
 	
-	public TexturePanel getFullScreenTexture() {
-		return fullScreenTexture;
+	public FullScreenQuad getFullScreenTexture() {
+		return fullScreenQuad;
 	}
 
 	public GUI getGui() {

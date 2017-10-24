@@ -1,6 +1,5 @@
-package org.oreon.core.gl.deferred;
+package org.oreon.core.gl.shaders;
 
-import org.oreon.core.gl.shaders.GLShader;
 import org.oreon.core.util.Constants;
 import org.oreon.core.util.ResourceLoader;
 
