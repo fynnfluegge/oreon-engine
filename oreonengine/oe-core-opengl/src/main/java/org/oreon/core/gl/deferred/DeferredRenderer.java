@@ -1,7 +1,6 @@
 package org.oreon.core.gl.deferred;
 
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
-import static org.lwjgl.opengl.GL11.glFinish;
 import static org.lwjgl.opengl.GL11.glTexImage2D;
 import static org.lwjgl.opengl.GL15.GL_WRITE_ONLY;
 import static org.lwjgl.opengl.GL15.GL_READ_ONLY;
@@ -42,8 +41,7 @@ public class DeferredRenderer {
 				width,
 				height,
 				0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
-		deferredSceneTexture.bilinearFilter();
-		deferredSceneTexture.clampToEdge();
+		deferredSceneTexture.noFilter();
 	}
 	
 	public void render(Texture2D sampleCoverageMask){
@@ -57,9 +55,6 @@ public class DeferredRenderer {
 		glBindImageTexture(5, sampleCoverageMask.getId(), 0, false, 0, GL_READ_ONLY, GL_R32F);
 		shader.updateUniforms();
 		glDispatchCompute(CoreSystem.getInstance().getWindow().getWidth()/16, CoreSystem.getInstance().getWindow().getHeight()/16,1);
-		glFinish();
-		deferredSceneTexture.bind();
-		deferredSceneTexture.bilinearFilter();
 	}
 
 	public GBuffer getGbuffer() {

@@ -6,6 +6,7 @@ import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import static org.lwjgl.opengl.GL11.GL_RGBA;
 import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glTexImage2D;
+import static org.lwjgl.opengl.GL11.glViewport;
 import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT0;
 import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT1;
 import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT2;
@@ -35,6 +36,8 @@ import org.oreon.core.util.BufferUtil;
 import org.oreon.core.util.Constants;
 import org.oreon.modules.gl.gui.GUI;
 import org.oreon.modules.gl.gui.GUIs.VoidGUI;
+import org.oreon.modules.gl.postprocessfilter.dofblur.DepthOfFieldBlur;
+import org.oreon.modules.gl.postprocessfilter.motionblur.MotionBlur;
 import org.oreon.modules.gl.terrain.Terrain;
 import static org.lwjgl.opengl.GL30.GL_RGBA16F;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
@@ -48,6 +51,7 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 	
 	private Texture2D sceneTexture;
 	private Texture2D sceneDepthmap;
+	private Texture2D postProcessingTexture;
 	
 	private GLFramebuffer gBufferFbo;
 	private GLFramebuffer finalSceneFbo;
@@ -58,6 +62,10 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 	
 	private Quaternion clipplane;
 	private static ParallelSplitShadowMaps shadowMaps;
+	
+	// post processing effects
+	private MotionBlur motionBlur;
+	private DepthOfFieldBlur dofBlur;
 	
 	@Override
 	public void init() {
@@ -76,6 +84,9 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		fullScreenQuad = new FullScreenQuad();
 		shadowMaps = new ParallelSplitShadowMaps();
 		msaa = new MSAA();
+		
+		motionBlur = new MotionBlur();
+		dofBlur = new DepthOfFieldBlur();
 		
 		IntBuffer drawBuffers = BufferUtil.createIntBuffer(5);
 		drawBuffers.put(GL_COLOR_ATTACHMENT0);
@@ -140,7 +151,14 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 //		fullScreenQuad.setTexture(msaa.getSampleCoverageMask());
 //		fullScreenQuad.render();
 
-		fullScreenQuad.setTexture(deferredRenderer.getDeferredSceneTexture());
+//		fullScreenQuad.setTexture(deferredRenderer.getDeferredSceneTexture());
+//		fullScreenQuad.render();
+		
+		// post processing effects
+		
+		postProcessingTexture = new Texture2D(deferredRenderer.getDeferredSceneTexture());
+			
+		fullScreenQuad.setTexture(postProcessingTexture);
 		fullScreenQuad.render();
 		
 		gui.render();

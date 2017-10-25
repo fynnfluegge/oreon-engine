@@ -4,10 +4,10 @@ import org.oreon.core.gl.scene.GLCamera;
 import org.oreon.core.system.CoreEngine;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.system.Window;
-import org.oreon.demo.gl.oreonworlds.gui.GUI;
 import org.oreon.demo.gl.oreonworlds2.shaders.TerrainGridShader;
 import org.oreon.demo.gl.oreonworlds2.shaders.TerrainShader;
 import org.oreon.modules.gl.atmosphere.SkySphere;
+import org.oreon.modules.gl.atmosphere.Sun;
 import org.oreon.modules.gl.terrain.Terrain;
 import org.oreon.system.gl.desktop.GLDeferredRenderingEngine;
 import org.oreon.system.gl.desktop.GLFWInput;
@@ -22,7 +22,6 @@ public class Main {
 		GLDeferredRenderingEngine renderingengine = new GLDeferredRenderingEngine();
 		Window window = new GLWindow();
 		
-		renderingengine.setGui(new GUI());
 		window.setWidth(1280);
 		window.setHeight(720);
 		window.setTitle("OREON ENGINE oreonworlds 2.0");

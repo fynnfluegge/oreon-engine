@@ -3,7 +3,6 @@ package org.oreon.core.gl.antialiasing;
 import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import static org.lwjgl.opengl.GL11.GL_RGBA;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
-import static org.lwjgl.opengl.GL11.glFinish;
 import static org.lwjgl.opengl.GL11.glTexImage2D;
 import static org.lwjgl.opengl.GL15.GL_READ_ONLY;
 import static org.lwjgl.opengl.GL15.GL_WRITE_ONLY;
@@ -48,10 +47,7 @@ public class MSAA {
 		glBindImageTexture(1, worldPositionTexture.getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA32F);
 		glBindImageTexture(2, normalTexture.getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA32F);
 		shader.updateUniforms(depthmap);
-		long time = System.nanoTime();
 		glDispatchCompute(CoreSystem.getInstance().getWindow().getWidth()/16, CoreSystem.getInstance().getWindow().getHeight()/16, 1);	
-//		glFinish();
-		System.out.println(System.nanoTime() - time);
 	}
 	
 	public Texture2D getSampleCoverageMask() {
