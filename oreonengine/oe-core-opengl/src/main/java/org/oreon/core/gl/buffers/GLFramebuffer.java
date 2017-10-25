@@ -107,6 +107,10 @@ public class GLFramebuffer implements Framebuffer{
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D_MULTISAMPLE, texture, 0 );
 	}
 	
+	public void createDepthTextureMultisampleAttachment(int texture){
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D_MULTISAMPLE, texture, 0 );
+	}
+	
 	public void createColorBufferMultisampleAttachment(int samples, int attachment, int width, int height, int internalformat){
 		int colorBuffer = glGenRenderbuffers();
 		glBindRenderbuffer(GL_RENDERBUFFER, colorBuffer);

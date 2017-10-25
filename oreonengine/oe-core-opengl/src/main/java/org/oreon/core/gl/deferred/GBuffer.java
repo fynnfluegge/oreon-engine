@@ -3,8 +3,9 @@ package org.oreon.core.gl.deferred;
 import static org.lwjgl.opengl.GL11.GL_RGBA8;
 import static org.lwjgl.opengl.GL32.GL_TEXTURE_2D_MULTISAMPLE;
 import static org.lwjgl.opengl.GL32.glTexImage2DMultisample;
+
+import static org.lwjgl.opengl.GL30.GL_DEPTH_COMPONENT32F;
 import static org.lwjgl.opengl.GL30.GL_RGBA32F;
-import static org.lwjgl.opengl.GL30.GL_RGBA32UI;
 
 import org.oreon.core.gl.texture.Texture2DMultisample;
 import org.oreon.core.util.Constants;
@@ -15,13 +16,14 @@ public class GBuffer {
 	private Texture2DMultisample normalTexture;
 	private Texture2DMultisample worldPositionTexture;
 	private Texture2DMultisample SpecularEmissionTexture;
+	private Texture2DMultisample depthmap;
 	
 	public GBuffer(int width, int height) {
 		
 		albedoTexture = new Texture2DMultisample();
 		albedoTexture.generate();
 		albedoTexture.bind();
-		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, Constants.MULTISAMPLES, GL_RGBA8, width, height, true);
+		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, Constants.MULTISAMPLES, GL_RGBA32F, width, height, true);
 		
 		worldPositionTexture = new Texture2DMultisample();
 		worldPositionTexture.generate();
@@ -36,7 +38,12 @@ public class GBuffer {
 		SpecularEmissionTexture = new Texture2DMultisample();
 		SpecularEmissionTexture.generate();
 		SpecularEmissionTexture.bind();
-		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, Constants.MULTISAMPLES, GL_RGBA8, width, height, true);		
+		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, Constants.MULTISAMPLES, GL_RGBA8, width, height, true);
+		
+		depthmap = new Texture2DMultisample();
+		depthmap.generate();
+		depthmap.bind();
+		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, Constants.MULTISAMPLES, GL_DEPTH_COMPONENT32F, width, height, true);
 	}
 		
 	public Texture2DMultisample getAlbedoTexture() {
@@ -62,5 +69,13 @@ public class GBuffer {
 	}
 	public void setWorldPositionTexture(Texture2DMultisample worldPositionTexture) {
 		this.worldPositionTexture = worldPositionTexture;
+	}
+
+	public Texture2DMultisample getDepthmap() {
+		return depthmap;
+	}
+
+	public void setDepthmap(Texture2DMultisample depthmap) {
+		this.depthmap = depthmap;
 	}
 }

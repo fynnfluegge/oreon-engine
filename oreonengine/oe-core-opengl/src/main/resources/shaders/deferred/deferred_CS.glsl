@@ -2,17 +2,17 @@
 
 layout (local_size_x = 16, local_size_y = 16) in;
 
-layout (binding = 0, rgba16f) uniform writeonly image2D defferedSceneImage;
+layout (binding = 0, rgba32f) uniform writeonly image2D defferedSceneImage;
 
-layout (binding = 1, rgba8) uniform readonly image2DMS albedoSceneImage;
+layout (binding = 1, rgba32f) uniform readonly image2DMS albedoSceneImage;
 
 layout (binding = 2, rgba32f) uniform readonly image2DMS worldPositionImage;
 
 layout (binding = 3, rgba32f) uniform readonly image2DMS normalImage;
 
-layout (binding = 4, rgba8) uniform readonly image2DMS specularEmissionImage;
+layout (binding = 4, rgba8)   uniform readonly image2DMS specularEmissionImage;
 
-layout (binding = 5, rgba8) uniform readonly image2DMS sampleCoverageMask;
+layout (binding = 5, r32f) uniform readonly image2D sampleCoverageMask;
 
 layout (std140, row_major) uniform Camera{
 	vec3 eyePosition;
@@ -33,6 +33,8 @@ layout (std140, row_major) uniform LightViewProjections{
 	float splitRange[6];
 };
 
+uniform int multisamples = 8;
+
 float diffuse(vec3 direction, vec3 normal, float intensity)
 {
 	return max(0.0, dot(normal, -direction) * intensity);
@@ -48,21 +50,51 @@ float specular(vec3 direction, vec3 normal, vec3 eyePosition, vec3 vertexPositio
 	return pow(specular, specularFactor) * emissionFactor;
 }
 
-const int multisamples = 8;
-
 void main(void){
 
 	ivec2 computeCoord = ivec2(gl_GlobalInvocationID.x, gl_GlobalInvocationID.y);
 	
-	vec3 albedo = imageLoad(albedoSceneImage, computeCoord,0).rgb; 
-	vec3 position = imageLoad(worldPositionImage, computeCoord,0).rgb;
-	vec3 normal = imageLoad(normalImage, computeCoord,0).rbg;
-	vec2 specular_emission = imageLoad(specularEmissionImage, computeCoord,0).rg;
+	vec3 albedo = vec3(0,0,0);
+	vec3 position = vec3(0,0,0);
+	vec3 normal = vec3(0,0,0);
+	vec2 specular_emission = vec2(0,0);
 	
+	if(imageLoad(sampleCoverageMask, computeCoord).r == 1.0){
+	
+		// perform supersampling
+		
+		for (int i=0; i<multisamples; i++){
+			albedo += imageLoad(albedoSceneImage, computeCoord,i).rgb; 
+		}
+		albedo /= multisamples;
+		
+		for (int i=0; i<multisamples; i++){
+			position += imageLoad(worldPositionImage, computeCoord,i).rgb; 
+		}
+		position /= multisamples;
+		
+		for (int i=0; i<multisamples; i++){
+			normal += imageLoad(normalImage, computeCoord,i).rbg; 
+		}
+		normal /= multisamples;
+		normal = normalize(normal);
+		
+		for (int i=0; i<multisamples; i++){
+			specular_emission += imageLoad(specularEmissionImage, computeCoord,i).rg; 
+		}
+		specular_emission /= multisamples;
+	}
+	else {
+		albedo = imageLoad(albedoSceneImage, computeCoord,0).rgb;
+		position = imageLoad(worldPositionImage, computeCoord,0).rgb;
+		normal = imageLoad(normalImage, computeCoord,0).rbg;
+		specular_emission = imageLoad(specularEmissionImage, computeCoord,0).rg;
+	}
+		
 	vec3 finalColor = albedo;
 	
 	// prevent lighting sky
-	if (imageLoad(normalImage, computeCoord,0).a != 0.0){
+	if (imageLoad(normalImage, computeCoord,0).rgb != vec3(0,0,0)){
 	
 		float diff = diffuse(directional_light.direction, normal, directional_light.intensity);
 		float spec = specular(directional_light.direction, normal, eyePosition, position, specular_emission.r, specular_emission.g);
@@ -73,14 +105,5 @@ void main(void){
 		finalColor = albedo * diffuseLight + specularLight;
 	}
 	
-	float abc = imageLoad(sampleCoverageMask, computeCoord,0).r; 
-	abc += imageLoad(sampleCoverageMask, computeCoord,1).r; 
-	abc += imageLoad(sampleCoverageMask, computeCoord,2).r; 
-	abc += imageLoad(sampleCoverageMask, computeCoord,3).r; 
-	abc += imageLoad(sampleCoverageMask, computeCoord,4).r; 
-	abc += imageLoad(sampleCoverageMask, computeCoord,5).r; 
-	abc += imageLoad(sampleCoverageMask, computeCoord,6).r; 
-	abc += imageLoad(sampleCoverageMask, computeCoord,7).r; 	
-	
-	imageStore(defferedSceneImage, computeCoord, vec4(abc,0.0,0.0,1.0));
+	imageStore(defferedSceneImage, computeCoord, vec4(finalColor,1.0));
 }

@@ -10,7 +10,6 @@ import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT0;
 import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT1;
 import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT2;
 import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT3;
-import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT4;
 import static org.lwjgl.opengl.GL30.GL_DEPTH_COMPONENT32F;
 
 import java.nio.ByteBuffer;
@@ -18,6 +17,7 @@ import java.nio.IntBuffer;
 
 import org.lwjgl.glfw.GLFW;
 import org.oreon.core.buffers.Framebuffer;
+import org.oreon.core.gl.antialiasing.MSAA;
 import org.oreon.core.gl.buffers.GLFramebuffer;
 import org.oreon.core.gl.config.Default;
 import org.oreon.core.gl.deferred.DeferredRenderer;
@@ -44,6 +44,7 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 	private Window window;
 	private FullScreenMultisampleQuad fullScreenMSQuad;
 	private FullScreenQuad fullScreenQuad;
+	private MSAA msaa;
 	
 	private Texture2D sceneTexture;
 	private Texture2D sceneDepthmap;
@@ -74,6 +75,7 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		fullScreenMSQuad = new FullScreenMultisampleQuad();
 		fullScreenQuad = new FullScreenQuad();
 		shadowMaps = new ParallelSplitShadowMaps();
+		msaa = new MSAA();
 		
 		IntBuffer drawBuffers = BufferUtil.createIntBuffer(5);
 		drawBuffers.put(GL_COLOR_ATTACHMENT0);
@@ -90,37 +92,13 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		gBufferFbo.createColorTextureMultisampleAttachment(deferredRenderer.getGbuffer().getWorldPositionTexture().getId(),1);
 		gBufferFbo.createColorTextureMultisampleAttachment(deferredRenderer.getGbuffer().getNormalTexture().getId(),2);
 		gBufferFbo.createColorTextureMultisampleAttachment(deferredRenderer.getGbuffer().getSpecularEmissionTexture().getId(),3);
-		gBufferFbo.createDepthBufferMultisampleAttachment(Constants.MULTISAMPLES, window.getWidth(), window.getHeight());
+		gBufferFbo.createDepthTextureMultisampleAttachment(deferredRenderer.getGbuffer().getDepthmap().getId());
 		gBufferFbo.setDrawBuffers(drawBuffers);
 		gBufferFbo.checkStatus();
 		gBufferFbo.unbind();
 
-		IntBuffer finalSceneDrawBuffer = BufferUtil.createIntBuffer(1);
-		finalSceneDrawBuffer.put(GL_COLOR_ATTACHMENT0);
-		finalSceneDrawBuffer.flip();
-		
-		sceneTexture = new Texture2D();
-		sceneTexture.generate();
-		sceneTexture.bind();
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, window.getWidth(), window.getHeight(), 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
-		sceneTexture.bilinearFilter();
-		sceneTexture.clampToEdge();
-		
-		sceneDepthmap = new Texture2D();
-		sceneDepthmap.generate();
-		sceneDepthmap.bind();
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32F, window.getWidth(), window.getHeight(), 0, GL_DEPTH_COMPONENT, GL_FLOAT, (ByteBuffer) null);
-		sceneDepthmap.bilinearFilter();
-		sceneDepthmap.clampToEdge();
-		
-		finalSceneFbo = new GLFramebuffer();
-		finalSceneFbo.bind();
-		finalSceneFbo.createColorTextureAttachment(sceneTexture.getId(),0);
-		finalSceneFbo.createDepthTextureAttachment(sceneDepthmap.getId());
-		finalSceneFbo.setDrawBuffers(finalSceneDrawBuffer);
-		finalSceneFbo.checkStatus();
-		finalSceneFbo.unbind();
 	}
+	
 	@Override
 	public void render() {
 
@@ -149,27 +127,21 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		CoreSystem.getInstance().getScenegraph().render();
 		gBufferFbo.unbind();
 		
-		deferredRenderer.render();
+		msaa.renderSampleCoverageMask(deferredRenderer.getGbuffer().getAlbedoTexture(),
+				    deferredRenderer.getGbuffer().getWorldPositionTexture(),
+				    deferredRenderer.getGbuffer().getNormalTexture(),
+				    deferredRenderer.getGbuffer().getDepthmap());
 		
-//		multisampleFbo.bind();
-//		Default.clearScreen();
-//		multisampleFbo.unbind();
-//		
-//		multisampleFbo.bind();
-//		msaa.render(deferredRenderer.getDeferredSceneTexture(), deferredRenderer.getGbuffer().getSceneDepthmap());
-//		multisampleFbo.unbind();
-//		
-//		finalSceneFbo.bind();
-//		Default.clearScreen();
-//		finalSceneFbo.unbind();
-//		
-//		multisampleFbo.blitFrameBuffer(0,0,finalSceneFbo.getId(), window.getWidth(), window.getHeight());
+		deferredRenderer.render(msaa.getSampleCoverageMask());
 		
-		fullScreenMSQuad.setTexture(deferredRenderer.getGbuffer().getAlbedoTexture());
-		fullScreenMSQuad.render();
+//		fullScreenMSQuad.setTexture(deferredRenderer.getGbuffer().getAlbedoTexture());
+//		fullScreenMSQuad.render();
 
-//		fullScreenQuad.setTexture(deferredRenderer.getDeferredSceneTexture());
+//		fullScreenQuad.setTexture(msaa.getSampleCoverageMask());
 //		fullScreenQuad.render();
+
+		fullScreenQuad.setTexture(deferredRenderer.getDeferredSceneTexture());
+		fullScreenQuad.render();
 		
 		gui.render();
 		

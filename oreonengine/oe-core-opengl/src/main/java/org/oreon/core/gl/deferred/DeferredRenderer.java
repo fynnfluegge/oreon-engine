@@ -6,7 +6,7 @@ import static org.lwjgl.opengl.GL11.glTexImage2D;
 import static org.lwjgl.opengl.GL15.GL_WRITE_ONLY;
 import static org.lwjgl.opengl.GL15.GL_READ_ONLY;
 import static org.lwjgl.opengl.GL30.GL_RGBA32F;
-import static org.lwjgl.opengl.GL30.GL_RGBA16F;
+import static org.lwjgl.opengl.GL30.GL_R32F;
 import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import static org.lwjgl.opengl.GL11.GL_RGBA;
 import static org.lwjgl.opengl.GL11.GL_RGBA8;
@@ -38,7 +38,7 @@ public class DeferredRenderer {
 		deferredSceneTexture = new Texture2D();
 		deferredSceneTexture.generate();
 		deferredSceneTexture.bind();
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F,
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F,
 				width,
 				height,
 				0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
@@ -46,14 +46,15 @@ public class DeferredRenderer {
 		deferredSceneTexture.clampToEdge();
 	}
 	
-	public void render(){
+	public void render(Texture2D sampleCoverageMask){
 		
 		shader.bind();
-		glBindImageTexture(0, deferredSceneTexture.getId(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
-		glBindImageTexture(1, gbuffer.getAlbedoTexture().getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA8);
+		glBindImageTexture(0, deferredSceneTexture.getId(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA32F);
+		glBindImageTexture(1, gbuffer.getAlbedoTexture().getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA32F);
 		glBindImageTexture(2, gbuffer.getWorldPositionTexture().getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA32F);
 		glBindImageTexture(3, gbuffer.getNormalTexture().getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA32F);
 		glBindImageTexture(4, gbuffer.getSpecularEmissionTexture().getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA8);
+		glBindImageTexture(5, sampleCoverageMask.getId(), 0, false, 0, GL_READ_ONLY, GL_R32F);
 		shader.updateUniforms();
 		glDispatchCompute(CoreSystem.getInstance().getWindow().getWidth()/16, CoreSystem.getInstance().getWindow().getHeight()/16,1);
 		glFinish();
