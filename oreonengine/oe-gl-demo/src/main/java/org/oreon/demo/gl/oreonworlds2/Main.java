@@ -39,7 +39,9 @@ public class Main {
 								   TerrainShader.getInstance(),
 								   TerrainGridShader.getInstance(), 
 								   null);
+		
 		coreSystem.getScenegraph().addObject(new SkySphere());	
+		coreSystem.getScenegraph().addObject(new Sun());
 		
 		coreEngine.start();
 	}

@@ -227,7 +227,7 @@ public class GLForwardRenderingEngine implements RenderingEngine{
 			// copy scene texture into low-resolution texture
 			dofBlur.getLowResFbo().bind();
 			fullScreenQuad.setTexture(postProcessingTexture);
-			glViewport(0,0,(int)(window.getWidth()/1.4f),(int)(window.getHeight()/1.4f));
+			glViewport(0,0,(int)(window.getWidth()/1.2f),(int)(window.getHeight()/1.2f));
 			fullScreenQuad.render();
 			dofBlur.getLowResFbo().unbind();
 			glViewport(0,0, window.getWidth(), window.getHeight());
