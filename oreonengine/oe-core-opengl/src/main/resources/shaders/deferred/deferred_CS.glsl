@@ -2,17 +2,19 @@
 
 layout (local_size_x = 16, local_size_y = 16) in;
 
-layout (binding = 0, rgba32f) uniform writeonly image2D defferedSceneImage;
+layout (binding = 0, rgba16f) uniform writeonly image2D defferedSceneImage;
 
-layout (binding = 1, rgba32f) uniform readonly image2DMS albedoSceneImage;
+layout (binding = 1, rgba32f) uniform writeonly image2D depthImage;
 
-layout (binding = 2, rgba32f) uniform readonly image2DMS worldPositionImage;
+layout (binding = 2, rgba16f) uniform readonly image2DMS albedoSceneImage;
 
-layout (binding = 3, rgba32f) uniform readonly image2DMS normalImage;
+layout (binding = 3, rgba32f) uniform readonly image2DMS worldPositionImage;
 
-layout (binding = 4, rgba8)   uniform readonly image2DMS specularEmissionImage;
+layout (binding = 4, rgba32f) uniform readonly image2DMS normalImage;
 
-layout (binding = 5, r32f) uniform readonly image2D sampleCoverageMask;
+layout (binding = 5, rgba8)   uniform readonly image2DMS specularEmissionImage;
+
+layout (binding = 6, r32f) uniform readonly image2D sampleCoverageMask;
 
 layout (std140, row_major) uniform Camera{
 	vec3 eyePosition;
@@ -33,7 +35,17 @@ layout (std140, row_major) uniform LightViewProjections{
 	float splitRange[6];
 };
 
-uniform int multisamples = 8;
+uniform sampler2DMS depthmap;
+uniform int multisamples;
+
+const float zfar = 10000;
+const float znear = 0.1;
+const vec3 fogColor = vec3(0.65,0.85,0.9);
+
+float linearizeDepth(float depth)
+{
+	return (2 * znear) / (zfar + znear - depth * (zfar - znear));
+}
 
 float diffuse(vec3 direction, vec3 normal, float intensity)
 {
@@ -58,6 +70,7 @@ void main(void){
 	vec3 position = vec3(0,0,0);
 	vec3 normal = vec3(0,0,0);
 	vec2 specular_emission = vec2(0,0);
+	vec3 depth = vec3(0,0,0);
 	
 	if(imageLoad(sampleCoverageMask, computeCoord).r == 1.0){
 	
@@ -83,12 +96,20 @@ void main(void){
 			specular_emission += imageLoad(specularEmissionImage, computeCoord,i).rg; 
 		}
 		specular_emission /= multisamples;
+		
+		for (int i=0; i<multisamples; i++){
+			depth += texelFetch(depthmap, computeCoord, i).rgb;
+		}
+		depth /= multisamples;
+		// depth = linearizeDepth(depth);
 	}
 	else {
 		albedo = imageLoad(albedoSceneImage, computeCoord,0).rgb;
 		position = imageLoad(worldPositionImage, computeCoord,0).rgb;
 		normal = imageLoad(normalImage, computeCoord,0).rbg;
 		specular_emission = imageLoad(specularEmissionImage, computeCoord,0).rg;
+		depth = texelFetch(depthmap, computeCoord, 0).rgb;
+		// depth = linearizeDepth(depth);
 	}
 		
 	vec3 finalColor = albedo;
@@ -105,5 +126,6 @@ void main(void){
 		finalColor = albedo * diffuseLight + specularLight;
 	}
 	
-	imageStore(defferedSceneImage, computeCoord, vec4(finalColor,1.0));
+	imageStore(defferedSceneImage, computeCoord, vec4(finalColor ,1.0));
+	imageStore(depthImage, computeCoord, vec4(depth, 1.0));
 }

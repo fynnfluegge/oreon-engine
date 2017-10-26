@@ -47,8 +47,8 @@ public class DepthOfFieldBlur {
 		lowResSceneSampler.generate();
 		lowResSceneSampler.bind();
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F,
-						(int)(CoreSystem.getInstance().getWindow().getWidth()/1.4f),
-						(int)(CoreSystem.getInstance().getWindow().getHeight()/1.4f),
+						(int)(CoreSystem.getInstance().getWindow().getWidth()/1.2f),
+						(int)(CoreSystem.getInstance().getWindow().getHeight()/1.2f),
 						0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
 		lowResSceneSampler.bilinearFilter();
 		lowResSceneSampler.clampToEdge();

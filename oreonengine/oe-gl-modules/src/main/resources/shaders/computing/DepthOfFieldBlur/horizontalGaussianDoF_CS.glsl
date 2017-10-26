@@ -33,7 +33,7 @@ void main(void){
 	
 	ivec2 computeCoord = ivec2(gl_GlobalInvocationID.x, gl_GlobalInvocationID.y);
 	
-	ivec2 computeCoordLowRes = ivec2(gl_GlobalInvocationID.x/1.4f, gl_GlobalInvocationID.y/1.4f);
+	ivec2 computeCoordLowRes = ivec2(gl_GlobalInvocationID.x/1.2f, gl_GlobalInvocationID.y/1.2f);
 	
 	float linDepth = linearize(depth);
 	

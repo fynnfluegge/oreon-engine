@@ -6,6 +6,7 @@ import static org.lwjgl.opengl.GL32.glTexImage2DMultisample;
 
 import static org.lwjgl.opengl.GL30.GL_DEPTH_COMPONENT32F;
 import static org.lwjgl.opengl.GL30.GL_RGBA32F;
+import static org.lwjgl.opengl.GL30.GL_RGBA16F;
 
 import org.oreon.core.gl.texture.Texture2DMultisample;
 import org.oreon.core.util.Constants;
@@ -23,7 +24,7 @@ public class GBuffer {
 		albedoTexture = new Texture2DMultisample();
 		albedoTexture.generate();
 		albedoTexture.bind();
-		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, Constants.MULTISAMPLES, GL_RGBA32F, width, height, true);
+		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, Constants.MULTISAMPLES, GL_RGBA16F, width, height, true);
 		
 		worldPositionTexture = new Texture2DMultisample();
 		worldPositionTexture.generate();

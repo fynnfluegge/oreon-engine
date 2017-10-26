@@ -158,6 +158,29 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		
 		postProcessingTexture = new Texture2D(deferredRenderer.getDeferredSceneTexture());
 			
+		// Depth of Field Blur
+					
+		// copy scene texture into low-resolution texture
+		dofBlur.getLowResFbo().bind();
+		fullScreenQuad.setTexture(postProcessingTexture);
+		glViewport(0,0,(int)(window.getWidth()/1.2f),(int)(window.getHeight()/1.2f));
+		fullScreenQuad.render();
+		dofBlur.getLowResFbo().unbind();
+		glViewport(0,0, window.getWidth(), window.getHeight());
+		
+		dofBlur.render(deferredRenderer.getDepthmap(), postProcessingTexture);
+		postProcessingTexture = dofBlur.getVerticalBlurSceneTexture();
+				
+		// Motion Blur
+		if (CoreSystem.getInstance().getScenegraph().getCamera().getPreviousPosition().sub(
+						CoreSystem.getInstance().getScenegraph().getCamera().getPosition()).length() > 0.04f ||
+				CoreSystem.getInstance().getScenegraph().getCamera().getForward().sub(
+						CoreSystem.getInstance().getScenegraph().getCamera().getPreviousForward()).length() > 0.01f){
+			motionBlur.render(deferredRenderer.getDepthmap(), postProcessingTexture);
+			postProcessingTexture = motionBlur.getMotionBlurSceneTexture();
+		}
+
+		
 		fullScreenQuad.setTexture(postProcessingTexture);
 		fullScreenQuad.render();
 		
