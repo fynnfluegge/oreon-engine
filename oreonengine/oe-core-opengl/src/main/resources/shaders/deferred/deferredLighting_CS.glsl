@@ -42,11 +42,6 @@ const float zfar = 10000;
 const float znear = 0.1;
 const vec3 fogColor = vec3(0.65,0.85,0.9);
 
-float linearizeDepth(float depth)
-{
-	return (2 * znear) / (zfar + znear - depth * (zfar - znear));
-}
-
 float diffuse(vec3 direction, vec3 normal, float intensity)
 {
 	return max(0.0, dot(normal, -direction) * intensity);
@@ -101,7 +96,6 @@ void main(void){
 			depth += texelFetch(depthmap, computeCoord, i).rgb;
 		}
 		depth /= multisamples;
-		// depth = linearizeDepth(depth);
 	}
 	else {
 		albedo = imageLoad(albedoSceneImage, computeCoord,0).rgb;
@@ -109,7 +103,6 @@ void main(void){
 		normal = imageLoad(normalImage, computeCoord,0).rbg;
 		specular_emission = imageLoad(specularEmissionImage, computeCoord,0).rg;
 		depth = texelFetch(depthmap, computeCoord, 0).rgb;
-		// depth = linearizeDepth(depth);
 	}
 		
 	vec3 finalColor = albedo;

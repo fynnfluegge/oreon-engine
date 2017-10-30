@@ -36,7 +36,9 @@ import org.oreon.core.util.BufferUtil;
 import org.oreon.core.util.Constants;
 import org.oreon.modules.gl.gui.GUI;
 import org.oreon.modules.gl.gui.GUIs.VoidGUI;
+import org.oreon.modules.gl.postprocessfilter.bloom.Bloom;
 import org.oreon.modules.gl.postprocessfilter.dofblur.DepthOfFieldBlur;
+import org.oreon.modules.gl.postprocessfilter.lensflare.LensFlare;
 import org.oreon.modules.gl.postprocessfilter.motionblur.MotionBlur;
 import org.oreon.modules.gl.terrain.Terrain;
 import static org.lwjgl.opengl.GL30.GL_RGBA16F;
@@ -49,12 +51,10 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 	private FullScreenQuad fullScreenQuad;
 	private MSAA msaa;
 	
-	private Texture2D sceneTexture;
-	private Texture2D sceneDepthmap;
 	private Texture2D postProcessingTexture;
 	
 	private GLFramebuffer gBufferFbo;
-	private GLFramebuffer finalSceneFbo;
+	private GLFramebuffer transparencyLayersFbo;
 	private DeferredRenderer deferredRenderer;
 	private GUI gui;
 	
@@ -66,6 +66,8 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 	// post processing effects
 	private MotionBlur motionBlur;
 	private DepthOfFieldBlur dofBlur;
+	private Bloom bloom;
+	private LensFlare lensFlare;
 	
 	@Override
 	public void init() {
@@ -87,6 +89,8 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		
 		motionBlur = new MotionBlur();
 		dofBlur = new DepthOfFieldBlur();
+		bloom = new Bloom();
+		lensFlare = new LensFlare();
 		
 		IntBuffer drawBuffers = BufferUtil.createIntBuffer(5);
 		drawBuffers.put(GL_COLOR_ATTACHMENT0);
@@ -107,7 +111,10 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		gBufferFbo.setDrawBuffers(drawBuffers);
 		gBufferFbo.checkStatus();
 		gBufferFbo.unbind();
-
+		
+		transparencyLayersFbo = new GLFramebuffer();
+		transparencyLayersFbo.bind();
+//		transparencyLayersFbo
 	}
 	
 	@Override
@@ -151,13 +158,17 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 //		fullScreenQuad.setTexture(msaa.getSampleCoverageMask());
 //		fullScreenQuad.render();
 
-//		fullScreenQuad.setTexture(deferredRenderer.getDeferredSceneTexture());
-//		fullScreenQuad.render();
+		fullScreenQuad.setTexture(deferredRenderer.getDeferredSceneTexture());
+		fullScreenQuad.render();
 		
 		// post processing effects
 		
 		postProcessingTexture = new Texture2D(deferredRenderer.getDeferredSceneTexture());
 			
+		// Bloom
+		bloom.render(postProcessingTexture);
+		postProcessingTexture = bloom.getBloomBlurSceneTexture();
+		
 		// Depth of Field Blur			
 		// copy scene texture into low-resolution texture
 //		dofBlur.getLowResFbo().bind();
@@ -180,8 +191,8 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		}
 
 		
-		fullScreenQuad.setTexture(postProcessingTexture);
-		fullScreenQuad.render();
+//		fullScreenQuad.setTexture(postProcessingTexture);
+//		fullScreenQuad.render();
 		
 		gui.render();
 		

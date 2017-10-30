@@ -20,11 +20,11 @@ material3_DISP oreonworlds/terrain/materials/Ground_21_DISP.jpg
 material3_displaceScale 4.0
 
 #maps
-heightmap oreonworlds2/terrain/maps/hm.bmp 8
-splatmap oreonworlds2/terrain/maps/splat0.bmp
-splatmap oreonworlds2/terrain/maps/splat1.bmp
-splatmap oreonworlds2/terrain/maps/splat2.bmp
-splatmap oreonworlds2/terrain/maps/splat3.bmp
+heightmap oreonworlds2/terrain/maps/terrain0/hm.bmp 16
+splatmap oreonworlds2/terrain/maps/terrain0/splat0.bmp
+splatmap oreonworlds2/terrain/maps/terrain0/splat1.bmp
+splatmap oreonworlds2/terrain/maps/terrain0/splat2.bmp
+splatmap oreonworlds2/terrain/maps/terrain0/splat3.bmp
 
 #terrain mesh settings
 scaleXZ 6000.0

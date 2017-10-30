@@ -23,6 +23,7 @@ public class Scenegraph extends Node{
 	}
 	
 	public void render(){
+		
 		rootObject.render();
 		terrain.render();
 		water.render();

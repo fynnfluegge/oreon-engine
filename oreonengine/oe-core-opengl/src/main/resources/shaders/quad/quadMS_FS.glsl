@@ -19,12 +19,7 @@ void main()
 	for (int i=0; i<multisamples; i++){
 		rgba += texelFetch(texture, coord,i).rgba; 
 	}
-	rgba /= 8;
+	rgba /= 8.0;
 	
-	if (rgba.a < 1.0){
-		discard;
-	}
-	else{
-		fragColor = rgba;
-	}
+	fragColor = rgba;
 }

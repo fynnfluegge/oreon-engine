@@ -24,7 +24,7 @@ private static DeferredShader instance = null;
 	{
 		super();
 		
-		addComputeShader(ResourceLoader.loadShader("shaders/deferred/deferred_CS.glsl"));
+		addComputeShader(ResourceLoader.loadShader("shaders/deferred/deferredLighting_CS.glsl"));
 		compileShader();
 		
 		addUniformBlock("Camera");

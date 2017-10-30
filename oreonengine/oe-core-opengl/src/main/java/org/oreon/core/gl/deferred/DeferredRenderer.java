@@ -68,6 +68,10 @@ public class DeferredRenderer {
 		shader.updateUniforms(gbuffer.getDepthmap());
 		glDispatchCompute(CoreSystem.getInstance().getWindow().getWidth()/16, CoreSystem.getInstance().getWindow().getHeight()/16,1);
 	}
+	
+	public void renderTransparencyLayers(){
+		
+	}
 
 	public GBuffer getGbuffer() {
 		return gbuffer;

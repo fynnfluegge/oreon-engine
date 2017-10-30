@@ -93,8 +93,8 @@ void main()
 		
 		vec3 bumpnormal = normalize((2*(texture(grass.normalmap, texCoordF).rgb) - 1) * vec3(1,1,4) * grassBlend
 								 +  (2*(texture(sand.normalmap, texCoordF/2).rgb) - 1) * vec3(1,1,1) * sandBlend
-								 +  (2*(texture(rock.normalmap, texCoordF/10).rgb) - 1) * vec3(1,1,1) * rockBlend
-								 +  (2*(texture(cliff.normalmap, texCoordF/10).rgb) - 1) * vec3(1,1,1) * cliffBlend);
+								 +  (2*(texture(rock.normalmap, texCoordF/10).rgb) - 1) * vec3(1,1,4) * rockBlend
+								 +  (2*(texture(cliff.normalmap, texCoordF/10).rgb) - 1) * vec3(1,1,4) * cliffBlend);
 		
 		bumpnormal.xy *= attenuation;
 		
