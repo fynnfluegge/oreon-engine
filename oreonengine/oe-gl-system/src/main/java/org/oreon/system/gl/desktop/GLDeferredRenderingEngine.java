@@ -12,6 +12,10 @@ import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT1;
 import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT2;
 import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT3;
 import static org.lwjgl.opengl.GL30.GL_DEPTH_COMPONENT32F;
+import static org.lwjgl.opengl.GL30.GL_RGBA16F;
+import static org.lwjgl.opengl.GL30.GL_RGBA32F;
+import static org.lwjgl.opengl.GL11.GL_RGBA8;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
@@ -41,8 +45,6 @@ import org.oreon.modules.gl.postprocessfilter.dofblur.DepthOfFieldBlur;
 import org.oreon.modules.gl.postprocessfilter.lensflare.LensFlare;
 import org.oreon.modules.gl.postprocessfilter.motionblur.MotionBlur;
 import org.oreon.modules.gl.terrain.Terrain;
-import static org.lwjgl.opengl.GL30.GL_RGBA16F;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 
 public class GLDeferredRenderingEngine implements RenderingEngine{
 
@@ -54,7 +56,7 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 	private Texture2D postProcessingTexture;
 	
 	private GLFramebuffer gBufferFbo;
-	private GLFramebuffer transparencyLayersFbo;
+	private GLFramebuffer transparencyLayerFbo;
 	private DeferredRenderer deferredRenderer;
 	private GUI gui;
 	
@@ -87,6 +89,8 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		shadowMaps = new ParallelSplitShadowMaps();
 		msaa = new MSAA();
 		
+		deferredRenderer = new DeferredRenderer(window.getWidth(), window.getHeight());
+		
 		motionBlur = new MotionBlur();
 		dofBlur = new DepthOfFieldBlur();
 		bloom = new Bloom();
@@ -99,8 +103,6 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		drawBuffers.put(GL_COLOR_ATTACHMENT3);
 		drawBuffers.flip();
 		
-		deferredRenderer = new DeferredRenderer(window.getWidth(), window.getHeight());
-		
 		gBufferFbo = new GLFramebuffer();
 		gBufferFbo.bind();
 		gBufferFbo.createColorTextureMultisampleAttachment(deferredRenderer.getGbuffer().getAlbedoTexture().getId(),0);
@@ -112,9 +114,25 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		gBufferFbo.checkStatus();
 		gBufferFbo.unbind();
 		
-		transparencyLayersFbo = new GLFramebuffer();
-		transparencyLayersFbo.bind();
-//		transparencyLayersFbo
+		transparencyLayerFbo = new GLFramebuffer();
+		transparencyLayerFbo.bind();
+		transparencyLayerFbo.createColorBufferMultisampleAttachment(Constants.MULTISAMPLES,0,
+																	window.getWidth(),window.getHeight(),
+																	GL_RGBA16F);
+		transparencyLayerFbo.createColorBufferMultisampleAttachment(Constants.MULTISAMPLES,1,
+																	window.getWidth(),window.getHeight(),
+																	GL_RGBA32F);
+		transparencyLayerFbo.createColorBufferMultisampleAttachment(Constants.MULTISAMPLES,2,
+																	window.getWidth(),window.getHeight(),
+																	GL_RGBA32F);
+		transparencyLayerFbo.createColorBufferMultisampleAttachment(Constants.MULTISAMPLES,3,
+																	window.getWidth(),window.getHeight(),
+																	GL_RGBA32F);
+		transparencyLayerFbo.createDepthBufferMultisampleAttachment(Constants.MULTISAMPLES,
+																    window.getWidth(),window.getHeight());
+		transparencyLayerFbo.setDrawBuffers(drawBuffers);
+		transparencyLayerFbo.checkStatus();
+		transparencyLayerFbo.unbind();
 	}
 	
 	@Override
@@ -151,6 +169,13 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 				    deferredRenderer.getGbuffer().getDepthmap());
 		
 		deferredRenderer.render(msaa.getSampleCoverageMask());
+		
+		// render transparent objects
+		transparencyLayerFbo.bind();
+		Default.clearScreen();
+		transparencyLayerFbo.unbind();
+		
+		// blend scene/transparent layers
 		
 //		fullScreenMSQuad.setTexture(deferredRenderer.getGbuffer().getAlbedoTexture());
 //		fullScreenMSQuad.render();
