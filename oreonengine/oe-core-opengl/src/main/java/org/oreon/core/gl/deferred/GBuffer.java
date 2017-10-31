@@ -17,7 +17,7 @@ public class GBuffer {
 	private Texture2DMultisample normalTexture;
 	private Texture2DMultisample worldPositionTexture;
 	private Texture2DMultisample SpecularEmissionTexture;
-	private Texture2DMultisample depthmap;
+	private Texture2DMultisample depthTexture;
 	
 	public GBuffer(int width, int height) {
 		
@@ -41,9 +41,9 @@ public class GBuffer {
 		SpecularEmissionTexture.bind();
 		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, Constants.MULTISAMPLES, GL_RGBA8, width, height, true);
 		
-		depthmap = new Texture2DMultisample();
-		depthmap.generate();
-		depthmap.bind();
+		depthTexture = new Texture2DMultisample();
+		depthTexture.generate();
+		depthTexture.bind();
 		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, Constants.MULTISAMPLES, GL_DEPTH_COMPONENT32F, width, height, true);
 	}
 		
@@ -72,11 +72,11 @@ public class GBuffer {
 		this.worldPositionTexture = worldPositionTexture;
 	}
 
-	public Texture2DMultisample getDepthmap() {
-		return depthmap;
+	public Texture2DMultisample getDepthTexture() {
+		return depthTexture;
 	}
 
-	public void setDepthmap(Texture2DMultisample depthmap) {
-		this.depthmap = depthmap;
+	public void setDepthTexture(Texture2DMultisample depthmap) {
+		this.depthTexture = depthmap;
 	}
 }

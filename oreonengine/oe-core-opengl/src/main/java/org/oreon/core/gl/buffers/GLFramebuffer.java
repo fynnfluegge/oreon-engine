@@ -90,7 +90,7 @@ public class GLFramebuffer implements Framebuffer{
 		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, texture, 0);
 	}
 	
-	public void createDepthbufferAttachment(int x, int y)
+	public void createDepthBufferAttachment(int x, int y)
 	{
 		int depthBuffer = glGenRenderbuffers();
 		glBindRenderbuffer(GL_RENDERBUFFER, depthBuffer);

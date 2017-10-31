@@ -41,7 +41,7 @@ public class Main {
 								   null);
 		
 		coreSystem.getScenegraph().addObject(new SkySphere());	
-		coreSystem.getScenegraph().addObject(new Sun());
+		coreSystem.getScenegraph().addTransparentObject(new Sun());
 		
 		coreEngine.start();
 	}

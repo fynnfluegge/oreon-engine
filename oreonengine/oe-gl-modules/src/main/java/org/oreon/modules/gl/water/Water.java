@@ -106,7 +106,7 @@ public class Water extends GameObject{
 		reflectionFBO.bind();
 		reflectionFBO.setDrawBuffer(0);
 		reflectionFBO.createColorTextureAttachment(reflectionTexture.getId(), 0);
-		reflectionFBO.createDepthbufferAttachment(CoreSystem.getInstance().getWindow().getWidth()/2, CoreSystem.getInstance().getWindow().getHeight()/2);
+		reflectionFBO.createDepthBufferAttachment(CoreSystem.getInstance().getWindow().getWidth()/2, CoreSystem.getInstance().getWindow().getHeight()/2);
 		reflectionFBO.checkStatus();
 		reflectionFBO.unbind();
 		
@@ -121,7 +121,7 @@ public class Water extends GameObject{
 		refractionFBO.bind();
 		refractionFBO.setDrawBuffer(0);
 		refractionFBO.createColorTextureAttachment(refractionTexture.getId(), 0);
-		refractionFBO.createDepthbufferAttachment(CoreSystem.getInstance().getWindow().getWidth()/2, CoreSystem.getInstance().getWindow().getHeight()/2);
+		refractionFBO.createDepthBufferAttachment(CoreSystem.getInstance().getWindow().getWidth()/2, CoreSystem.getInstance().getWindow().getHeight()/2);
 		refractionFBO.checkStatus();
 		refractionFBO.unbind();	
 	}

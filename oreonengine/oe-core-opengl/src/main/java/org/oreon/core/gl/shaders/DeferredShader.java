@@ -9,7 +9,7 @@ import org.oreon.core.util.ResourceLoader;
 
 public class DeferredShader extends GLShader{
 
-private static DeferredShader instance = null;
+	private static DeferredShader instance = null;
 	
 	public static DeferredShader getInstance() 
 	{

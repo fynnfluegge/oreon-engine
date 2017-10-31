@@ -8,6 +8,7 @@ public class Scenegraph extends Node{
 	private Node rootObject;
 	private Node terrain;
 	private Node water;
+	private Node transparentObjects;
 	
 	private boolean terrainExists = false;
 	
@@ -17,9 +18,11 @@ public class Scenegraph extends Node{
 		rootObject = new Node();
 		terrain = new Node();
 		water = new Node();
+		transparentObjects = new Node();
 		rootObject.setParent(this);
 		terrain.setParent(this);
 		water.setParent(this);
+		transparentObjects.setParent(this);
 	}
 	
 	public void render(){
@@ -27,6 +30,11 @@ public class Scenegraph extends Node{
 		rootObject.render();
 		terrain.render();
 		water.render();
+	}
+	
+	public void renderTransparentObejcts(){
+		
+		transparentObjects.render();
 	}
 	
 	public void renderShadows(){
@@ -39,6 +47,7 @@ public class Scenegraph extends Node{
 		rootObject.update();
 		terrain.update();
 		water.update();
+		transparentObjects.update();
 	}
 	
 	public void input(){
@@ -60,6 +69,10 @@ public class Scenegraph extends Node{
 	
 	public void addObject(Node object){
 		rootObject.addChild(object);
+	}
+	
+	public void addTransparentObject(Node object){
+		transparentObjects.addChild(object);
 	}
 
 	public Node getTerrain() {
@@ -95,6 +108,14 @@ public class Scenegraph extends Node{
 
 	public void setCamera(Camera camera) {
 		this.camera = camera;
+	}
+
+	public Node getTransparentObjects() {
+		return transparentObjects;
+	}
+
+	public void setTransparentObjects(Node transparentObjects) {
+		this.transparentObjects = transparentObjects;
 	}
 
 }

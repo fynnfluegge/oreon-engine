@@ -10,12 +10,10 @@ void main()
 {
 	vec4 rgba = texture2D(texture, texCoord1);
 	
-	if (rgba.a < 1.0){
+	if (rgba.a == 0)
 		discard;
-	}
-	else{
-		fragColor = rgba;
-	}
+		
+	fragColor = rgba;
 }
 
 
