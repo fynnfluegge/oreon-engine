@@ -35,8 +35,8 @@ public class TransparencyBlendShader extends GLShader{
 		addUniform("orthographicMatrix");
 		addUniform("opaqueSceneTexture");
 		addUniform("transparencyLayer");
-//		addUniform("opaqueSceneDepthMap");
-//		addUniform("transparencyLayerDepthMap");
+		addUniform("opaqueSceneDepthMap");
+		addUniform("transparencyLayerDepthMap");
 		addUniform("alphaMap");
 	}
 	
@@ -53,17 +53,17 @@ public class TransparencyBlendShader extends GLShader{
 		opaqueSceneTexture.bind();
 		setUniformi("opaqueSceneTexture", 0);
 		
-//		glActiveTexture(GL_TEXTURE1);
-//		opaqueSceneDepthMap.bind();
-//		setUniformi("opaqueSceneDepthMap", 1);
+		glActiveTexture(GL_TEXTURE1);
+		opaqueSceneDepthMap.bind();
+		setUniformi("opaqueSceneDepthMap", 1);
 
 		glActiveTexture(GL_TEXTURE2);
 		transparencyLayer.bind();
 		setUniformi("transparencyLayer", 2);
 		
-//		glActiveTexture(GL_TEXTURE3);
-//		transparencyLayerDepthMap.bind();
-//		setUniformi("transparencyLayerDepthMap", 3);
+		glActiveTexture(GL_TEXTURE3);
+		transparencyLayerDepthMap.bind();
+		setUniformi("transparencyLayerDepthMap", 3);
 
 		glActiveTexture(GL_TEXTURE4);
 		alphaMap.bind();

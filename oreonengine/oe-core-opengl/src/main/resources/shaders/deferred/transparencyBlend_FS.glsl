@@ -10,6 +10,14 @@ uniform sampler2D transparencyLayer;
 uniform sampler2D transparencyLayerDepthMap;
 uniform sampler2D alphaMap;
 
+const float zfar = 10000;
+const float znear = 0.1;
+
+float linearizeDepth(float depth)
+{
+	return (2 * znear) / (zfar + znear - depth * (zfar - znear));
+}
+
 void main()
 {
 	vec4 opaqueColor 	   = texture(opaqueSceneTexture, texCoord1);
@@ -18,14 +26,13 @@ void main()
 	vec4 transparencyDepth = texture(transparencyLayerDepthMap, texCoord1);
 	float alpha 		   = texture(alphaMap, texCoord1).r;
 	
-	vec4 rgba = transparencyColor + opaqueColor * (1-alpha);
-	
-	// if (opaqueDepth.r >= transparencyDepth.r){
-		// rgba = opaqueColor;
-	// }
-	// else{
-		// rgba = transparencyColor;
-	// }
+	vec4 rgba;
+	if (opaqueDepth.r <= transparencyDepth.r){
+		rgba = opaqueColor;
+	}
+	else{
+		rgba = transparencyColor + opaqueColor * (1-alpha);
+	}
 		
 	fragColor = rgba;
 }

@@ -1,22 +1,13 @@
 package org.oreon.system.gl.desktop;
 
 import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_DEPTH_COMPONENT;
 import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import static org.lwjgl.opengl.GL11.GL_RGBA;
 import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glTexImage2D;
 import static org.lwjgl.opengl.GL11.glViewport;
 import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT0;
-import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT1;
-import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT2;
-import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT3;
-import static org.lwjgl.opengl.GL30.GL_DEPTH_COMPONENT32F;
 import static org.lwjgl.opengl.GL30.GL_RGBA16F;
-import static org.lwjgl.opengl.GL30.GL_RGBA32F;
-import static org.lwjgl.opengl.GL32.GL_TEXTURE_2D_MULTISAMPLE;
-import static org.lwjgl.opengl.GL32.glTexImage2DMultisample;
-import static org.lwjgl.opengl.GL11.GL_RGBA8;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 
 import java.nio.ByteBuffer;
@@ -29,14 +20,13 @@ import org.oreon.core.gl.buffers.GLFramebuffer;
 import org.oreon.core.gl.config.Default;
 import org.oreon.core.gl.deferred.DeferredLightingRenderer;
 import org.oreon.core.gl.deferred.TransparencyLayer;
-import org.oreon.core.gl.deferred.GBuffer;
 import org.oreon.core.gl.deferred.TransparencyBlendRenderer;
 import org.oreon.core.gl.light.GLDirectionalLight;
 import org.oreon.core.gl.scene.FullScreenMultisampleQuad;
 import org.oreon.core.gl.scene.FullScreenQuad;
 import org.oreon.core.gl.shadow.ParallelSplitShadowMaps;
 import org.oreon.core.gl.texture.Texture2D;
-import org.oreon.core.gl.texture.Texture2DMultisample;
+import org.oreon.core.light.LightHandler;
 import org.oreon.core.math.Quaternion;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.system.RenderingEngine;
@@ -59,6 +49,8 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 	private FullScreenQuad fullScreenQuad;
 	private MSAA msaa;
 	
+	private GLFramebuffer finalSceneFbo;
+	private Texture2D finalSceneTexture;
 	private Texture2D postProcessingTexture;
 	
 	private DeferredLightingRenderer deferredRenderer;
@@ -103,6 +95,23 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		dofBlur = new DepthOfFieldBlur();
 		bloom = new Bloom();
 		lensFlare = new LensFlare();
+		
+		finalSceneTexture = new Texture2D();
+		finalSceneTexture.generate();
+		finalSceneTexture.bind();
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, window.getWidth(), window.getHeight(), 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
+		finalSceneTexture.noFilter();
+		
+		IntBuffer drawBuffers = BufferUtil.createIntBuffer(3);
+		drawBuffers.put(GL_COLOR_ATTACHMENT0);
+		drawBuffers.flip();
+		
+		finalSceneFbo = new GLFramebuffer();
+		finalSceneFbo.bind();
+		finalSceneFbo.createColorTextureAttachment(finalSceneTexture.getId(),0);
+		finalSceneFbo.setDrawBuffers(drawBuffers);
+		finalSceneFbo.checkStatus();
+		finalSceneFbo.unbind();
 	}
 	
 	@Override
@@ -147,25 +156,20 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		transparencyLayer.getFbo().unbind();
 		
 		// blend scene/transparent layers
+		finalSceneFbo.bind();
 		transparencyBlendRenderer.render(deferredRenderer.getDeferredSceneTexture(), 
 										 deferredRenderer.getDepthmap(),
 										 transparencyLayer.getGbuffer().getAlbedoTexture(),
 										 transparencyLayer.getGbuffer().getDepthTexture(),
 										 transparencyLayer.getGbuffer().getAlphaTexture());
-		
-		
-//		fullScreenMSQuad.setTexture(deferredRenderer.getGbuffer().getAlbedoTexture());
-//		fullScreenMSQuad.render();
+		finalSceneFbo.unbind();
 
-//		fullScreenQuad.setTexture(transparencyLayer.getGbuffer().getAlbedoTexture());
-//		fullScreenQuad.render();
-		
-//		fullScreenQuad.setTexture(deferredRenderer.getDeferredSceneTexture());
+//		fullScreenQuad.setTexture(finalSceneTexture);
 //		fullScreenQuad.render();
 		
 		// post processing effects
 		
-		postProcessingTexture = new Texture2D(deferredRenderer.getDeferredSceneTexture());
+		postProcessingTexture = new Texture2D(finalSceneTexture);
 			
 		// Bloom
 		bloom.render(postProcessingTexture);
@@ -191,10 +195,15 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 			motionBlur.render(deferredRenderer.getDepthmap(), postProcessingTexture);
 			postProcessingTexture = motionBlur.getMotionBlurSceneTexture();
 		}
-
 		
-//		fullScreenQuad.setTexture(postProcessingTexture);
-//		fullScreenQuad.render();
+		fullScreenQuad.setTexture(postProcessingTexture);
+		fullScreenQuad.render();
+		
+		deferredRenderer.getFbo().bind();
+		LightHandler.doOcclusionQueries();
+		deferredRenderer.getFbo().unbind();
+		
+		lensFlare.render();
 		
 		gui.render();
 		

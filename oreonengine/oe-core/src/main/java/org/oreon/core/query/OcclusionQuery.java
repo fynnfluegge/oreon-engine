@@ -1,5 +1,4 @@
 package org.oreon.core.query;
-import static org.lwjgl.opengl.GL15.glDeleteQueries;
 import java.nio.IntBuffer;
 
 import org.oreon.core.light.Light;
@@ -15,9 +14,7 @@ public abstract class OcclusionQuery {
 	
 	public abstract void doQuery(Light light);
 	
-	public void delete() {
-		glDeleteQueries(id);
-	}
+	public abstract void delete();
 
 	public int getId() {
 		return id;

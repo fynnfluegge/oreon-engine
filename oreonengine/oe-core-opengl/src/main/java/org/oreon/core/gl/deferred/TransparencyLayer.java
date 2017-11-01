@@ -29,7 +29,7 @@ public class TransparencyLayer {
 		fbo.createColorTextureAttachment(gbuffer.getAlbedoTexture().getId(),0);
 		fbo.createColorTextureAttachment(gbuffer.getAlphaTexture().getId(),1);
 		fbo.createColorTextureAttachment(gbuffer.getLightScatteringTexture().getId(),2);
-		fbo.createDepthBufferAttachment(width,height);
+		fbo.createDepthTextureAttachment(gbuffer.getDepthTexture().getId());
 		fbo.setDrawBuffers(drawBuffers);
 		fbo.checkStatus();
 		fbo.unbind();
