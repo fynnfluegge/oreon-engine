@@ -4,6 +4,7 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE2;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE3;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE4;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import org.oreon.core.math.Matrix4f;
@@ -32,10 +33,11 @@ public class TransparencyBlendShader extends GLShader{
 		compileShader();
 		
 		addUniform("orthographicMatrix");
-//		addUniform("opaqueSceneTexture");
+		addUniform("opaqueSceneTexture");
 		addUniform("transparencyLayer");
 //		addUniform("opaqueSceneDepthMap");
 //		addUniform("transparencyLayerDepthMap");
+		addUniform("alphaMap");
 	}
 	
 	public void updateUniforms(Matrix4f orthographicMatrix)
@@ -44,11 +46,12 @@ public class TransparencyBlendShader extends GLShader{
 	}
 	
 	public void updateUniforms(Texture opaqueSceneTexture, Texture opaqueSceneDepthMap,
-							   Texture transparencyLayer, Texture transparencyLayerDepthMap)
+							   Texture transparencyLayer, Texture transparencyLayerDepthMap,
+							   Texture alphaMap)
 	{
-//		glActiveTexture(GL_TEXTURE0);
-//		opaqueSceneTexture.bind();
-//		setUniformi("opaqueSceneTexture", 0);
+		glActiveTexture(GL_TEXTURE0);
+		opaqueSceneTexture.bind();
+		setUniformi("opaqueSceneTexture", 0);
 		
 //		glActiveTexture(GL_TEXTURE1);
 //		opaqueSceneDepthMap.bind();
@@ -61,5 +64,9 @@ public class TransparencyBlendShader extends GLShader{
 //		glActiveTexture(GL_TEXTURE3);
 //		transparencyLayerDepthMap.bind();
 //		setUniformi("transparencyLayerDepthMap", 3);
+
+		glActiveTexture(GL_TEXTURE4);
+		alphaMap.bind();
+		setUniformi("alphaMap", 4);
 	}
 }

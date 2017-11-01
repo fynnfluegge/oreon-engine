@@ -2,6 +2,7 @@
 
 layout(location = 0) out vec4 albedo_out;
 layout(location = 1) out vec4 alpha_out;
+layout(location = 2) out vec4 lightScattering_out;
 
 uniform sampler2D sunTexture;
 uniform sampler2D sunTexture_small;
@@ -11,5 +12,5 @@ void main()
 	vec4 color = texture(sunTexture, gl_PointCoord);
 	albedo_out = vec4(color);
 	alpha_out = vec4(color.a,0.0,0.0,1.0);
-	//outputColorForScattering = texture2D(sunTexture_small, gl_PointCoord);
+	lightScattering_out = texture(sunTexture_small, gl_PointCoord);
 }

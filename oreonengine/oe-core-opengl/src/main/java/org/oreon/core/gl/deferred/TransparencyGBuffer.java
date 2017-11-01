@@ -3,10 +3,13 @@ package org.oreon.core.gl.deferred;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_COMPONENT;
 import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import static org.lwjgl.opengl.GL11.GL_RGBA;
+import static org.lwjgl.opengl.GL11.GL_RED;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.glTexImage2D;
 import static org.lwjgl.opengl.GL30.GL_DEPTH_COMPONENT32F;
 import static org.lwjgl.opengl.GL30.GL_RGBA32F;
+import static org.lwjgl.opengl.GL30.GL_RGBA16F;
+import static org.lwjgl.opengl.GL30.GL_R32F;
 
 import java.nio.ByteBuffer;
 
@@ -16,6 +19,7 @@ public class TransparencyGBuffer {
 
 	private Texture2D albedoTexture;
 	private Texture2D alphaTexture;
+	private Texture2D lightScatteringTexture;
 	private Texture2D depthTexture;
 	
 	public TransparencyGBuffer(int width, int height) {
@@ -29,8 +33,14 @@ public class TransparencyGBuffer {
 		alphaTexture = new Texture2D();
 		alphaTexture.generate();
 		alphaTexture.bind();
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, width, height, 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, width, height, 0, GL_RED, GL_FLOAT, (ByteBuffer) null);
 		alphaTexture.noFilter();
+		
+		lightScatteringTexture = new Texture2D();
+		lightScatteringTexture.generate();
+		lightScatteringTexture.bind();
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
+		lightScatteringTexture.noFilter();
 		
 		depthTexture = new Texture2D();
 		depthTexture.generate();
@@ -61,5 +71,13 @@ public class TransparencyGBuffer {
 
 	public void setDepthTexture(Texture2D depthTexture) {
 		this.depthTexture = depthTexture;
+	}
+
+	public Texture2D getLightScatteringTexture() {
+		return lightScatteringTexture;
+	}
+
+	public void setLightScatteringTexture(Texture2D lightScatteringTexture) {
+		this.lightScatteringTexture = lightScatteringTexture;
 	}
 }

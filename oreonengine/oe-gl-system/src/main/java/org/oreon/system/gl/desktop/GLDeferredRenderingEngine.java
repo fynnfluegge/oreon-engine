@@ -141,18 +141,17 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		deferredRenderer.render(msaa.getSampleCoverageMask());
 		
 		// forward scene lighting - transparent objects
-		transparencyLayer.getMulisampleFbo().bind();
+		transparencyLayer.getFbo().bind();
 		Default.clearScreen();
 		CoreSystem.getInstance().getScenegraph().renderTransparentObejcts();
-		transparencyLayer.getMulisampleFbo().unbind();
-		
-//		transparencyLayer.blitBuffers();
+		transparencyLayer.getFbo().unbind();
 		
 		// blend scene/transparent layers
 		transparencyBlendRenderer.render(deferredRenderer.getDeferredSceneTexture(), 
 										 deferredRenderer.getDepthmap(),
 										 transparencyLayer.getGbuffer().getAlbedoTexture(),
-										 transparencyLayer.getGbuffer().getDepthTexture());
+										 transparencyLayer.getGbuffer().getDepthTexture(),
+										 transparencyLayer.getGbuffer().getAlphaTexture());
 		
 		
 //		fullScreenMSQuad.setTexture(deferredRenderer.getGbuffer().getAlbedoTexture());
