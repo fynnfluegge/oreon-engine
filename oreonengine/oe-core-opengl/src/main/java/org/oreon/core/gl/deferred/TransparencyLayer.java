@@ -29,42 +29,33 @@ public class TransparencyLayer {
 		
 		gbuffer = new TransparencyGBuffer(width, height);
 		
-		IntBuffer drawBuffers = BufferUtil.createIntBuffer(4);
+		IntBuffer drawBuffers = BufferUtil.createIntBuffer(2);
 		drawBuffers.put(GL_COLOR_ATTACHMENT0);
 		drawBuffers.put(GL_COLOR_ATTACHMENT1);
-		drawBuffers.put(GL_COLOR_ATTACHMENT2);
-		drawBuffers.put(GL_COLOR_ATTACHMENT3);
 		drawBuffers.flip();
 		
 		mulisampleFbo = new GLFramebuffer();
 		mulisampleFbo.bind();
-		mulisampleFbo.createColorBufferAttachment(width,height,0,GL_RGBA16F);
-		mulisampleFbo.createColorBufferAttachment(width,height,1,GL_RGBA32F);
-		mulisampleFbo.createColorBufferAttachment(width,height,2,GL_RGBA32F);
-		mulisampleFbo.createColorBufferAttachment(width,height,3,GL_RGBA8);
+		mulisampleFbo.createColorTextureAttachment(gbuffer.getAlbedoTexture().getId(),0);
+		mulisampleFbo.createColorTextureAttachment(gbuffer.getAlphaTexture().getId(),1);
 		mulisampleFbo.createDepthBufferAttachment(width,height);
 		mulisampleFbo.setDrawBuffers(drawBuffers);
 		mulisampleFbo.checkStatus();
 		mulisampleFbo.unbind();
 		
-		fbo = new GLFramebuffer();
-		fbo.bind();
-		fbo.createColorTextureAttachment(gbuffer.getAlbedoTexture().getId(),0);
-		fbo.createColorTextureAttachment(gbuffer.getWorldPositionTexture().getId(),1);
-		fbo.createColorTextureAttachment(gbuffer.getNormalTexture().getId(),2);
-		fbo.createColorTextureAttachment(gbuffer.getSpecularEmissionTexture().getId(),3);
-		fbo.createDepthTextureAttachment(gbuffer.getDepthTexture().getId());
-		fbo.setDrawBuffers(drawBuffers);
-		fbo.checkStatus();
-		fbo.unbind();
+//		fbo = new GLFramebuffer();
+//		fbo.bind();
+//		fbo.createColorTextureAttachment(gbuffer.getAlbedoTexture().getId(),0);
+//		fbo.createDepthTextureAttachment(gbuffer.getDepthTexture().getId());
+//		fbo.setDrawBuffers(drawBuffers);
+//		fbo.checkStatus();
+//		fbo.unbind();
 	}
 	
 	public void blitBuffers(){
 		
 		mulisampleFbo.blitFrameBuffer(0,0,fbo.getId(), width, height);
-		mulisampleFbo.blitFrameBuffer(1,1,fbo.getId(), width, height);
-		mulisampleFbo.blitFrameBuffer(2,2,fbo.getId(), width, height);
-		mulisampleFbo.blitFrameBuffer(3,3,fbo.getId(), width, height);
+
 	}
 
 	public TransparencyGBuffer getGbuffer() {

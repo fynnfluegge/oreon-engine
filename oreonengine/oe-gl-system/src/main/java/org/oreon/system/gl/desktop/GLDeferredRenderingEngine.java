@@ -146,7 +146,7 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		CoreSystem.getInstance().getScenegraph().renderTransparentObejcts();
 		transparencyLayer.getMulisampleFbo().unbind();
 		
-		transparencyLayer.blitBuffers();
+//		transparencyLayer.blitBuffers();
 		
 		// blend scene/transparent layers
 		transparencyBlendRenderer.render(deferredRenderer.getDeferredSceneTexture(), 

@@ -16,7 +16,7 @@ void main()
 	vec4 opaqueDepth 	   = texture(opaqueSceneDepthMap, texCoord1);
 	vec4 transparencyDepth = texture(transparencyLayerDepthMap, texCoord1);
 	
-	vec4 rgba = mix(opaqueColor,transparencyColor,0);
+	vec4 rgba = mix(opaqueColor,transparencyColor,0.5);
 	
 	// if (opaqueDepth.r >= transparencyDepth.r){
 		// rgba = opaqueColor;
@@ -25,5 +25,5 @@ void main()
 		// rgba = transparencyColor;
 	// }
 		
-	fragColor = rgba;
+	fragColor = vec4(transparencyColor.r,0,0,1);
 }
