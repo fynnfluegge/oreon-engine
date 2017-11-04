@@ -2,7 +2,7 @@
 
 layout(location = 0) out vec4 albedo_out;
 layout(location = 1) out vec4 alpha_out;
-layout(location = 2) out vec4 lightScattering_out;
+layout(location = 4) out vec4 lightScattering_out;
 
 uniform sampler2D sunTexture;
 uniform sampler2D sunTexture_small;

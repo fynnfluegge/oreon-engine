@@ -16,7 +16,8 @@ public class GBuffer {
 	private Texture2DMultisample albedoTexture;
 	private Texture2DMultisample normalTexture;
 	private Texture2DMultisample worldPositionTexture;
-	private Texture2DMultisample SpecularEmissionTexture;
+	private Texture2DMultisample specularEmissionTexture;
+	private Texture2DMultisample lightScatteringTexture;
 	private Texture2DMultisample depthTexture;
 	
 	public GBuffer(int width, int height) {
@@ -36,9 +37,14 @@ public class GBuffer {
 		normalTexture.bind();
 		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, Constants.MULTISAMPLES, GL_RGBA32F, width, height, true);
 		
-		SpecularEmissionTexture = new Texture2DMultisample();
-		SpecularEmissionTexture.generate();
-		SpecularEmissionTexture.bind();
+		specularEmissionTexture = new Texture2DMultisample();
+		specularEmissionTexture.generate();
+		specularEmissionTexture.bind();
+		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, Constants.MULTISAMPLES, GL_RGBA8, width, height, true);
+		
+		lightScatteringTexture = new Texture2DMultisample();
+		lightScatteringTexture.generate();
+		lightScatteringTexture.bind();
 		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, Constants.MULTISAMPLES, GL_RGBA8, width, height, true);
 		
 		depthTexture = new Texture2DMultisample();
@@ -60,10 +66,10 @@ public class GBuffer {
 		this.normalTexture = normalTexture;
 	}
 	public Texture2DMultisample getSpecularEmissionTexture() {
-		return SpecularEmissionTexture;
+		return specularEmissionTexture;
 	}
 	public void setSpecularEmissionTexture(Texture2DMultisample specularEmissionTexture) {
-		SpecularEmissionTexture = specularEmissionTexture;
+		this.specularEmissionTexture = specularEmissionTexture;
 	}
 	public Texture2DMultisample getWorldPositionTexture() {
 		return worldPositionTexture;
@@ -78,5 +84,13 @@ public class GBuffer {
 
 	public void setDepthTexture(Texture2DMultisample depthmap) {
 		this.depthTexture = depthmap;
+	}
+
+	public Texture2DMultisample getLightScatteringTexture() {
+		return lightScatteringTexture;
+	}
+
+	public void setLightScatteringTexture(Texture2DMultisample lightScatteringTexture) {
+		this.lightScatteringTexture = lightScatteringTexture;
 	}
 }

@@ -8,7 +8,7 @@ import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.glTexImage2D;
 import static org.lwjgl.opengl.GL30.GL_DEPTH_COMPONENT32F;
 import static org.lwjgl.opengl.GL30.GL_RGBA32F;
-import static org.lwjgl.opengl.GL30.GL_RGBA16F;
+import static org.lwjgl.opengl.GL11.GL_RGBA8;
 import static org.lwjgl.opengl.GL30.GL_R32F;
 
 import java.nio.ByteBuffer;
@@ -39,7 +39,7 @@ public class TransparencyGBuffer {
 		lightScatteringTexture = new Texture2D();
 		lightScatteringTexture.generate();
 		lightScatteringTexture.bind();
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
 		lightScatteringTexture.noFilter();
 		
 		depthTexture = new Texture2D();

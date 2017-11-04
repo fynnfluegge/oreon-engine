@@ -6,7 +6,7 @@ in vec2 texCoord_FS;
 flat in vec3 tangent;
 
 layout(location = 0) out vec4 outputColor;
-layout(location = 1) out vec4 blackColor;
+layout(location = 4) out vec4 lightScattering_out;
 
 struct DirectionalLight
 {
@@ -204,5 +204,5 @@ void main(void)
     vec3 rgb = mix(fogColor, fragColor, clamp(fogFactor,0,1));
 	
 	outputColor = vec4(rgb,1);
-	blackColor = vec4(0,0,0,1);
+	lightScattering_out = vec4(0,0,0,1);
 }

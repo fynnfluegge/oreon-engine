@@ -1,6 +1,7 @@
 package org.oreon.core.gl.deferred;
 
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.GL_RGBA8;
 import static org.lwjgl.opengl.GL11.glTexImage2D;
 import static org.lwjgl.opengl.GL15.GL_WRITE_ONLY;
 import static org.lwjgl.opengl.GL15.GL_READ_ONLY;
@@ -10,10 +11,10 @@ import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT0;
 import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT1;
 import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT2;
 import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT3;
+import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT4;
 import static org.lwjgl.opengl.GL30.GL_R32F;
 import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import static org.lwjgl.opengl.GL11.GL_RGBA;
-import static org.lwjgl.opengl.GL11.GL_RGBA8;
 import static org.lwjgl.opengl.GL42.glBindImageTexture;
 import static org.lwjgl.opengl.GL43.glDispatchCompute;
 
@@ -31,7 +32,7 @@ public class DeferredLightingRenderer {
 	private GLFramebuffer fbo;
 	private GBuffer gbuffer;
 	private DeferredShader shader;
-	private Texture2D deferredSceneTexture;
+	private Texture2D deferredLightingSceneTexture;
 	private Texture2D depthmap;
 	
 	public DeferredLightingRenderer(int width, int height) {
@@ -39,14 +40,14 @@ public class DeferredLightingRenderer {
 		gbuffer = new GBuffer(width, height);
 		shader = DeferredShader.getInstance();
 
-		deferredSceneTexture = new Texture2D();
-		deferredSceneTexture.generate();
-		deferredSceneTexture.bind();
+		deferredLightingSceneTexture = new Texture2D();
+		deferredLightingSceneTexture.generate();
+		deferredLightingSceneTexture.bind();
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F,
 				width,
 				height,
 				0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
-		deferredSceneTexture.noFilter();
+		deferredLightingSceneTexture.noFilter();
 		
 		depthmap = new Texture2D();
 		depthmap.generate();
@@ -57,11 +58,12 @@ public class DeferredLightingRenderer {
 				0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
 		depthmap.noFilter();
 		
-		IntBuffer drawBuffers = BufferUtil.createIntBuffer(4);
+		IntBuffer drawBuffers = BufferUtil.createIntBuffer(5);
 		drawBuffers.put(GL_COLOR_ATTACHMENT0);
 		drawBuffers.put(GL_COLOR_ATTACHMENT1);
 		drawBuffers.put(GL_COLOR_ATTACHMENT2);
 		drawBuffers.put(GL_COLOR_ATTACHMENT3);
+		drawBuffers.put(GL_COLOR_ATTACHMENT4);
 		drawBuffers.flip();
 		
 		fbo = new GLFramebuffer();
@@ -70,6 +72,7 @@ public class DeferredLightingRenderer {
 		fbo.createColorTextureMultisampleAttachment(gbuffer.getWorldPositionTexture().getId(),1);
 		fbo.createColorTextureMultisampleAttachment(gbuffer.getNormalTexture().getId(),2);
 		fbo.createColorTextureMultisampleAttachment(gbuffer.getSpecularEmissionTexture().getId(),3);
+		fbo.createColorTextureMultisampleAttachment(gbuffer.getLightScatteringTexture().getId(),4);
 		fbo.createDepthTextureMultisampleAttachment(gbuffer.getDepthTexture().getId());
 		fbo.setDrawBuffers(drawBuffers);
 		fbo.checkStatus();
@@ -79,7 +82,7 @@ public class DeferredLightingRenderer {
 	public void render(Texture2D sampleCoverageMask){
 		
 		shader.bind();
-		glBindImageTexture(0, deferredSceneTexture.getId(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
+		glBindImageTexture(0, deferredLightingSceneTexture.getId(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
 		glBindImageTexture(1, depthmap.getId(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA32F);
 		glBindImageTexture(2, gbuffer.getAlbedoTexture().getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA16F);
 		glBindImageTexture(3, gbuffer.getWorldPositionTexture().getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA32F);
@@ -93,19 +96,15 @@ public class DeferredLightingRenderer {
 	public GBuffer getGbuffer() {
 		return gbuffer;
 	}
-
 	public void setGbuffer(GBuffer gbuffer) {
 		this.gbuffer = gbuffer;
 	}
-
-	public Texture2D getDeferredSceneTexture() {
-		return deferredSceneTexture;
+	public Texture2D getDeferredLightingSceneTexture() {
+		return deferredLightingSceneTexture;
 	}
-
-	public void setDeferredSceneTexture(Texture2D deferredSceneTexture) {
-		this.deferredSceneTexture = deferredSceneTexture;
+	public void setDeferredLightingSceneTexture(Texture2D texture) {
+		this.deferredLightingSceneTexture = texture;
 	}
-
 	public Texture2D getDepthmap() {
 		return depthmap;
 	}
@@ -117,7 +116,6 @@ public class DeferredLightingRenderer {
 	public GLFramebuffer getFbo() {
 		return fbo;
 	}
-
 	public void setFbo(GLFramebuffer fbo) {
 		this.fbo = fbo;
 	}

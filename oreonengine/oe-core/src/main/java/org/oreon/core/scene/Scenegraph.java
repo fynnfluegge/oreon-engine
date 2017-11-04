@@ -38,6 +38,7 @@ public class Scenegraph extends Node{
 	}
 	
 	public void renderShadows(){
+		
 		rootObject.renderShadows();
 		terrain.renderShadows();
 		water.renderShadows();

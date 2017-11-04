@@ -119,6 +119,6 @@ void main(void){
 		finalColor = albedo * diffuseLight + specularLight;
 	}
 	
-	imageStore(defferedSceneImage, computeCoord, vec4(finalColor ,1.0));
-	imageStore(depthImage, computeCoord, vec4(depth, 1.0));
+	imageStore(defferedSceneImage, computeCoord, vec4(finalColor,1.0));
+	imageStore(depthImage, computeCoord, vec4(depth,1.0));
 }

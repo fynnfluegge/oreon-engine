@@ -2,11 +2,14 @@
 
 in vec2 texCoord1;
 
-layout(location = 0) out vec4 fragColor;
+layout(location = 0) out vec4 fragColor_out;
+layout(location = 1) out vec4 lightScattering_out;
 
 uniform sampler2D opaqueSceneTexture;
+// uniform sampler2D opaqueSceneLightScatteringTexture;
 uniform sampler2D opaqueSceneDepthMap;
 uniform sampler2D transparencyLayer;
+// uniform sampler2D transparencyLayerLightScatteringTexture;
 uniform sampler2D transparencyLayerDepthMap;
 uniform sampler2D alphaMap;
 
@@ -34,5 +37,5 @@ void main()
 		rgba = transparencyColor + opaqueColor * (1-alpha);
 	}
 		
-	fragColor = rgba;
+	fragColor_out = rgba;
 }

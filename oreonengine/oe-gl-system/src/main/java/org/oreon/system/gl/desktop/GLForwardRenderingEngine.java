@@ -10,7 +10,7 @@ import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glTexImage2D;
 import static org.lwjgl.opengl.GL11.glViewport;
 import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT0;
-import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT1;
+import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT4;
 import static org.lwjgl.opengl.GL30.GL_DEPTH_COMPONENT32F;
 import static org.lwjgl.opengl.GL30.GL_RGBA16F;
 import static org.lwjgl.opengl.GL30.GL_RGBA32F;
@@ -54,7 +54,7 @@ public class GLForwardRenderingEngine implements RenderingEngine{
 	private GLFramebuffer fbo;
 	private GLFramebuffer multisampledFbo;
 	private Texture2D sceneTexture;
-	private Texture2D blackScene4LightScatteringTexture;
+	private Texture2D lightScatteringTexture;
 	private Texture2D sceneDepthmap;
 	
 	private Quaternion clipplane;
@@ -72,15 +72,15 @@ public class GLForwardRenderingEngine implements RenderingEngine{
 	private UnderWater underWater;
 	private ContrastController contrastController;
 	
-	private static boolean motionBlurEnabled = true;
-	private static boolean depthOfFieldBlurEnabled = true;
-	private static boolean bloomEnabled = false;
-	private static boolean lightScatteringEnabled = false;
+	private static boolean motionBlurEnabled = false;
+	private static boolean depthOfFieldBlurEnabled = false;
+	private static boolean bloomEnabled = true;
+	private static boolean lightScatteringEnabled = true;
 	private static boolean waterReflection = false;
 	private static boolean waterRefraction = false;
 	private static boolean cameraUnderWater = false;
 	private static float t_causticsDistortion = 0;
-	private static float sightRangeFactor = 1.4f;
+	private static float sightRangeFactor = 2f;
 	
 	public GLForwardRenderingEngine()
 	{
@@ -111,13 +111,13 @@ public class GLForwardRenderingEngine implements RenderingEngine{
 		
 		IntBuffer drawBuffers = BufferUtil.createIntBuffer(2);
 		drawBuffers.put(GL_COLOR_ATTACHMENT0);
-		drawBuffers.put(GL_COLOR_ATTACHMENT1);
+		drawBuffers.put(GL_COLOR_ATTACHMENT4);
 		drawBuffers.flip();
 		
 		multisampledFbo = new GLFramebuffer();
 		multisampledFbo.bind();
 		multisampledFbo.createColorBufferMultisampleAttachment(Constants.MULTISAMPLES, 0, window.getWidth(), window.getHeight(), GL_RGBA8);
-		multisampledFbo.createColorBufferMultisampleAttachment(Constants.MULTISAMPLES, 1, window.getWidth(), window.getHeight(), GL_RGBA32F);
+		multisampledFbo.createColorBufferMultisampleAttachment(Constants.MULTISAMPLES, 4, window.getWidth(), window.getHeight(), GL_RGBA32F);
 		multisampledFbo.createDepthBufferMultisampleAttachment(Constants.MULTISAMPLES, window.getWidth(), window.getHeight());
 		multisampledFbo.setDrawBuffers(drawBuffers);
 		multisampledFbo.checkStatus();
@@ -130,12 +130,12 @@ public class GLForwardRenderingEngine implements RenderingEngine{
 		sceneTexture.bilinearFilter();
 		sceneTexture.clampToEdge();
 		
-		blackScene4LightScatteringTexture = new Texture2D();
-		blackScene4LightScatteringTexture.generate();
-		blackScene4LightScatteringTexture.bind();
+		lightScatteringTexture = new Texture2D();
+		lightScatteringTexture.generate();
+		lightScatteringTexture.bind();
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, window.getWidth(), window.getHeight(), 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
-		blackScene4LightScatteringTexture.bilinearFilter();
-		blackScene4LightScatteringTexture.clampToEdge();
+		lightScatteringTexture.bilinearFilter();
+		lightScatteringTexture.clampToEdge();
 		
 		sceneDepthmap = new Texture2D();
 		sceneDepthmap.generate();
@@ -147,7 +147,7 @@ public class GLForwardRenderingEngine implements RenderingEngine{
 		fbo = new GLFramebuffer();
 		fbo.bind();
 		fbo.createColorTextureAttachment(sceneTexture.getId(),0);
-		fbo.createColorTextureAttachment(blackScene4LightScatteringTexture.getId(),4);
+		fbo.createColorTextureAttachment(lightScatteringTexture.getId(),4);
 		fbo.createDepthTextureAttachment(sceneDepthmap.getId());
 		fbo.checkStatus();
 		fbo.unbind();
@@ -187,7 +187,7 @@ public class GLForwardRenderingEngine implements RenderingEngine{
 		multisampledFbo.blitFrameBuffer(0,0,fbo.getId(), window.getWidth(), window.getHeight());
 		
 		// blit light Scattering SceneTexture
-		multisampledFbo.blitFrameBuffer(1,1,fbo.getId(), window.getWidth(), window.getHeight());
+		multisampledFbo.blitFrameBuffer(4,4,fbo.getId(), window.getWidth(), window.getHeight());
 		
 		// start Threads to update instancing objects
 		instancingObjectHandler.signalAll();
@@ -248,14 +248,14 @@ public class GLForwardRenderingEngine implements RenderingEngine{
 		}
 		
 		if (isLightScatteringEnabled() && !isGrid()){
-			sunlightScattering.render(postProcessingTexture,blackScene4LightScatteringTexture);
+			sunlightScattering.render(postProcessingTexture,lightScatteringTexture);
 			postProcessingTexture = sunlightScattering.getSunLightScatteringSceneTexture();
 		}
 		
-		contrastController.render(postProcessingTexture);
+//		contrastController.render(postProcessingTexture);
 
 		// final scene texture
-		fullScreenQuad.setTexture(contrastController.getContrastTexture());	
+		fullScreenQuad.setTexture(postProcessingTexture);	
 		
 		fullScreenQuad.render();
 		
@@ -263,7 +263,7 @@ public class GLForwardRenderingEngine implements RenderingEngine{
 		LightHandler.doOcclusionQueries();
 		fbo.unbind();
 		
-		lensFlare.render();
+//		lensFlare.render();
 		
 		gui.render();
 		
@@ -280,14 +280,6 @@ public class GLForwardRenderingEngine implements RenderingEngine{
 				setGrid(true);
 		}
 		
-		if (isGrid()){
-			setDepthOfFieldBlurEnabled(false);
-			setBloomEnabled(false);
-		}
-		else{
-			setDepthOfFieldBlurEnabled(true);
-			setBloomEnabled(true);
-		}
 		CoreSystem.getInstance().getScenegraph().update();
 		gui.update();
 		contrastController.update();

@@ -9,6 +9,7 @@ layout(location = 0) out vec4 albedo_out;
 layout(location = 1) out vec4 worldPosition_out;
 layout(location = 2) out vec4 normal_out;
 layout(location = 3) out vec4 specularEmission_out;
+layout(location = 4) out vec4 lightScattering_out;
 
 struct Material
 {
@@ -131,4 +132,5 @@ void main()
 	worldPosition_out = vec4(position,1);
 	normal_out = vec4(normal,1);
 	specularEmission_out = vec4(1,0,0,1);
+	lightScattering_out = vec4(0,1,0,1);
 }

@@ -5,7 +5,6 @@ import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import static org.lwjgl.opengl.GL11.GL_RGBA;
 import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glTexImage2D;
-import static org.lwjgl.opengl.GL11.glViewport;
 import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT0;
 import static org.lwjgl.opengl.GL30.GL_RGBA16F;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
@@ -39,6 +38,7 @@ import org.oreon.modules.gl.gui.GUIs.VoidGUI;
 import org.oreon.modules.gl.postprocessfilter.bloom.Bloom;
 import org.oreon.modules.gl.postprocessfilter.dofblur.DepthOfFieldBlur;
 import org.oreon.modules.gl.postprocessfilter.lensflare.LensFlare;
+import org.oreon.modules.gl.postprocessfilter.lightscattering.SunLightScattering;
 import org.oreon.modules.gl.postprocessfilter.motionblur.MotionBlur;
 import org.oreon.modules.gl.terrain.Terrain;
 
@@ -67,6 +67,7 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 	private MotionBlur motionBlur;
 	private DepthOfFieldBlur dofBlur;
 	private Bloom bloom;
+	private SunLightScattering sunlightScattering;
 	private LensFlare lensFlare;
 	
 	@Override
@@ -94,6 +95,7 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		motionBlur = new MotionBlur();
 		dofBlur = new DepthOfFieldBlur();
 		bloom = new Bloom();
+		sunlightScattering = new SunLightScattering();
 		lensFlare = new LensFlare();
 		
 		finalSceneTexture = new Texture2D();
@@ -157,15 +159,13 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		
 		// blend scene/transparent layers
 		finalSceneFbo.bind();
-		transparencyBlendRenderer.render(deferredRenderer.getDeferredSceneTexture(), 
+		transparencyBlendRenderer.render(deferredRenderer.getDeferredLightingSceneTexture(), 
 										 deferredRenderer.getDepthmap(),
 										 transparencyLayer.getGbuffer().getAlbedoTexture(),
 										 transparencyLayer.getGbuffer().getDepthTexture(),
 										 transparencyLayer.getGbuffer().getAlphaTexture());
 		finalSceneFbo.unbind();
 
-//		fullScreenQuad.setTexture(finalSceneTexture);
-//		fullScreenQuad.render();
 		
 		// post processing effects
 		
@@ -196,14 +196,20 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 			postProcessingTexture = motionBlur.getMotionBlurSceneTexture();
 		}
 		
-		fullScreenQuad.setTexture(postProcessingTexture);
-		fullScreenQuad.render();
+//		sunlightScattering.render(postProcessingTexture,lightScatteringTexture);
+//		postProcessingTexture = sunlightScattering.getSunLightScatteringSceneTexture();
+		
+//		fullScreenQuad.setTexture(postProcessingTexture);
+//		fullScreenQuad.render();
+		
+		fullScreenMSQuad.setTexture(deferredRenderer.getGbuffer().getLightScatteringTexture());
+		fullScreenMSQuad.render();
 		
 		deferredRenderer.getFbo().bind();
 		LightHandler.doOcclusionQueries();
 		deferredRenderer.getFbo().unbind();
 		
-		lensFlare.render();
+//		lensFlare.render();
 		
 		gui.render();
 		
