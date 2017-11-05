@@ -33,10 +33,10 @@ void main(void){
 
 	vec3 finalColor = vec3(0,0,0);
 	
-	float alpha = imageLoad(blackSceneSampler, computeCoord).a;
+	float scatteringPreventionFlag = imageLoad(blackSceneSampler, computeCoord).a;
 	
-	// alpha = 0 to prevent scattering on atmosphere
-	if (alpha > 0.0){
+	// 1 to prevent scattering on atmosphere
+	if (scatteringPreventionFlag == 1.0){
 		for(int i=0; i < NUM_SAMPLES ; i++)
 		{
 			coord -= deltaCoord;

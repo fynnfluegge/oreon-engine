@@ -5,6 +5,8 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE2;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE3;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE4;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE5;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE6;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import org.oreon.core.math.Matrix4f;
@@ -34,10 +36,12 @@ public class TransparencyBlendShader extends GLShader{
 		
 		addUniform("orthographicMatrix");
 		addUniform("opaqueSceneTexture");
-		addUniform("transparencyLayer");
+		addUniform("opaqueSceneLightScatteringTexture");
 		addUniform("opaqueSceneDepthMap");
+		addUniform("transparencyLayer");
 		addUniform("transparencyLayerDepthMap");
-		addUniform("alphaMap");
+		addUniform("transparencyAlphaMap");
+		addUniform("transparencyLayerLightScatteringTexture");
 	}
 	
 	public void updateUniforms(Matrix4f orthographicMatrix)
@@ -46,8 +50,9 @@ public class TransparencyBlendShader extends GLShader{
 	}
 	
 	public void updateUniforms(Texture opaqueSceneTexture, Texture opaqueSceneDepthMap,
+							   Texture opaqueSceneLightScatteringTexture,
 							   Texture transparencyLayer, Texture transparencyLayerDepthMap,
-							   Texture alphaMap)
+							   Texture alphaMap, Texture transparencyLayerLightScatteringTexture)
 	{
 		glActiveTexture(GL_TEXTURE0);
 		opaqueSceneTexture.bind();
@@ -56,17 +61,25 @@ public class TransparencyBlendShader extends GLShader{
 		glActiveTexture(GL_TEXTURE1);
 		opaqueSceneDepthMap.bind();
 		setUniformi("opaqueSceneDepthMap", 1);
-
-		glActiveTexture(GL_TEXTURE2);
-		transparencyLayer.bind();
-		setUniformi("transparencyLayer", 2);
 		
-		glActiveTexture(GL_TEXTURE3);
-		transparencyLayerDepthMap.bind();
-		setUniformi("transparencyLayerDepthMap", 3);
+		glActiveTexture(GL_TEXTURE2);
+		opaqueSceneLightScatteringTexture.bind();
+		setUniformi("opaqueSceneLightScatteringTexture", 2);
 
+		glActiveTexture(GL_TEXTURE3);
+		transparencyLayer.bind();
+		setUniformi("transparencyLayer", 3);
+		
 		glActiveTexture(GL_TEXTURE4);
+		transparencyLayerDepthMap.bind();
+		setUniformi("transparencyLayerDepthMap", 4);
+
+		glActiveTexture(GL_TEXTURE5);
 		alphaMap.bind();
-		setUniformi("alphaMap", 4);
+		setUniformi("transparencyAlphaMap", 5);
+		
+		glActiveTexture(GL_TEXTURE6);
+		transparencyLayerLightScatteringTexture.bind();
+		setUniformi("transparencyLayerLightScatteringTexture", 6);
 	}
 }

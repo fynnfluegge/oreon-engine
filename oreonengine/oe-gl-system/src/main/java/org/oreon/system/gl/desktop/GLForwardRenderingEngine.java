@@ -8,12 +8,13 @@ import static org.lwjgl.opengl.GL11.GL_RGBA8;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glTexImage2D;
-import static org.lwjgl.opengl.GL11.glViewport;
 import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT0;
+import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT1;
+import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT2;
+import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT3;
 import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT4;
 import static org.lwjgl.opengl.GL30.GL_DEPTH_COMPONENT32F;
 import static org.lwjgl.opengl.GL30.GL_RGBA16F;
-import static org.lwjgl.opengl.GL30.GL_RGBA32F;
 
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
@@ -72,8 +73,8 @@ public class GLForwardRenderingEngine implements RenderingEngine{
 	private UnderWater underWater;
 	private ContrastController contrastController;
 	
-	private static boolean motionBlurEnabled = false;
-	private static boolean depthOfFieldBlurEnabled = false;
+	private static boolean motionBlurEnabled = true;
+	private static boolean depthOfFieldBlurEnabled = true;
 	private static boolean bloomEnabled = true;
 	private static boolean lightScatteringEnabled = true;
 	private static boolean waterReflection = false;
@@ -109,15 +110,18 @@ public class GLForwardRenderingEngine implements RenderingEngine{
 		contrastController = new ContrastController();
 		underWater = UnderWater.getInstance();
 		
-		IntBuffer drawBuffers = BufferUtil.createIntBuffer(2);
+		IntBuffer drawBuffers = BufferUtil.createIntBuffer(5);
 		drawBuffers.put(GL_COLOR_ATTACHMENT0);
+		drawBuffers.put(GL_COLOR_ATTACHMENT1);
+		drawBuffers.put(GL_COLOR_ATTACHMENT2);
+		drawBuffers.put(GL_COLOR_ATTACHMENT3);
 		drawBuffers.put(GL_COLOR_ATTACHMENT4);
 		drawBuffers.flip();
 		
 		multisampledFbo = new GLFramebuffer();
 		multisampledFbo.bind();
 		multisampledFbo.createColorBufferMultisampleAttachment(Constants.MULTISAMPLES, 0, window.getWidth(), window.getHeight(), GL_RGBA8);
-		multisampledFbo.createColorBufferMultisampleAttachment(Constants.MULTISAMPLES, 4, window.getWidth(), window.getHeight(), GL_RGBA32F);
+		multisampledFbo.createColorBufferMultisampleAttachment(Constants.MULTISAMPLES, 4, window.getWidth(), window.getHeight(), GL_RGBA16F);
 		multisampledFbo.createDepthBufferMultisampleAttachment(Constants.MULTISAMPLES, window.getWidth(), window.getHeight());
 		multisampledFbo.setDrawBuffers(drawBuffers);
 		multisampledFbo.checkStatus();
@@ -147,7 +151,7 @@ public class GLForwardRenderingEngine implements RenderingEngine{
 		fbo = new GLFramebuffer();
 		fbo.bind();
 		fbo.createColorTextureAttachment(sceneTexture.getId(),0);
-		fbo.createColorTextureAttachment(lightScatteringTexture.getId(),4);
+		fbo.createColorTextureAttachment(lightScatteringTexture.getId(),1);
 		fbo.createDepthTextureAttachment(sceneDepthmap.getId());
 		fbo.checkStatus();
 		fbo.unbind();
@@ -187,7 +191,7 @@ public class GLForwardRenderingEngine implements RenderingEngine{
 		multisampledFbo.blitFrameBuffer(0,0,fbo.getId(), window.getWidth(), window.getHeight());
 		
 		// blit light Scattering SceneTexture
-		multisampledFbo.blitFrameBuffer(4,4,fbo.getId(), window.getWidth(), window.getHeight());
+		multisampledFbo.blitFrameBuffer(4,1,fbo.getId(), window.getWidth(), window.getHeight());
 		
 		// start Threads to update instancing objects
 		instancingObjectHandler.signalAll();
@@ -224,15 +228,7 @@ public class GLForwardRenderingEngine implements RenderingEngine{
 		// Depth of Field Blur
 		if (isDepthOfFieldBlurEnabled()){
 			
-			// copy scene texture into low-resolution texture
-			dofBlur.getLowResFbo().bind();
-			fullScreenQuad.setTexture(postProcessingTexture);
-			glViewport(0,0,(int)(window.getWidth()/1.2f),(int)(window.getHeight()/1.2f));
-			fullScreenQuad.render();
-			dofBlur.getLowResFbo().unbind();
-			glViewport(0,0, window.getWidth(), window.getHeight());
-			
-			dofBlur.render(sceneDepthmap, postProcessingTexture);
+			dofBlur.render(sceneDepthmap, postProcessingTexture,window.getWidth(),window.getHeight());
 			postProcessingTexture = dofBlur.getVerticalBlurSceneTexture();
 		}
 		
@@ -263,7 +259,7 @@ public class GLForwardRenderingEngine implements RenderingEngine{
 		LightHandler.doOcclusionQueries();
 		fbo.unbind();
 		
-//		lensFlare.render();
+		lensFlare.render();
 		
 		gui.render();
 		

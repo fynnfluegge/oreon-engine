@@ -16,15 +16,16 @@ public class TransparencyBlendRenderer extends FullScreenQuad{
 	}
 	
 	public void render(Texture opaqueScene, Texture opaqueSceneDepthMap,
+					   Texture opaqueSceneLightScatteringTexture,
 					   Texture transparencyLayer, Texture transparencyLayerDepthMap,
-					   Texture alphaMap){
+					   Texture alphaMap, Texture transparencyLayerLightScatteringTexture){
 		
 		getConfig().enable();
 		shader.bind();
 		shader.updateUniforms(getOrthographicMatrix());
-		shader.updateUniforms(opaqueScene, opaqueSceneDepthMap, 
+		shader.updateUniforms(opaqueScene, opaqueSceneDepthMap, opaqueSceneLightScatteringTexture, 
 							  transparencyLayer, transparencyLayerDepthMap,
-							  alphaMap);
+							  alphaMap, transparencyLayerLightScatteringTexture);
 		getVao().draw();
 		getConfig().disable();
 	}

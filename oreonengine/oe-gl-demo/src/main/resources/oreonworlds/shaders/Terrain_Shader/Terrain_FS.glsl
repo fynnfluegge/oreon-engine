@@ -6,7 +6,7 @@ in vec3 position;
 in vec3 tangent;
 
 layout(location = 0) out vec4 outputColor;
-layout(location = 1) out vec4 blackColor;
+layout(location = 4) out vec4 blackColor;
 
 struct Material
 {

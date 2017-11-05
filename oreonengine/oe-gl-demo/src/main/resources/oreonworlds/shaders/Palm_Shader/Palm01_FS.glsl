@@ -5,7 +5,7 @@ in vec3 position_FS;
 in vec4 viewSpacePos;
 
 layout(location = 0) out vec4 outputColor;
-layout(location = 1) out vec4 blackColor;
+layout(location = 4) out vec4 blackColor;
 
 struct Material
 {

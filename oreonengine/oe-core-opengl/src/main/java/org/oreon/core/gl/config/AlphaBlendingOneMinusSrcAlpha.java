@@ -1,17 +1,17 @@
 package org.oreon.core.gl.config;
 
 import static org.lwjgl.opengl.GL11.GL_BLEND;
-import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
 import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
 import static org.lwjgl.opengl.GL11.glBlendFunc;
 import static org.lwjgl.opengl.GL11.glDisable;
 import static org.lwjgl.opengl.GL11.glEnable;
 
 import org.oreon.core.configs.RenderConfig;
 
-public class AlphaBlending implements RenderConfig{
+public class AlphaBlendingOneMinusSrcAlpha implements RenderConfig{
 	
-	public AlphaBlending(){
+	public AlphaBlendingOneMinusSrcAlpha(){
 	}
 	
 	public void enable(){

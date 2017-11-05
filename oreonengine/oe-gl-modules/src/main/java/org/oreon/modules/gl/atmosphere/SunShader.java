@@ -32,7 +32,7 @@ private static SunShader instance = null;
 			
 		addUniform("m_MVP");
 		addUniform("sunTexture");
-//		addUniform("sunTexture_small");
+		addUniform("sunTexture_small");
 	}
 		
 	public void updateUniforms(GameObject object)
@@ -43,8 +43,8 @@ private static SunShader instance = null;
 		((Material) object.getComponents().get("Material1")).getDiffusemap().bind();
 		setUniformi("sunTexture", 0);
 		
-//		glActiveTexture(GL_TEXTURE1);
-//		((Material) object.getComponents().get("Material2")).getDiffusemap().bind();
-//		setUniformi("sunTexture_small", 1);
+		glActiveTexture(GL_TEXTURE1);
+		((Material) object.getComponents().get("Material2")).getDiffusemap().bind();
+		setUniformi("sunTexture_small", 1);
 	}
 }

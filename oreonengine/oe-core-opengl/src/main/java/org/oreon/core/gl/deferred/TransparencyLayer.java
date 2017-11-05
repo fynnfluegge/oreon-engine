@@ -2,6 +2,8 @@ package org.oreon.core.gl.deferred;
 
 import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT0;
 import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT1;
+import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT2;
+import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT3;
 import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT4;
 
 import java.nio.IntBuffer;
@@ -18,9 +20,11 @@ public class TransparencyLayer {
 	
 		gbuffer = new TransparencyGBuffer(width, height);
 		
-		IntBuffer drawBuffers = BufferUtil.createIntBuffer(3);
+		IntBuffer drawBuffers = BufferUtil.createIntBuffer(6);
 		drawBuffers.put(GL_COLOR_ATTACHMENT0);
 		drawBuffers.put(GL_COLOR_ATTACHMENT1);
+		drawBuffers.put(GL_COLOR_ATTACHMENT2);
+		drawBuffers.put(GL_COLOR_ATTACHMENT3);
 		drawBuffers.put(GL_COLOR_ATTACHMENT4);
 		drawBuffers.flip();
 		
