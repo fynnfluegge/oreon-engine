@@ -14,8 +14,8 @@ uniform vec3 sunWorldPosition;
 const int NUM_SAMPLES = 200;
 const float density = 1.2;
 const float decay = 0.975;
-const float exposure = 0.25;
-const float weight = 1.0;
+const float exposure = 0.2;
+const float weight = 0.8;
 
 void main(void){
 

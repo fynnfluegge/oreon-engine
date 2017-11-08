@@ -17,7 +17,7 @@ public class Sun extends GameObject{
 	
 	public Sun(){
 		
-		getWorldTransform().setLocalTranslation(GLDirectionalLight.getInstance().getDirection().mul(-2800));
+		getWorldTransform().setLocalTranslation(GLDirectionalLight.getInstance().getDirection().mul(-2600));
 		Vec3f origin = new Vec3f(0,0,0);
 		Vec3f[] array = new Vec3f[1];
 		array[0] = origin;
