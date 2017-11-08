@@ -40,6 +40,7 @@ import org.oreon.modules.gl.postprocessfilter.dofblur.DepthOfFieldBlur;
 import org.oreon.modules.gl.postprocessfilter.lensflare.LensFlare;
 import org.oreon.modules.gl.postprocessfilter.lightscattering.SunLightScattering;
 import org.oreon.modules.gl.postprocessfilter.motionblur.MotionBlur;
+import org.oreon.modules.gl.postprocessfilter.ssao.SSAO;
 import org.oreon.modules.gl.terrain.Terrain;
 
 public class GLDeferredRenderingEngine implements RenderingEngine{
@@ -70,6 +71,7 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 	private Bloom bloom;
 	private SunLightScattering sunlightScattering;
 	private LensFlare lensFlare;
+	private SSAO ssao;
 	
 	@Override
 	public void init() {
@@ -97,6 +99,7 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		bloom = new Bloom();
 		sunlightScattering = new SunLightScattering();
 		lensFlare = new LensFlare();
+		ssao = new SSAO();
 		
 		finalSceneTexture = new Texture2D();
 		finalSceneTexture.generate();
