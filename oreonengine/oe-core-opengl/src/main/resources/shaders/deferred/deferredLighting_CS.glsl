@@ -16,6 +16,8 @@ layout (binding = 5, rgba8)   uniform readonly image2DMS specularEmissionImage;
 
 layout (binding = 6, r32f) uniform readonly image2D sampleCoverageMask;
 
+layout (binding = 7, rgba32f) uniform readonly image2D ssaoBlurImage;
+
 layout (std140, row_major) uniform Camera{
 	vec3 eyePosition;
 	mat4 m_View;
@@ -116,7 +118,8 @@ void main(void){
 		vec3 diffuseLight = directional_light.ambient + directional_light.color * diff;
 		vec3 specularLight = directional_light.color * spec;
 
-		finalColor = albedo * diffuseLight + specularLight;
+		vec3 ssao = imageLoad(ssaoBlurImage, computeCoord).rgb;
+		finalColor = albedo * diffuseLight * ssao + specularLight;
 	}
 	
 	imageStore(defferedSceneImage, computeCoord, vec4(finalColor,1.0));
