@@ -32,14 +32,14 @@ public class NoiseTextureShader extends GLShader{
 		}
 	}
 	
-	public void updateUniforms(int[] randomx, int[] randomy){
+	public void updateUniforms(float[] randomx, float[] randomy){
 		
 		for (int i=0; i<16; i++){
-			setUniformi("randomx[" + i + "]", randomx[i]);
+			setUniformf("randomx[" + i + "]", randomx[i]);
 		}
 		
 		for (int i=0; i<16; i++){
-			setUniformi("randomy[" + i + "]", randomy[i]);
+			setUniformf("randomy[" + i + "]", randomy[i]);
 		}
 	}
 

@@ -4,25 +4,55 @@ import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import static org.lwjgl.opengl.GL11.GL_RGBA;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.glTexImage2D;
+import static org.lwjgl.opengl.GL15.GL_WRITE_ONLY;
+import static org.lwjgl.opengl.GL15.GL_READ_ONLY;
 import static org.lwjgl.opengl.GL30.GL_RGBA32F;
+import static org.lwjgl.opengl.GL42.glBindImageTexture;
+import static org.lwjgl.opengl.GL43.glDispatchCompute;
 
 import java.nio.ByteBuffer;
 
+import javax.xml.bind.annotation.W3CDomHandler;
+
 import org.oreon.core.gl.texture.Texture2D;
+import org.oreon.core.gl.texture.Texture2DMultisample;
 import org.oreon.core.math.Vec3f;
+import org.oreon.core.system.CoreSystem;
 
 public class SSAO {
 	
-	private static Vec3f[] kernel;
+	private int kernelSize;
+	private Vec3f[] kernel;
+	private float[] randomx;
+	private float[] randomy;
 	private Texture2D noiseTexture;
+	private Texture2D ssaoSceneTexture;
 	
 	private NoiseTextureShader noiseTextureShader;
+	private SSAOShader ssaoShader;
 	
-	public SSAO() {
+	private int width;
+	private int height;
 	
-		generateKernel(32);
+	public SSAO(int width, int height) {
+
+		this.width = width;
+		this.height = height;
+		
+		kernelSize = 32;
 		
 		noiseTextureShader = NoiseTextureShader.getInstance();
+		ssaoShader = SSAOShader.getInstance();
+		
+		randomx = new float[16];
+		randomy = new float[16];
+		
+		for (int i=0; i<16; i++){
+			randomx[i] = (float) Math.random() * 2 - 1;
+			randomy[i] = (float) Math.random() * 2 - 1;
+		}
+	
+		generateKernel(kernelSize);
 		
 		noiseTexture = new Texture2D();
 		noiseTexture.generate();
@@ -32,10 +62,37 @@ public class SSAO {
 				4,
 				0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
 		noiseTexture.noFilter();
+		
+		ssaoSceneTexture = new Texture2D();
+		ssaoSceneTexture.generate();
+		ssaoSceneTexture.bind();
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F,
+				width,
+				height,
+				0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
+		ssaoSceneTexture.noFilter();
+		
+		noiseTextureShader.bind();
+		glBindImageTexture(0, noiseTexture.getId(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA32F);
+		noiseTextureShader.updateUniforms(randomx, randomy);
+		glDispatchCompute(1,1,1);
 	}
 	
-	public void render(){
-		
+	public void render(Texture2DMultisample worldPositionSceneTexture,
+					   Texture2DMultisample normalSceneTexture,
+					   Texture2D depthmap,
+					   Texture2DMultisample depthmapMs){
+		ssaoShader.bind();
+		glBindImageTexture(0, ssaoSceneTexture.getId(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA32F);
+		glBindImageTexture(1, worldPositionSceneTexture.getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA32F);
+		glBindImageTexture(2, normalSceneTexture.getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA32F);
+		glBindImageTexture(3, noiseTexture.getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA32F);
+		glBindImageTexture(4, depthmap.getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA32F);
+		glBindImageTexture(5, depthmap.getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA32F);
+		ssaoShader.updateUniforms(CoreSystem.getInstance().getScenegraph().getCamera().getViewMatrix(),
+								  CoreSystem.getInstance().getScenegraph().getCamera().getProjectionMatrix(),
+								  kernel);
+		glDispatchCompute(width/16,height/16,1);
 	}
 	
 	public void generateKernel(int kernelSize){
@@ -50,10 +107,26 @@ public class SSAO {
 			
 			float scale = (float) i / (float) kernelSize;
 			
-			scale = (float) Math.min(Math.max(0.1, scale*scale), 1.0);
+			scale = (float) Math.min(Math.max(0.01, scale*scale), 1.0);
 			
 			kernel[i] = kernel[i].mul(scale);
 		}
+	}
+
+	public Texture2D getNoiseTexture() {
+		return noiseTexture;
+	}
+
+	public void setNoiseTexture(Texture2D noiseTexture) {
+		this.noiseTexture = noiseTexture;
+	}
+
+	public Texture2D getSsaoSceneTexture() {
+		return ssaoSceneTexture;
+	}
+
+	public void setSsaoSceneTexture(Texture2D ssaoSceneTexture) {
+		this.ssaoSceneTexture = ssaoSceneTexture;
 	}
 
 }

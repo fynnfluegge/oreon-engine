@@ -31,7 +31,7 @@ public class TerrainQuadtree extends Node{
 		}
 	}
 	
-public Vec2f[] generatePatch(){
+	public Vec2f[] generatePatch(){
 		
 		// 16 vertices for each patch
 		Vec2f[] vertices = new Vec2f[16];

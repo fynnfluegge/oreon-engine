@@ -92,14 +92,14 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		
 		deferredRenderer = new DeferredLightingRenderer(window.getWidth(), window.getHeight());
 		transparencyLayer = new TransparencyLayer(window.getWidth(), window.getHeight());
-		transparencyBlendRenderer = new TransparencyBlendRenderer();
+//		transparencyBlendRenderer = new TransparencyBlendRenderer();
 		
 		motionBlur = new MotionBlur();
 		dofBlur = new DepthOfFieldBlur();
 		bloom = new Bloom();
 		sunlightScattering = new SunLightScattering();
 		lensFlare = new LensFlare();
-		ssao = new SSAO();
+		ssao = new SSAO(window.getWidth(),window.getHeight());
 		
 		finalSceneTexture = new Texture2D();
 		finalSceneTexture.generate();
@@ -162,21 +162,26 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		
 		deferredRenderer.render(msaa.getSampleCoverageMask());
 		
+		ssao.render(deferredRenderer.getGbuffer().getWorldPositionTexture(),
+					deferredRenderer.getGbuffer().getNormalTexture(),
+					deferredRenderer.getDepthmap(),
+					deferredRenderer.getGbuffer().getDepthTexture());
+		
 		// forward scene lighting - transparent objects
-		transparencyLayer.getFbo().bind();
-		Default.clearScreen();
-		CoreSystem.getInstance().getScenegraph().renderTransparentObejcts();
-		transparencyLayer.getFbo().unbind();
+//		transparencyLayer.getFbo().bind();
+//		Default.clearScreen();
+//		CoreSystem.getInstance().getScenegraph().renderTransparentObejcts();
+//		transparencyLayer.getFbo().unbind();
 		
 		// blend scene/transparent layers
 		finalSceneFbo.bind();
-		transparencyBlendRenderer.render(deferredRenderer.getDeferredLightingSceneTexture(), 
-										 deferredRenderer.getDepthmap(),
-										 deferredRenderer.getGbuffer().getLightScatteringTexture(),
-										 transparencyLayer.getGbuffer().getAlbedoTexture(),
-										 transparencyLayer.getGbuffer().getDepthTexture(),
-										 transparencyLayer.getGbuffer().getAlphaTexture(),
-										 transparencyLayer.getGbuffer().getLightScatteringTexture());
+//		transparencyBlendRenderer.render(deferredRenderer.getDeferredLightingSceneTexture(), 
+//										 deferredRenderer.getDepthmap(),
+//										 deferredRenderer.getGbuffer().getLightScatteringTexture(),
+//										 transparencyLayer.getGbuffer().getAlbedoTexture(),
+//										 transparencyLayer.getGbuffer().getDepthTexture(),
+//										 transparencyLayer.getGbuffer().getAlphaTexture(),
+//										 transparencyLayer.getGbuffer().getLightScatteringTexture());
 		finalSceneFbo.unbind();
 
 		
@@ -204,14 +209,14 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		sunlightScattering.render(postProcessingTexture,tex2);
 		postProcessingTexture = sunlightScattering.getSunLightScatteringSceneTexture();
 		
-		fullScreenQuad.setTexture(postProcessingTexture);
+		fullScreenQuad.setTexture(ssao.getSsaoSceneTexture());
 		fullScreenQuad.render();
 		
 		deferredRenderer.getFbo().bind();
 		LightHandler.doOcclusionQueries();
 		deferredRenderer.getFbo().unbind();
 		
-		lensFlare.render();
+//		lensFlare.render();
 		
 		gui.render();
 		
