@@ -51,7 +51,7 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 	
 	private GLFramebuffer finalSceneFbo;
 	private Texture2D finalSceneTexture;
-	private Texture2D tex2;
+	private Texture2D lightScatteringSceneTexture;
 	private Texture2D postProcessingTexture;
 	
 	private DeferredLightingRenderer deferredRenderer;
@@ -92,7 +92,7 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		
 		deferredRenderer = new DeferredLightingRenderer(window.getWidth(), window.getHeight());
 		transparencyLayer = new TransparencyLayer(window.getWidth(), window.getHeight());
-		transparencyBlendRenderer = new TransparencyBlendRenderer();
+//		transparencyBlendRenderer = new TransparencyBlendRenderer();
 		
 		motionBlur = new MotionBlur();
 		dofBlur = new DepthOfFieldBlur();
@@ -107,11 +107,11 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, window.getWidth(), window.getHeight(), 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
 		finalSceneTexture.noFilter();
 		
-		tex2 = new Texture2D();
-		tex2.generate();
-		tex2.bind();
+		lightScatteringSceneTexture = new Texture2D();
+		lightScatteringSceneTexture.generate();
+		lightScatteringSceneTexture.bind();
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, window.getWidth(), window.getHeight(), 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
-		tex2.noFilter();
+		lightScatteringSceneTexture.noFilter();
 		
 		IntBuffer drawBuffers = BufferUtil.createIntBuffer(2);
 		drawBuffers.put(GL_COLOR_ATTACHMENT0);
@@ -121,7 +121,7 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		finalSceneFbo = new GLFramebuffer();
 		finalSceneFbo.bind();
 		finalSceneFbo.createColorTextureAttachment(finalSceneTexture.getId(),0);
-		finalSceneFbo.createColorTextureAttachment(tex2.getId(),1);
+		finalSceneFbo.createColorTextureAttachment(lightScatteringSceneTexture.getId(),1);
 		finalSceneFbo.setDrawBuffers(drawBuffers);
 		finalSceneFbo.checkStatus();
 		finalSceneFbo.unbind();
@@ -174,13 +174,13 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		
 		// blend scene/transparent layers
 		finalSceneFbo.bind();
-		transparencyBlendRenderer.render(deferredRenderer.getDeferredLightingSceneTexture(), 
-										 deferredRenderer.getDepthmap(),
-										 deferredRenderer.getGbuffer().getLightScatteringTexture(),
-										 transparencyLayer.getGbuffer().getAlbedoTexture(),
-										 transparencyLayer.getGbuffer().getDepthTexture(),
-										 transparencyLayer.getGbuffer().getAlphaTexture(),
-										 transparencyLayer.getGbuffer().getLightScatteringTexture());
+//		transparencyBlendRenderer.render(deferredRenderer.getDeferredLightingSceneTexture(), 
+//										 deferredRenderer.getDepthmap(),
+//										 deferredRenderer.getGbuffer().getLightScatteringTexture(),
+//										 transparencyLayer.getGbuffer().getAlbedoTexture(),
+//										 transparencyLayer.getGbuffer().getDepthTexture(),
+//										 transparencyLayer.getGbuffer().getAlphaTexture(),
+//										 transparencyLayer.getGbuffer().getLightScatteringTexture());
 		finalSceneFbo.unbind();
 
 		
@@ -205,7 +205,7 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 			postProcessingTexture = motionBlur.getMotionBlurSceneTexture();
 		}
 		
-		sunlightScattering.render(postProcessingTexture,tex2);
+		sunlightScattering.render(postProcessingTexture,lightScatteringSceneTexture);
 		postProcessingTexture = sunlightScattering.getSunLightScatteringSceneTexture();
 		
 		fullScreenQuad.setTexture(deferredRenderer.getDeferredLightingSceneTexture());
