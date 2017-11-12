@@ -42,12 +42,8 @@ void main(void){
 			coord -= deltaCoord;
 			vec3 color = imageLoad(blackSceneSampler, ivec2(coord.x,coord.y)).rgb;
 
-			// if (imageLoad(blackSceneSampler, ivec2(coord.x,coord.y)).a > 0.0){
-				color *= illuminationDecay * weight;
-
-				finalColor += color;
-
-			// }
+			color *= illuminationDecay * weight;
+			finalColor += color;
 			illuminationDecay *= decay;
 		}
 		finalColor *= exposure;

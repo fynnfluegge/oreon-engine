@@ -1,6 +1,7 @@
 package org.oreon.modules.gl.atmosphere;
 import org.oreon.core.gl.buffers.GLPointVBO3D;
 import org.oreon.core.gl.config.AlphaBlendingOneMinusSrcAlpha;
+import org.oreon.core.gl.config.AlphaBlendingSrcAlpha;
 import org.oreon.core.gl.light.GLDirectionalLight;
 import org.oreon.core.gl.query.GLOcclusionQuery;
 import org.oreon.core.gl.texture.Texture2D;
@@ -36,7 +37,7 @@ public class Sun extends GameObject{
 		material2.getDiffusemap().trilinearFilter();
 		
 		Renderer renderer = new Renderer(buffer);
-		renderer.setRenderInfo(new RenderInfo(new AlphaBlendingOneMinusSrcAlpha(),SunShader.getInstance()));
+		renderer.setRenderInfo(new RenderInfo(new AlphaBlendingSrcAlpha(),SunShader.getInstance()));
 		addComponent("Renderer", renderer);
 		addComponent("Material1", material1);
 		addComponent("Material2", material2);

@@ -92,7 +92,7 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		
 		deferredRenderer = new DeferredLightingRenderer(window.getWidth(), window.getHeight());
 		transparencyLayer = new TransparencyLayer(window.getWidth(), window.getHeight());
-//		transparencyBlendRenderer = new TransparencyBlendRenderer();
+		transparencyBlendRenderer = new TransparencyBlendRenderer();
 		
 		motionBlur = new MotionBlur();
 		dofBlur = new DepthOfFieldBlur();
@@ -174,16 +174,15 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		
 		// blend scene/transparent layers
 		finalSceneFbo.bind();
-//		transparencyBlendRenderer.render(deferredRenderer.getDeferredLightingSceneTexture(), 
-//										 deferredRenderer.getDepthmap(),
-//										 deferredRenderer.getGbuffer().getLightScatteringTexture(),
-//										 transparencyLayer.getGbuffer().getAlbedoTexture(),
-//										 transparencyLayer.getGbuffer().getDepthTexture(),
-//										 transparencyLayer.getGbuffer().getAlphaTexture(),
-//										 transparencyLayer.getGbuffer().getLightScatteringTexture());
+		transparencyBlendRenderer.render(deferredRenderer.getDeferredLightingSceneTexture(), 
+										 deferredRenderer.getDepthmap(),
+										 deferredRenderer.getGbuffer().getLightScatteringTexture(),
+										 transparencyLayer.getGbuffer().getAlbedoTexture(),
+										 transparencyLayer.getGbuffer().getDepthTexture(),
+										 transparencyLayer.getGbuffer().getAlphaTexture(),
+										 transparencyLayer.getGbuffer().getLightScatteringTexture());
 		finalSceneFbo.unbind();
 
-		
 		// post processing effects
 		
 		postProcessingTexture = new Texture2D(finalSceneTexture);
@@ -208,7 +207,7 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		sunlightScattering.render(postProcessingTexture,lightScatteringSceneTexture);
 		postProcessingTexture = sunlightScattering.getSunLightScatteringSceneTexture();
 		
-		fullScreenQuad.setTexture(deferredRenderer.getDeferredLightingSceneTexture());
+		fullScreenQuad.setTexture(postProcessingTexture);
 		fullScreenQuad.render();
 		
 		deferredRenderer.getFbo().bind();

@@ -12,7 +12,6 @@ uniform sampler2D transparencyLayer;
 uniform sampler2D transparencyLayerLightScatteringTexture;
 uniform sampler2D transparencyLayerDepthMap;
 uniform sampler2D transparencyAlphaMap;
-uniform sampler2D transparencyLayerLightScatteringAlphaMap;
 uniform int width = 1280;
 uniform int height = 720;
 const float zfar = 10000;
@@ -30,7 +29,6 @@ void main()
 	vec4 opaqueDepth 	   = texture(opaqueSceneDepthMap, texCoord1);
 	vec4 transparencyDepth = texture(transparencyLayerDepthMap, texCoord1);
 	float alpha 		   = texture(transparencyAlphaMap, texCoord1).r;
-	float lightScatteringAlpha = texture(transparencyLayerLightScatteringAlphaMap, texCoord1).r;
 	vec4 transparencyLightScattering = texture(transparencyLayerLightScatteringTexture, texCoord1);
 	vec4 opaqueSceneLightScattering = texelFetch(opaqueSceneLightScatteringTexture, ivec2(texCoord1.x * width, texCoord1.y * height), 0);
 	

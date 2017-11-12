@@ -17,6 +17,9 @@ void main() {
 	for (int i = 0; i < uBlurSize; ++i) {
 		for (int j = 0; j < uBlurSize; ++j) {
 			ivec2 offset = hlim + ivec2(i,j);
+			
+			ivec2 sampleCoord = computeCoord + offset;
+			if (sampleCoord.x < 0)
 			result += imageLoad(ssao_in, computeCoord + offset).r;
 		}
 	}
