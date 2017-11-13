@@ -185,7 +185,7 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 
 		// post processing effects
 		
-		postProcessingTexture = new Texture2D(finalSceneTexture);
+		postProcessingTexture = new Texture2D(deferredRenderer.getDeferredLightingSceneTexture());
 			
 		// Bloom
 		bloom.render(postProcessingTexture);

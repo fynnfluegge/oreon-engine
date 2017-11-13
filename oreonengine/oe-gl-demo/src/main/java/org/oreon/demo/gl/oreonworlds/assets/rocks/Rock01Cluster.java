@@ -34,7 +34,7 @@ public class Rock01Cluster extends InstancingCluster{
 			Vec3f scaling = new Vec3f(s,s,s);
 			Vec3f rotation = new Vec3f(0,(float) Math.random()*360f,0);
 			
-			float terrainHeight = Terrain.getInstance().getTerrainHeight(translation.getX(),translation.getZ());
+			float terrainHeight = Terrain.getInstance().getFractalTerrainHeight(translation.getX(),translation.getZ());
 			terrainHeight -= 2;
 			translation.setY(terrainHeight);
 			

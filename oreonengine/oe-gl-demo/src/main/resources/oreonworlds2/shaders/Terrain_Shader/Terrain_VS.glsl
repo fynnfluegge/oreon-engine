@@ -138,7 +138,7 @@ void main()
 	texCoord1 = localPosition;
 	float height = 0;
 
-	height += texture(heightmap, localPosition).r;
+	height += texture(heightmap, texCoord1).r;
 	height += texture(fractals0[0].heightmap, texCoord1*fractals0[0].scaling).r * fractals0[0].strength;
 					
 	gl_Position = worldMatrix * vec4(localPosition.x,height,localPosition.y,1);

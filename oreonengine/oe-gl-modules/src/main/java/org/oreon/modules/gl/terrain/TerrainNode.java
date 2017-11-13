@@ -149,7 +149,7 @@ public class TerrainNode extends GameObject{
 	public void computeWorldPos(){
 		
 		Vec2f loc = location.add(gap/2f).mul(terrConfig.getScaleXZ()).sub(terrConfig.getScaleXZ()/2f);
-		float height = Terrain.getInstance().getTerrainHeight(loc.getX(), loc.getY());
+		float height = Terrain.getInstance().getFractalTerrainHeight(loc.getX(), loc.getY());
 		this.worldPos = new Vec3f(loc.getX(),height,loc.getY());
 	}
 
