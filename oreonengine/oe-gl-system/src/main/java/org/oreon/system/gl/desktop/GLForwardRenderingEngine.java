@@ -20,6 +20,7 @@ import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
 import org.lwjgl.glfw.GLFW;
+import org.oreon.core.buffers.Framebuffer;
 import org.oreon.core.gl.buffers.GLFramebuffer;
 import org.oreon.core.gl.config.Default;
 import org.oreon.core.gl.light.GLDirectionalLight;
@@ -409,6 +410,12 @@ public class GLForwardRenderingEngine implements RenderingEngine{
 
 	public void setMultisampledFbo(GLFramebuffer multisampledFbo) {
 		this.multisampledFbo = multisampledFbo;
+	}
+
+	@Override
+	public Framebuffer getDeferredFbo() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

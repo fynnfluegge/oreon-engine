@@ -46,7 +46,7 @@ public class Texture2D extends Texture{
 		int[] data = ImageLoader.loadImage(file);
 		id = data[0];
 		width = data[1];
-		width = data[2];
+		height = data[2];
 	}
 	
 	public void load(){

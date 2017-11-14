@@ -27,17 +27,17 @@ import org.oreon.core.gl.texture.Texture2D;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.BufferUtil;
 
-public class DeferredLightingRenderer {
+public class DeferredLightingMultisampleRenderer {
 
 	private GLFramebuffer fbo;
-	private GBuffer gbuffer;
+	private GBufferMultisample gbuffer;
 	private DeferredShader shader;
 	private Texture2D deferredLightingSceneTexture;
 	private Texture2D depthmap;
 	
-	public DeferredLightingRenderer(int width, int height) {
+	public DeferredLightingMultisampleRenderer(int width, int height) {
 		
-		gbuffer = new GBuffer(width, height);
+		gbuffer = new GBufferMultisample(width, height);
 		shader = DeferredShader.getInstance();
 
 		deferredLightingSceneTexture = new Texture2D();
@@ -94,10 +94,10 @@ public class DeferredLightingRenderer {
 		glDispatchCompute(CoreSystem.getInstance().getWindow().getWidth()/16, CoreSystem.getInstance().getWindow().getHeight()/16,1);
 	}
 
-	public GBuffer getGbuffer() {
+	public GBufferMultisample getGbuffer() {
 		return gbuffer;
 	}
-	public void setGbuffer(GBuffer gbuffer) {
+	public void setGbuffer(GBufferMultisample gbuffer) {
 		this.gbuffer = gbuffer;
 	}
 	public Texture2D getDeferredLightingSceneTexture() {

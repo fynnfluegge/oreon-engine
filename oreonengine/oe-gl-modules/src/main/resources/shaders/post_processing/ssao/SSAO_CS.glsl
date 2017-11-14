@@ -10,11 +10,12 @@ layout (binding = 2, rgba32f) uniform readonly image2DMS normalImage;
 
 layout (binding = 3, rgba32f) uniform readonly image2D noiseImage;
 
-uniform vec3 kernel[32];
+uniform vec3 kernel[64];
 uniform mat4 m_View;
 uniform mat4 m_Proj;
 uniform int kernelSize;
 uniform float uRadius;
+uniform float threshold;
 
 const float zfar = 10000.0f;
 
@@ -54,7 +55,7 @@ void main(void){
 			float sampleDepth = (m_View * vec4(imageLoad(worldPositionImage, ivec2(offset.x * 1280, offset.y * 720), 0).rgb,1.0)).z/zfar;
 		  
 			// range check & accumulate:
-			float rangeCheck= abs(actualDepth - sampleDepth) < uRadius ? 1.0 : 0.0;
+			float rangeCheck= abs(actualDepth - sampleDepth) < threshold ? 1.0 : 0.0;
 			occlusion += (sampleDepth <= smple.z/zfar ? 1.0 : 0.0) * rangeCheck;
 		}
 		else{

@@ -1,13 +1,18 @@
 package org.oreon.modules.gl.terrain;
 
+import static org.lwjgl.opengl.GL11.GL_FLOAT;
+import static org.lwjgl.opengl.GL11.GL_RED;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.glGetTexImage;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -16,6 +21,7 @@ import org.oreon.core.gl.shaders.GLShader;
 import org.oreon.core.gl.texture.Texture2D;
 import org.oreon.core.model.Material;
 import org.oreon.core.system.CoreSystem;
+import org.oreon.core.util.BufferUtil;
 import org.oreon.core.util.Constants;
 import org.oreon.core.util.Util;
 import org.oreon.modules.gl.gpgpu.NormalMapRenderer;
@@ -36,7 +42,7 @@ public class TerrainConfiguration {
 	private Texture2D heightmap;
 	private Texture2D normalmap;
 	private Texture2D ambientmap;
-	private Texture2D splatmap;
+	private FloatBuffer heightmapDataBuffer;
 	private Material material0;
 	private Material material1;
 	private Material material2;
@@ -139,6 +145,8 @@ public class TerrainConfiguration {
 						normalRenderer.setStrength(Integer.valueOf(tokens[2]));
 						normalRenderer.render(getHeightmap());
 						setNormalmap(normalRenderer.getNormalmap());
+						
+						createHeightmapDataBuffer();
 					}
 					if(tokens[0].equals("splatmap")){
 						Texture2D splatmap = new Texture2D(tokens[1]);
@@ -155,11 +163,6 @@ public class TerrainConfiguration {
 						setAmbientmap(new Texture2D(tokens[1]));
 						getAmbientmap().bind();
 						getAmbientmap().trilinearFilter();
-					}
-					if(tokens[0].equals("splatmap")){
-						setSplatmap(new Texture2D(tokens[1]));
-						getSplatmap().bind();
-						getSplatmap().trilinearFilter();
 					}
 					if(tokens[0].equals("material0_DIF")){
 						setMaterial0(new Material());
@@ -396,62 +399,11 @@ public class TerrainConfiguration {
 		getFractals().add(fractal);
 	}
 	
-	public void ReloadFractals(String file){
+	private void createHeightmapDataBuffer(){
 		
-		getFractals().clear();
-		BufferedReader reader = null;
-		
-		try{
-			if(new File(file).exists()){
-				reader = new BufferedReader(new FileReader(file));
-				String line;
-				
-				while((line = reader.readLine()) != null){
-					
-					String[] tokens = line.split(" ");
-					tokens = Util.removeEmptyStrings(tokens);
-					
-					if(tokens.length == 0)
-						continue;
-					if(tokens[0].equals("fractal_stage0")){
-						loadFractalMap(reader);
-					}	
-					if(tokens[0].equals("fractal_stage1")){
-						loadFractalMap(reader);
-					}	
-					if(tokens[0].equals("fractal_stage2")){
-						loadFractalMap(reader);
-					}	
-					if(tokens[0].equals("fractal_stage3")){
-						loadFractalMap(reader);
-					}	
-					if(tokens[0].equals("fractal_stage4")){
-						loadFractalMap(reader);
-					}	
-					if(tokens[0].equals("fractal_stage5")){
-						loadFractalMap(reader);
-					}	
-					if(tokens[0].equals("fractal_stage6")){
-						loadFractalMap(reader);
-					}	
-					if(tokens[0].equals("fractal_stage7")){
-						loadFractalMap(reader);
-					}	
-					if(tokens[0].equals("fractal_stage8")){
-						loadFractalMap(reader);
-					}	
-					if(tokens[0].equals("fractal_stage9")){
-						loadFractalMap(reader);
-					}	
-				}
-				reader.close();
-				}
-			}
-			catch(Exception e)
-			{
-				e.printStackTrace();
-				System.exit(1);
-			}
+		heightmapDataBuffer = BufferUtil.createFloatBuffer(getHeightmap().getWidth() * getHeightmap().getHeight());
+		heightmap.bind();
+		glGetTexImage(GL_TEXTURE_2D,0,GL_RED,GL_FLOAT,heightmapDataBuffer);
 	}
 	
 	private int updateMorphingArea(int lod){
@@ -529,12 +481,6 @@ public class TerrainConfiguration {
 	}
 	public void setAmbientmap(Texture2D ambientmap) {
 		this.ambientmap = ambientmap;
-	}
-	public Texture2D getSplatmap() {
-		return splatmap;
-	}
-	public void setSplatmap(Texture2D splatmap) {
-		this.splatmap = splatmap;
 	}
 	public Material getMaterial1() {
 		return material1;
@@ -618,5 +564,13 @@ public class TerrainConfiguration {
 
 	public void setSplatmaps(List<Texture2D> splatmaps) {
 		this.splatmaps = splatmaps;
+	}
+
+	public FloatBuffer getHeightmapDataBuffer() {
+		return heightmapDataBuffer;
+	}
+
+	public void setHeightmapDataBuffer(FloatBuffer heightmapDataBuffer) {
+		this.heightmapDataBuffer = heightmapDataBuffer;
 	}
 }

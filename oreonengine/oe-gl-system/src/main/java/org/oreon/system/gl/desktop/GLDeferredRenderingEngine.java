@@ -18,10 +18,12 @@ import org.oreon.core.buffers.Framebuffer;
 import org.oreon.core.gl.antialiasing.MSAA;
 import org.oreon.core.gl.buffers.GLFramebuffer;
 import org.oreon.core.gl.config.Default;
-import org.oreon.core.gl.deferred.DeferredLightingRenderer;
+import org.oreon.core.gl.deferred.DeferredLightingMultisampleRenderer;
 import org.oreon.core.gl.deferred.TransparencyLayer;
 import org.oreon.core.gl.deferred.TransparencyBlendRenderer;
 import org.oreon.core.gl.light.GLDirectionalLight;
+import org.oreon.core.gl.picking.TerrainPicking;
+import org.oreon.core.gl.scene.FullScreenMultisampleQuad;
 import org.oreon.core.gl.scene.FullScreenQuad;
 import org.oreon.core.gl.shadow.ParallelSplitShadowMaps;
 import org.oreon.core.gl.texture.Texture2D;
@@ -47,14 +49,16 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 
 	private Window window;
 	private FullScreenQuad fullScreenQuad;
+	private FullScreenMultisampleQuad fullScreenQuadMultisample;
 	private MSAA msaa;
 	
 	private GLFramebuffer finalSceneFbo;
 	private Texture2D finalSceneTexture;
+	private Texture2D sceneDepthmap;
 	private Texture2D lightScatteringSceneTexture;
 	private Texture2D postProcessingTexture;
 	
-	private DeferredLightingRenderer deferredRenderer;
+	private DeferredLightingMultisampleRenderer deferredRenderer;
 	private TransparencyBlendRenderer transparencyBlendRenderer;
 	private TransparencyLayer transparencyLayer;
 	private GUI gui;
@@ -87,10 +91,11 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		}
 		
 		fullScreenQuad = new FullScreenQuad();
+		fullScreenQuadMultisample = new FullScreenMultisampleQuad();
 		shadowMaps = new ParallelSplitShadowMaps();
 		msaa = new MSAA();
 		
-		deferredRenderer = new DeferredLightingRenderer(window.getWidth(), window.getHeight());
+		deferredRenderer = new DeferredLightingMultisampleRenderer(window.getWidth(), window.getHeight());
 		transparencyLayer = new TransparencyLayer(window.getWidth(), window.getHeight());
 		transparencyBlendRenderer = new TransparencyBlendRenderer();
 		
@@ -185,7 +190,8 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 
 		// post processing effects
 		
-		postProcessingTexture = new Texture2D(deferredRenderer.getDeferredLightingSceneTexture());
+		postProcessingTexture = new Texture2D(finalSceneTexture);
+		this.sceneDepthmap = deferredRenderer.getDepthmap();
 			
 		// Bloom
 		bloom.render(postProcessingTexture);
@@ -207,14 +213,17 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		sunlightScattering.render(postProcessingTexture,lightScatteringSceneTexture);
 		postProcessingTexture = sunlightScattering.getSunLightScatteringSceneTexture();
 		
-		fullScreenQuad.setTexture(postProcessingTexture);
-		fullScreenQuad.render();
+//		fullScreenQuad.setTexture(postProcessingTexture);
+//		fullScreenQuad.render();
+		
+		fullScreenQuadMultisample.setTexture(deferredRenderer.getGbuffer().getAlbedoTexture());
+		fullScreenQuadMultisample.render();
 		
 		deferredRenderer.getFbo().bind();
 		LightHandler.doOcclusionQueries();
 		deferredRenderer.getFbo().unbind();
 		
-//		lensFlare.render();
+		lensFlare.render();
 		
 		gui.render();
 		
@@ -231,7 +240,11 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 				setGrid(true);
 		}
 		
-		CoreSystem.getInstance().getScenegraph().update();		
+		CoreSystem.getInstance().getScenegraph().update();	
+		
+		if (CoreSystem.getInstance().getScenegraph().terrainExists()){
+			TerrainPicking.getInstance().getTerrainPosition();
+		}
 	}
 	@Override
 	public void shutdown() {
@@ -269,8 +282,8 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 	}
 	@Override
 	public Texture getSceneDepthmap() {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return sceneDepthmap;
 	}
 	@Override
 	public float getSightRangeFactor() {
@@ -322,5 +335,11 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 	}
 	public void setGui(GUI gui) {
 		this.gui = gui;
+	}
+
+	@Override
+	public Framebuffer getDeferredFbo() {
+		
+		return deferredRenderer.getFbo();
 	} 
 }

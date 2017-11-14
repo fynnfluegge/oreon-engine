@@ -11,7 +11,7 @@ import static org.lwjgl.opengl.GL30.GL_RGBA16F;
 import org.oreon.core.gl.texture.Texture2DMultisample;
 import org.oreon.core.util.Constants;
 
-public class GBuffer {
+public class GBufferMultisample {
 
 	private Texture2DMultisample albedoTexture;
 	private Texture2DMultisample normalTexture;
@@ -20,7 +20,7 @@ public class GBuffer {
 	private Texture2DMultisample lightScatteringTexture;
 	private Texture2DMultisample depthTexture;
 	
-	public GBuffer(int width, int height) {
+	public GBufferMultisample(int width, int height) {
 		
 		albedoTexture = new Texture2DMultisample();
 		albedoTexture.generate();

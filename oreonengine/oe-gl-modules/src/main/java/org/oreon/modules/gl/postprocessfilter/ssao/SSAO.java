@@ -38,7 +38,7 @@ public class SSAO {
 		this.width = width;
 		this.height = height;
 		
-		kernelSize = 32;
+		kernelSize = 64;
 		
 		noiseTextureShader = NoiseTextureShader.getInstance();
 		ssaoShader = SSAOShader.getInstance();

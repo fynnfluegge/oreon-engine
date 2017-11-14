@@ -1,14 +1,14 @@
-package org.oreon.demo.gl.oreonworlds.water;
+package org.oreon.demo.gl.oreonworlds2.water;
 
 import org.oreon.core.math.Quaternion;
 import org.oreon.core.util.Constants;
+import org.oreon.demo.gl.oreonworlds2.shaders.OceanBRDFShader;
 import org.oreon.modules.gl.water.Water;
-import org.oreon.modules.gl.water.shader.OceanBRDFShader;
 
 public class Ocean extends Water{
 
 	public Ocean() {
-		super(64,256,OceanBRDFShader.getInstance());
+		super(256, 256, OceanBRDFShader.getInstance());
 		
 		getWorldTransform().setScaling(Constants.ZFAR,1,Constants.ZFAR);
 		getWorldTransform().setTranslation(-Constants.ZFAR/2,-80,-Constants.ZFAR/2);
@@ -18,4 +18,5 @@ public class Ocean extends Water{
 
 		this.loadSettingsFile("src/main/resources/oreonworlds2/water/water_settings.txt");
 	}
+
 }

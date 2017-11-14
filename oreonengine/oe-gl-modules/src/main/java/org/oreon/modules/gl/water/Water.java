@@ -8,6 +8,7 @@ import java.nio.ByteBuffer;
 import org.oreon.core.gl.buffers.GLFramebuffer;
 import org.oreon.core.gl.buffers.GLPatchVBO;
 import org.oreon.core.gl.config.WaterConfig;
+import org.oreon.core.gl.shaders.GLShader;
 import org.oreon.core.gl.texture.Texture2D;
 import org.oreon.core.math.Quaternion;
 import org.oreon.core.math.Vec2f;
@@ -21,7 +22,6 @@ import org.oreon.core.util.Util;
 import org.oreon.modules.gl.gpgpu.NormalMapRenderer;
 import org.oreon.modules.gl.terrain.Terrain;
 import org.oreon.modules.gl.water.fft.OceanFFT;
-import org.oreon.modules.gl.water.shader.OceanBRDFShader;
 import org.oreon.modules.gl.water.shader.OceanGridShader;
 
 import static org.lwjgl.opengl.GL11.glTexImage2D;
@@ -74,16 +74,19 @@ public class Water extends GameObject{
 	private boolean cameraUnderwater;
 	
 	private WaterConfig config;
+	private GLShader shader;
 
-	public Water(int patches, int fftResolution)
+	public Water(int patches, int fftResolution, GLShader shader)
 	{		
+		this.shader = shader;
+		
 		GLPatchVBO meshBuffer = new GLPatchVBO();
 		meshBuffer.addData(generatePatch2D4x4(patches),16);
 		
 		config = new WaterConfig();
 		
 		Renderer renderer = new Renderer(meshBuffer);
-		renderer.setRenderInfo(new RenderInfo(config, OceanBRDFShader.getInstance()));
+		renderer.setRenderInfo(new RenderInfo(config, shader));
 		
 		dudv = new Texture2D("textures/water/dudv/dudv1.jpg");
 		dudv.bind();
@@ -124,9 +127,7 @@ public class Water extends GameObject{
 		refractionFBO.createDepthBufferAttachment(CoreSystem.getInstance().getWindow().getWidth()/2, CoreSystem.getInstance().getWindow().getHeight()/2);
 		refractionFBO.checkStatus();
 		refractionFBO.unbind();	
-	}
-	
-	
+	}	
 	
 	public void update()
 	{
@@ -137,7 +138,7 @@ public class Water extends GameObject{
 		}
 		else
 		{
-			((Renderer) getComponent("Renderer")).getRenderInfo().setShader(OceanBRDFShader.getInstance());
+			((Renderer) getComponent("Renderer")).getRenderInfo().setShader(shader);
 		}
 	}
 	
@@ -238,12 +239,12 @@ public class Water extends GameObject{
 		fft.render();
 		normalmapRenderer.render(fft.getDy());
 		
-		CoreSystem.getInstance().getRenderingEngine().getMultisampledFbo().bind();
+		CoreSystem.getInstance().getRenderingEngine().getDeferredFbo().bind();
 		
 		getComponents().get("Renderer").render();
 		// glFinish() important, to prevent conflicts with following compute shaders
 		glFinish();
-		CoreSystem.getInstance().getRenderingEngine().getMultisampledFbo().unbind();
+		CoreSystem.getInstance().getRenderingEngine().getDeferredFbo().unbind();
 	}
 		
 	public void loadSettingsFile(String file)
@@ -575,5 +576,17 @@ public class Water extends GameObject{
 
 	public void setCaustics(Texture2D caustics) {
 		this.caustics = caustics;
+	}
+
+
+
+	public GLShader getShader() {
+		return shader;
+	}
+
+
+
+	public void setShader(GLShader shader) {
+		this.shader = shader;
 	}
 }

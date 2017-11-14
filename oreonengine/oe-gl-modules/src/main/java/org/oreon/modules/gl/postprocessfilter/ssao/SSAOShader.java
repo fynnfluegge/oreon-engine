@@ -29,8 +29,9 @@ public class SSAOShader extends GLShader{
 		addUniform("m_Proj");
 		addUniform("kernelSize");
 		addUniform("uRadius");
+		addUniform("threshold");
 		
-		for (int i=0; i<32; i++){
+		for (int i=0; i<64; i++){
 			addUniform("kernel[" + i + "]");
 		}
 	}
@@ -39,10 +40,11 @@ public class SSAOShader extends GLShader{
 		
 		setUniform("m_View", viewMatrix);
 		setUniform("m_Proj", projectionMatrix);
-		setUniformi("kernelSize", 32);
+		setUniformi("kernelSize", 64);
 		setUniformf("uRadius", 1f);
+		setUniformf("threshold", 2f);
 		
-		for (int i=0; i<32; i++){
+		for (int i=0; i<64; i++){
 			setUniform("kernel[" + i + "]", kernel[i]);
 		}
 	}

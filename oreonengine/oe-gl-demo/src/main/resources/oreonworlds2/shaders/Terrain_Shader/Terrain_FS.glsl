@@ -119,15 +119,6 @@ void main()
 
     vec3 rgb = mix(fogColor, fragColor, clamp(fogFactor,0,1));
 	
-	// underwater distance blue blur
-	if (isRefraction == 1 && isCameraUnderWater == 0){
-		
-		float distToWaterSurace = distancePointPlane(position,clipplane);
-		float refractionFactor = clamp(0.02 * distToWaterSurace,0,1);
-		
-		rgb = mix(rgb, waterRefractionColor, refractionFactor); 
-	}
-	
 	albedo_out = vec4(rgb,1);
 	worldPosition_out = vec4(position,1);
 	normal_out = vec4(normal,1);

@@ -18,6 +18,7 @@ public interface RenderingEngine {
 	public boolean isBloomEnabled();
 	
 	public Framebuffer getMultisampledFbo();
+	public Framebuffer getDeferredFbo();
 	public Texture getSceneDepthmap();
 	public Quaternion getClipplane();
 	public float getSightRangeFactor();
