@@ -3,26 +3,21 @@ material0_DIF oreonworlds2/terrain/materials/grass0_DIF.jpg
 material0_NRM oreonworlds2/terrain/materials/grass0_NRM.jpg
 material0_DISP oreonworlds2/terrain/materials/grass0_DISP.jpg
 material0_displaceScale 0.0
-material0_emission 0.0
-material0_shininess 0.0
+
 material1_DIF oreonworlds2/terrain/materials/Ground_11_DIF.jpg
 material1_NRM oreonworlds2/terrain/materials/Ground_11_NRM.jpg
 material1_DISP oreonworlds2/terrain/materials/Ground_11_DISP.jpg
-material1_displaceScale 1.0
-material1_emission 0.0
-material1_shininess 0.0
+material1_displaceScale 0.5
+
 material2_DIF oreonworlds2/terrain/materials/Ground_21_DIF.jpg
 material2_NRM oreonworlds2/terrain/materials/Ground_21_NRM.jpg
 material2_DISP oreonworlds2/terrain/materials/Ground_21_DISP.jpg
-material2_displaceScale 8.0
-material2_emission 1.0
-material2_shininess 20.0
+material2_displaceScale 4.0
+
 material3_DIF oreonworlds2/terrain/materials/Ground_21_DIF.jpg
 material3_NRM oreonworlds2/terrain/materials/Ground_21_NRM.jpg
 material3_DISP oreonworlds2/terrain/materials/Ground_21_DISP.jpg
-material3_displaceScale 8.0
-material3_emission 1.0
-material3_shininess 20.0
+material3_displaceScale 4.0
 
 #maps
 heightmap oreonworlds2/terrain/maps/terrain0/hm.bmp 16

@@ -3,9 +3,7 @@ package org.oreon.modules.gl.water;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.nio.ByteBuffer;
 
-import org.oreon.core.gl.buffers.GLFramebuffer;
 import org.oreon.core.gl.buffers.GLPatchVBO;
 import org.oreon.core.gl.config.WaterConfig;
 import org.oreon.core.gl.shaders.GLShader;
@@ -24,20 +22,11 @@ import org.oreon.modules.gl.terrain.Terrain;
 import org.oreon.modules.gl.water.fft.OceanFFT;
 import org.oreon.modules.gl.water.shader.OceanGridShader;
 
-import static org.lwjgl.opengl.GL11.glTexImage2D;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
-import static org.lwjgl.opengl.GL11.GL_RGBA;
-import static org.lwjgl.opengl.GL30.GL_RGBA32F;
 import static org.lwjgl.opengl.GL11.GL_CCW;
 import static org.lwjgl.opengl.GL11.GL_CW;
-import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import static org.lwjgl.opengl.GL11.glFinish;
 import static org.lwjgl.opengl.GL11.glFrontFace;
-import static org.lwjgl.opengl.GL11.glTexParameteri;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_MAG_FILTER;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_MIN_FILTER;
 import static org.lwjgl.opengl.GL11.glDisable;
-import static org.lwjgl.opengl.GL11.GL_LINEAR;
 import static org.lwjgl.opengl.GL11.glViewport;
 import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.opengl.GL30.GL_CLIP_DISTANCE6;
@@ -63,11 +52,9 @@ public class Water extends GameObject{
 	private float kRefraction;	
 	private Texture2D dudv;
 	private Texture2D caustics;
-	private Texture2D reflectionTexture;
-	private Texture2D refractionTexture;
-	private Texture2D refractionDepthTexture;
-	private GLFramebuffer reflectionFBO;
-	private GLFramebuffer refractionFBO;
+	
+	private RefracReflecRenderer refractionRenderer;
+	private RefracReflecRenderer reflectionRenderer;
 	
 	private OceanFFT fft;
 	private NormalMapRenderer normalmapRenderer;
@@ -98,35 +85,11 @@ public class Water extends GameObject{
 		fft.init();
 		normalmapRenderer = new NormalMapRenderer(fftResolution);
 		
-		reflectionTexture = new Texture2D();
-		reflectionTexture.generate();
-		reflectionTexture.bind();
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, CoreSystem.getInstance().getWindow().getWidth()/2, CoreSystem.getInstance().getWindow().getHeight()/2, 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		refractionRenderer = new RefracReflecRenderer(CoreSystem.getInstance().getWindow().getWidth()/2,
+													  CoreSystem.getInstance().getWindow().getHeight()/2);
 		
-		reflectionFBO = new GLFramebuffer();
-		reflectionFBO.bind();
-		reflectionFBO.setDrawBuffer(0);
-		reflectionFBO.createColorTextureAttachment(reflectionTexture.getId(), 0);
-		reflectionFBO.createDepthBufferAttachment(CoreSystem.getInstance().getWindow().getWidth()/2, CoreSystem.getInstance().getWindow().getHeight()/2);
-		reflectionFBO.checkStatus();
-		reflectionFBO.unbind();
-		
-		refractionTexture = new Texture2D();
-		refractionTexture.generate();
-		refractionTexture.bind();
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, CoreSystem.getInstance().getWindow().getWidth()/2, CoreSystem.getInstance().getWindow().getHeight()/2, 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	
-		refractionFBO = new GLFramebuffer();
-		refractionFBO.bind();
-		refractionFBO.setDrawBuffer(0);
-		refractionFBO.createColorTextureAttachment(refractionTexture.getId(), 0);
-		refractionFBO.createDepthBufferAttachment(CoreSystem.getInstance().getWindow().getWidth()/2, CoreSystem.getInstance().getWindow().getHeight()/2);
-		refractionFBO.checkStatus();
-		refractionFBO.unbind();	
+		reflectionRenderer = new RefracReflecRenderer(CoreSystem.getInstance().getWindow().getWidth()/2,
+												 	  CoreSystem.getInstance().getWindow().getHeight()/2);
 	}	
 	
 	public void update()
@@ -182,7 +145,7 @@ public class Water extends GameObject{
 		
 		CoreSystem.getInstance().getRenderingEngine().setWaterReflection(true);
 		
-		this.getReflectionFBO().bind();
+		reflectionRenderer.getFbo().bind();
 		config.clearScreenDeepOcean();
 		glFrontFace(GL_CCW);
 		
@@ -196,7 +159,9 @@ public class Water extends GameObject{
 		// glFinish() important, to prevent conflicts with following compute shaders
 		glFinish(); 
 		glFrontFace(GL_CW);
-		this.getReflectionFBO().unbind();
+		reflectionRenderer.getFbo().unbind();
+		reflectionRenderer.render();
+		
 		CoreSystem.getInstance().getRenderingEngine().setWaterReflection(false);
 		
 		// antimirror scene to clipplane
@@ -217,8 +182,8 @@ public class Water extends GameObject{
 		
 		// render to refraction texture
 		CoreSystem.getInstance().getRenderingEngine().setWaterRefraction(true);
-		this.getRefractionFBO().bind();
 		
+		refractionRenderer.getFbo().bind();
 		config.clearScreenDeepOcean();
 	
 		scenegraph.getRoot().render();
@@ -228,7 +193,9 @@ public class Water extends GameObject{
 		
 		// glFinish() important, to prevent conflicts with following compute shaders
 		glFinish();
-		this.getRefractionFBO().unbind();
+		refractionRenderer.getFbo().unbind();
+		refractionRenderer.render();
+		
 		CoreSystem.getInstance().getRenderingEngine().setWaterRefraction(false);
 		
 		glDisable(GL_CLIP_DISTANCE6);
@@ -365,7 +332,6 @@ public class Water extends GameObject{
 		return vertices;
 	}
 
-
 	public Quaternion getClipplane() {
 		return clipplane;
 	}
@@ -482,38 +448,6 @@ public class Water extends GameObject{
 		this.choppiness = choppiness;
 	}
 
-	public GLFramebuffer getReflectionFBO() {
-		return reflectionFBO;
-	}
-
-	public void setReflectionFBO(GLFramebuffer reflectionFBO) {
-		this.reflectionFBO = reflectionFBO;
-	}
-
-	public GLFramebuffer getRefractionFBO() {
-		return refractionFBO;
-	}
-
-	public void setRefractionFBO(GLFramebuffer refractionFBO) {
-		this.refractionFBO = refractionFBO;
-	}
-
-	public Texture2D getReflectionTexture() {
-		return reflectionTexture;
-	}
-
-	public void setReflectionTexture(Texture2D reflectionTexture) {
-		this.reflectionTexture = reflectionTexture;
-	}
-
-	public Texture2D getRefractionTexture() {
-		return refractionTexture;
-	}
-
-	public void setRefractionTexture(Texture2D refractionTexture) {
-		this.refractionTexture = refractionTexture;
-	}
-
 	public float getTessellationShift() {
 		return tessellationShift;
 	}
@@ -553,14 +487,6 @@ public class Water extends GameObject{
 	public void setNormalmapRenderer(NormalMapRenderer normalmapRenderer) {
 		this.normalmapRenderer = normalmapRenderer;
 	}
-
-	public Texture2D getRefractionDepthTexture() {
-		return refractionDepthTexture;
-	}
-
-	public void setRefractionDepthTexture(Texture2D refractionDepthTexture) {
-		this.refractionDepthTexture = refractionDepthTexture;
-	}
 	
 	public void setCameraUnderwater(boolean cameraUnderwater) {
 		this.cameraUnderwater = cameraUnderwater;
@@ -578,15 +504,19 @@ public class Water extends GameObject{
 		this.caustics = caustics;
 	}
 
-
-
 	public GLShader getShader() {
 		return shader;
 	}
 
-
-
 	public void setShader(GLShader shader) {
 		this.shader = shader;
+	}
+	
+	public Texture2D getRefractionTexture(){
+		return refractionRenderer.getDeferredLightingSceneTexture();
+	}
+	
+	public Texture2D getReflectionTexture(){
+		return reflectionRenderer.getDeferredLightingSceneTexture();
 	}
 }

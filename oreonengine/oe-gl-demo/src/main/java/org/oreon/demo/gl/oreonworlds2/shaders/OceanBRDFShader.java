@@ -11,7 +11,6 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE7;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE8;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
-import org.oreon.core.gl.light.GLDirectionalLight;
 import org.oreon.core.gl.shaders.GLShader;
 import org.oreon.core.scene.GameObject;
 import org.oreon.core.system.CoreSystem;

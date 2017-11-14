@@ -22,23 +22,23 @@ import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
 import org.oreon.core.gl.buffers.GLFramebuffer;
-import org.oreon.core.gl.shaders.DeferredShader;
+import org.oreon.core.gl.shaders.DeferredLightingShader;
 import org.oreon.core.gl.texture.Texture2D;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.BufferUtil;
 
-public class DeferredLightingMultisampleRenderer {
+public class DeferredLightingRenderer {
 
 	private GLFramebuffer fbo;
 	private GBufferMultisample gbuffer;
-	private DeferredShader shader;
+	private DeferredLightingShader shader;
 	private Texture2D deferredLightingSceneTexture;
 	private Texture2D depthmap;
 	
-	public DeferredLightingMultisampleRenderer(int width, int height) {
+	public DeferredLightingRenderer(int width, int height) {
 		
 		gbuffer = new GBufferMultisample(width, height);
-		shader = DeferredShader.getInstance();
+		shader = DeferredLightingShader.getInstance();
 
 		deferredLightingSceneTexture = new Texture2D();
 		deferredLightingSceneTexture.generate();

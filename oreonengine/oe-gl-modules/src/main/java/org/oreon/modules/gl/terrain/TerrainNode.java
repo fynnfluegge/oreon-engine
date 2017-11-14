@@ -63,15 +63,15 @@ public class TerrainNode extends GameObject{
 	
 	public void update()
 	{
-			if (CoreSystem.getInstance().getRenderingEngine().isGrid())
-				((Renderer) getComponents().get(Constants.RENDERER_COMPONENT)).getRenderInfo().setShader(terrConfig.getGridShader());
-			else if (!CoreSystem.getInstance().getRenderingEngine().isGrid())
-				((Renderer) getComponents().get(Constants.RENDERER_COMPONENT)).getRenderInfo().setShader(terrConfig.getShader());
-			
-			getWorldTransform().setScaling(getWorldTransform().getLocalScaling());
-			
-			for(Node child: getChildren())
-				child.update();		
+		if (CoreSystem.getInstance().getRenderingEngine().isGrid())
+			((Renderer) getComponents().get(Constants.RENDERER_COMPONENT)).getRenderInfo().setShader(terrConfig.getGridShader());
+		else if (!CoreSystem.getInstance().getRenderingEngine().isGrid())
+			((Renderer) getComponents().get(Constants.RENDERER_COMPONENT)).getRenderInfo().setShader(terrConfig.getShader());
+		
+		getWorldTransform().setScaling(getWorldTransform().getLocalScaling());
+		
+		for(Node child: getChildren())
+			child.update();		
 	}
 	
 	public void render()

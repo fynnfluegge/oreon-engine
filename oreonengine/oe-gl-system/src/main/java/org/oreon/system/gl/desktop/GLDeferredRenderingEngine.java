@@ -18,7 +18,7 @@ import org.oreon.core.buffers.Framebuffer;
 import org.oreon.core.gl.antialiasing.MSAA;
 import org.oreon.core.gl.buffers.GLFramebuffer;
 import org.oreon.core.gl.config.Default;
-import org.oreon.core.gl.deferred.DeferredLightingMultisampleRenderer;
+import org.oreon.core.gl.deferred.DeferredLightingRenderer;
 import org.oreon.core.gl.deferred.TransparencyLayer;
 import org.oreon.core.gl.deferred.TransparencyBlendRenderer;
 import org.oreon.core.gl.light.GLDirectionalLight;
@@ -44,6 +44,7 @@ import org.oreon.modules.gl.postprocessfilter.lightscattering.SunLightScattering
 import org.oreon.modules.gl.postprocessfilter.motionblur.MotionBlur;
 import org.oreon.modules.gl.postprocessfilter.ssao.SSAO;
 import org.oreon.modules.gl.terrain.Terrain;
+import org.oreon.modules.gl.water.Water;
 
 public class GLDeferredRenderingEngine implements RenderingEngine{
 
@@ -58,7 +59,7 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 	private Texture2D lightScatteringSceneTexture;
 	private Texture2D postProcessingTexture;
 	
-	private DeferredLightingMultisampleRenderer deferredRenderer;
+	private DeferredLightingRenderer deferredRenderer;
 	private TransparencyBlendRenderer transparencyBlendRenderer;
 	private TransparencyLayer transparencyLayer;
 	private GUI gui;
@@ -95,9 +96,9 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		shadowMaps = new ParallelSplitShadowMaps();
 		msaa = new MSAA();
 		
-		deferredRenderer = new DeferredLightingMultisampleRenderer(window.getWidth(), window.getHeight());
+		deferredRenderer = new DeferredLightingRenderer(window.getWidth(), window.getHeight());
 		transparencyLayer = new TransparencyLayer(window.getWidth(), window.getHeight());
-		transparencyBlendRenderer = new TransparencyBlendRenderer();
+//		transparencyBlendRenderer = new TransparencyBlendRenderer();
 		
 		motionBlur = new MotionBlur();
 		dofBlur = new DepthOfFieldBlur();
@@ -179,18 +180,18 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		
 		// blend scene/transparent layers
 		finalSceneFbo.bind();
-		transparencyBlendRenderer.render(deferredRenderer.getDeferredLightingSceneTexture(), 
-										 deferredRenderer.getDepthmap(),
-										 deferredRenderer.getGbuffer().getLightScatteringTexture(),
-										 transparencyLayer.getGbuffer().getAlbedoTexture(),
-										 transparencyLayer.getGbuffer().getDepthTexture(),
-										 transparencyLayer.getGbuffer().getAlphaTexture(),
-										 transparencyLayer.getGbuffer().getLightScatteringTexture());
+//		transparencyBlendRenderer.render(deferredRenderer.getDeferredLightingSceneTexture(), 
+//										 deferredRenderer.getDepthmap(),
+//										 deferredRenderer.getGbuffer().getLightScatteringTexture(),
+//										 transparencyLayer.getGbuffer().getAlbedoTexture(),
+//										 transparencyLayer.getGbuffer().getDepthTexture(),
+//										 transparencyLayer.getGbuffer().getAlphaTexture(),
+//										 transparencyLayer.getGbuffer().getLightScatteringTexture());
 		finalSceneFbo.unbind();
 
 		// post processing effects
 		
-		postProcessingTexture = new Texture2D(finalSceneTexture);
+		postProcessingTexture = new Texture2D(deferredRenderer.getDeferredLightingSceneTexture());
 		this.sceneDepthmap = deferredRenderer.getDepthmap();
 			
 		// Bloom
@@ -213,7 +214,7 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		sunlightScattering.render(postProcessingTexture,lightScatteringSceneTexture);
 		postProcessingTexture = sunlightScattering.getSunLightScatteringSceneTexture();
 		
-//		fullScreenQuad.setTexture(postProcessingTexture);
+//		fullScreenQuad.setTexture(Water.getRefractionTexture());
 //		fullScreenQuad.render();
 		
 		fullScreenQuadMultisample.setTexture(deferredRenderer.getGbuffer().getAlbedoTexture());
@@ -228,7 +229,7 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		gui.render();
 		
 		// draw into OpenGL window
-		window.draw();
+		window.draw(); 
 	}
 	@Override
 	public void update() {

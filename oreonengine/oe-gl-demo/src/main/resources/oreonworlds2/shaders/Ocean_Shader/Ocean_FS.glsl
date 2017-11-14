@@ -51,6 +51,8 @@ const vec3 fogColor = vec3(0.62,0.8,0.98);
 const float zfar = 10000;
 const float znear = 0.1;
 vec3 vertexToEye;
+float SigmaSqX = 0.01;
+float SigmaSqY = 0.01;
 
 float fresnelApproximated(vec3 normal)
 {
@@ -88,7 +90,8 @@ void main(void)
 		normal = normalize(TBN * bumpNormal);
 	}
 	
-	float F = fresnelApproximated(normal);
+	vec3 fresnelNormal = normalize(2 * normal.xzy - 1);
+	float F = fresnelApproximated(fresnelNormal);
 	
 	// projCoord //
 	vec3 dudvCoord = normalize((2 * texture(dudvRefracReflec, texCoord_FS*4 + distortionRefracReflec).rbg) - 1);
@@ -97,7 +100,7 @@ void main(void)
     // Reflection //
 	vec2 reflecCoords = projCoord.xy + dudvCoord.rb * kReflection;
 	reflecCoords = clamp(reflecCoords, kReflection, 1-kReflection);
-    vec3 reflection = mix(texture(waterReflection, reflecCoords).rgb, deepOceanColor,  0.2);
+    vec3 reflection = mix(texture(waterReflection, reflecCoords).rgb, deepOceanColor,  0);
     reflection *= F;
  
     // Refraction //
@@ -131,7 +134,7 @@ void main(void)
 	
     vec3 rgb = mix(fogColor, fragColor, clamp(fogFactor,0,1));
 	
-	albedo_out = vec4(rgb,1);
+	albedo_out = vec4(refraction,1);
 	worldPosition_out = vec4(position_FS,1);
 	normal_out = vec4(normal,1);
 	specularEmission_out = vec4(emission,shininess,0,1);

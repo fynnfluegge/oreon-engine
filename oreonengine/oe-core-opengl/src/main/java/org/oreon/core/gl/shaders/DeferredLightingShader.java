@@ -7,20 +7,20 @@ import org.oreon.core.gl.texture.Texture2DMultisample;
 import org.oreon.core.util.Constants;
 import org.oreon.core.util.ResourceLoader;
 
-public class DeferredShader extends GLShader{
+public class DeferredLightingShader extends GLShader{
 
-	private static DeferredShader instance = null;
+	private static DeferredLightingShader instance = null;
 	
-	public static DeferredShader getInstance() 
+	public static DeferredLightingShader getInstance() 
 	{
 		if(instance == null) 
 		{
-			instance = new DeferredShader();
+			instance = new DeferredLightingShader();
 		}
 		return instance;
 	}
 		
-	protected DeferredShader()
+	protected DeferredLightingShader()
 	{
 		super();
 		
