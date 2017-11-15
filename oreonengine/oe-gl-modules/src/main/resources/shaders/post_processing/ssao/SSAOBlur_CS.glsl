@@ -9,7 +9,7 @@ layout (binding = 1, rgba32f) uniform readonly image2D ssao_in;
 uniform int width = 1280;
 uniform int height = 720;
 
-const int uBlurSize = 8;
+const int uBlurSize = 4;
 
 void main() {
 
