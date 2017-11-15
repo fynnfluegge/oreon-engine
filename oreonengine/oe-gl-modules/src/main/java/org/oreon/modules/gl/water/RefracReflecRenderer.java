@@ -9,8 +9,6 @@ import static org.lwjgl.opengl.GL15.GL_WRITE_ONLY;
 import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT0;
 import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT1;
 import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT2;
-import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT3;
-import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT4;
 import static org.lwjgl.opengl.GL30.GL_RGBA16F;
 import static org.lwjgl.opengl.GL30.GL_RGBA32F;
 import static org.lwjgl.opengl.GL42.glBindImageTexture;
@@ -51,7 +49,7 @@ public class RefracReflecRenderer {
 				0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
 		deferredLightingSceneTexture.noFilter();
 		
-		IntBuffer drawBuffers = BufferUtil.createIntBuffer(5);
+		IntBuffer drawBuffers = BufferUtil.createIntBuffer(3);
 		drawBuffers.put(GL_COLOR_ATTACHMENT0);
 		drawBuffers.put(GL_COLOR_ATTACHMENT1);
 		drawBuffers.put(GL_COLOR_ATTACHMENT2);

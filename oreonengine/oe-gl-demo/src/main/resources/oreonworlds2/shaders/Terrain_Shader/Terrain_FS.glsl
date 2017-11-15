@@ -42,7 +42,7 @@ uniform Material grass;
 uniform Material rock;
 uniform Material cliff;
 uniform float sightRangeFactor;
-uniform int largeDetailedRange;
+uniform int largeDetailRange;
 uniform int isReflection;
 uniform int isRefraction;
 uniform int isCameraUnderWater;
@@ -85,9 +85,9 @@ void main()
 	vec3 rockColor = texture(rock.diffusemap, texCoordF/20).rgb;
 	vec3 cliffColor = texture(cliff.diffusemap, texCoordF/20).rgb;
 	
-	if (dist < largeDetailedRange-50 && isReflection == 0)
+	if (dist < largeDetailRange-50)
 	{
-		float attenuation = clamp(-dist/(largeDetailedRange-50) + 1,0.0,1.0);
+		float attenuation = clamp(-dist/(largeDetailRange-50) + 1,0.0,1.0);
 		
 		vec3 bitangent = normalize(cross(tangent, normal));
 		mat3 TBN = mat3(tangent,bitangent,normal);
@@ -118,6 +118,15 @@ void main()
 	float fogFactor = -0.0002/sightRangeFactor*(dist-(zfar)/10*sightRangeFactor) + 1;
 
     vec3 rgb = mix(fogColor, fragColor, clamp(fogFactor,0,1));
+	
+	// underwater distance blue blur
+	if (isCameraUnderWater == 0 && isRefraction == 1){
+		
+		float distToWaterSurace = distancePointPlane(position,clipplane);
+		float refractionFactor = clamp(0.025 * distToWaterSurace,0,1);
+		
+		rgb = mix(rgb, waterRefractionColor, refractionFactor); 
+	}
 	
 	albedo_out = vec4(rgb,1);
 	worldPosition_out = vec4(position,1);

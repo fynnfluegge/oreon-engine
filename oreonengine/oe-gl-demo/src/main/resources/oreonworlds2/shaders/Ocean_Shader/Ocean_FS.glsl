@@ -56,7 +56,7 @@ float fresnelApproximated(vec3 normal)
     
     float cosine = dot(halfDirection, vertexToEye);
 
-	float fresnel = Eta + (1.0 - Eta) * pow(max(0.0, 1.0 - dot(vertexToEye, normal)), 2.0);
+	float fresnel = Eta + (1.0 - Eta) * pow(max(0.0, 1.0 - dot(vertexToEye, normal)), 5.0);
 	
 	return pow(fresnel,0.8);
 }
@@ -95,14 +95,14 @@ void main(void)
     // Reflection //
 	vec2 reflecCoords = projCoord.xy + dudvCoord.rb * kReflection;
 	reflecCoords = clamp(reflecCoords, kReflection, 1-kReflection);
-    vec3 reflection = mix(texture(waterReflection, reflecCoords).rgb, deepOceanColor,  0.4);
+    vec3 reflection = mix(texture(waterReflection, reflecCoords).rgb, deepOceanColor,  0.6);
     reflection *= F;
  
     // Refraction //
 	vec2 refracCoords = projCoord.xy + dudvCoord.rb * kRefraction;
 	refracCoords = clamp(refracCoords, kRefraction, 1-kRefraction);
 	
-	vec3 refraction = vec3(0,0,0);
+	vec3 refraction;
 	
 	// under water only refraction, no reflection 
 	if (isCameraUnderWater == 1){
@@ -110,7 +110,7 @@ void main(void)
 		refraction = texture(waterRefraction, refracCoords).rgb;
 	}
 	else {
-		refraction = mix(texture(waterRefraction, refracCoords).rgb, deepOceanColor, 0.1);
+		refraction = texture(waterRefraction, refracCoords).rgb;
 		refraction *= 1-F;
 	}
 	
@@ -127,9 +127,9 @@ void main(void)
 	
 	float fogFactor = -0.0002/sightRangeFactor*(dist-(zfar)/10*sightRangeFactor) + 1;
 	
-    vec3 rgb = mix(fogColor, fragColor, clamp(fogFactor,0,1));
+    // vec3 rgb = mix(fogColor, fragColor, clamp(fogFactor,0,1));
 	
-	albedo_out = vec4(rgb,1);
+	albedo_out = vec4(fragColor,1);
 	worldPosition_out = vec4(position_FS,1);
 	normal_out = vec4(normal,1);
 	specularEmission_out = vec4(specular,emission,0,1);

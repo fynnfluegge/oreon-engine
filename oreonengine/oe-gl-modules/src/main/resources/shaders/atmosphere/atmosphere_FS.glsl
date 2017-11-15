@@ -16,14 +16,6 @@ void main()
 	float green = -0.00025*(abs(worldPosition.y)-2800) + 0.27;
 	float blue = -0.00019*(abs(worldPosition.y)-2800) + 0.47;
 	
-	int sampleCoverage = 0;
-	
-	for (int i=0; i<1; i++){
-		if (gl_SampleMaskIn[i] == 1){
-			sampleCoverage++;
-		}
-	}
-	
 	albedo_out = vec4(red,green,blue,1);
 	worldPosition_out = vec4(0.0,0.0,0.0,1.0);
 	normal_out = vec4(0.0,0.0,0.0,1.0);

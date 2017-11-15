@@ -42,7 +42,7 @@ public class SSAOShader extends GLShader{
 		setUniform("m_Proj", projectionMatrix);
 		setUniformi("kernelSize", 64);
 		setUniformf("uRadius", 1f);
-		setUniformf("threshold", 2f);
+		setUniformf("threshold", 0.0002f);
 		
 		for (int i=0; i<64; i++){
 			setUniform("kernel[" + i + "]", kernel[i]);

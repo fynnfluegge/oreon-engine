@@ -51,10 +51,10 @@ public class OceanBRDFShader extends GLShader{
 		addUniform("waterReflection");
 		addUniform("waterRefraction");
 		addUniform("dudvRefracReflec");
-//		addUniform("dudvCaustics");
-//		addUniform("caustics");
+		addUniform("dudvCaustics");
+		addUniform("caustics");
 		addUniform("distortionRefracReflec");
-//		addUniform("distortionCaustics");
+		addUniform("distortionCaustics");
 		addUniform("displacementScale");
 		addUniform("choppiness");
 		addUniform("texDetail");
@@ -110,7 +110,7 @@ public class OceanBRDFShader extends GLShader{
 		setUniformf("tessShift", ocean.getTessellationShift());
 		setUniformi("largeDetailRange", ocean.getLargeDetailRange());
 		setUniformf("distortionRefracReflec", ocean.getDistortion());
-//		setUniformf("distortionCaustics", UnderWater.getInstance().getDistortion());
+		setUniformf("distortionCaustics", UnderWater.getInstance().getDistortion());
 		setUniformf("kReflection", ocean.getkReflection());
 		setUniformf("kRefraction", ocean.getkRefraction());
 		setUniformf("emission", ocean.getEmission());
@@ -141,9 +141,9 @@ public class OceanBRDFShader extends GLShader{
 		setUniformi("Dz", 6);
 		glActiveTexture(GL_TEXTURE7);
 		UnderWater.getInstance().getCausticsMap().bind();
-//		setUniformi("caustics", 7);
+		setUniformi("caustics", 7);
 		glActiveTexture(GL_TEXTURE8);
 		UnderWater.getInstance().getDudvMap().bind();
-//		setUniformi("dudvCaustics", 8);
+		setUniformi("dudvCaustics", 8);
 	}
 }

@@ -33,8 +33,8 @@ texDetail 400.0
 tessellationFactor 600
 tessellationSlope 1.8
 tessellationShift -0.3
-detailRange 400
-sightRangeFactor 1.4
+detailRange 100
+sightRangeFactor 2.0
 
 #lod_ranges
 lod1_range 1750

@@ -4,6 +4,7 @@ import org.oreon.core.gl.scene.GLCamera;
 import org.oreon.core.system.CoreEngine;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.system.Window;
+import org.oreon.demo.gl.oreonworlds2.assets.plants.Palm01ClusterGroup;
 import org.oreon.demo.gl.oreonworlds2.shaders.TerrainGridShader;
 import org.oreon.demo.gl.oreonworlds2.shaders.TerrainShader;
 import org.oreon.demo.gl.oreonworlds2.water.Ocean;
@@ -44,6 +45,8 @@ public class Main {
 		coreSystem.getScenegraph().addObject(new SkySphere());	
 		coreSystem.getScenegraph().addTransparentObject(new Sun());
 		coreSystem.getScenegraph().setWater(new Ocean());
+		
+		coreSystem.getScenegraph().getRoot().addChild(new Palm01ClusterGroup());
 		
 		coreEngine.start();
 	}

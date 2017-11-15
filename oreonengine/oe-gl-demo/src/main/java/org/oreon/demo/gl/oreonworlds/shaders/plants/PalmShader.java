@@ -52,7 +52,6 @@ public class PalmShader extends GLShader{
 		addUniformBlock("modelMatrices");
 		addUniformBlock("LightViewProjections");
 		addUniformBlock("Camera");
-		addUniform("shadowMaps");
 		
 		for (int i=0; i<100; i++)
 		{
@@ -80,10 +79,6 @@ public class PalmShader extends GLShader{
 		setUniform("material.color", material.getColor());
 //		setUniformf("material.emission", material.getEmission());
 //		setUniformf("material.shininess", material.getShininess());
-		
-		glActiveTexture(GL_TEXTURE1);
-		GLForwardRenderingEngine.getShadowMaps().getDepthMaps().bind();
-		setUniformi("shadowMaps", 1);
 		
 		List<Integer> indices = ((Palm01Cluster) object.getParent()).getHighPolyIndices();
 		

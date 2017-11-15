@@ -27,6 +27,7 @@ import org.oreon.core.gl.scene.FullScreenMultisampleQuad;
 import org.oreon.core.gl.scene.FullScreenQuad;
 import org.oreon.core.gl.shadow.ParallelSplitShadowMaps;
 import org.oreon.core.gl.texture.Texture2D;
+import org.oreon.core.instancing.InstancingObjectHandler;
 import org.oreon.core.light.LightHandler;
 import org.oreon.core.math.Quaternion;
 import org.oreon.core.system.CoreSystem;
@@ -44,6 +45,7 @@ import org.oreon.modules.gl.postprocessfilter.lightscattering.SunLightScattering
 import org.oreon.modules.gl.postprocessfilter.motionblur.MotionBlur;
 import org.oreon.modules.gl.postprocessfilter.ssao.SSAO;
 import org.oreon.modules.gl.terrain.Terrain;
+import org.oreon.modules.gl.water.UnderWater;
 
 public class GLDeferredRenderingEngine implements RenderingEngine{
 
@@ -51,6 +53,8 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 	private FullScreenQuad fullScreenQuad;
 	private FullScreenMultisampleQuad fullScreenQuadMultisample;
 	private MSAA msaa;
+	
+	private InstancingObjectHandler instancingObjectHandler;
 	
 	private GLFramebuffer finalSceneFbo;
 	private Texture2D finalSceneTexture;
@@ -66,24 +70,28 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 	private boolean grid;
 	
 	private Quaternion clipplane;
-	private static ParallelSplitShadowMaps shadowMaps;
+	private ParallelSplitShadowMaps shadowMaps;
 	
 	// post processing effects
 	private MotionBlur motionBlur;
-	@SuppressWarnings("unused")
 	private DepthOfFieldBlur dofBlur;
 	private Bloom bloom;
 	private SunLightScattering sunlightScattering;
 	private LensFlare lensFlare;
 	private SSAO ssao;
+	private UnderWater underWater;
 	
 	private float sightRangeFactor = 2f;
+	private boolean waterReflection = false;
+	private boolean waterRefraction = false;
+	private boolean cameraUnderWater = false;
 	
 	@Override
 	public void init() {
 		
 		Default.init();
 		window = CoreSystem.getInstance().getWindow();
+		instancingObjectHandler = InstancingObjectHandler.getInstance();
 		
 		if (gui != null){
 			gui.init();
@@ -99,7 +107,7 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		
 		deferredRenderer = new DeferredLightingRenderer(window.getWidth(), window.getHeight());
 		transparencyLayer = new TransparencyLayer(window.getWidth(), window.getHeight());
-		transparencyBlendRenderer = new TransparencyBlendRenderer();
+//		transparencyBlendRenderer = new TransparencyBlendRenderer();
 		
 		motionBlur = new MotionBlur();
 		dofBlur = new DepthOfFieldBlur();
@@ -107,6 +115,7 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		sunlightScattering = new SunLightScattering();
 		lensFlare = new LensFlare();
 		ssao = new SSAO(window.getWidth(),window.getHeight());
+		underWater = UnderWater.getInstance();
 		
 		finalSceneTexture = new Texture2D();
 		finalSceneTexture.generate();
@@ -171,7 +180,8 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 				    deferredRenderer.getGbuffer().getDepthTexture());
 		
 		deferredRenderer.render(msaa.getSampleCoverageMask(),
-							    ssao.getSsaoBlurSceneTexture());
+							    ssao.getSsaoBlurSceneTexture(),
+							    shadowMaps.getDepthMaps());
 		
 		// forward scene lighting - transparent objects
 		transparencyLayer.getFbo().bind();
@@ -181,20 +191,28 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		
 		// blend scene/transparent layers
 		finalSceneFbo.bind();
-		transparencyBlendRenderer.render(deferredRenderer.getDeferredLightingSceneTexture(), 
-										 deferredRenderer.getDepthmap(),
-										 deferredRenderer.getGbuffer().getLightScatteringTexture(),
-										 transparencyLayer.getGbuffer().getAlbedoTexture(),
-										 transparencyLayer.getGbuffer().getDepthTexture(),
-										 transparencyLayer.getGbuffer().getAlphaTexture(),
-										 transparencyLayer.getGbuffer().getLightScatteringTexture());
+//		transparencyBlendRenderer.render(deferredRenderer.getDeferredLightingSceneTexture(), 
+//										 deferredRenderer.getDepthmap(),
+//										 deferredRenderer.getGbuffer().getLightScatteringTexture(),
+//										 transparencyLayer.getGbuffer().getAlbedoTexture(),
+//										 transparencyLayer.getGbuffer().getDepthTexture(),
+//										 transparencyLayer.getGbuffer().getAlphaTexture(),
+//										 transparencyLayer.getGbuffer().getLightScatteringTexture());
 		finalSceneFbo.unbind();
+		
+		// start Threads to update instancing objects
+		instancingObjectHandler.signalAll();
 
+		postProcessingTexture = new Texture2D(deferredRenderer.getDeferredLightingSceneTexture());
+		sceneDepthmap = deferredRenderer.getDepthmap();
+		
 		// post processing effects
 		
-		postProcessingTexture = new Texture2D(finalSceneTexture);
-		this.sceneDepthmap = deferredRenderer.getDepthmap();
-			
+		if (isCameraUnderWater()){
+			underWater.render(postProcessingTexture, sceneDepthmap);
+			postProcessingTexture = underWater.getUnderwaterSceneTexture();
+		}
+		
 		// Bloom
 		bloom.render(postProcessingTexture);
 		postProcessingTexture = bloom.getBloomBlurSceneTexture();
@@ -218,14 +236,14 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		fullScreenQuad.setTexture(postProcessingTexture);
 		fullScreenQuad.render();
 		
-//		fullScreenQuadMultisample.setTexture(deferredRenderer.getGbuffer().getNormalTexture());
+//		fullScreenQuadMultisample.setTexture(deferredRenderer.getGbuffer().getAlbedoTexture());
 //		fullScreenQuadMultisample.render();
 		
 		deferredRenderer.getFbo().bind();
 		LightHandler.doOcclusionQueries();
 		deferredRenderer.getFbo().unbind();
 		
-		lensFlare.render();
+//		lensFlare.render();
 		
 		gui.render();
 		
@@ -254,81 +272,66 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 	}
 	@Override
 	public boolean isGrid() {
-		
 		return grid;
 	}
 	@Override
 	public boolean isCameraUnderWater() {
-		// TODO Auto-generated method stub
-		return false;
+		return cameraUnderWater;
 	}
 	@Override
 	public boolean isWaterReflection() {
-		// TODO Auto-generated method stub
-		return false;
+		return waterReflection;
 	}
 	@Override
 	public boolean isWaterRefraction() {
-		// TODO Auto-generated method stub
-		return false;
+		return waterRefraction;
 	}
 	@Override
 	public boolean isBloomEnabled() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 	@Override
 	public Framebuffer getMultisampledFbo() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 	@Override
 	public Texture getSceneDepthmap() {
-		
 		return sceneDepthmap;
 	}
 	@Override
 	public float getSightRangeFactor() {
-		
 		return sightRangeFactor;
 	}
 
 	@Override
 	public void setGrid(boolean flag) {
-
 		grid = flag;
 	}
 	@Override
 	public void setWaterRefraction(boolean flag) {
-		// TODO Auto-generated method stub
-		
+		waterRefraction = flag;
 	}
 	@Override
 	public void setWaterReflection(boolean flag) {
-		// TODO Auto-generated method stub
-		
+		waterReflection = flag;
 	}
 	@Override
 	public void setCameraUnderWater(boolean flag) {
-		// TODO Auto-generated method stub
-		
+		cameraUnderWater = flag;
 	}
 	@Override
 	public void setSightRangeFactor(float range) {
-		// TODO Auto-generated method stub
 		
 	}
-	public static ParallelSplitShadowMaps getShadowMaps() {
+	public ParallelSplitShadowMaps getShadowMaps() {
 		return shadowMaps;
 	}
-	public static void setShadowMaps(ParallelSplitShadowMaps shadowMaps) {
-		GLDeferredRenderingEngine.shadowMaps = shadowMaps;
+	public void setShadowMaps(ParallelSplitShadowMaps shadowMaps) {
+		this.shadowMaps = shadowMaps;
 	}
-	
 	public Quaternion getClipplane() {
 		return clipplane;
 	}
-
 	public void setClipplane(Quaternion clipplane) {
 		this.clipplane = clipplane;
 	}
@@ -338,10 +341,16 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 	public void setGui(GUI gui) {
 		this.gui = gui;
 	}
-
 	@Override
 	public Framebuffer getDeferredFbo() {
-		
 		return deferredRenderer.getFbo();
+	}
+
+	public UnderWater getUnderWater() {
+		return underWater;
+	}
+
+	public void setUnderWater(UnderWater underWater) {
+		this.underWater = underWater;
 	} 
 }

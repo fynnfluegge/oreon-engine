@@ -18,7 +18,6 @@ const vec3 waterRefractionColor = vec3(0.1,0.125,0.19);
 float linearize(float depth)
 {
 	return (2 * znear) / (zfar + znear - depth * (zfar - znear));
-	// return (2*depth - zfar - znear) / (zfar - znear) - 1;
 }
 
 void main(){
@@ -33,7 +32,7 @@ void main(){
 	
 	vec3 sceneColor = imageLoad(sceneSampler, computeCoord).rgb;
 	
-	float refractionFactor = clamp(2 * pow(depth,0.2) + 0.2,0.0,0.96);
+	float refractionFactor = clamp(2 * pow(depth,0.2) + 0.1,0.0,0.96);
 	
 	vec3 rgb = mix(sceneColor, waterRefractionColor, refractionFactor); 
 	

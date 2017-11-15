@@ -2,6 +2,8 @@ package org.oreon.demo.gl.oreonworlds2.shaders;
 
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE2;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE3;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE10;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE11;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE12;
@@ -27,6 +29,7 @@ import org.oreon.core.util.Constants;
 import org.oreon.core.util.ResourceLoader;
 import org.oreon.modules.gl.terrain.TerrainConfiguration;
 import org.oreon.modules.gl.terrain.TerrainNode;
+import org.oreon.modules.gl.water.UnderWater;
 
 public class TerrainShader extends GLShader{
 	
@@ -62,20 +65,19 @@ public class TerrainShader extends GLShader{
 		addUniform("tessFactor");
 		addUniform("tessSlope");
 		addUniform("tessShift");
-		addUniform("largeDetailedRange");
+		addUniform("largeDetailRange");
 		addUniform("index");
 		addUniform("gap");
 		addUniform("lod");
 		addUniform("location");
 		addUniform("texDetail");
 		addUniform("waterReflectionShift");
-		addUniform("isReflection");
 		addUniform("isRefraction");
-//		addUniform("isCameraUnderWater");
+		addUniform("isCameraUnderWater");
 		
-//		addUniform("caustics");
-//		addUniform("dudvCaustics");
-//		addUniform("distortionCaustics");
+		addUniform("caustics");
+		addUniform("dudvCaustics");
+		addUniform("distortionCaustics");
 		
 		addUniform("heightmap");
 		addUniform("normalmap");
@@ -122,9 +124,8 @@ public class TerrainShader extends GLShader{
 		bindUniformBlock("Camera", Constants.CameraUniformBlockBinding);
 		
 		setUniform("clipplane", CoreSystem.getInstance().getRenderingEngine().getClipplane());
-		setUniformi("isReflection", CoreSystem.getInstance().getRenderingEngine().isWaterReflection() ? 1 : 0);
 		setUniformi("isRefraction", CoreSystem.getInstance().getRenderingEngine().isWaterRefraction() ? 1 : 0);
-//		setUniformi("isCameraUnderWater", CoreSystem.getInstance().getRenderingEngine().isCameraUnderWater() ? 1 : 0);		
+		setUniformi("isCameraUnderWater", CoreSystem.getInstance().getRenderingEngine().isCameraUnderWater() ? 1 : 0);		
 		
 		TerrainConfiguration terrConfig = ((TerrainNode) object).getTerrConfig();
 		int lod = ((TerrainNode) object).getLod();
@@ -158,7 +159,7 @@ public class TerrainShader extends GLShader{
 		setUniformi("tessFactor", terrConfig.getTessellationFactor());
 		setUniformf("tessSlope", terrConfig.getTessellationSlope());
 		setUniformf("tessShift", terrConfig.getTessellationShift());
-		setUniformi("largeDetailedRange", terrConfig.getDetailRange());
+		setUniformi("largeDetailRange", terrConfig.getDetailRange());
 		setUniformf("texDetail", terrConfig.getTexDetail());
 		setUniformi("lod", lod);
 		setUniform("index", index);
@@ -166,14 +167,14 @@ public class TerrainShader extends GLShader{
 		setUniform("location", location);
 		setUniformi("waterReflectionShift", terrConfig.getWaterReflectionShift());
 		
-//		glActiveTexture(GL_TEXTURE2);
-//		UnderWater.getInstance().getCausticsMap().bind();
-//		setUniformi("caustics", 2);
-//		glActiveTexture(GL_TEXTURE3);
-//		UnderWater.getInstance().getDudvMap().bind();
-//		setUniformi("dudvCaustics", 3);
+		glActiveTexture(GL_TEXTURE2);
+		UnderWater.getInstance().getCausticsMap().bind();
+		setUniformi("caustics", 2);
+		glActiveTexture(GL_TEXTURE3);
+		UnderWater.getInstance().getDudvMap().bind();
+		setUniformi("dudvCaustics", 3);
 		
-//		setUniformf("distortionCaustics", UnderWater.getInstance().getDistortion());
+		setUniformf("distortionCaustics", UnderWater.getInstance().getDistortion());
 		
 		for (int i=0; i<8; i++){
 			setUniformi("lod_morph_area[" + i + "]", terrConfig.getLod_morphing_area()[i]);

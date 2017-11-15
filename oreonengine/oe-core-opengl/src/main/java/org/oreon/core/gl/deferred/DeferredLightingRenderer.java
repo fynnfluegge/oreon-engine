@@ -1,7 +1,6 @@
 package org.oreon.core.gl.deferred;
 
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
-import static org.lwjgl.opengl.GL11.GL_RGBA8;
 import static org.lwjgl.opengl.GL11.glTexImage2D;
 import static org.lwjgl.opengl.GL15.GL_WRITE_ONLY;
 import static org.lwjgl.opengl.GL15.GL_READ_ONLY;
@@ -24,6 +23,7 @@ import java.nio.IntBuffer;
 import org.oreon.core.gl.buffers.GLFramebuffer;
 import org.oreon.core.gl.shaders.DeferredLightingShader;
 import org.oreon.core.gl.texture.Texture2D;
+import org.oreon.core.gl.texture.Texture2DArray;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.BufferUtil;
 
@@ -79,7 +79,7 @@ public class DeferredLightingRenderer {
 		fbo.unbind();
 	}
 	
-	public void render(Texture2D sampleCoverageMask, Texture2D ssaoBlurTexture){
+	public void render(Texture2D sampleCoverageMask, Texture2D ssaoBlurTexture, Texture2DArray pssm){
 		
 		shader.bind();
 		glBindImageTexture(0, deferredLightingSceneTexture.getId(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
@@ -90,7 +90,7 @@ public class DeferredLightingRenderer {
 		glBindImageTexture(5, gbuffer.getSpecularEmissionTexture().getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA32F);
 		glBindImageTexture(6, sampleCoverageMask.getId(), 0, false, 0, GL_READ_ONLY, GL_R32F);
 		glBindImageTexture(7, ssaoBlurTexture.getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA32F);
-		shader.updateUniforms(gbuffer.getDepthTexture());
+		shader.updateUniforms(gbuffer.getDepthTexture(),pssm);
 		glDispatchCompute(CoreSystem.getInstance().getWindow().getWidth()/16, CoreSystem.getInstance().getWindow().getHeight()/16,1);
 	}
 

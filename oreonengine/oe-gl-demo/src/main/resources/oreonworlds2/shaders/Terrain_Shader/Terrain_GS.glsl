@@ -36,10 +36,8 @@ layout (std140, row_major) uniform Camera{
 uniform Material sand;
 uniform Material rock;
 uniform Material cliff;
-uniform int largeDetailedRange;
+uniform int largeDetailRange;
 uniform vec4 clipplane;
-uniform int isReflection;
-uniform int isRefraction;
 uniform Fractal fractals1[1];
 uniform float scaleXZ;
 
@@ -77,34 +75,31 @@ void main() {
 
 	float dist = (distance(gl_in[0].gl_Position.xyz, eyePosition) + distance(gl_in[1].gl_Position.xyz, eyePosition) + distance(gl_in[2].gl_Position.xyz, eyePosition))/3;
 	
-	if (dist < (largeDetailedRange) && isReflection == 0){
+	if (dist < (largeDetailRange)){
 	
-		if (isRefraction == 0){
+		calcTangent();
 		
-			calcTangent();
+		for(int k=0; k<gl_in.length(); k++){
 			
-			for(int k=0; k<gl_in.length(); k++){
-				
-				vec2 mapCoords = (gl_in[k].gl_Position.xz + scaleXZ/2)/scaleXZ; 
-				
-				displacement[k] = vec3(0,1,0);
-				
-				float height = gl_in[k].gl_Position.y;
-				
-				float sandBlend = texture(sand.splatmap, mapCoords).r;
-				float rockBlend = texture(rock.splatmap, mapCoords).r;
-				float cliffBlend = texture(cliff.splatmap, mapCoords).r;
-				
-				float scale = texture(sand.heightmap, texCoordG[k]/2).r * sandBlend * sand.displaceScale
-							+ texture(rock.heightmap, texCoordG[k]/10).r * rockBlend * rock.displaceScale
-							+ texture(cliff.heightmap, texCoordG[k]/10).r * cliffBlend * cliff.displaceScale;
-							
-				float attenuation = clamp(- distance(gl_in[k].gl_Position.xyz, eyePosition)/(largeDetailedRange-50) + 1,0.0,1.0);
-				scale *= attenuation;
+			vec2 mapCoords = (gl_in[k].gl_Position.xz + scaleXZ/2)/scaleXZ; 
+			
+			displacement[k] = vec3(0,1,0);
+			
+			float height = gl_in[k].gl_Position.y;
+			
+			float sandBlend = texture(sand.splatmap, mapCoords).r;
+			float rockBlend = texture(rock.splatmap, mapCoords).r;
+			float cliffBlend = texture(cliff.splatmap, mapCoords).r;
+			
+			float scale = texture(sand.heightmap, texCoordG[k]/2).r * sandBlend * sand.displaceScale
+						+ texture(rock.heightmap, texCoordG[k]/10).r * rockBlend * rock.displaceScale
+						+ texture(cliff.heightmap, texCoordG[k]/10).r * cliffBlend * cliff.displaceScale;
+						
+			float attenuation = clamp(- distance(gl_in[k].gl_Position.xyz, eyePosition)/(largeDetailRange-50) + 1,0.0,1.0);
+			scale *= attenuation;
 
-				displacement[k] *= scale;
-			}	
-		}
+			displacement[k] *= scale;
+		}	
 	}
 	
 	for (int i = 0; i < gl_in.length(); ++i)
