@@ -12,7 +12,7 @@ layout (binding = 3, rgba32f) uniform readonly image2DMS worldPositionImage;
 
 layout (binding = 4, rgba32f) uniform readonly image2DMS normalImage;
 
-layout (binding = 5, rgba8)   uniform readonly image2DMS specularEmissionImage;
+layout (binding = 5, rgba32f)   uniform readonly image2DMS specularEmissionImage;
 
 layout (binding = 6, r32f) uniform readonly image2D sampleCoverageMask;
 

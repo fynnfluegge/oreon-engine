@@ -44,7 +44,6 @@ import org.oreon.modules.gl.postprocessfilter.lightscattering.SunLightScattering
 import org.oreon.modules.gl.postprocessfilter.motionblur.MotionBlur;
 import org.oreon.modules.gl.postprocessfilter.ssao.SSAO;
 import org.oreon.modules.gl.terrain.Terrain;
-import org.oreon.modules.gl.water.Water;
 
 public class GLDeferredRenderingEngine implements RenderingEngine{
 
@@ -78,6 +77,8 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 	private LensFlare lensFlare;
 	private SSAO ssao;
 	
+	private float sightRangeFactor = 2f;
+	
 	@Override
 	public void init() {
 		
@@ -98,7 +99,7 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		
 		deferredRenderer = new DeferredLightingRenderer(window.getWidth(), window.getHeight());
 		transparencyLayer = new TransparencyLayer(window.getWidth(), window.getHeight());
-//		transparencyBlendRenderer = new TransparencyBlendRenderer();
+		transparencyBlendRenderer = new TransparencyBlendRenderer();
 		
 		motionBlur = new MotionBlur();
 		dofBlur = new DepthOfFieldBlur();
@@ -180,18 +181,18 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		
 		// blend scene/transparent layers
 		finalSceneFbo.bind();
-//		transparencyBlendRenderer.render(deferredRenderer.getDeferredLightingSceneTexture(), 
-//										 deferredRenderer.getDepthmap(),
-//										 deferredRenderer.getGbuffer().getLightScatteringTexture(),
-//										 transparencyLayer.getGbuffer().getAlbedoTexture(),
-//										 transparencyLayer.getGbuffer().getDepthTexture(),
-//										 transparencyLayer.getGbuffer().getAlphaTexture(),
-//										 transparencyLayer.getGbuffer().getLightScatteringTexture());
+		transparencyBlendRenderer.render(deferredRenderer.getDeferredLightingSceneTexture(), 
+										 deferredRenderer.getDepthmap(),
+										 deferredRenderer.getGbuffer().getLightScatteringTexture(),
+										 transparencyLayer.getGbuffer().getAlbedoTexture(),
+										 transparencyLayer.getGbuffer().getDepthTexture(),
+										 transparencyLayer.getGbuffer().getAlphaTexture(),
+										 transparencyLayer.getGbuffer().getLightScatteringTexture());
 		finalSceneFbo.unbind();
 
 		// post processing effects
 		
-		postProcessingTexture = new Texture2D(deferredRenderer.getDeferredLightingSceneTexture());
+		postProcessingTexture = new Texture2D(finalSceneTexture);
 		this.sceneDepthmap = deferredRenderer.getDepthmap();
 			
 		// Bloom
@@ -214,11 +215,11 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		sunlightScattering.render(postProcessingTexture,lightScatteringSceneTexture);
 		postProcessingTexture = sunlightScattering.getSunLightScatteringSceneTexture();
 		
-//		fullScreenQuad.setTexture(Water.getRefractionTexture());
-//		fullScreenQuad.render();
+		fullScreenQuad.setTexture(postProcessingTexture);
+		fullScreenQuad.render();
 		
-		fullScreenQuadMultisample.setTexture(deferredRenderer.getGbuffer().getAlbedoTexture());
-		fullScreenQuadMultisample.render();
+//		fullScreenQuadMultisample.setTexture(deferredRenderer.getGbuffer().getNormalTexture());
+//		fullScreenQuadMultisample.render();
 		
 		deferredRenderer.getFbo().bind();
 		LightHandler.doOcclusionQueries();
@@ -229,7 +230,7 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		gui.render();
 		
 		// draw into OpenGL window
-		window.draw(); 
+		window.draw();
 	}
 	@Override
 	public void update() {
@@ -288,8 +289,8 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 	}
 	@Override
 	public float getSightRangeFactor() {
-		// TODO Auto-generated method stub
-		return 0;
+		
+		return sightRangeFactor;
 	}
 
 	@Override

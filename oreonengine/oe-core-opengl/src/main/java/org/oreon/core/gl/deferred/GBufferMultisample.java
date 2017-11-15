@@ -40,7 +40,7 @@ public class GBufferMultisample {
 		specularEmissionTexture = new Texture2DMultisample();
 		specularEmissionTexture.generate();
 		specularEmissionTexture.bind();
-		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, Constants.MULTISAMPLES, GL_RGBA8, width, height, true);
+		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, Constants.MULTISAMPLES, GL_RGBA32F, width, height, true);
 		
 		lightScatteringTexture = new Texture2DMultisample();
 		lightScatteringTexture.generate();

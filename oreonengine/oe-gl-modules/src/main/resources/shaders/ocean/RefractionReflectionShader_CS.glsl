@@ -27,10 +27,6 @@ layout (std140, row_major) uniform LightViewProjections{
 	float splitRange[6];
 };
 
-const float zfar = 10000;
-const float znear = 0.1;
-const vec3 fogColor = vec3(0.65,0.85,0.9);
-
 float diffuse(vec3 direction, vec3 normal, float intensity)
 {
 	return max(0.0, dot(normal, -direction) * intensity);
