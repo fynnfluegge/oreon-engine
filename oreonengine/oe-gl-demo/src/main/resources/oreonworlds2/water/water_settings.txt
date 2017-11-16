@@ -10,7 +10,7 @@ tessellationFactor 2000
 tessellationSlope 1.6
 tessellationShift -0.02
 detailRange 1800
-shininess 160.0
+shininess 200.0
 emission 1.8
 kReflection 0.018
 kRefraction 0.01
