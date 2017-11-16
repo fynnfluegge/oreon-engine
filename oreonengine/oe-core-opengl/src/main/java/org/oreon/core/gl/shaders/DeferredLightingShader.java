@@ -33,7 +33,7 @@ public class DeferredLightingShader extends GLShader{
 		addUniformBlock("DirectionalLight");
 		addUniformBlock("LightViewProjections");
 		addUniform("depthmap");
-		addUniform("multisamples");
+		addUniform("numSamples");
 		addUniform("pssm");
 	}
 	
@@ -51,6 +51,6 @@ public class DeferredLightingShader extends GLShader{
 		pssm.bind();
 		setUniformi("pssm", 1);
 		
-		setUniformi("multisamples", Constants.MULTISAMPLES);
+		setUniformi("numSamples", Constants.MULTISAMPLES);
 	}
 }

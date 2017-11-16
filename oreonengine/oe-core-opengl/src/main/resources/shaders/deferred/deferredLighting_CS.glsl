@@ -39,7 +39,7 @@ layout (std140, row_major) uniform LightViewProjections{
 
 uniform sampler2DArray pssm;
 uniform sampler2DMS depthmap;
-uniform int multisamples;
+uniform int numSamples;
 
 const float zfar = 10000;
 const float znear = 0.1;
@@ -78,17 +78,18 @@ float percentageCloserShadows(vec3 projCoords, int split, float shadowFactor){
 		return 1;
 }
 
-float varianceShadow(vec3 projCoords, float depth, int split, int kernels){
+float varianceShadow(vec3 projCoords, int split, int kernels){
 	
 	float shadowFactor = 1.0;
 	float texelSize = 1.0/ 4096.0;
+	float currentDepth = projCoords.z;
 	float reduceFactor = 1/ pow(kernels*2+1,2);
 	
 	for (int i=-kernels; i<=kernels; i++){
 		for (int j=-kernels; j<=kernels; j++){
 			float shadowMapDepth = texture(pssm, vec3(projCoords.xy,split)
 													   + vec3(i,j,0) * texelSize).r; 
-			if (depth > shadowMapDepth)
+			if (currentDepth > shadowMapDepth)
 				shadowFactor -= reduceFactor;
 		}
 	}
@@ -97,56 +98,56 @@ float varianceShadow(vec3 projCoords, float depth, int split, int kernels){
 }
 
 
-float shadow(vec3 worldPos, float depth)
+float applyShadowMapping(vec3 worldPos, float depth)
 {
-	float shadow = 1;
 	float shadowFactor = 0;
 	vec3 projCoords = vec3(0,0,0);
-	if (depth < splitRange[0]){
+	float linDepth = (m_View * vec4(worldPos,1)).z/zfar;
+	if (linDepth < splitRange[0]){
 		vec4 lightSpacePos = m_lightViewProjection[0] * vec4(worldPos,1.0);
 		projCoords = lightSpacePos.xyz * 0.5 + 0.5;
-		float shadowFactor0 = varianceShadow(projCoords,depth,0,4);
+		float shadowFactor0 = varianceShadow(projCoords,0,4);
 		
 		lightSpacePos = m_lightViewProjection[1] * vec4(worldPos,1.0);
 		projCoords = lightSpacePos.xyz * 0.5 + 0.5;
-		float shadowFactor1 = varianceShadow(projCoords,depth,1,4);
+		float shadowFactor1 = varianceShadow(projCoords,1,4);
 		
 		lightSpacePos = m_lightViewProjection[2] * vec4(worldPos,1.0);
 		projCoords = lightSpacePos.xyz * 0.5 + 0.5;
-		float shadowFactor2 = varianceShadow(projCoords,depth,2,2);
+		float shadowFactor2 = varianceShadow(projCoords,2,2);
 		
 		shadowFactor = min(shadowFactor2, min(shadowFactor0,shadowFactor1));
 	}
-	else if (depth < splitRange[1]){
+	else if (linDepth < splitRange[1]){
 		vec4 lightSpacePos = m_lightViewProjection[1] * vec4(worldPos,1.0);
 		projCoords = lightSpacePos.xyz * 0.5 + 0.5;
-		float shadowFactor0 = varianceShadow(projCoords,depth,1,4);
+		float shadowFactor0 = varianceShadow(projCoords,1,4);
 		
 		lightSpacePos = m_lightViewProjection[2] * vec4(worldPos,1.0);
 		projCoords = lightSpacePos.xyz * 0.5 + 0.5;
-		float shadowFactor1 = varianceShadow(projCoords,depth,2,2);
+		float shadowFactor1 = varianceShadow(projCoords,2,2);
 		
 		shadowFactor = min(shadowFactor0,shadowFactor1);
 	}
-	else if (depth < splitRange[2]){
+	else if (linDepth < splitRange[2]){
 		vec4 lightSpacePos = m_lightViewProjection[2] * vec4(worldPos,1.0);
 		projCoords = lightSpacePos.xyz * 0.5 + 0.5;
-		shadowFactor = varianceShadow(projCoords,depth,2,2);
+		shadowFactor = varianceShadow(projCoords,2,2);
 	}
-	else if (depth < splitRange[3]){
+	else if (linDepth < splitRange[3]){
 		vec4 lightSpacePos = m_lightViewProjection[3] * vec4(worldPos,1.0);
 		projCoords = lightSpacePos.xyz * 0.5 + 0.5;
-		shadowFactor = varianceShadow(projCoords,depth,3,2);
+		shadowFactor = varianceShadow(projCoords,3,2);
 	}
-	else if (depth < splitRange[4]){
+	else if (linDepth < splitRange[4]){
 		vec4 lightSpacePos = m_lightViewProjection[4] * vec4(worldPos,1.0);
 		projCoords = lightSpacePos.xyz * 0.5 + 0.5;
-		shadowFactor = varianceShadow(projCoords,depth,4,1); 
+		shadowFactor = varianceShadow(projCoords,4,1); 
 	}
-	else if (depth < splitRange[5]){
+	else if (linDepth < splitRange[5]){
 		vec4 lightSpacePos = m_lightViewProjection[5] * vec4(worldPos,1.0);
 		projCoords = lightSpacePos.xyz * 0.5 + 0.5;
-		shadowFactor = varianceShadow(projCoords,depth,5,1); 
+		shadowFactor = varianceShadow(projCoords,5,1); 
 	}
 	else return 1;
 	
@@ -163,58 +164,58 @@ void main(void){
 	vec2 specular_emission = vec2(0,0);
 	vec3 depth = vec3(0,0,0);
 	
+	float diff = 0;
+	float shadow = 0;
+	float spec = 0;
+	
 	if(imageLoad(sampleCoverageMask, computeCoord).r == 1.0){
 	
 		// perform supersampling
 		
-		for (int i=0; i<multisamples; i++){
+		for (int i=0; i<numSamples; i++){
 			albedo += imageLoad(albedoSceneImage, computeCoord,i).rgb; 
 		}
-		albedo /= multisamples;
+		albedo /= numSamples;
 		
-		for (int i=0; i<multisamples; i++){
-			position += imageLoad(worldPositionImage, computeCoord,i).rgb; 
+		for (int i=0; i<numSamples; i++){
+			
+			normal = imageLoad(normalImage, computeCoord,i).rbg; 
+			position = imageLoad(worldPositionImage, computeCoord,i).rgb; 
+			specular_emission = imageLoad(specularEmissionImage, computeCoord,i).rg; 
+			
+			diff += diffuse(directional_light.direction, normal, directional_light.intensity);
+			spec += specular(directional_light.direction, normal, eyePosition, position, specular_emission.r, specular_emission.g);
+			shadow += applyShadowMapping(position, depth.r);
 		}
-		position /= multisamples;
 		
-		for (int i=0; i<multisamples; i++){
-			normal += imageLoad(normalImage, computeCoord,i).rbg; 
-		}
-		normal /= multisamples;
-		normal = normalize(normal);
+		diff /= numSamples;
+		spec /= numSamples;
+		shadow /= numSamples;
 		
-		for (int i=0; i<multisamples; i++){
-			specular_emission += imageLoad(specularEmissionImage, computeCoord,i).rg; 
-		}
-		specular_emission /= multisamples;
-		
-		for (int i=0; i<multisamples; i++){
+		for (int i=0; i<numSamples; i++){
 			depth += texelFetch(depthmap, computeCoord, i).rgb;
 		}
-		depth /= multisamples;
+		depth /= numSamples;
 	}
 	else {
 		albedo = imageLoad(albedoSceneImage, computeCoord,0).rgb;
 		position = imageLoad(worldPositionImage, computeCoord,0).rgb;
 		normal = imageLoad(normalImage, computeCoord,0).rbg;
 		specular_emission = imageLoad(specularEmissionImage, computeCoord,0).rg;
-		depth = texelFetch(depthmap, computeCoord, 0).rgb;
+		depth = texelFetch(depthmap, computeCoord,0).rgb;
+		
+		diff = diffuse(directional_light.direction, normal, directional_light.intensity);
+		spec = specular(directional_light.direction, normal, eyePosition, position, specular_emission.r, specular_emission.g);
+		shadow = applyShadowMapping(position, depth.r);
 	}
 		
 	vec3 finalColor = albedo;
 	
-	// prevent lighting sky
-	if (imageLoad(normalImage, computeCoord,0).rgb != vec3(0,0,0)){
-	
-		float diff = diffuse(directional_light.direction, normal, directional_light.intensity);
-		float spec = specular(directional_light.direction, normal, eyePosition, position, specular_emission.r, specular_emission.g);
+	vec3 diffuseLight = directional_light.ambient + directional_light.color * diff;
+	vec3 specularLight = directional_light.color * spec;
 
-		vec3 diffuseLight = directional_light.ambient + directional_light.color * diff * shadow(position, depth.r);
-		vec3 specularLight = directional_light.color * spec;
-
-		vec3 ssao = imageLoad(ssaoBlurImage, computeCoord).rgb;
-		finalColor = albedo * diffuseLight * ssao + specularLight;
-	}
+	vec3 ssao = imageLoad(ssaoBlurImage, computeCoord).rgb;
+	finalColor = albedo * diffuseLight * shadow * ssao + specularLight;
 	
 	imageStore(defferedSceneImage, computeCoord, vec4(finalColor,1.0));
 	imageStore(depthImage, computeCoord, vec4(depth,1.0));

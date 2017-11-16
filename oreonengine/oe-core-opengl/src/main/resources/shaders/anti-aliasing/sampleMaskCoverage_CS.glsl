@@ -11,9 +11,9 @@ layout (binding = 2, rgba32f) uniform readonly image2DMS normalImage;
 uniform sampler2DMS depthmap;
 uniform int multisamples;
 
-const float depthThreshold = 0.0001;
+const float depthThreshold = 0.00001;
 const float normalThreshold = 0.2;
-const float positionThreshold = 10;
+const float positionThreshold = 20;
 
 void main()
 {
@@ -49,14 +49,12 @@ void main()
 	for (int i=0; i<multisamples-1; i++){
 		depthDiscontinuities += abs(depths[i] - depths[i+1]);
 	}
-	
-	if (depthDiscontinuities > 0.001)
-		depthDiscontinuities = 1;
 		
 	float coverageValue = 0;
-	if ((depthDiscontinuities > depthThreshold)   || 
-	    (normalDiscontinuities > normalThreshold) || 
-		(positionDiscontinuities > positionThreshold)){
+	// if ((depthDiscontinuities > depthThreshold)){
+		// || 
+	    // (normalDiscontinuities > normalThreshold) || 
+	if(positionDiscontinuities > positionThreshold){
 		
 		coverageValue = 1.0;
 	}

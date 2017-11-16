@@ -64,7 +64,7 @@ public class OceanBRDFShader extends GLShader{
 		addUniform("kReflection");
 		addUniform("kRefraction");
 		addUniform("largeDetailRange");
-		addUniform("sightRangeFactor");
+//		addUniform("sightRangeFactor");
 		
 		addUniform("emission");
 		addUniform("specular");
@@ -93,7 +93,7 @@ public class OceanBRDFShader extends GLShader{
 		setUniformi("windowWidth", CoreSystem.getInstance().getWindow().getWidth());
 		setUniformi("windowHeight", CoreSystem.getInstance().getWindow().getHeight());
 		
-		setUniformf("sightRangeFactor", CoreSystem.getInstance().getRenderingEngine().getSightRangeFactor());
+//		setUniformf("sightRangeFactor", CoreSystem.getInstance().getRenderingEngine().getSightRangeFactor());
 		
 		for (int i=0; i<6; i++)
 		{

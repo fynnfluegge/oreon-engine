@@ -59,6 +59,6 @@ void main()
 	float alpha = texture(material.diffusemap, texCoord_FS).a;
 	alpha *= alphaDistanceFactor(dist);
 
-	outputColor = vec4(rgb,alpha);
+	outputColor = vec4(rgb,0);
 	blackColor = vec4(0,0,0,alpha);
 }

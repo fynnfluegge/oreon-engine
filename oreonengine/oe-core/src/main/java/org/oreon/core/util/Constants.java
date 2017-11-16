@@ -20,7 +20,7 @@ public class Constants {
 	
 	public static final int TERRAIN_FRACTALS_RESOLUTION = 512;
 	public static final int PSSM_SHADOWMAP_RESOLUTION = 4096;
-	public static final int MULTISAMPLES = 4;
+	public static final int MULTISAMPLES = 8;
 	
 	// Component keys
 	public static final String RENDERER_COMPONENT = "Renderer";

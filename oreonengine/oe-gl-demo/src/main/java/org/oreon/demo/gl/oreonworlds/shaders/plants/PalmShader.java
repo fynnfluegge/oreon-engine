@@ -1,8 +1,5 @@
 package org.oreon.demo.gl.oreonworlds.shaders.plants;
 
-import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
-import static org.lwjgl.opengl.GL13.glActiveTexture;
-
 import java.util.List;
 
 import org.oreon.core.gl.shaders.GLShader;
@@ -15,7 +12,6 @@ import org.oreon.core.util.Constants;
 import org.oreon.core.util.ResourceLoader;
 import org.oreon.demo.gl.oreonworlds.assets.plants.Palm01Cluster;
 import org.oreon.modules.gl.terrain.Terrain;
-import org.oreon.system.gl.desktop.GLForwardRenderingEngine;
 
 public class PalmShader extends GLShader{
 
