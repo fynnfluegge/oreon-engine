@@ -5,6 +5,7 @@ import org.oreon.core.system.CoreEngine;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.system.Window;
 import org.oreon.demo.gl.oreonworlds2.assets.plants.Palm01ClusterGroup;
+import org.oreon.demo.gl.oreonworlds2.gui.GUI;
 import org.oreon.demo.gl.oreonworlds2.shaders.TerrainGridShader;
 import org.oreon.demo.gl.oreonworlds2.shaders.TerrainShader;
 import org.oreon.demo.gl.oreonworlds2.water.Ocean;
@@ -24,6 +25,7 @@ public class Main {
 		GLDeferredRenderingEngine renderingengine = new GLDeferredRenderingEngine();
 		Window window = new GLWindow();
 		
+		renderingengine.setGui(new GUI());
 		window.setWidth(1280);
 		window.setHeight(720);
 		window.setTitle("OREON ENGINE oreonworlds 2.0");
@@ -46,7 +48,7 @@ public class Main {
 		coreSystem.getScenegraph().addTransparentObject(new Sun());
 		coreSystem.getScenegraph().setWater(new Ocean());
 		
-		coreSystem.getScenegraph().getRoot().addChild(new Palm01ClusterGroup());
+//		coreSystem.getScenegraph().getRoot().addChild(new Palm01ClusterGroup());
 		
 		coreEngine.start();
 	}

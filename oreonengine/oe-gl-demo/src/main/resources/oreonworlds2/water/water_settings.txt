@@ -1,6 +1,6 @@
 
 choppy 1
-delta_T 0.04
+delta_T 0.1
 displacementScale 2.5
 choppiness 12.0
 distortion 1.0E-3

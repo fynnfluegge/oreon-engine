@@ -94,7 +94,7 @@ float varianceShadow(vec3 projCoords, int split, int kernels){
 		}
 	}
 	
-	return max(0.0,shadowFactor);
+	return max(0.1,shadowFactor);
 }
 
 
@@ -158,8 +158,7 @@ void main(void){
 
 	ivec2 computeCoord = ivec2(gl_GlobalInvocationID.x, gl_GlobalInvocationID.y);
 	
-	int currentSamples = numSamples;
-	
+	vec3 finalColor = vec3(0,0,0);
 	vec3 albedo = vec3(0,0,0);
 	vec3 position = vec3(0,0,0);
 	vec3 normal = vec3(0,0,0);
@@ -171,16 +170,10 @@ void main(void){
 	float spec = 0;
 	
 	if(imageLoad(sampleCoverageMask, computeCoord).r == 1.0){
-	
-		// perform supersampling
-		for (int i=0; i<numSamples; i++){
-			albedo += imageLoad(albedoSceneImage, computeCoord,i).rgb; 
-		}
-		
-		albedo /= numSamples;
 		
 		for (int i=0; i<numSamples; i++){
 			
+			albedo = imageLoad(albedoSceneImage, computeCoord,i).rgb; 
 			normal = imageLoad(normalImage, computeCoord,i).rbg; 
 			
 			// prevent lighting atmosphere
@@ -188,18 +181,22 @@ void main(void){
 				position = imageLoad(worldPositionImage, computeCoord,i).rgb; 
 				specular_emission = imageLoad(specularEmissionImage, computeCoord,i).rg; 
 			
-				diff += diffuse(directional_light.direction, normal, directional_light.intensity);
-				spec += specular(directional_light.direction, normal, eyePosition, position, specular_emission.r, specular_emission.g);
-				shadow += applyShadowMapping(position, depth.r);
+				diff = diffuse(directional_light.direction, normal, directional_light.intensity);
+				spec = specular(directional_light.direction, normal, eyePosition, position, specular_emission.r, specular_emission.g);
+				shadow = applyShadowMapping(position, depth.r);
+				
+				vec3 diffuseLight = directional_light.ambient + directional_light.color * diff;
+				vec3 specularLight = directional_light.color * spec;
+				vec3 ssao = imageLoad(ssaoBlurImage, computeCoord).rgb;
+			
+				finalColor += (albedo * diffuseLight * shadow * ssao + specularLight);
 			}
 			else{
-				currentSamples--;
+				finalColor += albedo;
 			}
 		}
 		
-		diff /= currentSamples;
-		spec /= currentSamples;
-		shadow /= currentSamples;
+		finalColor /= numSamples;
 		
 		for (int i=0; i<numSamples; i++){
 			depth += texelFetch(depthmap, computeCoord, i).rgb;
@@ -210,21 +207,26 @@ void main(void){
 		albedo = imageLoad(albedoSceneImage, computeCoord,0).rgb;
 		position = imageLoad(worldPositionImage, computeCoord,0).rgb;
 		normal = imageLoad(normalImage, computeCoord,0).rbg;
-		specular_emission = imageLoad(specularEmissionImage, computeCoord,0).rg;
-		depth = texelFetch(depthmap, computeCoord,0).rgb;
+		depth = texelFetch(depthmap, computeCoord, 0).rgb;
 		
-		diff = diffuse(directional_light.direction, normal, directional_light.intensity);
-		spec = specular(directional_light.direction, normal, eyePosition, position, specular_emission.r, specular_emission.g);
-		shadow = applyShadowMapping(position, depth.r);
+		if (normal != vec3(0,0,0)){
+			specular_emission = imageLoad(specularEmissionImage, computeCoord,0).rg;
+			depth = texelFetch(depthmap, computeCoord,0).rgb;
+		
+			diff = diffuse(directional_light.direction, normal, directional_light.intensity);
+			spec = specular(directional_light.direction, normal, eyePosition, position, specular_emission.r, specular_emission.g);
+			shadow = applyShadowMapping(position, depth.r);
+			
+			vec3 diffuseLight = directional_light.ambient + directional_light.color * diff;
+			vec3 specularLight = directional_light.color * spec;
+			vec3 ssao = imageLoad(ssaoBlurImage, computeCoord).rgb;
+			
+			finalColor = albedo * diffuseLight * shadow * ssao + specularLight;
+		}
+		else{
+			finalColor = albedo;
+		}
 	}
-		
-	vec3 finalColor = albedo;
-	
-	vec3 diffuseLight = directional_light.ambient + directional_light.color * diff;
-	vec3 specularLight = directional_light.color * spec;
-
-	vec3 ssao = imageLoad(ssaoBlurImage, computeCoord).rgb;
-	finalColor = albedo * diffuseLight * shadow * ssao + specularLight;
 	
 	imageStore(defferedSceneImage, computeCoord, vec4(finalColor,1.0));
 	imageStore(depthImage, computeCoord, vec4(depth,1.0));

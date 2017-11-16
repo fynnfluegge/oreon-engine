@@ -233,7 +233,7 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		sunlightScattering.render(postProcessingTexture,lightScatteringSceneTexture);
 		postProcessingTexture = sunlightScattering.getSunLightScatteringSceneTexture();
 		
-		fullScreenQuad.setTexture(deferredRenderer.getDeferredLightingSceneTexture());
+		fullScreenQuad.setTexture(postProcessingTexture);
 		fullScreenQuad.render();
 		
 //		fullScreenQuadMultisample.setTexture(deferredRenderer.getGbuffer().getAlbedoTexture());
