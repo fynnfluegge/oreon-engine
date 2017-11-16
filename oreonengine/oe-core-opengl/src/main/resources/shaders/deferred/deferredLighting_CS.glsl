@@ -158,6 +158,8 @@ void main(void){
 
 	ivec2 computeCoord = ivec2(gl_GlobalInvocationID.x, gl_GlobalInvocationID.y);
 	
+	int currentSamples = numSamples;
+	
 	vec3 albedo = vec3(0,0,0);
 	vec3 position = vec3(0,0,0);
 	vec3 normal = vec3(0,0,0);
@@ -171,26 +173,33 @@ void main(void){
 	if(imageLoad(sampleCoverageMask, computeCoord).r == 1.0){
 	
 		// perform supersampling
-		
 		for (int i=0; i<numSamples; i++){
 			albedo += imageLoad(albedoSceneImage, computeCoord,i).rgb; 
 		}
+		
 		albedo /= numSamples;
 		
 		for (int i=0; i<numSamples; i++){
 			
 			normal = imageLoad(normalImage, computeCoord,i).rbg; 
-			position = imageLoad(worldPositionImage, computeCoord,i).rgb; 
-			specular_emission = imageLoad(specularEmissionImage, computeCoord,i).rg; 
 			
-			diff += diffuse(directional_light.direction, normal, directional_light.intensity);
-			spec += specular(directional_light.direction, normal, eyePosition, position, specular_emission.r, specular_emission.g);
-			shadow += applyShadowMapping(position, depth.r);
+			// prevent lighting atmosphere
+			if (normal != vec3(0,0,0)){
+				position = imageLoad(worldPositionImage, computeCoord,i).rgb; 
+				specular_emission = imageLoad(specularEmissionImage, computeCoord,i).rg; 
+			
+				diff += diffuse(directional_light.direction, normal, directional_light.intensity);
+				spec += specular(directional_light.direction, normal, eyePosition, position, specular_emission.r, specular_emission.g);
+				shadow += applyShadowMapping(position, depth.r);
+			}
+			else{
+				currentSamples--;
+			}
 		}
 		
-		diff /= numSamples;
-		spec /= numSamples;
-		shadow /= numSamples;
+		diff /= currentSamples;
+		spec /= currentSamples;
+		shadow /= currentSamples;
 		
 		for (int i=0; i<numSamples; i++){
 			depth += texelFetch(depthmap, computeCoord, i).rgb;
