@@ -45,8 +45,7 @@ public class MSAA {
 		shader.bind();
 		glBindImageTexture(0, sampleCoverageMask.getId(), 0, false, 0, GL_WRITE_ONLY, GL_R32F);
 		glBindImageTexture(1, worldPositionTexture.getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA32F);
-		glBindImageTexture(2, normalTexture.getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA32F);
-		shader.updateUniforms(depthmap);
+		shader.updateUniforms();
 		glDispatchCompute(CoreSystem.getInstance().getWindow().getWidth()/16, CoreSystem.getInstance().getWindow().getHeight()/16, 1);	
 	}
 	

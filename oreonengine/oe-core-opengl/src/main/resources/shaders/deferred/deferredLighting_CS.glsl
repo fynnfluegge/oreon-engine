@@ -197,21 +197,14 @@ void main(void){
 		}
 		
 		finalColor /= numSamples;
-		
-		for (int i=0; i<numSamples; i++){
-			depth += texelFetch(depthmap, computeCoord, i).rgb;
-		}
-		depth /= numSamples;
 	}
 	else {
 		albedo = imageLoad(albedoSceneImage, computeCoord,0).rgb;
-		position = imageLoad(worldPositionImage, computeCoord,0).rgb;
 		normal = imageLoad(normalImage, computeCoord,0).rbg;
-		depth = texelFetch(depthmap, computeCoord, 0).rgb;
 		
 		if (normal != vec3(0,0,0)){
+			position = imageLoad(worldPositionImage, computeCoord,0).rgb;
 			specular_emission = imageLoad(specularEmissionImage, computeCoord,0).rg;
-			depth = texelFetch(depthmap, computeCoord,0).rgb;
 		
 			diff = diffuse(directional_light.direction, normal, directional_light.intensity);
 			spec = specular(directional_light.direction, normal, eyePosition, position, specular_emission.r, specular_emission.g);
@@ -227,6 +220,8 @@ void main(void){
 			finalColor = albedo;
 		}
 	}
+	
+	depth = texelFetch(depthmap, computeCoord,0).rgb;
 	
 	imageStore(defferedSceneImage, computeCoord, vec4(finalColor,1.0));
 	imageStore(depthImage, computeCoord, vec4(depth,1.0));
