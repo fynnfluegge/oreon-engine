@@ -95,7 +95,7 @@ void main(void)
     // Reflection //
 	vec2 reflecCoords = projCoord.xy + dudvCoord.rb * kReflection;
 	reflecCoords = clamp(reflecCoords, kReflection, 1-kReflection);
-    vec3 reflection = mix(texture(waterReflection, reflecCoords).rgb, deepOceanColor,  0.6);
+    vec3 reflection = mix(texture(waterReflection, reflecCoords).rgb, deepOceanColor,  0.1);
     reflection *= F;
  
     // Refraction //

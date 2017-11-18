@@ -189,7 +189,7 @@ void main(void){
 				vec3 specularLight = directional_light.color * spec;
 				vec3 ssao = imageLoad(ssaoBlurImage, computeCoord).rgb;
 			
-				finalColor += (albedo * diffuseLight * shadow * ssao + specularLight);
+				finalColor += (albedo * diffuseLight * shadow * ssao);
 			}
 			else{
 				finalColor += albedo;
@@ -214,7 +214,7 @@ void main(void){
 			vec3 specularLight = directional_light.color * spec;
 			vec3 ssao = imageLoad(ssaoBlurImage, computeCoord).rgb;
 			
-			finalColor = albedo * diffuseLight * shadow * ssao + specularLight;
+			finalColor = albedo * diffuseLight * shadow * ssao;
 		}
 		else{
 			finalColor = albedo;

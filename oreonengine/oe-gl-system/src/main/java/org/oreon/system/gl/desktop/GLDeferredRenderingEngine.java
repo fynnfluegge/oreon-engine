@@ -15,6 +15,7 @@ import java.nio.IntBuffer;
 
 import org.lwjgl.glfw.GLFW;
 import org.oreon.core.buffers.Framebuffer;
+import org.oreon.core.gl.antialiasing.FXAA;
 import org.oreon.core.gl.antialiasing.MSAA;
 import org.oreon.core.gl.buffers.GLFramebuffer;
 import org.oreon.core.gl.config.Default;
@@ -53,6 +54,7 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 	private FullScreenQuad fullScreenQuad;
 	private FullScreenMultisampleQuad fullScreenQuadMultisample;
 	private MSAA msaa;
+	private FXAA fxaa;
 	
 	private InstancingObjectHandler instancingObjectHandler;
 	
@@ -104,6 +106,7 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		fullScreenQuadMultisample = new FullScreenMultisampleQuad();
 		shadowMaps = new ParallelSplitShadowMaps();
 		msaa = new MSAA();
+		fxaa = new FXAA();
 		
 		deferredRenderer = new DeferredLightingRenderer(window.getWidth(), window.getHeight());
 		transparencyLayer = new TransparencyLayer(window.getWidth(), window.getHeight());
@@ -200,6 +203,9 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 										 transparencyLayer.getGbuffer().getLightScatteringTexture());
 		finalSceneFbo.unbind();
 		
+		// perform FXAA
+		fxaa.render(finalSceneTexture);
+		
 		// start Threads to update instancing objects
 		instancingObjectHandler.signalAll();
 
@@ -218,8 +224,8 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		postProcessingTexture = bloom.getBloomBlurSceneTexture();
 		
 		// Depth of Field Blur			
-//		dofBlur.render(deferredRenderer.getDepthmap(), postProcessingTexture, window.getWidth(), window.getHeight());
-//		postProcessingTexture = dofBlur.getVerticalBlurSceneTexture();
+		dofBlur.render(deferredRenderer.getDepthmap(), postProcessingTexture, window.getWidth(), window.getHeight());
+		postProcessingTexture = dofBlur.getVerticalBlurSceneTexture();
 				
 		// Motion Blur
 		if (CoreSystem.getInstance().getScenegraph().getCamera().getPreviousPosition().sub(
@@ -243,7 +249,7 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		LightHandler.doOcclusionQueries();
 		deferredRenderer.getFbo().unbind();
 		
-//		lensFlare.render();
+		lensFlare.render();
 		
 		gui.render();
 		
