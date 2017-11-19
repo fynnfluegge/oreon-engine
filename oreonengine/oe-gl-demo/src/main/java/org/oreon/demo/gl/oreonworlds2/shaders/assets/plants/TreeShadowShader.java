@@ -30,9 +30,9 @@ public class TreeShadowShader extends GLShader{
 	{
 		super();
 		
-		addVertexShader(ResourceLoader.loadShader("oreonworlds/shaders/Tree_Shader/TreeShadow_VS.glsl"));
-		addGeometryShader(ResourceLoader.loadShader("oreonworlds/shaders/Tree_Shader/TreeShadow_GS.glsl"));
-		addFragmentShader(ResourceLoader.loadShader("oreonworlds/shaders/Tree_Shader/TreeShadow_FS.glsl"));
+		addVertexShader(ResourceLoader.loadShader("oreonworlds2/shaders/assets/Tree_Shader/TreeShadow_VS.glsl"));
+		addGeometryShader(ResourceLoader.loadShader("oreonworlds2/shaders/assets/Tree_Shader/TreeShadow_GS.glsl"));
+		addFragmentShader(ResourceLoader.loadShader("oreonworlds2/shaders/assets/Tree_Shader/TreeShadow_FS.glsl"));
 		compileShader();
 		
 		addUniform("clipplane");

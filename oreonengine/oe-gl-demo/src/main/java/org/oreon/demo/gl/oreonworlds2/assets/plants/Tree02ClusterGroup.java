@@ -14,11 +14,11 @@ import org.oreon.core.model.Vertex;
 import org.oreon.core.renderer.RenderInfo;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.Util;
-import org.oreon.demo.gl.oreonworlds.shaders.plants.TreeBillboardShader;
-import org.oreon.demo.gl.oreonworlds.shaders.plants.TreeBillboardShadowShader;
-import org.oreon.demo.gl.oreonworlds.shaders.plants.TreeLeavesShader;
-import org.oreon.demo.gl.oreonworlds.shaders.plants.TreeShadowShader;
-import org.oreon.demo.gl.oreonworlds.shaders.plants.TreeTrunkShader;
+import org.oreon.demo.gl.oreonworlds2.shaders.assets.plants.TreeBillboardShader;
+import org.oreon.demo.gl.oreonworlds2.shaders.assets.plants.TreeBillboardShadowShader;
+import org.oreon.demo.gl.oreonworlds2.shaders.assets.plants.TreeLeavesShader;
+import org.oreon.demo.gl.oreonworlds2.shaders.assets.plants.TreeShadowShader;
+import org.oreon.demo.gl.oreonworlds2.shaders.assets.plants.TreeTrunkShader;
 
 public class Tree02ClusterGroup extends InstancingObject{
 	

@@ -32,9 +32,9 @@ private static TreeBillboardShader instance = null;
 	{
 		super();
 		
-		addVertexShader(ResourceLoader.loadShader("oreonworlds/shaders/Billboard_Shader/Billboard_VS.glsl"));
-		addGeometryShader(ResourceLoader.loadShader("oreonworlds/shaders/Billboard_Shader/Billboard_GS.glsl"));
-		addFragmentShader(ResourceLoader.loadShader("oreonworlds/shaders/Billboard_Shader/Billboard_FS.glsl"));
+		addVertexShader(ResourceLoader.loadShader("oreonworlds2/shaders/assets/Billboard_Shader/Billboard_VS.glsl"));
+		addGeometryShader(ResourceLoader.loadShader("oreonworlds2/shaders/assets/Billboard_Shader/Billboard_GS.glsl"));
+		addFragmentShader(ResourceLoader.loadShader("oreonworlds2/shaders/assets/Billboard_Shader/Billboard_FS.glsl"));
 		compileShader();
 		
 		addUniform("sightRangeFactor");

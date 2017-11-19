@@ -35,9 +35,9 @@ public class TreeTrunkShader extends GLShader{
 	{
 		super();
 		
-		addVertexShader(ResourceLoader.loadShader("oreonworlds/shaders/Tree_Shader/TreeTrunk_VS.glsl"));
-		addGeometryShader(ResourceLoader.loadShader("oreonworlds/shaders/Tree_Shader/TreeTrunk_GS.glsl"));
-		addFragmentShader(ResourceLoader.loadShader("oreonworlds/shaders/Tree_Shader/TreeTrunk_FS.glsl"));
+		addVertexShader(ResourceLoader.loadShader("oreonworlds2/shaders/assets/Tree_Shader/TreeTrunk_VS.glsl"));
+		addGeometryShader(ResourceLoader.loadShader("oreonworlds2/shaders/assets/Tree_Shader/TreeTrunk_GS.glsl"));
+		addFragmentShader(ResourceLoader.loadShader("oreonworlds2/shaders/assets/Tree_Shader/TreeTrunk_FS.glsl"));
 		compileShader();
 		
 		addUniform("sightRangeFactor");

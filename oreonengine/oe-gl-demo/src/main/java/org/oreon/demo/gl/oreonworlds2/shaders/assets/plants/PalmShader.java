@@ -1,6 +1,5 @@
 package org.oreon.demo.gl.oreonworlds2.shaders.assets.plants;
 
-
 import java.util.List;
 
 import org.oreon.core.gl.shaders.GLShader;
@@ -11,7 +10,6 @@ import org.oreon.core.scene.GameObject;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.Constants;
 import org.oreon.core.util.ResourceLoader;
-import org.oreon.demo.gl.oreonworlds2.assets.plants.Palm01Cluster;
 import org.oreon.modules.gl.terrain.Terrain;
 
 public class PalmShader extends GLShader{
@@ -73,7 +71,7 @@ public class PalmShader extends GLShader{
 //		setUniformf("material.emission", material.getEmission());
 //		setUniformf("material.shininess", material.getShininess());
 		
-		List<Integer> indices = ((Palm01Cluster) object.getParent()).getHighPolyIndices();
+		List<Integer> indices = ((InstancingCluster) object.getParent()).getHighPolyIndices();
 		
 		for (int i=0; i<indices.size(); i++)
 		{

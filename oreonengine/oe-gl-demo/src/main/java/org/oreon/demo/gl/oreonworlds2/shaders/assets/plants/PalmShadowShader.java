@@ -8,7 +8,6 @@ import org.oreon.core.scene.GameObject;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.Constants;
 import org.oreon.core.util.ResourceLoader;
-import org.oreon.demo.gl.oreonworlds2.assets.plants.Palm01Cluster;
 
 public class PalmShadowShader extends GLShader{
 
@@ -52,7 +51,7 @@ public class PalmShadowShader extends GLShader{
 		((InstancingCluster) object.getParent()).getWorldMatricesBuffer().bindBufferBase(0);
 		bindUniformBlock("worldMatrices", 0);
 		
-		List<Integer> indices = ((Palm01Cluster) object.getParent()).getHighPolyIndices();
+		List<Integer> indices = ((InstancingCluster) object.getParent()).getHighPolyIndices();
 		
 		for (int i=0; i<indices.size(); i++)
 		{
