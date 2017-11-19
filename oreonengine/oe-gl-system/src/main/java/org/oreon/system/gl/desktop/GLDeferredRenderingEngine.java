@@ -124,7 +124,7 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		finalSceneTexture.generate();
 		finalSceneTexture.bind();
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, window.getWidth(), window.getHeight(), 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
-		finalSceneTexture.noFilter();
+		finalSceneTexture.bilinearFilter();
 		
 		lightScatteringSceneTexture = new Texture2D();
 		lightScatteringSceneTexture.generate();
@@ -239,7 +239,7 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		sunlightScattering.render(postProcessingTexture,lightScatteringSceneTexture);
 		postProcessingTexture = sunlightScattering.getSunLightScatteringSceneTexture();
 		
-		fullScreenQuad.setTexture(postProcessingTexture);
+		fullScreenQuad.setTexture(fxaa.getFxaaSceneTexture());
 		fullScreenQuad.render();
 		
 //		fullScreenQuadMultisample.setTexture(deferredRenderer.getGbuffer().getAlbedoTexture());

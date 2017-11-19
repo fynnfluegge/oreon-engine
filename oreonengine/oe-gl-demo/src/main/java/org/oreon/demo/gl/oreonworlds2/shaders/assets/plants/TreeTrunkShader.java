@@ -2,7 +2,6 @@ package org.oreon.demo.gl.oreonworlds2.shaders.assets.plants;
 
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
-import static org.lwjgl.opengl.GL13.GL_TEXTURE2;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import java.util.List;
@@ -16,7 +15,6 @@ import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.Constants;
 import org.oreon.core.util.ResourceLoader;
 import org.oreon.modules.gl.terrain.Terrain;
-import org.oreon.system.gl.desktop.GLForwardRenderingEngine;
 
 public class TreeTrunkShader extends GLShader{
 
@@ -47,12 +45,9 @@ public class TreeTrunkShader extends GLShader{
 		addUniform("scalingMatrix");
 		addUniform("isReflection");
 		
-		addUniformBlock("DirectionalLight");
 		addUniformBlock("worldMatrices");
 		addUniformBlock("modelMatrices");
-		addUniformBlock("LightViewProjections");
 		addUniformBlock("Camera");
-		addUniform("shadowMaps");
 		
 		for (int i=0; i<100; i++)
 		{
@@ -63,8 +58,6 @@ public class TreeTrunkShader extends GLShader{
 	public void updateUniforms(GameObject object)
 	{
 		bindUniformBlock("Camera", Constants.CameraUniformBlockBinding);
-		bindUniformBlock("DirectionalLight", Constants.DirectionalLightUniformBlockBinding);
-		bindUniformBlock("LightViewProjections",Constants.LightMatricesUniformBlockBinding);
 		setUniformi("isReflection", CoreSystem.getInstance().getRenderingEngine().isWaterReflection() ? 1 : 0);
 		
 		((InstancingCluster) object.getParent()).getWorldMatricesBuffer().bindBufferBase(0);
@@ -85,10 +78,6 @@ public class TreeTrunkShader extends GLShader{
 		glActiveTexture(GL_TEXTURE1);
 		material.getNormalmap().bind();
 		setUniformi("material.normalmap", 1);
-		
-		glActiveTexture(GL_TEXTURE2);
-		GLForwardRenderingEngine.getShadowMaps().getDepthMaps().bind();
-		setUniformi("shadowMaps", 2);
 		
 		List<Integer> indices = ((InstancingCluster) object.getParent()).getHighPolyIndices();
 		
