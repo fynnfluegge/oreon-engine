@@ -29,11 +29,6 @@ layout (std140, row_major) uniform Camera{
 };
 
 uniform Material material;
-uniform float sightRangeFactor;
-
-const float zFar = 10000.0;
-const float zNear = 0.1;
-const vec3 fogColor = vec3(0.62,0.85,0.95);
 
 float alphaDistanceFactor(float dist)
 {
@@ -50,19 +45,15 @@ void main()
 	float dist = length(eyePosition - position_FS);
 	
 	mat3 TBN = mat3(tangent_FS, normal_FS, bitangent_FS);
-	vec3 normal = normalize(2*(texture(material.normalmap, texCoord_FS * vec2(20,4)).rbg)-1);
+	vec3 normal = normalize(2*(texture(material.normalmap, texCoord_FS * vec2(20,4)).rgb)-1);
 	normal = normalize(TBN * normal);
 	
 	vec3 albedo = texture(material.diffusemap, texCoord_FS * vec2(20,4)).rgb;
 	
-	float fogFactor = -0.0005/sightRangeFactor*(dist-zFar/5*sightRangeFactor);
-	
-    vec3 rgb = mix(fogColor, albedo, clamp(fogFactor,0,1));
-	
 	float alpha = texture(material.diffusemap, texCoord_FS).a;
 	alpha *= alphaDistanceFactor(dist);
 	
-	albedo_out = vec4(rgb,1);
+	albedo_out = vec4(albedo,1);
 	worldPosition_out = vec4(position_FS,1);
 	normal_out = vec4(normal,1);
 	specularEmission_out = vec4(1,0,0,1);

@@ -17,7 +17,7 @@ uniform sampler2D sceneTexture;
 
 const float EDGE_THRESHOLD_MIN = 0.0312;
 const float EDGE_THRESHOLD_MAX = 0.125;
-const int ITERATIONS = 5;
+const int ITERATIONS = 7;
 const float QUALITY[7] = {1.5f, 2.0f, 2.0f, 2.0f, 2.0f, 4.0f, 8.0f};
 const float SUBPIXEL_QUALITY = 0.75;
 
@@ -29,7 +29,7 @@ void main(){
 
 	ivec2 computeCoord = ivec2(gl_GlobalInvocationID.x, gl_GlobalInvocationID.y);
 	
-	vec2 uv = vec2(gl_GlobalInvocationID.x/1280.0, gl_GlobalInvocationID.y/720.0);
+	vec2 uv = vec2(gl_GlobalInvocationID.x/1280.0f, gl_GlobalInvocationID.y/720.0f);
 	
 	vec2 inverseScreenSize = vec2(1.0/1280.0, 1.0/720.0);
 	
@@ -58,10 +58,10 @@ void main(){
 	}
 	
 	// Query the 4 remaining corners lumas.
-	float lumaDownLeft = rgb2luma(imageLoad(sceneImage_in,computeCoord * ivec2(-1,-1)).rgb);
-	float lumaUpRight = rgb2luma(imageLoad(sceneImage_in,computeCoord * ivec2(1,1)).rgb);
-	float lumaUpLeft = rgb2luma(imageLoad(sceneImage_in,computeCoord * ivec2(-1,1)).rgb);
-	float lumaDownRight = rgb2luma(imageLoad(sceneImage_in,computeCoord * ivec2(1,-1)).rgb);
+	float lumaDownLeft = rgb2luma(imageLoad(sceneImage_in,computeCoord + ivec2(-1,-1)).rgb);
+	float lumaUpRight = rgb2luma(imageLoad(sceneImage_in,computeCoord + ivec2(1,1)).rgb);
+	float lumaUpLeft = rgb2luma(imageLoad(sceneImage_in,computeCoord + ivec2(-1,1)).rgb);
+	float lumaDownRight = rgb2luma(imageLoad(sceneImage_in,computeCoord + ivec2(1,-1)).rgb);
 
 	// Combine the four edges lumas (using intermediary variables for future computations with the same values).
 	float lumaDownUp = lumaDown + lumaUp;
@@ -143,7 +143,7 @@ void main(){
 	// If both sides have not been reached, continue to explore.
 	if(!reachedBoth){
 
-		for(int i = 2; i < ITERATIONS; i++){
+		for(int i = 0; i < ITERATIONS; i++){
 			// If needed, read luma in 1st direction, compute delta.
 			if(!reached1){
 				lumaEnd1 = rgb2luma(texture(sceneTexture, uv1).rgb);
@@ -209,7 +209,7 @@ void main(){
 	finalOffset = max(finalOffset,subPixelOffsetFinal);
 	
 	// Compute the final UV coordinates.
-	ivec2 finalUv = uv;
+	vec2 finalUv = uv;
 	if(isHorizontal){
 		finalUv.y += int(finalOffset * stepLength);
 	} else {
@@ -221,6 +221,10 @@ void main(){
 	
 	imageStore(fxaaScene_out, computeCoord, vec4(finalColor, 1.0));	
 }
+
+// alternative approach
+// void main(){
+
 	// Sampling neighbour texels. Offsets are adapted to OpenGL texture coordinates. 
 	// vec3 rgbNW = imageLoad(sceneImage_in, computeCoord + ivec2(-1,1)).rgb;
     // vec3 rgbNE = imageLoad(sceneImage_in, computeCoord + ivec2(1,1)).rgb;
@@ -296,3 +300,4 @@ void main(){
 	// {
 		// imageStore(fxaaScene_out, computeCoord, vec4(1.0,0.0,0.0,1.0));
 	// }
+// }

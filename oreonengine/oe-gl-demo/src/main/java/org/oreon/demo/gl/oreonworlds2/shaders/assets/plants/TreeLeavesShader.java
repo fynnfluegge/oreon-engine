@@ -1,7 +1,6 @@
 package org.oreon.demo.gl.oreonworlds2.shaders.assets.plants;
 
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
-import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import java.util.List;
@@ -14,8 +13,6 @@ import org.oreon.core.scene.GameObject;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.Constants;
 import org.oreon.core.util.ResourceLoader;
-import org.oreon.modules.gl.terrain.Terrain;
-import org.oreon.system.gl.desktop.GLForwardRenderingEngine;
 
 public class TreeLeavesShader extends GLShader{
 	
@@ -39,7 +36,6 @@ public class TreeLeavesShader extends GLShader{
 		addFragmentShader(ResourceLoader.loadShader("oreonworlds2/shaders/assets/Tree_Shader/TreeLeaves_FS.glsl"));
 		compileShader();
 		
-		addUniform("sightRangeFactor");
 		addUniform("material.diffusemap");
 		addUniform("clipplane");
 		addUniform("scalingMatrix");
@@ -67,7 +63,6 @@ public class TreeLeavesShader extends GLShader{
 		
 		setUniform("clipplane", CoreSystem.getInstance().getRenderingEngine().getClipplane());
 		setUniform("scalingMatrix", new Matrix4f().Scaling(object.getWorldTransform().getScaling()));
-		setUniformf("sightRangeFactor", Terrain.getInstance().getConfiguration().getSightRangeFactor());
 		
 		Material material = (Material) object.getComponent("Material");
 

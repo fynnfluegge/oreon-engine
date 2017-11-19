@@ -224,8 +224,8 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		postProcessingTexture = bloom.getBloomBlurSceneTexture();
 		
 		// Depth of Field Blur			
-		dofBlur.render(deferredRenderer.getDepthmap(), postProcessingTexture, window.getWidth(), window.getHeight());
-		postProcessingTexture = dofBlur.getVerticalBlurSceneTexture();
+//		dofBlur.render(deferredRenderer.getDepthmap(), postProcessingTexture, window.getWidth(), window.getHeight());
+//		postProcessingTexture = dofBlur.getVerticalBlurSceneTexture();
 				
 		// Motion Blur
 		if (CoreSystem.getInstance().getScenegraph().getCamera().getPreviousPosition().sub(
@@ -239,7 +239,7 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		sunlightScattering.render(postProcessingTexture,lightScatteringSceneTexture);
 		postProcessingTexture = sunlightScattering.getSunLightScatteringSceneTexture();
 		
-		fullScreenQuad.setTexture(fxaa.getFxaaSceneTexture());
+		fullScreenQuad.setTexture(postProcessingTexture);
 		fullScreenQuad.render();
 		
 //		fullScreenQuadMultisample.setTexture(deferredRenderer.getGbuffer().getAlbedoTexture());

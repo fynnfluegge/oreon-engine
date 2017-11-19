@@ -49,7 +49,7 @@ public class Main {
 		coreSystem.getScenegraph().addTransparentObject(new Sun());
 		coreSystem.getScenegraph().setWater(new Ocean());
 		
-//		coreSystem.getScenegraph().getRoot().addChild(new Palm01ClusterGroup());
+		coreSystem.getScenegraph().getRoot().addChild(new Palm01ClusterGroup());
 		coreSystem.getScenegraph().getRoot().addChild(new Tree02ClusterGroup());
 		
 		coreEngine.start();

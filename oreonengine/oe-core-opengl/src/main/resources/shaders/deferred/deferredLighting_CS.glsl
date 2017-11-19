@@ -94,7 +94,7 @@ float varianceShadow(vec3 projCoords, int split, int kernels){
 		}
 	}
 	
-	return max(0.1,shadowFactor);
+	return max(0.0,shadowFactor);
 }
 
 
@@ -184,12 +184,13 @@ void main(void){
 				diff = diffuse(directional_light.direction, normal, directional_light.intensity);
 				spec = specular(directional_light.direction, normal, eyePosition, position, specular_emission.r, specular_emission.g);
 				shadow = applyShadowMapping(position, depth.r);
-				
-				vec3 diffuseLight = directional_light.ambient + directional_light.color * diff;
-				vec3 specularLight = directional_light.color * spec;
 				vec3 ssao = imageLoad(ssaoBlurImage, computeCoord).rgb;
+				
+				vec3 diffuseLight = directional_light.ambient + directional_light.color * diff * shadow * ssao;
+				vec3 specularLight = directional_light.color * spec;
+				
 			
-				finalColor += (albedo * diffuseLight * shadow * ssao);
+				finalColor += (albedo * diffuseLight);
 			}
 			else{
 				finalColor += albedo;
@@ -209,12 +210,12 @@ void main(void){
 			diff = diffuse(directional_light.direction, normal, directional_light.intensity);
 			spec = specular(directional_light.direction, normal, eyePosition, position, specular_emission.r, specular_emission.g);
 			shadow = applyShadowMapping(position, depth.r);
-			
-			vec3 diffuseLight = directional_light.ambient + directional_light.color * diff;
-			vec3 specularLight = directional_light.color * spec;
 			vec3 ssao = imageLoad(ssaoBlurImage, computeCoord).rgb;
 			
-			finalColor = albedo * diffuseLight * shadow * ssao;
+			vec3 diffuseLight = directional_light.ambient + directional_light.color * diff * shadow * ssao;
+			vec3 specularLight = directional_light.color * spec;
+			
+			finalColor = albedo * diffuseLight;
 		}
 		else{
 			finalColor = albedo;

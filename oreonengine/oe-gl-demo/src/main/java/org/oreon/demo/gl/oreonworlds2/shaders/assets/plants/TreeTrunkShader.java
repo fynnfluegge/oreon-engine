@@ -38,7 +38,6 @@ public class TreeTrunkShader extends GLShader{
 		addFragmentShader(ResourceLoader.loadShader("oreonworlds2/shaders/assets/Tree_Shader/TreeTrunk_FS.glsl"));
 		compileShader();
 		
-		addUniform("sightRangeFactor");
 		addUniform("material.diffusemap");
 		addUniform("material.normalmap");
 		addUniform("clipplane");
@@ -67,7 +66,6 @@ public class TreeTrunkShader extends GLShader{
 		
 		setUniform("clipplane", CoreSystem.getInstance().getRenderingEngine().getClipplane());
 		setUniform("scalingMatrix", new Matrix4f().Scaling(object.getWorldTransform().getScaling()));
-		setUniformf("sightRangeFactor", Terrain.getInstance().getConfiguration().getSightRangeFactor());
 		
 		Material material = (Material) object.getComponent("Material");
 
