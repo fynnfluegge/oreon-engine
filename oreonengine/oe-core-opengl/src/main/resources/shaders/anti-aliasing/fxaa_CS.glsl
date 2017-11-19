@@ -13,6 +13,8 @@ uniform float u_minReduce = 128.0f;
 uniform float u_maxSpan = 8.0f;
 uniform int u_showEdges = 0;
 
+uniform sampler2D sceneTexture;
+
 const float EDGE_THRESHOLD_MIN = 0.0312;
 const float EDGE_THRESHOLD_MAX = 0.125;
 const int ITERATIONS = 5;
@@ -26,6 +28,10 @@ float rgb2luma(vec3 rgb){
 void main(){
 
 	ivec2 computeCoord = ivec2(gl_GlobalInvocationID.x, gl_GlobalInvocationID.y);
+	
+	vec2 uv = vec2(gl_GlobalInvocationID.x/1280.0, gl_GlobalInvocationID.y/720.0);
+	
+	vec2 inverseScreenSize = vec2(1.0/1280.0, 1.0/720.0);
 	
 	vec3 rgb = imageLoad(sceneImage_in, computeCoord).rgb;
 	
@@ -88,7 +94,7 @@ void main(){
 	// Gradient in the corresponding direction, normalized.
 	float gradientScaled = 0.25*max(abs(gradient1),abs(gradient2));
 	
-	float stepLength = 1; //isHorizontal ? inverseScreenSize.y : inverseScreenSize.x;
+	float stepLength = isHorizontal ? inverseScreenSize.y : inverseScreenSize.x;
 
 	// Average luma in the correct direction.
 	float lumaLocalAverage = 0.0;
@@ -102,7 +108,7 @@ void main(){
 	}
 
 	// Shift UV in the correct direction by half a pixel.
-	vec2 currentUv = computeCoord;
+	vec2 currentUv = uv;
 	if(isHorizontal){
 		currentUv.y += stepLength * 0.5;
 	} else {
@@ -110,14 +116,14 @@ void main(){
 	}
 	
 	// Compute offset (for each iteration step) in the right direction.
-	vec2 offset = isHorizontal ? vec2(1.0,0.0) : vec2(0.0,1.0);
+	vec2 offset = isHorizontal ? vec2(inverseScreenSize.x,0.0) : vec2(0.0,inverseScreenSize.y);
 	// Compute UVs to explore on each side of the edge, orthogonally. The QUALITY allows us to step faster.
 	vec2 uv1 = currentUv - offset;
 	vec2 uv2 = currentUv + offset;
 
 	// Read the lumas at both current extremities of the exploration segment, and compute the delta wrt to the local average luma.
-	float lumaEnd1 = rgb2luma(imageLoad(sceneImage_in, ivec2(uv1)).rgb);
-	float lumaEnd2 = rgb2luma(imageLoad(sceneImage_in, ivec2(uv2)).rgb);
+	float lumaEnd1 = rgb2luma(texture(sceneTexture, uv1).rgb);
+	float lumaEnd2 = rgb2luma(texture(sceneTexture, uv2).rgb);
 	lumaEnd1 -= lumaLocalAverage;
 	lumaEnd2 -= lumaLocalAverage;
 
@@ -140,12 +146,12 @@ void main(){
 		for(int i = 2; i < ITERATIONS; i++){
 			// If needed, read luma in 1st direction, compute delta.
 			if(!reached1){
-				lumaEnd1 = rgb2luma(imageLoad(sceneImage_in, ivec2(uv1)).rgb);
+				lumaEnd1 = rgb2luma(texture(sceneTexture, uv1).rgb);
 				lumaEnd1 = lumaEnd1 - lumaLocalAverage;
 			}
 			// If needed, read luma in opposite direction, compute delta.
 			if(!reached2){
-				lumaEnd2 = rgb2luma(imageLoad(sceneImage_in, ivec2(uv2)).rgb);
+				lumaEnd2 = rgb2luma(texture(sceneTexture, uv2).rgb);
 				lumaEnd2 = lumaEnd2 - lumaLocalAverage;
 			}
 			// If the luma deltas at the current extremities is larger than the local gradient, we have reached the side of the edge.
@@ -203,7 +209,7 @@ void main(){
 	finalOffset = max(finalOffset,subPixelOffsetFinal);
 	
 	// Compute the final UV coordinates.
-	ivec2 finalUv = computeCoord;
+	ivec2 finalUv = uv;
 	if(isHorizontal){
 		finalUv.y += int(finalOffset * stepLength);
 	} else {
@@ -211,7 +217,7 @@ void main(){
 	}
 
 	// Read the color at the new UV coordinates, and use it.
-	vec3 finalColor = imageLoad(sceneImage_in,finalUv).rgb;
+	vec3 finalColor = texture(sceneTexture, finalUv).rgb;
 	
 	imageStore(fxaaScene_out, computeCoord, vec4(finalColor, 1.0));	
 }

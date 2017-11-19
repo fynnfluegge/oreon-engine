@@ -40,6 +40,7 @@ public class FXAA {
 		shader.bind();
 		glBindImageTexture(0, fxaaSceneTexture.getId(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
 		glBindImageTexture(1, sceneTexture.getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA16F);
+		shader.updateUniforms(sceneTexture);
 		glDispatchCompute(CoreSystem.getInstance().getWindow().getWidth()/16, CoreSystem.getInstance().getWindow().getHeight()/16, 1);	
 	}
 
