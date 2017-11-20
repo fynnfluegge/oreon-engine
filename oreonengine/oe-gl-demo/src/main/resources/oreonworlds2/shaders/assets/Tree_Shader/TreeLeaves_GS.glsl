@@ -11,7 +11,6 @@ in int instanceID_GS[];
 out vec2 texCoord_FS;
 out vec3 position_FS;
 out vec3 normal_FS;
-out vec4 viewSpacePos;
 
 layout (std140, row_major) uniform worldMatrices{
 	mat4 m_World[200];
@@ -51,7 +50,6 @@ void main()
 		gl_ClipDistance[6] = dot(worldPos,clipplane);
 		texCoord_FS = texCoord_GS[i];
 		position_FS = worldPos.xyz;
-		viewSpacePos = m_View * worldPos;
 		normal_FS = (m_Model[matrixIndices[instanceID_GS[i]]] * normal_GS[i]).xyz;
 		EmitVertex();
 	}	
@@ -73,7 +71,6 @@ void main()
 		gl_ClipDistance[6] = dot(worldPos,clipplane);
 		texCoord_FS = texCoord_GS[i];
 		position_FS = worldPos.xyz;
-		viewSpacePos = m_View * worldPos;
 		normal_FS = -(m_Model[matrixIndices[instanceID_GS[i]]] * normal_GS[i]).xyz;
 		EmitVertex();
 	}	

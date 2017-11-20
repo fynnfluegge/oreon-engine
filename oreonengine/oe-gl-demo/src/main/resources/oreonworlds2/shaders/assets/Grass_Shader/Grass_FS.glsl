@@ -1,7 +1,7 @@
-#version 430
+#version 330
 
-in vec2 texCoord_FS;
 in vec3 position_FS;
+in vec2 texCoord_FS;
 in vec3 normal_FS;
 
 layout(location = 0) out vec4 albedo_out;
@@ -13,8 +13,6 @@ layout(location = 4) out vec4 lightScattering_out;
 struct Material
 {
 	sampler2D diffusemap;
-	float shininess;
-	float emission;
 };
 
 layout (std140, row_major) uniform Camera{
@@ -26,9 +24,12 @@ layout (std140, row_major) uniform Camera{
 
 uniform Material material;
 
+const float zFar = 10000;
+const float zNear = 0.1;
+
 float alphaDistanceFactor(float dist)
 {
-	return clamp(0.01f * (-dist+220),0,1);
+	return clamp(0.003f * (-dist+750),0,1);
 }
 
 void main()
@@ -39,11 +40,11 @@ void main()
 	
 	float alpha = texture(material.diffusemap, texCoord_FS).a;
 	
-	if (alpha < 0.2)
+	if (alpha < 0.6)
 		discard;
-		
-	alpha *= alphaDistanceFactor(dist);
 	
+	alpha *= alphaDistanceFactor(dist);
+
 	albedo_out = vec4(albedo,1);
 	worldPosition_out = vec4(position_FS,1);
 	normal_out = vec4(normal_FS.xzy,1);

@@ -1,7 +1,6 @@
 package org.oreon.demo.gl.oreonworlds2.shaders.assets.plants;
 
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
-import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import java.util.List;
@@ -15,30 +14,31 @@ import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.Constants;
 import org.oreon.core.util.ResourceLoader;
 
-public class TreeTrunkShader extends GLShader{
+public class GrassShader extends GLShader{
 
-	private static TreeTrunkShader instance = null;
+	private static GrassShader instance = null;
 
-	public static TreeTrunkShader getInstance() 
+	public static GrassShader getInstance() 
 	{
 	    if(instance == null) 
 	    {
-	    	instance = new TreeTrunkShader();
+	    	instance = new GrassShader();
 	    }
 	      return instance;
 	}
 	
-	protected TreeTrunkShader()
+	protected GrassShader()
 	{
 		super();
 		
-		addVertexShader(ResourceLoader.loadShader("oreonworlds2/shaders/assets/Tree_Shader/TreeTrunk_VS.glsl"));
-		addGeometryShader(ResourceLoader.loadShader("oreonworlds2/shaders/assets/Tree_Shader/TreeTrunk_GS.glsl"));
-		addFragmentShader(ResourceLoader.loadShader("oreonworlds2/shaders/assets/Tree_Shader/TreeTrunk_FS.glsl"));
+		addVertexShader(ResourceLoader.loadShader("oreonworlds2/shaders/assets/Grass_Shader/Grass_VS.glsl"));
+		addGeometryShader(ResourceLoader.loadShader("oreonworlds2/shaders/assets/Grass_Shader/Grass_GS.glsl"));
+		addFragmentShader(ResourceLoader.loadShader("oreonworlds2/shaders/assets/Grass_Shader/Grass_FS.glsl"));
 		compileShader();
 		
 		addUniform("material.diffusemap");
-		addUniform("material.normalmap");
+//		addUniform("material.shininess");
+//		addUniform("material.emission");
 		addUniform("clipplane");
 		addUniform("scalingMatrix");
 		addUniform("isReflection");
@@ -47,7 +47,7 @@ public class TreeTrunkShader extends GLShader{
 		addUniformBlock("modelMatrices");
 		addUniformBlock("Camera");
 		
-		for (int i=0; i<100; i++)
+		for (int i=0; i<500; i++)
 		{
 			addUniform("matrixIndices[" + i + "]");
 		}
@@ -56,15 +56,14 @@ public class TreeTrunkShader extends GLShader{
 	public void updateUniforms(GameObject object)
 	{
 		bindUniformBlock("Camera", Constants.CameraUniformBlockBinding);
-		setUniformi("isReflection", CoreSystem.getInstance().getRenderingEngine().isWaterReflection() ? 1 : 0);
-		
 		((InstancingCluster) object.getParent()).getWorldMatricesBuffer().bindBufferBase(0);
 		bindUniformBlock("worldMatrices", 0);
 		((InstancingCluster) object.getParent()).getModelMatricesBuffer().bindBufferBase(1);
 		bindUniformBlock("modelMatrices", 1);
+		setUniformi("isReflection", CoreSystem.getInstance().getRenderingEngine().isWaterReflection() ? 1 : 0);
+		setUniform("scalingMatrix", new Matrix4f().Scaling(object.getWorldTransform().getScaling()));
 		
 		setUniform("clipplane", CoreSystem.getInstance().getRenderingEngine().getClipplane());
-		setUniform("scalingMatrix", new Matrix4f().Scaling(object.getWorldTransform().getScaling()));
 		
 		Material material = (Material) object.getComponent("Material");
 
@@ -72,9 +71,8 @@ public class TreeTrunkShader extends GLShader{
 		material.getDiffusemap().bind();
 		setUniformi("material.diffusemap", 0);
 		
-		glActiveTexture(GL_TEXTURE1);
-		material.getNormalmap().bind();
-		setUniformi("material.normalmap", 1);
+//		setUniformf("material.shininess", material.getShininess());
+//		setUniformf("material.emission", material.getEmission());
 		
 		List<Integer> indices = ((InstancingCluster) object.getParent()).getHighPolyIndices();
 		

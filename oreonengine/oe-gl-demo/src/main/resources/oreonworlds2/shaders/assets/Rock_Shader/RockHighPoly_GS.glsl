@@ -6,9 +6,9 @@ layout(triangle_strip, max_vertices = 3) out;
 
 in vec2 texCoord_GS[];
 in vec4 normal_GS[];
-in int instanceID_GS[];
 in vec4 tangent_GS[];
 in vec4 bitangent_GS[];
+in int instanceID_GS[];
 
 out vec2 texCoord_FS;
 out vec3 position_FS;
@@ -17,11 +17,11 @@ out vec3 tangent_FS;
 out vec3 bitangent_FS;
 
 layout (std140, row_major) uniform worldMatrices{
-	mat4 m_World[200];
+	mat4 m_World[100];
 };
 
 layout (std140, row_major) uniform modelMatrices{
-	mat4 m_Model[200];
+	mat4 m_Model[100];
 };
 
 layout (std140, row_major) uniform Camera{
@@ -40,9 +40,9 @@ void main()
 {	
 	for (int i = 0; i < gl_in.length(); ++i)
 	{
-		vec4 worldPos = (m_World[matrixIndices[instanceID_GS[i]]]) * (scalingMatrix * gl_in[i].gl_Position);
+		vec4 worldPos = m_World[matrixIndices[instanceID_GS[i]]] * (scalingMatrix * gl_in[i].gl_Position);
 		if (isReflection == 1){
-			worldPos.y += (clipplane.w - (m_World[matrixIndices[instanceID_GS[i]]])[3][1] ) * 2;
+			worldPos.y += (clipplane.w - (worldPos.y + 2)) * 2;
 		}
 		gl_Position = viewProjectionMatrix * worldPos;
 		gl_ClipDistance[0] = dot(gl_Position,frustumPlanes[0]);

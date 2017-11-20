@@ -3,7 +3,6 @@
 in vec2 texCoord_FS;
 in vec3 position_FS;
 in vec3 normal_FS;
-in vec4 viewSpacePos;
 in vec3 tangent_FS;
 in vec3 bitangent_FS;
 
@@ -36,12 +35,7 @@ float alphaDistanceFactor(float dist)
 }
 
 void main()
-{
-	vec3 diffuseLight = vec3(0,0,0);
-	vec3 specularLight = vec3(0,0,0);
-	float diffuseFactor = 0;
-	float specularFactor = 0;
-	
+{	
 	float dist = length(eyePosition - position_FS);
 	
 	mat3 TBN = mat3(tangent_FS, normal_FS, bitangent_FS);
