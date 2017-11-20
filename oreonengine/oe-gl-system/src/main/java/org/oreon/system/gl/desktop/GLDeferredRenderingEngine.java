@@ -203,17 +203,29 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 										 transparencyLayer.getGbuffer().getLightScatteringTexture());
 		finalSceneFbo.unbind();
 		
-		// perform FXAA
-		fxaa.render(finalSceneTexture);
-		
 		// start Threads to update instancing objects
 		instancingObjectHandler.signalAll();
 
 		postProcessingTexture = new Texture2D(finalSceneTexture);
 		sceneDepthmap = deferredRenderer.getDepthmap();
 		
-		// post processing effects
+		boolean doMotionBlur = CoreSystem.getInstance().getScenegraph().getCamera().getPreviousPosition().sub(
+							   CoreSystem.getInstance().getScenegraph().getCamera().getPosition()).length() > 0.04f ||
+							   CoreSystem.getInstance().getScenegraph().getCamera().getForward().sub(
+							   CoreSystem.getInstance().getScenegraph().getCamera().getPreviousForward()).length() > 0.01f;
+							   
+		// Depth of Field Blur			
+		dofBlur.render(deferredRenderer.getDepthmap(), postProcessingTexture, window.getWidth(), window.getHeight());
+		postProcessingTexture = dofBlur.getVerticalBlurSceneTexture();
+								
 		
+		// perform FXAA
+		if (!doMotionBlur){
+			fxaa.render(postProcessingTexture);
+			postProcessingTexture = fxaa.getFxaaSceneTexture();
+		}
+		
+		// post processing effects
 		if (isCameraUnderWater()){
 			underWater.render(postProcessingTexture, sceneDepthmap);
 			postProcessingTexture = underWater.getUnderwaterSceneTexture();
@@ -223,15 +235,8 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		bloom.render(postProcessingTexture);
 		postProcessingTexture = bloom.getBloomBlurSceneTexture();
 		
-		// Depth of Field Blur			
-//		dofBlur.render(deferredRenderer.getDepthmap(), postProcessingTexture, window.getWidth(), window.getHeight());
-//		postProcessingTexture = dofBlur.getVerticalBlurSceneTexture();
-				
 		// Motion Blur
-		if (CoreSystem.getInstance().getScenegraph().getCamera().getPreviousPosition().sub(
-						CoreSystem.getInstance().getScenegraph().getCamera().getPosition()).length() > 0.04f ||
-				CoreSystem.getInstance().getScenegraph().getCamera().getForward().sub(
-						CoreSystem.getInstance().getScenegraph().getCamera().getPreviousForward()).length() > 0.01f){
+		if (doMotionBlur){
 			motionBlur.render(deferredRenderer.getDepthmap(), postProcessingTexture);
 			postProcessingTexture = motionBlur.getMotionBlurSceneTexture();
 		}

@@ -39,6 +39,7 @@ void main(void){
 	mat3 tbn = mat3(tangent, bitangent, normal);
 	
 	float occlusion = 0.0;
+	float occlusionOffset = 0.0;
 	for (int i = 0; i < kernelSize; ++i) {
 		// get sample position:
 		vec3 smple = tbn * kernel[i];
@@ -56,10 +57,12 @@ void main(void){
 		  
 			// range check & accumulate:
 			float rangeCheck= abs(actualDepth - sampleDepth) < threshold ? 1.0 : 0.0;
-			occlusion += (sampleDepth <= smple.z/zfar ? 1.0 : 0.0) * rangeCheck;
+			
+			occlusionOffset = (sampleDepth <= smple.z/zfar ? 1.0 : 0.0) * rangeCheck;
+			occlusion += occlusionOffset;
 		}
 		else{
-			occlusion += 0.5;
+			occlusion += 0.4f;
 		}
 	}
 	

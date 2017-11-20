@@ -5,6 +5,7 @@ import org.oreon.core.system.CoreEngine;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.system.Window;
 import org.oreon.demo.gl.oreonworlds2.assets.plants.Palm01ClusterGroup;
+import org.oreon.demo.gl.oreonworlds2.assets.plants.Tree01ClusterGroup;
 import org.oreon.demo.gl.oreonworlds2.assets.plants.Tree02ClusterGroup;
 import org.oreon.demo.gl.oreonworlds2.gui.GUI;
 import org.oreon.demo.gl.oreonworlds2.shaders.TerrainGridShader;
@@ -51,6 +52,7 @@ public class Main {
 		
 		coreSystem.getScenegraph().getRoot().addChild(new Palm01ClusterGroup());
 		coreSystem.getScenegraph().getRoot().addChild(new Tree02ClusterGroup());
+		coreSystem.getScenegraph().getRoot().addChild(new Tree01ClusterGroup());
 		
 		coreEngine.start();
 	}
