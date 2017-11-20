@@ -186,11 +186,11 @@ void main(void){
 				shadow = applyShadowMapping(position, depth.r);
 				vec3 ssao = imageLoad(ssaoBlurImage, computeCoord).rgb;
 				
-				vec3 diffuseLight = directional_light.ambient + directional_light.color * diff * shadow * ssao;
+				vec3 diffuseLight = directional_light.ambient + directional_light.color * diff * shadow;
 				vec3 specularLight = directional_light.color * spec;
 				
 			
-				finalColor += (albedo * diffuseLight);
+				finalColor += (albedo * diffuseLight * ssao);
 			}
 			else{
 				finalColor += albedo;
@@ -212,10 +212,10 @@ void main(void){
 			shadow = applyShadowMapping(position, depth.r);
 			vec3 ssao = imageLoad(ssaoBlurImage, computeCoord).rgb;
 			
-			vec3 diffuseLight = directional_light.ambient + directional_light.color * diff * shadow * ssao;
+			vec3 diffuseLight = directional_light.ambient + directional_light.color * diff * shadow;
 			vec3 specularLight = directional_light.color * spec;
 			
-			finalColor = albedo * diffuseLight;
+			finalColor = albedo * diffuseLight * ssao;
 		}
 		else{
 			finalColor = albedo;
