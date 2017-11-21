@@ -21,8 +21,8 @@ public class Palm01ClusterGroup extends InstancingObject{
 	
 	public Palm01ClusterGroup(){
 		
-		Model[] models = new OBJLoader().load("oreonworlds2/assets/plants/Palm_01","Palma 001.obj","Palma 001.mtl");
-		Model[] billboards = new OBJLoader().load("oreonworlds2/assets/plants/Palm_01","billboardmodel.obj","billboardmodel.mtl");
+		Model[] models = new OBJLoader().load("oreonworlds/assets/plants/Palm_01","Palma 001.obj","Palma 001.mtl");
+		Model[] billboards = new OBJLoader().load("oreonworlds/assets/plants/Palm_01","billboardmodel.obj","billboardmodel.mtl");
 		
 		for (Model model : models){
 			

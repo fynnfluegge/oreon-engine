@@ -4,9 +4,13 @@ import org.oreon.core.gl.scene.GLCamera;
 import org.oreon.core.system.CoreEngine;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.system.Window;
+import org.oreon.demo.gl.oreonworlds.assets.plants.Grass01ClusterGroup;
 import org.oreon.demo.gl.oreonworlds.assets.plants.Palm01ClusterGroup;
+import org.oreon.demo.gl.oreonworlds.assets.plants.Plant01ClusterGroup;
 import org.oreon.demo.gl.oreonworlds.assets.plants.Tree01ClusterGroup;
 import org.oreon.demo.gl.oreonworlds.assets.plants.Tree02ClusterGroup;
+import org.oreon.demo.gl.oreonworlds.assets.rocks.Rock01ClusterGroup;
+import org.oreon.demo.gl.oreonworlds.assets.rocks.Rock02ClusterGroup;
 import org.oreon.demo.gl.oreonworlds.gui.GUI;
 import org.oreon.demo.gl.oreonworlds.shaders.TerrainGridShader;
 import org.oreon.demo.gl.oreonworlds.shaders.TerrainShader;
@@ -40,8 +44,8 @@ public class Main {
 		coreEngine.init(coreSystem);
 		
 		GLTerrain terrain = new GLTerrain();
-		terrain.init("oreonworlds2/terrain/terrain_settings.txt",
-				   "oreonworlds2/terrain/terrain_settings_LowPoly.txt",
+		terrain.init("oreonworlds/terrain/terrain_settings.txt",
+				   "oreonworlds/terrain/terrain_settings_LowPoly.txt",
 				   TerrainShader.getInstance(),
 				   TerrainGridShader.getInstance(), 
 				   null);
@@ -51,10 +55,14 @@ public class Main {
 		coreSystem.getScenegraph().addTransparentObject(new Sun());
 		coreSystem.getScenegraph().setWater(new Ocean());
 		
-		coreSystem.getScenegraph().getRoot().addChild(new Palm01ClusterGroup());
-		coreSystem.getScenegraph().getRoot().addChild(new Tree02ClusterGroup());
-		coreSystem.getScenegraph().getRoot().addChild(new Tree01ClusterGroup());
-		
+//		coreSystem.getScenegraph().getRoot().addChild(new Palm01ClusterGroup());
+//		coreSystem.getScenegraph().getRoot().addChild(new Tree02ClusterGroup());
+//		coreSystem.getScenegraph().getRoot().addChild(new Tree01ClusterGroup());
+//		coreSystem.getScenegraph().getRoot().addChild(new Grass01ClusterGroup());
+//		coreSystem.getScenegraph().getRoot().addChild(new Plant01ClusterGroup());
+//		coreSystem.getScenegraph().getRoot().addChild(new Rock01ClusterGroup());
+//		coreSystem.getScenegraph().getRoot().addChild(new Rock02ClusterGroup());
+//		
 		coreEngine.start();
 	}
 

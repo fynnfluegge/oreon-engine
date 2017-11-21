@@ -59,7 +59,7 @@ void main()
 		vec2 causticDistortion = texture(dudvCaustics, causticsTexCoord*0.2 + distortionCaustics*0.6).rb * 0.18;
 		vec3 causticsColor = texture(caustics, causticsTexCoord + causticDistortion).rbg;
 		
-		fragColor += (causticsColor/4);
+		albedo += (causticsColor/4);
 	}	
 	
 	// underwater distance blue blur
@@ -68,12 +68,12 @@ void main()
 		float distToWaterSurace = distancePointPlane(position_FS,clipplane);
 		float refractionFactor = clamp(0.02 * distToWaterSurace,0,1);
 		
-		rgb = mix(rgb, waterRefractionColor, refractionFactor); 
+		albedo = mix(albedo, waterRefractionColor, refractionFactor); 
 	}
 	
 	albedo_out = vec4(albedo,1);
 	worldPosition_out = vec4(position_FS,1);
-	normal_out = vec4(normal_FS.xzy,1);
-	specularEmission_out = vec4(1,0,0,1);
+	normal_out = vec4(normal.xzy,1);
+	specularEmission_out = vec4(material.shininess,material.emission,0,1);
 	lightScattering_out = vec4(0,0,0,1);
 }

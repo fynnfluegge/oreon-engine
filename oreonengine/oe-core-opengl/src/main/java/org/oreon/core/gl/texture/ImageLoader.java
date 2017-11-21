@@ -18,6 +18,7 @@ import static org.lwjgl.opengl.GL11.glGenTextures;
 import static org.lwjgl.opengl.GL11.glTexImage2D;
 import static org.lwjgl.opengl.GL11.GL_RGBA;
 import static org.lwjgl.opengl.GL11.GL_RGB;
+import static org.lwjgl.opengl.GL30.GL_RGBA32F;
 import static org.lwjgl.opengl.GL11.GL_UNPACK_ALIGNMENT;
 import static org.lwjgl.opengl.GL11.glPixelStorei;
 import static org.lwjgl.opengl.GL11.GL_UNSIGNED_BYTE;
@@ -27,6 +28,59 @@ import static org.lwjgl.opengl.GL11.glBindTexture;
 public class ImageLoader {
 	
 	public static int[] loadImage(String file) {
+		
+		ByteBuffer imageBuffer;
+        try {
+            imageBuffer = ioResourceToByteBuffer(file, 128 * 128);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        
+        IntBuffer w    = BufferUtils.createIntBuffer(1);
+        IntBuffer h    = BufferUtils.createIntBuffer(1);
+        IntBuffer c = BufferUtils.createIntBuffer(1);
+
+        // Use info to read image metadata without decoding the entire image.
+        if (!stbi_info_from_memory(imageBuffer, w, h, c)) {
+            throw new RuntimeException("Failed to read image information: " + stbi_failure_reason());
+        }
+  
+//        System.out.println("Image width: " + w.get(0));
+//        System.out.println("Image height: " + h.get(0));
+//        System.out.println("Image components: " + c.get(0));
+//        System.out.println("Image HDR: " + stbi_is_hdr_from_memory(imageBuffer));
+
+        // Decode the image
+        ByteBuffer image = stbi_load_from_memory(imageBuffer, w, h, c, 0);
+        if (image == null) {
+            throw new RuntimeException("Failed to load image: " + stbi_failure_reason());
+        }
+       
+        int width = w.get(0);
+        int height = h.get(0);
+        int comp = c.get(0);
+        
+        int texId = glGenTextures();
+
+        glBindTexture(GL_TEXTURE_2D, texId);
+        
+        if (comp == 3) {
+            if ((width & 3) != 0) {
+                glPixelStorei(GL_UNPACK_ALIGNMENT, 2 - (width & 1));
+            }
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+        } else {
+        	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+        }
+        
+        stbi_image_free(image);
+        
+        int[] data = {texId, w.get(), h.get()};
+        
+		return data;
+	}
+	
+	public static int[] loadHeightmap16bit(String file) {
 		
 		ByteBuffer imageBuffer;
         try {

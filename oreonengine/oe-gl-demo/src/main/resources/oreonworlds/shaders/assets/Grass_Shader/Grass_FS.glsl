@@ -40,7 +40,7 @@ void main()
 	
 	float alpha = texture(material.diffusemap, texCoord_FS).a;
 	
-	if (alpha < 0.6)
+	if (alpha < 0.8)
 		discard;
 	
 	alpha *= alphaDistanceFactor(dist);

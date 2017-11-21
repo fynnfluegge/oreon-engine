@@ -57,6 +57,14 @@ public class Texture2D extends Texture{
 		width = data[2];
 	}
 	
+	public void loadHeightmap(String file){
+		
+		int[] data = ImageLoader.loadImage(file);
+		id = data[0];
+		width = data[1];
+		width = data[2];
+	}
+	
 	public void generate(){
 		
 		id = glGenTextures();

@@ -1,34 +1,34 @@
 #textures
-material0_DIF oreonworlds2/terrain/materials/grass0_DIF.jpg
-material0_NRM oreonworlds2/terrain/materials/grass0_NRM.jpg
-material0_DISP oreonworlds2/terrain/materials/grass0_DISP.jpg
+material0_DIF oreonworlds/terrain/materials/grass0_DIF.jpg
+material0_NRM oreonworlds/terrain/materials/grass0_NRM.jpg
+material0_DISP oreonworlds/terrain/materials/grass0_DISP.jpg
 material0_displaceScale 0.0
 
-material1_DIF oreonworlds2/terrain/materials/Ground_11_DIF.jpg
-material1_NRM oreonworlds2/terrain/materials/Ground_11_NRM.jpg
-material1_DISP oreonworlds2/terrain/materials/Ground_11_DISP.jpg
+material1_DIF oreonworlds/terrain/materials/Ground_11_DIF.jpg
+material1_NRM oreonworlds/terrain/materials/Ground_11_NRM.jpg
+material1_DISP oreonworlds/terrain/materials/Ground_11_DISP.jpg
 material1_displaceScale 0.5
 
-material2_DIF oreonworlds2/terrain/materials/Ground_21_DIF.jpg
-material2_NRM oreonworlds2/terrain/materials/Ground_21_NRM.jpg
-material2_DISP oreonworlds2/terrain/materials/Ground_21_DISP.jpg
+material2_DIF oreonworlds/terrain/materials/Ground_21_DIF.jpg
+material2_NRM oreonworlds/terrain/materials/Ground_21_NRM.jpg
+material2_DISP oreonworlds/terrain/materials/Ground_21_DISP.jpg
 material2_displaceScale 4.0
 
-material3_DIF oreonworlds2/terrain/materials/Ground_21_DIF.jpg
-material3_NRM oreonworlds2/terrain/materials/Ground_21_NRM.jpg
-material3_DISP oreonworlds2/terrain/materials/Ground_21_DISP.jpg
+material3_DIF oreonworlds/terrain/materials/Ground_21_DIF.jpg
+material3_NRM oreonworlds/terrain/materials/Ground_21_NRM.jpg
+material3_DISP oreonworlds/terrain/materials/Ground_21_DISP.jpg
 material3_displaceScale 4.0
 
 #maps
-heightmap oreonworlds2/terrain/maps/terrain0/hm.bmp 24
-splatmap oreonworlds2/terrain/maps/terrain0/splat0.bmp
-splatmap oreonworlds2/terrain/maps/terrain0/splat1.bmp
-splatmap oreonworlds2/terrain/maps/terrain0/splat2.bmp
-splatmap oreonworlds2/terrain/maps/terrain0/splat3.bmp
+heightmap oreonworlds/terrain/maps/terrain1/hm0.bmp 24
+splatmap oreonworlds/terrain/maps/terrain1/alpha0.bmp
+splatmap oreonworlds/terrain/maps/terrain1/alpha1.bmp
+splatmap oreonworlds/terrain/maps/terrain1/alpha2.bmp
+splatmap oreonworlds/terrain/maps/terrain1/alpha3.bmp
 
 #terrain mesh settings
 scaleXZ 6000.0
-scaleY 500.0
+scaleY 400.0
 texDetail 1000.0
 tessellationFactor 600
 tessellationSlope 1.8
