@@ -9,8 +9,8 @@ import org.oreon.core.math.Vec3f;
 import org.oreon.core.model.Model;
 import org.oreon.core.renderer.RenderInfo;
 import org.oreon.core.util.Util;
-import org.oreon.demo.gl.oreonworlds.shaders.rocks.RockHighPolyShader;
-import org.oreon.demo.gl.oreonworlds.shaders.rocks.RockShadowShader;
+import org.oreon.demo.gl.oreonworlds.shaders.assets.rocks.RockHighPolyShader;
+import org.oreon.demo.gl.oreonworlds.shaders.assets.rocks.RockShadowShader;
 
 public class Rock01ClusterGroup extends InstancingObject{
 	

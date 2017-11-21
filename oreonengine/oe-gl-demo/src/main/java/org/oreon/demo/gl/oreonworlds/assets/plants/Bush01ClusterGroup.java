@@ -11,8 +11,8 @@ import org.oreon.core.math.Vec3f;
 import org.oreon.core.model.Model;
 import org.oreon.core.renderer.RenderInfo;
 import org.oreon.core.system.CoreSystem;
-import org.oreon.demo.gl.oreonworlds.shaders.plants.BushShader;
-import org.oreon.demo.gl.oreonworlds.shaders.plants.BushShadowShader;
+import org.oreon.demo.gl.oreonworlds.shaders.assets.plants.BushShader;
+import org.oreon.demo.gl.oreonworlds.shaders.assets.plants.BushShadowShader;
 
 public class Bush01ClusterGroup extends InstancingObject{
 

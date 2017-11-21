@@ -13,7 +13,8 @@ struct Fractal
 	float strength;
 };
 
-uniform Fractal fractals0[7];
+uniform sampler2D heightmap;
+uniform Fractal fractals0[1];
 uniform float scaleY;
 uniform int bezier;
 uniform float texDetail;
@@ -83,10 +84,8 @@ void main(){
 	u * v * texCoord2[3] +
 	(1 - u) * v * texCoord2[15]);
 	
-	float height = 0;
-	for (int i=0; i<7; i++){
-		height += texture(fractals0[i].heightmap, texCoord*fractals0[i].scaling).r * fractals0[i].strength;
-	}
+	float height = texture(fractals0[0].heightmap, texCoord*fractals0[0].scaling).r * fractals0[0].strength;
+	height += texture(heightmap, texCoord).r;
 	height *= scaleY;
 					
 	position.y = height;

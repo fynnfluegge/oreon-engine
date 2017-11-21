@@ -45,7 +45,7 @@ import org.oreon.modules.gl.postprocessfilter.lensflare.LensFlare;
 import org.oreon.modules.gl.postprocessfilter.lightscattering.SunLightScattering;
 import org.oreon.modules.gl.postprocessfilter.motionblur.MotionBlur;
 import org.oreon.modules.gl.postprocessfilter.ssao.SSAO;
-import org.oreon.modules.gl.terrain.Terrain;
+import org.oreon.modules.gl.terrain.GLTerrain;
 import org.oreon.modules.gl.water.UnderWater;
 
 public class GLDeferredRenderingEngine implements RenderingEngine{
@@ -153,7 +153,7 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		
 		if (CoreSystem.getInstance().getScenegraph().getCamera().isCameraMoved()){
 			if (CoreSystem.getInstance().getScenegraph().terrainExists()){
-				((Terrain) CoreSystem.getInstance().getScenegraph().getTerrain()).updateQuadtree();
+				((GLTerrain) CoreSystem.getInstance().getScenegraph().getTerrain()).updateQuadtree();
 			}
 		}
 		

@@ -1,12 +1,13 @@
 package org.oreon.core.scene;
 
 import org.oreon.core.math.Transform;
+import org.oreon.core.terrain.Terrain;
 
 public class Scenegraph extends Node{
 	
 	private Camera camera;
 	private Node rootObject;
-	private Node terrain;
+	private Terrain terrain;
 	private Node water;
 	private Node transparentObjects;
 	
@@ -16,7 +17,7 @@ public class Scenegraph extends Node{
 		
 		setWorldTransform(new Transform());
 		rootObject = new Node();
-		terrain = new Node();
+		terrain = new Terrain();
 		water = new Node();
 		transparentObjects = new Node();
 		rootObject.setParent(this);
@@ -76,11 +77,11 @@ public class Scenegraph extends Node{
 		transparentObjects.addChild(object);
 	}
 
-	public Node getTerrain() {
+	public Terrain getTerrain() {
 		return terrain;
 	}
 
-	public void setTerrain(Node terrain) {
+	public void setTerrain(Terrain terrain) {
 		terrain.setParent(this);
 		setTerrainExists(true);
 		this.terrain = terrain;

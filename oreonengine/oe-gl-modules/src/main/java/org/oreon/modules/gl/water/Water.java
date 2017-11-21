@@ -18,7 +18,7 @@ import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.Constants;
 import org.oreon.core.util.Util;
 import org.oreon.modules.gl.gpgpu.NormalMapRenderer;
-import org.oreon.modules.gl.terrain.Terrain;
+import org.oreon.modules.gl.terrain.GLTerrain;
 import org.oreon.modules.gl.water.fft.OceanFFT;
 import org.oreon.modules.gl.water.shader.OceanGridShader;
 
@@ -132,7 +132,7 @@ public class Water extends GameObject{
 			
 		if (scenegraph.terrainExists()){
 				
-				Terrain terrain = (Terrain) scenegraph.getTerrain();
+				GLTerrain terrain = (GLTerrain) scenegraph.getTerrain();
 				terrain.getLowPolyConfiguration().setScaleY(terrain.getLowPolyConfiguration().getScaleY() * -1f);
 				terrain.getLowPolyConfiguration().setWaterReflectionShift((int) (getClipplane().getW() * 2f));
 		}
@@ -152,7 +152,7 @@ public class Water extends GameObject{
 		if (!isCameraUnderwater()){
 			scenegraph.getRoot().render();
 			if (scenegraph.terrainExists()){
-				((Terrain) scenegraph.getTerrain()).renderLowPoly();
+				((GLTerrain) scenegraph.getTerrain()).renderLowPoly();
 			}
 		}
 		
@@ -173,7 +173,7 @@ public class Water extends GameObject{
 //				(scenegraph.getTransform().getTranslation().getY() - RenderingEngine.getClipplane().getW()));
 
 		if (scenegraph.terrainExists()){
-				Terrain terrain = (Terrain) scenegraph.getTerrain();
+				GLTerrain terrain = (GLTerrain) scenegraph.getTerrain();
 				terrain.getLowPolyConfiguration().setScaleY(terrain.getLowPolyConfiguration().getScaleY() / -1f);
 				terrain.getLowPolyConfiguration().setWaterReflectionShift(0);
 		}
@@ -188,7 +188,7 @@ public class Water extends GameObject{
 	
 		scenegraph.getRoot().render();
 		if (scenegraph.terrainExists()){
-			((Terrain) scenegraph.getTerrain()).renderLowPoly();
+			((GLTerrain) scenegraph.getTerrain()).renderLowPoly();
 		}
 		
 		// glFinish() important, to prevent conflicts with following compute shaders

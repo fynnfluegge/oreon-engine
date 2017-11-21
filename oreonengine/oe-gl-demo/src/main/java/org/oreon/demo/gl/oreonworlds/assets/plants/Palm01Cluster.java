@@ -17,9 +17,8 @@ import org.oreon.core.util.BufferUtil;
 import org.oreon.core.util.Constants;
 import org.oreon.core.util.IntegerReference;
 import org.oreon.demo.gl.oreonworlds.shaders.InstancingGridShader;
-import org.oreon.demo.gl.oreonworlds.shaders.plants.PalmBillboardShader;
-import org.oreon.demo.gl.oreonworlds.shaders.plants.PalmShader;
-import org.oreon.modules.gl.terrain.Terrain;
+import org.oreon.demo.gl.oreonworlds.shaders.assets.plants.PalmBillboardShader;
+import org.oreon.demo.gl.oreonworlds.shaders.assets.plants.PalmShader;
 
 public class Palm01Cluster extends InstancingCluster{
 
@@ -37,7 +36,7 @@ public class Palm01Cluster extends InstancingCluster{
 			Vec3f scaling = new Vec3f(s,s,s);
 			Vec3f rotation = new Vec3f(0,(float) Math.random()*360f,0);
 			
-			float terrainHeight = Terrain.getInstance().getFractalTerrainHeight(translation.getX(),translation.getZ());
+			float terrainHeight = CoreSystem.getInstance().getScenegraph().getTerrain().getTerrainHeight(translation.getX(),translation.getZ());
 			terrainHeight -= 3;
 			translation.setY(terrainHeight);
 			

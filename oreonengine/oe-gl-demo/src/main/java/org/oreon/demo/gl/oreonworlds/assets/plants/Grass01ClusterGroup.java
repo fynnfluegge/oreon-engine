@@ -11,8 +11,8 @@ import org.oreon.core.math.Vec3f;
 import org.oreon.core.model.Model;
 import org.oreon.core.renderer.RenderInfo;
 import org.oreon.core.system.CoreSystem;
-import org.oreon.demo.gl.oreonworlds.shaders.plants.GrassShader;
-import org.oreon.demo.gl.oreonworlds.shaders.plants.GrassShadowShader;
+import org.oreon.demo.gl.oreonworlds.shaders.assets.plants.GrassShader;
+import org.oreon.demo.gl.oreonworlds.shaders.assets.plants.GrassShadowShader;
 
 public class Grass01ClusterGroup extends InstancingObject{
 	

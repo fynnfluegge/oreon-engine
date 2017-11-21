@@ -1,37 +1,39 @@
-package org.oreon.demo.gl.oreonworlds.shaders;
+package org.oreon.demo.gl.oreonworlds.shaders.assets.plants;
 
 import java.util.List;
 
 import org.oreon.core.gl.shaders.GLShader;
 import org.oreon.core.instancing.InstancingCluster;
 import org.oreon.core.math.Matrix4f;
+import org.oreon.core.model.Material;
 import org.oreon.core.scene.GameObject;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.Constants;
 import org.oreon.core.util.ResourceLoader;
 
-public class InstancingGridShader extends GLShader{
+public class PalmShader extends GLShader{
 
-private static InstancingGridShader instance = null;
+	private static PalmShader instance = null;
 	
-	public static InstancingGridShader getInstance() 
+	public static PalmShader getInstance() 
 	{
 	    if(instance == null) 
 	    {
-	    	instance = new InstancingGridShader();
+	    	instance = new PalmShader();
 	    }
 	      return instance;
 	}
 	
-	protected InstancingGridShader()
+	protected PalmShader()
 	{
 		super();
 
-		addVertexShader(ResourceLoader.loadShader("oreonworlds/shaders/assets/InstancingGrid_Shader/Grid_VS.glsl"));
-		addGeometryShader(ResourceLoader.loadShader("oreonworlds/shaders/assets/InstancingGrid_Shader/Grid_GS.glsl"));
-		addFragmentShader(ResourceLoader.loadShader("oreonworlds/shaders/assets/InstancingGrid_Shader/Grid_FS.glsl"));
+		addVertexShader(ResourceLoader.loadShader("oreonworlds/shaders/assets/Palm_Shader/Palm01_VS.glsl"));
+		addGeometryShader(ResourceLoader.loadShader("oreonworlds/shaders/assets/Palm_Shader/Palm01_GS.glsl"));
+		addFragmentShader(ResourceLoader.loadShader("oreonworlds/shaders/assets/Palm_Shader/Palm01_FS.glsl"));
 		compileShader();
 		
+		addUniform("material.color");
 		addUniform("clipplane");
 		addUniform("scalingMatrix");
 		addUniform("isReflection");
@@ -40,11 +42,11 @@ private static InstancingGridShader instance = null;
 		addUniformBlock("modelMatrices");
 		addUniformBlock("Camera");
 		
-		for (int i=0; i<500; i++)
+		for (int i=0; i<100; i++)
 		{
 			addUniform("matrixIndices[" + i + "]");
 		}
-	}	
+	}
 	
 	public void updateUniforms(GameObject object)
 	{
@@ -58,6 +60,11 @@ private static InstancingGridShader instance = null;
 		
 		setUniform("clipplane", CoreSystem.getInstance().getRenderingEngine().getClipplane());
 		setUniform("scalingMatrix", new Matrix4f().Scaling(object.getWorldTransform().getScaling()));
+		
+		Material material = (Material) object.getComponent("Material");
+		setUniform("material.color", material.getColor());
+//		setUniformf("material.emission", material.getEmission());
+//		setUniformf("material.shininess", material.getShininess());
 		
 		List<Integer> indices = ((InstancingCluster) object.getParent()).getHighPolyIndices();
 		

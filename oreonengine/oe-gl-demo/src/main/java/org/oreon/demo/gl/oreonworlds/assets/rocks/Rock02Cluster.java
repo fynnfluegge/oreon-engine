@@ -17,8 +17,7 @@ import org.oreon.core.util.BufferUtil;
 import org.oreon.core.util.Constants;
 import org.oreon.core.util.IntegerReference;
 import org.oreon.demo.gl.oreonworlds.shaders.InstancingGridShader;
-import org.oreon.demo.gl.oreonworlds.shaders.rocks.RockHighPolyShader;
-import org.oreon.modules.gl.terrain.Terrain;
+import org.oreon.demo.gl.oreonworlds.shaders.assets.rocks.RockHighPolyShader;
 
 public class Rock02Cluster extends InstancingCluster{
 	
@@ -34,7 +33,7 @@ public class Rock02Cluster extends InstancingCluster{
 			Vec3f scaling = new Vec3f(s,s,s);
 			Vec3f rotation = new Vec3f(0,(float) Math.random()*360f,0);
 			
-			float terrainHeight = Terrain.getInstance().getFractalTerrainHeight(translation.getX(),translation.getZ());
+			float terrainHeight = CoreSystem.getInstance().getScenegraph().getTerrain().getTerrainHeight(translation.getX(),translation.getZ());
 			terrainHeight -= 2;
 			translation.setY(terrainHeight);
 			
