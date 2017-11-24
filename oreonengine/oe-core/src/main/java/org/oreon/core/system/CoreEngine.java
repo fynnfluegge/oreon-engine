@@ -161,7 +161,7 @@ public class CoreEngine{
 	private void render()
 	{
 		coreSystem.getRenderingEngine().render();
-//		System.out.println(getFps());
+		System.out.println(getFps());
 	}
 	
 	private void update()
@@ -181,12 +181,12 @@ public class CoreEngine{
 	
 	private void getDeviceProperties(){
 		System.out.println("OpenGL version: " + GL11.glGetString(GL11.GL_VERSION) + " bytes");
-		System.out.println("Max Geometry Uniform Blocks: " + GL31.GL_MAX_GEOMETRY_UNIFORM_BLOCKS + " bytes");
-		System.out.println("Max Geometry Shader Invocations: " + GL40.GL_MAX_GEOMETRY_SHADER_INVOCATIONS + " bytes");
-		System.out.println("Max Uniform Buffer Bindings: " + GL31.GL_MAX_UNIFORM_BUFFER_BINDINGS + " bytes");
-		System.out.println("Max Uniform Block Size: " + GL31.GL_MAX_UNIFORM_BLOCK_SIZE + " bytes");
-		System.out.println("Max SSBO Block Size: " + GL43.GL_MAX_SHADER_STORAGE_BLOCK_SIZE + " bytes");	
-		System.out.println("Max Image Bindings: " + GL42.GL_MAX_IMAGE_UNITS);
+		System.out.println("Max Geometry Uniform Blocks: " + GL11.glGetInteger(GL31.GL_MAX_GEOMETRY_UNIFORM_BLOCKS));
+		System.out.println("Max Geometry Shader Invocations: " + GL11.glGetInteger(GL40.GL_MAX_GEOMETRY_SHADER_INVOCATIONS));
+		System.out.println("Max Uniform Buffer Bindings: " + GL11.glGetInteger(GL31.GL_MAX_UNIFORM_BUFFER_BINDINGS));
+		System.out.println("Max Uniform Block Size: " + GL11.glGetInteger(GL31.GL_MAX_UNIFORM_BLOCK_SIZE) + " bytes");
+		System.out.println("Max SSBO Block Size: " + GL11.glGetInteger(GL43.GL_MAX_SHADER_STORAGE_BLOCK_SIZE) + " bytes");	
+		System.out.println("Max Image Bindings: " + GL11.glGetInteger(GL42.GL_MAX_IMAGE_UNITS));
 	}
 
 	public static float getFrameTime() {
