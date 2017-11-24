@@ -6,8 +6,8 @@ layout (binding = 0, rgba32f) uniform writeonly image2D ssaoBlur_out;
 
 layout (binding = 1, rgba32f) uniform readonly image2D ssao_in;
 
-uniform int width = 1280;
-uniform int height = 720;
+uniform int width;
+uniform int height;
 
 const int uBlurSize = 4;
 

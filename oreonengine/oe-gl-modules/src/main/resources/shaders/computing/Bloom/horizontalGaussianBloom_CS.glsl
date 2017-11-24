@@ -7,7 +7,6 @@ layout (binding = 0, rgba16f) uniform writeonly image2D horizontalBloomBlurSampl
 uniform sampler2D bloomSampler;
 uniform float windowWidth;
 uniform float windowHeight;
-uniform int div;
 
 const float gaussianKernel7_sigma2[7] = float[7](0.071303,0.131514,0.189879,0.214607,0.189879,0.131514,0.071303);
 const float gaussianKernel9_sigma3[9] = float[9](0.063327,0.093095,0.122589,0.144599,0.152781,0.144599,0.122589,0.093095,0.063327);

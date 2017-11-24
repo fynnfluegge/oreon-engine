@@ -1,34 +1,50 @@
 #textures
-material0_DIF oreonworlds/terrain/materials/grass0_DIF.jpg
-material0_NRM oreonworlds/terrain/materials/grass0_NRM.jpg
-material0_DISP oreonworlds/terrain/materials/grass0_DISP.jpg
-material0_displaceScale 0.0
+material
+material_DIF oreonworlds/terrain/materials/grass0_DIF.jpg
+material_NRM oreonworlds/terrain/materials/grass0_NRM.jpg
+material_DISP oreonworlds/terrain/materials/grass0_DISP.jpg
+material_ALPHA oreonworlds/terrain/maps/terrain4/alpha0.bmp
+material_heightScaling 0.0
+material_horizontalScaling 1.0
 
-material1_DIF oreonworlds/terrain/materials/Ground_11_DIF.jpg
-material1_NRM oreonworlds/terrain/materials/Ground_11_NRM.jpg
-material1_DISP oreonworlds/terrain/materials/Ground_11_DISP.jpg
-material1_displaceScale 0.5
+material
+material_DIF oreonworlds/terrain/materials/Ground_11_DIF.jpg
+material_NRM oreonworlds/terrain/materials/Ground_11_NRM.jpg
+material_DISP oreonworlds/terrain/materials/Ground_11_DISP.jpg
+material_ALPHA oreonworlds/terrain/maps/terrain4/alpha1.bmp
+material_heightScaling 1.0
+material_horizontalScaling 2.0
 
-material2_DIF oreonworlds/terrain/materials/Ground_21_DIF.jpg
-material2_NRM oreonworlds/terrain/materials/Ground_21_NRM.jpg
-material2_DISP oreonworlds/terrain/materials/Ground_21_DISP.jpg
-material2_displaceScale 4.0
+material
+material_DIF oreonworlds/terrain/materials/Ground_21_DIF.jpg
+material_NRM oreonworlds/terrain/materials/Ground_21_NRM.jpg
+material_DISP oreonworlds/terrain/materials/Ground_21_DISP.jpg
+material_ALPHA oreonworlds/terrain/maps/terrain4/alpha2.bmp
+material_heightScaling 3.0
+material_horizontalScaling 10.0
 
-material3_DIF oreonworlds/terrain/materials/Ground_21_DIF.jpg
-material3_NRM oreonworlds/terrain/materials/Ground_21_NRM.jpg
-material3_DISP oreonworlds/terrain/materials/Ground_21_DISP.jpg
-material3_displaceScale 4.0
+material
+material_DIF oreonworlds/terrain/materials/Ground_21_DIF.jpg
+material_NRM oreonworlds/terrain/materials/Ground_21_NRM.jpg
+material_DISP oreonworlds/terrain/materials/Ground_21_DISP.jpg
+material_ALPHA oreonworlds/terrain/maps/terrain4/alpha3.bmp
+material_heightScaling 3.0
+material_horizontalScaling 10.0
+
+material
+material_DIF oreonworlds/terrain/materials/Ground_21_DIF.jpg
+material_NRM oreonworlds/terrain/materials/Ground_21_NRM.jpg
+material_DISP oreonworlds/terrain/materials/Ground_21_DISP.jpg
+material_ALPHA oreonworlds/terrain/maps/terrain4/alpha4.bmp
+material_heightScaling 3.0
+material_horizontalScaling 10.0
 
 #maps
-heightmap oreonworlds/terrain/maps/terrain1/hm0.bmp 24
-splatmap oreonworlds/terrain/maps/terrain1/alpha0.bmp
-splatmap oreonworlds/terrain/maps/terrain1/alpha1.bmp
-splatmap oreonworlds/terrain/maps/terrain1/alpha2.bmp
-splatmap oreonworlds/terrain/maps/terrain1/alpha3.bmp
+heightmap oreonworlds/terrain/maps/terrain4/heightmap.bmp 12
 
 #terrain mesh settings
 scaleXZ 6000.0
-scaleY 400.0
+scaleY 300.0
 texDetail 400.0
 tessellationFactor 600
 tessellationSlope 1.8
@@ -48,12 +64,12 @@ lod8_range 0
 
 #fractals
 fractal_stage0
-amp 8.0
-l 12.0
-scaling 1
-strength 1.0
-normalStrength 256
-random 589
+amp 4.0
+l 200.0
+scaling 10
+strength 0.02
+normalStrength 2
+random 158
 
 fractal_stage1
 amp 2.0

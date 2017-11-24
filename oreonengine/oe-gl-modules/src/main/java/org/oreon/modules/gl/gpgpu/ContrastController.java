@@ -23,7 +23,7 @@ public class ContrastController {
 	private Texture2D contrastTexture;
 	private GLShader contrastShader;
 	
-	private float contrastFactor = 1.11f;
+	private float contrastFactor = 1.0f;
 	private float brightnessFactor = 2.0f;
 	
 	public ContrastController() {

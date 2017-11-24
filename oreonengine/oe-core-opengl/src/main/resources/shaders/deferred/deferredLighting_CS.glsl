@@ -40,6 +40,7 @@ layout (std140, row_major) uniform LightViewProjections{
 uniform sampler2DArray pssm;
 uniform sampler2DMS depthmap;
 uniform int numSamples;
+uniform float sightRangeFactor;
 
 const float zfar = 10000;
 const float znear = 0.1;
@@ -58,6 +59,11 @@ float specular(vec3 direction, vec3 normal, vec3 eyePosition, vec3 vertexPositio
 	float specular = max(0.0, dot(vertexToEye, reflectionVector));
 	
 	return pow(specular, specularFactor) * emissionFactor;
+}
+
+float getFogFactor(float dist)
+{
+	return -0.0002/sightRangeFactor*(dist-(zfar)/10*sightRangeFactor) + 1;
 }
 
 float linearizeDepth(float depth)
@@ -94,7 +100,7 @@ float varianceShadow(vec3 projCoords, int split, int kernels){
 		}
 	}
 	
-	return max(0.0,shadowFactor);
+	return max(0.1,shadowFactor);
 }
 
 
@@ -190,7 +196,7 @@ void main(void){
 				vec3 specularLight = directional_light.color * spec;
 				
 			
-				finalColor += (albedo * diffuseLight * ssao);
+				finalColor += (albedo * diffuseLight * ssao + specularLight);
 			}
 			else{
 				finalColor += albedo;
@@ -215,12 +221,16 @@ void main(void){
 			vec3 diffuseLight = directional_light.ambient + directional_light.color * diff * shadow;
 			vec3 specularLight = directional_light.color * spec;
 			
-			finalColor = albedo * diffuseLight * ssao;
+			finalColor = albedo * diffuseLight * ssao + specularLight;
 		}
 		else{
 			finalColor = albedo;
 		}
 	}
+	
+	float dist = length(eyePosition - position);
+	float fogFactor = getFogFactor(dist);
+	finalColor = mix(fogColor, finalColor, clamp(fogFactor,0,1));
 	
 	depth = texelFetch(depthmap, computeCoord,0).rgb;
 	

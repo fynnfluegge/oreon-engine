@@ -16,6 +16,8 @@ uniform mat4 m_Proj;
 uniform int kernelSize;
 uniform float uRadius;
 uniform float threshold;
+uniform int width;
+uniform int height;
 
 const float zfar = 10000.0f;
 
@@ -53,7 +55,7 @@ void main(void){
 		  
 		if (offset.x < 1.0 && offset.y < 1.0 && offset.x >= 0.0 && offset.y >= 0.0){
 			// get sample depth:
-			float sampleDepth = (m_View * vec4(imageLoad(worldPositionImage, ivec2(offset.x * 1280, offset.y * 720), 0).rgb,1.0)).z/zfar;
+			float sampleDepth = (m_View * vec4(imageLoad(worldPositionImage, ivec2(offset.x * width, offset.y * height), 0).rgb,1.0)).z/zfar;
 		  
 			// range check & accumulate:
 			float rangeCheck= abs(actualDepth - sampleDepth) < threshold ? 1.0 : 0.0;

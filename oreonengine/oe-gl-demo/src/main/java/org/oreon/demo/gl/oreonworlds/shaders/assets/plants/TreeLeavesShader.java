@@ -44,6 +44,8 @@ public class TreeLeavesShader extends GLShader{
 		addUniformBlock("worldMatrices");
 		addUniformBlock("modelMatrices");
 		addUniformBlock("Camera");
+//		addUniform("screenWidth");
+//		addUniform("screenHeight");
 		
 		for (int i=0; i<100; i++)
 		{
@@ -54,6 +56,8 @@ public class TreeLeavesShader extends GLShader{
 	public void updateUniforms(GameObject object)
 	{
 		bindUniformBlock("Camera", Constants.CameraUniformBlockBinding);
+//		setUniformi("screenWidth", CoreSystem.getInstance().getWindow().getWidth());
+//		setUniformi("screenHeight", CoreSystem.getInstance().getWindow().getHeight());
 		setUniformi("isReflection", CoreSystem.getInstance().getRenderingEngine().isWaterReflection() ? 1 : 0);
 		
 		((InstancingCluster) object.getParent()).getWorldMatricesBuffer().bindBufferBase(0);

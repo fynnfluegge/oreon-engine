@@ -84,7 +84,9 @@ void main(){
 	u * v * texCoord2[3] +
 	(1 - u) * v * texCoord2[15]);
 	
-	float height = texture(heightmap, texCoord).r;
+	float height = 0;
+	height += texture(heightmap, texCoord).r;
+	height += texture(fractals0[0].heightmap, texCoord*fractals0[0].scaling).r * fractals0[0].strength;
 	height *= scaleY;
 					
 	position.y = height;

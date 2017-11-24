@@ -43,10 +43,11 @@ public class TerrainConfiguration {
 	private Texture2D normalmap;
 	private Texture2D ambientmap;
 	private FloatBuffer heightmapDataBuffer;
-	private Material material0;
-	private Material material1;
-	private Material material2;
-	private Material material3;
+	private List<Material> materials = new ArrayList<>();
+//	private Material material0;
+//	private Material material1;
+//	private Material material2;
+//	private Material material3;
 	private List<Texture2D> splatmaps = new ArrayList<>();
 	private List<FractalMaps> fractals = new ArrayList<>();
 	
@@ -148,12 +149,6 @@ public class TerrainConfiguration {
 						
 						createHeightmapDataBuffer();
 					}
-					if(tokens[0].equals("splatmap")){
-						Texture2D splatmap = new Texture2D(tokens[1]);
-						splatmap.bind();
-						splatmap.trilinearFilter();
-						getSplatmaps().add(splatmap);
-					}
 					if(tokens[0].equals("normalmap")){
 						setNormalmap(new Texture2D(tokens[1]));
 						getNormalmap().bind();
@@ -164,105 +159,44 @@ public class TerrainConfiguration {
 						getAmbientmap().bind();
 						getAmbientmap().trilinearFilter();
 					}
-					if(tokens[0].equals("material0_DIF")){
-						setMaterial0(new Material());
-						getMaterial0().setDiffusemap(new Texture2D(tokens[1]));
-						getMaterial0().getDiffusemap().bind();
-						getMaterial0().getDiffusemap().trilinearFilter();
+					if(tokens[0].equals("material")){
+						getMaterials().add(new Material());
 					}
-					if(tokens[0].equals("material0_NRM")){
-						getMaterial0().setNormalmap(new Texture2D(tokens[1]));
-						getMaterial0().getNormalmap().bind();
-						getMaterial0().getNormalmap().trilinearFilter();
+					if(tokens[0].equals("material_DIF")){
+						Texture2D diffusemap = new Texture2D(tokens[1]);
+						diffusemap.bind();
+						diffusemap.trilinearFilter();
+						getMaterials().get(materials.size()-1).setDiffusemap(diffusemap);
 					}
-					if(tokens[0].equals("material0_DISP")){
-						getMaterial0().setHeightemap(new Texture2D(tokens[1]));
-						getMaterial0().getHeightmap().bind();
-						getMaterial0().getHeightmap().trilinearFilter();
+					if(tokens[0].equals("material_NRM")){
+						Texture2D normalmap = new Texture2D(tokens[1]);
+						normalmap.bind();
+						normalmap.trilinearFilter();
+						getMaterials().get(materials.size()-1).setNormalmap(normalmap);
 					}
-					if(tokens[0].equals("material0_displaceScale")){
-						getMaterial0().setDisplacementScale(Float.valueOf(tokens[1]));
+					if(tokens[0].equals("material_DISP")){
+						Texture2D heightmap = new Texture2D(tokens[1]);
+						heightmap.bind();
+						heightmap.trilinearFilter();
+						getMaterials().get(materials.size()-1).setHeightmap(heightmap);
 					}
-					if(tokens[0].equals("material0_emission")){
-						getMaterial0().setEmission(Float.valueOf(tokens[1]));
+					if(tokens[0].equals("material_ALPHA")){
+						Texture2D alphamap = new Texture2D(tokens[1]);
+						alphamap.bind();
+						alphamap.trilinearFilter();
+						getMaterials().get(materials.size()-1).setAlphamap(alphamap);
 					}
-					if(tokens[0].equals("material0_shininess")){
-						getMaterial0().setShininess(Float.valueOf(tokens[1]));
+					if(tokens[0].equals("material_heightScaling")){
+						getMaterials().get(materials.size()-1).setHeightScaling(Float.valueOf(tokens[1]));
 					}
-					if(tokens[0].equals("material1_DIF")){
-						setMaterial1(new Material());
-						getMaterial1().setDiffusemap(new Texture2D(tokens[1]));
-						getMaterial1().getDiffusemap().bind();
-						getMaterial1().getDiffusemap().trilinearFilter();
+					if(tokens[0].equals("material_horizontalScaling")){
+						getMaterials().get(materials.size()-1).setHorizontalScaling(Float.valueOf(tokens[1]));
 					}
-					if(tokens[0].equals("material1_NRM")){
-						getMaterial1().setNormalmap(new Texture2D(tokens[1]));
-						getMaterial1().getNormalmap().bind();
-						getMaterial1().getNormalmap().trilinearFilter();
+					if(tokens[0].equals("material_emission")){
+						getMaterials().get(materials.size()-1).setEmission(Float.valueOf(tokens[1]));
 					}
-					if(tokens[0].equals("material1_DISP")){
-						getMaterial1().setHeightemap(new Texture2D(tokens[1]));
-						getMaterial1().getHeightmap().bind();
-						getMaterial1().getHeightmap().trilinearFilter();
-					}
-					if(tokens[0].equals("material1_displaceScale")){
-						getMaterial1().setDisplacementScale(Float.valueOf(tokens[1]));
-					}
-					if(tokens[0].equals("material1_emission")){
-						getMaterial1().setEmission(Float.valueOf(tokens[1]));
-					}
-					if(tokens[0].equals("material1_shininess")){
-						getMaterial1().setShininess(Float.valueOf(tokens[1]));
-					}
-					if(tokens[0].equals("material2_DIF")){
-						setMaterial2(new Material());
-						getMaterial2().setDiffusemap(new Texture2D(tokens[1]));
-						getMaterial2().getDiffusemap().bind();
-						getMaterial2().getDiffusemap().trilinearFilter();
-					}
-					if(tokens[0].equals("material2_NRM")){
-						getMaterial2().setNormalmap(new Texture2D(tokens[1]));
-						getMaterial2().getNormalmap().bind();
-						getMaterial2().getNormalmap().trilinearFilter();
-					}
-					if(tokens[0].equals("material2_DISP")){
-						getMaterial2().setHeightemap(new Texture2D(tokens[1]));
-						getMaterial2().getHeightmap().bind();
-						getMaterial2().getHeightmap().trilinearFilter();
-					}
-					if(tokens[0].equals("material2_displaceScale")){
-						getMaterial2().setDisplacementScale(Float.valueOf(tokens[1]));
-					}
-					if(tokens[0].equals("material2_emission")){
-						getMaterial2().setEmission(Float.valueOf(tokens[1]));
-					}
-					if(tokens[0].equals("material2_shininess")){
-						getMaterial2().setShininess(Float.valueOf(tokens[1]));
-					}
-					if(tokens[0].equals("material3_DIF")){
-						setMaterial3(new Material());
-						getMaterial3().setDiffusemap(new Texture2D(tokens[1]));
-						getMaterial3().getDiffusemap().bind();
-						getMaterial3().getDiffusemap().trilinearFilter();
-					}
-					if(tokens[0].equals("material3_NRM")){
-						getMaterial3().setNormalmap(new Texture2D(tokens[1]));
-						getMaterial3().getNormalmap().bind();
-						getMaterial3().getNormalmap().trilinearFilter();
-					}
-					if(tokens[0].equals("material3_DISP")){
-						getMaterial3().setHeightemap(new Texture2D(tokens[1]));
-						getMaterial3().getHeightmap().bind();
-						getMaterial3().getHeightmap().trilinearFilter();
-					}
-					if(tokens[0].equals("material3_displaceScale")){
-						getMaterial3().setDisplacementScale(Float.valueOf(tokens[1]));
-					}
-					if(tokens[0].equals("material3_emission")){
-						getMaterial3().setEmission(Float.valueOf(tokens[1]));
-					}
-					if(tokens[0].equals("material3_shininess")){
-						getMaterial3().setShininess(Float.valueOf(tokens[1]));
+					if(tokens[0].equals("material_shininess")){
+						getMaterials().get(materials.size()-1).setShininess(Float.valueOf(tokens[1]));
 					}
 					if(tokens[0].equals("tessellationFactor")){
 						setTessellationFactor(Integer.valueOf(tokens[1]));
@@ -482,24 +416,24 @@ public class TerrainConfiguration {
 	public void setAmbientmap(Texture2D ambientmap) {
 		this.ambientmap = ambientmap;
 	}
-	public Material getMaterial1() {
-		return material1;
-	}
-	public void setMaterial1(Material material1) {
-		this.material1 = material1;
-	}
-	public Material getMaterial2() {
-		return material2;
-	}
-	public void setMaterial2(Material material2) {
-		this.material2 = material2;
-	}
-	public Material getMaterial3() {
-		return material3;
-	}
-	public void setMaterial3(Material material3) {
-		this.material3 = material3;
-	}
+//	public Material getMaterial1() {
+//		return material1;
+//	}
+//	public void setMaterial1(Material material1) {
+//		this.material1 = material1;
+//	}
+//	public Material getMaterial2() {
+//		return material2;
+//	}
+//	public void setMaterial2(Material material2) {
+//		this.material2 = material2;
+//	}
+//	public Material getMaterial3() {
+//		return material3;
+//	}
+//	public void setMaterial3(Material material3) {
+//		this.material3 = material3;
+//	}
 
 	public List<FractalMaps> getFractals() {
 		return fractals;
@@ -542,13 +476,13 @@ public class TerrainConfiguration {
 		return lod_range;
 	}
 
-	public Material getMaterial0() {
-		return material0;
-	}
-
-	public void setMaterial0(Material material0) {
-		this.material0 = material0;
-	}
+//	public Material getMaterial0() {
+//		return material0;
+//	}
+//
+//	public void setMaterial0(Material material0) {
+//		this.material0 = material0;
+//	}
 
 	public int getWaterReflectionShift() {
 		return waterReflectionShift;
@@ -572,5 +506,13 @@ public class TerrainConfiguration {
 
 	public void setHeightmapDataBuffer(FloatBuffer heightmapDataBuffer) {
 		this.heightmapDataBuffer = heightmapDataBuffer;
+	}
+
+	public List<Material> getMaterials() {
+		return materials;
+	}
+
+	public void setMaterials(List<Material> materials) {
+		this.materials = materials;
 	}
 }

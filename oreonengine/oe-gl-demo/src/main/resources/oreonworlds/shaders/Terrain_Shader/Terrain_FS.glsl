@@ -16,8 +16,9 @@ struct Material
 	sampler2D diffusemap;
 	sampler2D normalmap;
 	sampler2D heightmap;
-	sampler2D splatmap;
-	float displaceScale;
+	sampler2D alphamap;
+	float heightScaling;
+	float horizontalScaling;
 };
 
 struct Fractal
@@ -37,10 +38,7 @@ uniform sampler2D normalmap;
 uniform Fractal fractals1[1];
 uniform float scaleY;
 uniform float scaleXZ;
-uniform Material sand;
-uniform Material grass;
-uniform Material rock;
-uniform Material cliff;
+uniform Material materials[5];
 uniform float sightRangeFactor;
 uniform int largeDetailRange;
 uniform int isReflection;
@@ -68,22 +66,22 @@ void main()
 	
 	// normalmap/occlusionmap/splatmap coords
 	vec2 mapCoords = (position.xz + scaleXZ/2)/scaleXZ; 
-
-	vec3 bumpNormal = vec3(0,0,0);
 	
 	vec3 normal = texture(normalmap, mapCoords).rgb;
-	// normal.xy += (texture(fractals1[0].normalmap, mapCoords*fractals1[0].scaling).rg);
+	normal.xy += (texture(fractals1[0].normalmap, mapCoords*fractals1[0].scaling).rg);
 	normal = normalize(normal);
 	
-	float grassBlend = texture(grass.splatmap, mapCoords).r;
-	float sandBlend = texture(sand.splatmap, mapCoords).r;
-	float rockBlend = texture(rock.splatmap, mapCoords).r;
-	float cliffBlend = texture(cliff.splatmap, mapCoords).r;
+	float material0Alpha = texture(materials[0].alphamap, mapCoords).r;
+	float material1Alpha = texture(materials[1].alphamap, mapCoords).r;
+	float material2Alpha = texture(materials[2].alphamap, mapCoords).r;
+	float material3Alpha = texture(materials[3].alphamap, mapCoords).r;
+	float material4Alpha = texture(materials[4].alphamap, mapCoords).r;
 	
-	vec3 grassColor = texture(grass.diffusemap, texCoordF).rgb;
-	vec3 sandColor = texture(sand.diffusemap, texCoordF/2).rgb;
-	vec3 rockColor = texture(rock.diffusemap, texCoordF/20).rgb;
-	vec3 cliffColor = texture(cliff.diffusemap, texCoordF/20).rgb;
+	vec3 material0Color = texture(materials[0].diffusemap, texCoordF/materials[0].horizontalScaling).rgb;
+	vec3 material1Color = texture(materials[1].diffusemap, texCoordF/materials[1].horizontalScaling).rgb;
+	vec3 material2Color = texture(materials[2].diffusemap, texCoordF/materials[2].horizontalScaling).rgb;
+	vec3 material3Color = texture(materials[3].diffusemap, texCoordF/materials[3].horizontalScaling).rgb;
+	vec3 material4Color = texture(materials[4].diffusemap, texCoordF/materials[4].horizontalScaling).rgb;
 	
 	if (dist < largeDetailRange-50)
 	{
@@ -92,20 +90,24 @@ void main()
 		vec3 bitangent = normalize(cross(tangent, normal));
 		mat3 TBN = mat3(tangent,bitangent,normal);
 		
-		vec3 bumpnormal = normalize((2*(texture(grass.normalmap, texCoordF).rgb) - 1) * grassBlend
-								 +  (2*(texture(sand.normalmap, texCoordF/2).rgb) - 1) * sandBlend
-								 +  (2*(texture(rock.normalmap, texCoordF/10).rgb) - 1) * rockBlend
-								 +  (2*(texture(cliff.normalmap, texCoordF/10).rgb) - 1) * cliffBlend);
+		vec3 bumpNormal;
+		for (int i=0; i<5; i++){
+			
+			bumpNormal += (2*(texture(materials[i].normalmap, texCoordF/materials[i].horizontalScaling).rgb) - 1) * texture(materials[i].alphamap, mapCoords).r;
+		}
 		
-		bumpnormal.xy *= attenuation;
+		bumpNormal = normalize(bumpNormal);
 		
-		normal = normalize(TBN * bumpnormal);
+		bumpNormal.xy *= attenuation;
+		
+		normal = normalize(TBN * bumpNormal);
 	}
 	
-	vec3 fragColor = grassColor * grassBlend + 
-				     sandColor * sandBlend + 
-					 rockColor * rockBlend + 
-					 cliffColor * cliffBlend;
+	vec3 fragColor = material0Color * material0Alpha + 
+				     material1Color * material1Alpha + 
+					 material2Color * material2Alpha + 
+					 material3Color * material3Alpha +
+					 material4Color * material4Alpha;
 	
 	// caustics
 	if (isCameraUnderWater == 1 && isRefraction == 0){
@@ -115,9 +117,6 @@ void main()
 		
 		fragColor += (causticsColor/5);
 	}
-	float fogFactor = -0.0002/sightRangeFactor*(dist-(zfar)/10*sightRangeFactor) + 1;
-
-    vec3 rgb = mix(fogColor, fragColor, clamp(fogFactor,0,1));
 	
 	// underwater distance blue blur
 	if (isCameraUnderWater == 0 && isRefraction == 1){
@@ -125,10 +124,10 @@ void main()
 		float distToWaterSurace = distancePointPlane(position,clipplane);
 		float refractionFactor = clamp(0.025 * distToWaterSurace,0,1);
 		
-		rgb = mix(rgb, waterRefractionColor, refractionFactor); 
+		fragColor = mix(fragColor, waterRefractionColor, refractionFactor); 
 	}
 	
-	albedo_out = vec4(rgb,1);
+	albedo_out = vec4(fragColor,1);
 	worldPosition_out = vec4(position,1);
 	normal_out = vec4(normal,1);
 	specularEmission_out = vec4(1,0,0,1);

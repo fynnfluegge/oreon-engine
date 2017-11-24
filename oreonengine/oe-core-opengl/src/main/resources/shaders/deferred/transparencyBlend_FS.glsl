@@ -12,8 +12,8 @@ uniform sampler2D transparencyLayer;
 uniform sampler2D transparencyLayerLightScatteringTexture;
 uniform sampler2D transparencyLayerDepthMap;
 uniform sampler2D transparencyAlphaMap;
-uniform int width = 1280;
-uniform int height = 720;
+uniform int width;
+uniform int height;
 const float zfar = 10000;
 const float znear = 0.1;
 

@@ -22,5 +22,14 @@ public class SSAOBlurShader extends GLShader{
 		
 		addComputeShader(ResourceLoader.loadShader("shaders/post_processing/ssao/SSAOBlur_CS.glsl"));
 		compileShader();
+		
+		addUniform("width");
+		addUniform("height");
+	}
+	
+	public void updateUniforms(int width, int height){
+		
+		setUniformi("width", width);
+		setUniformi("height", height);
 	}
 }

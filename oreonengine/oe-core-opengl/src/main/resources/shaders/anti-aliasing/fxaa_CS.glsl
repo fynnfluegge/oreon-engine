@@ -12,6 +12,8 @@ uniform float u_mulReduce = 8.0f;
 uniform float u_minReduce = 128.0f;
 uniform float u_maxSpan = 8.0f;
 uniform int u_showEdges = 0;
+uniform int width;
+uniform int height;
 
 uniform sampler2D sceneTexture;
 
@@ -29,9 +31,9 @@ void main(){
 
 	ivec2 computeCoord = ivec2(gl_GlobalInvocationID.x, gl_GlobalInvocationID.y);
 	
-	vec2 uv = vec2(gl_GlobalInvocationID.x/1280.0f, gl_GlobalInvocationID.y/720.0f);
+	vec2 uv = vec2(gl_GlobalInvocationID.x/float(width), gl_GlobalInvocationID.y/float(height));
 	
-	vec2 inverseScreenSize = vec2(1.0/1280.0, 1.0/720.0);
+	vec2 inverseScreenSize = vec2(1.0/float(width), 1.0/float(height));
 	
 	vec3 rgb = imageLoad(sceneImage_in, computeCoord).rgb;
 	

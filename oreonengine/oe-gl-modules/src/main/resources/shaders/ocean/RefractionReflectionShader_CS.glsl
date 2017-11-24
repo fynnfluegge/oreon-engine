@@ -22,14 +22,9 @@ layout (std140) uniform DirectionalLight{
 	vec3 color;
 } directional_light;
 
-layout (std140, row_major) uniform LightViewProjections{
-	mat4 m_lightViewProjection[6];
-	float splitRange[6];
-};
-
 float diffuse(vec3 direction, vec3 normal, float intensity)
 {
-	return max(0.0, dot(normal, -direction) * intensity);
+	return max(0.2, dot(normal, -direction) * intensity);
 }
 
 void main(void){

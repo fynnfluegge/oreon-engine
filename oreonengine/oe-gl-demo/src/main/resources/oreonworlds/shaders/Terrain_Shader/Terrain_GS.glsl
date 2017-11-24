@@ -6,19 +6,14 @@ layout(triangle_strip, max_vertices = 3) out;
 
 in vec2 texCoordG[];
 
-struct Fractal
-{
-	sampler2D normalmap;
-	int scaling;
-};
-
 struct Material
 {
 	sampler2D diffusemap;
 	sampler2D normalmap;
 	sampler2D heightmap;
-	sampler2D splatmap;
-	float displaceScale;
+	sampler2D alphamap;
+	float heightScaling;
+	float horizontalScaling;
 };
 
 out vec2 texCoordF;
@@ -33,12 +28,9 @@ layout (std140, row_major) uniform Camera{
 	vec4 frustumPlanes[6];
 };
 
-uniform Material sand;
-uniform Material rock;
-uniform Material cliff;
+uniform Material materials[5];
 uniform int largeDetailRange;
 uniform vec4 clipplane;
-uniform Fractal fractals1[1];
 uniform float scaleXZ;
 
 vec3 Tangent;
@@ -87,13 +79,10 @@ void main() {
 			
 			float height = gl_in[k].gl_Position.y;
 			
-			float sandBlend = texture(sand.splatmap, mapCoords).r;
-			float rockBlend = texture(rock.splatmap, mapCoords).r;
-			float cliffBlend = texture(cliff.splatmap, mapCoords).r;
-			
-			float scale = texture(sand.heightmap, texCoordG[k]/2).r * sandBlend * sand.displaceScale
-						+ texture(rock.heightmap, texCoordG[k]/10).r * rockBlend * rock.displaceScale
-						+ texture(cliff.heightmap, texCoordG[k]/10).r * cliffBlend * cliff.displaceScale;
+			float scale = 0;
+			for (int i=0; i<5; i++){
+				scale += texture(materials[i].heightmap, texCoordG[k]/materials[i].horizontalScaling).r * texture(materials[i].alphamap, mapCoords).r * materials[i].heightScaling;
+			}
 						
 			float attenuation = clamp(- distance(gl_in[k].gl_Position.xyz, eyePosition)/(largeDetailRange-50) + 1,0.0,1.0);
 			scale *= attenuation;

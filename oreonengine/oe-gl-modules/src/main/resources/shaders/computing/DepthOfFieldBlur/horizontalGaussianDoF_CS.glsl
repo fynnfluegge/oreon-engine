@@ -6,7 +6,9 @@ layout (binding = 0, rgba16f) uniform readonly image2D sceneSampler;
 
 layout (binding = 1, rgba16f) uniform readonly image2D lowResSceneSampler;
 
-layout (binding = 2, rgba16f) uniform writeonly image2D horizontalBlurSceneSampler;
+layout (binding = 2, rgba16f) uniform readonly image2D depthOfFieldBlurMask;
+
+layout (binding = 3, rgba16f) uniform writeonly image2D horizontalBlurSceneSampler;
 
 uniform sampler2D depthmap;
 uniform float windowWidth;
@@ -38,6 +40,13 @@ void main(void){
 	float linDepth = linearize(depth);
 	
 	vec3 color = imageLoad(sceneSampler, computeCoord).rgb;  
+	
+	float dofBlurPreventionFlag = imageLoad(depthOfFieldBlurMask, computeCoord).a;  
+	
+	if (dofBlurPreventionFlag == 0.0 || linDepth < 0.01){
+		imageStore(horizontalBlurSceneSampler, computeCoord, vec4(color, 1.0));
+		return;
+	}
 	
 	if (gl_GlobalInvocationID.x > 3 && gl_GlobalInvocationID.y > 3
 		&& gl_GlobalInvocationID.x < windowWidth-4
@@ -73,7 +82,7 @@ void main(void){
 					color += imageLoad(sceneSampler, computeCoord).rgb * gaussianKernel7_Sigma1_5[i];
 			}
 		}
-		else if (linDepth > 0.005){
+		else if (linDepth > 0.01){
 			color = vec3(0,0,0);
 			for (int i=0; i<7; i++){
 				color += imageLoad(sceneSampler, computeCoord + ivec2(i-3,0)).rgb * gaussianKernel7_Sigma1[i];

@@ -23,7 +23,7 @@ public class WaterConfig implements RenderConfig{
 
 	public void clearScreenDeepOcean()
 	{
-		glClearColor(0.1f,0.125f,0.19f,1.0f);
+		glClearColor(0.1f,0.125f,0.24f,1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 }

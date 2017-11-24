@@ -33,6 +33,14 @@ public class Texture2D extends Texture{
 	public Texture2D(){
 	}
 	
+	public Texture2D(String file, int i){
+		setPath(file);
+		int[] data = ImageLoader.loadHeightmap(file);
+		id = data[0];
+		width = data[1];
+		height = data[2];
+	}
+	
 	public Texture2D(Texture2D texture){
 		
 		id = texture.getId();
@@ -59,7 +67,7 @@ public class Texture2D extends Texture{
 	
 	public void loadHeightmap(String file){
 		
-		int[] data = ImageLoader.loadImage(file);
+		int[] data = ImageLoader.loadHeightmap(file);
 		id = data[0];
 		width = data[1];
 		width = data[2];

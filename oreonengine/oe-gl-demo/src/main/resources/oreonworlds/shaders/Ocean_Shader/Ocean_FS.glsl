@@ -44,7 +44,7 @@ uniform int isCameraUnderWater;
 
 const vec2 wind = vec2(1,1);
 const float Eta = 0.15; // Water
-const vec3 deepOceanColor = vec3(0.1,0.125,0.19);
+const vec3 deepOceanColor = vec3(0.1,0.125,0.20);
 const vec3 fogColor = vec3(0.62,0.8,0.98);
 const float zfar = 10000;
 const float znear = 0.1;
@@ -56,9 +56,9 @@ float fresnelApproximated(vec3 normal)
     
     float cosine = dot(halfDirection, vertexToEye);
 
-	float fresnel = Eta + (1.0 - Eta) * pow(max(0.0, 1.0 - dot(vertexToEye, normal)), 5.0);
+	float fresnel = Eta + (1.0 - Eta) * pow(max(0.0, 1.0 - dot(vertexToEye, normal)), 8.0);
 	
-	return pow(fresnel,0.8);
+	return clamp(pow(fresnel, 1.2),0.0,1.0);
 }
  
 void main(void)
@@ -95,7 +95,7 @@ void main(void)
     // Reflection //
 	vec2 reflecCoords = projCoord.xy + dudvCoord.rb * kReflection;
 	reflecCoords = clamp(reflecCoords, kReflection, 1-kReflection);
-    vec3 reflection = mix(texture(waterReflection, reflecCoords).rgb, deepOceanColor,  0.1);
+    vec3 reflection = mix(texture(waterReflection, reflecCoords).rgb, deepOceanColor,  0.4);
     reflection *= F;
  
     // Refraction //

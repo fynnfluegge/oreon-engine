@@ -37,6 +37,7 @@ import org.oreon.core.system.Window;
 import org.oreon.core.texture.Texture;
 import org.oreon.core.util.BufferUtil;
 import org.oreon.core.util.Constants;
+import org.oreon.modules.gl.gpgpu.ContrastController;
 import org.oreon.modules.gl.gui.GUI;
 import org.oreon.modules.gl.gui.GUIs.VoidGUI;
 import org.oreon.modules.gl.postprocessfilter.bloom.Bloom;
@@ -61,7 +62,7 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 	private GLFramebuffer finalSceneFbo;
 	private Texture2D finalSceneTexture;
 	private Texture2D sceneDepthmap;
-	private Texture2D lightScatteringSceneTexture;
+	private Texture2D lightScatteringMask;
 	private Texture2D postProcessingTexture;
 	
 	private DeferredLightingRenderer deferredRenderer;
@@ -82,11 +83,20 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 	private LensFlare lensFlare;
 	private SSAO ssao;
 	private UnderWater underWater;
+	private ContrastController contrastController;
 	
 	private float sightRangeFactor = 2f;
 	private boolean waterReflection = false;
 	private boolean waterRefraction = false;
 	private boolean cameraUnderWater = false;
+	
+	private boolean renderAlbedoBuffer;
+	private boolean renderNormalBuffer;
+	private boolean renderPositionBuffer;
+	private boolean renderSampleCoverageMask;
+	private boolean renderDeferredLightingScene;
+	private boolean renderSSAOBuffer;
+	private boolean renderFXAA = true;
 	
 	@Override
 	public void init() {
@@ -119,6 +129,7 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		lensFlare = new LensFlare();
 		ssao = new SSAO(window.getWidth(),window.getHeight());
 		underWater = UnderWater.getInstance();
+		contrastController = new ContrastController();
 		
 		finalSceneTexture = new Texture2D();
 		finalSceneTexture.generate();
@@ -126,11 +137,11 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, window.getWidth(), window.getHeight(), 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
 		finalSceneTexture.bilinearFilter();
 		
-		lightScatteringSceneTexture = new Texture2D();
-		lightScatteringSceneTexture.generate();
-		lightScatteringSceneTexture.bind();
+		lightScatteringMask = new Texture2D();
+		lightScatteringMask.generate();
+		lightScatteringMask.bind();
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, window.getWidth(), window.getHeight(), 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
-		lightScatteringSceneTexture.noFilter();
+		lightScatteringMask.noFilter();
 		
 		IntBuffer drawBuffers = BufferUtil.createIntBuffer(2);
 		drawBuffers.put(GL_COLOR_ATTACHMENT0);
@@ -140,7 +151,7 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		finalSceneFbo = new GLFramebuffer();
 		finalSceneFbo.bind();
 		finalSceneFbo.createColorTextureAttachment(finalSceneTexture.getId(),0);
-		finalSceneFbo.createColorTextureAttachment(lightScatteringSceneTexture.getId(),1);
+		finalSceneFbo.createColorTextureAttachment(lightScatteringMask.getId(),1);
 		finalSceneFbo.setDrawBuffers(drawBuffers);
 		finalSceneFbo.checkStatus();
 		finalSceneFbo.unbind();
@@ -213,17 +224,16 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 							   CoreSystem.getInstance().getScenegraph().getCamera().getPosition()).length() > 0.04f ||
 							   CoreSystem.getInstance().getScenegraph().getCamera().getForward().sub(
 							   CoreSystem.getInstance().getScenegraph().getCamera().getPreviousForward()).length() > 0.01f;
+				
+		// perform FXAA
+			if (!doMotionBlur && renderFXAA){
+				fxaa.render(postProcessingTexture);
+				postProcessingTexture = fxaa.getFxaaSceneTexture();
+		}
 							   
 		// Depth of Field Blur			
-		dofBlur.render(deferredRenderer.getDepthmap(), postProcessingTexture, window.getWidth(), window.getHeight());
+		dofBlur.render(deferredRenderer.getDepthmap(), lightScatteringMask, postProcessingTexture, window.getWidth(), window.getHeight());
 		postProcessingTexture = dofBlur.getVerticalBlurSceneTexture();
-								
-		
-		// perform FXAA
-		if (!doMotionBlur){
-			fxaa.render(postProcessingTexture);
-			postProcessingTexture = fxaa.getFxaaSceneTexture();
-		}
 		
 		// post processing effects
 		if (isCameraUnderWater()){
@@ -241,14 +251,42 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 			postProcessingTexture = motionBlur.getMotionBlurSceneTexture();
 		}
 		
-		sunlightScattering.render(postProcessingTexture,lightScatteringSceneTexture);
+		sunlightScattering.render(postProcessingTexture,lightScatteringMask);
 		postProcessingTexture = sunlightScattering.getSunLightScatteringSceneTexture();
 		
-		fullScreenQuad.setTexture(postProcessingTexture);
-		fullScreenQuad.render();
+		if (isGrid()){
+			fullScreenQuadMultisample.setTexture(deferredRenderer.getGbuffer().getAlbedoTexture());
+			fullScreenQuadMultisample.render();
+		}
+		if (renderAlbedoBuffer){
+			fullScreenQuadMultisample.setTexture(deferredRenderer.getGbuffer().getAlbedoTexture());
+			fullScreenQuadMultisample.render();
+		}
+		if (renderNormalBuffer){
+			fullScreenQuadMultisample.setTexture(deferredRenderer.getGbuffer().getNormalTexture());
+			fullScreenQuadMultisample.render();
+		}
+		if (renderPositionBuffer){
+			fullScreenQuadMultisample.setTexture(deferredRenderer.getGbuffer().getWorldPositionTexture());
+			fullScreenQuadMultisample.render();
+		}
+		if (renderSampleCoverageMask){
+			fullScreenQuad.setTexture(msaa.getSampleCoverageMask());
+			fullScreenQuad.render();
+		}
+		if (renderSSAOBuffer){
+			fullScreenQuad.setTexture(ssao.getSsaoBlurSceneTexture());
+			fullScreenQuad.render();
+		}
+		if (renderDeferredLightingScene){
+			fullScreenQuad.setTexture(deferredRenderer.getDeferredLightingSceneTexture());
+			fullScreenQuad.render();
+		}
 		
-//		fullScreenQuadMultisample.setTexture(deferredRenderer.getGbuffer().getAlbedoTexture());
-//		fullScreenQuadMultisample.render();
+		contrastController.render(postProcessingTexture);
+		
+		fullScreenQuad.setTexture(contrastController.getContrastTexture());
+		fullScreenQuad.render();
 		
 		deferredRenderer.getFbo().bind();
 		LightHandler.doOcclusionQueries();
@@ -270,6 +308,99 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 			else
 				setGrid(true);
 		}
+		
+		if (CoreSystem.getInstance().getInput().isKeyPushed(GLFW.GLFW_KEY_KP_1)){
+			if (renderAlbedoBuffer){
+				renderAlbedoBuffer = false;
+			}
+			else{
+				renderAlbedoBuffer  = true;
+				renderNormalBuffer = false;
+				renderPositionBuffer = false;
+				renderSampleCoverageMask = false;
+				renderSSAOBuffer = false;
+				renderDeferredLightingScene = false;
+			}
+		}
+		if (CoreSystem.getInstance().getInput().isKeyPushed(GLFW.GLFW_KEY_KP_2)){
+			if (renderNormalBuffer){
+				renderNormalBuffer = false;
+			}
+			else{
+				renderNormalBuffer  = true;
+				renderAlbedoBuffer = false;
+				renderPositionBuffer = false;
+				renderSampleCoverageMask = false;
+				renderSSAOBuffer = false;
+				renderDeferredLightingScene = false;
+			}
+		}
+		if (CoreSystem.getInstance().getInput().isKeyPushed(GLFW.GLFW_KEY_KP_3)){
+			if (renderPositionBuffer){
+				renderPositionBuffer = false;
+			}
+			else{
+				renderPositionBuffer  = true;
+				renderAlbedoBuffer = false;
+				renderNormalBuffer = false;
+				renderSampleCoverageMask = false;
+				renderSSAOBuffer = false;
+				renderDeferredLightingScene = false;
+			}
+		}
+		if (CoreSystem.getInstance().getInput().isKeyPushed(GLFW.GLFW_KEY_KP_4)){
+			if (renderSampleCoverageMask){
+				renderSampleCoverageMask = false;
+			}
+			else{
+				renderSampleCoverageMask = true;
+				renderAlbedoBuffer = false;
+				renderNormalBuffer = false;
+				renderPositionBuffer = false;
+				renderSSAOBuffer = false;
+				renderDeferredLightingScene = false;
+			}
+		}
+		if (CoreSystem.getInstance().getInput().isKeyPushed(GLFW.GLFW_KEY_KP_5)){
+			if (renderSSAOBuffer){
+				renderSSAOBuffer = false;
+			}
+			else{
+				renderSSAOBuffer = true;
+				renderAlbedoBuffer = false;
+				renderNormalBuffer = false;
+				renderPositionBuffer = false;
+				renderSampleCoverageMask = false;
+				renderDeferredLightingScene = false;
+			}
+		}
+		if (CoreSystem.getInstance().getInput().isKeyPushed(GLFW.GLFW_KEY_KP_6)){
+			if (renderDeferredLightingScene){
+				renderDeferredLightingScene = false;
+			}
+			else{
+				renderDeferredLightingScene = true;
+				renderAlbedoBuffer = false;
+				renderNormalBuffer = false;
+				renderPositionBuffer = false;
+				renderSampleCoverageMask = false;
+				renderSSAOBuffer = false;
+			}
+		}
+		if (CoreSystem.getInstance().getInput().isKeyPushed(GLFW.GLFW_KEY_KP_7)){
+			if (renderFXAA){
+				renderFXAA = false;
+			}
+			else{
+				renderFXAA = true;
+			}
+			
+			System.out.println("FXAA: " + renderFXAA);
+		}
+		
+		
+		gui.update();
+		contrastController.update();
 		
 		CoreSystem.getInstance().getScenegraph().update();	
 		

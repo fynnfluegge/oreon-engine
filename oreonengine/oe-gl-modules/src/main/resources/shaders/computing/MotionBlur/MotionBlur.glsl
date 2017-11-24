@@ -11,7 +11,8 @@ layout (binding = 2, rgba32f) uniform readonly image2D velocityMap;
 uniform float windowWidth;
 uniform float windowHeight;
 
-float maxSamples = 12;
+const int windowHeaderWidth = 20;
+const float maxSamples = 12;
 
 void main(void)
 {
@@ -29,36 +30,36 @@ void main(void)
 		//Sample the color buffer along the velocity vector. 
 		for(int i = 1; i < maxSamples; ++i)  
 		{  
-				if (texCoord.x >= 0 && texCoord.y >= 0 && texCoord.x < windowWidth && texCoord.y < windowHeight){
+				if (texCoord.x >= 0 && texCoord.y >= 0 && texCoord.x < windowWidth && texCoord.y < windowHeight-windowHeaderWidth){
 					currentColor = imageLoad(sceneSampler, ivec2(texCoord.x, texCoord.y));  
 					blurredColor += currentColor;
 					texCoord += velocity;
 					samples++;
 				}
-				if (texCoord.x < 0 && texCoord.y >= 0 && texCoord.y < windowHeight){
-					currentColor = imageLoad(sceneSampler, ivec2(0, texCoord.y));  
-					blurredColor += currentColor;
-					texCoord += vec2(0,velocity.y);
-					samples++;
-				}
-				if (texCoord.x >= windowWidth && texCoord.y >= 0 && texCoord.y < windowHeight){
-					currentColor = imageLoad(sceneSampler, ivec2(windowWidth-1, texCoord.y));  
-					blurredColor += currentColor;
-					texCoord += vec2(0,velocity.y);
-					samples++;
-				}
-				if (texCoord.y < 0 && texCoord.x >= 0 && texCoord.x < windowWidth){
-					currentColor = imageLoad(sceneSampler, ivec2(texCoord.x,0));  
-					blurredColor += currentColor;
-					texCoord += vec2(velocity.x,0);
-					samples++;
-				}
-				if (texCoord.y >= windowHeight && texCoord.x >= 0 && texCoord.x < windowWidth){
-					currentColor = imageLoad(sceneSampler, ivec2(texCoord.x, windowHeight-1));  
-					blurredColor += currentColor;
-					texCoord += vec2(velocity.x,0);
-					samples ++;
-				}
+				// if (texCoord.x < 0 && texCoord.y >= 0 && texCoord.y < windowHeight){
+					// currentColor = imageLoad(sceneSampler, ivec2(0, texCoord.y));  
+					// blurredColor += currentColor;
+					// texCoord += vec2(0,velocity.y);
+					// samples++;
+				// }
+				// if (texCoord.x >= windowWidth && texCoord.y >= 0 && texCoord.y < windowHeight){
+					// currentColor = imageLoad(sceneSampler, ivec2(windowWidth-1, texCoord.y));  
+					// blurredColor += currentColor;
+					// texCoord += vec2(0,velocity.y);
+					// samples++;
+				// }
+				// if (texCoord.y < 0 && texCoord.x >= 0 && texCoord.x < windowWidth){
+					// currentColor = imageLoad(sceneSampler, ivec2(texCoord.x,0));  
+					// blurredColor += currentColor;
+					// texCoord += vec2(velocity.x,0);
+					// samples++;
+				// }
+				// if (texCoord.y >= windowHeight && texCoord.x >= 0 && texCoord.x < windowWidth){
+					// currentColor = imageLoad(sceneSampler, ivec2(texCoord.x, windowHeight-1));  
+					// blurredColor += currentColor;
+					// texCoord += vec2(velocity.x,0);
+					// samples ++;
+				// }
 		}  
 		
 	// Average all of the samples to get the final blur color.  

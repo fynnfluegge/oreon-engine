@@ -15,7 +15,7 @@ public class LensFlare {
 	private List<LensFlareTexturePanel> lensFlareTexturePanels = new ArrayList<LensFlareTexturePanel>();
 	private Vec2f windowMidPos = new Vec2f(CoreSystem.getInstance().getWindow().getWidth()/2f, CoreSystem.getInstance().getWindow().getHeight()/2f);
 	
-	private float strengthFactor = 0.6f;
+	private float strengthFactor = 0.2f;
 	private float occlusionThreshold = 80000f;
 	
 	public LensFlare(){

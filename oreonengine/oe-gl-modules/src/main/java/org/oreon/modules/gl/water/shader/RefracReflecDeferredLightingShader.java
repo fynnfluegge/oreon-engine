@@ -26,13 +26,11 @@ public class RefracReflecDeferredLightingShader extends GLShader{
 		
 		addUniformBlock("Camera");
 		addUniformBlock("DirectionalLight");
-		addUniformBlock("LightViewProjections");
 	}
 	
 	public void updateUniforms(){
 		
 		bindUniformBlock("Camera", Constants.CameraUniformBlockBinding);
 		bindUniformBlock("DirectionalLight", Constants.DirectionalLightUniformBlockBinding);	
-		bindUniformBlock("LightViewProjections",Constants.LightMatricesUniformBlockBinding);
 	}
 }

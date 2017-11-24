@@ -40,12 +40,12 @@ void main()
 	
 	float alpha = texture(material.diffusemap, texCoord_FS).a;
 	
-	if (alpha < 0.8)
-		discard;
+	// if (alpha < 0.8)
+		// discard;
 	
 	alpha *= alphaDistanceFactor(dist);
 
-	albedo_out = vec4(albedo,1);
+	albedo_out = vec4(albedo,alpha);
 	worldPosition_out = vec4(position_FS,1);
 	normal_out = vec4(normal_FS.xzy,1);
 	specularEmission_out = vec4(1,0,0,1);

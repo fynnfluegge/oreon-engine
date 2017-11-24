@@ -67,7 +67,7 @@ public class DepthOfFieldBlur {
 		lowResFbo.unbind();
 	}
 	
-	public void render(Texture2D depthmap, Texture2D sceneSampler, int width, int height) {
+	public void render(Texture2D depthmap, Texture2D lightScatteringMask, Texture2D sceneSampler, int width, int height) {
 		
 		getLowResFbo().bind();
 		fullScreenQuad.setTexture(sceneSampler);
@@ -79,14 +79,16 @@ public class DepthOfFieldBlur {
 		horizontalBlurShader.bind();
 		glBindImageTexture(0, sceneSampler.getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA16F);
 		glBindImageTexture(1, lowResSceneSampler.getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA16F);
-		glBindImageTexture(2, horizontalBlurSceneTexture.getId(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
+		glBindImageTexture(2, lightScatteringMask.getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA16F);
+		glBindImageTexture(3, horizontalBlurSceneTexture.getId(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
 		horizontalBlurShader.updateUniforms(depthmap);
 		glDispatchCompute(CoreSystem.getInstance().getWindow().getWidth()/8, CoreSystem.getInstance().getWindow().getHeight()/8, 1);	
 		glFinish();
 		
 		verticalBlurShader.bind();
 		glBindImageTexture(0, horizontalBlurSceneTexture.getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA16F);
-		glBindImageTexture(1, verticalBlurSceneTexture.getId(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
+		glBindImageTexture(1, lightScatteringMask.getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA16F);
+		glBindImageTexture(2, verticalBlurSceneTexture.getId(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
 		verticalBlurShader.updateUniforms(depthmap);
 		glDispatchCompute(CoreSystem.getInstance().getWindow().getWidth()/8, CoreSystem.getInstance().getWindow().getHeight()/8, 1);	
 		glFinish();

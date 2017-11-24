@@ -24,11 +24,9 @@ layout (std140, row_major) uniform Camera{
 };
 
 uniform Material material;
-uniform float sightRangeFactor;
 
 const float zFar = 10000;
 const float zNear = 0.1;
-const vec3 fogColor = vec3(0.62,0.85,0.95);
 
 float alphaDistanceFactor(float dist)
 {
@@ -41,14 +39,10 @@ void main()
 
 	vec3 fragColor = material.color;
 	
-	float fogFactor = -0.0005/sightRangeFactor*(dist-zFar/5*sightRangeFactor);
-	
-    vec3 rgb = mix(fogColor, fragColor, clamp(fogFactor,0,1));
-	
 	float alpha = 1;
 	alpha *= alphaDistanceFactor(dist);
 		
-	albedo_out = vec4(rgb,1);
+	albedo_out = vec4(fragColor,alpha);
 	worldPosition_out = vec4(position_FS,1);
 	normal_out = vec4(normal_FS,1);
 	specularEmission_out = vec4(1,0,0,1);

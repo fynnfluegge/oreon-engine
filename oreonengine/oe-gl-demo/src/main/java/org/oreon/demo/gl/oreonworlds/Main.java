@@ -31,7 +31,7 @@ public class Main {
 		GLDeferredRenderingEngine renderingengine = new GLDeferredRenderingEngine();
 		Window window = new GLWindow();
 		
-		renderingengine.setGui(new GUI());
+//		renderingengine.setGui(new GUI());
 		window.setWidth(1280);
 		window.setHeight(720);
 		window.setTitle("OREON ENGINE oreonworlds 2.0");
@@ -55,14 +55,14 @@ public class Main {
 		coreSystem.getScenegraph().addTransparentObject(new Sun());
 		coreSystem.getScenegraph().setWater(new Ocean());
 		
-//		coreSystem.getScenegraph().getRoot().addChild(new Palm01ClusterGroup());
-//		coreSystem.getScenegraph().getRoot().addChild(new Tree02ClusterGroup());
-//		coreSystem.getScenegraph().getRoot().addChild(new Tree01ClusterGroup());
+		coreSystem.getScenegraph().getRoot().addChild(new Palm01ClusterGroup());
+		coreSystem.getScenegraph().getRoot().addChild(new Tree02ClusterGroup());
+		coreSystem.getScenegraph().getRoot().addChild(new Tree01ClusterGroup());
 //		coreSystem.getScenegraph().getRoot().addChild(new Grass01ClusterGroup());
-//		coreSystem.getScenegraph().getRoot().addChild(new Plant01ClusterGroup());
-//		coreSystem.getScenegraph().getRoot().addChild(new Rock01ClusterGroup());
-//		coreSystem.getScenegraph().getRoot().addChild(new Rock02ClusterGroup());
-//		
+		coreSystem.getScenegraph().getRoot().addChild(new Plant01ClusterGroup());
+		coreSystem.getScenegraph().getRoot().addChild(new Rock01ClusterGroup());
+		coreSystem.getScenegraph().getRoot().addChild(new Rock02ClusterGroup());
+		
 		coreEngine.start();
 	}
 

@@ -98,12 +98,12 @@ public class SSAO {
 		glBindImageTexture(3, noiseTexture.getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA32F);
 		ssaoShader.updateUniforms(CoreSystem.getInstance().getScenegraph().getCamera().getViewMatrix(),
 								  CoreSystem.getInstance().getScenegraph().getCamera().getProjectionMatrix(),
-								  kernel);
+								  width, height, kernel);
 		glDispatchCompute(width/16,height/16,1);
-		
 		blurShader.bind();
 		glBindImageTexture(0, ssaoBlurSceneTexture.getId(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA32F);
 		glBindImageTexture(1, ssaoSceneTexture.getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA32F);
+		blurShader.updateUniforms(width, height);
 		glDispatchCompute(width/16,height/16,1);
 	}
 	

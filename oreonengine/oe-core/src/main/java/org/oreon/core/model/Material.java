@@ -15,8 +15,8 @@ public class Material extends Component{
 	private Texture specularmap;
 	private Texture alphamap;
 	private Vec3f color;
-	private float alpha;
-	private float displacementScale;
+	private float heightScaling;
+	private float horizontalScaling;
 	private float emission;
 	private float shininess;
 	
@@ -35,7 +35,7 @@ public class Material extends Component{
 	public Texture getHeightmap() {
 		return heightmap;
 	}
-	public void setHeightemap(Texture heightmap) {
+	public void setHeightmap(Texture heightmap) {
 		this.heightmap = heightmap;
 	}
 	public Texture getAmbientmap() {
@@ -62,17 +62,11 @@ public class Material extends Component{
 	public void setColor(Vec3f color) {
 		this.color = color;
 	}
-	public float getAlpha() {
-		return alpha;
+	public float getHeightScaling() {
+		return heightScaling;
 	}
-	public void setAlpha(float alpha) {
-		this.alpha = alpha;
-	}
-	public float getDisplacementScale() {
-		return displacementScale;
-	}
-	public void setDisplacementScale(float displaceScale) {
-		this.displacementScale = displaceScale;
+	public void setHeightScaling(float scaling) {
+		this.heightScaling = scaling;
 	}
 	public float getEmission() {
 		return emission;
@@ -91,6 +85,12 @@ public class Material extends Component{
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+	public float getHorizontalScaling() {
+		return horizontalScaling;
+	}
+	public void setHorizontalScaling(float scaling) {
+		this.horizontalScaling = scaling;
 	}
 	
 	
