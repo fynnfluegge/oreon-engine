@@ -28,6 +28,7 @@ import org.oreon.core.gl.scene.FullScreenMultisampleQuad;
 import org.oreon.core.gl.scene.FullScreenQuad;
 import org.oreon.core.gl.shadow.ParallelSplitShadowMaps;
 import org.oreon.core.gl.texture.Texture2D;
+import org.oreon.core.gl.texture.Texture2DMultisample;
 import org.oreon.core.instancing.InstancingObjectHandler;
 import org.oreon.core.light.LightHandler;
 import org.oreon.core.math.Quaternion;
@@ -61,7 +62,7 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 	
 	private GLFramebuffer finalSceneFbo;
 	private Texture2D finalSceneTexture;
-	private Texture2D sceneDepthmap;
+	private Texture2DMultisample sceneDepthmap;
 	private Texture2D lightScatteringMask;
 	private Texture2D postProcessingTexture;
 	
@@ -128,7 +129,7 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		sunlightScattering = new SunLightScattering();
 		lensFlare = new LensFlare();
 		ssao = new SSAO(window.getWidth(),window.getHeight());
-		underWater = UnderWater.getInstance();
+		underWater = new UnderWater();
 		contrastController = new ContrastController();
 		
 		finalSceneTexture = new Texture2D();
@@ -188,10 +189,7 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		ssao.render(deferredRenderer.getGbuffer().getWorldPositionTexture(),
 					deferredRenderer.getGbuffer().getNormalTexture());
 		
-		msaa.renderSampleCoverageMask(deferredRenderer.getGbuffer().getAlbedoTexture(),
-				    deferredRenderer.getGbuffer().getWorldPositionTexture(),
-				    deferredRenderer.getGbuffer().getNormalTexture(),
-				    deferredRenderer.getGbuffer().getDepthTexture());
+		msaa.renderSampleCoverageMask(deferredRenderer.getGbuffer().getWorldPositionTexture());
 		
 		deferredRenderer.render(msaa.getSampleCoverageMask(),
 							    ssao.getSsaoBlurSceneTexture(),
@@ -206,7 +204,7 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		// blend scene/transparent layers
 		finalSceneFbo.bind();
 		transparencyBlendRenderer.render(deferredRenderer.getDeferredLightingSceneTexture(), 
-										 deferredRenderer.getDepthmap(),
+										 deferredRenderer.getGbuffer().getDepthTexture(),
 										 deferredRenderer.getGbuffer().getLightScatteringTexture(),
 										 transparencyLayer.getGbuffer().getAlbedoTexture(),
 										 transparencyLayer.getGbuffer().getDepthTexture(),
@@ -218,7 +216,7 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		instancingObjectHandler.signalAll();
 
 		postProcessingTexture = new Texture2D(finalSceneTexture);
-		sceneDepthmap = deferredRenderer.getDepthmap();
+		sceneDepthmap = deferredRenderer.getGbuffer().getDepthTexture();
 		
 		boolean doMotionBlur = CoreSystem.getInstance().getScenegraph().getCamera().getPreviousPosition().sub(
 							   CoreSystem.getInstance().getScenegraph().getCamera().getPosition()).length() > 0.04f ||
@@ -226,18 +224,18 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 							   CoreSystem.getInstance().getScenegraph().getCamera().getPreviousForward()).length() > 0.01f;
 				
 		// perform FXAA
-			if (!doMotionBlur && renderFXAA){
-				fxaa.render(postProcessingTexture);
-				postProcessingTexture = fxaa.getFxaaSceneTexture();
+		if (!doMotionBlur && renderFXAA){
+			fxaa.render(postProcessingTexture);
+			postProcessingTexture = fxaa.getFxaaSceneTexture();
 		}
 							   
 		// Depth of Field Blur			
-		dofBlur.render(deferredRenderer.getDepthmap(), lightScatteringMask, postProcessingTexture, window.getWidth(), window.getHeight());
+		dofBlur.render(deferredRenderer.getGbuffer().getDepthTexture(), lightScatteringMask, postProcessingTexture, window.getWidth(), window.getHeight());
 		postProcessingTexture = dofBlur.getVerticalBlurSceneTexture();
 		
 		// post processing effects
 		if (isCameraUnderWater()){
-			underWater.render(postProcessingTexture, sceneDepthmap);
+			underWater.render(postProcessingTexture, deferredRenderer.getGbuffer().getDepthTexture());
 			postProcessingTexture = underWater.getUnderwaterSceneTexture();
 		}
 		
@@ -247,7 +245,7 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		
 		// Motion Blur
 		if (doMotionBlur){
-			motionBlur.render(deferredRenderer.getDepthmap(), postProcessingTexture);
+			motionBlur.render(deferredRenderer.getGbuffer().getDepthTexture(), postProcessingTexture);
 			postProcessingTexture = motionBlur.getMotionBlurSceneTexture();
 		}
 		
@@ -495,5 +493,10 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 
 	public void setUnderWater(UnderWater underWater) {
 		this.underWater = underWater;
+	}
+
+	@Override
+	public Object getUnderwater() {
+		return underWater;
 	} 
 }

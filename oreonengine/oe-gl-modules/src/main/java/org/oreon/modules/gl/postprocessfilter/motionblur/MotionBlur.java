@@ -11,6 +11,7 @@ import static org.lwjgl.opengl.GL42.glTexStorage2D;
 import static org.lwjgl.opengl.GL43.glDispatchCompute;
 
 import org.oreon.core.gl.texture.Texture2D;
+import org.oreon.core.gl.texture.Texture2DMultisample;
 import org.oreon.core.system.CoreSystem;
 
 public class MotionBlur {
@@ -35,7 +36,7 @@ public class MotionBlur {
 		motionBlurShader = MotionBlurShader.getInstance();
 	}
 	
-	public void render(Texture2D depthmap, Texture2D sceneSampler) {
+	public void render(Texture2DMultisample depthmap, Texture2D sceneSampler) {
 		
 		pixelVelocityShader.bind();
 		glBindImageTexture(0, pixelVelocityTexture.getId(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA32F);

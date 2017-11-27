@@ -37,10 +37,7 @@ public class MSAA {
 		sampleCoverageMask.noFilter();
 	}
 	
-	public void renderSampleCoverageMask(Texture2DMultisample albedoTexture,
-			           Texture2DMultisample worldPositionTexture,
-					   Texture2DMultisample normalTexture,
-					   Texture2DMultisample depthmap) {
+	public void renderSampleCoverageMask(Texture2DMultisample worldPositionTexture) {
 		
 		shader.bind();
 		glBindImageTexture(0, sampleCoverageMask.getId(), 0, false, 0, GL_WRITE_ONLY, GL_R32F);

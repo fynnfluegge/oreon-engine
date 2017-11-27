@@ -2,8 +2,8 @@ package org.oreon.demo.gl.oreonworlds.shaders.assets.rocks;
 
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE2;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE3;
-import static org.lwjgl.opengl.GL13.GL_TEXTURE4;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import java.util.List;
@@ -92,15 +92,17 @@ public class RockHighPolyShader extends GLShader{
 		
 		setUniformf("material.shininess", material.getShininess());
 		setUniformf("material.emission", material.getEmission());
-
-		setUniformf("distortionCaustics", UnderWater.getInstance().getDistortion());
 		
+		UnderWater underwater = (UnderWater) CoreSystem.getInstance().getRenderingEngine().getUnderwater();
+		
+		glActiveTexture(GL_TEXTURE2);
+		underwater.getCausticsMap().bind();
+		setUniformi("caustics", 2);
 		glActiveTexture(GL_TEXTURE3);
-		UnderWater.getInstance().getCausticsMap().bind();
-		setUniformi("caustics", 3);
-		glActiveTexture(GL_TEXTURE4);
-		UnderWater.getInstance().getDudvMap().bind();
-		setUniformi("dudvCaustics", 4);
+		underwater.getDudvMap().bind();
+		setUniformi("dudvCaustics", 3);
+		
+		setUniformf("distortionCaustics", underwater.getDistortion());
 		
 		List<Integer> indices = ((InstancingCluster) object.getParent()).getHighPolyIndices();
 		

@@ -22,6 +22,7 @@ public interface RenderingEngine {
 	public Texture getSceneDepthmap();
 	public Quaternion getClipplane();
 	public float getSightRangeFactor();
+	public Object getUnderwater();
 	
 	public void setClipplane(Quaternion plane);
 	public void setGrid(boolean flag);

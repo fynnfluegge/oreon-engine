@@ -33,7 +33,6 @@ public class DeferredLightingRenderer {
 	private GBufferMultisample gbuffer;
 	private DeferredLightingShader shader;
 	private Texture2D deferredLightingSceneTexture;
-	private Texture2D depthmap;
 	
 	public DeferredLightingRenderer(int width, int height) {
 		
@@ -48,15 +47,6 @@ public class DeferredLightingRenderer {
 				height,
 				0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
 		deferredLightingSceneTexture.noFilter();
-		
-		depthmap = new Texture2D();
-		depthmap.generate();
-		depthmap.bind();
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F,
-				width,
-				height,
-				0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
-		depthmap.noFilter();
 		
 		IntBuffer drawBuffers = BufferUtil.createIntBuffer(5);
 		drawBuffers.put(GL_COLOR_ATTACHMENT0);
@@ -83,14 +73,13 @@ public class DeferredLightingRenderer {
 		
 		shader.bind();
 		glBindImageTexture(0, deferredLightingSceneTexture.getId(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
-		glBindImageTexture(1, depthmap.getId(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA32F);
 		glBindImageTexture(2, gbuffer.getAlbedoTexture().getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA16F);
 		glBindImageTexture(3, gbuffer.getWorldPositionTexture().getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA32F);
 		glBindImageTexture(4, gbuffer.getNormalTexture().getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA32F);
 		glBindImageTexture(5, gbuffer.getSpecularEmissionTexture().getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA32F);
 		glBindImageTexture(6, sampleCoverageMask.getId(), 0, false, 0, GL_READ_ONLY, GL_R32F);
 		glBindImageTexture(7, ssaoBlurTexture.getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA32F);
-		shader.updateUniforms(gbuffer.getDepthTexture(),pssm);
+		shader.updateUniforms(pssm);
 		glDispatchCompute(CoreSystem.getInstance().getWindow().getWidth()/16, CoreSystem.getInstance().getWindow().getHeight()/16,1);
 	}
 
@@ -106,14 +95,6 @@ public class DeferredLightingRenderer {
 	public void setDeferredLightingSceneTexture(Texture2D texture) {
 		this.deferredLightingSceneTexture = texture;
 	}
-	public Texture2D getDepthmap() {
-		return depthmap;
-	}
-
-	public void setDepthmap(Texture2D depthmap) {
-		this.depthmap = depthmap;
-	}
-
 	public GLFramebuffer getFbo() {
 		return fbo;
 	}

@@ -4,7 +4,7 @@ layout (local_size_x = 16, local_size_y = 16) in;
 
 layout (binding = 0, rgba16f) uniform writeonly image2D defferedSceneImage;
 
-layout (binding = 1, rgba32f) uniform writeonly image2D depthImage;
+// layout (binding = 1, rgba32f) uniform writeonly image2D depthImage;
 
 layout (binding = 2, rgba16f) uniform readonly image2DMS albedoSceneImage;
 
@@ -38,7 +38,6 @@ layout (std140, row_major) uniform LightViewProjections{
 };
 
 uniform sampler2DArray pssm;
-uniform sampler2DMS depthmap;
 uniform int numSamples;
 uniform float sightRangeFactor;
 
@@ -104,7 +103,7 @@ float varianceShadow(vec3 projCoords, int split, int kernels){
 }
 
 
-float applyShadowMapping(vec3 worldPos, float depth)
+float applyShadowMapping(vec3 worldPos)
 {
 	float shadowFactor = 0;
 	vec3 projCoords = vec3(0,0,0);
@@ -189,7 +188,7 @@ void main(void){
 			
 				diff = diffuse(directional_light.direction, normal, directional_light.intensity);
 				spec = specular(directional_light.direction, normal, eyePosition, position, specular_emission.r, specular_emission.g);
-				shadow = applyShadowMapping(position, depth.r);
+				shadow = applyShadowMapping(position);
 				vec3 ssao = imageLoad(ssaoBlurImage, computeCoord).rgb;
 				
 				vec3 diffuseLight = directional_light.ambient + directional_light.color * diff * shadow;
@@ -215,7 +214,7 @@ void main(void){
 		
 			diff = diffuse(directional_light.direction, normal, directional_light.intensity);
 			spec = specular(directional_light.direction, normal, eyePosition, position, specular_emission.r, specular_emission.g);
-			shadow = applyShadowMapping(position, depth.r);
+			shadow = applyShadowMapping(position);
 			vec3 ssao = imageLoad(ssaoBlurImage, computeCoord).rgb;
 			
 			vec3 diffuseLight = directional_light.ambient + directional_light.color * diff * shadow;
@@ -232,8 +231,5 @@ void main(void){
 	float fogFactor = getFogFactor(dist);
 	finalColor = mix(fogColor, finalColor, clamp(fogFactor,0,1));
 	
-	depth = texelFetch(depthmap, computeCoord,0).rgb;
-	
 	imageStore(defferedSceneImage, computeCoord, vec4(finalColor,1.0));
-	imageStore(depthImage, computeCoord, vec4(depth,1.0));
 }

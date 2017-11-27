@@ -4,7 +4,7 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import org.oreon.core.gl.shaders.GLShader;
-import org.oreon.core.gl.texture.Texture2D;
+import org.oreon.core.gl.texture.Texture2DMultisample;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.ResourceLoader;
@@ -38,7 +38,10 @@ public class PixelVelocityShader extends GLShader{
 		addUniform("previousViewProjectionMatrix");
 	}
 	
-	public void updateUniforms(Matrix4f projectionMatrix, Matrix4f inverseViewProjectionMatrix, Matrix4f previousViewProjectionMatrix, Texture2D depthmap)
+	public void updateUniforms(Matrix4f projectionMatrix,
+							   Matrix4f inverseViewProjectionMatrix, 
+							   Matrix4f previousViewProjectionMatrix, 
+							   Texture2DMultisample depthmap)
 	{
 		glActiveTexture(GL_TEXTURE0);
 		depthmap.bind();

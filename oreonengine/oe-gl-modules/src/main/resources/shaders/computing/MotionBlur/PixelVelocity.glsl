@@ -4,7 +4,7 @@ layout (local_size_x = 8, local_size_y = 8) in;
 
 layout (binding = 0, rgba32f) uniform writeonly image2D velocitymap;
 
-uniform sampler2D depthmap;
+uniform sampler2DMS depthmap;
 uniform float windowWidth;
 uniform float windowHeight;
 uniform mat4 projectionMatrix;
@@ -27,7 +27,7 @@ void main(void){
 	vec2 w = vec2(gl_GlobalInvocationID.x/windowWidth, gl_GlobalInvocationID.y/windowHeight);
 	
 	// Get the depth buffer value at this pixel.  
-	float depth = texture(depthmap, w).r ; 
+	float depth = texelFetch(depthmap, ivec2(gl_GlobalInvocationID.xy), 0).r ; 
 	
 	//ndc coords
 	vec3 N = vec3(w.x * 2 - 1, w.y * 2 - 1, depth);

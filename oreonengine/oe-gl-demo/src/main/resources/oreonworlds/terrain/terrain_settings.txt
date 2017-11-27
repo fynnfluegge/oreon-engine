@@ -44,7 +44,7 @@ heightmap oreonworlds/terrain/maps/terrain4/heightmap.bmp 12
 
 #terrain mesh settings
 scaleXZ 6000.0
-scaleY 300.0
+scaleY 400.0
 texDetail 1000.0
 tessellationFactor 600
 tessellationSlope 1.8

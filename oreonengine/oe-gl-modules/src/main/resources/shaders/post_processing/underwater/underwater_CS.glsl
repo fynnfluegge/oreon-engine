@@ -6,9 +6,7 @@ layout (binding = 0, rgba16f) uniform readonly image2D sceneSampler;
 
 layout (binding = 1, rgba16f) uniform writeonly image2D underwaterSceneSampler;
 
-uniform sampler2D sceneDepthMap;
-uniform float windowWidth;
-uniform float windowHeight;
+uniform sampler2DMS sceneDepthMap;
 
 const float zfar = 10000.0f;
 const float znear = 0.1f;
@@ -24,11 +22,8 @@ void main(){
 
 	ivec2 computeCoord = ivec2(gl_GlobalInvocationID.x, gl_GlobalInvocationID.y);
 	
-	// window coords
-	vec2 w = vec2(gl_GlobalInvocationID.x/windowWidth, gl_GlobalInvocationID.y/windowHeight);
-	
 	// Get the depth buffer value at this pixel.  
-	float depth = linearize(texture(sceneDepthMap, w).r); 
+	float depth = linearize(texelFetch(sceneDepthMap, computeCoord, 0).r); 
 	
 	vec3 sceneColor = imageLoad(sceneSampler, computeCoord).rgb;
 	

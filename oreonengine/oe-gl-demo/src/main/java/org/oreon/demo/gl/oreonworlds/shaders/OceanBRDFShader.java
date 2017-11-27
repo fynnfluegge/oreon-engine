@@ -15,7 +15,6 @@ import org.oreon.core.gl.shaders.GLShader;
 import org.oreon.core.scene.GameObject;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.ResourceLoader;
-import org.oreon.modules.gl.water.UnderWater;
 import org.oreon.modules.gl.water.Water;
 
 public class OceanBRDFShader extends GLShader{
@@ -110,7 +109,7 @@ public class OceanBRDFShader extends GLShader{
 		setUniformf("tessShift", ocean.getTessellationShift());
 		setUniformi("largeDetailRange", ocean.getLargeDetailRange());
 		setUniformf("distortionRefracReflec", ocean.getDistortion());
-		setUniformf("distortionCaustics", UnderWater.getInstance().getDistortion());
+		setUniformf("distortionCaustics", 0);
 		setUniformf("kReflection", ocean.getkReflection());
 		setUniformf("kRefraction", ocean.getkRefraction());
 		setUniformf("emission", ocean.getEmission());
@@ -140,10 +139,10 @@ public class OceanBRDFShader extends GLShader{
 		ocean.getFft().getDz().bind();
 		setUniformi("Dz", 6);
 		glActiveTexture(GL_TEXTURE7);
-		UnderWater.getInstance().getCausticsMap().bind();
+		ocean.getCaustics().bind();;
 		setUniformi("caustics", 7);
 		glActiveTexture(GL_TEXTURE8);
-		UnderWater.getInstance().getDudvMap().bind();
+		ocean.getDudv().bind();
 		setUniformi("dudvCaustics", 8);
 	}
 }

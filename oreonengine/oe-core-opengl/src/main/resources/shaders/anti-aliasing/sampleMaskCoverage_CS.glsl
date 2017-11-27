@@ -8,7 +8,7 @@ layout (binding = 1, rgba32f) uniform readonly image2DMS worldPositionImage;
 
 uniform int multisamples;
 
-const float threshold = 20;
+const float threshold = 40;
 
 void main()
 {

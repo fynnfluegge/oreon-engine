@@ -4,8 +4,7 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import org.oreon.core.gl.shaders.GLShader;
-import org.oreon.core.gl.texture.Texture2D;
-import org.oreon.core.system.CoreSystem;
+import org.oreon.core.gl.texture.Texture2DMultisample;
 import org.oreon.core.util.ResourceLoader;
 
 public class UnderWaterShader extends GLShader{
@@ -30,16 +29,11 @@ public class UnderWaterShader extends GLShader{
 		compileShader();
 		
 		addUniform("sceneDepthMap");
-		addUniform("windowWidth");
-		addUniform("windowHeight");
 	}
 	
-	public void updateUniforms(Texture2D sceneDepthMap) {
+	public void updateUniforms(Texture2DMultisample sceneDepthMap) {
 		glActiveTexture(GL_TEXTURE0);
 		sceneDepthMap.bind();
 		setUniformi("sceneDepthMap", 0);
-		
-		setUniformf("windowWidth", CoreSystem.getInstance().getWindow().getWidth());
-		setUniformf("windowHeight", CoreSystem.getInstance().getWindow().getHeight());
 	}
 }

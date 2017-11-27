@@ -79,6 +79,10 @@ public class Water extends GameObject{
 		dudv.bind();
 		dudv.trilinearFilter();
 		
+		caustics = new Texture2D("textures/water/caustics/caustics.jpg");
+		caustics.bind();
+		caustics.trilinearFilter();
+		
 		addComponent("Renderer", renderer);
 
 		fft = new OceanFFT(fftResolution); 

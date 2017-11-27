@@ -18,6 +18,7 @@ import java.nio.ByteBuffer;
 import org.oreon.core.gl.buffers.GLFramebuffer;
 import org.oreon.core.gl.scene.FullScreenQuad;
 import org.oreon.core.gl.texture.Texture2D;
+import org.oreon.core.gl.texture.Texture2DMultisample;
 import org.oreon.core.system.CoreSystem;
 
 public class DepthOfFieldBlur {
@@ -67,7 +68,7 @@ public class DepthOfFieldBlur {
 		lowResFbo.unbind();
 	}
 	
-	public void render(Texture2D depthmap, Texture2D lightScatteringMask, Texture2D sceneSampler, int width, int height) {
+	public void render(Texture2DMultisample depthmap, Texture2D lightScatteringMask, Texture2D sceneSampler, int width, int height) {
 		
 		getLowResFbo().bind();
 		fullScreenQuad.setTexture(sceneSampler);

@@ -10,7 +10,7 @@ layout (binding = 2, rgba16f) uniform readonly image2D depthOfFieldBlurMask;
 
 layout (binding = 3, rgba16f) uniform writeonly image2D horizontalBlurSceneSampler;
 
-uniform sampler2D depthmap;
+uniform sampler2DMS depthmap;
 uniform float windowWidth;
 uniform float windowHeight;
 
@@ -27,13 +27,13 @@ float linearize(float depth)
 
 void main(void){
 
+	ivec2 computeCoord = ivec2(gl_GlobalInvocationID.x, gl_GlobalInvocationID.y);
+	
 	// window coords
 	vec2 w = vec2(gl_GlobalInvocationID.x/windowWidth, gl_GlobalInvocationID.y/windowHeight);
 	
 	// Get the depth buffer value at this pixel.  
-	float depth = texture(depthmap, w).r ; 
-	
-	ivec2 computeCoord = ivec2(gl_GlobalInvocationID.x, gl_GlobalInvocationID.y);
+	float depth = texelFetch(depthmap, computeCoord, 0).r ; 
 	
 	ivec2 computeCoordLowRes = ivec2(gl_GlobalInvocationID.x/1.2f, gl_GlobalInvocationID.y/1.2f);
 	
@@ -56,7 +56,7 @@ void main(void){
 			color = vec3(0,0,0);
 			
 			for (int i=0; i<9; i++){
-				if (linearize(texture(depthmap, w + vec2(((i-4)*1.4)/windowWidth,0)).r) > 0.059)
+				if (linearize(texelFetch(depthmap, computeCoord + ivec2(((i-4)*1.4),0),0).r) > 0.059)
 					color += imageLoad(lowResSceneSampler, computeCoordLowRes + ivec2((i-4),0)).rgb * gaussianKernel9_Sigma2[i];
 				else
 					color += imageLoad(lowResSceneSampler, computeCoordLowRes).rgb * gaussianKernel9_Sigma2[i];
@@ -66,7 +66,7 @@ void main(void){
 			color = vec3(0,0,0);
 			
 			for (int i=0; i<9; i++){
-				if (linearize(texture(depthmap, w + vec2((i-4)/windowWidth,0)).r) > 0.039)
+				if (linearize(texelFetch(depthmap, computeCoord + ivec2((i-4),0),0).r) > 0.039)
 					color += imageLoad(sceneSampler, computeCoord + ivec2(i-4,0)).rgb * gaussianKernel9_Sigma2[i];
 				else
 					color += imageLoad(sceneSampler, computeCoord).rgb * gaussianKernel9_Sigma2[i];
@@ -76,7 +76,7 @@ void main(void){
 			color = vec3(0,0,0);
 			
 			for (int i=0; i<7; i++){
-				if (linearize(texture(depthmap, w + vec2((i-3)/windowWidth,0)).r) > 0.019)
+				if (linearize(texelFetch(depthmap, computeCoord + ivec2((i-3),0),0).r) > 0.019)
 					color += imageLoad(sceneSampler, computeCoord + ivec2(i-3,0)).rgb * gaussianKernel7_Sigma1_5[i];
 				else
 					color += imageLoad(sceneSampler, computeCoord).rgb * gaussianKernel7_Sigma1_5[i];

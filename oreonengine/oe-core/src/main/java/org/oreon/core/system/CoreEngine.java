@@ -65,44 +65,6 @@ public class CoreEngine{
 		// Rendering Loop
 		while(isRunning)
 		{
-			if(shareGLContext)
-			{
-				// TODO lwjgl 3 support
-//				glContextLock.lock();
-//				System.out.println("CoreEngine lock");
-//				try{
-//
-//					Display.releaseContext();
-//					System.out.println("CoreEngine signal");
-//					holdGLContext.signalAll();
-//				} catch (LWJGLException e1) {
-//					e1.printStackTrace();
-//				}
-//				finally{
-//					System.out.println("CoreEngine unlock");
-//					glContextLock.unlock();
-//				}
-//				
-//				glContextLock.lock();
-//				System.out.println("CoreEngine lock");
-//				try{
-//    				System.out.println("CoreEngine await");
-//    				holdGLContext.await();
-//		    	} catch (InterruptedException e) {
-//		    		e.printStackTrace();
-//		    	}
-//		    	finally{
-//					System.out.println("CoreEngine unlock");
-//		    		glContextLock.unlock();
-//		    	}
-//				
-//				try {
-//					Display.makeCurrent();
-//				} catch (LWJGLException e) {
-//					e.printStackTrace();
-//				}
-//				shareGLContext = false;
-			}
 			
 			boolean render = false;
 			

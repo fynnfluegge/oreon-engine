@@ -155,14 +155,16 @@ public class TerrainShader extends GLShader{
 		setUniform("location", location);
 		setUniformi("waterReflectionShift", terrConfig.getWaterReflectionShift());
 		
+		UnderWater underwater = (UnderWater) CoreSystem.getInstance().getRenderingEngine().getUnderwater();
+		
 		glActiveTexture(GL_TEXTURE2);
-		UnderWater.getInstance().getCausticsMap().bind();
+		underwater.getCausticsMap().bind();
 		setUniformi("caustics", 2);
 		glActiveTexture(GL_TEXTURE3);
-		UnderWater.getInstance().getDudvMap().bind();
+		underwater.getDudvMap().bind();
 		setUniformi("dudvCaustics", 3);
 		
-		setUniformf("distortionCaustics", UnderWater.getInstance().getDistortion());
+		setUniformf("distortionCaustics", underwater.getDistortion());
 		
 		for (int i=0; i<8; i++){
 			setUniformi("lod_morph_area[" + i + "]", terrConfig.getLod_morphing_area()[i]);
