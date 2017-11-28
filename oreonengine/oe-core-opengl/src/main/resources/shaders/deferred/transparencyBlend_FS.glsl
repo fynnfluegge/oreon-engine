@@ -6,7 +6,7 @@ layout(location = 0) out vec4 fragColor_out;
 layout(location = 1) out vec4 lightScattering_out;
 
 uniform sampler2D opaqueSceneTexture;
-uniform sampler2DMS opaqueSceneLightScatteringTexture;
+uniform sampler2D opaqueSceneLightScatteringTexture;
 uniform sampler2DMS opaqueSceneDepthMap;
 uniform sampler2D transparencyLayer;
 uniform sampler2D transparencyLayerLightScatteringTexture;
@@ -30,7 +30,7 @@ void main()
 	vec4 transparencyDepth = texture(transparencyLayerDepthMap, texCoord1);
 	float alpha 		   = texture(transparencyAlphaMap, texCoord1).r;
 	vec4 transparencyLightScattering = texture(transparencyLayerLightScatteringTexture, texCoord1);
-	vec4 opaqueSceneLightScattering = texelFetch(opaqueSceneLightScatteringTexture, ivec2(texCoord1.x * width, texCoord1.y * height),0);
+	vec4 opaqueSceneLightScattering = texture(opaqueSceneLightScatteringTexture, texCoord1);
 	
 	vec4 rgba;
 	vec4 lightScattering;

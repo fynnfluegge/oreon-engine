@@ -63,7 +63,8 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 	private GLFramebuffer finalSceneFbo;
 	private Texture2D finalSceneTexture;
 	private Texture2DMultisample sceneDepthmap;
-	private Texture2D lightScatteringMask;
+	private Texture2D deferredLightScatteringMask;
+	private Texture2D finalLightScatteringMask;
 	private Texture2D postProcessingTexture;
 	
 	private DeferredLightingRenderer deferredRenderer;
@@ -132,17 +133,23 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		underWater = new UnderWater();
 		contrastController = new ContrastController();
 		
+		deferredLightScatteringMask = new Texture2D();
+		deferredLightScatteringMask.generate();
+		deferredLightScatteringMask.bind();
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, window.getWidth(), window.getHeight(), 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
+		deferredLightScatteringMask.bilinearFilter();
+		
 		finalSceneTexture = new Texture2D();
 		finalSceneTexture.generate();
 		finalSceneTexture.bind();
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, window.getWidth(), window.getHeight(), 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
 		finalSceneTexture.bilinearFilter();
 		
-		lightScatteringMask = new Texture2D();
-		lightScatteringMask.generate();
-		lightScatteringMask.bind();
+		finalLightScatteringMask = new Texture2D();
+		finalLightScatteringMask.generate();
+		finalLightScatteringMask.bind();
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, window.getWidth(), window.getHeight(), 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
-		lightScatteringMask.noFilter();
+		finalLightScatteringMask.noFilter();
 		
 		IntBuffer drawBuffers = BufferUtil.createIntBuffer(2);
 		drawBuffers.put(GL_COLOR_ATTACHMENT0);
@@ -152,7 +159,7 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		finalSceneFbo = new GLFramebuffer();
 		finalSceneFbo.bind();
 		finalSceneFbo.createColorTextureAttachment(finalSceneTexture.getId(),0);
-		finalSceneFbo.createColorTextureAttachment(lightScatteringMask.getId(),1);
+		finalSceneFbo.createColorTextureAttachment(finalLightScatteringMask.getId(),1);
 		finalSceneFbo.setDrawBuffers(drawBuffers);
 		finalSceneFbo.checkStatus();
 		finalSceneFbo.unbind();
@@ -189,7 +196,9 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		ssao.render(deferredRenderer.getGbuffer().getWorldPositionTexture(),
 					deferredRenderer.getGbuffer().getNormalTexture());
 		
-		msaa.renderSampleCoverageMask(deferredRenderer.getGbuffer().getWorldPositionTexture());
+		msaa.renderSampleCoverageMask(deferredRenderer.getGbuffer().getWorldPositionTexture(),
+									  deferredRenderer.getGbuffer().getLightScatteringTexture(),
+									  deferredLightScatteringMask);
 		
 		deferredRenderer.render(msaa.getSampleCoverageMask(),
 							    ssao.getSsaoBlurSceneTexture(),
@@ -205,7 +214,7 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		finalSceneFbo.bind();
 		transparencyBlendRenderer.render(deferredRenderer.getDeferredLightingSceneTexture(), 
 										 deferredRenderer.getGbuffer().getDepthTexture(),
-										 deferredRenderer.getGbuffer().getLightScatteringTexture(),
+										 deferredLightScatteringMask,
 										 transparencyLayer.getGbuffer().getAlbedoTexture(),
 										 transparencyLayer.getGbuffer().getDepthTexture(),
 										 transparencyLayer.getGbuffer().getAlphaTexture(),
@@ -230,7 +239,7 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		}
 							   
 		// Depth of Field Blur			
-		dofBlur.render(deferredRenderer.getGbuffer().getDepthTexture(), lightScatteringMask, postProcessingTexture, window.getWidth(), window.getHeight());
+		dofBlur.render(deferredRenderer.getGbuffer().getDepthTexture(), finalLightScatteringMask, postProcessingTexture, window.getWidth(), window.getHeight());
 		postProcessingTexture = dofBlur.getVerticalBlurSceneTexture();
 		
 		// post processing effects
@@ -249,7 +258,7 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 			postProcessingTexture = motionBlur.getMotionBlurSceneTexture();
 		}
 		
-		sunlightScattering.render(postProcessingTexture,lightScatteringMask);
+		sunlightScattering.render(postProcessingTexture,finalLightScatteringMask);
 		postProcessingTexture = sunlightScattering.getSunLightScatteringSceneTexture();
 		
 		if (isGrid()){

@@ -20,7 +20,7 @@ public class SampleCoverageMaskShader extends GLShader{
 	{
 		super();
 		
-		addComputeShader(ResourceLoader.loadShader("shaders/anti-aliasing/sampleMaskCoverage_CS.glsl"));
+		addComputeShader(ResourceLoader.loadShader("shaders/anti-aliasing/sampleCoverageMask_CS.glsl"));
 		
 		compileShader();
 		

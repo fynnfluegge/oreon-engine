@@ -6,6 +6,10 @@ layout (binding = 0, r32f) uniform writeonly image2D sampleCoverageMaskImage;
 
 layout (binding = 1, rgba32f) uniform readonly image2DMS worldPositionImage;
 
+layout (binding = 2, rgba16f) uniform writeonly image2D lightScatteringMask_out;
+
+layout (binding = 3, rgba16f) uniform readonly image2DMS lightScatteringMask_in;
+
 uniform int multisamples;
 
 const float threshold = 40;
@@ -29,6 +33,25 @@ void main()
 	if(positionDiscontinuities > threshold){	
 		coverageValue = 1.0;
 	}
+	
+	float lightScatteringMaskValue = 0;
+	if (coverageValue == 1.0){
+		for (int i=0; i<multisamples-1; i++){
+			lightScatteringMaskValue += imageLoad(lightScatteringMask_in, computeCoord, i).r;
+		}
+		lightScatteringMaskValue /= multisamples;
+		
+		if (lightScatteringMaskValue > 0.5){
+			lightScatteringMaskValue = 1.0;
+		}
+		else{
+			lightScatteringMaskValue = 0.0;
+		}
+	}
+	else{
+		lightScatteringMaskValue = imageLoad(lightScatteringMask_in, computeCoord, 0).r;
+	}
 			  
 	imageStore(sampleCoverageMaskImage, computeCoord, vec4(coverageValue,0,0,1));
+	imageStore(lightScatteringMask_out, computeCoord, vec4(lightScatteringMaskValue,lightScatteringMaskValue,lightScatteringMaskValue,1));
 }

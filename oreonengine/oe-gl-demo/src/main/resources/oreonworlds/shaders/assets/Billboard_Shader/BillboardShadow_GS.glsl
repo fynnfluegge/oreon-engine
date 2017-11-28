@@ -8,6 +8,7 @@ in int instanceID_GS[];
 in vec2 texCoord_GS[];
 
 out vec2 texCoord_FS;
+out vec3 position_FS;
 
 layout (std140, row_major) uniform Camera{
 	vec3 eyePosition;
@@ -32,8 +33,10 @@ void main()
 		for (int i = 0; i < gl_in.length(); ++i)
 		{
 			gl_Layer = gl_InvocationID;
-			gl_Position = m_lightViewProjection[ gl_InvocationID ] * m_World[matrixIndices[instanceID_GS[i]]] * gl_in[i].gl_Position;
+			vec4 position = m_World[matrixIndices[instanceID_GS[i]]] * gl_in[i].gl_Position;
+			gl_Position = m_lightViewProjection[ gl_InvocationID ] * position;
 			texCoord_FS = texCoord_GS[i];
+			position_FS = position.xyz;
 			EmitVertex();
 		}	
 		EndPrimitive();
