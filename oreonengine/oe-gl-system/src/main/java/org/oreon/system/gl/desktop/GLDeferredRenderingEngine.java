@@ -299,7 +299,11 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		LightHandler.doOcclusionQueries();
 		deferredRenderer.getFbo().unbind();
 		
-		lensFlare.render();
+		if (!renderDeferredLightingScene && !renderSSAOBuffer
+			&& !renderSampleCoverageMask && !renderPositionBuffer
+			&& !renderNormalBuffer && !renderAlbedoBuffer){
+			lensFlare.render();
+		}
 		
 		gui.render();
 		
@@ -401,10 +405,7 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 			else{
 				renderFXAA = true;
 			}
-			
-			System.out.println("FXAA: " + renderFXAA);
 		}
-		
 		
 		gui.update();
 		contrastController.update();

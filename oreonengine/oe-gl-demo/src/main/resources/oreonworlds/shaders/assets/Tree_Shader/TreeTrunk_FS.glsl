@@ -47,9 +47,9 @@ void main()
 	float alpha = texture(material.diffusemap, texCoord_FS).a;
 	alpha *= alphaDistanceFactor(dist);
 	
-	albedo_out = vec4(albedo,1);
+	albedo_out = vec4(albedo,alpha);
 	worldPosition_out = vec4(position_FS,1);
-	normal_out = vec4(normal,1);
+	normal_out = vec4(normal.xzy,1);
 	specularEmission_out = vec4(1,0,0,1);
 	lightScattering_out = vec4(0,0,0,1);
 }

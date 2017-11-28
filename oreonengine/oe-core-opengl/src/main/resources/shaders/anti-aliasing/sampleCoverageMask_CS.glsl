@@ -34,24 +34,30 @@ void main()
 		coverageValue = 1.0;
 	}
 	
-	float lightScatteringMaskValue = 0;
+	vec2 lightScatteringMaskValue = vec2(0,0);
 	if (coverageValue == 1.0){
 		for (int i=0; i<multisamples-1; i++){
-			lightScatteringMaskValue += imageLoad(lightScatteringMask_in, computeCoord, i).r;
+			lightScatteringMaskValue += imageLoad(lightScatteringMask_in, computeCoord, i).ra;
 		}
 		lightScatteringMaskValue /= multisamples;
 		
-		if (lightScatteringMaskValue > 0.5){
-			lightScatteringMaskValue = 1.0;
+		if (lightScatteringMaskValue.x > 0.5){
+			lightScatteringMaskValue.x = 1.0;
 		}
 		else{
-			lightScatteringMaskValue = 0.0;
+			lightScatteringMaskValue.x = 0.0;
+		}
+		if (lightScatteringMaskValue.y > 0.5){
+			lightScatteringMaskValue.y = 1.0;
+		}
+		else{
+			lightScatteringMaskValue.y = 0.0;
 		}
 	}
 	else{
-		lightScatteringMaskValue = imageLoad(lightScatteringMask_in, computeCoord, 0).r;
+		lightScatteringMaskValue = imageLoad(lightScatteringMask_in, computeCoord, 0).ra;
 	}
 			  
 	imageStore(sampleCoverageMaskImage, computeCoord, vec4(coverageValue,0,0,1));
-	imageStore(lightScatteringMask_out, computeCoord, vec4(lightScatteringMaskValue,lightScatteringMaskValue,lightScatteringMaskValue,1));
+	imageStore(lightScatteringMask_out, computeCoord, vec4(lightScatteringMaskValue.x,lightScatteringMaskValue.x,lightScatteringMaskValue.x,lightScatteringMaskValue.y));
 }

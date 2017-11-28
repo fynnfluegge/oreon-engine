@@ -98,6 +98,14 @@ public class Tree02ClusterGroup extends InstancingObject{
 		addCluster(new Tree02Cluster(6,new Vec3f(-595,0,624),getObjectData()));
 		addCluster(new Tree02Cluster(6,new Vec3f(-462,0,597),getObjectData()));
 		addCluster(new Tree02Cluster(6,new Vec3f(-1275,0,2549),getObjectData()));
+		addCluster(new Tree02Cluster(6,new Vec3f(-1275,0,2549),getObjectData()));
+		addCluster(new Tree02Cluster(6,new Vec3f(-525,0,704),getObjectData()));
+		addCluster(new Tree02Cluster(6,new Vec3f(-552,0,788),getObjectData()));
+		addCluster(new Tree02Cluster(6,new Vec3f(-608,0,712),getObjectData()));
+		addCluster(new Tree02Cluster(6,new Vec3f(-568,0,894),getObjectData()));
+		addCluster(new Tree02Cluster(6,new Vec3f(-593,0,954),getObjectData()));
+		addCluster(new Tree02Cluster(6,new Vec3f(-663,0,665),getObjectData()));
+		addCluster(new Tree02Cluster(6,new Vec3f(-728,0,654),getObjectData()));
 		
 		setThread(new Thread(this));
 		getThread().start();
