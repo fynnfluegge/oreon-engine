@@ -2,6 +2,7 @@ package org.oreon.modules.gl.postprocessfilter.lightscattering;
 
 import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import static org.lwjgl.opengl.GL11.GL_RGBA;
+import static org.lwjgl.opengl.GL30.GL_RG16F;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.glFinish;
 import static org.lwjgl.opengl.GL11.glTexImage2D;
@@ -49,10 +50,10 @@ public class SunLightScattering {
 		sunLightScatteringSceneTexture.clampToEdge();
 	}
 	
-	public void render(Texture2D sceneSampler, Texture2D blackScene4lightScatteringSampler) {
+	public void render(Texture2D sceneSampler, Texture2D lightScatteringMask) {
 		
 		lightScatteringShader.bind();
-		glBindImageTexture(0, blackScene4lightScatteringSampler.getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA16F);
+		glBindImageTexture(0, lightScatteringMask.getId(), 0, false, 0, GL_READ_ONLY, GL_RG16F);
 		glBindImageTexture(1, sunLightScatteringTexture.getId(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
 		lightScatteringShader.updateUniforms(CoreSystem.getInstance().getWindow().getWidth(), 
 											 CoreSystem.getInstance().getWindow().getHeight(), 

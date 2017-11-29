@@ -62,7 +62,7 @@ public class DeferredLightingRenderer {
 		fbo.createColorTextureMultisampleAttachment(gbuffer.getWorldPositionTexture().getId(),1);
 		fbo.createColorTextureMultisampleAttachment(gbuffer.getNormalTexture().getId(),2);
 		fbo.createColorTextureMultisampleAttachment(gbuffer.getSpecularEmissionTexture().getId(),3);
-		fbo.createColorTextureMultisampleAttachment(gbuffer.getLightScatteringTexture().getId(),4);
+		fbo.createColorTextureMultisampleAttachment(gbuffer.getLightScatteringMask().getId(),4);
 		fbo.createDepthTextureMultisampleAttachment(gbuffer.getDepthTexture().getId());
 		fbo.setDrawBuffers(drawBuffers);
 		fbo.checkStatus();

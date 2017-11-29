@@ -58,10 +58,10 @@ public class Main {
 //		coreSystem.getScenegraph().getRoot().addChild(new Palm01ClusterGroup());
 		coreSystem.getScenegraph().getRoot().addChild(new Tree02ClusterGroup());
 //		coreSystem.getScenegraph().getRoot().addChild(new Tree01ClusterGroup());
-		coreSystem.getScenegraph().getRoot().addChild(new Grass01ClusterGroup());
+//		coreSystem.getScenegraph().getRoot().addChild(new Grass01ClusterGroup());
 //		coreSystem.getScenegraph().getRoot().addChild(new Plant01ClusterGroup());
-		coreSystem.getScenegraph().getRoot().addChild(new Rock01ClusterGroup());
-		coreSystem.getScenegraph().getRoot().addChild(new Rock02ClusterGroup());
+//		coreSystem.getScenegraph().getRoot().addChild(new Rock01ClusterGroup());
+//		coreSystem.getScenegraph().getRoot().addChild(new Rock02ClusterGroup());
 		
 		coreEngine.start();
 	}

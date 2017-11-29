@@ -6,6 +6,7 @@ import static org.lwjgl.opengl.GL32.glTexImage2DMultisample;
 import static org.lwjgl.opengl.GL30.GL_DEPTH_COMPONENT32F;
 import static org.lwjgl.opengl.GL30.GL_RGBA32F;
 import static org.lwjgl.opengl.GL30.GL_RGBA16F;
+import static org.lwjgl.opengl.GL30.GL_RG16F;
 
 import org.oreon.core.gl.texture.Texture2DMultisample;
 import org.oreon.core.util.Constants;
@@ -16,7 +17,7 @@ public class GBufferMultisample {
 	private Texture2DMultisample normalTexture;
 	private Texture2DMultisample worldPositionTexture;
 	private Texture2DMultisample specularEmissionTexture;
-	private Texture2DMultisample lightScatteringTexture;
+	private Texture2DMultisample lightScatteringMask;
 	private Texture2DMultisample depthTexture;
 	
 	public GBufferMultisample(int width, int height) {
@@ -41,10 +42,10 @@ public class GBufferMultisample {
 		specularEmissionTexture.bind();
 		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, Constants.MULTISAMPLES, GL_RGBA32F, width, height, true);
 		
-		lightScatteringTexture = new Texture2DMultisample();
-		lightScatteringTexture.generate();
-		lightScatteringTexture.bind();
-		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, Constants.MULTISAMPLES, GL_RGBA16F, width, height, true);
+		lightScatteringMask = new Texture2DMultisample();
+		lightScatteringMask.generate();
+		lightScatteringMask.bind();
+		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, Constants.MULTISAMPLES, GL_RG16F, width, height, true);
 		
 		depthTexture = new Texture2DMultisample();
 		depthTexture.generate();
@@ -85,11 +86,11 @@ public class GBufferMultisample {
 		this.depthTexture = depthmap;
 	}
 
-	public Texture2DMultisample getLightScatteringTexture() {
-		return lightScatteringTexture;
+	public Texture2DMultisample getLightScatteringMask() {
+		return lightScatteringMask;
 	}
 
-	public void setLightScatteringTexture(Texture2DMultisample lightScatteringTexture) {
-		this.lightScatteringTexture = lightScatteringTexture;
+	public void setLightScatteringMask(Texture2DMultisample lightScatteringMask) {
+		this.lightScatteringMask = lightScatteringMask;
 	}
 }

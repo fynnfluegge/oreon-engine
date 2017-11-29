@@ -8,7 +8,7 @@ import static org.lwjgl.opengl.GL15.GL_READ_ONLY;
 import static org.lwjgl.opengl.GL15.GL_WRITE_ONLY;
 import static org.lwjgl.opengl.GL30.GL_R32F;
 import static org.lwjgl.opengl.GL30.GL_RGBA32F;
-import static org.lwjgl.opengl.GL30.GL_RGBA16F;
+import static org.lwjgl.opengl.GL30.GL_RG16F;
 import static org.lwjgl.opengl.GL42.glBindImageTexture;
 import static org.lwjgl.opengl.GL43.glDispatchCompute;
 
@@ -45,8 +45,8 @@ public class MSAA {
 		shader.bind();
 		glBindImageTexture(0, sampleCoverageMask.getId(), 0, false, 0, GL_WRITE_ONLY, GL_R32F);
 		glBindImageTexture(1, worldPositionTexture.getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA32F);
-		glBindImageTexture(2, LightScatteringMask.getId(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
-		glBindImageTexture(3, LightScatteringMaskMS.getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA16F);
+		glBindImageTexture(2, LightScatteringMask.getId(), 0, false, 0, GL_WRITE_ONLY, GL_RG16F);
+		glBindImageTexture(3, LightScatteringMaskMS.getId(), 0, false, 0, GL_READ_ONLY, GL_RG16F);
 		shader.updateUniforms();
 		glDispatchCompute(CoreSystem.getInstance().getWindow().getWidth()/16, CoreSystem.getInstance().getWindow().getHeight()/16, 1);	
 	}
