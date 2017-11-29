@@ -2,7 +2,10 @@ package org.oreon.system.gl.desktop;
 
 import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_FLOAT;
+import static org.lwjgl.opengl.GL11.GL_BYTE;
 import static org.lwjgl.opengl.GL11.GL_RGBA;
+import static org.lwjgl.opengl.GL30.GL_RG;
+import static org.lwjgl.opengl.GL30.GL_RG8;
 import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glTexImage2D;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
@@ -136,7 +139,7 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		deferredLightScatteringMask = new Texture2D();
 		deferredLightScatteringMask.generate();
 		deferredLightScatteringMask.bind();
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, window.getWidth(), window.getHeight(), 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RG8, window.getWidth(), window.getHeight(), 0, GL_RG, GL_BYTE, (ByteBuffer) null);
 		deferredLightScatteringMask.bilinearFilter();
 		
 		finalSceneTexture = new Texture2D();
@@ -148,7 +151,7 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		finalLightScatteringMask = new Texture2D();
 		finalLightScatteringMask.generate();
 		finalLightScatteringMask.bind();
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, window.getWidth(), window.getHeight(), 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RG8, window.getWidth(), window.getHeight(), 0, GL_RG, GL_BYTE, (ByteBuffer) null);
 		finalLightScatteringMask.noFilter();
 		
 		IntBuffer drawBuffers = BufferUtil.createIntBuffer(2);
