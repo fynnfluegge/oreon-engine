@@ -1,12 +1,12 @@
 package org.oreon.core.gl.antialiasing;
 
 import static org.lwjgl.opengl.GL11.GL_FLOAT;
-import static org.lwjgl.opengl.GL11.GL_RGBA;
+import static org.lwjgl.opengl.GL11.GL_RED;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.glTexImage2D;
 import static org.lwjgl.opengl.GL15.GL_READ_ONLY;
 import static org.lwjgl.opengl.GL15.GL_WRITE_ONLY;
-import static org.lwjgl.opengl.GL30.GL_R32F;
+import static org.lwjgl.opengl.GL30.GL_R16F;
 import static org.lwjgl.opengl.GL30.GL_RGBA32F;
 import static org.lwjgl.opengl.GL30.GL_RGBA16F;
 import static org.lwjgl.opengl.GL42.glBindImageTexture;
@@ -31,10 +31,10 @@ public class MSAA {
 		sampleCoverageMask = new Texture2D();
 		sampleCoverageMask.generate();
 		sampleCoverageMask.bind();
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F,
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_R16F,
 						CoreSystem.getInstance().getWindow().getWidth(),
 						CoreSystem.getInstance().getWindow().getHeight(),
-						0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
+						0, GL_RED, GL_FLOAT, (ByteBuffer) null);
 		sampleCoverageMask.noFilter();
 	}
 	
@@ -43,7 +43,7 @@ public class MSAA {
 										 Texture2D LightScatteringMask) {
 		
 		shader.bind();
-		glBindImageTexture(0, sampleCoverageMask.getId(), 0, false, 0, GL_WRITE_ONLY, GL_R32F);
+		glBindImageTexture(0, sampleCoverageMask.getId(), 0, false, 0, GL_WRITE_ONLY, GL_R16F);
 		glBindImageTexture(1, worldPositionTexture.getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA32F);
 		glBindImageTexture(2, LightScatteringMask.getId(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
 		glBindImageTexture(3, LightScatteringMaskMS.getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA16F);

@@ -4,17 +4,15 @@ layout (local_size_x = 16, local_size_y = 16) in;
 
 layout (binding = 0, rgba16f) uniform writeonly image2D defferedSceneImage;
 
-// layout (binding = 1, rgba32f) uniform writeonly image2D depthImage;
-
 layout (binding = 2, rgba16f) uniform readonly image2DMS albedoSceneImage;
 
 layout (binding = 3, rgba32f) uniform readonly image2DMS worldPositionImage;
 
 layout (binding = 4, rgba32f) uniform readonly image2DMS normalImage;
 
-layout (binding = 5, rgba32f)   uniform readonly image2DMS specularEmissionImage;
+layout (binding = 5, rgba16f)   uniform readonly image2DMS specularEmissionImage;
 
-layout (binding = 6, r32f) uniform readonly image2D sampleCoverageMask;
+layout (binding = 6, r16f) uniform readonly image2D sampleCoverageMask;
 
 layout (binding = 7, rgba32f) uniform readonly image2D ssaoBlurImage;
 

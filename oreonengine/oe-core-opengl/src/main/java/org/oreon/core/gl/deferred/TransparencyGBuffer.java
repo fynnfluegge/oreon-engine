@@ -8,8 +8,7 @@ import static org.lwjgl.opengl.GL11.GL_RED;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.glTexImage2D;
 import static org.lwjgl.opengl.GL30.GL_DEPTH_COMPONENT32F;
-import static org.lwjgl.opengl.GL30.GL_RGBA32F;
-import static org.lwjgl.opengl.GL30.GL_R32F;
+import static org.lwjgl.opengl.GL30.GL_R16F;
 
 import java.nio.ByteBuffer;
 
@@ -27,13 +26,13 @@ public class TransparencyGBuffer {
 		albedoTexture = new Texture2D();
 		albedoTexture.generate();
 		albedoTexture.bind();
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, width, height, 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
 		albedoTexture.noFilter();
 		
 		alphaTexture = new Texture2D();
 		alphaTexture.generate();
 		alphaTexture.bind();
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, width, height, 0, GL_RED, GL_FLOAT, (ByteBuffer) null);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_R16F, width, height, 0, GL_RED, GL_FLOAT, (ByteBuffer) null);
 		alphaTexture.noFilter();
 		
 		lightScatteringMask = new Texture2D();

@@ -2,7 +2,7 @@
 
 layout (local_size_x = 16, local_size_y = 16) in;
 
-layout (binding = 0, r32f) uniform writeonly image2D sampleCoverageMaskImage;
+layout (binding = 0, r16f) uniform writeonly image2D sampleCoverageMaskImage;
 
 layout (binding = 1, rgba32f) uniform readonly image2DMS worldPositionImage;
 
