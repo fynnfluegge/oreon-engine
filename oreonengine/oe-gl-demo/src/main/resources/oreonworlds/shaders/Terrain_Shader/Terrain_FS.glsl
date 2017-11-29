@@ -131,5 +131,5 @@ void main()
 	worldPosition_out = vec4(position,1);
 	normal_out = vec4(normal,1);
 	specularEmission_out = vec4(1,0,0,1);
-	lightScattering_out = vec4(0,1,0,1);
+	lightScattering_out = vec4(0,0,0,1);
 }
