@@ -53,7 +53,7 @@ public class SunLightScattering {
 	public void render(Texture2D sceneSampler, Texture2D lightScatteringMask) {
 		
 		lightScatteringShader.bind();
-		glBindImageTexture(0, lightScatteringMask.getId(), 0, false, 0, GL_READ_ONLY, GL_RG16F);
+		glBindImageTexture(0, lightScatteringMask.getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA16F);
 		glBindImageTexture(1, sunLightScatteringTexture.getId(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
 		lightScatteringShader.updateUniforms(CoreSystem.getInstance().getWindow().getWidth(), 
 											 CoreSystem.getInstance().getWindow().getHeight(), 

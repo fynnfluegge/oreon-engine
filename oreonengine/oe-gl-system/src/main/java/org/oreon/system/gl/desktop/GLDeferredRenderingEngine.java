@@ -139,7 +139,7 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		deferredLightScatteringMask = new Texture2D();
 		deferredLightScatteringMask.generate();
 		deferredLightScatteringMask.bind();
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RG16F, window.getWidth(), window.getHeight(), 0, GL_RG, GL_FLOAT, (ByteBuffer) null);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, window.getWidth(), window.getHeight(), 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
 		deferredLightScatteringMask.bilinearFilter();
 		
 		finalSceneTexture = new Texture2D();
@@ -151,7 +151,7 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		finalLightScatteringMask = new Texture2D();
 		finalLightScatteringMask.generate();
 		finalLightScatteringMask.bind();
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RG16F, window.getWidth(), window.getHeight(), 0, GL_RG, GL_UNSIGNED_INT, (ByteBuffer) null);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, window.getWidth(), window.getHeight(), 0, GL_RGBA, GL_UNSIGNED_INT, (ByteBuffer) null);
 		finalLightScatteringMask.noFilter();
 		
 		IntBuffer drawBuffers = BufferUtil.createIntBuffer(2);

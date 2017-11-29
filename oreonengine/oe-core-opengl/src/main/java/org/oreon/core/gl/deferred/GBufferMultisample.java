@@ -45,7 +45,7 @@ public class GBufferMultisample {
 		lightScatteringMask = new Texture2DMultisample();
 		lightScatteringMask.generate();
 		lightScatteringMask.bind();
-		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, Constants.MULTISAMPLES, GL_RG16F, width, height, true);
+		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, Constants.MULTISAMPLES, GL_RGBA16F, width, height, true);
 		
 		depthTexture = new Texture2DMultisample();
 		depthTexture.generate();

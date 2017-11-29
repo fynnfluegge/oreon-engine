@@ -6,9 +6,9 @@ layout (binding = 0, r32f) uniform writeonly image2D sampleCoverageMaskImage;
 
 layout (binding = 1, rgba32f) uniform readonly image2DMS worldPositionImage;
 
-layout (binding = 2, rg16f) uniform writeonly image2D lightScatteringMask_out;
+layout (binding = 2, rgba16f) uniform writeonly image2D lightScatteringMask_out;
 
-layout (binding = 3, rg16f) uniform readonly image2DMS lightScatteringMask_in;
+layout (binding = 3, rgba16f) uniform readonly image2DMS lightScatteringMask_in;
 
 uniform int multisamples;
 
@@ -37,7 +37,7 @@ void main()
 	vec2 lightScatteringMaskValue = vec2(0,0);
 	if (coverageValue == 1.0){
 		for (int i=0; i<multisamples-1; i++){
-			lightScatteringMaskValue += imageLoad(lightScatteringMask_in, computeCoord, i).rg;
+			lightScatteringMaskValue += imageLoad(lightScatteringMask_in, computeCoord, i).ra;
 		}
 		lightScatteringMaskValue /= multisamples;
 		
@@ -55,9 +55,9 @@ void main()
 		}
 	}
 	else{
-		lightScatteringMaskValue = imageLoad(lightScatteringMask_in, computeCoord, 0).rg;
+		lightScatteringMaskValue = imageLoad(lightScatteringMask_in, computeCoord, 0).ra;
 	}
 			  
 	imageStore(sampleCoverageMaskImage, computeCoord, vec4(coverageValue,0,0,1));
-	imageStore(lightScatteringMask_out, computeCoord, vec4(lightScatteringMaskValue.x,lightScatteringMaskValue.y,0,1));
+	imageStore(lightScatteringMask_out, computeCoord, vec4(lightScatteringMaskValue.x,lightScatteringMaskValue.x,lightScatteringMaskValue.x,lightScatteringMaskValue.y));
 }

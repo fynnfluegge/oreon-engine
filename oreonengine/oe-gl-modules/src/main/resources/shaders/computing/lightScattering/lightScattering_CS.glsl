@@ -2,7 +2,7 @@
 
 layout (local_size_x = 8, local_size_y = 8) in;
 
-layout (binding = 0, rg16f) uniform readonly image2D lightScatteringMask;
+layout (binding = 0, rgba16f) uniform readonly image2D lightScatteringMask;
 
 layout (binding = 1, rgba16f) uniform writeonly image2D lightScatteringSampler;
 
@@ -33,15 +33,14 @@ void main(void){
 
 	vec3 finalColor = vec3(0,0,0);
 	
-	float scatteringPreventionFlag = imageLoad(lightScatteringMask, computeCoord).g;
+	float scatteringPreventionFlag = imageLoad(lightScatteringMask, computeCoord).a;
 	
 	// 1 to prevent scattering on atmosphere
 	if (scatteringPreventionFlag == 1.0){
 		for(int i=0; i < NUM_SAMPLES ; i++)
 		{
 			coord -= deltaCoord;
-			float b = imageLoad(lightScatteringMask, ivec2(coord.x,coord.y)).r;
-			vec3 color = vec3(b,b,b);
+			vec3 color = imageLoad(lightScatteringMask, ivec2(coord.x,coord.y)).rgb;
 			color *= illuminationDecay * weight;
 			finalColor += color;
 			illuminationDecay *= decay;
