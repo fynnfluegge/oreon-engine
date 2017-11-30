@@ -30,7 +30,7 @@ void main(void){
 	ivec2 computeCoord = ivec2(gl_GlobalInvocationID.x, gl_GlobalInvocationID.y);
 	
 	// window coords
-	vec2 w = vec2(gl_GlobalInvocationID.x/windowWidth, gl_GlobalInvocationID.y/windowHeight);
+	// vec2 w = vec2(gl_GlobalInvocationID.x/windowWidth, gl_GlobalInvocationID.y/windowHeight);
 	
 	// Get the depth buffer value at this pixel.  
 	float depth = texelFetch(depthmap, computeCoord, 0).r ; 
@@ -39,14 +39,14 @@ void main(void){
 	
 	float linDepth = linearize(depth);
 	
-	vec3 color = imageLoad(sceneSampler, computeCoord).rgb;  
-	
+	vec3 color = imageLoad(sceneSampler, computeCoord).rgb;
+
 	float dofBlurPreventionFlag = imageLoad(depthOfFieldBlurMask, computeCoord).a;  
 	
 	if (dofBlurPreventionFlag == 0.0 || linDepth < 0.01){
 		imageStore(horizontalBlurSceneSampler, computeCoord, vec4(color, 1.0));
 		return;
-	}
+	}   
 	
 	if (gl_GlobalInvocationID.x > 3 && gl_GlobalInvocationID.y > 3
 		&& gl_GlobalInvocationID.x < windowWidth-4
