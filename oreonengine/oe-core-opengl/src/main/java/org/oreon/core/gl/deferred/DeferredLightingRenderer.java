@@ -69,7 +69,7 @@ public class DeferredLightingRenderer {
 		fbo.unbind();
 	}
 	
-	public void render(Texture2D sampleCoverageMask, Texture2D ssaoBlurTexture, Texture2DArray pssm){
+	public void render(Texture2D sampleCoverageMask, Texture2D ssaoBlurTexture, Texture2DArray pssm, boolean flag){
 		
 		shader.bind();
 		glBindImageTexture(0, deferredLightingSceneTexture.getId(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
@@ -79,7 +79,7 @@ public class DeferredLightingRenderer {
 		glBindImageTexture(5, gbuffer.getSpecularEmissionTexture().getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA16F);
 		glBindImageTexture(6, sampleCoverageMask.getId(), 0, false, 0, GL_READ_ONLY, GL_R16F);
 		glBindImageTexture(7, ssaoBlurTexture.getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA32F);
-		shader.updateUniforms(pssm);
+		shader.updateUniforms(pssm, flag);
 		glDispatchCompute(CoreSystem.getInstance().getWindow().getWidth()/16, CoreSystem.getInstance().getWindow().getHeight()/16,1);
 	}
 

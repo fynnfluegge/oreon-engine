@@ -31,7 +31,7 @@ public class Palm01Cluster extends InstancingCluster{
 				
 		for (int i=0; i<instances; i++){
 			
-			float s = (float)(Math.random()*0.15 + 0.2);
+			float s = (float)(Math.random()*0.1 + 0.3);
 			Vec3f translation = new Vec3f((float)(Math.random()*100)-50 + getCenter().getX(), 0, (float)(Math.random()*100)-50 + getCenter().getZ());
 			Vec3f scaling = new Vec3f(s,s,s);
 			Vec3f rotation = new Vec3f(0,(float) Math.random()*360f,0);

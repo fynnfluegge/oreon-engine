@@ -3,7 +3,7 @@ choppy 1
 delta_T 0.15
 displacementScale 4.0
 choppiness 12.0
-distortion 1.0E-3
+distortion 4.0E-3
 wavemotion 0.00002
 texDetail 25
 tessellationFactor 2000
@@ -12,6 +12,6 @@ tessellationShift -0.02
 detailRange 1800
 shininess 200.0
 emission 1.2
-kReflection 0.02
+kReflection 0.012
 kRefraction 0.01
-normalStrength 0.6
+normalStrength 0.5

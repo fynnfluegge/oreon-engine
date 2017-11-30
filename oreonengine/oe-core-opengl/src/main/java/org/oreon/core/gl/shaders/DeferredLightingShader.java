@@ -34,9 +34,10 @@ public class DeferredLightingShader extends GLShader{
 		addUniform("numSamples");
 		addUniform("pssm");
 		addUniform("sightRangeFactor");
+		addUniform("flag");
 	}
 	
-	public void updateUniforms(Texture2DArray pssm){
+	public void updateUniforms(Texture2DArray pssm, boolean flag){
 		
 		bindUniformBlock("Camera", Constants.CameraUniformBlockBinding);
 		bindUniformBlock("DirectionalLight", Constants.DirectionalLightUniformBlockBinding);	
@@ -46,6 +47,8 @@ public class DeferredLightingShader extends GLShader{
 		glActiveTexture(GL_TEXTURE1);
 		pssm.bind();
 		setUniformi("pssm", 1);
+		
+		setUniformi("flag", flag ? 1 : 0);
 		
 		setUniformi("numSamples", Constants.MULTISAMPLES);
 	}

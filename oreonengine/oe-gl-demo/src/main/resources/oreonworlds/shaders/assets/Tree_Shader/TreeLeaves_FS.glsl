@@ -54,7 +54,7 @@ void main()
 	
 	float alpha = albedo.a;
 	
-	if (alpha < 0.1)
+	if (alpha < 0.01)
 		discard;
 		
 	alpha *= alphaDistanceFactor(dist);

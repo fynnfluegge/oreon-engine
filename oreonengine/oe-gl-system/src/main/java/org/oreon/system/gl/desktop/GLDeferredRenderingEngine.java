@@ -100,6 +100,8 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 	private boolean renderSSAOBuffer;
 	private boolean renderFXAA = true;
 	
+	boolean renderSSAO = true;
+	
 	@Override
 	public void init() {
 		
@@ -202,7 +204,8 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 		
 		deferredRenderer.render(msaa.getSampleCoverageMask(),
 							    ssao.getSsaoBlurSceneTexture(),
-							    shadowMaps.getDepthMaps());
+							    shadowMaps.getDepthMaps(),
+							    renderSSAO);
 		
 		// forward scene lighting - transparent objects
 		transparencyLayer.getFbo().bind();
@@ -404,6 +407,14 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 			}
 			else{
 				renderFXAA = true;
+			}
+		}
+		if (CoreSystem.getInstance().getInput().isKeyPushed(GLFW.GLFW_KEY_KP_8)){
+			if (renderSSAO){
+				renderSSAO = false;
+			}
+			else {
+				renderSSAO = true;
 			}
 		}
 		

@@ -55,8 +55,8 @@ public class Main {
 		coreSystem.getScenegraph().addTransparentObject(new Sun());
 		coreSystem.getScenegraph().setWater(new Ocean());
 		
-//		coreSystem.getScenegraph().getRoot().addChild(new Palm01ClusterGroup());
-		coreSystem.getScenegraph().getRoot().addChild(new Tree02ClusterGroup());
+		coreSystem.getScenegraph().getRoot().addChild(new Palm01ClusterGroup());
+//		coreSystem.getScenegraph().getRoot().addChild(new Tree02ClusterGroup());
 //		coreSystem.getScenegraph().getRoot().addChild(new Tree01ClusterGroup());
 //		coreSystem.getScenegraph().getRoot().addChild(new Grass01ClusterGroup());
 //		coreSystem.getScenegraph().getRoot().addChild(new Plant01ClusterGroup());

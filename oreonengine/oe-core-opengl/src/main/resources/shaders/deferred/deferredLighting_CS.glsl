@@ -38,6 +38,7 @@ layout (std140, row_major) uniform LightViewProjections{
 uniform sampler2DArray pssm;
 uniform int numSamples;
 uniform float sightRangeFactor;
+uniform int flag;
 
 const float zfar = 10000;
 const float znear = 0.1;
@@ -192,8 +193,10 @@ void main(void){
 				vec3 diffuseLight = directional_light.ambient + directional_light.color * diff * shadow;
 				vec3 specularLight = directional_light.color * spec;
 				
-			
-				finalColor += (albedo * diffuseLight * ssao + specularLight);
+				if (flag == 1)
+					finalColor += albedo * diffuseLight * ssao + specularLight;
+				else 
+					finalColor += albedo * diffuseLight + specularLight;
 			}
 			else{
 				finalColor += albedo;
@@ -218,7 +221,10 @@ void main(void){
 			vec3 diffuseLight = directional_light.ambient + directional_light.color * diff * shadow;
 			vec3 specularLight = directional_light.color * spec;
 			
-			finalColor = albedo * diffuseLight * ssao + specularLight;
+			if (flag == 1)
+				finalColor = albedo * diffuseLight * ssao + specularLight;
+			else 
+				finalColor = albedo * diffuseLight + specularLight;
 		}
 		else{
 			finalColor = albedo;
