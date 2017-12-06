@@ -56,9 +56,9 @@ float fresnelApproximated(vec3 normal)
     
     float cosine = dot(halfDirection, vertexToEye);
 
-	float fresnel = Eta + (1.0 - Eta) * pow(max(0.0, 1.0 - dot(vertexToEye, normal)), 4.0);
+	float fresnel = Eta + (1.0 - Eta) * pow(max(0.0, 1.0 - dot(vertexToEye, normal)), 6.0);
 	
-	return clamp(pow(fresnel, 1.2),0.0,1.0);
+	return clamp(pow(fresnel, 1.0),0.0,1.0);
 }
  
 void main(void)
