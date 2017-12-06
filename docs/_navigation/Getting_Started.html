@@ -125,37 +125,42 @@ Now you are ready to clone the repository to your local system and set it up as 
 <img alt="../_images/local_Repo.png" src="../_images/local_Repo.png" />
 <ul class="simple">
 <li>Eclipse will clone the GitHub repository to the previously created local repository</li>
-<li>when finished, choose &#8216;Import using the New Project wizard&#8217; -&gt; click Finish</li>
 </ul>
 <img alt="../_images/build_local_repo.png" src="../_images/build_local_repo.png" />
 <ul class="simple">
-<li>Choose Java Project -&gt; Next &gt;</li>
+<li>click Finish</li>
 </ul>
-<img alt="../_images/New_project.png" src="../_images/New_project.png" />
+<img alt="../_images/cancel.png" src="../_images/cancel.png" />
+<ul class="simple">
+<li>click Cancel</li>
+</ul>
+<img alt="../_images/existing_maven_projects.png" src="../_images/existing_maven_projects.png" />
+<ul class="simple">
+<li>Now once more choose File -&gt; Import... in the Eclipse IDE and select Existing Maven Projects</li>
+<li>click Finish</li>
+</ul>
+<img alt="../_images/maven_root.png" src="../_images/maven_root.png" />
+<ul class="simple">
+<li>select as root directory the subfolder &#8216;oreonengine&#8217; of the previously checked out github project &#8216;oreon-engine&#8217;</li>
+</ul>
+<img alt="../_images/modules.png" src="../_images/modules.png" />
+<ul class="simple">
+<li>select all modules and optionally choose a working set for your project</li>
+</ul>
+<p>Congratulations, you are done!
+You will see the project in your Eclipse package Explorer as with all it&#8217;s maven modules.
+Good luck and have fun with the project!</p>
 <ul>
-<li><p class="first">Set a project name</p>
-</li>
 <li><dl class="first docutils">
-<dt>Deselect &#8216;Use default location&#8217;</dt>
+<dt>To build the project</dt>
 <dd><ul class="first last simple">
-<li>Choose the project path of your local repository as location</li>
+<li>rightclick on &#8216;oe-main&#8217; and click Run As -&gt; maven clean</li>
+<li>again rightclick on &#8216;oe_main&#8217; and click Run As -&gt; maven install</li>
 </ul>
 </dd>
 </dl>
 </li>
 </ul>
-<img alt="../_images/newProject2.png" src="../_images/newProject2.png" />
-<ul class="simple">
-<li>click Finish</li>
-<li>Now you see the project in your project explorer with a lot of errors, because there is one last thing to do. Since the project uses Maven-dependencies it has to be converted to a Maven-project.</li>
-</ul>
-<img alt="../_images/errors.png" src="../_images/errors.png" />
-<ul class="simple">
-<li>Right click on the project in project explorer -&gt; go to &#8216;Configure&#8217; and click on &#8216;convert to maven project&#8217;</li>
-</ul>
-<p>Congratulations! You are done!
-You will see the project in your Eclipse package Explorer as a Maven-project without missing dependencies.
-Good luck and have fun with the project!</p>
 <img alt="../_images/project_setup_finished.png" src="../_images/project_setup_finished.png" />
 </div>
 </div>
