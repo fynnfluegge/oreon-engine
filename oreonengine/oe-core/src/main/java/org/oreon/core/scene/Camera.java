@@ -46,7 +46,7 @@ private final Vec3f yAxis = new Vec3f(0,1,0);
 	
 	protected Camera()
 	{
-		this(new Vec3f(-200,400,-20), new Vec3f(1,0,-1).normalize(), new Vec3f(0,1,0));
+		this(new Vec3f(-447.3447f,265.7899f,923.41846f), new Vec3f(-0.16345039f,0.28538036f,-0.94437385f).normalize(), new Vec3f(0.048669036f,0.9584144f,0.28119972f));
 		setProjection(70, CoreSystem.getInstance().getWindow().getWidth(), CoreSystem.getInstance().getWindow().getHeight());
 		setViewMatrix(new Matrix4f().View(this.getForward(), this.getUp()).mul(
 				new Matrix4f().Translation(this.getPosition().mul(-1))));

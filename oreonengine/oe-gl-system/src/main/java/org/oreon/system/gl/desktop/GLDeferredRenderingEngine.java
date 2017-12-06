@@ -92,15 +92,15 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 	private boolean waterRefraction = false;
 	private boolean cameraUnderWater = false;
 	
-	private boolean renderAlbedoBuffer;
-	private boolean renderNormalBuffer;
-	private boolean renderPositionBuffer;
-	private boolean renderSampleCoverageMask;
-	private boolean renderDeferredLightingScene;
-	private boolean renderSSAOBuffer;
+	private boolean renderAlbedoBuffer = false;
+	private boolean renderNormalBuffer = false;
+	private boolean renderPositionBuffer = false;
+	private boolean renderSampleCoverageMask = false;
+	private boolean renderDeferredLightingScene = false;
+	private boolean renderSSAOBuffer = false;
 	private boolean renderFXAA = true;
-	
-	boolean renderSSAO = true;
+	private boolean renderPostProcessingEffects = true;
+	private boolean renderSSAO = true;
 	
 	@Override
 	public void init() {
@@ -240,29 +240,31 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 			fxaa.render(postProcessingTexture);
 			postProcessingTexture = fxaa.getFxaaSceneTexture();
 		}
-							   
-		// Depth of Field Blur			
-		dofBlur.render(deferredRenderer.getGbuffer().getDepthTexture(), finalLightScatteringMask, postProcessingTexture, window.getWidth(), window.getHeight());
-		postProcessingTexture = dofBlur.getVerticalBlurSceneTexture();
-		
-		// post processing effects
-		if (isCameraUnderWater()){
-			underWater.render(postProcessingTexture, deferredRenderer.getGbuffer().getDepthTexture());
-			postProcessingTexture = underWater.getUnderwaterSceneTexture();
+			
+		if (renderPostProcessingEffects){
+			// Depth of Field Blur			
+			dofBlur.render(deferredRenderer.getGbuffer().getDepthTexture(), finalLightScatteringMask, postProcessingTexture, window.getWidth(), window.getHeight());
+			postProcessingTexture = dofBlur.getVerticalBlurSceneTexture();
+			
+			// post processing effects
+			if (isCameraUnderWater()){
+				underWater.render(postProcessingTexture, deferredRenderer.getGbuffer().getDepthTexture());
+				postProcessingTexture = underWater.getUnderwaterSceneTexture();
+			}
+			
+			// Bloom
+			bloom.render(postProcessingTexture);
+			postProcessingTexture = bloom.getBloomBlurSceneTexture();
+			
+			// Motion Blur
+			if (doMotionBlur){
+				motionBlur.render(deferredRenderer.getGbuffer().getDepthTexture(), postProcessingTexture);
+				postProcessingTexture = motionBlur.getMotionBlurSceneTexture();
+			}
+			
+			sunlightScattering.render(postProcessingTexture,finalLightScatteringMask);
+			postProcessingTexture = sunlightScattering.getSunLightScatteringSceneTexture();
 		}
-		
-		// Bloom
-		bloom.render(postProcessingTexture);
-		postProcessingTexture = bloom.getBloomBlurSceneTexture();
-		
-		// Motion Blur
-		if (doMotionBlur){
-			motionBlur.render(deferredRenderer.getGbuffer().getDepthTexture(), postProcessingTexture);
-			postProcessingTexture = motionBlur.getMotionBlurSceneTexture();
-		}
-		
-		sunlightScattering.render(postProcessingTexture,finalLightScatteringMask);
-		postProcessingTexture = sunlightScattering.getSunLightScatteringSceneTexture();
 		
 		if (isGrid()){
 			fullScreenQuadMultisample.setTexture(deferredRenderer.getGbuffer().getAlbedoTexture());
@@ -415,6 +417,14 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 			}
 			else {
 				renderSSAO = true;
+			}
+		}
+		if (CoreSystem.getInstance().getInput().isKeyPushed(GLFW.GLFW_KEY_KP_9)){
+			if (renderPostProcessingEffects){
+				renderPostProcessingEffects = false;
+			}
+			else {
+				renderPostProcessingEffects = true;
 			}
 		}
 		

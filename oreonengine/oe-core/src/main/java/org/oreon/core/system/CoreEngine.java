@@ -123,7 +123,7 @@ public class CoreEngine{
 	private void render()
 	{
 		coreSystem.getRenderingEngine().render();
-		System.out.println(getFps());
+//		System.out.println(getFps());
 	}
 	
 	private void update()

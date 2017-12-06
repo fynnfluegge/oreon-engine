@@ -47,7 +47,7 @@ public class RefracReflecRenderer {
 				width,
 				height,
 				0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
-		deferredLightingSceneTexture.noFilter();
+		deferredLightingSceneTexture.bilinearFilter();
 		
 		IntBuffer drawBuffers = BufferUtil.createIntBuffer(3);
 		drawBuffers.put(GL_COLOR_ATTACHMENT0);

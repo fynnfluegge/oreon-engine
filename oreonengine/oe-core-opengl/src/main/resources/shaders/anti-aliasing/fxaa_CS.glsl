@@ -6,12 +6,13 @@ layout (binding = 0, rgba16f) uniform writeonly image2D fxaaScene_out;
 
 layout (binding = 1, rgba16f) uniform readonly image2D sceneImage_in;
 
-uniform vec2 u_texelStep = vec2(128.0f,128.0f);
-uniform float u_lumaThreshold = 0.5f;
-uniform float u_mulReduce = 8.0f;
-uniform float u_minReduce = 128.0f;
-uniform float u_maxSpan = 8.0f;
-uniform int u_showEdges = 0;
+// uniform vec2 u_texelStep = vec2(1f,1f);
+// uniform float u_lumaThreshold = 0.5f;
+// uniform float u_mulReduce = 8.0f;
+// uniform float u_minReduce = 128.0f;
+// uniform float u_maxSpan = 2.0f;
+// uniform int u_showEdges = 0;
+
 uniform int width;
 uniform int height;
 
@@ -227,6 +228,14 @@ void main(){
 // alternative approach
 // void main(){
 
+	// ivec2 computeCoord = ivec2(gl_GlobalInvocationID.x, gl_GlobalInvocationID.y);
+	
+	// vec2 uv = vec2(gl_GlobalInvocationID.x/float(width), gl_GlobalInvocationID.y/float(height));
+	
+	// vec2 inverseScreenSize = vec2(1.0/float(width), 1.0/float(height));
+	
+	// vec3 rgb = imageLoad(sceneImage_in, computeCoord).rgb;
+
 	// Sampling neighbour texels. Offsets are adapted to OpenGL texture coordinates. 
 	// vec3 rgbNW = imageLoad(sceneImage_in, computeCoord + ivec2(-1,1)).rgb;
     // vec3 rgbNE = imageLoad(sceneImage_in, computeCoord + ivec2(1,1)).rgb;
@@ -250,7 +259,7 @@ void main(){
 	// if (lumaMax - lumaMin < lumaMax * u_lumaThreshold)
 	// {
 		// ... do no AA and return.
-		// imageStore(fxaaScene_out, computeCoord, vec4(rgbM, 1.0));
+		// imageStore(fxaaScene_out, computeCoord, vec4(rgb, 1.0));
 		
 		// return;
 	// }  
@@ -271,14 +280,14 @@ void main(){
     // samplingDirection = clamp(samplingDirection * minSamplingDirectionFactor, vec2(-u_maxSpan, -u_maxSpan), vec2(u_maxSpan, u_maxSpan)) * u_texelStep;
 	
 	// Inner samples on the tab.
-	// vec3 rgbSampleNeg = imageLoad(sceneImage_in, computeCoord + ivec2(samplingDirection * (1.0/3.0 - 0.5)) * ivec2(1280,720)).rgb;
-	// vec3 rgbSamplePos = imageLoad(sceneImage_in, computeCoord + ivec2(samplingDirection * (2.0/3.0 - 0.5)) * ivec2(1280,720)).rgb;
+	// vec3 rgbSampleNeg = texture(sceneTexture, computeCoord + vec2(samplingDirection * (1.0/3.0 - 0.5))).rgb;
+	// vec3 rgbSamplePos = texture(sceneTexture, computeCoord + vec2(samplingDirection * (2.0/3.0 - 0.5))).rgb;
 
 	// vec3 rgbTwoTab = (rgbSamplePos + rgbSampleNeg) * 0.5;  
 
 	// Outer samples on the tab.
-	// vec3 rgbSampleNegOuter = imageLoad(sceneImage_in, computeCoord + ivec2(samplingDirection * (0.0/3.0 - 0.5)) * ivec2(1280,720)).rgb;
-	// vec3 rgbSamplePosOuter = imageLoad(sceneImage_in, computeCoord + ivec2(samplingDirection * (3.0/3.0 - 0.5)) * ivec2(1280,720)).rgb;
+	// vec3 rgbSampleNegOuter = texture(sceneTexture, uv + vec2(samplingDirection * (0.0/3.0 - 0.5))).rgb;
+	// vec3 rgbSamplePosOuter = texture(sceneTexture, uv + vec2(samplingDirection * (3.0/3.0 - 0.5))).rgb;
 	
 	// vec3 rgbFourTab = (rgbSamplePosOuter + rgbSampleNegOuter) * 0.25 + rgbTwoTab * 0.5;   
 	

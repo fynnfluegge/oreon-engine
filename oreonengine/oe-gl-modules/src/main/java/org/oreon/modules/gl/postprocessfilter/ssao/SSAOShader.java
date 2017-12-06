@@ -44,7 +44,7 @@ public class SSAOShader extends GLShader{
 		setUniform("m_Proj", projectionMatrix);
 		setUniformi("kernelSize", 64);
 		setUniformf("uRadius", 1f);
-		setUniformf("threshold", 0.0002f);
+		setUniformf("threshold", 0.02f);
 		setUniformi("width", width);
 		setUniformi("height", height);
 		
