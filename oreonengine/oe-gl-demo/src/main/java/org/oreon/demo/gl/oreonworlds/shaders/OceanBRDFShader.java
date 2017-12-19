@@ -14,6 +14,7 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 import org.oreon.core.gl.shaders.GLShader;
 import org.oreon.core.scene.GameObject;
 import org.oreon.core.system.CoreSystem;
+import org.oreon.core.util.Constants;
 import org.oreon.core.util.ResourceLoader;
 import org.oreon.modules.gl.water.Water;
 
@@ -63,7 +64,6 @@ public class OceanBRDFShader extends GLShader{
 		addUniform("kReflection");
 		addUniform("kRefraction");
 		addUniform("largeDetailRange");
-//		addUniform("sightRangeFactor");
 		
 		addUniform("emission");
 		addUniform("specular");
@@ -81,18 +81,20 @@ public class OceanBRDFShader extends GLShader{
 		{
 			addUniform("frustumPlanes[" + i +"]");
 		}
+		
+		addUniformBlock("DirectionalLight");
 	}
 	
 	public void updateUniforms(GameObject object)
 	{
+		bindUniformBlock("DirectionalLight", Constants.DirectionalLightUniformBlockBinding);	
+		
 		setUniform("projectionViewMatrix", CoreSystem.getInstance().getScenegraph().getCamera().getViewProjectionMatrix());
 		setUniform("worldMatrix", object.getWorldTransform().getWorldMatrix());
 				
 		setUniform("eyePosition", CoreSystem.getInstance().getScenegraph().getCamera().getPosition());
 		setUniformi("windowWidth", CoreSystem.getInstance().getWindow().getWidth());
 		setUniformi("windowHeight", CoreSystem.getInstance().getWindow().getHeight());
-		
-//		setUniformf("sightRangeFactor", CoreSystem.getInstance().getRenderingEngine().getSightRangeFactor());
 		
 		for (int i=0; i<6; i++)
 		{

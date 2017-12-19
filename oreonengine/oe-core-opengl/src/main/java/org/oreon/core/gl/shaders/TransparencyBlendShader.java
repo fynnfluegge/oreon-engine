@@ -9,7 +9,6 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE5;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE6;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
-import org.oreon.core.math.Matrix4f;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.texture.Texture;
 import org.oreon.core.util.ResourceLoader;
@@ -35,7 +34,6 @@ public class TransparencyBlendShader extends GLShader{
 		addFragmentShader(ResourceLoader.loadShader("shaders/deferred/transparencyBlend_FS.glsl"));
 		compileShader();
 		
-		addUniform("orthographicMatrix");
 		addUniform("opaqueSceneTexture");
 		addUniform("opaqueSceneLightScatteringTexture");
 		addUniform("opaqueSceneDepthMap");
@@ -47,18 +45,14 @@ public class TransparencyBlendShader extends GLShader{
 		addUniform("height");
 	}
 	
-	public void updateUniforms(Matrix4f orthographicMatrix)
-	{
-		setUniform("orthographicMatrix", orthographicMatrix);
-		setUniformi("width", CoreSystem.getInstance().getWindow().getWidth());
-		setUniformi("height", CoreSystem.getInstance().getWindow().getHeight());
-	}
-	
 	public void updateUniforms(Texture opaqueSceneTexture, Texture opaqueSceneDepthMap,
 							   Texture opaqueSceneLightScatteringTexture,
 							   Texture transparencyLayer, Texture transparencyLayerDepthMap,
 							   Texture alphaMap, Texture transparencyLayerLightScatteringTexture)
 	{
+		setUniformi("width", CoreSystem.getInstance().getWindow().getWidth());
+		setUniformi("height", CoreSystem.getInstance().getWindow().getHeight());
+		
 		glActiveTexture(GL_TEXTURE0);
 		opaqueSceneTexture.bind();
 		setUniformi("opaqueSceneTexture", 0);

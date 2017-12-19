@@ -11,17 +11,15 @@ layout(location = 2) out vec4 normal_out;
 layout(location = 3) out vec4 specularEmission_out;
 layout(location = 4) out vec4 lightScattering_out;
 
-struct DirectionalLight
-{
+layout (std140) uniform DirectionalLight{
+	vec3 direction;
 	float intensity;
 	vec3 ambient;
-	vec3 direction;
 	vec3 color;
-};
+} directional_light;
 
 uniform int largeDetailRange;
 uniform mat4 modelViewProjectionMatrix;
-uniform DirectionalLight sunlight;
 uniform sampler2D waterReflection;
 uniform sampler2D waterRefraction;
 uniform sampler2D dudvRefracReflec;
@@ -45,7 +43,6 @@ uniform int isCameraUnderWater;
 const vec2 wind = vec2(1,1);
 const float Eta = 0.15; // Water
 const vec3 deepOceanColor = vec3(0.1,0.125,0.20);
-const vec3 fogColor = vec3(0.62,0.8,0.98);
 const float zfar = 10000;
 const float znear = 0.1;
 vec3 vertexToEye;
@@ -59,6 +56,18 @@ float fresnelApproximated(vec3 normal)
 	float fresnel = Eta + (1.0 - Eta) * pow(max(0.0, 1.0 - dot(vertexToEye, normal)), 6.0);
 	
 	return clamp(pow(fresnel, 1.0),0.0,1.0);
+}
+
+float specularReflection(vec3 direction, vec3 normal, vec3 eyePosition, vec3 vertexPosition, float specularFactor, float emissionFactor)
+{
+	normal.xz *= 2.2;
+
+	vec3 reflectionVector = normalize(reflect(direction, normalize(normal)));
+	vec3 vertexToEye = normalize(eyePosition - vertexPosition);
+	
+	float specular = max(0.0, dot(vertexToEye, reflectionVector));
+	
+	return pow(specular, specularFactor) * emissionFactor;
 }
  
 void main(void)
@@ -125,13 +134,14 @@ void main(void)
 		fragColor += (causticsColor/4);
 	}
 	
-	float fogFactor = -0.0002/sightRangeFactor*(dist-(zfar)/10*sightRangeFactor) + 1;
+	float spec = specularReflection(directional_light.direction, normal.xzy, eyePosition, position_FS, specular, emission);
+	vec3 specularLight = (directional_light.color + vec3(0,0.03,0.08)) * spec;
 	
-    // vec3 rgb = mix(fogColor, fragColor, clamp(fogFactor,0,1));
+	fragColor += specularLight;
 	
 	albedo_out = vec4(fragColor,1);
 	worldPosition_out = vec4(position_FS,1);
 	normal_out = vec4(normal,1);
-	specularEmission_out = vec4(specular,emission,0,1);
+	specularEmission_out = vec4(1,0,0,1);
 	lightScattering_out = vec4(0,0,0,1);
 }

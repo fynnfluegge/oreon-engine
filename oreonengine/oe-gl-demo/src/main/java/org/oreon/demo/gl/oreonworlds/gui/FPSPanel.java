@@ -29,7 +29,7 @@ public class FPSPanel extends GUIElement{
 	public FPSPanel(){
 		texture = new Texture2D("gui/tex/Fonts.png");
 		texture.bind();
-		texture.bilinearFilter();
+		texture.noFilter();
 		texCoords = new Vec2f[24];
 		fps = new Vec2f[24];
 		setShader(GuiShader.getInstance());

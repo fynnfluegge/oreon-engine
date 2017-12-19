@@ -22,7 +22,6 @@ public class TransparencyBlendRenderer extends FullScreenQuad{
 		
 		getConfig().enable();
 		shader.bind();
-		shader.updateUniforms(getOrthographicMatrix());
 		shader.updateUniforms(opaqueScene, opaqueSceneDepthMap, opaqueSceneLightScatteringTexture, 
 							  transparencyLayer, transparencyLayerDepthMap,
 							  alphaMap, transparencyLayerLightScatteringTexture);

@@ -9,6 +9,8 @@ uniform mat4 orthographicMatrix;
 
 void main()
 {
-	gl_Position = orthographicMatrix * vec4(position0, 1);
+	vec4 vertices[4] = vec4[4](vec4(0.0, 0.0, 0.0, 1.0), vec4(1.0, 0.0, 0.0, 1.0), vec4(0.0, 1.0, 0.0, 1.0), vec4(1.0, 1.0, 0.0, 1.0));
+	
+	gl_Position = orthographicMatrix * vertices[gl_VertexID];
 	texCoord1 = texCoord0;
 }

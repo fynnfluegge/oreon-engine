@@ -9,6 +9,7 @@ import org.oreon.demo.gl.oreonworlds.assets.plants.Tree01ClusterGroup;
 import org.oreon.demo.gl.oreonworlds.assets.plants.Tree02ClusterGroup;
 import org.oreon.demo.gl.oreonworlds.assets.rocks.Rock01ClusterGroup;
 import org.oreon.demo.gl.oreonworlds.assets.rocks.Rock02ClusterGroup;
+import org.oreon.demo.gl.oreonworlds.gui.GUI;
 import org.oreon.demo.gl.oreonworlds.shaders.TerrainGridShader;
 import org.oreon.demo.gl.oreonworlds.shaders.TerrainShader;
 import org.oreon.demo.gl.oreonworlds.water.Ocean;
@@ -28,6 +29,7 @@ public class Main {
 		GLDeferredRenderingEngine renderingengine = new GLDeferredRenderingEngine();
 		Window window = new GLWindow();
 		
+		renderingengine.setGui(new GUI());
 		window.setWidth(1280);
 		window.setHeight(720);
 		window.setTitle("OREON ENGINE oreonworlds 2.0");

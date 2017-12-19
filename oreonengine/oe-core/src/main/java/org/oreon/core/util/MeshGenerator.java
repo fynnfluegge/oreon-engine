@@ -7,25 +7,25 @@ import org.oreon.core.model.Vertex;
 
 public class MeshGenerator {
 	
-	public static Mesh Quad2D()
+	public static Mesh NDCQuad2D()
 	{
 		Vertex[] vertices = new Vertex[4];
 		int[] indices = {0,2,1,1,2,3};
-		vertices[0] = new Vertex(new Vec3f(0,0,0), new Vec2f(0,0));
-		vertices[1] = new Vertex(new Vec3f(1,0,0), new Vec2f(1,0));
-		vertices[2] = new Vertex(new Vec3f(0,1,0), new Vec2f(0,1));
+		vertices[0] = new Vertex(new Vec3f(-1,-1,0), new Vec2f(0,0));
+		vertices[1] = new Vertex(new Vec3f(1,-1,0), new Vec2f(1,0));
+		vertices[2] = new Vertex(new Vec3f(-1,1,0), new Vec2f(0,1));
 		vertices[3] = new Vertex(new Vec3f(1,1,0), new Vec2f(1,1));
 		Mesh quad = new Mesh(vertices, indices);
 		return quad;
 	}
 	
-	public static Mesh Quad2Drot180()
+	public static Mesh NDCQuad2Drot180()
 	{
 		Vertex[] vertices = new Vertex[4];
 		int[] indices = {0,2,1,1,2,3};
-		vertices[0] = new Vertex(new Vec3f(0,0,0), new Vec2f(0,1));
-		vertices[1] = new Vertex(new Vec3f(1,0,0), new Vec2f(1,1));
-		vertices[2] = new Vertex(new Vec3f(0,1,0), new Vec2f(0,0));
+		vertices[0] = new Vertex(new Vec3f(-1,-1,0), new Vec2f(0,1));
+		vertices[1] = new Vertex(new Vec3f(1,-1,0), new Vec2f(1,1));
+		vertices[2] = new Vertex(new Vec3f(-1,1,0), new Vec2f(0,0));
 		vertices[3] = new Vertex(new Vec3f(1,1,0), new Vec2f(1,0));
 		Mesh quad = new Mesh(vertices, indices);
 		return quad;
