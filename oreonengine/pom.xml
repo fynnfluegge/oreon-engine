@@ -134,6 +134,10 @@
   		<module>oe-gl-modules</module>
   		<module>oe-core-opengl</module>
   		<module>oe-gl-system</module>
+  		<module>oe-core-vulkan</module>
+  		<module>oe-vk-demo</module>
+  		<module>oe-vk-modules</module>
+  		<module>oe-vk-system</module>
   </modules>
 
 </project>
