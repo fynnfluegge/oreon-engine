@@ -1,5 +1,7 @@
 package org.oreon.system.gl.desktop;
 
+import static org.lwjgl.glfw.GLFW.glfwSetErrorCallback;
+import static org.lwjgl.glfw.GLFW.glfwTerminate;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import static org.lwjgl.opengl.GL11.GL_RGBA;
@@ -14,6 +16,12 @@ import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.glfw.GLFWErrorCallback;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL31;
+import org.lwjgl.opengl.GL40;
+import org.lwjgl.opengl.GL42;
+import org.lwjgl.opengl.GL43;
 import org.oreon.core.buffers.Framebuffer;
 import org.oreon.core.gl.antialiasing.FXAA;
 import org.oreon.core.gl.antialiasing.MSAA;
@@ -50,7 +58,7 @@ import org.oreon.modules.gl.postprocessfilter.ssao.SSAO;
 import org.oreon.modules.gl.terrain.GLTerrain;
 import org.oreon.modules.gl.water.UnderWater;
 
-public class GLDeferredRenderingEngine implements RenderingEngine{
+public class GLRenderingEngine implements RenderingEngine{
 
 	private Window window;
 	private FullScreenQuad fullScreenQuad;
@@ -102,8 +110,15 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 	private boolean renderPostProcessingEffects = true;
 	private boolean renderSSAO = true;
 	
+	@SuppressWarnings("unused")
+	private GLFWErrorCallback errorCallback;
+	
 	@Override
 	public void init() {
+		
+		glfwSetErrorCallback(errorCallback = GLFWErrorCallback.createPrint(System.err));
+		
+		getDeviceProperties();
 		
 		Default.init();
 		window = CoreSystem.getInstance().getWindow();
@@ -441,6 +456,7 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 	public void shutdown() {
 		CoreSystem.getInstance().getScenegraph().shutdown();
 		instancingObjectHandler.signalAll();
+		glfwTerminate();
 	}
 	@Override
 	public boolean isGrid() {
@@ -530,4 +546,14 @@ public class GLDeferredRenderingEngine implements RenderingEngine{
 	public Object getUnderwater() {
 		return underWater;
 	} 
+	
+	private void getDeviceProperties(){
+		System.out.println("OpenGL version: " + GL11.glGetString(GL11.GL_VERSION) + " bytes");
+		System.out.println("Max Geometry Uniform Blocks: " + GL11.glGetInteger(GL31.GL_MAX_GEOMETRY_UNIFORM_BLOCKS));
+		System.out.println("Max Geometry Shader Invocations: " + GL11.glGetInteger(GL40.GL_MAX_GEOMETRY_SHADER_INVOCATIONS));
+		System.out.println("Max Uniform Buffer Bindings: " + GL11.glGetInteger(GL31.GL_MAX_UNIFORM_BUFFER_BINDINGS));
+		System.out.println("Max Uniform Block Size: " + GL11.glGetInteger(GL31.GL_MAX_UNIFORM_BLOCK_SIZE) + " bytes");
+		System.out.println("Max SSBO Block Size: " + GL11.glGetInteger(GL43.GL_MAX_SHADER_STORAGE_BLOCK_SIZE) + " bytes");	
+		System.out.println("Max Image Bindings: " + GL11.glGetInteger(GL42.GL_MAX_IMAGE_UNITS));
+	}
 }

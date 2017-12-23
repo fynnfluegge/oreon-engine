@@ -14,7 +14,8 @@ import static org.lwjgl.glfw.GLFW.glfwSetKeyCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetMouseButtonCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetFramebufferSizeCallback;
 
-import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.lwjgl.glfw.GLFWCursorPosCallback;
 import org.lwjgl.glfw.GLFWKeyCallback;
@@ -27,13 +28,13 @@ import org.lwjgl.glfw.GLFWFramebufferSizeCallback;
 
 public class GLFWInput implements Input{
 	
-	private ArrayList<Integer> pushedKeys = new ArrayList<Integer>();
-	private ArrayList<Integer> keysHolding = new ArrayList<Integer>();
-	private ArrayList<Integer> releasedKeys = new ArrayList<Integer>();
+	private Set<Integer> pushedKeys = new HashSet<>();
+	private Set<Integer> keysHolding = new HashSet<>();
+	private Set<Integer> releasedKeys = new HashSet<>();
 	
-	private ArrayList<Integer> pushedButtons = new ArrayList<Integer>();
-	private ArrayList<Integer> buttonsHolding = new ArrayList<Integer>();
-	private ArrayList<Integer> releasedButtons = new ArrayList<Integer>();
+	private Set<Integer> pushedButtons = new HashSet<>();
+	private Set<Integer> buttonsHolding = new HashSet<>();
+	private Set<Integer> releasedButtons = new HashSet<>();
 	
 	private Vec2f cursorPosition;
 	private Vec2f lockedCursorPosition;
@@ -202,11 +203,11 @@ public class GLFWInput implements Input{
 		this.lockedCursorPosition = lockedCursorPosition;
 	}
 	
-	public ArrayList<Integer> getPushedKeys() {
+	public Set<Integer> getPushedKeys() {
 		return pushedKeys;
 	}
 
-	public ArrayList<Integer> getButtonsHolding() {
+	public Set<Integer> getButtonsHolding() {
 		return buttonsHolding;
 	}
 
@@ -218,11 +219,11 @@ public class GLFWInput implements Input{
 		this.scrollOffset = scrollOffset;
 	}
 
-	public ArrayList<Integer> getKeysHolding() {
+	public Set<Integer> getKeysHolding() {
 		return keysHolding;
 	}
 
-	public ArrayList<Integer> getPushedButtons() {
+	public Set<Integer> getPushedButtons() {
 		return pushedButtons;
 	}
 }

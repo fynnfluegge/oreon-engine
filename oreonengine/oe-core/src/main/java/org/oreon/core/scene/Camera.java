@@ -7,7 +7,6 @@ import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.Constants;
 import org.oreon.core.util.Util;
 
-
 public abstract class Camera {
 	
 private final Vec3f yAxis = new Vec3f(0,1,0);

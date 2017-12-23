@@ -16,7 +16,7 @@ import org.oreon.demo.gl.oreonworlds.water.Ocean;
 import org.oreon.modules.gl.atmosphere.SkySphere;
 import org.oreon.modules.gl.atmosphere.Sun;
 import org.oreon.modules.gl.terrain.GLTerrain;
-import org.oreon.system.gl.desktop.GLDeferredRenderingEngine;
+import org.oreon.system.gl.desktop.GLRenderingEngine;
 import org.oreon.system.gl.desktop.GLFWInput;
 import org.oreon.system.gl.desktop.GLWindow;
 
@@ -26,7 +26,7 @@ public class Main {
 
 		CoreEngine coreEngine = new CoreEngine();
 		CoreSystem coreSystem = CoreSystem.getInstance();
-		GLDeferredRenderingEngine renderingengine = new GLDeferredRenderingEngine();
+		GLRenderingEngine renderingengine = new GLRenderingEngine();
 		Window window = new GLWindow();
 		
 		renderingengine.setGui(new GUI());

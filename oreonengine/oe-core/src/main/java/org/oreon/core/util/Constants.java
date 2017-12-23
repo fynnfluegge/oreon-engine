@@ -2,7 +2,6 @@ package org.oreon.core.util;
 
 import org.oreon.core.math.Quaternion;
 
-
 public class Constants {
 	
 	public static final long NANOSECOND = 1000000000;

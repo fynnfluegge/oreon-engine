@@ -7,6 +7,7 @@ import static org.lwjgl.glfw.GLFW.GLFW_OPENGL_PROFILE;
 import static org.lwjgl.glfw.GLFW.GLFW_RESIZABLE;
 import static org.lwjgl.glfw.GLFW.glfwCreateWindow;
 import static org.lwjgl.glfw.GLFW.glfwDestroyWindow;
+import static org.lwjgl.glfw.GLFW.glfwInit;
 import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowIcon;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowSize;
@@ -42,6 +43,8 @@ public class GLWindow extends Window{
 	
 	public void create()
 	{
+		glfwInit();
+		
 		glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);	
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);	
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);	

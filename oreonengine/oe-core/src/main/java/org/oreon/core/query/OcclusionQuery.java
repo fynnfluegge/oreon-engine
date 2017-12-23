@@ -1,4 +1,5 @@
 package org.oreon.core.query;
+
 import java.nio.IntBuffer;
 
 import org.oreon.core.light.Light;
