@@ -3,6 +3,7 @@ package org.oreon.demo.gl.oreonworlds;
 import org.oreon.core.gl.scene.GLCamera;
 import org.oreon.core.system.CoreEngine;
 import org.oreon.core.system.CoreSystem;
+import org.oreon.core.system.GLFWInput;
 import org.oreon.core.system.Window;
 import org.oreon.demo.gl.oreonworlds.assets.plants.Palm01ClusterGroup;
 import org.oreon.demo.gl.oreonworlds.assets.plants.Tree01ClusterGroup;
@@ -17,7 +18,6 @@ import org.oreon.modules.gl.atmosphere.SkySphere;
 import org.oreon.modules.gl.atmosphere.Sun;
 import org.oreon.modules.gl.terrain.GLTerrain;
 import org.oreon.system.gl.desktop.GLRenderEngine;
-import org.oreon.system.gl.desktop.GLFWInput;
 import org.oreon.system.gl.desktop.GLWindow;
 
 public class Main {
