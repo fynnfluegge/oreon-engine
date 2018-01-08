@@ -7,6 +7,7 @@ import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import static org.lwjgl.opengl.GL11.GL_RGBA;
 import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glTexImage2D;
+import static org.lwjgl.opengl.GL11.glViewport;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT0;
 import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT1;
@@ -41,7 +42,7 @@ import org.oreon.core.instancing.InstancingObjectHandler;
 import org.oreon.core.light.LightHandler;
 import org.oreon.core.math.Quaternion;
 import org.oreon.core.system.CoreSystem;
-import org.oreon.core.system.RenderingEngine;
+import org.oreon.core.system.RenderEngine;
 import org.oreon.core.system.Window;
 import org.oreon.core.texture.Texture;
 import org.oreon.core.util.BufferUtil;
@@ -58,7 +59,7 @@ import org.oreon.modules.gl.postprocessfilter.ssao.SSAO;
 import org.oreon.modules.gl.terrain.GLTerrain;
 import org.oreon.modules.gl.water.UnderWater;
 
-public class GLRenderingEngine implements RenderingEngine{
+public class GLRenderEngine implements RenderEngine{
 
 	private Window window;
 	private FullScreenQuad fullScreenQuad;
@@ -200,7 +201,9 @@ public class GLRenderingEngine implements RenderingEngine{
 		shadowMaps.getFBO().bind();
 		shadowMaps.getConfig().enable();
 		glClear(GL_DEPTH_BUFFER_BIT);
+		glViewport(0,0,Constants.PSSM_SHADOWMAP_RESOLUTION,Constants.PSSM_SHADOWMAP_RESOLUTION);
 		CoreSystem.getInstance().getScenegraph().renderShadows();
+		glViewport(0,0,CoreSystem.getInstance().getWindow().getWidth(), CoreSystem.getInstance().getWindow().getHeight());
 		shadowMaps.getConfig().disable();
 		shadowMaps.getFBO().unbind();
 		

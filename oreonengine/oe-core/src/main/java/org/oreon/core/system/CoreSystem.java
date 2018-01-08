@@ -2,6 +2,7 @@ package org.oreon.core.system;
 
 import org.oreon.core.scene.Scenegraph;
 
+
 public class CoreSystem {
 
 	private static CoreSystem instance = null;
@@ -9,8 +10,7 @@ public class CoreSystem {
 	private Window window;
 	private Input input;
 	private Scenegraph scenegraph;
-	
-	private RenderingEngine renderingEngine;
+	private RenderEngine renderingEngine;
 	
 	public static CoreSystem getInstance() 
 	{
@@ -56,11 +56,11 @@ public class CoreSystem {
 		this.scenegraph = scenegraph;
 	}
 
-	public RenderingEngine getRenderingEngine() {
+	public RenderEngine getRenderingEngine() {
 		return renderingEngine;
 	}
 
-	public void setRenderingEngine(RenderingEngine renderingEngine) {
+	public void setRenderingEngine(RenderEngine renderingEngine) {
 		this.renderingEngine = renderingEngine;
 	}
 }

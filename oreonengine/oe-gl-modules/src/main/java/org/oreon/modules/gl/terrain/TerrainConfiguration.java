@@ -44,10 +44,6 @@ public class TerrainConfiguration {
 	private Texture2D ambientmap;
 	private FloatBuffer heightmapDataBuffer;
 	private List<Material> materials = new ArrayList<>();
-//	private Material material0;
-//	private Material material1;
-//	private Material material2;
-//	private Material material3;
 	private List<Texture2D> splatmaps = new ArrayList<>();
 	private List<FractalMaps> fractals = new ArrayList<>();
 	
@@ -416,24 +412,6 @@ public class TerrainConfiguration {
 	public void setAmbientmap(Texture2D ambientmap) {
 		this.ambientmap = ambientmap;
 	}
-//	public Material getMaterial1() {
-//		return material1;
-//	}
-//	public void setMaterial1(Material material1) {
-//		this.material1 = material1;
-//	}
-//	public Material getMaterial2() {
-//		return material2;
-//	}
-//	public void setMaterial2(Material material2) {
-//		this.material2 = material2;
-//	}
-//	public Material getMaterial3() {
-//		return material3;
-//	}
-//	public void setMaterial3(Material material3) {
-//		this.material3 = material3;
-//	}
 
 	public List<FractalMaps> getFractals() {
 		return fractals;
@@ -475,14 +453,6 @@ public class TerrainConfiguration {
 	public int[] getLod_range() {
 		return lod_range;
 	}
-
-//	public Material getMaterial0() {
-//		return material0;
-//	}
-//
-//	public void setMaterial0(Material material0) {
-//		this.material0 = material0;
-//	}
 
 	public int getWaterReflectionShift() {
 		return waterReflectionShift;

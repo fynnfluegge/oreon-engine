@@ -1,10 +1,8 @@
  package org.oreon.core.scene;
 
-import static org.lwjgl.opengl.GL11.glViewport;
 
 import java.util.HashMap;
 
-import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.Constants;
 
 public class GameObject extends Node{
@@ -49,11 +47,9 @@ public class GameObject extends Node{
 	
 	public void renderShadows()
 	{
-		glViewport(0,0,Constants.PSSM_SHADOWMAP_RESOLUTION,Constants.PSSM_SHADOWMAP_RESOLUTION);
 		if (components.containsKey(Constants.SHADOW_RENDERER_COMPONENT)){
 			components.get(Constants.SHADOW_RENDERER_COMPONENT).render();
 		}
-		glViewport(0,0,CoreSystem.getInstance().getWindow().getWidth(), CoreSystem.getInstance().getWindow().getHeight());
 		
 		super.renderShadows();
 	}

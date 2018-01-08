@@ -10,5 +10,13 @@
 	<groupId>org.oreon.system</groupId>
 	<artifactId>oe-vk-system</artifactId>
 	<packaging>jar</packaging>
+	
+	<dependencies>
+		<dependency>
+			<groupId>org.oreon.core</groupId>
+			<artifactId>oe-core</artifactId>
+			<version>3.0.0</version>
+		</dependency>
+	</dependencies>
   
 </project>

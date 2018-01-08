@@ -4,7 +4,7 @@ import org.oreon.core.buffers.Framebuffer;
 import org.oreon.core.math.Quaternion;
 import org.oreon.core.texture.Texture;
 
-public interface RenderingEngine {
+public interface RenderEngine {
 
 	public void init();
 	public void render();
