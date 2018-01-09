@@ -46,7 +46,7 @@ public class Scenegraph extends Node{
 	}
 	
 	public void update(){
-		
+
 		rootObject.update();
 		terrain.update();
 		water.update();

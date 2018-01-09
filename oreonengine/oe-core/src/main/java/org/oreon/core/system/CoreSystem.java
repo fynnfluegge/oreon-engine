@@ -22,10 +22,12 @@ public class CoreSystem {
 	}
 	
 	private CoreSystem() {
+		
 		scenegraph = new Scenegraph();
 	}
 	
 	public void init(){
+		
 		window.create();
 		input.create(window.getId());
 		scenegraph.getCamera().init();
@@ -35,9 +37,9 @@ public class CoreSystem {
 	public void update(){
 		
 		input.update();
+		scenegraph.update();
 		scenegraph.getCamera().update();
 		renderingEngine.update();
-		scenegraph.update();	
 	}
 	
 	public void render(){

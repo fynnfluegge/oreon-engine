@@ -36,8 +36,9 @@ public class Main {
 		
 		coreSystem.setRenderingEngine(renderingengine);
 		coreSystem.setWindow(window);
-		coreSystem.setInput(new GLFWInput());
-		coreSystem.getScenegraph().setCamera(new GLCamera());
+		GLFWInput input = new GLFWInput();
+		coreSystem.setInput(input);
+		coreSystem.getScenegraph().setCamera(new GLCamera(input));
 
 		coreEngine.init(coreSystem);
 		

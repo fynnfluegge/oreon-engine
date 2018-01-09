@@ -17,18 +17,22 @@ import org.oreon.core.math.Matrix4f;
 import org.oreon.core.math.Vec3f;
 import org.oreon.core.scene.Camera;
 import org.oreon.core.system.CoreSystem;
+import org.oreon.core.system.GLFWInput;
 import org.oreon.core.util.BufferUtil;
 import org.oreon.core.util.Constants;
 
 public class GLCamera extends Camera{
 
+	private GLFWInput input;
 	private GLUBO ubo;
 	private FloatBuffer floatBuffer;
 	private final int bufferSize = Float.BYTES * (4+16+(6*4));
 	
-	public GLCamera() {
+	public GLCamera(GLFWInput input) {
 		
 		super();
+		
+		this.input = input;
 	}
 	
 	public void init(){
@@ -47,32 +51,32 @@ public class GLCamera extends Camera{
 		setCameraMoved(false);
 		setCameraRotated(false);
 		
-		setMovAmt(getMovAmt() + (0.04f * CoreSystem.getInstance().getInput().getScrollOffset()));
+		setMovAmt(getMovAmt() + (0.04f * input.getScrollOffset()));
 		setMovAmt(Math.max(0.02f, getMovAmt()));
 		
-		if(CoreSystem.getInstance().getInput().isKeyHolding(GLFW_KEY_W))
+		if(input.isKeyHolding(GLFW_KEY_W))
 			move(getForward(), getMovAmt());
-		if(CoreSystem.getInstance().getInput().isKeyHolding(GLFW_KEY_S))
+		if(input.isKeyHolding(GLFW_KEY_S))
 			move(getForward(), -getMovAmt());
-		if(CoreSystem.getInstance().getInput().isKeyHolding(GLFW_KEY_A))
+		if(input.isKeyHolding(GLFW_KEY_A))
 			move(getLeft(), getMovAmt());
-		if(CoreSystem.getInstance().getInput().isKeyHolding(GLFW_KEY_D))
+		if(input.isKeyHolding(GLFW_KEY_D))
 			move(getRight(), getMovAmt());
 				
-		if(CoreSystem.getInstance().getInput().isKeyHolding(GLFW_KEY_UP))
+		if(input.isKeyHolding(GLFW_KEY_UP))
 			rotateX(-getRotAmt()/8f);
-		if(CoreSystem.getInstance().getInput().isKeyHolding(GLFW_KEY_DOWN))
+		if(input.isKeyHolding(GLFW_KEY_DOWN))
 			rotateX(getRotAmt()/8f);
-		if(CoreSystem.getInstance().getInput().isKeyHolding(GLFW_KEY_LEFT))
+		if(input.isKeyHolding(GLFW_KEY_LEFT))
 			rotateY(-getRotAmt()/8f);
-		if(CoreSystem.getInstance().getInput().isKeyHolding(GLFW_KEY_RIGHT))
+		if(input.isKeyHolding(GLFW_KEY_RIGHT))
 			rotateY(getRotAmt()/8f);
 		
 		// free mouse rotation
-		if(CoreSystem.getInstance().getInput().isButtonHolding(2))
+		if(input.isButtonHolding(2))
 		{
-			float dy = CoreSystem.getInstance().getInput().getLockedCursorPosition().getY() - CoreSystem.getInstance().getInput().getCursorPosition().getY();
-			float dx = CoreSystem.getInstance().getInput().getLockedCursorPosition().getX() - CoreSystem.getInstance().getInput().getCursorPosition().getX();
+			float dy = input.getLockedCursorPosition().getY() - input.getCursorPosition().getY();
+			float dx = input.getLockedCursorPosition().getX() - input.getCursorPosition().getX();
 			
 			// y-axxis rotation
 			
@@ -152,8 +156,8 @@ public class GLCamera extends Camera{
 			}
 			
 			glfwSetCursorPos(CoreSystem.getInstance().getWindow().getId(),
-					CoreSystem.getInstance().getInput().getLockedCursorPosition().getX(),
-					CoreSystem.getInstance().getInput().getLockedCursorPosition().getY());
+					input.getLockedCursorPosition().getX(),
+					input.getLockedCursorPosition().getY());
 		}
 		
 		if (!getPosition().equals(getPreviousPosition())){
