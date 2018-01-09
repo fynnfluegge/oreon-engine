@@ -1,7 +1,5 @@
 package org.oreon.system.gl.desktop;
 
-import static org.lwjgl.glfw.GLFW.glfwSetErrorCallback;
-import static org.lwjgl.glfw.GLFW.glfwTerminate;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import static org.lwjgl.opengl.GL11.GL_RGBA;
@@ -17,7 +15,6 @@ import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
 import org.lwjgl.glfw.GLFW;
-import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL31;
 import org.lwjgl.opengl.GL40;
@@ -111,13 +108,8 @@ public class GLRenderEngine implements RenderEngine{
 	private boolean renderPostProcessingEffects = true;
 	private boolean renderSSAO = true;
 	
-	@SuppressWarnings("unused")
-	private GLFWErrorCallback errorCallback;
-	
 	@Override
 	public void init() {
-		
-		glfwSetErrorCallback(errorCallback = GLFWErrorCallback.createPrint(System.err));
 		
 		getDeviceProperties();
 		
@@ -449,17 +441,13 @@ public class GLRenderEngine implements RenderEngine{
 		gui.update();
 		contrastController.update();
 		
-		CoreSystem.getInstance().getScenegraph().update();	
-		
 		if (CoreSystem.getInstance().getScenegraph().terrainExists()){
 			TerrainPicking.getInstance().getTerrainPosition();
 		}
 	}
 	@Override
 	public void shutdown() {
-		CoreSystem.getInstance().getScenegraph().shutdown();
 		instancingObjectHandler.signalAll();
-		glfwTerminate();
 	}
 	@Override
 	public boolean isGrid() {

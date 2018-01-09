@@ -40,19 +40,14 @@ public class GLFWInput implements Input{
 	
 	private boolean pause = false;
 	
-	@SuppressWarnings("unused")
 	private GLFWKeyCallback keyCallback;
 	 
-	@SuppressWarnings("unused")
 	private GLFWCursorPosCallback cursorPosCallback;
 	
-	@SuppressWarnings("unused")
 	private GLFWMouseButtonCallback mouseButtonCallback;
 	
-	@SuppressWarnings("unused")
 	private GLFWScrollCallback scrollCallback;
 	
-	@SuppressWarnings("unused")
 	private GLFWFramebufferSizeCallback framebufferSizeCallback;
 	
 	public GLFWInput()
@@ -139,8 +134,16 @@ public class GLFWInput implements Input{
 		releasedKeys.clear();
 		pushedButtons.clear();
 		releasedButtons.clear();
-		
 		glfwPollEvents();
+	}
+	
+	@Override
+	public void shutdown() {
+		keyCallback.free();
+		cursorPosCallback.free();
+		mouseButtonCallback.free();
+		scrollCallback.free();
+		framebufferSizeCallback.free();
 	}
 	
 	public boolean isKeyPushed(int key)
@@ -225,4 +228,3 @@ public class GLFWInput implements Input{
 		return pushedButtons;
 	}
 }
-

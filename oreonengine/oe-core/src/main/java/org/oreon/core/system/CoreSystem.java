@@ -31,6 +31,27 @@ public class CoreSystem {
 		scenegraph.getCamera().init();
 		renderingEngine.init();
 	}
+	
+	public void update(){
+		
+		input.update();
+		scenegraph.getCamera().update();
+		renderingEngine.update();
+		scenegraph.update();	
+	}
+	
+	public void render(){
+		
+		renderingEngine.render();
+	}
+	
+	public void shutdown(){
+		
+		window.shutdown();
+		input.shutdown();
+		scenegraph.shutdown();
+		renderingEngine.shutdown();
+	}
 
 	public Window getWindow() {
 		return window;

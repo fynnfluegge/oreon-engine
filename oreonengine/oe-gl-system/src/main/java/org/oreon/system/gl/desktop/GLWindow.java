@@ -6,9 +6,11 @@ import static org.lwjgl.glfw.GLFW.GLFW_OPENGL_CORE_PROFILE;
 import static org.lwjgl.glfw.GLFW.GLFW_OPENGL_PROFILE;
 import static org.lwjgl.glfw.GLFW.GLFW_RESIZABLE;
 import static org.lwjgl.glfw.GLFW.glfwCreateWindow;
+import static org.lwjgl.glfw.GLFW.glfwTerminate;
 import static org.lwjgl.glfw.GLFW.glfwDestroyWindow;
 import static org.lwjgl.glfw.GLFW.glfwInit;
 import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
+import static org.lwjgl.glfw.GLFW.glfwSetErrorCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowIcon;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowSize;
 import static org.lwjgl.glfw.GLFW.glfwShowWindow;
@@ -32,18 +34,27 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.lwjgl.BufferUtils;
+import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.opengl.GL;
+import org.lwjgl.opengl.GLCapabilities;
 import org.oreon.core.gl.texture.ImageLoader;
 import org.oreon.core.system.Window;
 
 public class GLWindow extends Window{
 
+	private GLFWErrorCallback errorCallback;
+	
+	GLCapabilities capabilities;
+	
 	public GLWindow(){}
 	
 	public void create()
 	{
-		glfwInit();
+		glfwSetErrorCallback(errorCallback = GLFWErrorCallback.createPrint(System.err));
+		
+		if (!glfwInit())
+			throw new IllegalStateException("Unable to initialize GLFW");
 		
 		glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);	
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);	
@@ -68,7 +79,7 @@ public class GLWindow extends Window{
 		glfwSetWindowIcon(getId(), images);
 		
 		glfwMakeContextCurrent(getId());
-		GL.createCapabilities();
+		capabilities = GL.createCapabilities();
 		glfwShowWindow(getId());
 	}
 	
@@ -77,9 +88,12 @@ public class GLWindow extends Window{
 		glfwSwapBuffers(getId());
 	}
 	
-	public void dispose()
+	public void shutdown()
 	{
 		glfwDestroyWindow(getId());
+		glfwTerminate();
+		
+		errorCallback.free();
 	}
 	
 	public boolean isCloseRequested()

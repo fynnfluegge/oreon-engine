@@ -11,7 +11,7 @@ public abstract class Window {
 	
 	public abstract void draw();
 	
-	public abstract void dispose();
+	public abstract void shutdown();
 	
 	public abstract boolean isCloseRequested();
 

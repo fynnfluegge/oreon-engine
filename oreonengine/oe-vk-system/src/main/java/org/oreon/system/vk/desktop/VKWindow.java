@@ -19,7 +19,7 @@ public class VKWindow extends Window{
 	}
 
 	@Override
-	public void dispose() {
+	public void shutdown() {
 		// TODO Auto-generated method stub
 		
 	}

@@ -89,7 +89,7 @@ public class CoreEngine{
 			}		
 		}
 		
-		cleanUp();	
+		shutdown();	
 	}
 
 	private void stop()
@@ -102,21 +102,18 @@ public class CoreEngine{
 	
 	private void render()
 	{
-		coreSystem.getRenderingEngine().render();
+		coreSystem.render();
 	}
 	
 	private void update()
 	{
-		coreSystem.getInput().update();
-		CoreSystem.getInstance().getScenegraph().getCamera().update();
-		
-		coreSystem.getRenderingEngine().update();
+		coreSystem.update();
 	}
 	
-	private void cleanUp()
+	private void shutdown()
 	{
-		coreSystem.getWindow().dispose();
-		coreSystem.getRenderingEngine().shutdown();
+		coreSystem.shutdown();
+		
 	}
 	
 	public static float getFrameTime() {

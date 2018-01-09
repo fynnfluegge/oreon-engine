@@ -6,6 +6,8 @@ public interface Input {
 	
 	public void create(long windowId);
 	public void update();
+	public void shutdown();
+	
 	public boolean isKeyHolding(int key);
 	public boolean isKeyPushed(int key);
 	public boolean isButtonHolding(int key);
