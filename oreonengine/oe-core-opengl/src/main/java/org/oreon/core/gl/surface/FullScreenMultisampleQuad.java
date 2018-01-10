@@ -1,4 +1,4 @@
-package org.oreon.core.gl.scene;
+package org.oreon.core.gl.surface;
 
 import org.oreon.core.configs.RenderConfig;
 import org.oreon.core.gl.buffers.GLMeshVBO;

@@ -30,9 +30,9 @@ import org.oreon.core.gl.deferred.TransparencyLayer;
 import org.oreon.core.gl.deferred.TransparencyBlendRenderer;
 import org.oreon.core.gl.light.GLDirectionalLight;
 import org.oreon.core.gl.picking.TerrainPicking;
-import org.oreon.core.gl.scene.FullScreenMultisampleQuad;
-import org.oreon.core.gl.scene.FullScreenQuad;
 import org.oreon.core.gl.shadow.ParallelSplitShadowMaps;
+import org.oreon.core.gl.surface.FullScreenMultisampleQuad;
+import org.oreon.core.gl.surface.FullScreenQuad;
 import org.oreon.core.gl.texture.Texture2D;
 import org.oreon.core.gl.texture.Texture2DMultisample;
 import org.oreon.core.instancing.InstancingObjectHandler;
@@ -321,10 +321,8 @@ public class GLRenderEngine implements RenderEngine{
 		}
 		
 		gui.render();
-		
-		// draw into OpenGL window
-		window.draw();
 	}
+	
 	@Override
 	public void update() {
 		

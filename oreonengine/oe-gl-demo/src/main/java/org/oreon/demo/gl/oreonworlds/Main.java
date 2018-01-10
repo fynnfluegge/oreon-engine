@@ -26,17 +26,17 @@ public class Main {
 
 		CoreEngine coreEngine = new CoreEngine();
 		CoreSystem coreSystem = CoreSystem.getInstance();
-		GLRenderEngine renderingengine = new GLRenderEngine();
+		GLRenderEngine renderEngine = new GLRenderEngine();
 		Window window = new GLWindow();
+		GLFWInput input = new GLFWInput();
 		
-		renderingengine.setGui(new GUI());
+		renderEngine.setGui(new GUI());
 		window.setWidth(1280);
 		window.setHeight(720);
 		window.setTitle("OREON ENGINE oreonworlds 2.0");
 		
-		coreSystem.setRenderingEngine(renderingengine);
+		coreSystem.setRenderingEngine(renderEngine);
 		coreSystem.setWindow(window);
-		GLFWInput input = new GLFWInput();
 		coreSystem.setInput(input);
 		coreSystem.getScenegraph().setCamera(new GLCamera(input));
 

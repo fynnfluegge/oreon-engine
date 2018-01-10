@@ -1,9 +1,20 @@
 package org.oreon.core.scene;
 
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_A;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_D;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_DOWN;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_LEFT;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_RIGHT;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_S;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_UP;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_W;
+import static org.lwjgl.glfw.GLFW.glfwSetCursorPos;
+
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.math.Quaternion;
 import org.oreon.core.math.Vec3f;
 import org.oreon.core.system.CoreSystem;
+import org.oreon.core.system.Input;
 import org.oreon.core.util.Constants;
 import org.oreon.core.util.Util;
 
@@ -11,6 +22,7 @@ public abstract class Camera {
 	
 private final Vec3f yAxis = new Vec3f(0,1,0);
 	
+	private Input input;
 	private Vec3f position;
 	private Vec3f previousPosition;
 	private Vec3f forward;
@@ -66,7 +78,136 @@ private final Vec3f yAxis = new Vec3f(0,1,0);
 	
 	public abstract void init();
 	
-	public abstract void update();
+	public void update(){
+		
+		setPreviousPosition(new Vec3f(getPosition()));
+		setPreviousForward(new Vec3f(getForward()));
+		setCameraMoved(false);
+		setCameraRotated(false);
+		
+		setMovAmt(getMovAmt() + (0.04f * input.getScrollOffset()));
+		setMovAmt(Math.max(0.02f, getMovAmt()));
+		
+		if(input.isKeyHolding(GLFW_KEY_W))
+			move(getForward(), getMovAmt());
+		if(input.isKeyHolding(GLFW_KEY_S))
+			move(getForward(), -getMovAmt());
+		if(input.isKeyHolding(GLFW_KEY_A))
+			move(getLeft(), getMovAmt());
+		if(input.isKeyHolding(GLFW_KEY_D))
+			move(getRight(), getMovAmt());
+				
+		if(input.isKeyHolding(GLFW_KEY_UP))
+			rotateX(-getRotAmt()/8f);
+		if(input.isKeyHolding(GLFW_KEY_DOWN))
+			rotateX(getRotAmt()/8f);
+		if(input.isKeyHolding(GLFW_KEY_LEFT))
+			rotateY(-getRotAmt()/8f);
+		if(input.isKeyHolding(GLFW_KEY_RIGHT))
+			rotateY(getRotAmt()/8f);
+		
+		// free mouse rotation
+		if(input.isButtonHolding(2))
+		{
+			float dy = input.getLockedCursorPosition().getY() - input.getCursorPosition().getY();
+			float dx = input.getLockedCursorPosition().getX() - input.getCursorPosition().getX();
+			
+			// y-axxis rotation
+			
+			if (dy != 0){
+				setRotYamt(getRotYamt() - dy);
+				setRotYstride(Math.abs(getRotYamt() * 0.1f));
+			}
+			
+			if (getRotYamt() != 0 || getRotYstride() != 0){
+				
+				// up-rotation
+				if (getRotYamt() < 0){
+					setUpRotation(true);
+					setDownRotation(false);
+					rotateX(-getRotYstride() * getMouseSensitivity());
+					setRotYamt(getRotYamt() + getRotYstride());
+					if (getRotYamt() > 0)
+						setRotYamt(0);
+				}
+				// down-rotation
+				if (getRotYamt() > 0){
+					setUpRotation(false);
+					setDownRotation(true);
+					rotateX(getRotYstride() * getMouseSensitivity());
+					setRotYamt(getRotYamt() - getRotYstride());
+					if (getRotYamt() < 0)
+						setRotYamt(0);
+				}
+				// smooth-stop
+				if (getRotYamt() == 0){
+					setRotYstride(getRotYstride() * 0.95f);
+					if (isUpRotation())
+						rotateX(-getRotYstride() * getMouseSensitivity());
+					if (isDownRotation())
+						rotateX(getRotYstride() * getMouseSensitivity());
+					if (getRotYstride() < 0.001f)
+						setRotYstride(0);
+				}
+			}
+			
+			// x-axxis rotation
+			if (dx != 0){
+				setRotXamt(getRotXamt() + dx);
+				setRotXstride(Math.abs(getRotXamt() * 0.1f));
+			}
+			
+			if (getRotXamt() != 0 || getRotXstride() != 0){
+				
+				// right-rotation
+				if (getRotXamt() < 0){
+					setRightRotation(true);
+					setLeftRotation(false);
+					rotateY(getRotXstride() * getMouseSensitivity());
+					setRotXamt(getRotXamt() + getRotXstride());
+					if (getRotXamt() > 0)
+						setRotXamt(0);
+				}
+				// left-rotation
+				if (getRotXamt() > 0){
+					setRightRotation(false);
+					setLeftRotation(true);
+					rotateY(-getRotXstride() * getMouseSensitivity());
+					setRotXamt(getRotXamt() - getRotXstride());
+					if (getRotXamt() < 0)
+						setRotXamt(0);
+				}
+				// smooth-stop
+				if (getRotXamt() == 0){
+					setRotXstride(getRotXstride() * 0.95f);
+					if (isRightRotation())
+						rotateY(getRotXstride() * getMouseSensitivity());
+					if (isLeftRotation())
+						rotateY(-getRotXstride() * getMouseSensitivity());
+					if (getRotXstride() < 0.001f)
+						setRotXstride(0);
+				}
+			}
+			
+			glfwSetCursorPos(CoreSystem.getInstance().getWindow().getId(),
+					input.getLockedCursorPosition().getX(),
+					input.getLockedCursorPosition().getY());
+		}
+		
+		if (!getPosition().equals(getPreviousPosition())){
+			setCameraMoved(true);
+		}
+		
+		if (!getForward().equals(getPreviousForward())){
+			setCameraRotated(true);
+		}
+		
+		setPreviousViewMatrix(getViewMatrix());
+		setPreviousViewProjectionMatrix(getViewProjectionMatrix());
+		setViewMatrix(new Matrix4f().View(this.getForward(), this.getUp()).mul(
+				new Matrix4f().Translation(this.getPosition().mul(-1))));
+		setViewProjectionMatrix(getProjectionMatrix().mul(getViewMatrix()));
+	}
 	
 	public void move(Vec3f dir, float amount)
 	{
@@ -377,5 +518,13 @@ private final Vec3f yAxis = new Vec3f(0,1,0);
 
 	public void setRightRotation(boolean isRightRotation) {
 		this.isRightRotation = isRightRotation;
+	}
+
+	public Input getInput() {
+		return input;
+	}
+
+	public void setInput(Input input) {
+		this.input = input;
 	}
 }

@@ -1,5 +1,10 @@
 package org.oreon.core.system;
 
+import static org.lwjgl.glfw.GLFW.glfwInit;
+import static org.lwjgl.glfw.GLFW.glfwSetErrorCallback;
+import static org.lwjgl.glfw.GLFW.glfwTerminate;
+
+import org.lwjgl.glfw.GLFWErrorCallback;
 import org.oreon.core.scene.Scenegraph;
 
 
@@ -11,6 +16,8 @@ public class CoreSystem {
 	private Input input;
 	private Scenegraph scenegraph;
 	private RenderEngine renderingEngine;
+	
+	private GLFWErrorCallback errorCallback;
 	
 	public static CoreSystem getInstance() 
 	{
@@ -27,6 +34,11 @@ public class CoreSystem {
 	}
 	
 	public void init(){
+		
+		glfwSetErrorCallback(errorCallback = GLFWErrorCallback.createPrint(System.err));
+		
+		if (!glfwInit())
+			throw new IllegalStateException("Unable to initialize GLFW");
 		
 		window.create();
 		input.create(window.getId());
@@ -45,6 +57,7 @@ public class CoreSystem {
 	public void render(){
 		
 		renderingEngine.render();
+		window.draw();
 	}
 	
 	public void shutdown(){
@@ -53,6 +66,10 @@ public class CoreSystem {
 		input.shutdown();
 		scenegraph.shutdown();
 		renderingEngine.shutdown();
+		
+		errorCallback.free();
+		
+		glfwTerminate();
 	}
 
 	public Window getWindow() {
