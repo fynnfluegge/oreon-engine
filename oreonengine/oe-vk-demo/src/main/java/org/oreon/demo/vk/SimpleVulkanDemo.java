@@ -24,7 +24,7 @@ public class SimpleVulkanDemo {
 		coreSystem.setRenderingEngine(renderEngine);
 		coreSystem.setWindow(window);
 		coreSystem.setInput(input);
-		coreSystem.getScenegraph().setCamera(new VkCamera());
+		coreSystem.getScenegraph().setCamera(new VkCamera(input));
 
 		coreEngine.init(coreSystem);
 		
