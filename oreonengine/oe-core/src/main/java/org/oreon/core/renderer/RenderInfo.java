@@ -1,7 +1,6 @@
 package org.oreon.core.renderer;
 
 import org.oreon.core.configs.RenderConfig;
-import org.oreon.core.shaders.Shader;
 
 public class RenderInfo {
 	

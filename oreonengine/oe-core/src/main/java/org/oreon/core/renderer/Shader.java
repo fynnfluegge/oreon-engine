@@ -1,4 +1,4 @@
-package org.oreon.core.shaders;
+package org.oreon.core.renderer;
 
 import org.oreon.core.scene.GameObject;
 
