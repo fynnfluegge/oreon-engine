@@ -101,7 +101,7 @@ public class Palm01Cluster extends InstancingCluster{
 	{	
 		super.update();
 		
-		if (CoreSystem.getInstance().getRenderingEngine().isGrid()){
+		if (CoreSystem.getInstance().getRenderEngine().isGrid()){
 			for (Node child : getChildren()){
 				((Renderer) ((GameObject) child).getComponent("Renderer")).getRenderInfo().setShader(InstancingGridShader.getInstance());
 			}
@@ -132,8 +132,8 @@ public class Palm01Cluster extends InstancingCluster{
 	}
 	
 	public void render(){
-		if (!CoreSystem.getInstance().getRenderingEngine().isWaterReflection() && 
-					!CoreSystem.getInstance().getRenderingEngine().isWaterRefraction()){
+		if (!CoreSystem.getInstance().getRenderEngine().isWaterReflection() && 
+					!CoreSystem.getInstance().getRenderEngine().isWaterRefraction()){
 			super.render();
 		}
 	}

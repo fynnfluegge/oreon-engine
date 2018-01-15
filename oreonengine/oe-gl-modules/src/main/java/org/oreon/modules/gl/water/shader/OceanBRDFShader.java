@@ -102,7 +102,7 @@ public class OceanBRDFShader extends GLShader{
 		setUniform("sunlight.color", GLDirectionalLight.getInstance().getColor());
 		setUniform("sunlight.direction", GLDirectionalLight.getInstance().getDirection());	
 		
-		setUniformf("sightRangeFactor", CoreSystem.getInstance().getRenderingEngine().getSightRangeFactor());
+		setUniformf("sightRangeFactor", CoreSystem.getInstance().getRenderEngine().getSightRangeFactor());
 		
 		for (int i=0; i<6; i++)
 		{
@@ -125,7 +125,7 @@ public class OceanBRDFShader extends GLShader{
 		setUniformf("emission", ocean.getEmission());
 		setUniformf("shininess", ocean.getShininess());
 		setUniformf("motion", ocean.getMotion());
-		setUniformi("isCameraUnderWater", CoreSystem.getInstance().getRenderingEngine().isCameraUnderWater() ? 1 : 0);
+		setUniformi("isCameraUnderWater", CoreSystem.getInstance().getRenderEngine().isCameraUnderWater() ? 1 : 0);
 				
 		glActiveTexture(GL_TEXTURE0);
 		ocean.getDudv().bind();

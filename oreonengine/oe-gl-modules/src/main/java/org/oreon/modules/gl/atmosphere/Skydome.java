@@ -31,10 +31,10 @@ public class Skydome extends GameObject{
 	}
 	
 	public void render() {
-		if (CoreSystem.getInstance().getRenderingEngine().isWaterRefraction() && !CoreSystem.getInstance().getRenderingEngine().isCameraUnderWater()){
+		if (CoreSystem.getInstance().getRenderEngine().isWaterRefraction() && !CoreSystem.getInstance().getRenderEngine().isCameraUnderWater()){
 			return;
 		}
-		if (CoreSystem.getInstance().getRenderingEngine().isGrid()){
+		if (CoreSystem.getInstance().getRenderEngine().isGrid()){
 			return;
 		}
 		else {

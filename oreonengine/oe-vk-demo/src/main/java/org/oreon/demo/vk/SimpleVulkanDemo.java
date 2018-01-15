@@ -21,7 +21,7 @@ public class SimpleVulkanDemo {
 		window.setWidth(1280);
 		window.setHeight(720);
 		
-		coreSystem.setRenderingEngine(renderEngine);
+		coreSystem.setRenderEngine(renderEngine);
 		coreSystem.setWindow(window);
 		coreSystem.setInput(input);
 		coreSystem.getScenegraph().setCamera(new VkCamera(input));

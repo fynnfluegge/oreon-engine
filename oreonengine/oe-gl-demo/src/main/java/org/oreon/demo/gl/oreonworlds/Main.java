@@ -35,7 +35,7 @@ public class Main {
 		window.setHeight(720);
 		window.setTitle("OREON ENGINE oreonworlds 2.0");
 		
-		coreSystem.setRenderingEngine(renderEngine);
+		coreSystem.setRenderEngine(renderEngine);
 		coreSystem.setWindow(window);
 		coreSystem.setInput(input);
 		coreSystem.getScenegraph().setCamera(new GLCamera(input));

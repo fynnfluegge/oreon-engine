@@ -93,7 +93,7 @@ public class Bush01Cluster extends InstancingCluster{
 	{	
 		super.update();
 		
-		if (CoreSystem.getInstance().getRenderingEngine().isGrid()){
+		if (CoreSystem.getInstance().getRenderEngine().isGrid()){
 			for (Node child : getChildren()){
 				((Renderer) ((GameObject) child).getComponent("Renderer")).getRenderInfo().setShader(InstancingGridShader.getInstance());
 			}

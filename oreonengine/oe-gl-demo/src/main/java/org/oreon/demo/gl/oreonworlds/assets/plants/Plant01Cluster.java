@@ -87,7 +87,7 @@ public class Plant01Cluster extends InstancingCluster{
 	
 	public void update()
 	{	
-		if (CoreSystem.getInstance().getRenderingEngine().isGrid()){
+		if (CoreSystem.getInstance().getRenderEngine().isGrid()){
 			for (Node child : getChildren()){
 				((Renderer) ((GameObject) child).getComponent("Renderer")).getRenderInfo().setShader(InstancingGridShader.getInstance());
 				((Renderer) ((GameObject) child).getComponent("Renderer")).getRenderInfo().setShader(InstancingGridShader.getInstance());

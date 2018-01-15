@@ -99,7 +99,7 @@ public class Water extends GameObject{
 	public void update()
 	{
 		setCameraUnderwater(CoreSystem.getInstance().getScenegraph().getCamera().getPosition().getY() < (getWorldTransform().getTranslation().getY())); 
-		if (CoreSystem.getInstance().getRenderingEngine().isGrid())
+		if (CoreSystem.getInstance().getRenderEngine().isGrid())
 		{
 			((Renderer) getComponent("Renderer")).getRenderInfo().setShader(OceanGridShader.getInstance());
 		}
@@ -113,10 +113,10 @@ public class Water extends GameObject{
 	{
 		if (!isCameraUnderwater()){
 			glEnable(GL_CLIP_DISTANCE6);
-			CoreSystem.getInstance().getRenderingEngine().setCameraUnderWater(false);
+			CoreSystem.getInstance().getRenderEngine().setCameraUnderWater(false);
 		}
 		else {
-			CoreSystem.getInstance().getRenderingEngine().setCameraUnderWater(true);
+			CoreSystem.getInstance().getRenderEngine().setCameraUnderWater(true);
 		}
 			
 		distortion += getDistortionOffset();
@@ -124,7 +124,7 @@ public class Water extends GameObject{
 		
 		Scenegraph scenegraph = ((Scenegraph) getParent());
 		
-		CoreSystem.getInstance().getRenderingEngine().setClipplane(getClipplane());
+		CoreSystem.getInstance().getRenderEngine().setClipplane(getClipplane());
 			
 		//mirror scene to clipplane
 			
@@ -147,7 +147,7 @@ public class Water extends GameObject{
 
 		glViewport(0,0,CoreSystem.getInstance().getWindow().getWidth()/2, CoreSystem.getInstance().getWindow().getHeight()/2);
 		
-		CoreSystem.getInstance().getRenderingEngine().setWaterReflection(true);
+		CoreSystem.getInstance().getRenderEngine().setWaterReflection(true);
 		
 		reflectionRenderer.getFbo().bind();
 		config.clearScreenDeepOcean();
@@ -166,7 +166,7 @@ public class Water extends GameObject{
 		reflectionRenderer.getFbo().unbind();
 		reflectionRenderer.render();
 		
-		CoreSystem.getInstance().getRenderingEngine().setWaterReflection(false);
+		CoreSystem.getInstance().getRenderEngine().setWaterReflection(false);
 		
 		// antimirror scene to clipplane
 	
@@ -185,7 +185,7 @@ public class Water extends GameObject{
 		scenegraph.update();
 		
 		// render to refraction texture
-		CoreSystem.getInstance().getRenderingEngine().setWaterRefraction(true);
+		CoreSystem.getInstance().getRenderEngine().setWaterRefraction(true);
 		
 		refractionRenderer.getFbo().bind();
 		config.clearScreenDeepOcean();
@@ -200,22 +200,22 @@ public class Water extends GameObject{
 		refractionRenderer.getFbo().unbind();
 		refractionRenderer.render();
 		
-		CoreSystem.getInstance().getRenderingEngine().setWaterRefraction(false);
+		CoreSystem.getInstance().getRenderEngine().setWaterRefraction(false);
 		
 		glDisable(GL_CLIP_DISTANCE6);
-		CoreSystem.getInstance().getRenderingEngine().setClipplane(Constants.PLANE0);	
+		CoreSystem.getInstance().getRenderEngine().setClipplane(Constants.PLANE0);	
 	
 		glViewport(0,0,CoreSystem.getInstance().getWindow().getWidth(), CoreSystem.getInstance().getWindow().getHeight());
 		
 		fft.render();
 		normalmapRenderer.render(fft.getDy());
 		
-		CoreSystem.getInstance().getRenderingEngine().getDeferredFbo().bind();
+		CoreSystem.getInstance().getRenderEngine().getDeferredFbo().bind();
 		
 		getComponents().get("Renderer").render();
 		// glFinish() important, to prevent conflicts with following compute shaders
 		glFinish();
-		CoreSystem.getInstance().getRenderingEngine().getDeferredFbo().unbind();
+		CoreSystem.getInstance().getRenderEngine().getDeferredFbo().unbind();
 	}
 		
 	public void loadSettingsFile(String file)

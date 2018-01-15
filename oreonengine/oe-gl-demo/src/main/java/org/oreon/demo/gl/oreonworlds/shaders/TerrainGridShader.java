@@ -83,7 +83,7 @@ private static TerrainGridShader instance = null;
 	{	
 		bindUniformBlock("Camera", Constants.CameraUniformBlockBinding);
 		
-		setUniform("clipplane", CoreSystem.getInstance().getRenderingEngine().getClipplane());
+		setUniform("clipplane", CoreSystem.getInstance().getRenderEngine().getClipplane());
 		
 		TerrainConfiguration terrConfig = ((TerrainNode) object).getTerrConfig();
 		int lod = ((TerrainNode) object).getLod();

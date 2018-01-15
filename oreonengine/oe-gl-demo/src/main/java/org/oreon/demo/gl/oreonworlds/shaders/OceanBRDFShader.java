@@ -117,7 +117,7 @@ public class OceanBRDFShader extends GLShader{
 		setUniformf("emission", ocean.getEmission());
 		setUniformf("specular", ocean.getShininess());
 		setUniformf("motion", ocean.getMotion());
-		setUniformi("isCameraUnderWater", CoreSystem.getInstance().getRenderingEngine().isCameraUnderWater() ? 1 : 0);
+		setUniformi("isCameraUnderWater", CoreSystem.getInstance().getRenderEngine().isCameraUnderWater() ? 1 : 0);
 				
 		glActiveTexture(GL_TEXTURE0);
 		ocean.getDudv().bind();

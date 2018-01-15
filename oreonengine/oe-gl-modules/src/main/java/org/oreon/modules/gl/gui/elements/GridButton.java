@@ -23,7 +23,7 @@ public class GridButton extends Button{
 	@Override
 	public void onClickActionPerformed()
 	{
-		CoreSystem.getInstance().getRenderingEngine().setGrid(!CoreSystem.getInstance().getRenderingEngine().isGrid());
+		CoreSystem.getInstance().getRenderEngine().setGrid(!CoreSystem.getInstance().getRenderEngine().isGrid());
 	}
 
 }

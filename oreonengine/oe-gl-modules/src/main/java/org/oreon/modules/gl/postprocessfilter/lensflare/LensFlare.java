@@ -122,7 +122,7 @@ public class LensFlare {
 	
 	public void render(){
 		
-		if (CoreSystem.getInstance().getRenderingEngine().isGrid())
+		if (CoreSystem.getInstance().getRenderEngine().isGrid())
 			return;
 		
 		for (Light light : LightHandler.getLights()){

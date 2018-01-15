@@ -103,9 +103,9 @@ public class TerrainShader extends GLShader{
 	{	
 		bindUniformBlock("Camera", Constants.CameraUniformBlockBinding);
 		
-		setUniform("clipplane", CoreSystem.getInstance().getRenderingEngine().getClipplane());
-		setUniformi("isRefraction", CoreSystem.getInstance().getRenderingEngine().isWaterRefraction() ? 1 : 0);
-		setUniformi("isCameraUnderWater", CoreSystem.getInstance().getRenderingEngine().isCameraUnderWater() ? 1 : 0);		
+		setUniform("clipplane", CoreSystem.getInstance().getRenderEngine().getClipplane());
+		setUniformi("isRefraction", CoreSystem.getInstance().getRenderEngine().isWaterRefraction() ? 1 : 0);
+		setUniformi("isCameraUnderWater", CoreSystem.getInstance().getRenderEngine().isCameraUnderWater() ? 1 : 0);		
 		
 		TerrainConfiguration terrConfig = ((TerrainNode) object).getTerrConfig();
 		int lod = ((TerrainNode) object).getLod();
@@ -155,7 +155,7 @@ public class TerrainShader extends GLShader{
 		setUniform("location", location);
 		setUniformi("waterReflectionShift", terrConfig.getWaterReflectionShift());
 		
-		UnderWater underwater = (UnderWater) CoreSystem.getInstance().getRenderingEngine().getUnderwater();
+		UnderWater underwater = (UnderWater) CoreSystem.getInstance().getRenderEngine().getUnderwater();
 		
 		glActiveTexture(GL_TEXTURE2);
 		underwater.getCausticsMap().bind();

@@ -72,13 +72,13 @@ public class RockHighPolyShader extends GLShader{
 		((InstancingCluster) object.getParent()).getModelMatricesBuffer().bindBufferBase(1);
 		bindUniformBlock("modelMatrices", 1);
 		
-		setUniformi("isReflection", CoreSystem.getInstance().getRenderingEngine().isWaterReflection() ? 1 : 0);
-		setUniformi("isRefraction", CoreSystem.getInstance().getRenderingEngine().isWaterRefraction() ? 1 : 0);
+		setUniformi("isReflection", CoreSystem.getInstance().getRenderEngine().isWaterReflection() ? 1 : 0);
+		setUniformi("isRefraction", CoreSystem.getInstance().getRenderEngine().isWaterRefraction() ? 1 : 0);
 		setUniform("scalingMatrix", new Matrix4f().Scaling(object.getWorldTransform().getScaling()));
-		setUniform("clipplane", CoreSystem.getInstance().getRenderingEngine().getClipplane());
+		setUniform("clipplane", CoreSystem.getInstance().getRenderEngine().getClipplane());
 		
 		
-		setUniformi("isCameraUnderWater", CoreSystem.getInstance().getRenderingEngine().isCameraUnderWater() ? 1 : 0);
+		setUniformi("isCameraUnderWater", CoreSystem.getInstance().getRenderEngine().isCameraUnderWater() ? 1 : 0);
 		
 		Material material = (Material) object.getComponent("Material");
 
@@ -93,7 +93,7 @@ public class RockHighPolyShader extends GLShader{
 		setUniformf("material.shininess", material.getShininess());
 		setUniformf("material.emission", material.getEmission());
 		
-		UnderWater underwater = (UnderWater) CoreSystem.getInstance().getRenderingEngine().getUnderwater();
+		UnderWater underwater = (UnderWater) CoreSystem.getInstance().getRenderEngine().getUnderwater();
 		
 		glActiveTexture(GL_TEXTURE2);
 		underwater.getCausticsMap().bind();

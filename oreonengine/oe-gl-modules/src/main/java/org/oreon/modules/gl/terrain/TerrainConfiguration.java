@@ -208,7 +208,7 @@ public class TerrainConfiguration {
 					}
 					if(tokens[0].equals("sightRangeFactor")){
 						sightRangeFactor = Float.valueOf(tokens[1]);
-						CoreSystem.getInstance().getRenderingEngine().setSightRangeFactor(sightRangeFactor);
+						CoreSystem.getInstance().getRenderEngine().setSightRangeFactor(sightRangeFactor);
 					}
 					if(tokens[0].equals("bezier")){
 						setBezier(Integer.valueOf(tokens[1]));

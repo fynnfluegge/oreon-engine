@@ -36,9 +36,9 @@ public class TerrainNode extends GameObject{
 		Renderer renderer = new Renderer(buffer);
 		renderer.setRenderInfo(new RenderInfo(new Default(),terrConfig.getShader()));
 		
-		if (CoreSystem.getInstance().getRenderingEngine().isGrid())
+		if (CoreSystem.getInstance().getRenderEngine().isGrid())
 			renderer.getRenderInfo().setShader(terrConfig.getGridShader());
-		else if (!CoreSystem.getInstance().getRenderingEngine().isGrid())
+		else if (!CoreSystem.getInstance().getRenderEngine().isGrid())
 			renderer.getRenderInfo().setShader(terrConfig.getShader());
 		
 		addComponent(Constants.RENDERER_COMPONENT, renderer);
@@ -63,9 +63,9 @@ public class TerrainNode extends GameObject{
 	
 	public void update()
 	{
-		if (CoreSystem.getInstance().getRenderingEngine().isGrid())
+		if (CoreSystem.getInstance().getRenderEngine().isGrid())
 			((Renderer) getComponents().get(Constants.RENDERER_COMPONENT)).getRenderInfo().setShader(terrConfig.getGridShader());
-		else if (!CoreSystem.getInstance().getRenderingEngine().isGrid())
+		else if (!CoreSystem.getInstance().getRenderEngine().isGrid())
 			((Renderer) getComponents().get(Constants.RENDERER_COMPONENT)).getRenderInfo().setShader(terrConfig.getShader());
 		
 		getWorldTransform().setScaling(getWorldTransform().getLocalScaling());

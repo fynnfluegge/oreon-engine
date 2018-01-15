@@ -15,7 +15,7 @@ public class CoreSystem {
 	private Window window;
 	private Input input;
 	private Scenegraph scenegraph;
-	private RenderEngine renderingEngine;
+	private RenderEngine renderEngine;
 	
 	private GLFWErrorCallback errorCallback;
 	
@@ -43,7 +43,7 @@ public class CoreSystem {
 		window.create();
 		input.create(window.getId());
 		scenegraph.getCamera().init();
-		renderingEngine.init();
+		renderEngine.init();
 	}
 	
 	public void update(){
@@ -51,12 +51,12 @@ public class CoreSystem {
 		input.update();
 		scenegraph.update();
 		scenegraph.getCamera().update();
-		renderingEngine.update();
+		renderEngine.update();
 	}
 	
 	public void render(){
 		
-		renderingEngine.render();
+		renderEngine.render();
 		window.draw();
 	}
 	
@@ -65,7 +65,7 @@ public class CoreSystem {
 		window.shutdown();
 		input.shutdown();
 		scenegraph.shutdown();
-		renderingEngine.shutdown();
+		renderEngine.shutdown();
 		
 		errorCallback.free();
 		
@@ -96,11 +96,11 @@ public class CoreSystem {
 		this.scenegraph = scenegraph;
 	}
 
-	public RenderEngine getRenderingEngine() {
-		return renderingEngine;
+	public RenderEngine getRenderEngine() {
+		return renderEngine;
 	}
 
-	public void setRenderingEngine(RenderEngine renderingEngine) {
-		this.renderingEngine = renderingEngine;
+	public void setRenderEngine(RenderEngine renderingEngine) {
+		this.renderEngine = renderingEngine;
 	}
 }
