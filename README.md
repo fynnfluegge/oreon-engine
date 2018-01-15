@@ -1,7 +1,7 @@
 ![Banner](docs/_images/Banner.png)
-# Oreon Engine OpenGL/Java
-Welcome to the Cross-Platform 3D OpenGL Engine.
-As OpenGL Binding for Java the [LWJGL 3](https://www.lwjgl.org/) API is used.
+# Oreon Engine (Java - OpenGL/Vulkan)
+Welcome to the Cross-Platform 3D Engine.
+As OpenGL and Vulkan Binding for Java the [LWJGL 3](https://www.lwjgl.org/) API is used.
 
 Documentation: http://oreonengine.github.io/oreon-engine
 
