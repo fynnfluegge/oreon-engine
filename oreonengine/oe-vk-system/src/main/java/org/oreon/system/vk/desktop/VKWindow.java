@@ -27,6 +27,8 @@ public class VKWindow extends Window{
 		    throw new RuntimeException("Failed to create window");
 		}
         
+        setIcon("textures/logo/oreon_lwjgl_icon32.png");
+        
         glfwShowWindow(getId());
 	}
 

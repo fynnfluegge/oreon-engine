@@ -17,6 +17,11 @@
 			<artifactId>oe-core</artifactId>
 			<version>3.0.0</version>
 		</dependency>
+		<dependency>
+			<groupId>org.oreon.core</groupId>
+			<artifactId>oe-core-vulkan</artifactId>
+			<version>3.0.0</version>
+		</dependency>
 	</dependencies>
   
 </project>

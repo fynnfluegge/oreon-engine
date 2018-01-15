@@ -1,5 +1,12 @@
 package org.oreon.core.system;
 
+import static org.lwjgl.glfw.GLFW.glfwSetWindowIcon;
+
+import java.nio.ByteBuffer;
+
+import org.lwjgl.glfw.GLFWImage;
+import org.oreon.core.util.ResourceLoader;
+
 public abstract class Window {
 	
 	private long id;
@@ -16,6 +23,20 @@ public abstract class Window {
 	public abstract boolean isCloseRequested();
 
 	public abstract void resize(int x, int y);
+	
+	public void setIcon(String path){
+		
+		ByteBuffer bufferedImage = ResourceLoader.loadImageToByteBuffer(path);
+		
+		GLFWImage image = GLFWImage.malloc();
+		
+		image.set(32, 32, bufferedImage);
+		
+		GLFWImage.Buffer images = GLFWImage.malloc(1);
+        images.put(0, image);
+		
+		glfwSetWindowIcon(getId(), images);
+	}
 	
 	public int getWidth()
 	{

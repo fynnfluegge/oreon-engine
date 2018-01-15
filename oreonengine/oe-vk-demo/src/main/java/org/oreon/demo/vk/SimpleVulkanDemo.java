@@ -4,9 +4,9 @@ import org.oreon.core.system.CoreEngine;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.system.GLFWInput;
 import org.oreon.core.system.Window;
-import org.oreon.core.vk.scene.VkCamera;
+import org.oreon.core.vk.scene.VKCamera;
 import org.oreon.system.vk.desktop.VKWindow;
-import org.oreon.system.vk.desktop.VkRenderEngine;
+import org.oreon.system.vk.desktop.VKRenderEngine;
 
 public class SimpleVulkanDemo {
 	
@@ -14,7 +14,7 @@ public class SimpleVulkanDemo {
 
 		CoreEngine coreEngine = new CoreEngine();
 		CoreSystem coreSystem = CoreSystem.getInstance();
-		VkRenderEngine renderEngine = new VkRenderEngine();
+		VKRenderEngine renderEngine = new VKRenderEngine();
 		Window window = new VKWindow();
 		GLFWInput input = new GLFWInput();
 		
@@ -24,7 +24,7 @@ public class SimpleVulkanDemo {
 		coreSystem.setRenderEngine(renderEngine);
 		coreSystem.setWindow(window);
 		coreSystem.setInput(input);
-		coreSystem.getScenegraph().setCamera(new VkCamera(input));
+		coreSystem.getScenegraph().setCamera(new VKCamera(input));
 
 		coreEngine.init(coreSystem);
 		
