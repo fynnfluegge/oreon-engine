@@ -24,6 +24,8 @@ import static org.lwjgl.vulkan.KHRSwapchain.VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
 import static org.lwjgl.vulkan.KHRSwapchain.vkCreateSwapchainKHR;
 import static org.lwjgl.vulkan.KHRSwapchain.vkDestroySwapchainKHR;
 import static org.lwjgl.vulkan.KHRSwapchain.vkGetSwapchainImagesKHR;
+import static org.lwjgl.vulkan.KHRSwapchain.vkAcquireNextImageKHR;
+import static org.lwjgl.vulkan.KHRSwapchain.vkQueuePresentKHR;
 import static org.lwjgl.vulkan.KHRSurface.vkGetPhysicalDeviceSurfaceSupportKHR;
 import static org.lwjgl.vulkan.KHRSurface.vkGetPhysicalDeviceSurfaceFormatsKHR;
 import static org.lwjgl.vulkan.KHRSurface.vkGetPhysicalDeviceSurfaceCapabilitiesKHR;
@@ -139,6 +141,7 @@ import static org.lwjgl.vulkan.VK10.vkCmdBindPipeline;
 import static org.lwjgl.vulkan.VK10.vkCmdBindVertexBuffers;
 import static org.lwjgl.vulkan.VK10.vkCmdDraw;
 import static org.lwjgl.vulkan.VK10.vkCmdEndRenderPass;
+import static org.lwjgl.vulkan.VK10.vkCreateSemaphore;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -210,6 +213,27 @@ import org.oreon.core.vk.util.VKUtil;
 public class VKRenderEngine implements RenderEngine{
 	
 	private VkInstance vkInstance;
+	private VkDevice device;
+	private VkPhysicalDevice physicalDevice;
+	private VkQueue queue;
+	private VkSubmitInfo submitInfo;
+	private DeviceAndGraphicsQueueFamily deviceAndGraphicsQueueFamily;
+	private IntBuffer pImageIndex;
+	private PointerBuffer pCommandBuffers;
+	private SwapchainRecreator swapchainRecreator;
+	private LongBuffer pSwapchains;
+	
+	private VkPresentInfoKHR presentInfo;
+	
+	private int currentBuffer;
+	private final long UINT64_MAX = 0xFFFFFFFFFFFFFFFFL;
+	
+	private VkDebugReportCallbackEXT debugCallback;
+	private long debugCallbackHandle;
+	
+	private VkSemaphoreCreateInfo semaphoreCreateInfo;
+	private LongBuffer pImageAcquiredSemaphore;
+	private LongBuffer pRenderCompleteSemaphore;
 	
 	/*
      * All resources that must be reallocated on window resize.
@@ -298,7 +322,7 @@ public class VKRenderEngine implements RenderEngine{
 	@Override
 	public void init() {
 		
-		 if (!glfwVulkanSupported()) {
+		if (!glfwVulkanSupported()) {
 	            throw new AssertionError("GLFW failed to find the Vulkan loader");
 	        }
 		
@@ -315,13 +339,13 @@ public class VKRenderEngine implements RenderEngine{
                 return 0;
             }
         };
-        long debugCallbackHandle = setupDebugging(vkInstance, VK_DEBUG_REPORT_ERROR_BIT_EXT | VK_DEBUG_REPORT_WARNING_BIT_EXT, debugCallback);
+        debugCallbackHandle = setupDebugging(vkInstance, VK_DEBUG_REPORT_ERROR_BIT_EXT | VK_DEBUG_REPORT_WARNING_BIT_EXT, debugCallback);
         
-        final VkPhysicalDevice physicalDevice = getFirstPhysicalDevice(vkInstance);
-        final DeviceAndGraphicsQueueFamily deviceAndGraphicsQueueFamily = createDeviceAndGetGraphicsQueueFamily(physicalDevice);
-        final VkDevice device = deviceAndGraphicsQueueFamily.device;
+        physicalDevice = getFirstPhysicalDevice(vkInstance);
+        deviceAndGraphicsQueueFamily = createDeviceAndGetGraphicsQueueFamily(physicalDevice);
+        device = deviceAndGraphicsQueueFamily.device;
         int queueFamilyIndex = deviceAndGraphicsQueueFamily.queueFamilyIndex;
-        final VkPhysicalDeviceMemoryProperties memoryProperties = deviceAndGraphicsQueueFamily.memoryProperties;
+        VkPhysicalDeviceMemoryProperties memoryProperties = deviceAndGraphicsQueueFamily.memoryProperties;
 	
 		LongBuffer pSurface = memAllocLong(1);
 	    int err = glfwCreateWindowSurface(vkInstance, CoreSystem.getInstance().getWindow().getId(), null, pSurface);
@@ -335,29 +359,30 @@ public class VKRenderEngine implements RenderEngine{
 	    long commandPool = createCommandPool(device, queueFamilyIndex);
 	    VkCommandBuffer setupCommandBuffer = createCommandBuffer(device, commandPool);
 	    VkCommandBuffer postPresentCommandBuffer = createCommandBuffer(device, commandPool);
-	    VkQueue queue = createDeviceQueue(device, queueFamilyIndex);
+	    queue = createDeviceQueue(device, queueFamilyIndex);
 	    long renderPass = createRenderPass(device, colorFormatAndSpace.colorFormat);
 	    long renderCommandPool = createCommandPool(device, queueFamilyIndex);
 	    Vertices vertices = createVertices(memoryProperties, device);
 	    long pipeline = createPipeline(device, renderPass, vertices.createInfo);
 	    
-	    SwapchainRecreator swapchainRecreator = new SwapchainRecreator();
+	    swapchainRecreator = new SwapchainRecreator();
 	    
-	    IntBuffer pImageIndex = memAllocInt(1);
-        int currentBuffer = 0;
-        PointerBuffer pCommandBuffers = memAllocPointer(1);
-        LongBuffer pSwapchains = memAllocLong(1);
-        LongBuffer pImageAcquiredSemaphore = memAllocLong(1);
-        LongBuffer pRenderCompleteSemaphore = memAllocLong(1);
+	    pImageIndex = memAllocInt(1);
+        currentBuffer = 0;
+        pCommandBuffers = memAllocPointer(1);
+        pSwapchains = memAllocLong(1);
+        pImageAcquiredSemaphore = memAllocLong(1);
+        pRenderCompleteSemaphore = memAllocLong(1);
         
-        VkSemaphoreCreateInfo semaphoreCreateInfo = VkSemaphoreCreateInfo.calloc()
+        semaphoreCreateInfo = VkSemaphoreCreateInfo.calloc()
                 .sType(VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO)
                 .pNext(0)
                 .flags(0);
         
         IntBuffer pWaitDstStageMask = memAllocInt(1);
         pWaitDstStageMask.put(0, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT);
-        VkSubmitInfo submitInfo = VkSubmitInfo.calloc()
+        
+        submitInfo = VkSubmitInfo.calloc()
                 .sType(VK_STRUCTURE_TYPE_SUBMIT_INFO)
                 .pNext(0)
                 .waitSemaphoreCount(pImageAcquiredSemaphore.remaining())
@@ -366,7 +391,7 @@ public class VKRenderEngine implements RenderEngine{
                 .pCommandBuffers(pCommandBuffers)
                 .pSignalSemaphores(pRenderCompleteSemaphore);
         
-        VkPresentInfoKHR presentInfo = VkPresentInfoKHR.calloc()
+        presentInfo = VkPresentInfoKHR.calloc()
                 .sType(VK_STRUCTURE_TYPE_PRESENT_INFO_KHR)
                 .pNext(0)
                 .pWaitSemaphores(pRenderCompleteSemaphore)
@@ -374,12 +399,69 @@ public class VKRenderEngine implements RenderEngine{
                 .pSwapchains(pSwapchains)
                 .pImageIndices(pImageIndex)
                 .pResults(null);
+        
+        if (swapchainRecreator.mustRecreate)
+            swapchainRecreator.recreate(setupCommandBuffer,
+            							device,
+            							physicalDevice,
+            							surface,
+            							colorFormatAndSpace,
+            							queue,
+            							renderPass,
+            		        			renderCommandPool,
+            		        			pipeline,
+            		        			vertices);
 	}
     
 
 	@Override
 	public void render() {
-		// TODO Auto-generated method stub
+		
+		// Create a semaphore to wait for the swapchain to acquire the next image
+        int err = vkCreateSemaphore(device, semaphoreCreateInfo, null, pImageAcquiredSemaphore);
+        if (err != VK_SUCCESS) {
+            throw new AssertionError("Failed to create image acquired semaphore: " + VKUtil.translateVulkanResult(err));
+        }
+        
+        // Create a semaphore to wait for the render to complete, before presenting
+        err = vkCreateSemaphore(device, semaphoreCreateInfo, null, pRenderCompleteSemaphore);
+        if (err != VK_SUCCESS) {
+            throw new AssertionError("Failed to create render complete semaphore: " + VKUtil.translateVulkanResult(err));
+        }
+        
+        // Get next image from the swap chain (back/front buffer).
+        // This will setup the imageAquiredSemaphore to be signalled when the operation is complete
+        err = vkAcquireNextImageKHR(device, swapchain.swapchainHandle, UINT64_MAX, pImageAcquiredSemaphore.get(0), VK_NULL_HANDLE, pImageIndex);
+        currentBuffer = pImageIndex.get(0);
+        if (err != VK_SUCCESS) {
+            throw new AssertionError("Failed to acquire next swapchain image: " + VKUtil.translateVulkanResult(err));
+        }
+        
+        // Select the command buffer for the current framebuffer image/attachment
+        pCommandBuffers.put(0, renderCommandBuffers[currentBuffer]);
+
+        // Submit to the graphics queue
+        err = vkQueueSubmit(queue, submitInfo, VK_NULL_HANDLE);
+        if (err != VK_SUCCESS) {
+            throw new AssertionError("Failed to submit render queue: " + VKUtil.translateVulkanResult(err));
+        }
+
+        // Present the current buffer to the swap chain
+        // This will display the image
+        pSwapchains.put(0, swapchain.swapchainHandle);
+        err = vkQueuePresentKHR(queue, presentInfo);
+        if (err != VK_SUCCESS) {
+            throw new AssertionError("Failed to present the swapchain image: " + VKUtil.translateVulkanResult(err));
+        }
+        
+        // Create and submit post present barrier
+        vkQueueWaitIdle(queue);
+
+        // Destroy this semaphore (we will create a new one in the next frame)
+//        vkDestroySemaphore(device, pImageAcquiredSemaphore.get(0), null);
+//        vkDestroySemaphore(device, pRenderCompleteSemaphore.get(0), null);
+//        submitPostPresentBarrier(swapchain.images[currentBuffer], postPresentCommandBuffer, queue);
+
 	}
 
 	@Override
