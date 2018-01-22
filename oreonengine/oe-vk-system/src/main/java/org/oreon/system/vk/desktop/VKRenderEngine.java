@@ -12,6 +12,7 @@ import static org.lwjgl.system.MemoryUtil.memAllocLong;
 import static org.lwjgl.system.MemoryUtil.memAlloc;
 import static org.lwjgl.system.MemoryUtil.memCopy;
 import static org.lwjgl.system.MemoryUtil.memAddress;
+import static org.lwjgl.system.MemoryUtil.NULL;
 import static org.lwjgl.vulkan.EXTDebugReport.VK_EXT_DEBUG_REPORT_EXTENSION_NAME;
 import static org.lwjgl.vulkan.EXTDebugReport.VK_DEBUG_REPORT_ERROR_BIT_EXT;
 import static org.lwjgl.vulkan.EXTDebugReport.VK_DEBUG_REPORT_WARNING_BIT_EXT;
@@ -142,12 +143,17 @@ import static org.lwjgl.vulkan.VK10.vkCmdBindVertexBuffers;
 import static org.lwjgl.vulkan.VK10.vkCmdDraw;
 import static org.lwjgl.vulkan.VK10.vkCmdEndRenderPass;
 import static org.lwjgl.vulkan.VK10.vkCreateSemaphore;
+import static org.lwjgl.vulkan.VK10.vkEnumerateInstanceExtensionProperties;
+import static org.lwjgl.vulkan.VK10.vkEnumerateInstanceLayerProperties;
 
 import java.io.IOException;
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.LongBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.vulkan.VkApplicationInfo;
@@ -202,6 +208,8 @@ import org.lwjgl.vulkan.VkSwapchainCreateInfoKHR;
 import org.lwjgl.vulkan.VkVertexInputAttributeDescription;
 import org.lwjgl.vulkan.VkVertexInputBindingDescription;
 import org.lwjgl.vulkan.VkViewport;
+import org.lwjgl.vulkan.VkExtensionProperties;
+import org.lwjgl.vulkan.VkLayerProperties;
 import org.oreon.core.buffers.Framebuffer;
 import org.oreon.core.math.Quaternion;
 import org.oreon.core.system.CoreSystem;
@@ -213,8 +221,9 @@ import org.oreon.core.vk.util.VKUtil;
 public class VKRenderEngine implements RenderEngine{
 	
 	private VkInstance vkInstance;
-	private VkDevice device;
 	private VkPhysicalDevice physicalDevice;
+	
+	private VkDevice device;
 	private VkQueue queue;
 	private VkSubmitInfo submitInfo;
 	private DeviceAndGraphicsQueueFamily deviceAndGraphicsQueueFamily;
@@ -247,7 +256,7 @@ public class VKRenderEngine implements RenderEngine{
 	            	memUTF8("VK_LAYER_LUNARG_standard_validation"),
 				};
 	 
-	private final boolean validation = Boolean.parseBoolean(System.getProperty("vulkan.validation", "false"));
+	private final boolean validation = Boolean.parseBoolean(System.getProperty("vulkan.validation", "true"));
 	
 	private class DeviceAndGraphicsQueueFamily {
         VkDevice device;
@@ -331,7 +340,7 @@ public class VKRenderEngine implements RenderEngine{
             throw new AssertionError("Failed to find list of required Vulkan extensions");
         }
         
-        vkInstance = createInstance(requiredExtensions); 
+        vkInstance = createVkInstance(requiredExtensions); 
         
         VkDebugReportCallbackEXT debugCallback = new VkDebugReportCallbackEXT() {
             public int invoke(int flags, int objectType, long object, long location, int messageCode, long pLayerPrefix, long pMessage, long pUserData) {
@@ -342,7 +351,9 @@ public class VKRenderEngine implements RenderEngine{
         debugCallbackHandle = setupDebugging(vkInstance, VK_DEBUG_REPORT_ERROR_BIT_EXT | VK_DEBUG_REPORT_WARNING_BIT_EXT, debugCallback);
         
         physicalDevice = getFirstPhysicalDevice(vkInstance);
+        
         deviceAndGraphicsQueueFamily = createDeviceAndGetGraphicsQueueFamily(physicalDevice);
+        
         device = deviceAndGraphicsQueueFamily.device;
         int queueFamilyIndex = deviceAndGraphicsQueueFamily.queueFamilyIndex;
         VkPhysicalDeviceMemoryProperties memoryProperties = deviceAndGraphicsQueueFamily.memoryProperties;
@@ -417,50 +428,50 @@ public class VKRenderEngine implements RenderEngine{
 	@Override
 	public void render() {
 		
-		// Create a semaphore to wait for the swapchain to acquire the next image
-        int err = vkCreateSemaphore(device, semaphoreCreateInfo, null, pImageAcquiredSemaphore);
-        if (err != VK_SUCCESS) {
-            throw new AssertionError("Failed to create image acquired semaphore: " + VKUtil.translateVulkanResult(err));
-        }
-        
-        // Create a semaphore to wait for the render to complete, before presenting
-        err = vkCreateSemaphore(device, semaphoreCreateInfo, null, pRenderCompleteSemaphore);
-        if (err != VK_SUCCESS) {
-            throw new AssertionError("Failed to create render complete semaphore: " + VKUtil.translateVulkanResult(err));
-        }
-        
-        // Get next image from the swap chain (back/front buffer).
-        // This will setup the imageAquiredSemaphore to be signalled when the operation is complete
-        err = vkAcquireNextImageKHR(device, swapchain.swapchainHandle, UINT64_MAX, pImageAcquiredSemaphore.get(0), VK_NULL_HANDLE, pImageIndex);
-        currentBuffer = pImageIndex.get(0);
-        if (err != VK_SUCCESS) {
-            throw new AssertionError("Failed to acquire next swapchain image: " + VKUtil.translateVulkanResult(err));
-        }
-        
-        // Select the command buffer for the current framebuffer image/attachment
-        pCommandBuffers.put(0, renderCommandBuffers[currentBuffer]);
-
-        // Submit to the graphics queue
-        err = vkQueueSubmit(queue, submitInfo, VK_NULL_HANDLE);
-        if (err != VK_SUCCESS) {
-            throw new AssertionError("Failed to submit render queue: " + VKUtil.translateVulkanResult(err));
-        }
-
-        // Present the current buffer to the swap chain
-        // This will display the image
-        pSwapchains.put(0, swapchain.swapchainHandle);
-        err = vkQueuePresentKHR(queue, presentInfo);
-        if (err != VK_SUCCESS) {
-            throw new AssertionError("Failed to present the swapchain image: " + VKUtil.translateVulkanResult(err));
-        }
-        
-        // Create and submit post present barrier
-        vkQueueWaitIdle(queue);
-
-        // Destroy this semaphore (we will create a new one in the next frame)
-//        vkDestroySemaphore(device, pImageAcquiredSemaphore.get(0), null);
-//        vkDestroySemaphore(device, pRenderCompleteSemaphore.get(0), null);
-//        submitPostPresentBarrier(swapchain.images[currentBuffer], postPresentCommandBuffer, queue);
+//		// Create a semaphore to wait for the swapchain to acquire the next image
+//        int err = vkCreateSemaphore(device, semaphoreCreateInfo, null, pImageAcquiredSemaphore);
+//        if (err != VK_SUCCESS) {
+//            throw new AssertionError("Failed to create image acquired semaphore: " + VKUtil.translateVulkanResult(err));
+//        }
+//        
+//        // Create a semaphore to wait for the render to complete, before presenting
+//        err = vkCreateSemaphore(device, semaphoreCreateInfo, null, pRenderCompleteSemaphore);
+//        if (err != VK_SUCCESS) {
+//            throw new AssertionError("Failed to create render complete semaphore: " + VKUtil.translateVulkanResult(err));
+//        }
+//        
+//        // Get next image from the swap chain (back/front buffer).
+//        // This will setup the imageAquiredSemaphore to be signalled when the operation is complete
+//        err = vkAcquireNextImageKHR(device, swapchain.swapchainHandle, UINT64_MAX, pImageAcquiredSemaphore.get(0), VK_NULL_HANDLE, pImageIndex);
+//        currentBuffer = pImageIndex.get(0);
+//        if (err != VK_SUCCESS) {
+//            throw new AssertionError("Failed to acquire next swapchain image: " + VKUtil.translateVulkanResult(err));
+//        }
+//        
+//        // Select the command buffer for the current framebuffer image/attachment
+//        pCommandBuffers.put(0, renderCommandBuffers[currentBuffer]);
+//
+//        // Submit to the graphics queue
+//        err = vkQueueSubmit(queue, submitInfo, VK_NULL_HANDLE);
+//        if (err != VK_SUCCESS) {
+//            throw new AssertionError("Failed to submit render queue: " + VKUtil.translateVulkanResult(err));
+//        }
+//
+//        // Present the current buffer to the swap chain
+//        // This will display the image
+//        pSwapchains.put(0, swapchain.swapchainHandle);
+//        err = vkQueuePresentKHR(queue, presentInfo);
+//        if (err != VK_SUCCESS) {
+//            throw new AssertionError("Failed to present the swapchain image: " + VKUtil.translateVulkanResult(err));
+//        }
+//        
+//        // Create and submit post present barrier
+//        vkQueueWaitIdle(queue);
+//
+//        // Destroy this semaphore (we will create a new one in the next frame)
+////        vkDestroySemaphore(device, pImageAcquiredSemaphore.get(0), null);
+////        vkDestroySemaphore(device, pRenderCompleteSemaphore.get(0), null);
+////        submitPostPresentBarrier(swapchain.images[currentBuffer], postPresentCommandBuffer, queue);
 
 	}
 
@@ -476,21 +487,31 @@ public class VKRenderEngine implements RenderEngine{
 		
 	}
 	
-	private VkInstance createInstance(PointerBuffer requiredExtensions) {
+	private VkInstance createVkInstance(PointerBuffer requiredExtensions) {
+		
         VkApplicationInfo appInfo = VkApplicationInfo.calloc()
                 .sType(VK_STRUCTURE_TYPE_APPLICATION_INFO)
                 .pApplicationName(memUTF8("GLFW Vulkan Demo"))
                 .pEngineName(memUTF8(""))
                 .apiVersion(VK_MAKE_VERSION(1, 0, 2));
+        
         PointerBuffer ppEnabledExtensionNames = memAllocPointer(requiredExtensions.remaining() + 1);
         ppEnabledExtensionNames.put(requiredExtensions);
+        
         ByteBuffer VK_EXT_DEBUG_REPORT_EXTENSION = memUTF8(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
+        
         ppEnabledExtensionNames.put(VK_EXT_DEBUG_REPORT_EXTENSION);
         ppEnabledExtensionNames.flip();
+        
+        checkExtensionSupport(ppEnabledExtensionNames);
+        
         PointerBuffer ppEnabledLayerNames = memAllocPointer(layers.length);
         for (int i = 0; validation && i < layers.length; i++)
             ppEnabledLayerNames.put(layers[i]);
         ppEnabledLayerNames.flip();
+        
+        checkValidationLayerSupport(ppEnabledLayerNames);
+        
         VkInstanceCreateInfo pCreateInfo = VkInstanceCreateInfo.calloc()
                 .sType(VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO)
                 .pNext(0)
@@ -500,63 +521,150 @@ public class VKRenderEngine implements RenderEngine{
         PointerBuffer pInstance = memAllocPointer(1);
         int err = vkCreateInstance(pCreateInfo, null, pInstance);
         long instance = pInstance.get(0);
-        memFree(pInstance);
+    
         if (err != VK_SUCCESS) {
             throw new AssertionError("Failed to create VkInstance: " + VKUtil.translateVulkanResult(err));
         }
         VkInstance ret = new VkInstance(instance, pCreateInfo);
+        
         pCreateInfo.free();
+        memFree(pInstance);
         memFree(ppEnabledLayerNames);
         memFree(VK_EXT_DEBUG_REPORT_EXTENSION);
         memFree(ppEnabledExtensionNames);
         memFree(appInfo.pApplicationName());
         memFree(appInfo.pEngineName());
         appInfo.free();
+        
         return ret;
     }
 	
+	public void checkExtensionSupport(PointerBuffer ppEnabledExtensionNames){
+		
+		IntBuffer extensionCount = memAllocInt(1);
+		
+		int err = vkEnumerateInstanceExtensionProperties("", extensionCount, null);
+		if (err != VK_SUCCESS) {
+            throw new AssertionError(VKUtil.translateVulkanResult(err));
+        }
+		
+		VkExtensionProperties.Buffer extensions = VkExtensionProperties.calloc(extensionCount.get(0));
+				
+		err = vkEnumerateInstanceExtensionProperties("", extensionCount, extensions);
+		if (err != VK_SUCCESS) {
+            throw new AssertionError(VKUtil.translateVulkanResult(err));
+        }
+		
+		List<String> availableExtensions = new ArrayList<>();
+		for (VkExtensionProperties extension : extensions){
+			availableExtensions.add(extension.extensionNameString());
+		}
+		
+		for (int i=0; i<ppEnabledExtensionNames.limit(); i++){
+			if (!availableExtensions.contains(ppEnabledExtensionNames.getStringUTF8())){
+				throw new AssertionError("Extension " + ppEnabledExtensionNames.getStringUTF8() + " not supported");
+			}
+		}
+		
+		ppEnabledExtensionNames.flip();
+		
+		memFree(extensionCount);
+		extensions.free();
+	}
+	
+	public void checkValidationLayerSupport(PointerBuffer ppEnabledLayerNames){
+		
+		IntBuffer layerCount = memAllocInt(1);
+		
+		int err = vkEnumerateInstanceLayerProperties(layerCount, null);
+		if (err != VK_SUCCESS) {
+            throw new AssertionError(VKUtil.translateVulkanResult(err));
+        }
+		
+		VkLayerProperties.Buffer layers = VkLayerProperties.calloc(layerCount.get(0));
+		
+		err = vkEnumerateInstanceLayerProperties(layerCount, layers);
+		if (err != VK_SUCCESS) {
+            throw new AssertionError(VKUtil.translateVulkanResult(err));
+        }
+		
+		List<String> availableLayers = new ArrayList<>();
+		for (VkLayerProperties layer : layers){
+			availableLayers.add(layer.layerNameString());
+		}
+		
+		for (int i=0; i<ppEnabledLayerNames.limit(); i++){
+			if (!availableLayers.contains(ppEnabledLayerNames.getStringUTF8())){
+				throw new AssertionError("Extension " + ppEnabledLayerNames.getStringUTF8() + " not supported");
+			}
+		}
+
+		ppEnabledLayerNames.flip();
+		
+		memFree(layerCount);
+		layers.free();
+	}
+	
+	private VkPhysicalDevice getFirstPhysicalDevice(VkInstance instance) {
+		
+        IntBuffer pPhysicalDeviceCount = memAllocInt(1);
+        int err = vkEnumeratePhysicalDevices(instance, pPhysicalDeviceCount, null);
+        if (err != VK_SUCCESS) {
+            throw new AssertionError("Failed to get number of physical devices: " + VKUtil.translateVulkanResult(err));
+        }
+        
+        System.out.println("Available Physical Devices: " + pPhysicalDeviceCount.get(0));
+        
+        PointerBuffer pPhysicalDevices = memAllocPointer(pPhysicalDeviceCount.get(0));
+        err = vkEnumeratePhysicalDevices(instance, pPhysicalDeviceCount, pPhysicalDevices);
+        long physicalDevice = pPhysicalDevices.get(0);
+       
+        if (err != VK_SUCCESS) {
+            throw new AssertionError("Failed to get physical devices: " + VKUtil.translateVulkanResult(err));
+        }
+        
+        memFree(pPhysicalDeviceCount);
+        memFree(pPhysicalDevices);
+        
+        return new VkPhysicalDevice(physicalDevice, instance);
+    }
+	
+	public void getPhysicalDeviceFeatures(){
+		
+		
+	}
+	
 	private long setupDebugging(VkInstance instance, int flags, VkDebugReportCallbackEXT callback) {
+		
         VkDebugReportCallbackCreateInfoEXT dbgCreateInfo = VkDebugReportCallbackCreateInfoEXT.calloc()
                 .sType(VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT)
                 .pNext(0)
                 .pfnCallback(callback)
                 .pUserData(0)
                 .flags(flags);
+        
         LongBuffer pCallback = memAllocLong(1);
         int err = vkCreateDebugReportCallbackEXT(instance, dbgCreateInfo, null, pCallback);
         long callbackHandle = pCallback.get(0);
-        memFree(pCallback);
-        dbgCreateInfo.free();
+        
         if (err != VK_SUCCESS) {
             throw new AssertionError("Failed to create VkInstance: " + VKUtil.translateVulkanResult(err));
         }
+        
+        memFree(pCallback);
+        dbgCreateInfo.free();
+        
         return callbackHandle;
     }
 	
-	private VkPhysicalDevice getFirstPhysicalDevice(VkInstance instance) {
-        IntBuffer pPhysicalDeviceCount = memAllocInt(1);
-        int err = vkEnumeratePhysicalDevices(instance, pPhysicalDeviceCount, null);
-        if (err != VK_SUCCESS) {
-            throw new AssertionError("Failed to get number of physical devices: " + VKUtil.translateVulkanResult(err));
-        }
-        PointerBuffer pPhysicalDevices = memAllocPointer(pPhysicalDeviceCount.get(0));
-        err = vkEnumeratePhysicalDevices(instance, pPhysicalDeviceCount, pPhysicalDevices);
-        long physicalDevice = pPhysicalDevices.get(0);
-        memFree(pPhysicalDeviceCount);
-        memFree(pPhysicalDevices);
-        if (err != VK_SUCCESS) {
-            throw new AssertionError("Failed to get physical devices: " + VKUtil.translateVulkanResult(err));
-        }
-        return new VkPhysicalDevice(physicalDevice, instance);
-    }
-	
 	private DeviceAndGraphicsQueueFamily createDeviceAndGetGraphicsQueueFamily(VkPhysicalDevice physicalDevice) {
+		
         IntBuffer pQueueFamilyPropertyCount = memAllocInt(1);
         vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, pQueueFamilyPropertyCount, null);
         int queueCount = pQueueFamilyPropertyCount.get(0);
         VkQueueFamilyProperties.Buffer queueProps = VkQueueFamilyProperties.calloc(queueCount);
         vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, pQueueFamilyPropertyCount, queueProps);
-        memFree(pQueueFamilyPropertyCount);
+        
         int graphicsQueueFamilyIndex;
         for (graphicsQueueFamilyIndex = 0; graphicsQueueFamilyIndex < queueCount; graphicsQueueFamilyIndex++) {
             if ((queueProps.get(graphicsQueueFamilyIndex).queueFlags() & VK_QUEUE_GRAPHICS_BIT) != 0)
@@ -589,7 +697,7 @@ public class VKRenderEngine implements RenderEngine{
         PointerBuffer pDevice = memAllocPointer(1);
         int err = vkCreateDevice(physicalDevice, deviceCreateInfo, null, pDevice);
         long device = pDevice.get(0);
-        memFree(pDevice);
+       
         if (err != VK_SUCCESS) {
             throw new AssertionError("Failed to create device: " + VKUtil.translateVulkanResult(err));
         }
@@ -603,6 +711,8 @@ public class VKRenderEngine implements RenderEngine{
         ret.memoryProperties = memoryProperties;
 
         deviceCreateInfo.free();
+        memFree(pQueueFamilyPropertyCount);
+        memFree(pDevice);
         memFree(ppEnabledLayerNames);
         memFree(VK_KHR_SWAPCHAIN_EXTENSION);
         memFree(extensions);
