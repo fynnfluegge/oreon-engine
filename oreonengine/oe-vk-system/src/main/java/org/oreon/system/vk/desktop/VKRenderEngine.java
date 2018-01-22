@@ -107,6 +107,7 @@ import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
 import static org.lwjgl.vulkan.VK10.VK_SUBPASS_CONTENTS_INLINE;
 import static org.lwjgl.vulkan.VK10.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+import static org.lwjgl.vulkan.VK10.VK_NULL_HANDLE;
 import static org.lwjgl.vulkan.VK10.vkCreateInstance;
 import static org.lwjgl.vulkan.VK10.vkEnumeratePhysicalDevices;
 import static org.lwjgl.vulkan.VK10.vkGetPhysicalDeviceQueueFamilyProperties;
@@ -145,6 +146,8 @@ import static org.lwjgl.vulkan.VK10.vkCmdEndRenderPass;
 import static org.lwjgl.vulkan.VK10.vkCreateSemaphore;
 import static org.lwjgl.vulkan.VK10.vkEnumerateInstanceExtensionProperties;
 import static org.lwjgl.vulkan.VK10.vkEnumerateInstanceLayerProperties;
+import static org.lwjgl.vulkan.VK10.vkGetPhysicalDeviceProperties;
+import static org.lwjgl.vulkan.VK10.vkGetPhysicalDeviceFeatures;
 
 import java.io.IOException;
 import java.nio.Buffer;
@@ -210,6 +213,8 @@ import org.lwjgl.vulkan.VkVertexInputBindingDescription;
 import org.lwjgl.vulkan.VkViewport;
 import org.lwjgl.vulkan.VkExtensionProperties;
 import org.lwjgl.vulkan.VkLayerProperties;
+import org.lwjgl.vulkan.VkPhysicalDeviceProperties;
+import org.lwjgl.vulkan.VkPhysicalDeviceFeatures;
 import org.oreon.core.buffers.Framebuffer;
 import org.oreon.core.math.Quaternion;
 import org.oreon.core.system.CoreSystem;
@@ -351,6 +356,10 @@ public class VKRenderEngine implements RenderEngine{
         debugCallbackHandle = setupDebugging(vkInstance, VK_DEBUG_REPORT_ERROR_BIT_EXT | VK_DEBUG_REPORT_WARNING_BIT_EXT, debugCallback);
         
         physicalDevice = getFirstPhysicalDevice(vkInstance);
+        
+        getPhysicalDeviceProperties(physicalDevice);
+        
+        getPhysicalDeviceFeatures(physicalDevice);
         
         deviceAndGraphicsQueueFamily = createDeviceAndGetGraphicsQueueFamily(physicalDevice);
         
@@ -629,9 +638,17 @@ public class VKRenderEngine implements RenderEngine{
         return new VkPhysicalDevice(physicalDevice, instance);
     }
 	
-	public void getPhysicalDeviceFeatures(){
+	public void getPhysicalDeviceProperties(VkPhysicalDevice physicalDevice){
 		
+		VkPhysicalDeviceProperties properties = VkPhysicalDeviceProperties.create();
+		vkGetPhysicalDeviceProperties(physicalDevice, properties);
+		System.out.println("Physical Device: " + properties.deviceNameString());
+	}
+	
+	public void getPhysicalDeviceFeatures(VkPhysicalDevice physicalDevice){
 		
+		VkPhysicalDeviceFeatures features = VkPhysicalDeviceFeatures.create();
+		vkGetPhysicalDeviceFeatures(physicalDevice, features);
 	}
 	
 	private long setupDebugging(VkInstance instance, int flags, VkDebugReportCallbackEXT callback) {
@@ -662,6 +679,9 @@ public class VKRenderEngine implements RenderEngine{
         IntBuffer pQueueFamilyPropertyCount = memAllocInt(1);
         vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, pQueueFamilyPropertyCount, null);
         int queueCount = pQueueFamilyPropertyCount.get(0);
+        
+        System.out.println("Queue Families: " +  queueCount);
+        
         VkQueueFamilyProperties.Buffer queueProps = VkQueueFamilyProperties.calloc(queueCount);
         vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, pQueueFamilyPropertyCount, queueProps);
         
