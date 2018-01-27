@@ -46,7 +46,9 @@ public class GLTerrain extends Terrain{
 				getLock().unlock();
 			}
 			
-			updateQuadtree();
+			if (CoreSystem.getInstance().getScenegraph().getCamera().isCameraMoved()){
+				updateQuadtree();
+			}
 		}
 	}
 	
@@ -65,11 +67,12 @@ public class GLTerrain extends Terrain{
 	
 	@Override
 	public void render() {
-		// render only high poly terrain
+		// render high poly terrain (first child)
 		getChildren().get(0).render();
 	}
 	
 	public void renderLowPoly() {
+		// render low poly terrain (second child)
 		getChildren().get(1).render();
 	}
 	
