@@ -234,6 +234,7 @@ public class VKRenderEngine implements RenderEngine{
 	private VkInstance vkInstance;
 	private VkPhysicalDevice physicalDevice;
 	private VkDevice device;
+	
 	private VkQueue queue;
 	private DeviceAndGraphicsQueueFamily deviceAndGraphicsQueueFamily;
 	private long surface;
@@ -360,6 +361,7 @@ public class VKRenderEngine implements RenderEngine{
                 return 0;
             }
         };
+        
         debugCallbackHandle = setupDebugging(vkInstance, VK_DEBUG_REPORT_ERROR_BIT_EXT | VK_DEBUG_REPORT_WARNING_BIT_EXT, debugCallback);
         
         physicalDevice = getFirstPhysicalDevice(vkInstance);
@@ -376,6 +378,8 @@ public class VKRenderEngine implements RenderEngine{
 	        throw new AssertionError("Failed to create surface: " + VKUtil.translateVulkanResult(err));
 	    }
         
+	    // BREAKPOINT
+	    
         deviceAndGraphicsQueueFamily = createDeviceAndGetGraphicsQueueFamily(physicalDevice);
         
         device = deviceAndGraphicsQueueFamily.device;

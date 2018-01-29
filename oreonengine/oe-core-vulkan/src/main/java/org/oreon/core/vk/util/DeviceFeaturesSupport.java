@@ -91,7 +91,6 @@ public class DeviceFeaturesSupport {
 		
 		VkPhysicalDeviceProperties properties = VkPhysicalDeviceProperties.create();
 		vkGetPhysicalDeviceProperties(physicalDevice, properties);
-		System.out.println("Physical Device: " + properties.deviceNameString());
 	}
 	
 	public void checkPhysicalDeviceFeatures(VkPhysicalDevice physicalDevice){
