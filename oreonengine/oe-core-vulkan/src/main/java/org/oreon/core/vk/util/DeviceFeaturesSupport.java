@@ -2,11 +2,13 @@ package org.oreon.core.vk.util;
 
 import static org.lwjgl.system.MemoryUtil.memAllocInt;
 import static org.lwjgl.system.MemoryUtil.memFree;
+import static org.lwjgl.vulkan.VK10.VK_QUEUE_GRAPHICS_BIT;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import static org.lwjgl.vulkan.VK10.vkEnumerateInstanceExtensionProperties;
 import static org.lwjgl.vulkan.VK10.vkEnumerateInstanceLayerProperties;
 import static org.lwjgl.vulkan.VK10.vkGetPhysicalDeviceFeatures;
 import static org.lwjgl.vulkan.VK10.vkGetPhysicalDeviceProperties;
+import static org.lwjgl.vulkan.VK10.vkGetPhysicalDeviceQueueFamilyProperties;
 
 import java.nio.IntBuffer;
 import java.util.ArrayList;
@@ -18,6 +20,7 @@ import org.lwjgl.vulkan.VkLayerProperties;
 import org.lwjgl.vulkan.VkPhysicalDevice;
 import org.lwjgl.vulkan.VkPhysicalDeviceFeatures;
 import org.lwjgl.vulkan.VkPhysicalDeviceProperties;
+import org.lwjgl.vulkan.VkQueueFamilyProperties;
 
 public class DeviceFeaturesSupport {
 
@@ -87,13 +90,13 @@ public class DeviceFeaturesSupport {
 		layers.free();
 	}
 	
-	public void checkPhysicalDeviceProperties(VkPhysicalDevice physicalDevice){
+	public static void checkPhysicalDeviceProperties(VkPhysicalDevice physicalDevice){
 		
 		VkPhysicalDeviceProperties properties = VkPhysicalDeviceProperties.create();
 		vkGetPhysicalDeviceProperties(physicalDevice, properties);
 	}
 	
-	public void checkPhysicalDeviceFeatures(VkPhysicalDevice physicalDevice){
+	public static void checkPhysicalDeviceFeatures(VkPhysicalDevice physicalDevice){
 		
 		VkPhysicalDeviceFeatures features = VkPhysicalDeviceFeatures.create();
 		vkGetPhysicalDeviceFeatures(physicalDevice, features);
