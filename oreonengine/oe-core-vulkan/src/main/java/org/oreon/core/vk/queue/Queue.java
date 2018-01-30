@@ -1,38 +1,51 @@
-package org.oreon.core.vk.pipeline;
+package org.oreon.core.vk.queue;
 
-import static org.lwjgl.system.MemoryUtil.memAllocFloat;
 import static org.lwjgl.system.MemoryUtil.memAllocInt;
 import static org.lwjgl.system.MemoryUtil.memFree;
 import static org.lwjgl.vulkan.VK10.vkGetPhysicalDeviceQueueFamilyProperties;
+import static org.lwjgl.vulkan.VK10.VK_QUEUE_GRAPHICS_BIT;
+import static org.lwjgl.vulkan.VK10.VK_QUEUE_COMPUTE_BIT;
+import static org.lwjgl.vulkan.VK10.VK_QUEUE_TRANSFER_BIT;
+import static org.lwjgl.vulkan.VK10.VK_QUEUE_SPARSE_BINDING_BIT;
 
-import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
 import org.lwjgl.vulkan.VkPhysicalDevice;
 import org.lwjgl.vulkan.VkQueue;
 import org.lwjgl.vulkan.VkQueueFamilyProperties;
-import org.oreon.core.vk.util.VKUtil;
 
 public class Queue {
 	
-	private int familyIndex;
-	private int count;
+	private QueueFamily family;
 	private VkQueue vkQueueHandle;
 
-	public void createGraphicsQueue(){
-		
+	public Queue() {
+		// TODO Auto-generated constructor stub
 	}
 	
-	public void createComputeQueue(){
+	public void createQueue(){
 		
+		
+	} 
+	
+	public int getGraphicsQueueIndex(VkPhysicalDevice physicalDevice){
+		
+		return findQueueFamiliyIndex(physicalDevice, VK_QUEUE_GRAPHICS_BIT);
 	}
 	
-	public void createTransferQueue(){
+	public int getComputeQueueIndex(VkPhysicalDevice physicalDevice){
 		
+		return findQueueFamiliyIndex(physicalDevice, VK_QUEUE_COMPUTE_BIT);
 	}
 	
-	public void createSparseBindingQueue(){
+	public int getTransferQueueIndex(VkPhysicalDevice physicalDevice){
 		
+		return findQueueFamiliyIndex(physicalDevice, VK_QUEUE_TRANSFER_BIT);
+	}
+	
+	public int getSparseBindingQueueIndex(VkPhysicalDevice physicalDevice){
+		
+		return findQueueFamiliyIndex(physicalDevice, VK_QUEUE_SPARSE_BINDING_BIT);
 	}
 	
 	public int findQueueFamiliyIndex(VkPhysicalDevice physicalDevice, int queueFlag){
@@ -62,14 +75,6 @@ public class Queue {
         
         return graphicsQueueFamilyIndex;
 	}
-	
-	public int getFamilyIndex() {
-		return familyIndex;
-	}
-
-	public void setFamilyIndex(int familyIndex) {
-		this.familyIndex = familyIndex;
-	}
 
 	public VkQueue getVkQueueHandle() {
 		return vkQueueHandle;
@@ -79,12 +84,12 @@ public class Queue {
 		this.vkQueueHandle = vkQueueHandle;
 	}
 
-	public int getCount() {
-		return count;
+	public QueueFamily getFamily() {
+		return family;
 	}
 
-	public void setCount(int count) {
-		this.count = count;
+	public void setFamily(QueueFamily family) {
+		this.family = family;
 	}
 
 }

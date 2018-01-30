@@ -227,14 +227,20 @@ import org.oreon.core.system.CoreSystem;
 import org.oreon.core.system.RenderEngine;
 import org.oreon.core.texture.Texture;
 import org.oreon.core.util.ResourceLoader;
+import org.oreon.core.vk.queue.QueueFamily;
+import org.oreon.core.vk.util.DeviceFeaturesSupport;
 import org.oreon.core.vk.util.VKUtil;
 
 public class VKRenderEngine implements RenderEngine{
 	
 	private VkInstance vkInstance;
 	private VkPhysicalDevice physicalDevice;
-	private VkDevice device;
 	
+	private List<QueueFamily> availableQueueFamilies; 
+	
+	// BREALPOINT
+	
+	private VkDevice device;
 	private VkQueue queue;
 	private DeviceAndGraphicsQueueFamily deviceAndGraphicsQueueFamily;
 	private long surface;
@@ -269,7 +275,7 @@ public class VKRenderEngine implements RenderEngine{
 	            	memUTF8("VK_LAYER_LUNARG_standard_validation"),
 				};
 	 
-	private final boolean validation = Boolean.parseBoolean(System.getProperty("vulkan.validation", "true"));
+	private final boolean validation = Boolean.parseBoolean(System.getProperty("vulkan.validation", "false"));
 	
 	private class DeviceAndGraphicsQueueFamily {
         VkDevice device;
@@ -366,9 +372,9 @@ public class VKRenderEngine implements RenderEngine{
         
         physicalDevice = getFirstPhysicalDevice(vkInstance);
         
-        getPhysicalDeviceProperties(physicalDevice);
+        DeviceFeaturesSupport.checkPhysicalDeviceProperties(physicalDevice);
         
-        getPhysicalDeviceFeatures(physicalDevice);
+        DeviceFeaturesSupport.checkPhysicalDeviceFeatures(physicalDevice);
         
         LongBuffer pSurface = memAllocLong(1);
 	    int err = glfwCreateWindowSurface(vkInstance, CoreSystem.getInstance().getWindow().getId(), null, pSurface);
@@ -377,6 +383,8 @@ public class VKRenderEngine implements RenderEngine{
 	    if (err != VK_SUCCESS) {
 	        throw new AssertionError("Failed to create surface: " + VKUtil.translateVulkanResult(err));
 	    }
+	    
+	    availableQueueFamilies = DeviceFeaturesSupport.getAvailableQueueFamilies(physicalDevice);
         
 	    // BREAKPOINT
 	    
@@ -651,19 +659,6 @@ public class VKRenderEngine implements RenderEngine{
         return new VkPhysicalDevice(physicalDevice, instance);
     }
 	
-	public void getPhysicalDeviceProperties(VkPhysicalDevice physicalDevice){
-		
-		VkPhysicalDeviceProperties properties = VkPhysicalDeviceProperties.create();
-		vkGetPhysicalDeviceProperties(physicalDevice, properties);
-		System.out.println("Physical Device: " + properties.deviceNameString());
-	}
-	
-	public void getPhysicalDeviceFeatures(VkPhysicalDevice physicalDevice){
-		
-		VkPhysicalDeviceFeatures features = VkPhysicalDeviceFeatures.create();
-		vkGetPhysicalDeviceFeatures(physicalDevice, features);
-	}
-	
 	private long setupDebugging(VkInstance instance, int flags, VkDebugReportCallbackEXT callback) {
 		
         VkDebugReportCallbackCreateInfoEXT dbgCreateInfo = VkDebugReportCallbackCreateInfoEXT.calloc()
@@ -692,8 +687,6 @@ public class VKRenderEngine implements RenderEngine{
         IntBuffer pQueueFamilyPropertyCount = memAllocInt(1);
         vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, pQueueFamilyPropertyCount, null);
         int queueCount = pQueueFamilyPropertyCount.get(0);
-        
-        System.out.println("Queue Families: " +  queueCount);
         
         VkQueueFamilyProperties.Buffer queueProps = VkQueueFamilyProperties.calloc(queueCount);
         vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, pQueueFamilyPropertyCount, queueProps);
