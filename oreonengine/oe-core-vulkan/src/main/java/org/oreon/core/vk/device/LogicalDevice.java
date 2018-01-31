@@ -26,27 +26,44 @@ public class LogicalDevice {
 
 	private VkDevice deviceHandle;
 	
+	public void createGraphicsDevice(){
+		
+	}
+	
+	public void createGraphicsAndPresentationDevice(){
+		
+	}
+	
+	public void createComputeDevice(){
+		
+	}
+	
+	public void createComputeAndPresentationDevice(){
+		
+	}
+	
+	public void createTransferDevice(){
+		
+	}
+	
 	public LogicalDevice(VkPhysicalDevice physicalDevice,
 						 QueueFamily queueFamily,
-						 ByteBuffer[] layers,
-						 boolean validation) {
+						 float priority,
+						 PointerBuffer extensions,
+						 PointerBuffer ppEnabledLayerNames) {
 		
-		FloatBuffer pQueuePriorities = memAllocFloat(1).put(0.0f);
+		FloatBuffer pQueuePriorities = memAllocFloat(1).put(priority);
         pQueuePriorities.flip();
+        
         VkDeviceQueueCreateInfo.Buffer queueCreateInfo = VkDeviceQueueCreateInfo.calloc(1)
                 .sType(VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO)
                 .queueFamilyIndex(queueFamily.getIndex())
                 .pQueuePriorities(pQueuePriorities);
 
-        PointerBuffer extensions = memAllocPointer(1);
-        ByteBuffer VK_KHR_SWAPCHAIN_EXTENSION = memUTF8(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
-        extensions.put(VK_KHR_SWAPCHAIN_EXTENSION);
-        extensions.flip();
-        
-        PointerBuffer ppEnabledLayerNames = memAllocPointer(layers.length);
-        for (int i = 0; validation && i < layers.length; i++)
-            ppEnabledLayerNames.put(layers[i]);
-        ppEnabledLayerNames.flip();
+//        PointerBuffer extensions = memAllocPointer(1);
+//        ByteBuffer VK_KHR_SWAPCHAIN_EXTENSION = memUTF8(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
+//        extensions.put(VK_KHR_SWAPCHAIN_EXTENSION);
+//        extensions.flip();
 
         VkDeviceCreateInfo deviceCreateInfo = VkDeviceCreateInfo.calloc()
                 .sType(VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO)
@@ -66,10 +83,10 @@ public class LogicalDevice {
         
         deviceCreateInfo.free();
         memFree(pDevice);
-        memFree(ppEnabledLayerNames);
-        memFree(VK_KHR_SWAPCHAIN_EXTENSION);
-        memFree(extensions);
         memFree(pQueuePriorities);
+//        memFree(ppEnabledLayerNames);
+//        memFree(VK_KHR_SWAPCHAIN_EXTENSION);
+//        memFree(extensions);
 	}
 	
 	public VkDevice getDeviceHandle() {
