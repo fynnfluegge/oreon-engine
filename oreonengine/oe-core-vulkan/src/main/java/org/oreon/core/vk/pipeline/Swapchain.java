@@ -6,7 +6,7 @@ import org.lwjgl.vulkan.VkSurfaceFormatKHR;
 
 public class Swapchain {
 	
-	private long handle;
+	private long swapChainHandle;
 	private VkSurfaceCapabilitiesKHR capabilities;
 	private VkSurfaceFormatKHR format;
 	private int presenMode;
@@ -30,6 +30,10 @@ public class Swapchain {
 
 	public VkExtent2D getExtent() {
 		return extent;
+	}
+
+	public long getSwapChainHandle() {
+		return swapChainHandle;
 	}
 
 }

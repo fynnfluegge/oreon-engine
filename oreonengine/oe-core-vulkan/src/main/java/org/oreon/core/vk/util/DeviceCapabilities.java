@@ -20,10 +20,9 @@ import org.lwjgl.vulkan.VkPhysicalDevice;
 import org.lwjgl.vulkan.VkPhysicalDeviceFeatures;
 import org.lwjgl.vulkan.VkPhysicalDeviceProperties;
 import org.lwjgl.vulkan.VkQueueFamilyProperties;
-import org.oreon.core.vk.queue.QueueFamily;
 
-public class DeviceFeaturesSupport {
-
+public class DeviceCapabilities {
+	
 	public static void checkExtensionSupport(PointerBuffer ppEnabledExtensionNames){
 		
 		IntBuffer extensionCount = memAllocInt(1);
@@ -94,41 +93,14 @@ public class DeviceFeaturesSupport {
 		
 		VkPhysicalDeviceProperties properties = VkPhysicalDeviceProperties.create();
 		vkGetPhysicalDeviceProperties(physicalDevice, properties);
-		System.out.print(properties.deviceNameString());
+		
+		System.out.println(properties.deviceNameString());
 	}
 	
 	public static void checkPhysicalDeviceFeatures(VkPhysicalDevice physicalDevice){
 		
 		VkPhysicalDeviceFeatures features = VkPhysicalDeviceFeatures.create();
 		vkGetPhysicalDeviceFeatures(physicalDevice, features);
-	}
-	
-	public static List<QueueFamily> getAvailableQueueFamilies(VkPhysicalDevice physicalDevice){
-		
-		List<QueueFamily> queueFamilies = new ArrayList<>();
-		
-		IntBuffer pQueueFamilyPropertyCount = memAllocInt(1);
-        vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, pQueueFamilyPropertyCount, null);
-        int queueCount = pQueueFamilyPropertyCount.get(0);
-        
-        VkQueueFamilyProperties.Buffer queueProps = VkQueueFamilyProperties.calloc(queueCount);
-        vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, pQueueFamilyPropertyCount, queueProps);
-        
-        for (int i = 0; i < queueCount; i++) {
-
-        	int flags = queueProps.get(i).queueFlags();
-        	int count = queueProps.get(i).queueCount();
-        	
-        	QueueFamily queueFamily = new QueueFamily();
-        	queueFamily.setIndex(i);
-        	queueFamily.setFlags(flags);
-        	queueFamily.setQueueCount(count);
-        }
-        
-        memFree(pQueueFamilyPropertyCount);
-        queueProps.free();
-		
-		return queueFamilies;
 	}
 
 }

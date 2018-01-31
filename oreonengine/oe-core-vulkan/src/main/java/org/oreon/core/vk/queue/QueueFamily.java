@@ -1,10 +1,11 @@
 package org.oreon.core.vk.queue;
 
 public class QueueFamily {
-
+	
 	private int index;
-	private int queueCount;
+	private int count;
 	private int flags;
+	private int presentFlag;
 	
 	public int getIndex() {
 		return index;
@@ -12,11 +13,11 @@ public class QueueFamily {
 	public void setIndex(int index) {
 		this.index = index;
 	}
-	public int getQueueCount() {
-		return queueCount;
+	public int getCount() {
+		return count;
 	}
-	public void setQueueCount(int queueCount) {
-		this.queueCount = queueCount;
+	public void setCount(int count) {
+		this.count = count;
 	}
 	public int getFlags() {
 		return flags;
@@ -24,4 +25,11 @@ public class QueueFamily {
 	public void setFlags(int flags) {
 		this.flags = flags;
 	}
+	public int getPresentFlag() {
+		return presentFlag;
+	}
+	public void setPresentFlag(int presentFlag) {
+		this.presentFlag = presentFlag;
+	}
+
 }

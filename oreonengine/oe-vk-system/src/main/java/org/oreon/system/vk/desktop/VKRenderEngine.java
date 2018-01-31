@@ -227,8 +227,9 @@ import org.oreon.core.system.CoreSystem;
 import org.oreon.core.system.RenderEngine;
 import org.oreon.core.texture.Texture;
 import org.oreon.core.util.ResourceLoader;
+import org.oreon.core.vk.queue.QueueFamilies;
 import org.oreon.core.vk.queue.QueueFamily;
-import org.oreon.core.vk.util.DeviceFeaturesSupport;
+import org.oreon.core.vk.util.DeviceCapabilities;
 import org.oreon.core.vk.util.VKUtil;
 
 public class VKRenderEngine implements RenderEngine{
@@ -236,7 +237,7 @@ public class VKRenderEngine implements RenderEngine{
 	private VkInstance vkInstance;
 	private VkPhysicalDevice physicalDevice;
 	
-	private List<QueueFamily> availableQueueFamilies; 
+	private QueueFamilies queueFamilies;
 	
 	// BREALPOINT
 	
@@ -372,9 +373,9 @@ public class VKRenderEngine implements RenderEngine{
         
         physicalDevice = getFirstPhysicalDevice(vkInstance);
         
-        DeviceFeaturesSupport.checkPhysicalDeviceProperties(physicalDevice);
+        DeviceCapabilities.checkPhysicalDeviceProperties(physicalDevice);
         
-        DeviceFeaturesSupport.checkPhysicalDeviceFeatures(physicalDevice);
+        DeviceCapabilities.checkPhysicalDeviceFeatures(physicalDevice);
         
         LongBuffer pSurface = memAllocLong(1);
 	    int err = glfwCreateWindowSurface(vkInstance, CoreSystem.getInstance().getWindow().getId(), null, pSurface);
@@ -384,7 +385,7 @@ public class VKRenderEngine implements RenderEngine{
 	        throw new AssertionError("Failed to create surface: " + VKUtil.translateVulkanResult(err));
 	    }
 	    
-	    availableQueueFamilies = DeviceFeaturesSupport.getAvailableQueueFamilies(physicalDevice);
+	    queueFamilies = new QueueFamilies(physicalDevice, surface);
         
 	    // BREAKPOINT
 	    
@@ -392,13 +393,14 @@ public class VKRenderEngine implements RenderEngine{
         
         device = deviceAndGraphicsQueueFamily.device;
         int queueFamilyIndex = deviceAndGraphicsQueueFamily.queueFamilyIndex;
+        queue = createDeviceQueue(device, queueFamilyIndex);
         VkPhysicalDeviceMemoryProperties memoryProperties = deviceAndGraphicsQueueFamily.memoryProperties;
 	    
 	    ColorFormatAndSpace colorFormatAndSpace = getColorFormatAndSpace(physicalDevice, surface);
 	    long commandPool = createCommandPool(device, queueFamilyIndex);
 	    VkCommandBuffer setupCommandBuffer = createCommandBuffer(device, commandPool);
 	    postPresentCommandBuffer = createCommandBuffer(device, commandPool);
-	    queue = createDeviceQueue(device, queueFamilyIndex);
+	    
 	    long renderPass = createRenderPass(device, colorFormatAndSpace.colorFormat);
 	    long renderCommandPool = createCommandPool(device, queueFamilyIndex);
 	    Vertices vertices = createVertices(memoryProperties, device);
@@ -525,22 +527,22 @@ public class VKRenderEngine implements RenderEngine{
                 .pEngineName(memUTF8(""))
                 .apiVersion(VK_MAKE_VERSION(1, 0, 2));
         
-        PointerBuffer ppEnabledExtensionNames = memAllocPointer(requiredExtensions.remaining() + 1);
-        ppEnabledExtensionNames.put(requiredExtensions);
-        
         ByteBuffer VK_EXT_DEBUG_REPORT_EXTENSION = memUTF8(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
         
+        // +1 due to VK_EXT_DEBUG_REPORT_EXTENSION
+        PointerBuffer ppEnabledExtensionNames = memAllocPointer(requiredExtensions.remaining() + 1);
+        ppEnabledExtensionNames.put(requiredExtensions);
         ppEnabledExtensionNames.put(VK_EXT_DEBUG_REPORT_EXTENSION);
         ppEnabledExtensionNames.flip();
         
-        checkExtensionSupport(ppEnabledExtensionNames);
+        DeviceCapabilities.checkExtensionSupport(ppEnabledExtensionNames);
         
         PointerBuffer ppEnabledLayerNames = memAllocPointer(layers.length);
         for (int i = 0; validation && i < layers.length; i++)
             ppEnabledLayerNames.put(layers[i]);
         ppEnabledLayerNames.flip();
         
-        checkValidationLayerSupport(ppEnabledLayerNames);
+        DeviceCapabilities.checkValidationLayerSupport(ppEnabledLayerNames);
         
         VkInstanceCreateInfo pCreateInfo = VkInstanceCreateInfo.calloc()
                 .sType(VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO)
@@ -568,72 +570,6 @@ public class VKRenderEngine implements RenderEngine{
         
         return ret;
     }
-	
-	public void checkExtensionSupport(PointerBuffer ppEnabledExtensionNames){
-		
-		IntBuffer extensionCount = memAllocInt(1);
-		
-		int err = vkEnumerateInstanceExtensionProperties("", extensionCount, null);
-		if (err != VK_SUCCESS) {
-            throw new AssertionError(VKUtil.translateVulkanResult(err));
-        }
-		
-		VkExtensionProperties.Buffer extensions = VkExtensionProperties.calloc(extensionCount.get(0));
-				
-		err = vkEnumerateInstanceExtensionProperties("", extensionCount, extensions);
-		if (err != VK_SUCCESS) {
-            throw new AssertionError(VKUtil.translateVulkanResult(err));
-        }
-		
-		List<String> availableExtensions = new ArrayList<>();
-		for (VkExtensionProperties extension : extensions){
-			availableExtensions.add(extension.extensionNameString());
-		}
-		
-		for (int i=0; i<ppEnabledExtensionNames.limit(); i++){
-			if (!availableExtensions.contains(ppEnabledExtensionNames.getStringUTF8())){
-				throw new AssertionError("Extension " + ppEnabledExtensionNames.getStringUTF8() + " not supported");
-			}
-		}
-		
-		ppEnabledExtensionNames.flip();
-		
-		memFree(extensionCount);
-		extensions.free();
-	}
-	
-	public void checkValidationLayerSupport(PointerBuffer ppEnabledLayerNames){
-		
-		IntBuffer layerCount = memAllocInt(1);
-		
-		int err = vkEnumerateInstanceLayerProperties(layerCount, null);
-		if (err != VK_SUCCESS) {
-            throw new AssertionError(VKUtil.translateVulkanResult(err));
-        }
-		
-		VkLayerProperties.Buffer layers = VkLayerProperties.calloc(layerCount.get(0));
-		
-		err = vkEnumerateInstanceLayerProperties(layerCount, layers);
-		if (err != VK_SUCCESS) {
-            throw new AssertionError(VKUtil.translateVulkanResult(err));
-        }
-		
-		List<String> availableLayers = new ArrayList<>();
-		for (VkLayerProperties layer : layers){
-			availableLayers.add(layer.layerNameString());
-		}
-		
-		for (int i=0; i<ppEnabledLayerNames.limit(); i++){
-			if (!availableLayers.contains(ppEnabledLayerNames.getStringUTF8())){
-				throw new AssertionError("Extension " + ppEnabledLayerNames.getStringUTF8() + " not supported");
-			}
-		}
-
-		ppEnabledLayerNames.flip();
-		
-		memFree(layerCount);
-		layers.free();
-	}
 	
 	private VkPhysicalDevice getFirstPhysicalDevice(VkInstance instance) {
 		
