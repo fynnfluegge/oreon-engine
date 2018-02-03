@@ -5,9 +5,9 @@ import static org.lwjgl.system.MemoryUtil.memFree;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import static org.lwjgl.vulkan.VK10.vkEnumerateInstanceExtensionProperties;
 import static org.lwjgl.vulkan.VK10.vkEnumerateInstanceLayerProperties;
+import static org.lwjgl.vulkan.VK10.vkEnumerateDeviceExtensionProperties;
 import static org.lwjgl.vulkan.VK10.vkGetPhysicalDeviceFeatures;
 import static org.lwjgl.vulkan.VK10.vkGetPhysicalDeviceProperties;
-import static org.lwjgl.vulkan.VK10.vkGetPhysicalDeviceQueueFamilyProperties;
 
 import java.nio.IntBuffer;
 import java.util.ArrayList;
@@ -19,11 +19,10 @@ import org.lwjgl.vulkan.VkLayerProperties;
 import org.lwjgl.vulkan.VkPhysicalDevice;
 import org.lwjgl.vulkan.VkPhysicalDeviceFeatures;
 import org.lwjgl.vulkan.VkPhysicalDeviceProperties;
-import org.lwjgl.vulkan.VkQueueFamilyProperties;
 
 public class DeviceCapabilities {
 	
-	public static void checkExtensionSupport(PointerBuffer ppEnabledExtensionNames){
+	public static void checkInstanceExtensionSupport(PointerBuffer ppEnabledExtensionNames){
 		
 		IntBuffer extensionCount = memAllocInt(1);
 		
@@ -54,6 +53,30 @@ public class DeviceCapabilities {
 		
 		memFree(extensionCount);
 		extensions.free();
+	}
+	
+	public static List<String> getPhysicalDeviceExtensionNamesSupport(VkPhysicalDevice physicalDevice){
+	
+		IntBuffer extensionCount = memAllocInt(1);
+		
+		int err = vkEnumerateDeviceExtensionProperties(physicalDevice, "", extensionCount, null);
+		if (err != VK_SUCCESS) {
+            throw new AssertionError(VKUtil.translateVulkanResult(err));
+        }
+		
+		VkExtensionProperties.Buffer extensions = VkExtensionProperties.calloc(extensionCount.get(0));
+		
+		err = vkEnumerateDeviceExtensionProperties(physicalDevice, "", extensionCount, extensions);
+		if (err != VK_SUCCESS) {
+            throw new AssertionError(VKUtil.translateVulkanResult(err));
+        }
+		
+		List<String> extensionNames = new ArrayList<>();
+		for (VkExtensionProperties extension : extensions){
+			extensionNames.add(extension.extensionNameString());
+		}
+		
+		return extensionNames;
 	}
 	
 	public static void checkValidationLayerSupport(PointerBuffer ppEnabledLayerNames){
@@ -102,5 +125,4 @@ public class DeviceCapabilities {
 		VkPhysicalDeviceFeatures features = VkPhysicalDeviceFeatures.create();
 		vkGetPhysicalDeviceFeatures(physicalDevice, features);
 	}
-
 }

@@ -227,24 +227,27 @@ import org.oreon.core.system.CoreSystem;
 import org.oreon.core.system.RenderEngine;
 import org.oreon.core.texture.Texture;
 import org.oreon.core.util.ResourceLoader;
+import org.oreon.core.vk.device.LogicalDevice;
+import org.oreon.core.vk.device.PhysicalDevice;
 import org.oreon.core.vk.queue.QueueFamilies;
 import org.oreon.core.vk.queue.QueueFamily;
+import org.oreon.core.vk.swapchain.SwapChain;
 import org.oreon.core.vk.util.DeviceCapabilities;
 import org.oreon.core.vk.util.VKUtil;
 
 public class VKRenderEngine implements RenderEngine{
 	
 	private VkInstance vkInstance;
-	private VkPhysicalDevice physicalDevice;
-	
-	private QueueFamilies queueFamilies;
+	private PhysicalDevice physicalDevice;
+	private LogicalDevice logicalDevice;
+	private SwapChain swapchain;
+	private long surface;
 	
 	// BREALPOINT
 	
 	private VkDevice device;
 	private VkQueue queue;
 	private DeviceAndGraphicsQueueFamily deviceAndGraphicsQueueFamily;
-	private long surface;
 
 	private VkCommandBuffer postPresentCommandBuffer;
 	private VkSubmitInfo submitInfo;
@@ -267,7 +270,7 @@ public class VKRenderEngine implements RenderEngine{
 	/*
      * All resources that must be reallocated on window resize.
      */
-    private static Swapchain swapchain;
+    private static SwapChain0 swapchain0;
     private static long[] framebuffers;
     private static int width, height;
     private static VkCommandBuffer[] renderCommandBuffers;
@@ -275,8 +278,8 @@ public class VKRenderEngine implements RenderEngine{
 	private ByteBuffer[] layers = {
 	            	memUTF8("VK_LAYER_LUNARG_standard_validation"),
 				};
-	 
-	private final boolean validation = Boolean.parseBoolean(System.getProperty("vulkan.validation", "false"));
+	private final boolean validationEnabled = Boolean.parseBoolean(System.getProperty("vulkan.validation", "false"));
+	private PointerBuffer ppEnabledLayerNames;
 	
 	private class DeviceAndGraphicsQueueFamily {
         VkDevice device;
@@ -294,7 +297,7 @@ public class VKRenderEngine implements RenderEngine{
         VkPipelineVertexInputStateCreateInfo createInfo;
     }
 	
-	private class Swapchain {
+	private class SwapChain0 {
         long swapchainHandle;
         long[] images;
         long[] imageViews;
@@ -321,9 +324,9 @@ public class VKRenderEngine implements RenderEngine{
             if (err != VK_SUCCESS) {
                 throw new AssertionError("Failed to begin setup command buffer: " + VKUtil.translateVulkanResult(err));
             }
-            long oldChain = swapchain != null ? swapchain.swapchainHandle : VK_NULL_HANDLE;
+            long oldChain = swapchain0 != null ? swapchain0.swapchainHandle : VK_NULL_HANDLE;
             // Create the swapchain (this will also add a memory barrier to initialize the framebuffer images)
-            swapchain = createSwapChain(device, physicalDevice, surface, oldChain, setupCommandBuffer,
+            swapchain0 = createSwapChain(device, physicalDevice, surface, oldChain, setupCommandBuffer,
                     width, height, colorFormatAndSpace.colorFormat, colorFormatAndSpace.colorSpace);
             err = vkEndCommandBuffer(setupCommandBuffer);
             if (err != VK_SUCCESS) {
@@ -336,7 +339,7 @@ public class VKRenderEngine implements RenderEngine{
                 for (int i = 0; i < framebuffers.length; i++)
                     vkDestroyFramebuffer(device, framebuffers[i], null);
             }
-            framebuffers = createFramebuffers(device, swapchain, renderPass, width, height);
+            framebuffers = createFramebuffers(device, swapchain0, renderPass, width, height);
             // Create render command buffers
             if (renderCommandBuffers != null) {
                 vkResetCommandPool(device, renderCommandPool, 0);
@@ -360,7 +363,9 @@ public class VKRenderEngine implements RenderEngine{
             throw new AssertionError("Failed to find list of required Vulkan extensions");
         }
         
-        vkInstance = createVkInstance(requiredExtensions); 
+        ppEnabledLayerNames = VKUtil.getValidationLayerNames(validationEnabled, layers);
+        
+        vkInstance = createVkInstance(requiredExtensions, ppEnabledLayerNames); 
         
         VkDebugReportCallbackEXT debugCallback = new VkDebugReportCallbackEXT() {
             public int invoke(int flags, int objectType, long object, long location, int messageCode, long pLayerPrefix, long pMessage, long pUserData) {
@@ -371,12 +376,6 @@ public class VKRenderEngine implements RenderEngine{
         
         debugCallbackHandle = setupDebugging(vkInstance, VK_DEBUG_REPORT_ERROR_BIT_EXT | VK_DEBUG_REPORT_WARNING_BIT_EXT, debugCallback);
         
-        physicalDevice = getFirstPhysicalDevice(vkInstance);
-        
-        DeviceCapabilities.checkPhysicalDeviceProperties(physicalDevice);
-        
-        DeviceCapabilities.checkPhysicalDeviceFeatures(physicalDevice);
-        
         LongBuffer pSurface = memAllocLong(1);
 	    int err = glfwCreateWindowSurface(vkInstance, CoreSystem.getInstance().getWindow().getId(), null, pSurface);
 	    
@@ -385,18 +384,24 @@ public class VKRenderEngine implements RenderEngine{
 	        throw new AssertionError("Failed to create surface: " + VKUtil.translateVulkanResult(err));
 	    }
 	    
-	    queueFamilies = new QueueFamilies(physicalDevice, surface);
+        physicalDevice = new PhysicalDevice(vkInstance, surface);
         
+        DeviceCapabilities.checkPhysicalDeviceProperties(physicalDevice.getDeviceHandle());
+        DeviceCapabilities.checkPhysicalDeviceFeatures(physicalDevice.getDeviceHandle());
+        
+	    logicalDevice = new LogicalDevice();
+	    logicalDevice.createGraphicsAndPresentationDevice(physicalDevice, 0, ppEnabledLayerNames);
+	    
 	    // BREAKPOINT
 	    
-        deviceAndGraphicsQueueFamily = createDeviceAndGetGraphicsQueueFamily(physicalDevice);
+        deviceAndGraphicsQueueFamily = createDeviceAndGetGraphicsQueueFamily(physicalDevice.getDeviceHandle());
         
         device = deviceAndGraphicsQueueFamily.device;
         int queueFamilyIndex = deviceAndGraphicsQueueFamily.queueFamilyIndex;
         queue = createDeviceQueue(device, queueFamilyIndex);
         VkPhysicalDeviceMemoryProperties memoryProperties = deviceAndGraphicsQueueFamily.memoryProperties;
 	    
-	    ColorFormatAndSpace colorFormatAndSpace = getColorFormatAndSpace(physicalDevice, surface);
+	    ColorFormatAndSpace colorFormatAndSpace = getColorFormatAndSpace(physicalDevice.getDeviceHandle(), surface);
 	    long commandPool = createCommandPool(device, queueFamilyIndex);
 	    VkCommandBuffer setupCommandBuffer = createCommandBuffer(device, commandPool);
 	    postPresentCommandBuffer = createCommandBuffer(device, commandPool);
@@ -444,7 +449,7 @@ public class VKRenderEngine implements RenderEngine{
         if (swapchainRecreator.mustRecreate)
             swapchainRecreator.recreate(setupCommandBuffer,
             							device,
-            							physicalDevice,
+            							physicalDevice.getDeviceHandle(),
             							surface,
             							colorFormatAndSpace,
             							queue,
@@ -472,7 +477,7 @@ public class VKRenderEngine implements RenderEngine{
         
         // Get next image from the swap chain (back/front buffer).
         // This will setup the imageAquiredSemaphore to be signalled when the operation is complete
-        err = vkAcquireNextImageKHR(device, swapchain.swapchainHandle, UINT64_MAX, pImageAcquiredSemaphore.get(0), VK_NULL_HANDLE, pImageIndex);
+        err = vkAcquireNextImageKHR(device, swapchain0.swapchainHandle, UINT64_MAX, pImageAcquiredSemaphore.get(0), VK_NULL_HANDLE, pImageIndex);
         currentBuffer = pImageIndex.get(0);
         if (err != VK_SUCCESS) {
             throw new AssertionError("Failed to acquire next swapchain image: " + VKUtil.translateVulkanResult(err));
@@ -489,7 +494,7 @@ public class VKRenderEngine implements RenderEngine{
 
         // Present the current buffer to the swap chain
         // This will display the image
-        pSwapchains.put(0, swapchain.swapchainHandle);
+        pSwapchains.put(0, swapchain0.swapchainHandle);
         err = vkQueuePresentKHR(queue, presentInfo);
         if (err != VK_SUCCESS) {
             throw new AssertionError("Failed to present the swapchain image: " + VKUtil.translateVulkanResult(err));
@@ -501,7 +506,7 @@ public class VKRenderEngine implements RenderEngine{
         // Destroy this semaphore (we will create a new one in the next frame)
         vkDestroySemaphore(device, pImageAcquiredSemaphore.get(0), null);
         vkDestroySemaphore(device, pRenderCompleteSemaphore.get(0), null);
-        submitPostPresentBarrier(swapchain.images[currentBuffer], postPresentCommandBuffer, queue);
+        submitPostPresentBarrier(swapchain0.images[currentBuffer], postPresentCommandBuffer, queue);
 	}
 
 	@Override
@@ -519,7 +524,7 @@ public class VKRenderEngine implements RenderEngine{
         vkDestroyInstance(vkInstance, null);		
 	}
 	
-	private VkInstance createVkInstance(PointerBuffer requiredExtensions) {
+	private VkInstance createVkInstance(PointerBuffer requiredExtensions, PointerBuffer enabledLayerNames) {
 		
         VkApplicationInfo appInfo = VkApplicationInfo.calloc()
                 .sType(VK_STRUCTURE_TYPE_APPLICATION_INFO)
@@ -535,21 +540,14 @@ public class VKRenderEngine implements RenderEngine{
         ppEnabledExtensionNames.put(VK_EXT_DEBUG_REPORT_EXTENSION);
         ppEnabledExtensionNames.flip();
         
-        DeviceCapabilities.checkExtensionSupport(ppEnabledExtensionNames);
-        
-        PointerBuffer ppEnabledLayerNames = memAllocPointer(layers.length);
-        for (int i = 0; validation && i < layers.length; i++)
-            ppEnabledLayerNames.put(layers[i]);
-        ppEnabledLayerNames.flip();
-        
-        DeviceCapabilities.checkValidationLayerSupport(ppEnabledLayerNames);
+        DeviceCapabilities.checkInstanceExtensionSupport(ppEnabledExtensionNames);
         
         VkInstanceCreateInfo pCreateInfo = VkInstanceCreateInfo.calloc()
                 .sType(VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO)
                 .pNext(0)
                 .pApplicationInfo(appInfo)
                 .ppEnabledExtensionNames(ppEnabledExtensionNames)
-                .ppEnabledLayerNames(ppEnabledLayerNames);
+                .ppEnabledLayerNames(enabledLayerNames);
         PointerBuffer pInstance = memAllocPointer(1);
         int err = vkCreateInstance(pCreateInfo, null, pInstance);
         long instance = pInstance.get(0);
@@ -561,7 +559,6 @@ public class VKRenderEngine implements RenderEngine{
         
         pCreateInfo.free();
         memFree(pInstance);
-        memFree(ppEnabledLayerNames);
         memFree(VK_EXT_DEBUG_REPORT_EXTENSION);
         memFree(ppEnabledExtensionNames);
         memFree(appInfo.pApplicationName());
@@ -569,30 +566,6 @@ public class VKRenderEngine implements RenderEngine{
         appInfo.free();
         
         return ret;
-    }
-	
-	private VkPhysicalDevice getFirstPhysicalDevice(VkInstance instance) {
-		
-        IntBuffer pPhysicalDeviceCount = memAllocInt(1);
-        int err = vkEnumeratePhysicalDevices(instance, pPhysicalDeviceCount, null);
-        if (err != VK_SUCCESS) {
-            throw new AssertionError("Failed to get number of physical devices: " + VKUtil.translateVulkanResult(err));
-        }
-        
-        System.out.println("Available Physical Devices: " + pPhysicalDeviceCount.get(0));
-        
-        PointerBuffer pPhysicalDevices = memAllocPointer(pPhysicalDeviceCount.get(0));
-        err = vkEnumeratePhysicalDevices(instance, pPhysicalDeviceCount, pPhysicalDevices);
-        long physicalDevice = pPhysicalDevices.get(0);
-       
-        if (err != VK_SUCCESS) {
-            throw new AssertionError("Failed to get physical devices: " + VKUtil.translateVulkanResult(err));
-        }
-        
-        memFree(pPhysicalDeviceCount);
-        memFree(pPhysicalDevices);
-        
-        return new VkPhysicalDevice(physicalDevice, instance);
     }
 	
 	private long setupDebugging(VkInstance instance, int flags, VkDebugReportCallbackEXT callback) {
@@ -645,7 +618,7 @@ public class VKRenderEngine implements RenderEngine{
         extensions.put(VK_KHR_SWAPCHAIN_EXTENSION);
         extensions.flip();
         PointerBuffer ppEnabledLayerNames = memAllocPointer(layers.length);
-        for (int i = 0; validation && i < layers.length; i++)
+        for (int i = 0; validationEnabled && i < layers.length; i++)
             ppEnabledLayerNames.put(layers[i]);
         ppEnabledLayerNames.flip();
 
@@ -1083,7 +1056,7 @@ public class VKRenderEngine implements RenderEngine{
         return pipeline;
     }
 	 
-	 private Swapchain createSwapChain(VkDevice device, VkPhysicalDevice physicalDevice, long surface, long oldSwapChain, VkCommandBuffer commandBuffer, int newWidth,
+	 private SwapChain0 createSwapChain(VkDevice device, VkPhysicalDevice physicalDevice, long surface, long oldSwapChain, VkCommandBuffer commandBuffer, int newWidth,
 	            int newHeight, int colorFormat, int colorSpace) {
 	        int err;
 	        // Get physical device surface properties and formats
@@ -1230,7 +1203,7 @@ public class VKRenderEngine implements RenderEngine{
 	        memFree(pBufferView);
 	        memFree(pSwapchainImages);
 
-	        Swapchain ret = new Swapchain();
+	        SwapChain0 ret = new SwapChain0();
 	        ret.images = images;
 	        ret.imageViews = imageViews;
 	        ret.swapchainHandle = swapChain;
@@ -1445,7 +1418,7 @@ public class VKRenderEngine implements RenderEngine{
             // Add a present memory barrier to the end of the command buffer
             // This will transform the frame buffer color attachment to a
             // new layout for presenting it to the windowing system integration 
-            VkImageMemoryBarrier.Buffer prePresentBarrier = createPrePresentBarrier(swapchain.images[i]);
+            VkImageMemoryBarrier.Buffer prePresentBarrier = createPrePresentBarrier(swapchain0.images[i]);
             vkCmdPipelineBarrier(renderCommandBuffers[i],
                 VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
                 VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
@@ -1466,7 +1439,7 @@ public class VKRenderEngine implements RenderEngine{
         return renderCommandBuffers;
     }
 	
-	private long[] createFramebuffers(VkDevice device, Swapchain swapchain, long renderPass, int width, int height) {
+	private long[] createFramebuffers(VkDevice device, SwapChain0 swapchain, long renderPass, int width, int height) {
         LongBuffer attachments = memAllocLong(1);
         VkFramebufferCreateInfo fci = VkFramebufferCreateInfo.calloc()
                 .sType(VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO)

@@ -9,6 +9,7 @@ import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import static org.lwjgl.vulkan.VK10.vkCreateDevice;
+import static org.lwjgl.vulkan.VK10.vkGetDeviceQueue;
 
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
@@ -17,20 +18,67 @@ import org.lwjgl.PointerBuffer;
 import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkDeviceCreateInfo;
 import org.lwjgl.vulkan.VkDeviceQueueCreateInfo;
-import org.lwjgl.vulkan.VkPhysicalDevice;
 import org.lwjgl.vulkan.VkQueue;
-import org.oreon.core.vk.queue.QueueFamily;
 import org.oreon.core.vk.util.VKUtil;
 
 public class LogicalDevice {
 
 	private VkDevice deviceHandle;
+	private VkQueue graphicsAndPresentationQueue;
+	private VkQueue computeQueue;
+	private VkQueue transferQueue;
 	
-	public void createGraphicsDevice(){
+	public void createGraphicsAndPresentationDevice(PhysicalDevice physicalDevice,
+			 										float priority,
+			 										PointerBuffer ppEnabledLayerNames){
+		
+		FloatBuffer pQueuePriorities = memAllocFloat(1).put(priority);
+        pQueuePriorities.flip();
+        
+        int graphicsAndPresentationQueueFamilyIndex = physicalDevice.getQueueFamilies().getGraphicsAndPresentationQueueFamily().getIndex();
+        
+        VkDeviceQueueCreateInfo.Buffer queueCreateInfo = VkDeviceQueueCreateInfo.calloc(1)
+                .sType(VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO)
+                .queueFamilyIndex(graphicsAndPresentationQueueFamilyIndex)
+                .pQueuePriorities(pQueuePriorities);
+
+        PointerBuffer extensions = memAllocPointer(1);
+        ByteBuffer VK_KHR_SWAPCHAIN_EXTENSION = memUTF8(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
+        extensions.put(VK_KHR_SWAPCHAIN_EXTENSION);
+        extensions.flip();
+        
+        physicalDevice.checkExtensionsSupport(extensions);
+        
+        VkDeviceCreateInfo deviceCreateInfo = VkDeviceCreateInfo.calloc()
+                .sType(VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO)
+                .pNext(0)
+                .pQueueCreateInfos(queueCreateInfo)
+                .ppEnabledExtensionNames(extensions)
+                .ppEnabledLayerNames(ppEnabledLayerNames);
+
+        PointerBuffer pDevice = memAllocPointer(1);
+        int err = vkCreateDevice(physicalDevice.getDeviceHandle(), deviceCreateInfo, null, pDevice);
+       
+        if (err != VK_SUCCESS) {
+            throw new AssertionError("Failed to create device: " + VKUtil.translateVulkanResult(err));
+        }
+        
+        deviceHandle = new VkDevice(pDevice.get(0), physicalDevice.getDeviceHandle(), deviceCreateInfo);
+        
+        graphicsAndPresentationQueue = createDeviceQueue(graphicsAndPresentationQueueFamilyIndex);
+        
+        deviceCreateInfo.free();
+        memFree(pDevice);
+        memFree(pQueuePriorities);
+        memFree(VK_KHR_SWAPCHAIN_EXTENSION);
+        memFree(extensions);
+	}
+	
+	public void createDeviceFullQueueSupport(){
 		
 	}
 	
-	public void createGraphicsAndPresentationDevice(){
+	public void createGraphicsDevice(){
 		
 	}
 	
@@ -46,51 +94,41 @@ public class LogicalDevice {
 		
 	}
 	
-	public LogicalDevice(VkPhysicalDevice physicalDevice,
-						 QueueFamily queueFamily,
-						 float priority,
-						 PointerBuffer extensions,
-						 PointerBuffer ppEnabledLayerNames) {
+	private VkQueue createDeviceQueue(int queueFamilyIndex) {
 		
-		FloatBuffer pQueuePriorities = memAllocFloat(1).put(priority);
-        pQueuePriorities.flip();
-        
-        VkDeviceQueueCreateInfo.Buffer queueCreateInfo = VkDeviceQueueCreateInfo.calloc(1)
-                .sType(VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO)
-                .queueFamilyIndex(queueFamily.getIndex())
-                .pQueuePriorities(pQueuePriorities);
-
-//        PointerBuffer extensions = memAllocPointer(1);
-//        ByteBuffer VK_KHR_SWAPCHAIN_EXTENSION = memUTF8(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
-//        extensions.put(VK_KHR_SWAPCHAIN_EXTENSION);
-//        extensions.flip();
-
-        VkDeviceCreateInfo deviceCreateInfo = VkDeviceCreateInfo.calloc()
-                .sType(VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO)
-                .pNext(0)
-                .pQueueCreateInfos(queueCreateInfo)
-                .ppEnabledExtensionNames(extensions)
-                .ppEnabledLayerNames(ppEnabledLayerNames);
-
-        PointerBuffer pDevice = memAllocPointer(1);
-        int err = vkCreateDevice(physicalDevice, deviceCreateInfo, null, pDevice);
-       
-        if (err != VK_SUCCESS) {
-            throw new AssertionError("Failed to create device: " + VKUtil.translateVulkanResult(err));
-        }
-        
-        deviceHandle = new VkDevice(pDevice.get(0), physicalDevice, deviceCreateInfo);
-        
-        deviceCreateInfo.free();
-        memFree(pDevice);
-        memFree(pQueuePriorities);
-//        memFree(ppEnabledLayerNames);
-//        memFree(VK_KHR_SWAPCHAIN_EXTENSION);
-//        memFree(extensions);
-	}
+        PointerBuffer pQueue = memAllocPointer(1);
+        vkGetDeviceQueue(deviceHandle, queueFamilyIndex, 0, pQueue);
+        long queue = pQueue.get(0);
+        memFree(pQueue);
+        return new VkQueue(queue, deviceHandle);
+    }
 	
 	public VkDevice getDeviceHandle() {
 		return deviceHandle;
+	}
+
+	public VkQueue getGraphicsAndPresentationQueue() {
+		return graphicsAndPresentationQueue;
+	}
+
+	public void setGraphicsAndPresentationQueue(VkQueue graphicsAndPresentationQueue) {
+		this.graphicsAndPresentationQueue = graphicsAndPresentationQueue;
+	}
+
+	public VkQueue getComputeQueue() {
+		return computeQueue;
+	}
+
+	public void setComputeQueue(VkQueue computeQueue) {
+		this.computeQueue = computeQueue;
+	}
+
+	public VkQueue getTransferQueue() {
+		return transferQueue;
+	}
+
+	public void setTransferQueue(VkQueue transferQueue) {
+		this.transferQueue = transferQueue;
 	}
 
 }

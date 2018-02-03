@@ -7,6 +7,11 @@ package org.oreon.core.vk.util;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import static org.lwjgl.vulkan.VK10.VK_NOT_READY;
 import static org.lwjgl.vulkan.VK10.VK_TIMEOUT;
+
+import java.nio.ByteBuffer;
+
+import org.lwjgl.PointerBuffer;
+
 import static org.lwjgl.vulkan.VK10.VK_EVENT_SET;
 import static org.lwjgl.vulkan.VK10.VK_EVENT_RESET;
 import static org.lwjgl.vulkan.VK10.VK_INCOMPLETE;
@@ -26,6 +31,7 @@ import static org.lwjgl.vulkan.KHRSwapchain.VK_ERROR_OUT_OF_DATE_KHR;
 import static org.lwjgl.vulkan.KHRSurface.VK_ERROR_SURFACE_LOST_KHR;
 import static org.lwjgl.vulkan.KHRSurface.VK_ERROR_NATIVE_WINDOW_IN_USE_KHR;
 import static org.lwjgl.vulkan.KHRDisplaySwapchain.VK_ERROR_INCOMPATIBLE_DISPLAY_KHR;
+import static org.lwjgl.system.MemoryUtil.memAllocPointer;
 import static org.lwjgl.vulkan.EXTDebugReport.VK_ERROR_VALIDATION_FAILED_EXT;
 
 public class VKUtil {
@@ -94,5 +100,15 @@ public class VKUtil {
             return String.format("%s [%d]", "Unknown", Integer.valueOf(result));
         }
     }
+    
+    public static PointerBuffer getValidationLayerNames(boolean validation, ByteBuffer[] layers){
+		
+		PointerBuffer ppEnabledLayerNames = memAllocPointer(layers.length);
+        for (int i = 0; validation && i < layers.length; i++)
+            ppEnabledLayerNames.put(layers[i]);
+        ppEnabledLayerNames.flip();
+        
+        return ppEnabledLayerNames;
+	}
 
 }
