@@ -23,7 +23,7 @@ import org.oreon.core.vk.util.VKUtil;
 
 public class LogicalDevice {
 
-	private VkDevice deviceHandle;
+	private VkDevice handle;
 	private VkQueue graphicsAndPresentationQueue;
 	private VkQueue computeQueue;
 	private VkQueue transferQueue;
@@ -47,7 +47,7 @@ public class LogicalDevice {
         extensions.put(VK_KHR_SWAPCHAIN_EXTENSION);
         extensions.flip();
         
-        physicalDevice.checkExtensionsSupport(extensions);
+        physicalDevice.checkDeviceExtensionsSupport(extensions);
         
         VkDeviceCreateInfo deviceCreateInfo = VkDeviceCreateInfo.calloc()
                 .sType(VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO)
@@ -57,13 +57,13 @@ public class LogicalDevice {
                 .ppEnabledLayerNames(ppEnabledLayerNames);
 
         PointerBuffer pDevice = memAllocPointer(1);
-        int err = vkCreateDevice(physicalDevice.getDeviceHandle(), deviceCreateInfo, null, pDevice);
+        int err = vkCreateDevice(physicalDevice.getHandle(), deviceCreateInfo, null, pDevice);
        
         if (err != VK_SUCCESS) {
             throw new AssertionError("Failed to create device: " + VKUtil.translateVulkanResult(err));
         }
         
-        deviceHandle = new VkDevice(pDevice.get(0), physicalDevice.getDeviceHandle(), deviceCreateInfo);
+        handle = new VkDevice(pDevice.get(0), physicalDevice.getHandle(), deviceCreateInfo);
         
         graphicsAndPresentationQueue = createDeviceQueue(graphicsAndPresentationQueueFamilyIndex);
         
@@ -97,38 +97,26 @@ public class LogicalDevice {
 	private VkQueue createDeviceQueue(int queueFamilyIndex) {
 		
         PointerBuffer pQueue = memAllocPointer(1);
-        vkGetDeviceQueue(deviceHandle, queueFamilyIndex, 0, pQueue);
+        vkGetDeviceQueue(handle, queueFamilyIndex, 0, pQueue);
         long queue = pQueue.get(0);
         memFree(pQueue);
-        return new VkQueue(queue, deviceHandle);
+        return new VkQueue(queue, handle);
     }
 	
-	public VkDevice getDeviceHandle() {
-		return deviceHandle;
+	public VkDevice getHandle() {
+		return handle;
 	}
 
 	public VkQueue getGraphicsAndPresentationQueue() {
 		return graphicsAndPresentationQueue;
 	}
 
-	public void setGraphicsAndPresentationQueue(VkQueue graphicsAndPresentationQueue) {
-		this.graphicsAndPresentationQueue = graphicsAndPresentationQueue;
-	}
-
 	public VkQueue getComputeQueue() {
 		return computeQueue;
 	}
 
-	public void setComputeQueue(VkQueue computeQueue) {
-		this.computeQueue = computeQueue;
-	}
-
 	public VkQueue getTransferQueue() {
 		return transferQueue;
-	}
-
-	public void setTransferQueue(VkQueue transferQueue) {
-		this.transferQueue = transferQueue;
 	}
 
 }

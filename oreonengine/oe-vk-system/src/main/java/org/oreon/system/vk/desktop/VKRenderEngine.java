@@ -39,6 +39,7 @@ import static org.lwjgl.vulkan.KHRSurface.VK_PRESENT_MODE_MAILBOX_KHR;
 import static org.lwjgl.vulkan.KHRSurface.VK_PRESENT_MODE_IMMEDIATE_KHR;
 import static org.lwjgl.vulkan.KHRSurface.VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR;
 import static org.lwjgl.vulkan.KHRSurface.VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
+import static org.lwjgl.vulkan.KHRSurface.VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_APPLICATION_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
@@ -240,7 +241,7 @@ public class VKRenderEngine implements RenderEngine{
 	private VkInstance vkInstance;
 	private PhysicalDevice physicalDevice;
 	private LogicalDevice logicalDevice;
-	private SwapChain swapchain;
+	private SwapChain swapChain;
 	private long surface;
 	
 	// BREALPOINT
@@ -386,22 +387,45 @@ public class VKRenderEngine implements RenderEngine{
 	    
         physicalDevice = new PhysicalDevice(vkInstance, surface);
         
-        DeviceCapabilities.checkPhysicalDeviceProperties(physicalDevice.getDeviceHandle());
-        DeviceCapabilities.checkPhysicalDeviceFeatures(physicalDevice.getDeviceHandle());
+        DeviceCapabilities.checkPhysicalDeviceProperties(physicalDevice.getHandle());
+        DeviceCapabilities.checkPhysicalDeviceFeatures(physicalDevice.getHandle());
         
 	    logicalDevice = new LogicalDevice();
 	    logicalDevice.createGraphicsAndPresentationDevice(physicalDevice, 0, ppEnabledLayerNames);
 	    
+	    VkExtent2D swapExtent = physicalDevice.getSwapChainCapabilities().getSurfaceCapabilities().currentExtent();
+	    swapExtent.height(600);
+	    swapExtent.width(800);
+	    
+	    int imageFormat = VK_FORMAT_B8G8R8A8_UNORM;
+	    int colorSpace = VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
+	    
+	    physicalDevice.checkDeviceFormatAndColorSpaceSupport(imageFormat, colorSpace);
+	    
+	    int presentMode = VK_PRESENT_MODE_MAILBOX_KHR;
+	    
+	    if (!physicalDevice.checkDevicePresentationModeSupport(presentMode)){
+	    	
+	    	if (physicalDevice.checkDevicePresentationModeSupport(VK_PRESENT_MODE_FIFO_KHR))
+	    		presentMode = VK_PRESENT_MODE_FIFO_KHR;
+	    	else
+	    		presentMode = VK_PRESENT_MODE_IMMEDIATE_KHR;
+	    }
+	    
+	    int minImageCount = physicalDevice.getDeviceMinImageCount4TripleBuffering();
+	    
+	    swapChain = new SwapChain(logicalDevice.getHandle(), surface, minImageCount, imageFormat, colorSpace, presentMode, swapExtent);
+	    
 	    // BREAKPOINT
 	    
-        deviceAndGraphicsQueueFamily = createDeviceAndGetGraphicsQueueFamily(physicalDevice.getDeviceHandle());
+        deviceAndGraphicsQueueFamily = createDeviceAndGetGraphicsQueueFamily(physicalDevice.getHandle());
         
         device = deviceAndGraphicsQueueFamily.device;
         int queueFamilyIndex = deviceAndGraphicsQueueFamily.queueFamilyIndex;
         queue = createDeviceQueue(device, queueFamilyIndex);
         VkPhysicalDeviceMemoryProperties memoryProperties = deviceAndGraphicsQueueFamily.memoryProperties;
 	    
-	    ColorFormatAndSpace colorFormatAndSpace = getColorFormatAndSpace(physicalDevice.getDeviceHandle(), surface);
+	    ColorFormatAndSpace colorFormatAndSpace = getColorFormatAndSpace(physicalDevice.getHandle(), surface);
 	    long commandPool = createCommandPool(device, queueFamilyIndex);
 	    VkCommandBuffer setupCommandBuffer = createCommandBuffer(device, commandPool);
 	    postPresentCommandBuffer = createCommandBuffer(device, commandPool);
@@ -449,7 +473,7 @@ public class VKRenderEngine implements RenderEngine{
         if (swapchainRecreator.mustRecreate)
             swapchainRecreator.recreate(setupCommandBuffer,
             							device,
-            							physicalDevice.getDeviceHandle(),
+            							physicalDevice.getHandle(),
             							surface,
             							colorFormatAndSpace,
             							queue,
@@ -519,6 +543,9 @@ public class VKRenderEngine implements RenderEngine{
 	public void shutdown() {
 		
 		vkDestroySwapchainKHR(device, pSwapchains.get(0), null);
+		// TODO
+		// destroy image views
+		// destroy shaderModules
 		vkDestroySurfaceKHR(vkInstance, surface, null);
 		vkDestroyDebugReportCallbackEXT(vkInstance, debugCallbackHandle, null);
         vkDestroyInstance(vkInstance, null);		

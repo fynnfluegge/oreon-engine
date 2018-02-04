@@ -19,7 +19,7 @@ import org.oreon.core.vk.util.VKUtil;
 
 public class PhysicalDevice {
 
-	private VkPhysicalDevice deviceHandle;
+	private VkPhysicalDevice handle;
 	private QueueFamilies queueFamilies;
 	private SwapChainCapabilities swapChainCapabilities;
 	private List<String> supportedExtensionNames;
@@ -45,13 +45,13 @@ public class PhysicalDevice {
         memFree(pPhysicalDeviceCount);
         memFree(pPhysicalDevices);
         
-        deviceHandle =  new VkPhysicalDevice(physicalDevice, vkInstance);
-        queueFamilies = new QueueFamilies(deviceHandle, surface);
-        swapChainCapabilities = new SwapChainCapabilities(deviceHandle, surface);
-        supportedExtensionNames = DeviceCapabilities.getPhysicalDeviceExtensionNamesSupport(deviceHandle);
+        handle =  new VkPhysicalDevice(physicalDevice, vkInstance);
+        queueFamilies = new QueueFamilies(handle, surface);
+        swapChainCapabilities = new SwapChainCapabilities(handle, surface);
+        supportedExtensionNames = DeviceCapabilities.getPhysicalDeviceExtensionNamesSupport(handle);
 	}
 	
-	public void checkExtensionsSupport(PointerBuffer ppEnabledExtensionNames){
+	public void checkDeviceExtensionsSupport(PointerBuffer ppEnabledExtensionNames){
 		
 		for (int i=0; i<ppEnabledExtensionNames.limit(); i++){
 			if (!supportedExtensionNames.contains(ppEnabledExtensionNames.getStringUTF8())){
@@ -61,13 +61,28 @@ public class PhysicalDevice {
 		
 		ppEnabledExtensionNames.flip();
 	}
+	
+	public void checkDeviceFormatAndColorSpaceSupport(int format, int colorSpace){
+		
+		swapChainCapabilities.checkVkSurfaceFormatKHRSupport(format, colorSpace);
+	}
+	
+	public boolean checkDevicePresentationModeSupport(int presentMode){
+		
+		return swapChainCapabilities.checkPresentationModeSupport(presentMode);
+	}
+	
+	public int getDeviceMinImageCount4TripleBuffering(){
+		
+		return swapChainCapabilities.getMinImageCount4TripleBuffering();
+	}
 
 	public QueueFamilies getQueueFamilies() {
 		return queueFamilies;
 	}
 
-	public VkPhysicalDevice getDeviceHandle() {
-		return deviceHandle;
+	public VkPhysicalDevice getHandle() {
+		return handle;
 	}
 
 	public SwapChainCapabilities getSwapChainCapabilities() {

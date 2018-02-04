@@ -13,6 +13,7 @@ import static org.lwjgl.vulkan.VK10.vkCreateImageView;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_VIEW_TYPE_2D;
 import static org.lwjgl.vulkan.VK10.VK_NULL_HANDLE;
+import static org.lwjgl.vulkan.VK10.VK_SHARING_MODE_EXCLUSIVE;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_COMPONENT_SWIZZLE_R;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_ASPECT_COLOR_BIT;
@@ -22,18 +23,18 @@ import static org.lwjgl.vulkan.VK10.VK_COMPONENT_SWIZZLE_A;
 
 import java.nio.IntBuffer;
 import java.nio.LongBuffer;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkExtent2D;
 import org.lwjgl.vulkan.VkImageViewCreateInfo;
-import org.lwjgl.vulkan.VkSurfaceFormatKHR;
 import org.lwjgl.vulkan.VkSwapchainCreateInfoKHR;
 import org.oreon.core.vk.util.VKUtil;
 
 public class SwapChain {
 	
-	private long swapChainHandle;
+	private long handle;
 	private int imageFormat;
 	private int colorSpace;
 	private int presenMode;
@@ -43,12 +44,14 @@ public class SwapChain {
 	
 	public SwapChain(VkDevice logicalDevice,
 					 long surface,
-					 VkSurfaceFormatKHR surfaceFormat,
+					 int minImageCount,
+					 int imageFormat,
+					 int colorSpace,
 					 int presentMode,
 					 VkExtent2D swapExtend) {
 		
-		imageFormat = surfaceFormat.format();
-		colorSpace = surfaceFormat.colorSpace();
+		this.imageFormat = imageFormat;
+		this.colorSpace = colorSpace;
 		extent = swapExtend;
 		
 		VkSwapchainCreateInfoKHR swapchainCreateInfo = VkSwapchainCreateInfoKHR.calloc()
@@ -59,35 +62,39 @@ public class SwapChain {
 		        .compositeAlpha(VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR)
 		        .imageUsage(VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT)
 		        .preTransform(VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR)
+		        .minImageCount(minImageCount)
 		        .imageFormat(imageFormat)
 		        .imageColorSpace(colorSpace)
 		        .imageExtent(extent)
 		        .presentMode(presentMode)
 		        .imageArrayLayers(1)
-		        .clipped(true);
+		        .clipped(true)
+		        // presentation queue family and graphics queue family are the same
+		        .imageSharingMode(VK_SHARING_MODE_EXCLUSIVE)
+                .pQueueFamilyIndices(null);
 		
 		LongBuffer pSwapChain = memAllocLong(1);
         int err = vkCreateSwapchainKHR(logicalDevice, swapchainCreateInfo, null, pSwapChain);
-        swapchainCreateInfo.free();
-        swapChainHandle = pSwapChain.get(0);
+        handle = pSwapChain.get(0);
         
         if (err != VK_SUCCESS) {
             throw new AssertionError("Failed to create swap chain: " + VKUtil.translateVulkanResult(err));
         }
         
         IntBuffer pImageCount = memAllocInt(1);
-        err = vkGetSwapchainImagesKHR(logicalDevice, swapChainHandle, pImageCount, null);
+        err = vkGetSwapchainImagesKHR(logicalDevice, handle, pImageCount, null);
         int imageCount = pImageCount.get(0);
         if (err != VK_SUCCESS) {
         	throw new AssertionError("Failed to get number of swapchain images: " + VKUtil.translateVulkanResult(err));
         }
 
         LongBuffer pSwapchainImages = memAllocLong(imageCount);
-        err = vkGetSwapchainImagesKHR(logicalDevice, swapChainHandle, pImageCount, pSwapchainImages);
+        err = vkGetSwapchainImagesKHR(logicalDevice, handle, pImageCount, pSwapchainImages);
         if (err != VK_SUCCESS) {
             throw new AssertionError("Failed to get swapchain images: " + VKUtil.translateVulkanResult(err));
         }
         
+        swapChainImages = new ArrayList<>(imageCount);
         for (int i = 0; i < imageCount; i++) {
         	swapChainImages.add(pSwapchainImages.get(i));
         }
@@ -112,7 +119,8 @@ public class SwapChain {
 	                .layerCount(1);
         
         LongBuffer pImageView = memAllocLong(1);
-        	
+        
+        swapChainImageViews = new ArrayList<>(imageCount);
         for (long swapChainImage : swapChainImages){
         	
         	imageViewCreateInfo.image(swapChainImage);
@@ -129,14 +137,19 @@ public class SwapChain {
         memFree(pSwapchainImages);
         memFree(pImageView);
         swapchainCreateInfo.free();
+        imageViewCreateInfo.free();
+	}
+	
+	public void shutdown(){
+		
 	}
 
 	public int getPresenMode() {
 		return presenMode;
 	}
 
-	public long getSwapChainHandle() {
-		return swapChainHandle;
+	public long getHandle() {
+		return handle;
 	}
 
 	public List<Long> getSwapChainImages() {

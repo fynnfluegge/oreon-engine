@@ -6,7 +6,7 @@ import static org.lwjgl.vulkan.KHRSurface.vkGetPhysicalDeviceSurfaceCapabilities
 import static org.lwjgl.vulkan.KHRSurface.vkGetPhysicalDeviceSurfaceFormatsKHR;
 import static org.lwjgl.vulkan.KHRSurface.vkGetPhysicalDeviceSurfacePresentModesKHR;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
-
+import static org.lwjgl.vulkan.VK10.VK_FORMAT_UNDEFINED;
 import java.nio.IntBuffer;
 
 import org.lwjgl.vulkan.VkPhysicalDevice;
@@ -57,6 +57,44 @@ public class SwapChainCapabilities {
         
         memFree(pPresentModeCount);
         memFree(pFormatCount);
+	}
+	
+	public void checkVkSurfaceFormatKHRSupport(int format, int colorSpace){
+		
+		if (surfaceFormats.get(0).format() == VK_FORMAT_UNDEFINED){
+			// surface has not format restrictions
+			return;
+		}
+		
+		for (int i=0; i<surfaceFormats.limit(); i++){
+			
+			if (surfaceFormats.get(i).format() == format
+				&& surfaceFormats.get(i).colorSpace() == colorSpace){
+				return;
+			}
+		}
+		throw new AssertionError("Desired format and colorspace not supported");
+	}
+	
+	public boolean checkPresentationModeSupport(int presentMode){
+		
+        for (int i = 0; i < presentModes.limit(); i++) {
+        	
+            if (presentModes.get(i) == presentMode) {
+            	return true;
+            }
+        }
+        return false;
+	}
+	
+	public int getMinImageCount4TripleBuffering(){
+		
+		int minImageCount = surfaceCapabilities.minImageCount() + 1;
+        if ((surfaceCapabilities.maxImageCount() > 0) && (minImageCount > surfaceCapabilities.maxImageCount())) {
+        	minImageCount = surfaceCapabilities.maxImageCount();
+        }
+        
+        return minImageCount;
 	}
 	
 	public VkSurfaceCapabilitiesKHR getSurfaceCapabilities() {

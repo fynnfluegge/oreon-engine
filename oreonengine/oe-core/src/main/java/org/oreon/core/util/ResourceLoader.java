@@ -79,6 +79,7 @@ public class ResourceLoader {
 	}
 	
 	public static ByteBuffer ioResourceToByteBuffer(String resource, int bufferSize) throws IOException {
+		
         ByteBuffer buffer;
 
         Path path = Paths.get(resource);
@@ -91,26 +92,26 @@ public class ResourceLoader {
             }
         } else {
             try (
-                    InputStream source = ResourceLoader.class.getClassLoader().getResourceAsStream(resource);
-                    ReadableByteChannel rbc = Channels.newChannel(source)
-            )
-            {
-                    buffer = BufferUtils.createByteBuffer(bufferSize);
-
-                    while (true) {
-                        int bytes = rbc.read(buffer);
-                        if (bytes == -1) {
-                            break;
-                        }
-                        if (buffer.remaining() == 0) {
-                            buffer = resizeBuffer(buffer, buffer.capacity() * 2);
-                        }
-                    }
-                }
+	                InputStream source = ResourceLoader.class.getClassLoader().getResourceAsStream(resource);
+	                ReadableByteChannel rbc = Channels.newChannel(source)
+            	)
+            	{
+	                buffer = BufferUtils.createByteBuffer(bufferSize);
+	
+	                while (true) {
+	                    int bytes = rbc.read(buffer);
+	                    if (bytes == -1) {
+	                        break;
+	                    }
+	                    if (buffer.remaining() == 0) {
+	                        buffer = resizeBuffer(buffer, buffer.capacity() * 2);
+	                    }
+	                }
+            	}
             }
 
-            buffer.flip();
-            return buffer;
+        buffer.flip();
+        return buffer;
     }
 	
 	private static ByteBuffer resizeBuffer(ByteBuffer buffer, int newCapacity) {
