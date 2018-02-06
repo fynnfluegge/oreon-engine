@@ -2,7 +2,6 @@ package org.oreon.modules.gl.terrain;
 
 import org.oreon.core.gl.shaders.GLShader;
 import org.oreon.core.math.Vec2f;
-import org.oreon.core.system.CoreSystem;
 import org.oreon.core.terrain.Terrain;
 import org.oreon.core.util.Constants;
 
@@ -29,13 +28,14 @@ public class GLTerrain extends Terrain{
 		addChild(new TerrainQuadtree(configuration));
 		addChild(new TerrainQuadtree(lowPolyConfiguration));
 		
-//		setThread(new Thread(this));
-//		getThread().start();
+		setThread(new Thread(this));
+		getThread().start();
 	}
 	
 	@Override
 	public void run() {
-		while(true){
+		while(isRunning()){
+			
 			getLock().lock();
 			try{
 				getCondition().await();
@@ -46,17 +46,15 @@ public class GLTerrain extends Terrain{
 				getLock().unlock();
 			}
 			
-			if (CoreSystem.getInstance().getScenegraph().getCamera().isCameraMoved()){
-				updateQuadtree();
-			}
+			updateQuadtree();
 		}
 	}
 	
 	public void updateQuadtree(){
-		if (CoreSystem.getInstance().getScenegraph().getCamera().isCameraMoved()){
-			updateQuadtreeCounter++;
-		}
-		if (updateQuadtreeCounter == 1){
+		
+		updateQuadtreeCounter++;
+		
+		if (updateQuadtreeCounter == 2){
 			
 			((TerrainQuadtree) getChildren().get(0)).updateQuadtree();
 			((TerrainQuadtree) getChildren().get(1)).updateQuadtree();

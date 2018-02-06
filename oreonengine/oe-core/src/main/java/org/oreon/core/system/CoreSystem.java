@@ -64,6 +64,11 @@ public class CoreSystem {
 		
 		window.shutdown();
 		input.shutdown();
+		
+		// important to shutdown scenegraph before render-engine, since
+		// thread safety of instancing clusters.
+		// scenegraph sets isRunning to false, render-engine signals all
+		// waiting threads to shutdown
 		scenegraph.shutdown();
 		renderEngine.shutdown();
 		

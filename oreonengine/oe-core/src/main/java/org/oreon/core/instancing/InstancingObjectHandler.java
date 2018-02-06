@@ -20,9 +20,6 @@ public class InstancingObjectHandler {
 	      return instance;
 	}
 	
-	protected InstancingObjectHandler(){
-	}
-	
 	public void signalAll(){
 		lock.lock();
 		try{

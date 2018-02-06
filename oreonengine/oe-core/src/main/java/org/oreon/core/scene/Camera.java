@@ -46,7 +46,7 @@ private final Vec3f yAxis = new Vec3f(0,1,0);
 	private float rotYamt = 0;
 	private float rotXstride;
 	private float rotXamt = 0;
-	private float mouseSensitivity = 0.08f;
+	private float mouseSensitivity = 0.05f;
 	private boolean isUpRotation;
 	private boolean isDownRotation;	
 	private boolean isLeftRotation;	

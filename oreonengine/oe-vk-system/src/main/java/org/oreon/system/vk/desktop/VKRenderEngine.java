@@ -414,7 +414,7 @@ public class VKRenderEngine implements RenderEngine{
 	    
 	    int minImageCount = physicalDevice.getDeviceMinImageCount4TripleBuffering();
 	    
-	    swapChain = new SwapChain(logicalDevice.getHandle(), surface, minImageCount, imageFormat, colorSpace, presentMode, swapExtent);
+//	    swapChain = new SwapChain(logicalDevice.getHandle(), surface, minImageCount, imageFormat, colorSpace, presentMode, swapExtent);
 	    
 	    // BREAKPOINT
 	    

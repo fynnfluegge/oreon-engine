@@ -180,12 +180,6 @@ public class GLRenderEngine implements RenderEngine{
 
 		GLDirectionalLight.getInstance().update();
 		
-		if (CoreSystem.getInstance().getScenegraph().getCamera().isCameraMoved()){
-			if (CoreSystem.getInstance().getScenegraph().terrainExists()){
-				((GLTerrain) CoreSystem.getInstance().getScenegraph().getTerrain()).updateQuadtree();
-			}
-		}
-		
 		setClipplane(Constants.PLANE0);
 		Default.clearScreen();
 		
@@ -236,6 +230,13 @@ public class GLRenderEngine implements RenderEngine{
 		
 		// start Threads to update instancing objects
 		instancingObjectHandler.signalAll();
+		
+		// update Terrain Quadtree
+		if (CoreSystem.getInstance().getScenegraph().getCamera().isCameraMoved()){
+			if (CoreSystem.getInstance().getScenegraph().terrainExists()){
+				((GLTerrain) CoreSystem.getInstance().getScenegraph().getTerrain()).signal();
+			}
+		}
 
 		postProcessingTexture = new Texture2D(finalSceneTexture);
 		sceneDepthmap = deferredRenderer.getGbuffer().getDepthTexture();
@@ -445,7 +446,11 @@ public class GLRenderEngine implements RenderEngine{
 	}
 	@Override
 	public void shutdown() {
+		
 		instancingObjectHandler.signalAll();
+		if (CoreSystem.getInstance().getScenegraph().terrainExists()){
+			((GLTerrain) CoreSystem.getInstance().getScenegraph().getTerrain()).signal();
+		}
 	}
 	@Override
 	public boolean isGrid() {

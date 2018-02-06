@@ -37,7 +37,6 @@ public class SwapChainCapabilities {
 
         surfaceFormats = VkSurfaceFormatKHR.calloc(formatCount);
         err = vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, surface, pFormatCount, surfaceFormats);
-        memFree(pFormatCount);
         if (err != VK_SUCCESS) {
             throw new AssertionError("Failed to query physical device surface formats: " + VKUtil.translateVulkanResult(err));
         }

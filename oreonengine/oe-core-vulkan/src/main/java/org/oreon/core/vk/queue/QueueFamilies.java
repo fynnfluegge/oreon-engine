@@ -38,6 +38,7 @@ public class QueueFamilies {
         
         IntBuffer supportsPresent = memAllocInt(queueCount);
 
+        System.out.println("QueueFamilies");
         for (int i = 0; i < queueCount; i++) {
 
         	supportsPresent.position(i);
