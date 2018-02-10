@@ -19,6 +19,7 @@ public class RenderPass {
 	private VkAttachmentDescription.Buffer attachments;
 	private VkAttachmentReference.Buffer attachmentReferences;
 	private VkSubpassDescription.Buffer subpass;
+	private long handle;
 	
 	public void createRenderPass(){
 		
@@ -55,6 +56,10 @@ public class RenderPass {
                 .pResolveAttachments(null)
                 .pDepthStencilAttachment(null)
                 .pPreserveAttachments(null);
+	}
+
+	public long getHandle() {
+		return handle;
 	}
 
 }

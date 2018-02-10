@@ -8,6 +8,7 @@ import static org.lwjgl.vulkan.VK10.VK_POLYGON_MODE_FILL;
 import static org.lwjgl.vulkan.VK10.VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
 import static org.lwjgl.vulkan.VK10.VK_SAMPLE_COUNT_1_BIT;
 import static org.lwjgl.vulkan.VK10.VK_STENCIL_OP_KEEP;
+import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
@@ -17,17 +18,25 @@ import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
+import static org.lwjgl.vulkan.VK10.vkCreateGraphicsPipelines;
+import static org.lwjgl.vulkan.VK10.VK_NULL_HANDLE;
 
 import java.nio.IntBuffer;
+import java.nio.LongBuffer;
 
 import static org.lwjgl.vulkan.VK10.VK_COLOR_COMPONENT_R_BIT;
 import static org.lwjgl.vulkan.VK10.VK_COMPARE_OP_ALWAYS;
 import static org.lwjgl.vulkan.VK10.VK_COLOR_COMPONENT_G_BIT;
 import static org.lwjgl.vulkan.VK10.VK_COLOR_COMPONENT_B_BIT;
 import static org.lwjgl.system.MemoryUtil.memAllocInt;
+import static org.lwjgl.system.MemoryUtil.memAllocLong;
+import static org.lwjgl.system.MemoryUtil.memFree;
 import static org.lwjgl.vulkan.VK10.VK_COLOR_COMPONENT_A_BIT;
 
+import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkExtent2D;
+import org.lwjgl.vulkan.VkGraphicsPipelineCreateInfo;
 import org.lwjgl.vulkan.VkPipelineColorBlendAttachmentState;
 import org.lwjgl.vulkan.VkPipelineColorBlendStateCreateInfo;
 import org.lwjgl.vulkan.VkPipelineDepthStencilStateCreateInfo;
@@ -40,26 +49,61 @@ import org.lwjgl.vulkan.VkPipelineVertexInputStateCreateInfo;
 import org.lwjgl.vulkan.VkPipelineViewportStateCreateInfo;
 import org.lwjgl.vulkan.VkRect2D;
 import org.lwjgl.vulkan.VkViewport;
+import org.oreon.core.vk.device.LogicalDevice;
+import org.oreon.core.vk.util.VKUtil;
 
 public class Pipeline {
 	
-	private VkPipelineVertexInputStateCreateInfo vertexInput;
+	private VkPipelineVertexInputStateCreateInfo vertexInputState;
 	private VkPipelineInputAssemblyStateCreateInfo inputAssembly;
-	private VkPipelineViewportStateCreateInfo viewportAndScissor;
-	private VkPipelineRasterizationStateCreateInfo rasterization;
+	private VkPipelineViewportStateCreateInfo viewportAndScissorState;
+	private VkPipelineRasterizationStateCreateInfo rasterizer;
 	private VkPipelineMultisampleStateCreateInfo multisampling;
 	private VkPipelineColorBlendStateCreateInfo colorBlending;
 	private VkPipelineDepthStencilStateCreateInfo depthStencil;
 	private VkPipelineDynamicStateCreateInfo dynamicState;
-	private VkPipelineLayoutCreateInfo pipelineLayout;
 	
-	public void createPipeline(){
+	private long handle;
+	
+	public void createPipeline(LogicalDevice device, ShaderPipeline shaderPipeline, RenderPass renderPass, PipelineLayout layout){
 		
+		VkGraphicsPipelineCreateInfo.Buffer pipelineCreateInfo = VkGraphicsPipelineCreateInfo.calloc(1)
+				.sType(VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO)
+				.pStages(shaderPipeline.getShaderPipeline())
+				.pVertexInputState(vertexInputState)
+				.pInputAssemblyState(inputAssembly)
+				.pViewportState(viewportAndScissorState)
+				.pRasterizationState(rasterizer)
+				.pMultisampleState(multisampling)
+				.pDepthStencilState(null)
+				.pColorBlendState(colorBlending)
+				.pDynamicState(null)
+				.layout(layout.getHandle())
+				.renderPass(renderPass.getHandle())
+				.subpass(0)
+				.basePipelineHandle(VK_NULL_HANDLE)
+				.basePipelineIndex(-1);
+		
+		LongBuffer pPipelines = memAllocLong(1);
+		int err = vkCreateGraphicsPipelines(device.getHandle(), VK_NULL_HANDLE, pipelineCreateInfo, null, pPipelines);
+		if (err != VK_SUCCESS) {
+			throw new AssertionError("Failed to create pipeline: " + VKUtil.translateVulkanResult(err));
+		}
+		handle = pPipelines.get(0);
+		
+		vertexInputState.free();
+		inputAssembly.free();
+		viewportAndScissorState.free();
+        dynamicState.free();
+        viewportAndScissorState.free();
+        colorBlending.free();
+        rasterizer.free();
+        inputAssembly.free();
 	}
 	
 	public void specifyVertexInput(){
 		
-		vertexInput = VkPipelineVertexInputStateCreateInfo.calloc()
+		vertexInputState = VkPipelineVertexInputStateCreateInfo.calloc()
 				.sType(VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO)
 				.pNext(0)
 				.pVertexBindingDescriptions(null)
@@ -88,7 +132,7 @@ public class Pipeline {
 		scissor.extent().set(extent.width(), extent.height());
 		scissor.offset().set(0, 0);
 		
-		viewportAndScissor = VkPipelineViewportStateCreateInfo.calloc()
+		viewportAndScissorState = VkPipelineViewportStateCreateInfo.calloc()
 		        .sType(VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO)
 		        .viewportCount(1)
 		        .pViewports(viewport)
@@ -98,7 +142,7 @@ public class Pipeline {
 	
 	public void specifyRasterizer(){
 		
-		rasterization = VkPipelineRasterizationStateCreateInfo.calloc()
+		rasterizer = VkPipelineRasterizationStateCreateInfo.calloc()
 				.sType(VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO)
 				.polygonMode(VK_POLYGON_MODE_FILL)
 				.cullMode(VK_CULL_MODE_NONE)
@@ -154,19 +198,16 @@ public class Pipeline {
 	
 	public void specifyDynamicState(){
 		
-//		IntBuffer pDynamicStates = memAllocInt(2);
-//        pDynamicStates.put(VK_DYNAMIC_STATE_VIEWPORT).put(VK_DYNAMIC_STATE_SCISSOR).flip();
-//        
-//        dynamicState = VkPipelineDynamicStateCreateInfo.calloc()
-//                .sType(VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO)
-//                .pDynamicStates(pDynamicStates);
+		IntBuffer pDynamicStates = memAllocInt(2);
+        pDynamicStates.put(VK_DYNAMIC_STATE_VIEWPORT).put(VK_DYNAMIC_STATE_SCISSOR).flip();
+        
+        dynamicState = VkPipelineDynamicStateCreateInfo.calloc()
+                .sType(VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO)
+                .pDynamicStates(pDynamicStates);
+	}
+
+	public long getHandle() {
+		return handle;
 	}
 	
-	public void specifyPipelineLayout(){
-		
-		pipelineLayout = VkPipelineLayoutCreateInfo.calloc()
-				.sType(VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO)
-                .pNext(0)
-                .pSetLayouts(null);
-	}
 }
