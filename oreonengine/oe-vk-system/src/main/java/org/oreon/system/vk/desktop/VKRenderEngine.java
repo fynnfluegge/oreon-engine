@@ -1382,8 +1382,8 @@ public class VKRenderEngine implements RenderEngine{
         // Specify clear color (cornflower blue)
         VkClearValue.Buffer clearValues = VkClearValue.calloc(1);
         clearValues.color()
-                .float32(0, 100/255.0f)
-                .float32(1, 149/255.0f)
+                .float32(0, 5.0f)
+                .float32(1, 0.0f)
                 .float32(2, 237/255.0f)
                 .float32(3, 1.0f);
 
