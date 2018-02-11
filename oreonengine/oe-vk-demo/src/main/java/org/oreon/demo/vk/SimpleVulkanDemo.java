@@ -1,9 +1,9 @@
 package org.oreon.demo.vk;
 
+import org.oreon.core.platform.GLFWInput;
+import org.oreon.core.platform.Window;
 import org.oreon.core.system.CoreEngine;
 import org.oreon.core.system.CoreSystem;
-import org.oreon.core.system.GLFWInput;
-import org.oreon.core.system.Window;
 import org.oreon.core.vk.scene.VKCamera;
 import org.oreon.system.vk.desktop.VKWindow;
 import org.oreon.system.vk.desktop.VKRenderEngine;

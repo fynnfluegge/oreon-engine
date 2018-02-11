@@ -18,7 +18,7 @@ import static org.lwjgl.opengl.GL11.GL_TRUE;
 
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GLCapabilities;
-import org.oreon.core.system.Window;
+import org.oreon.core.platform.Window;
 
 public class GLWindow extends Window{
 

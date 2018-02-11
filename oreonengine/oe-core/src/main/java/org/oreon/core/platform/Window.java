@@ -1,4 +1,4 @@
-package org.oreon.core.system;
+package org.oreon.core.platform;
 
 import static org.lwjgl.glfw.GLFW.glfwSetWindowIcon;
 

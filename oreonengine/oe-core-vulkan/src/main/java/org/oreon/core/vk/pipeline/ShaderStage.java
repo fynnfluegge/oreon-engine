@@ -51,6 +51,8 @@ public class ShaderStage {
 	    }
 	    
 	    memFree(pShaderModule);
+	    moduleCreateInfo.free();
+	    memFree(shaderCode);
 	    
 	    return shaderModule;
 	}

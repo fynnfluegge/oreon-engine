@@ -11,7 +11,7 @@ import static org.lwjgl.glfw.GLFW.GLFW_CLIENT_API;
 import static org.lwjgl.glfw.GLFW.GLFW_NO_API;
 import static org.lwjgl.opengl.GL11.GL_TRUE;
 
-import org.oreon.core.system.Window;
+import org.oreon.core.platform.Window;
 
 public class VKWindow extends Window{
 	

@@ -86,9 +86,7 @@ public class Pipeline {
 		
 		LongBuffer pPipelines = memAllocLong(1);
 		int err = vkCreateGraphicsPipelines(device.getHandle(), VK_NULL_HANDLE, pipelineCreateInfo, null, pPipelines);
-		if (err != VK_SUCCESS) {
-			throw new AssertionError("Failed to create pipeline: " + VKUtil.translateVulkanResult(err));
-		}
+		
 		handle = pPipelines.get(0);
 		
 		vertexInputState.free();
@@ -99,6 +97,10 @@ public class Pipeline {
         colorBlending.free();
         rasterizer.free();
         inputAssembly.free();
+		
+		if (err != VK_SUCCESS) {
+			throw new AssertionError("Failed to create pipeline: " + VKUtil.translateVulkanResult(err));
+		}
 	}
 	
 	public void specifyVertexInput(){

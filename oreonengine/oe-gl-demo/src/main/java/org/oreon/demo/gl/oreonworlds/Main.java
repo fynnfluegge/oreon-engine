@@ -1,10 +1,10 @@
 package org.oreon.demo.gl.oreonworlds;
 
 import org.oreon.core.gl.scene.GLCamera;
+import org.oreon.core.platform.GLFWInput;
+import org.oreon.core.platform.Window;
 import org.oreon.core.system.CoreEngine;
 import org.oreon.core.system.CoreSystem;
-import org.oreon.core.system.GLFWInput;
-import org.oreon.core.system.Window;
 import org.oreon.demo.gl.oreonworlds.assets.plants.Palm01ClusterGroup;
 import org.oreon.demo.gl.oreonworlds.assets.plants.Tree01ClusterGroup;
 import org.oreon.demo.gl.oreonworlds.assets.plants.Tree02ClusterGroup;

@@ -13,8 +13,8 @@ import static org.lwjgl.glfw.GLFW.glfwSetCursorPos;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.math.Quaternion;
 import org.oreon.core.math.Vec3f;
+import org.oreon.core.platform.Input;
 import org.oreon.core.system.CoreSystem;
-import org.oreon.core.system.Input;
 import org.oreon.core.util.Constants;
 import org.oreon.core.util.Util;
 

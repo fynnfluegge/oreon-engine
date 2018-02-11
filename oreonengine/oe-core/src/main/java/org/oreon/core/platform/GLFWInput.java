@@ -1,4 +1,4 @@
-package org.oreon.core.system;
+package org.oreon.core.platform;
 
 import static org.lwjgl.glfw.GLFW.GLFW_CURSOR;
 import static org.lwjgl.glfw.GLFW.GLFW_CURSOR_HIDDEN;
@@ -22,6 +22,7 @@ import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWMouseButtonCallback;
 import org.lwjgl.glfw.GLFWScrollCallback;
 import org.oreon.core.math.Vec2f;
+import org.oreon.core.system.CoreSystem;
 import org.lwjgl.glfw.GLFWFramebufferSizeCallback;
 
 public class GLFWInput implements Input{

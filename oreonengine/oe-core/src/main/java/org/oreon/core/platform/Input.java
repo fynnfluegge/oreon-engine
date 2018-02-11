@@ -1,4 +1,4 @@
-package org.oreon.core.system;
+package org.oreon.core.platform;
 
 import org.oreon.core.math.Vec2f;
 

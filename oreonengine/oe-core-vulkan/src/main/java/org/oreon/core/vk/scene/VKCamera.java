@@ -1,7 +1,7 @@
 package org.oreon.core.vk.scene;
 
+import org.oreon.core.platform.GLFWInput;
 import org.oreon.core.scene.Camera;
-import org.oreon.core.system.GLFWInput;
 
 public class VKCamera extends Camera{
 

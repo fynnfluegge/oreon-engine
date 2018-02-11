@@ -9,11 +9,13 @@ import static org.lwjgl.vulkan.KHRSwapchain.VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_I
 import static org.lwjgl.vulkan.KHRSwapchain.vkCreateSwapchainKHR;
 import static org.lwjgl.vulkan.KHRSwapchain.vkGetSwapchainImagesKHR;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
+import static org.lwjgl.vulkan.VK10.vkCreateFramebuffer;
 import static org.lwjgl.vulkan.VK10.vkCreateImageView;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_VIEW_TYPE_2D;
 import static org.lwjgl.vulkan.VK10.VK_NULL_HANDLE;
 import static org.lwjgl.vulkan.VK10.VK_SHARING_MODE_EXCLUSIVE;
+import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_COMPONENT_SWIZZLE_R;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_ASPECT_COLOR_BIT;
@@ -28,6 +30,7 @@ import java.util.List;
 
 import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkExtent2D;
+import org.lwjgl.vulkan.VkFramebufferCreateInfo;
 import org.lwjgl.vulkan.VkImageViewCreateInfo;
 import org.lwjgl.vulkan.VkSwapchainCreateInfoKHR;
 import org.oreon.core.vk.util.VKUtil;
@@ -41,14 +44,16 @@ public class SwapChain {
 	private VkExtent2D extent;
 	private List<Long> swapChainImages;
 	private List<Long> swapChainImageViews;
+	private List<Long> frameBuffers;
 	
-	public SwapChain(VkDevice logicalDevice,
+	public SwapChain(VkDevice device,
 					 long surface,
 					 int minImageCount,
 					 int imageFormat,
 					 int colorSpace,
 					 int presentMode,
-					 VkExtent2D swapExtend) {
+					 VkExtent2D swapExtend,
+					 long renderPass) {
 		
 		this.imageFormat = imageFormat;
 		this.colorSpace = colorSpace;
@@ -74,7 +79,7 @@ public class SwapChain {
                 .pQueueFamilyIndices(null);
 		
 		LongBuffer pSwapChain = memAllocLong(1);
-        int err = vkCreateSwapchainKHR(logicalDevice, swapchainCreateInfo, null, pSwapChain);
+        int err = vkCreateSwapchainKHR(device, swapchainCreateInfo, null, pSwapChain);
         handle = pSwapChain.get(0);
         
         if (err != VK_SUCCESS) {
@@ -82,14 +87,14 @@ public class SwapChain {
         }
         
         IntBuffer pImageCount = memAllocInt(1);
-        err = vkGetSwapchainImagesKHR(logicalDevice, handle, pImageCount, null);
+        err = vkGetSwapchainImagesKHR(device, handle, pImageCount, null);
         int imageCount = pImageCount.get(0);
         if (err != VK_SUCCESS) {
         	throw new AssertionError("Failed to get number of swapchain images: " + VKUtil.translateVulkanResult(err));
         }
 
         LongBuffer pSwapchainImages = memAllocLong(imageCount);
-        err = vkGetSwapchainImagesKHR(logicalDevice, handle, pImageCount, pSwapchainImages);
+        err = vkGetSwapchainImagesKHR(device, handle, pImageCount, pSwapchainImages);
         if (err != VK_SUCCESS) {
             throw new AssertionError("Failed to get swapchain images: " + VKUtil.translateVulkanResult(err));
         }
@@ -118,20 +123,48 @@ public class SwapChain {
 	                .baseArrayLayer(0)
 	                .layerCount(1);
         
-        LongBuffer pImageView = memAllocLong(1);
-        
         swapChainImageViews = new ArrayList<>(imageCount);
+        LongBuffer pImageView = memAllocLong(1);
         for (long swapChainImage : swapChainImages){
         	
         	imageViewCreateInfo.image(swapChainImage);
         	
-			err = vkCreateImageView(logicalDevice, imageViewCreateInfo, null, pImageView);
+			err = vkCreateImageView(device, imageViewCreateInfo, null, pImageView);
 			if (err != VK_SUCCESS) {
 			   throw new AssertionError("Failed to create image view: " + VKUtil.translateVulkanResult(err));
 			}
 			swapChainImageViews.add(pImageView.get(0));
         }
         
+        frameBuffers = new ArrayList<>(imageCount);
+        LongBuffer pFramebuffer = memAllocLong(1);
+        LongBuffer attachments = memAllocLong(1);
+        for (long imageView : swapChainImageViews){
+        	
+        	attachments.put(0, imageView);
+            VkFramebufferCreateInfo framebufferInfo = VkFramebufferCreateInfo.calloc()
+                    .sType(VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO)
+                    .pAttachments(attachments)
+                    .flags(0)
+                    .height(extent.height())
+                    .width(extent.width())
+                    .layers(1)
+                    .pNext(0)
+                    .renderPass(renderPass);
+            
+            err = vkCreateFramebuffer(device, framebufferInfo, null, pFramebuffer);
+            long framebuffer = pFramebuffer.get(0);
+            if (err != VK_SUCCESS) {
+                throw new AssertionError("Failed to create framebuffer: " + VKUtil.translateVulkanResult(err));
+            }
+            
+            frameBuffers.add(framebuffer);
+            
+            framebufferInfo.free();
+        }
+        
+        memFree(pFramebuffer);
+        memFree(attachments);
         memFree(pSwapChain);
         memFree(pImageCount);
         memFree(pSwapchainImages);

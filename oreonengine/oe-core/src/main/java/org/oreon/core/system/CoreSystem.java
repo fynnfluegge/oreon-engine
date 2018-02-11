@@ -5,6 +5,8 @@ import static org.lwjgl.glfw.GLFW.glfwSetErrorCallback;
 import static org.lwjgl.glfw.GLFW.glfwTerminate;
 
 import org.lwjgl.glfw.GLFWErrorCallback;
+import org.oreon.core.platform.Input;
+import org.oreon.core.platform.Window;
 import org.oreon.core.scene.Scenegraph;
 
 

@@ -8,11 +8,22 @@ import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_UNDEFINED;
 import static org.lwjgl.vulkan.VK10.VK_PIPELINE_BIND_POINT_GRAPHICS;
 import static org.lwjgl.vulkan.VK10.VK_SAMPLE_COUNT_1_BIT;
+import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
+import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
+import static org.lwjgl.vulkan.VK10.vkCreateRenderPass;
+
+import java.nio.LongBuffer;
+
+import static org.lwjgl.system.MemoryUtil.memAllocLong;
+import static org.lwjgl.system.MemoryUtil.memFree;
 import static org.lwjgl.vulkan.KHRSwapchain.VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 
 import org.lwjgl.vulkan.VkAttachmentDescription;
 import org.lwjgl.vulkan.VkAttachmentReference;
+import org.lwjgl.vulkan.VkRenderPassCreateInfo;
 import org.lwjgl.vulkan.VkSubpassDescription;
+import org.oreon.core.vk.device.LogicalDevice;
+import org.oreon.core.vk.util.VKUtil;
 
 public class RenderPass {
 	
@@ -21,8 +32,29 @@ public class RenderPass {
 	private VkSubpassDescription.Buffer subpass;
 	private long handle;
 	
-	public void createRenderPass(){
+	public void createRenderPass(LogicalDevice device){
 		
+		VkRenderPassCreateInfo renderPassInfo = VkRenderPassCreateInfo.calloc()
+	            .sType(VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO)
+	            .pNext(0)
+	            .pAttachments(attachments)
+	            .pSubpasses(subpass)
+	            .pDependencies(null);
+		
+		LongBuffer pRenderPass = memAllocLong(1);
+        int err = vkCreateRenderPass(device.getHandle(), renderPassInfo, null, pRenderPass);
+
+        handle = pRenderPass.get(0);
+        
+        memFree(pRenderPass);
+        renderPassInfo.free();
+        attachmentReferences.free();
+        subpass.free();
+        attachments.free();
+        
+        if (err != VK_SUCCESS) {
+            throw new AssertionError("Failed to create clear render pass: " + VKUtil.translateVulkanResult(err));
+        }
 	}
 	
 	public void specifyAttachmentDescription(int format){
