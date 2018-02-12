@@ -44,6 +44,7 @@ import org.lwjgl.vulkan.VkPipelineRasterizationStateCreateInfo;
 import org.lwjgl.vulkan.VkPipelineVertexInputStateCreateInfo;
 import org.lwjgl.vulkan.VkPipelineViewportStateCreateInfo;
 import org.lwjgl.vulkan.VkRect2D;
+import org.lwjgl.vulkan.VkSubmitInfo;
 import org.lwjgl.vulkan.VkViewport;
 import org.oreon.core.vk.device.LogicalDevice;
 import org.oreon.core.vk.util.VKUtil;
@@ -202,6 +203,10 @@ public class Pipeline {
         dynamicState = VkPipelineDynamicStateCreateInfo.calloc()
                 .sType(VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO)
                 .pDynamicStates(pDynamicStates);
+	}
+	
+	public void submitToGraphicsQueue(){
+		
 	}
 
 	public long getHandle() {

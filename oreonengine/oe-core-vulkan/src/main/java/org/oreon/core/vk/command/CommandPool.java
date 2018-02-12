@@ -5,6 +5,7 @@ import static org.lwjgl.system.MemoryUtil.memFree;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import static org.lwjgl.vulkan.VK10.vkCreateCommandPool;
+import static org.lwjgl.vulkan.VK10.vkDestroyCommandPool;
 
 import java.nio.LongBuffer;
 
@@ -33,6 +34,11 @@ public class CommandPool {
 		if (err != VK_SUCCESS) {
 		    throw new AssertionError("Failed to create command pool: " + VKUtil.translateVulkanResult(err));
 		}
+	}
+	
+	public void destroy(VkDevice device){
+		
+		vkDestroyCommandPool(device, handle, null);
 	}
 
 	public long getHandle() {

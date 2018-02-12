@@ -11,6 +11,7 @@ import static org.lwjgl.vulkan.VK10.VK_TIMEOUT;
 import java.nio.ByteBuffer;
 
 import org.lwjgl.PointerBuffer;
+import org.lwjgl.vulkan.VkClearValue;
 
 import static org.lwjgl.vulkan.VK10.VK_EVENT_SET;
 import static org.lwjgl.vulkan.VK10.VK_EVENT_RESET;
@@ -110,5 +111,17 @@ public class VKUtil {
         
         return ppEnabledLayerNames;
 	}
+    
+    public static VkClearValue.Buffer getBlackClearValues(){
+    	
+    	VkClearValue.Buffer clearValues = VkClearValue.calloc(1);
+        clearValues.color()
+                .float32(0, 0.0f)
+                .float32(1, 0.0f)
+                .float32(2, 0.0f)
+                .float32(3, 1.0f);
+        
+        return clearValues;
+    }
 
 }
