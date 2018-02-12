@@ -5,11 +5,13 @@ import static org.lwjgl.system.MemoryUtil.memAllocPointer;
 import static org.lwjgl.system.MemoryUtil.memFree;
 import static org.lwjgl.system.MemoryUtil.memUTF8;
 import static org.lwjgl.vulkan.KHRSwapchain.VK_KHR_SWAPCHAIN_EXTENSION_NAME;
+import static org.lwjgl.vulkan.VK10.VK_NULL_HANDLE;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import static org.lwjgl.vulkan.VK10.vkCreateDevice;
 import static org.lwjgl.vulkan.VK10.vkGetDeviceQueue;
+import static org.lwjgl.vulkan.VK10.vkQueueSubmit;
 
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
@@ -19,6 +21,7 @@ import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkDeviceCreateInfo;
 import org.lwjgl.vulkan.VkDeviceQueueCreateInfo;
 import org.lwjgl.vulkan.VkQueue;
+import org.lwjgl.vulkan.VkSubmitInfo;
 import org.oreon.core.vk.util.VKUtil;
 
 public class LogicalDevice {

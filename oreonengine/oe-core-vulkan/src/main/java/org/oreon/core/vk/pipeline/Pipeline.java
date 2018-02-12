@@ -19,6 +19,7 @@ import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STAT
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import static org.lwjgl.vulkan.VK10.vkCreateGraphicsPipelines;
+import static org.lwjgl.vulkan.VK10.vkQueueSubmit;
 import static org.lwjgl.vulkan.VK10.VK_NULL_HANDLE;
 
 import java.nio.IntBuffer;
@@ -203,10 +204,6 @@ public class Pipeline {
         dynamicState = VkPipelineDynamicStateCreateInfo.calloc()
                 .sType(VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO)
                 .pDynamicStates(pDynamicStates);
-	}
-	
-	public void submitToGraphicsQueue(){
-		
 	}
 
 	public long getHandle() {

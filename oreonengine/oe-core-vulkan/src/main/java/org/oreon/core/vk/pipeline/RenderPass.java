@@ -89,6 +89,10 @@ public class RenderPass {
                 .pDepthStencilAttachment(null)
                 .pPreserveAttachments(null);
 	}
+	
+	public void specifySubpassDependencies(){
+		// TODO
+	}
 
 	public long getHandle() {
 		return handle;

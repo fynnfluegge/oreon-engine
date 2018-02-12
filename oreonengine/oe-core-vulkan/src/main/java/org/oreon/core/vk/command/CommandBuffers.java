@@ -8,6 +8,7 @@ import static org.lwjgl.vulkan.VK10.VK_PIPELINE_BIND_POINT_GRAPHICS;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_SUBMIT_INFO;
 import static org.lwjgl.vulkan.VK10.VK_SUBPASS_CONTENTS_INLINE;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import static org.lwjgl.vulkan.VK10.vkAllocateCommandBuffers;
@@ -32,7 +33,7 @@ import org.oreon.core.vk.util.VKUtil;
 public class CommandBuffers {
 
 	private VkCommandBuffer[] commandBuffers;
-	private VkSubmitInfo[] submitInfos;
+	private VkSubmitInfo submitInfo;
 	
 	public CommandBuffers(VkDevice device, long commandPool, int count) {
 		
@@ -111,13 +112,17 @@ public class CommandBuffers {
 		renderPassBeginInfo.free();
 		renderArea.free();
 	}
+	
+	public void createSubmitInfos(){
+		
+	}
 
 	public VkCommandBuffer[] getCommandBuffers() {
 		return commandBuffers;
 	}
 
-	public VkSubmitInfo[] getSubmitInfos() {
-		return submitInfos;
+	public VkSubmitInfo getSubmitInfos() {
+		return submitInfo;
 	}
 	
 }

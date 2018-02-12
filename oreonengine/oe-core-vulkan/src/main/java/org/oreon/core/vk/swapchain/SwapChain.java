@@ -33,6 +33,7 @@ import org.lwjgl.vulkan.VkExtent2D;
 import org.lwjgl.vulkan.VkFramebufferCreateInfo;
 import org.lwjgl.vulkan.VkImageViewCreateInfo;
 import org.lwjgl.vulkan.VkSwapchainCreateInfoKHR;
+import org.oreon.core.vk.command.CommandBuffers;
 import org.oreon.core.vk.util.VKUtil;
 
 public class SwapChain {
@@ -45,6 +46,7 @@ public class SwapChain {
 	private List<Long> swapChainImages;
 	private List<Long> swapChainImageViews;
 	private List<Long> frameBuffers;
+	private CommandBuffers renderCommandBuffers;
 	
 	public SwapChain(VkDevice device,
 					 long surface,
@@ -171,6 +173,10 @@ public class SwapChain {
         memFree(pImageView);
         swapchainCreateInfo.free();
         imageViewCreateInfo.free();
+	}
+	
+	public void draw(){
+		
 	}
 	
 	public void shutdown(){
