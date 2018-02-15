@@ -18,10 +18,11 @@ public class ShaderPipeline {
 		
 		shaderPipeline = VkPipelineShaderStageCreateInfo.calloc(shaderStages.size());
 		
-		shaderPipeline.flip();
 		for (ShaderStage shaderStage : shaderStages){
 			shaderPipeline.put(shaderStage.getShaderStageInfo());
 		}
+		
+		shaderPipeline.flip();
 	}
 	
 	public void createVertexShader(VkDevice device, String filePath){

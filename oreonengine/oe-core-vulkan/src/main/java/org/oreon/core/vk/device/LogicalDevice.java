@@ -11,7 +11,6 @@ import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import static org.lwjgl.vulkan.VK10.vkCreateDevice;
 import static org.lwjgl.vulkan.VK10.vkGetDeviceQueue;
-import static org.lwjgl.vulkan.VK10.vkQueueSubmit;
 
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
@@ -21,7 +20,6 @@ import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkDeviceCreateInfo;
 import org.lwjgl.vulkan.VkDeviceQueueCreateInfo;
 import org.lwjgl.vulkan.VkQueue;
-import org.lwjgl.vulkan.VkSubmitInfo;
 import org.oreon.core.vk.util.VKUtil;
 
 public class LogicalDevice {
@@ -31,6 +29,8 @@ public class LogicalDevice {
 	private VkQueue computeQueue;
 	private VkQueue transferQueue;
 	
+	private int graphicsAndPresentationQueueFamilyIndex;
+	
 	public void createGraphicsAndPresentationDevice(PhysicalDevice physicalDevice,
 			 										float priority,
 			 										PointerBuffer ppEnabledLayerNames){
@@ -38,7 +38,7 @@ public class LogicalDevice {
 		FloatBuffer pQueuePriorities = memAllocFloat(1).put(priority);
         pQueuePriorities.flip();
         
-        int graphicsAndPresentationQueueFamilyIndex = physicalDevice.getQueueFamilies().getGraphicsAndPresentationQueueFamily().getIndex();
+        graphicsAndPresentationQueueFamilyIndex = physicalDevice.getQueueFamilies().getGraphicsAndPresentationQueueFamily().getIndex();
         
         VkDeviceQueueCreateInfo.Buffer queueCreateInfo = VkDeviceQueueCreateInfo.calloc(1)
                 .sType(VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO)
@@ -54,7 +54,7 @@ public class LogicalDevice {
         
         VkDeviceCreateInfo deviceCreateInfo = VkDeviceCreateInfo.calloc()
                 .sType(VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO)
-                .pNext(0)
+                .pNext(VK_NULL_HANDLE)
                 .pQueueCreateInfos(queueCreateInfo)
                 .ppEnabledExtensionNames(extensions)
                 .ppEnabledLayerNames(ppEnabledLayerNames);
@@ -120,6 +120,10 @@ public class LogicalDevice {
 
 	public VkQueue getTransferQueue() {
 		return transferQueue;
+	}
+
+	public int getGraphicsAndPresentationQueueFamilyIndex() {
+		return graphicsAndPresentationQueueFamilyIndex;
 	}
 
 }

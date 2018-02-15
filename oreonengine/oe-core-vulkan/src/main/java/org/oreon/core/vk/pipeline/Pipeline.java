@@ -1,9 +1,9 @@
 package org.oreon.core.vk.pipeline;
 
-import static org.lwjgl.vulkan.VK10.VK_CULL_MODE_NONE;
+import static org.lwjgl.vulkan.VK10.VK_CULL_MODE_BACK_BIT;
 import static org.lwjgl.vulkan.VK10.VK_DYNAMIC_STATE_SCISSOR;
 import static org.lwjgl.vulkan.VK10.VK_DYNAMIC_STATE_VIEWPORT;
-import static org.lwjgl.vulkan.VK10.VK_FRONT_FACE_COUNTER_CLOCKWISE;
+import static org.lwjgl.vulkan.VK10.VK_FRONT_FACE_CLOCKWISE;
 import static org.lwjgl.vulkan.VK10.VK_POLYGON_MODE_FILL;
 import static org.lwjgl.vulkan.VK10.VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
 import static org.lwjgl.vulkan.VK10.VK_SAMPLE_COUNT_1_BIT;
@@ -19,7 +19,6 @@ import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STAT
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import static org.lwjgl.vulkan.VK10.vkCreateGraphicsPipelines;
-import static org.lwjgl.vulkan.VK10.vkQueueSubmit;
 import static org.lwjgl.vulkan.VK10.VK_NULL_HANDLE;
 
 import java.nio.IntBuffer;
@@ -33,6 +32,7 @@ import static org.lwjgl.system.MemoryUtil.memAllocInt;
 import static org.lwjgl.system.MemoryUtil.memAllocLong;
 import static org.lwjgl.vulkan.VK10.VK_COLOR_COMPONENT_A_BIT;
 
+import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkExtent2D;
 import org.lwjgl.vulkan.VkGraphicsPipelineCreateInfo;
 import org.lwjgl.vulkan.VkPipelineColorBlendAttachmentState;
@@ -45,9 +45,7 @@ import org.lwjgl.vulkan.VkPipelineRasterizationStateCreateInfo;
 import org.lwjgl.vulkan.VkPipelineVertexInputStateCreateInfo;
 import org.lwjgl.vulkan.VkPipelineViewportStateCreateInfo;
 import org.lwjgl.vulkan.VkRect2D;
-import org.lwjgl.vulkan.VkSubmitInfo;
 import org.lwjgl.vulkan.VkViewport;
-import org.oreon.core.vk.device.LogicalDevice;
 import org.oreon.core.vk.util.VKUtil;
 
 public class Pipeline {
@@ -63,7 +61,15 @@ public class Pipeline {
 	
 	private long handle;
 	
-	public void createPipeline(LogicalDevice device, ShaderPipeline shaderPipeline, RenderPass renderPass, PipelineLayout layout){
+	private ShaderPipeline shaderPipeline;
+	private RenderPass renderPass;
+	private PipelineLayout pipelineLayout;
+	
+	public void createPipeline(VkDevice device, ShaderPipeline shaderPipeline, RenderPass renderPass, PipelineLayout layout){
+		
+		this.shaderPipeline = shaderPipeline;
+		this.renderPass = renderPass;
+		this.pipelineLayout = layout;
 		
 		VkGraphicsPipelineCreateInfo.Buffer pipelineCreateInfo = VkGraphicsPipelineCreateInfo.calloc(1)
 				.sType(VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO)
@@ -83,18 +89,18 @@ public class Pipeline {
 				.basePipelineIndex(-1);
 		
 		LongBuffer pPipelines = memAllocLong(1);
-		int err = vkCreateGraphicsPipelines(device.getHandle(), VK_NULL_HANDLE, pipelineCreateInfo, null, pPipelines);
+		int err = vkCreateGraphicsPipelines(device, VK_NULL_HANDLE, pipelineCreateInfo, null, pPipelines);
 		
 		handle = pPipelines.get(0);
 		
 		vertexInputState.free();
 		inputAssembly.free();
 		viewportAndScissorState.free();
-        dynamicState.free();
-        viewportAndScissorState.free();
-        colorBlending.free();
-        rasterizer.free();
-        inputAssembly.free();
+		rasterizer.free();
+		multisampling.free();
+		colorBlending.free();
+		depthStencil.free();
+		dynamicState.free();
 		
 		if (err != VK_SUCCESS) {
 			throw new AssertionError("Failed to create pipeline: " + VKUtil.translateVulkanResult(err));
@@ -145,8 +151,8 @@ public class Pipeline {
 		rasterizer = VkPipelineRasterizationStateCreateInfo.calloc()
 				.sType(VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO)
 				.polygonMode(VK_POLYGON_MODE_FILL)
-				.cullMode(VK_CULL_MODE_NONE)
-				.frontFace(VK_FRONT_FACE_COUNTER_CLOCKWISE)
+				.cullMode(VK_CULL_MODE_BACK_BIT)
+				.frontFace(VK_FRONT_FACE_CLOCKWISE)
 				.rasterizerDiscardEnable(false)
 				.lineWidth(1.0f)
 				.depthClampEnable(false)
@@ -199,7 +205,9 @@ public class Pipeline {
 	public void specifyDynamicState(){
 		
 		IntBuffer pDynamicStates = memAllocInt(2);
-        pDynamicStates.put(VK_DYNAMIC_STATE_VIEWPORT).put(VK_DYNAMIC_STATE_SCISSOR).flip();
+        pDynamicStates.put(VK_DYNAMIC_STATE_VIEWPORT);
+        pDynamicStates.put(VK_DYNAMIC_STATE_SCISSOR);
+        pDynamicStates.flip();
         
         dynamicState = VkPipelineDynamicStateCreateInfo.calloc()
                 .sType(VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO)
@@ -208,6 +216,18 @@ public class Pipeline {
 
 	public long getHandle() {
 		return handle;
+	}
+
+	public ShaderPipeline getShaderPipeline() {
+		return shaderPipeline;
+	}
+
+	public RenderPass getRenderPass() {
+		return renderPass;
+	}
+
+	public PipelineLayout getPipelineLayout() {
+		return pipelineLayout;
 	}
 	
 }

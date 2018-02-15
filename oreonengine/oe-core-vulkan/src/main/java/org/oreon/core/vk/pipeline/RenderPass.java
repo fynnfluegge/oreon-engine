@@ -10,6 +10,10 @@ import static org.lwjgl.vulkan.VK10.VK_PIPELINE_BIND_POINT_GRAPHICS;
 import static org.lwjgl.vulkan.VK10.VK_SAMPLE_COUNT_1_BIT;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
+import static org.lwjgl.vulkan.VK10.VK_SUBPASS_EXTERNAL;
+import static org.lwjgl.vulkan.VK10.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+import static org.lwjgl.vulkan.VK10.VK_ACCESS_COLOR_ATTACHMENT_READ_BIT;
+import static org.lwjgl.vulkan.VK10.VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
 import static org.lwjgl.vulkan.VK10.vkCreateRenderPass;
 
 import java.nio.LongBuffer;
@@ -20,9 +24,10 @@ import static org.lwjgl.vulkan.KHRSwapchain.VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 
 import org.lwjgl.vulkan.VkAttachmentDescription;
 import org.lwjgl.vulkan.VkAttachmentReference;
+import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkRenderPassCreateInfo;
+import org.lwjgl.vulkan.VkSubpassDependency;
 import org.lwjgl.vulkan.VkSubpassDescription;
-import org.oreon.core.vk.device.LogicalDevice;
 import org.oreon.core.vk.util.VKUtil;
 
 public class RenderPass {
@@ -30,19 +35,21 @@ public class RenderPass {
 	private VkAttachmentDescription.Buffer attachments;
 	private VkAttachmentReference.Buffer attachmentReferences;
 	private VkSubpassDescription.Buffer subpass;
+	private VkSubpassDependency.Buffer dependency;
 	private long handle;
 	
-	public void createRenderPass(LogicalDevice device){
+	public void createRenderPass(VkDevice device){
 		
 		VkRenderPassCreateInfo renderPassInfo = VkRenderPassCreateInfo.calloc()
 	            .sType(VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO)
 	            .pNext(0)
 	            .pAttachments(attachments)
 	            .pSubpasses(subpass)
+	            .pDependencies(dependency)
 	            .pDependencies(null);
 		
 		LongBuffer pRenderPass = memAllocLong(1);
-        int err = vkCreateRenderPass(device.getHandle(), renderPassInfo, null, pRenderPass);
+        int err = vkCreateRenderPass(device, renderPassInfo, null, pRenderPass);
 
         handle = pRenderPass.get(0);
         
@@ -50,6 +57,7 @@ public class RenderPass {
         renderPassInfo.free();
         attachmentReferences.free();
         subpass.free();
+        dependency.free();
         attachments.free();
         
         if (err != VK_SUCCESS) {
@@ -77,7 +85,7 @@ public class RenderPass {
                 .layout(VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
 	}
 	
-	public void specifySubpassDescription(){
+	public void specifySubpass(){
 		
 		subpass = VkSubpassDescription.calloc(1)
                 .pipelineBindPoint(VK_PIPELINE_BIND_POINT_GRAPHICS)
@@ -90,8 +98,15 @@ public class RenderPass {
                 .pPreserveAttachments(null);
 	}
 	
-	public void specifySubpassDependencies(){
-		// TODO
+	public void specifyDependency(){
+		
+		dependency = VkSubpassDependency.calloc(1)
+				.srcSubpass(VK_SUBPASS_EXTERNAL)
+				.dstSubpass(0)
+				.srcStageMask(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT)
+				.srcAccessMask(0)
+				.dstStageMask(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT)
+				.dstAccessMask(VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT);
 	}
 
 	public long getHandle() {

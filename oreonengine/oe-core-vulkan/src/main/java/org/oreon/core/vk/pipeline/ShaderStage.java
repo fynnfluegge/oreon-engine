@@ -36,6 +36,7 @@ public class ShaderStage {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
 	    int err;
 	    VkShaderModuleCreateInfo moduleCreateInfo = VkShaderModuleCreateInfo.calloc()
 	            .sType(VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO)
@@ -52,7 +53,6 @@ public class ShaderStage {
 	    
 	    memFree(pShaderModule);
 	    moduleCreateInfo.free();
-	    memFree(shaderCode);
 	    
 	    return shaderModule;
 	}

@@ -45,6 +45,10 @@ import org.oreon.core.system.RenderEngine;
 import org.oreon.core.texture.Texture;
 import org.oreon.core.vk.device.LogicalDevice;
 import org.oreon.core.vk.device.PhysicalDevice;
+import org.oreon.core.vk.pipeline.Pipeline;
+import org.oreon.core.vk.pipeline.PipelineLayout;
+import org.oreon.core.vk.pipeline.RenderPass;
+import org.oreon.core.vk.pipeline.ShaderPipeline;
 import org.oreon.core.vk.swapchain.SwapChain;
 import org.oreon.core.vk.util.DeviceCapabilities;
 import org.oreon.core.vk.util.VKUtil;
@@ -107,8 +111,8 @@ public class VKRenderEngine implements RenderEngine{
 	    logicalDevice.createGraphicsAndPresentationDevice(physicalDevice, 0, ppEnabledLayerNames);
 	    
 	    VkExtent2D swapExtent = physicalDevice.getSwapChainCapabilities().getSurfaceCapabilities().currentExtent();
-	    swapExtent.height(600);
-	    swapExtent.width(800);
+	    swapExtent.width(1280);
+	    swapExtent.height(720);
 	    
 	    int imageFormat = VK_FORMAT_B8G8R8A8_UNORM;
 	    int colorSpace = VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
@@ -127,13 +131,52 @@ public class VKRenderEngine implements RenderEngine{
 	    
 	    int minImageCount = physicalDevice.getDeviceMinImageCount4TripleBuffering();
 	    
-//	    swapChain = new SwapChain(logicalDevice.getHandle(), surface, minImageCount, imageFormat, colorSpace, presentMode, swapExtent);
+	    ShaderPipeline shaderPipeline = new ShaderPipeline();
+	    shaderPipeline.createVertexShader(logicalDevice.getHandle(), "shaders/vert.spv");
+	    shaderPipeline.createFragmentShader(logicalDevice.getHandle(), "shaders/frag.spv");
+	    shaderPipeline.createShaderPipeline();
+	    
+	    PipelineLayout pipeLineLayout = new PipelineLayout();
+	    pipeLineLayout.specifyPipelineLayout();
+	    pipeLineLayout.createPipelineLayout(logicalDevice.getHandle());
+	    
+	    RenderPass renderPass = new RenderPass();
+	    renderPass.specifyAttachmentDescription(imageFormat);
+	    renderPass.specifyAttachmentReference();
+	    renderPass.specifySubpass();
+	    renderPass.specifyDependency();
+	    renderPass.createRenderPass(logicalDevice.getHandle());
+	    
+	    Pipeline pipeline = new Pipeline();
+	    pipeline.specifyVertexInput();
+	    pipeline.specifyInputAssembly();
+	    pipeline.specifyViewportAndScissor(swapExtent);
+	    pipeline.specifyRasterizer();
+	    pipeline.specifyMultisampling();
+	    pipeline.specifyColorBlending();
+	    pipeline.specifyDepthAndStencilTest();
+	    pipeline.specifyDynamicState();
+	    pipeline.createPipeline(logicalDevice.getHandle(), shaderPipeline, renderPass, pipeLineLayout);
+	    
+	    swapChain = new SwapChain(logicalDevice.getHandle(), 
+	    						  surface, 
+	    						  minImageCount, 
+	    						  imageFormat, 
+	    						  colorSpace, 
+	    						  presentMode,
+	    						  swapExtent,
+	    						  renderPass.getHandle());
+	    
+	    swapChain.createCommandPool(logicalDevice.getHandle(), logicalDevice.getGraphicsAndPresentationQueueFamilyIndex());
+	    swapChain.createRenderCommandBuffers(logicalDevice.getHandle(), pipeline.getHandle(), renderPass.getHandle());
+	    swapChain.createSubmitInfo();
 	}
     
 
 	@Override
 	public void render() {
 		
+		swapChain.draw(logicalDevice.getHandle(), logicalDevice.getGraphicsAndPresentationQueue());
 	}
 
 	@Override
