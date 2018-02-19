@@ -1,9 +1,11 @@
 package org.oreon.core.vk.target;
 
 import static org.lwjgl.system.MemoryUtil.memAllocLong;
+import static org.lwjgl.system.MemoryUtil.memFree;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import static org.lwjgl.vulkan.VK10.vkCreateFramebuffer;
+import static org.lwjgl.vulkan.VK10.vkDestroyFramebuffer;
 
 import java.nio.LongBuffer;
 
@@ -12,19 +14,19 @@ import org.lwjgl.vulkan.VkExtent2D;
 import org.lwjgl.vulkan.VkFramebufferCreateInfo;
 import org.oreon.core.vk.util.VKUtil;
 
-public class FrameBuffer {
+public class VkFrameBuffer {
 	
 	private long handle;
 	
-	public FrameBuffer(VkDevice device, long imageView, VkExtent2D extent, long renderPass) {
+	public VkFrameBuffer(VkDevice device, long imageView, VkExtent2D extent, long renderPass) {
 		
 		LongBuffer pFramebuffer = memAllocLong(1);
-        LongBuffer attachments = memAllocLong(1);
-    	attachments.put(0, imageView);
+        LongBuffer pAttachments = memAllocLong(1);
+    	pAttachments.put(0, imageView);
     	
         VkFramebufferCreateInfo framebufferInfo = VkFramebufferCreateInfo.calloc()
                 .sType(VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO)
-                .pAttachments(attachments)
+                .pAttachments(pAttachments)
                 .flags(0)
                 .height(extent.height())
                 .width(extent.width())
@@ -41,6 +43,13 @@ public class FrameBuffer {
         handle = pFramebuffer.get(0);
         
         framebufferInfo.free();
+        memFree(pFramebuffer);
+        memFree(pAttachments);
+	}
+	
+	public void destroy(VkDevice device){
+		
+		vkDestroyFramebuffer(device, handle, null);
 	}
 
 	public long getHandle() {

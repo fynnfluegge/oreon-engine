@@ -34,7 +34,7 @@ public class Grass01ClusterGroup extends InstancingObject{
 			object.setShadowRenderInfo(new RenderInfo(new CullFaceDisable(), GrassShadowShader.getInstance()));	
 			
 			object.setMaterial(model.getMaterial());
-			object.setVao(meshBuffer);
+			object.setVbo(meshBuffer);
 			getObjectData().add(object);
 		}
 		

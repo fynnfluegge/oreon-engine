@@ -11,7 +11,7 @@ import org.oreon.system.vk.desktop.VKRenderEngine;
 public class SimpleVulkanDemo {
 	
 	public static void main(String[] args) {
-
+		
 		CoreEngine coreEngine = new CoreEngine();
 		CoreSystem coreSystem = CoreSystem.getInstance();
 		VKRenderEngine renderEngine = new VKRenderEngine();

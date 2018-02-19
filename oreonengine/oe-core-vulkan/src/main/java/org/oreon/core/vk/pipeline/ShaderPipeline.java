@@ -12,13 +12,13 @@ import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_FRAGMENT_BIT;
 public class ShaderPipeline {
 
 	private VkPipelineShaderStageCreateInfo.Buffer shaderPipeline;
-	private List<ShaderStage> shaderStages = new ArrayList<ShaderStage>();
+	private List<ShaderModule> shaderStages = new ArrayList<ShaderModule>();
 
 	public void createShaderPipeline(){
 		
 		shaderPipeline = VkPipelineShaderStageCreateInfo.calloc(shaderStages.size());
 		
-		for (ShaderStage shaderStage : shaderStages){
+		for (ShaderModule shaderStage : shaderStages){
 			shaderPipeline.put(shaderStage.getShaderStageInfo());
 		}
 		
@@ -27,12 +27,21 @@ public class ShaderPipeline {
 	
 	public void createVertexShader(VkDevice device, String filePath){
 		
-		shaderStages.add(new ShaderStage(device, filePath, VK_SHADER_STAGE_VERTEX_BIT));
+		shaderStages.add(new ShaderModule(device, filePath, VK_SHADER_STAGE_VERTEX_BIT));
 	}
 	
 	public void createFragmentShader(VkDevice device, String filePath){
 		
-		shaderStages.add(new ShaderStage(device, filePath, VK_SHADER_STAGE_FRAGMENT_BIT));
+		shaderStages.add(new ShaderModule(device, filePath, VK_SHADER_STAGE_FRAGMENT_BIT));
+	}
+	
+	public void destroy(VkDevice device){
+		
+		shaderPipeline.free();
+		
+		for (ShaderModule shaderModule : shaderStages){
+			shaderModule.destroy(device);
+		}
 	}
 	
 	public VkPipelineShaderStageCreateInfo.Buffer getShaderPipeline() {

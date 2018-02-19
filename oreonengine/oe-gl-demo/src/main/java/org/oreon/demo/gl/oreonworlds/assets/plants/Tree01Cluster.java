@@ -76,14 +76,14 @@ public class Tree01Cluster extends InstancingCluster{
 		
 		for (InstancedDataObject dataObject : objects){
 			GameObject object = new GameObject();
-			GLMeshVBO vao = new GLMeshVBO((GLMeshVBO) dataObject.getVao());
+			GLMeshVBO vbo = new GLMeshVBO((GLMeshVBO) dataObject.getVbo());
 			
-			vao.setInstances(new IntegerReference(instances));
+			vbo.setInstances(new IntegerReference(instances));
 			
-			Renderer renderer = new Renderer(vao);
+			Renderer renderer = new Renderer(vbo);
 			renderer.setRenderInfo(dataObject.getRenderInfo());
 			
-			Renderer shadowRenderer = new Renderer(vao);
+			Renderer shadowRenderer = new Renderer(vbo);
 			shadowRenderer.setRenderInfo(dataObject.getShadowRenderInfo());
 			
 			object.addComponent("Material", dataObject.getMaterial());
@@ -132,7 +132,7 @@ public class Tree01Cluster extends InstancingCluster{
 	
 	public void renderShadows(){
 		
-		getHighPolyInstances().setValue(0);
+		getHighPolyInstances().setValue(0);;
 	
 		super.renderShadows();
 	

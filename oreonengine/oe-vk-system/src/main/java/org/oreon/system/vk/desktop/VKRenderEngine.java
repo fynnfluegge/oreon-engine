@@ -14,7 +14,6 @@ import static org.lwjgl.vulkan.EXTDebugReport.VK_STRUCTURE_TYPE_DEBUG_REPORT_CAL
 import static org.lwjgl.vulkan.EXTDebugReport.vkDestroyDebugReportCallbackEXT;
 import static org.lwjgl.vulkan.EXTDebugReport.vkCreateDebugReportCallbackEXT;
 import static org.lwjgl.vulkan.KHRSwapchain.vkDestroySwapchainKHR;
-import static org.lwjgl.vulkan.KHRSurface.vkDestroySurfaceKHR;
 import static org.lwjgl.vulkan.KHRSurface.VK_PRESENT_MODE_FIFO_KHR;
 import static org.lwjgl.vulkan.KHRSurface.VK_PRESENT_MODE_MAILBOX_KHR;
 import static org.lwjgl.vulkan.KHRSurface.VK_PRESENT_MODE_IMMEDIATE_KHR;
@@ -25,11 +24,11 @@ import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_B8G8R8A8_UNORM;
 import static org.lwjgl.vulkan.VK10.vkCreateInstance;
 import static org.lwjgl.vulkan.VK10.vkDestroyInstance;
+import static org.lwjgl.vulkan.VK10.vkQueueWaitIdle;
 import static org.lwjgl.vulkan.VK10.VK_MAKE_VERSION;
 
 import java.nio.ByteBuffer;
 import java.nio.LongBuffer;
-import java.util.List;
 
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.vulkan.VkApplicationInfo;
@@ -60,6 +59,8 @@ public class VKRenderEngine implements RenderEngine{
 	private LogicalDevice logicalDevice;
 	private SwapChain swapChain;
 	private long surface;
+	
+	private Pipeline pipeline;
 	
 	private ByteBuffer[] layers = {
 	            	memUTF8("VK_LAYER_LUNARG_standard_validation"),
@@ -147,7 +148,7 @@ public class VKRenderEngine implements RenderEngine{
 	    renderPass.specifyDependency();
 	    renderPass.createRenderPass(logicalDevice.getHandle());
 	    
-	    Pipeline pipeline = new Pipeline();
+	    pipeline = new Pipeline();
 	    pipeline.specifyVertexInput();
 	    pipeline.specifyInputAssembly();
 	    pipeline.specifyViewportAndScissor(swapExtent);
@@ -176,6 +177,9 @@ public class VKRenderEngine implements RenderEngine{
 	@Override
 	public void render() {
 		
+		// wait for queues to be finished before start draw command
+		vkQueueWaitIdle(logicalDevice.getGraphicsAndPresentationQueue());
+		
 		swapChain.draw(logicalDevice.getHandle(), logicalDevice.getGraphicsAndPresentationQueue());
 	}
 
@@ -187,11 +191,13 @@ public class VKRenderEngine implements RenderEngine{
 	@Override
 	public void shutdown() {
 		
-//		vkDestroySwapchainKHR(logicalDevice.getHandle(), swapChain.getHandle(), null);
-		// TODO
-		// destroy image views
-		// destroy shaderModules
-		vkDestroySurfaceKHR(vkInstance, surface, null);
+		// wait for queues to be finished before destroy vulkan objects
+		vkQueueWaitIdle(logicalDevice.getGraphicsAndPresentationQueue());
+		
+		vkDestroySwapchainKHR(logicalDevice.getHandle(), swapChain.getHandle(), null);
+		swapChain.destroy(logicalDevice.getHandle());
+		pipeline.destroy(logicalDevice.getHandle());
+		logicalDevice.destroy();
 		vkDestroyDebugReportCallbackEXT(vkInstance, debugCallbackHandle, null);
         vkDestroyInstance(vkInstance, null);		
 	}

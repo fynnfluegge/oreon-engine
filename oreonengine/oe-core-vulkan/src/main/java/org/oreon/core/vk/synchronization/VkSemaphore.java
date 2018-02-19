@@ -4,6 +4,7 @@ import static org.lwjgl.system.MemoryUtil.memAllocLong;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import static org.lwjgl.vulkan.VK10.vkCreateSemaphore;
+import static org.lwjgl.vulkan.VK10.vkDestroySemaphore;
 
 import java.nio.LongBuffer;
 
@@ -35,8 +36,9 @@ public class VkSemaphore {
 		semaphoreCreateInfo.free();
 	}
 	
-	public void destroy(){
+	public void destroy(VkDevice device){
 		
+		vkDestroySemaphore(device, handle, null);
 	}
 
 	public LongBuffer getpHandle() {

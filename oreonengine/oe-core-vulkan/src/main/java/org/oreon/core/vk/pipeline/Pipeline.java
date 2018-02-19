@@ -19,6 +19,7 @@ import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STAT
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import static org.lwjgl.vulkan.VK10.vkCreateGraphicsPipelines;
+import static org.lwjgl.vulkan.VK10.vkDestroyPipeline;
 import static org.lwjgl.vulkan.VK10.VK_NULL_HANDLE;
 
 import java.nio.IntBuffer;
@@ -30,6 +31,7 @@ import static org.lwjgl.vulkan.VK10.VK_COLOR_COMPONENT_G_BIT;
 import static org.lwjgl.vulkan.VK10.VK_COLOR_COMPONENT_B_BIT;
 import static org.lwjgl.system.MemoryUtil.memAllocInt;
 import static org.lwjgl.system.MemoryUtil.memAllocLong;
+import static org.lwjgl.system.MemoryUtil.memFree;
 import static org.lwjgl.vulkan.VK10.VK_COLOR_COMPONENT_A_BIT;
 
 import org.lwjgl.vulkan.VkDevice;
@@ -58,6 +60,9 @@ public class Pipeline {
 	private VkPipelineColorBlendStateCreateInfo colorBlending;
 	private VkPipelineDepthStencilStateCreateInfo depthStencil;
 	private VkPipelineDynamicStateCreateInfo dynamicState;
+	private VkViewport.Buffer viewport;
+	private VkRect2D.Buffer scissor;
+	private IntBuffer pDynamicStates;
 	
 	private long handle;
 	
@@ -101,6 +106,10 @@ public class Pipeline {
 		colorBlending.free();
 		depthStencil.free();
 		dynamicState.free();
+		viewport.free();
+		scissor.free();
+		memFree(pDynamicStates);
+		shaderPipeline.destroy(device);
 		
 		if (err != VK_SUCCESS) {
 			throw new AssertionError("Failed to create pipeline: " + VKUtil.translateVulkanResult(err));
@@ -126,7 +135,7 @@ public class Pipeline {
 	
 	public void specifyViewportAndScissor(VkExtent2D extent){
 		
-		VkViewport.Buffer viewport = VkViewport.calloc(1)
+		viewport = VkViewport.calloc(1)
 				.x(0)
 				.y(0)
 				.height(extent.height())
@@ -134,7 +143,7 @@ public class Pipeline {
 		        .minDepth(0.0f)
 		        .maxDepth(1.0f);
 		 
-		VkRect2D.Buffer scissor = VkRect2D.calloc(1);
+		scissor = VkRect2D.calloc(1);
 		scissor.extent().set(extent.width(), extent.height());
 		scissor.offset().set(0, 0);
 		
@@ -204,7 +213,7 @@ public class Pipeline {
 	
 	public void specifyDynamicState(){
 		
-		IntBuffer pDynamicStates = memAllocInt(2);
+		pDynamicStates = memAllocInt(2);
         pDynamicStates.put(VK_DYNAMIC_STATE_VIEWPORT);
         pDynamicStates.put(VK_DYNAMIC_STATE_SCISSOR);
         pDynamicStates.flip();
@@ -212,6 +221,13 @@ public class Pipeline {
         dynamicState = VkPipelineDynamicStateCreateInfo.calloc()
                 .sType(VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO)
                 .pDynamicStates(pDynamicStates);
+	}
+	
+	public void destroy(VkDevice device){
+		
+		pipelineLayout.destroy(device);
+		renderPass.destroy(device);
+		vkDestroyPipeline(device, handle, null);
 	}
 
 	public long getHandle() {

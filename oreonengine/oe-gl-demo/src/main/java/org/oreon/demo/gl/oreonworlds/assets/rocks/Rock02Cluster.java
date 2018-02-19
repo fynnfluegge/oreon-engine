@@ -72,7 +72,7 @@ public class Rock02Cluster extends InstancingCluster{
 		
 		for (InstancedDataObject dataObject : objects){
 			GameObject object = new GameObject();
-			GLMeshVBO vao = new GLMeshVBO((GLMeshVBO) dataObject.getVao());
+			GLMeshVBO vao = new GLMeshVBO((GLMeshVBO) dataObject.getVbo());
 			vao.setInstances(new IntegerReference(instances));
 			
 			Renderer renderer = new Renderer(vao);

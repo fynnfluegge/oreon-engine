@@ -15,6 +15,7 @@ import static org.lwjgl.vulkan.VK10.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BI
 import static org.lwjgl.vulkan.VK10.VK_ACCESS_COLOR_ATTACHMENT_READ_BIT;
 import static org.lwjgl.vulkan.VK10.VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
 import static org.lwjgl.vulkan.VK10.vkCreateRenderPass;
+import static org.lwjgl.vulkan.VK10.vkDestroyRenderPass;
 
 import java.nio.LongBuffer;
 
@@ -107,6 +108,11 @@ public class RenderPass {
 				.srcAccessMask(0)
 				.dstStageMask(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT)
 				.dstAccessMask(VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT);
+	}
+	
+	public void destroy(VkDevice device){
+		
+		vkDestroyRenderPass(device, handle, null);
 	}
 
 	public long getHandle() {

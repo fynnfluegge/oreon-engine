@@ -1,9 +1,5 @@
 package org.oreon.core.system;
 
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
 import org.oreon.core.util.Constants;
 
 public class CoreEngine{
@@ -12,9 +8,6 @@ public class CoreEngine{
 	private static float framerate = 200;
 	private static float frameTime = 1.0f/framerate;
 	private boolean isRunning;
-	private static boolean shareGLContext = false;
-	private static Lock glContextLock = new ReentrantLock();
-	private static Condition holdGLContext = glContextLock.newCondition();
 	private CoreSystem coreSystem;
 	
 	public void init(CoreSystem coreSystem)
@@ -45,7 +38,6 @@ public class CoreEngine{
 		// Rendering Loop
 		while(isRunning)
 		{
-			
 			boolean render = false;
 			
 			long startTime = System.nanoTime();
@@ -54,16 +46,15 @@ public class CoreEngine{
 			
 			unprocessedTime += passedTime / (double) Constants.NANOSECOND;
 			frameCounter += passedTime;
-		
 			
 			while(unprocessedTime > frameTime)
 			{
-
 				render = true;
 				unprocessedTime -= frameTime;
 				
-				if(coreSystem.getWindow().isCloseRequested())
+				if(coreSystem.getWindow().isCloseRequested()){
 					stop();
+				}
 				
 				update();
 				
@@ -128,19 +119,4 @@ public class CoreEngine{
 		CoreEngine.fps = fps;
 	}
 
-	public static boolean isShareGLContext() {
-		return shareGLContext;
-	}
-
-	public static void setShareGLContext(boolean shareGLContext) {
-		CoreEngine.shareGLContext = shareGLContext;
-	}
-
-	public static Lock getGLContextLock() {
-		return glContextLock;
-	}
-
-	public static Condition getHoldGLContext() {
-		return holdGLContext;
-	}
 }

@@ -7,6 +7,7 @@ import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREA
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import static org.lwjgl.vulkan.VK10.vkCreateShaderModule;
+import static org.lwjgl.vulkan.VK10.vkDestroyShaderModule;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -18,14 +19,15 @@ import org.lwjgl.vulkan.VkShaderModuleCreateInfo;
 import org.oreon.core.util.ResourceLoader;
 import org.oreon.core.vk.util.VKUtil;
 
-public class ShaderStage {
+public class ShaderModule {
 
 	private VkPipelineShaderStageCreateInfo shaderStageInfo;
+	private long handle;
 	
-	public ShaderStage(VkDevice device, String filePath, int stage) {
+	public ShaderModule(VkDevice device, String filePath, int stage) {
 		
-		long shaderModule = createShaderModule(filePath, device);
-		shaderStageInfo = createShaderStage(shaderModule, device, stage);
+		handle = createShaderModule(filePath, device);
+		shaderStageInfo = createShaderStage(handle, device, stage);
 	}
 	
 	public long createShaderModule(String filePath, VkDevice device) {
@@ -68,9 +70,18 @@ public class ShaderStage {
 	       
 		 return shaderStage;
 	}
+	
+	public void destroy(VkDevice device){
+		
+		vkDestroyShaderModule(device, handle, null);
+	}
 
 	public VkPipelineShaderStageCreateInfo getShaderStageInfo() {
 		return shaderStageInfo;
+	}
+
+	public long getHandle() {
+		return handle;
 	}
 
 }

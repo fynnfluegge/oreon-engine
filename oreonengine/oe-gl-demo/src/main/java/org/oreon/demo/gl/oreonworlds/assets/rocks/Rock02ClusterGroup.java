@@ -32,7 +32,7 @@ public class Rock02ClusterGroup extends InstancingObject{
 			object.setShadowRenderInfo(new RenderInfo(new Default(), RockShadowShader.getInstance()));
 				
 			object.setMaterial(model.getMaterial());
-			object.setVao(meshBuffer);
+			object.setVbo(meshBuffer);
 			getObjectData().add(object);
 		}
 		

@@ -1,7 +1,6 @@
 package org.oreon.core.vk.command;
 
 import static org.lwjgl.system.MemoryUtil.memAllocPointer;
-import static org.lwjgl.system.MemoryUtil.memFree;
 import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
 import static org.lwjgl.vulkan.VK10.VK_NULL_HANDLE;
@@ -105,13 +104,15 @@ public class CommandBuffer {
 	
 	public void submit(VkQueue queue, VkSubmitInfo submitInfo){
 		
-		submitInfo.pCommandBuffers(pCommandBuffer);
-		
 		int err = vkQueueSubmit(queue, submitInfo, VK_NULL_HANDLE);
 		
 		if (err != VK_SUCCESS) {
             throw new AssertionError("Failed to submit render queue: " + VKUtil.translateVulkanResult(err));
         }
+	}
+	
+	public void destroy(){
+		
 	}
 
 	public VkCommandBuffer getCommandBuffer() {

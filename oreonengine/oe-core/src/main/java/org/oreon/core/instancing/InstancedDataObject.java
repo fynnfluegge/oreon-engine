@@ -6,7 +6,7 @@ import org.oreon.core.renderer.RenderInfo;
 
 public class InstancedDataObject {
 
-	private VBO vao;
+	private VBO vbo;
 	private Material material;
 	private RenderInfo renderInfo;
 	private RenderInfo shadowRenderInfo;
@@ -27,12 +27,12 @@ public class InstancedDataObject {
 		this.renderInfo = renderInfo;
 	}
 
-	public VBO getVao() {
-		return vao;
+	public VBO getVbo() {
+		return vbo;
 	}
 
-	public void setVao(VBO vao) {
-		this.vao = vao;
+	public void setVbo(VBO vao) {
+		this.vbo = vao;
 	}
 
 	public RenderInfo getShadowRenderInfo() {

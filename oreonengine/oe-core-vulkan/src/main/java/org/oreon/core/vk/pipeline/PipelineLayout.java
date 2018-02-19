@@ -5,6 +5,7 @@ import static org.lwjgl.system.MemoryUtil.memFree;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import static org.lwjgl.vulkan.VK10.vkCreatePipelineLayout;
+import static org.lwjgl.vulkan.VK10.vkDestroyPipelineLayout;
 
 import java.nio.LongBuffer;
 
@@ -37,6 +38,11 @@ public class PipelineLayout {
 				.sType(VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO)
                 .pNext(0)
                 .pSetLayouts(null);
+	}
+	
+	public void destroy(VkDevice device){
+		
+		vkDestroyPipelineLayout(device, handle, null);
 	}
 
 	public long getHandle() {

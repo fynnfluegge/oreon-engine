@@ -57,7 +57,7 @@ public class Tree01ClusterGroup extends InstancingObject{
 			}
 			
 			object.setMaterial(model.getMaterial());
-			object.setVao(meshBuffer);
+			object.setVbo(meshBuffer);
 			getObjectData().add(object);
 		}
 		
@@ -80,7 +80,7 @@ public class Tree01ClusterGroup extends InstancingObject{
 			object.setShadowRenderInfo(new RenderInfo(new CullFaceDisable(), TreeBillboardShadowShader.getInstance()));
 			
 			object.setMaterial(billboard.getMaterial());
-			object.setVao(meshBuffer);
+			object.setVbo(meshBuffer);
 			getObjectData().add(object);
 		}
 	

@@ -32,7 +32,7 @@ public class Bush01ClusterGroup extends InstancingObject{
 			object.setShadowRenderInfo(new RenderInfo(new CullFaceDisable(), BushShadowShader.getInstance()));
 
 			object.setMaterial(model.getMaterial());
-			object.setVao(meshBuffer);
+			object.setVbo(meshBuffer);
 			getObjectData().add(object);
 		}
 		

@@ -11,6 +11,7 @@ import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import static org.lwjgl.vulkan.VK10.vkCreateDevice;
 import static org.lwjgl.vulkan.VK10.vkGetDeviceQueue;
+import static org.lwjgl.vulkan.VK10.vkDestroyDevice;
 
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
@@ -105,6 +106,11 @@ public class LogicalDevice {
         memFree(pQueue);
         return new VkQueue(queue, handle);
     }
+	
+	public void destroy(){
+		
+		vkDestroyDevice(handle, null);
+	}
 	
 	public VkDevice getHandle() {
 		return handle;

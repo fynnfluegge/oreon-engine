@@ -36,7 +36,7 @@ public class Palm01ClusterGroup extends InstancingObject{
 			object.setShadowRenderInfo(new RenderInfo(new CullFaceDisable(), PalmShadowShader.getInstance()));
 
 			object.setMaterial(model.getMaterial());
-			object.setVao(meshBuffer);
+			object.setVbo(meshBuffer);
 			getObjectData().add(object);
 		}
 		for (Model billboard : billboards){	
@@ -57,7 +57,7 @@ public class Palm01ClusterGroup extends InstancingObject{
 			object.setShadowRenderInfo(new RenderInfo(new CullFaceDisable(), PalmBillboardShadowShader.getInstance()));
 			
 			object.setMaterial(billboard.getMaterial());
-			object.setVao(meshBuffer);
+			object.setVbo(meshBuffer);
 			getObjectData().add(object);
 		}
 	
