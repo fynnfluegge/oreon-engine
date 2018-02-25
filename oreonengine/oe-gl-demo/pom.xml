@@ -3,8 +3,8 @@
   
 	<parent>
 	 	<groupId>org.oreon</groupId>
-	 	<artifactId>oe-main</artifactId>
-	 	<version>3.0.0</version>
+	 	<artifactId>oreon-engine</artifactId>
+	 	<version>${oreon.version}</version>
 	</parent>
   
 	<groupId>org.oreon.gl</groupId>
@@ -46,22 +46,22 @@
 		<dependency>
 			<groupId>org.oreon.core</groupId>
 			<artifactId>oe-core</artifactId>
-			<version>3.0.0</version>
+			<version>${oreon.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.oreon.core</groupId>
 			<artifactId>oe-core-opengl</artifactId>
-			<version>3.0.0</version>
+			<version>${oreon.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.oreon.gl</groupId>
 			<artifactId>oe-gl-modules</artifactId>
-			<version>3.0.0</version>
+			<version>${oreon.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.oreon.gl</groupId>
 			<artifactId>oe-gl-engine</artifactId>
-			<version>3.0.0</version>
+			<version>${oreon.version}</version>
 		</dependency>
 	</dependencies>
   

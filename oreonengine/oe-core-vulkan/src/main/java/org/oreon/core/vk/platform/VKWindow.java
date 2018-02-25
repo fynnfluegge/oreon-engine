@@ -1,4 +1,4 @@
-package org.oreon.vk.engine;
+package org.oreon.core.vk.platform;
 
 import static org.lwjgl.glfw.GLFW.GLFW_RESIZABLE;
 import static org.lwjgl.glfw.GLFW.glfwDefaultWindowHints;
