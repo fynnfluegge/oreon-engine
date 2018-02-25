@@ -1,9 +1,6 @@
-bin/cdk/
-bin/engine/
-bin/modules/
-bin/simulations/
 .project
 .classpath
 /bin/
 /target/
 .settings
+dependency-reduced-pom.xml
