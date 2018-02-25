@@ -6,7 +6,7 @@
     <version>3.0.0</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.oreon.demo</groupId>
+  <groupId>org.oreon.gl</groupId>
   <artifactId>oe-gl-demo</artifactId>
   <build>
     <sourceDirectory>src/main/java</sourceDirectory>
@@ -28,7 +28,7 @@
             <configuration>
               <transformers>
                 <transformer>
-                  <mainClass>org.oreon.demo.oreonworlds.Main</mainClass>
+                  <mainClass>org.oreon.demo.gl.oreonworlds.Main</mainClass>
                 </transformer>
               </transformers>
             </configuration>

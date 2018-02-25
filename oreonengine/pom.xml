@@ -135,14 +135,14 @@
   
   <modules>
   		<module>oe-core</module>
+  		<module>oe-core-opengl</module>
+  		<module>oe-core-vulkan</module>
   		<module>oe-gl-demo</module>
   		<module>oe-gl-modules</module>
-  		<module>oe-core-opengl</module>
-  		<module>oe-gl-system</module>
-  		<module>oe-core-vulkan</module>
+  		<module>oe-gl-engine</module>
   		<module>oe-vk-demo</module>
   		<module>oe-vk-modules</module>
-  		<module>oe-vk-system</module>
+  		<module>oe-vk-engine</module>
   </modules>
 
 </project>

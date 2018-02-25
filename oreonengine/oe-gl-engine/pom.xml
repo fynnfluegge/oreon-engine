@@ -8,7 +8,7 @@
 	</parent>
   
 	<groupId>org.oreon.gl</groupId>
-	<artifactId>oe-gl-modules</artifactId>
+	<artifactId>oe-gl-engine</artifactId>
 	<packaging>jar</packaging>
 	
 	<dependencies>
@@ -22,6 +22,11 @@
 			<artifactId>oe-core-opengl</artifactId>
 			<version>3.0.0</version>
 		</dependency>
+		<dependency>
+			<groupId>org.oreon.gl</groupId>
+			<artifactId>oe-gl-modules</artifactId>
+			<version>3.0.0</version>
+		</dependency>
 	</dependencies>
-	
+  
 </project>

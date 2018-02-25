@@ -6,9 +6,22 @@
 	 	<artifactId>oe-main</artifactId>
 	 	<version>3.0.0</version>
 	</parent>
-	
+  
 	<groupId>org.oreon.vk</groupId>
-	<artifactId>oe-vk-modules</artifactId>
+	<artifactId>oe-vk-engine</artifactId>
 	<packaging>jar</packaging>
 	
+	<dependencies>
+		<dependency>
+			<groupId>org.oreon.core</groupId>
+			<artifactId>oe-core</artifactId>
+			<version>3.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.oreon.core</groupId>
+			<artifactId>oe-core-vulkan</artifactId>
+			<version>3.0.0</version>
+		</dependency>
+	</dependencies>
+  
 </project>

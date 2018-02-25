@@ -7,7 +7,7 @@
 	 	<version>3.0.0</version>
 	</parent>
 	 
-	<groupId>org.oreon.demo</groupId>
+	<groupId>org.oreon.vk</groupId>
 	<artifactId>oe-vk-demo</artifactId>
 	<packaging>jar</packaging>
 	
@@ -54,8 +54,8 @@
 			<version>3.0.0</version>
 		</dependency>
 		<dependency>
-			<groupId>org.oreon.system</groupId>
-			<artifactId>oe-vk-system</artifactId>
+			<groupId>org.oreon.vk</groupId>
+			<artifactId>oe-vk-engine</artifactId>
 			<version>3.0.0</version>
 		</dependency>
 	</dependencies>
