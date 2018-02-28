@@ -14,6 +14,7 @@ import org.oreon.gl.demo.oreonworlds.assets.rocks.Rock02ClusterGroup;
 import org.oreon.gl.demo.oreonworlds.gui.GUI;
 import org.oreon.gl.demo.oreonworlds.shaders.TerrainGridShader;
 import org.oreon.gl.demo.oreonworlds.shaders.TerrainShader;
+import org.oreon.gl.demo.oreonworlds.terrain.Terrain;
 import org.oreon.gl.demo.oreonworlds.water.Ocean;
 import org.oreon.gl.engine.GLRenderEngine;
 import org.oreon.modules.gl.atmosphere.SkySphere;
@@ -42,9 +43,9 @@ public class Main {
 
 		coreEngine.init(coreSystem);
 		
-		GLTerrain terrain = new GLTerrain();
-		terrain.init("oreonworlds/terrain/terrain_settings.txt",
-				   "oreonworlds/terrain/terrain_settings_LowPoly.txt",
+		GLTerrain terrain = new Terrain();
+		terrain.init("oreonworlds/terrain/terrain-config.properties",
+				   "oreonworlds/terrain/terrain-lowPoly-config.properties",
 				   TerrainShader.getInstance(),
 				   TerrainGridShader.getInstance(), 
 				   null);

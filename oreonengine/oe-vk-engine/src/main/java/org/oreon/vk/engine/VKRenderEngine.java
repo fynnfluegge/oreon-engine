@@ -149,7 +149,7 @@ public class VKRenderEngine implements RenderEngine{
 	    renderPass.createRenderPass(logicalDevice.getHandle());
 	    
 	    pipeline = new Pipeline();
-	    pipeline.specifyVertexInput();
+	    pipeline.specifyVertexInput(null);
 	    pipeline.specifyInputAssembly();
 	    pipeline.specifyViewportAndScissor(swapExtent);
 	    pipeline.specifyRasterizer();

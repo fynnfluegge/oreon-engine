@@ -59,7 +59,7 @@ private static TerrainGridShader instance = null;
 			addUniform("lod_morph_area[" + i + "]");
 		}
 		
-		for (int i=0; i<5; i++){
+		for (int i=0; i<4; i++){
 			addUniform("materials[" + i + "].alphamap");
 			addUniform("materials[" + i + "].heightmap");
 			addUniform("materials[" + i + "].heightScaling");
@@ -109,7 +109,7 @@ private static TerrainGridShader instance = null;
 		}
 		
 		int texUnit = 4;
-		for (int i=0; i<5; i++){
+		for (int i=0; i<4; i++){
 			
 			glActiveTexture(GL_TEXTURE0 + texUnit);
 			terrConfig.getMaterials().get(i).getHeightmap().bind();

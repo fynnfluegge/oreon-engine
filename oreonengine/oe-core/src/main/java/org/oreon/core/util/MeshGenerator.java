@@ -69,4 +69,34 @@ public class MeshGenerator {
 		
 		return new Mesh(vertices, indices);
 	}
+	
+	public static Vec2f[] TerrainChunkMesh(){
+		
+		// 16 vertices for each patch
+		Vec2f[] vertices = new Vec2f[16];
+		
+		int index = 0;
+		
+		vertices[index++] = new Vec2f(0,0);
+		vertices[index++] = new Vec2f(0.333f,0);
+		vertices[index++] = new Vec2f(0.666f,0);
+		vertices[index++] = new Vec2f(1,0);
+		
+		vertices[index++] = new Vec2f(0,0.333f);
+		vertices[index++] = new Vec2f(0.333f,0.333f);
+		vertices[index++] = new Vec2f(0.666f,0.333f);
+		vertices[index++] = new Vec2f(1,0.333f);
+		
+		vertices[index++] = new Vec2f(0,0.666f);
+		vertices[index++] = new Vec2f(0.333f,0.666f);
+		vertices[index++] = new Vec2f(0.666f,0.666f);
+		vertices[index++] = new Vec2f(1,0.666f);
+	
+		vertices[index++] = new Vec2f(0,1);
+		vertices[index++] = new Vec2f(0.333f,1);
+		vertices[index++] = new Vec2f(0.666f,1);
+		vertices[index++] = new Vec2f(1,1);
+		
+		return vertices;
+	}
 }

@@ -149,51 +149,8 @@ public class TerrainNode extends GameObject{
 	public void computeWorldPos(){
 		
 		Vec2f loc = location.add(gap/2f).mul(terrConfig.getScaleXZ()).sub(terrConfig.getScaleXZ()/2f);
-		float height = getTerrainHeight(loc.getX(), loc.getY());
+		float height = CoreSystem.getInstance().getScenegraph().getTerrain().getTerrainHeight(loc.getX(), loc.getY());
 		this.worldPos = new Vec3f(loc.getX(),height,loc.getY());
-	}
-	
-	public float getTerrainHeight(float x, float z){
-		
-		float h = 0;
-		
-		Vec2f pos = new Vec2f();
-		pos.setX(x);
-		pos.setY(z);
-		pos = pos.add(terrConfig.getScaleXZ()/2f);
-		pos = pos.div(terrConfig.getScaleXZ());
-		Vec2f floor = new Vec2f((int) Math.floor(pos.getX()), (int) Math.floor(pos.getY()));
-		pos = pos.sub(floor);
-		pos = pos.mul(terrConfig.getHeightmap().getWidth());
-		int x0 = (int) Math.floor(pos.getX());
-		int x1 = x0 + 1;
-		int z0 = (int) Math.floor(pos.getY());
-		int z1 = z0 + 1;
-		
-		float h0 =  terrConfig.getHeightmapDataBuffer().get(terrConfig.getHeightmap().getWidth() * z0 + x0);
-		float h1 =  terrConfig.getHeightmapDataBuffer().get(terrConfig.getHeightmap().getWidth() * z0 + x1);
-		float h2 =  terrConfig.getHeightmapDataBuffer().get(terrConfig.getHeightmap().getWidth() * z1 + x0);
-		float h3 =  terrConfig.getHeightmapDataBuffer().get(terrConfig.getHeightmap().getWidth() * z1 + x1);
-		
-		float percentU = pos.getX() - x0;
-        float percentV = pos.getY() - z0;
-        
-        float dU, dV;
-        if (percentU > percentV)
-        {   // bottom triangle
-            dU = h1 - h0;
-            dV = h3 - h1;
-        }
-        else
-        {   // top triangle
-            dU = h3 - h2;
-            dV = h2 - h0;
-        }
-        
-        h = h0 + (dU * percentU) + (dV * percentV );
-        h *= terrConfig.getScaleY();
-		
-		return h;
 	}
 
 	public Vec3f getWorldPos() {

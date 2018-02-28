@@ -31,7 +31,7 @@ layout (std140, row_major) uniform Camera{
 uniform sampler2D normalmap;
 uniform float scaleY;
 uniform float scaleXZ;
-uniform Material materials[5];
+uniform Material materials[4];
 uniform float sightRangeFactor;
 uniform int largeDetailRange;
 uniform int isReflection;
@@ -67,13 +67,11 @@ void main()
 	float material1Alpha = texture(materials[1].alphamap, mapCoords).r;
 	float material2Alpha = texture(materials[2].alphamap, mapCoords).r;
 	float material3Alpha = texture(materials[3].alphamap, mapCoords).r;
-	float material4Alpha = texture(materials[4].alphamap, mapCoords).r;
 	
 	vec3 material0Color = texture(materials[0].diffusemap, texCoordF/materials[0].horizontalScaling).rgb;
 	vec3 material1Color = texture(materials[1].diffusemap, texCoordF/materials[1].horizontalScaling).rgb;
 	vec3 material2Color = texture(materials[2].diffusemap, texCoordF/materials[2].horizontalScaling).rgb;
 	vec3 material3Color = texture(materials[3].diffusemap, texCoordF/materials[3].horizontalScaling).rgb;
-	vec3 material4Color = texture(materials[4].diffusemap, texCoordF/materials[4].horizontalScaling).rgb;
 	
 	if (dist < largeDetailRange-50)
 	{
@@ -83,7 +81,7 @@ void main()
 		mat3 TBN = mat3(tangent,bitangent,normal);
 		
 		vec3 bumpNormal;
-		for (int i=0; i<5; i++){
+		for (int i=0; i<4; i++){
 			
 			bumpNormal += (2*(texture(materials[i].normalmap, texCoordF/materials[i].horizontalScaling).rgb) - 1) * texture(materials[i].alphamap, mapCoords).r;
 		}
@@ -98,8 +96,7 @@ void main()
 	vec3 fragColor = material0Color * material0Alpha + 
 				     material1Color * material1Alpha + 
 					 material2Color * material2Alpha + 
-					 material3Color * material3Alpha +
-					 material4Color * material4Alpha;
+					 material3Color * material3Alpha;
 	
 	// caustics
 	if (isCameraUnderWater == 1 && isRefraction == 0){

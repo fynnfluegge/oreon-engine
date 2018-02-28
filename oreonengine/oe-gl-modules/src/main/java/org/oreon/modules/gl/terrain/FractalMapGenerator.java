@@ -11,7 +11,7 @@ import static org.lwjgl.opengl.GL43.glDispatchCompute;
 import java.util.List;
 
 import org.oreon.core.gl.texture.Texture2D;
-import org.oreon.modules.gl.terrain.fractals.FractalMaps;
+import org.oreon.modules.gl.terrain.fractals.FractalMap;
 
 public class FractalMapGenerator {
 
@@ -32,7 +32,7 @@ public class FractalMapGenerator {
 		fractalmap.setHeight(N);
 	}
 	
-	public void render(List<FractalMaps> fractals){
+	public void render(List<FractalMap> fractals){
 		
 		shader.bind();
 		shader.updateUniforms(fractals, N);

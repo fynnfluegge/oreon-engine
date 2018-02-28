@@ -70,7 +70,7 @@ public class TerrainShader extends GLShader{
 			addUniform("lod_morph_area[" + i + "]");
 		}
 		
-		for (int i=0; i<5; i++){
+		for (int i=0; i<4; i++){
 			addUniform("materials[" + i + "].diffusemap");
 			addUniform("materials[" + i + "].alphamap");
 			addUniform("materials[" + i + "].normalmap");
@@ -139,7 +139,7 @@ public class TerrainShader extends GLShader{
 		}
 		
 		int texUnit = 4;
-		for (int i=0; i<5; i++){
+		for (int i=0; i<4; i++){
 			
 			glActiveTexture(GL_TEXTURE0 + texUnit);
 			terrConfig.getMaterials().get(i).getDiffusemap().bind();

@@ -7,7 +7,7 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import org.oreon.core.gl.shaders.GLShader;
 import org.oreon.core.util.ResourceLoader;
-import org.oreon.modules.gl.terrain.fractals.FractalMaps;
+import org.oreon.modules.gl.terrain.fractals.FractalMap;
 
 public class FractalMapShader extends GLShader{
 	
@@ -38,7 +38,7 @@ public class FractalMapShader extends GLShader{
 		}
 	}
 	
-	public void updateUniforms(List<FractalMaps> fractals, int N){
+	public void updateUniforms(List<FractalMap> fractals, int N){
 		
 		setUniformi("N", N);
 		

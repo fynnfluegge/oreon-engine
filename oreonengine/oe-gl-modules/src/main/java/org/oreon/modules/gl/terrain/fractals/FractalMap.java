@@ -3,7 +3,7 @@ package org.oreon.modules.gl.terrain.fractals;
 import org.oreon.core.gl.texture.Texture2D;
 import org.oreon.core.math.Vec2f;
 
-public class FractalMaps {
+public class FractalMap {
 	
 	private int N;
 	private float amplitude; 
@@ -13,7 +13,7 @@ public class FractalMaps {
 	private float strength;
 	private int random;
 	
-	public FractalMaps(int N, float amplitude, float l, int scaling, float strength, int random){
+	public FractalMap(int N, float amplitude, float l, int scaling, float strength, int random){
 		
 		this.scaling = scaling;
 		this.strength = strength;

@@ -3,6 +3,7 @@ package org.oreon.modules.gl.terrain;
 import org.oreon.core.gl.buffers.GLPatchVBO;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.scene.Node;
+import org.oreon.core.util.MeshGenerator;
 
 public class TerrainQuadtree extends Node{
 	
@@ -11,7 +12,7 @@ public class TerrainQuadtree extends Node{
 	public TerrainQuadtree(TerrainConfiguration terrConfig){
 		
 		GLPatchVBO buffer  = new GLPatchVBO();
-		buffer.addData(generatePatch(),16);
+		buffer.addData(MeshGenerator.TerrainChunkMesh(),16);
 		
 		for (int i=0; i<rootPatches; i++){
 			for (int j=0; j<rootPatches; j++){
@@ -29,36 +30,6 @@ public class TerrainQuadtree extends Node{
 		for (Node node : getChildren()){
 			((TerrainNode) node).updateQuadtree();
 		}
-	}
-	
-	public Vec2f[] generatePatch(){
-		
-		// 16 vertices for each patch
-		Vec2f[] vertices = new Vec2f[16];
-		
-		int index = 0;
-		
-		vertices[index++] = new Vec2f(0,0);
-		vertices[index++] = new Vec2f(0.333f,0);
-		vertices[index++] = new Vec2f(0.666f,0);
-		vertices[index++] = new Vec2f(1,0);
-		
-		vertices[index++] = new Vec2f(0,0.333f);
-		vertices[index++] = new Vec2f(0.333f,0.333f);
-		vertices[index++] = new Vec2f(0.666f,0.333f);
-		vertices[index++] = new Vec2f(1,0.333f);
-		
-		vertices[index++] = new Vec2f(0,0.666f);
-		vertices[index++] = new Vec2f(0.333f,0.666f);
-		vertices[index++] = new Vec2f(0.666f,0.666f);
-		vertices[index++] = new Vec2f(1,0.666f);
-	
-		vertices[index++] = new Vec2f(0,1);
-		vertices[index++] = new Vec2f(0.333f,1);
-		vertices[index++] = new Vec2f(0.666f,1);
-		vertices[index++] = new Vec2f(1,1);
-		
-		return vertices;
 	}
 
 	public static int getRootPatches() {
