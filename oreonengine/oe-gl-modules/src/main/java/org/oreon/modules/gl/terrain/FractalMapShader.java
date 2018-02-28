@@ -26,8 +26,10 @@ public class FractalMapShader extends GLShader{
 		
 		super();
 		
-		addComputeShader(ResourceLoader.loadShader("shaders/terrain/FractalMap.glsl"));
+		addComputeShader(ResourceLoader.loadShader("shaders/terrain/FractalMap_CS.glsl"));
 		compileShader();
+		
+		addUniform("N");
 		
 		for (int i=0; i<8; i++){
 			addUniform("fractals[" + i + "].heightmap");
@@ -36,15 +38,17 @@ public class FractalMapShader extends GLShader{
 		}
 	}
 	
-	public void updateUniforms(List<FractalMaps> fractals){
+	public void updateUniforms(List<FractalMaps> fractals, int N){
 		
-		for (int i=0; i<7; i++)
+		setUniformi("N", N);
+		
+		for (int i=0; i<8; i++)
 		{
 			glActiveTexture(GL_TEXTURE0 + i);
 			fractals.get(i).getHeightmap().bind();
-			setUniformi("fractals0[" + i +"].heightmap", i);	
-			setUniformi("fractals0[" + i +"].scaling", fractals.get(i).getScaling());
-			setUniformf("fractals0[" + i +"].strength", fractals.get(i).getStrength());
+			setUniformi("fractals[" + i +"].heightmap", i);	
+			setUniformi("fractals[" + i +"].scaling", fractals.get(i).getScaling());
+			setUniformf("fractals[" + i +"].strength", fractals.get(i).getStrength());
 		}
 	}
 

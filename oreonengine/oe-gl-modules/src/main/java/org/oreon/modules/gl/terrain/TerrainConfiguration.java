@@ -322,7 +322,7 @@ public class TerrainConfiguration {
 		setHeightmap(fractalMapGenerator.getFractalmap());
 		
 		NormalMapRenderer normalRenderer = new NormalMapRenderer(Constants.TERRAIN_FRACTALS_RESOLUTION);
-		normalRenderer.setStrength(48);
+		normalRenderer.setStrength(4);
 		normalRenderer.render(getHeightmap());
 		setNormalmap(normalRenderer.getNormalmap());
 		

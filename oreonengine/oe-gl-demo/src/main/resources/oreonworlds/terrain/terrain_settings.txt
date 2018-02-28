@@ -63,34 +63,34 @@ lod8_range 0
 
 #fractals
 fractal_stage0
-amp 4.0
-l 200.0
-scaling 10
-strength 0.01
-random 158
+amp 2.0
+l 20.0
+scaling 1
+strength 4.0
+random 941
 fractal_stage1
-amp 4.0
-l 400.0
-scaling 100
-strength 0.02
-random 35
+amp 2.0
+l 30.0
+scaling 2
+strength 2.5
+random 558
 fractal_stage2
 amp 4.0
 l 100.0
 scaling 4
-strength 0.15
+strength 0.2
 random 812
 fractal_stage3
 amp 4.0
 l 100.0
 scaling 6
-strength 0.04
+strength 0.1
 random 470
 fractal_stage4
 amp 4.0
 l 200.0
 scaling 10
-strength 0.02
+strength 0.03
 random 158
 fractal_stage5
 amp 6.0
@@ -99,14 +99,14 @@ scaling 20
 strength 0.01
 random 789
 fractal_stage6
-amp 4.0
+amp 6.0
 l 400.0
-scaling 100
-strength 0.02
-random 35
-fractal_stage7
-amp 4.0
-l 400.0
-scaling 100
+scaling 22
 strength 0.01
 random 35
+fractal_stage7
+amp 6.0
+l 500.0
+scaling 24
+strength 0.004
+random 96
