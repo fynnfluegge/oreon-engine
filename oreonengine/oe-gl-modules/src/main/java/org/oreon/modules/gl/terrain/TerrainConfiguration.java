@@ -42,6 +42,7 @@ public class TerrainConfiguration {
 	private Texture2D heightmap;
 	private Texture2D normalmap;
 	private Texture2D ambientmap;
+	private Texture2D splatmap;
 	private FloatBuffer heightmapDataBuffer;
 	private List<Material> materials = new ArrayList<>();
 	private List<Texture2D> splatmaps = new ArrayList<>();
@@ -98,8 +99,6 @@ public class TerrainConfiguration {
 				writer.write("scaling " + fractal.getScaling());
 				writer.newLine();
 				writer.write("strength " + fractal.getStrength());
-				writer.newLine();
-				writer.write("normalStrength " + fractal.getNormalStrength());
 				writer.newLine();
 				writer.write("random " + fractal.getRandom());
 				writer.newLine();
@@ -232,36 +231,22 @@ public class TerrainConfiguration {
 							}
 						}
 					}
-					if(tokens[0].equals("fractal_stage0")){
-						loadFractalMap(reader);
-					}	
-					if(tokens[0].equals("fractal_stage1")){
-						loadFractalMap(reader);
-					}	
-					if(tokens[0].equals("fractal_stage2")){
-						loadFractalMap(reader);
-					}	
-					if(tokens[0].equals("fractal_stage3")){
-						loadFractalMap(reader);
-					}	
-					if(tokens[0].equals("fractal_stage4")){
-						loadFractalMap(reader);
-					}	
-					if(tokens[0].equals("fractal_stage5")){
-						loadFractalMap(reader);
-					}	
-					if(tokens[0].equals("fractal_stage6")){
-						loadFractalMap(reader);
-					}	
-					if(tokens[0].equals("fractal_stage7")){
-						loadFractalMap(reader);
-					}	
-					if(tokens[0].equals("fractal_stage8")){
-						loadFractalMap(reader);
-					}	
-					if(tokens[0].equals("fractal_stage9")){
-						loadFractalMap(reader);
-					}	
+					
+					if (tokens[0].equals("#fractals")){
+						
+						for (int i = 0; i < 8; i++){
+							line = reader.readLine();
+							tokens = line.split(" ");
+							tokens = Util.removeEmptyStrings(tokens);
+							
+							if (tokens[0].equals("fractal_stage" + i)){
+								loadFractalMap(reader);
+							}
+						}
+						
+						renderFractalMap();
+						createHeightmapDataBuffer();
+					}
 				}
 				reader.close();
 		}
@@ -282,7 +267,6 @@ public class TerrainConfiguration {
 		int scaling = 0;
 		float strength = 0;
 		int random = 0;
-		int normalStrength = 0;
 		
 		try{
 			line = reader.readLine();
@@ -308,11 +292,6 @@ public class TerrainConfiguration {
 			line = reader.readLine();
 			tokens = line.split(" ");
 			tokens = Util.removeEmptyStrings(tokens);
-			if(tokens[0].equals("normalStrength"))
-				normalStrength = Integer.valueOf(tokens[1]);
-			line = reader.readLine();
-			tokens = line.split(" ");
-			tokens = Util.removeEmptyStrings(tokens);
 			if(tokens[0].equals("random")){
 				if (tokens.length == 2)
 					random = Integer.valueOf(tokens[1]);
@@ -325,7 +304,7 @@ public class TerrainConfiguration {
 			e.printStackTrace();
 			System.exit(1);
 		}
-		FractalMaps fractal = new FractalMaps(Constants.TERRAIN_FRACTALS_RESOLUTION,amp,l,scaling,strength,normalStrength,random);
+		FractalMaps fractal = new FractalMaps(Constants.TERRAIN_FRACTALS_RESOLUTION,amp,l,scaling,strength,random);
 		getFractals().add(fractal);
 	}
 	
@@ -334,6 +313,22 @@ public class TerrainConfiguration {
 		heightmapDataBuffer = BufferUtil.createFloatBuffer(getHeightmap().getWidth() * getHeightmap().getHeight());
 		heightmap.bind();
 		glGetTexImage(GL_TEXTURE_2D,0,GL_RED,GL_FLOAT,heightmapDataBuffer);
+	}
+	
+	private void renderFractalMap(){
+		
+		FractalMapGenerator fractalMapGenerator = new FractalMapGenerator(Constants.TERRAIN_FRACTALS_RESOLUTION);
+		fractalMapGenerator.render(fractals);
+		setHeightmap(fractalMapGenerator.getFractalmap());
+		
+		NormalMapRenderer normalRenderer = new NormalMapRenderer(Constants.TERRAIN_FRACTALS_RESOLUTION);
+		normalRenderer.setStrength(48);
+		normalRenderer.render(getHeightmap());
+		setNormalmap(normalRenderer.getNormalmap());
+		
+		SplatMapGenerator splatMapGenerator = new SplatMapGenerator(Constants.TERRAIN_FRACTALS_RESOLUTION);
+		splatMapGenerator.render(getNormalmap());
+		setSplatmap(splatMapGenerator.getSplatmap());
 	}
 	
 	private int updateMorphingArea(int lod){
@@ -484,5 +479,13 @@ public class TerrainConfiguration {
 
 	public void setMaterials(List<Material> materials) {
 		this.materials = materials;
+	}
+
+	public Texture2D getSplatmap() {
+		return splatmap;
+	}
+
+	public void setSplatmap(Texture2D splatmap) {
+		this.splatmap = splatmap;
 	}
 }

@@ -21,12 +21,6 @@ struct Material
 	float horizontalScaling;
 };
 
-struct Fractal
-{
-	sampler2D normalmap;
-	int scaling;
-};
-
 layout (std140, row_major) uniform Camera{
 	vec3 eyePosition;
 	mat4 m_View;
@@ -35,7 +29,6 @@ layout (std140, row_major) uniform Camera{
 };
 
 uniform sampler2D normalmap;
-uniform Fractal fractals1[1];
 uniform float scaleY;
 uniform float scaleXZ;
 uniform Material materials[5];
@@ -68,7 +61,6 @@ void main()
 	vec2 mapCoords = (position.xz + scaleXZ/2)/scaleXZ; 
 	
 	vec3 normal = texture(normalmap, mapCoords).rgb;
-	normal.xy += (texture(fractals1[0].normalmap, mapCoords*fractals1[0].scaling).rg);
 	normal = normalize(normal);
 	
 	float material0Alpha = texture(materials[0].alphamap, mapCoords).r;

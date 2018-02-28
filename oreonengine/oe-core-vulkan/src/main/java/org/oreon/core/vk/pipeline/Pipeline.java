@@ -48,6 +48,7 @@ import org.lwjgl.vulkan.VkPipelineVertexInputStateCreateInfo;
 import org.lwjgl.vulkan.VkPipelineViewportStateCreateInfo;
 import org.lwjgl.vulkan.VkRect2D;
 import org.lwjgl.vulkan.VkViewport;
+import org.oreon.core.vk.buffers.VertexInputInfo;
 import org.oreon.core.vk.util.VKUtil;
 
 public class Pipeline {
@@ -116,13 +117,13 @@ public class Pipeline {
 		}
 	}
 	
-	public void specifyVertexInput(){
+	public void specifyVertexInput(VertexInputInfo vertexInput){
 		
 		vertexInputState = VkPipelineVertexInputStateCreateInfo.calloc()
 				.sType(VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO)
 				.pNext(0)
-				.pVertexBindingDescriptions(null)
-				.pVertexAttributeDescriptions(null);
+				.pVertexBindingDescriptions(vertexInput.getBindingDescription())
+				.pVertexAttributeDescriptions(vertexInput.getAttributeDescription());
 	}
 	
 	public void specifyInputAssembly(){

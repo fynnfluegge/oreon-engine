@@ -5,6 +5,7 @@ import static org.lwjgl.system.MemoryUtil.memAllocPointer;
 import static org.lwjgl.system.MemoryUtil.memFree;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import static org.lwjgl.vulkan.VK10.vkEnumeratePhysicalDevices;
+import static org.lwjgl.vulkan.VK10.vkGetPhysicalDeviceMemoryProperties;
 
 import java.nio.IntBuffer;
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.List;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.vulkan.VkInstance;
 import org.lwjgl.vulkan.VkPhysicalDevice;
+import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
 import org.oreon.core.vk.queue.QueueFamilies;
 import org.oreon.core.vk.swapchain.SwapChainCapabilities;
 import org.oreon.core.vk.util.DeviceCapabilities;
@@ -22,6 +24,7 @@ public class PhysicalDevice {
 	private VkPhysicalDevice handle;
 	private QueueFamilies queueFamilies;
 	private SwapChainCapabilities swapChainCapabilities;
+	private VkPhysicalDeviceMemoryProperties memoryProperties;
 	private List<String> supportedExtensionNames;
 	
 	public PhysicalDevice(VkInstance vkInstance, long surface) {
@@ -49,6 +52,9 @@ public class PhysicalDevice {
         queueFamilies = new QueueFamilies(handle, surface);
         swapChainCapabilities = new SwapChainCapabilities(handle, surface);
         supportedExtensionNames = DeviceCapabilities.getPhysicalDeviceExtensionNamesSupport(handle);
+        
+        memoryProperties = VkPhysicalDeviceMemoryProperties.calloc();
+        vkGetPhysicalDeviceMemoryProperties(handle, memoryProperties);
 	}
 	
 	public void checkDeviceExtensionsSupport(PointerBuffer ppEnabledExtensionNames){
@@ -87,6 +93,10 @@ public class PhysicalDevice {
 
 	public SwapChainCapabilities getSwapChainCapabilities() {
 		return swapChainCapabilities;
+	}
+
+	public VkPhysicalDeviceMemoryProperties getMemoryProperties() {
+		return memoryProperties;
 	}
 
 }

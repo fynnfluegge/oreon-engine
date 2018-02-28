@@ -40,7 +40,6 @@ material_heightScaling 3.0
 material_horizontalScaling 10.0
 
 #maps
-heightmap oreonworlds/terrain/maps/terrain4/heightmap.bmp 12
 
 #terrain mesh settings
 scaleXZ 6000.0
@@ -68,53 +67,40 @@ amp 4.0
 l 200.0
 scaling 10
 strength 0.02
-normalStrength 2
 random 158
-
 fractal_stage1
 amp 2.0
 l 20.0
 scaling 2
 strength 1
-normalStrength 128
 random 558
-
 fractal_stage2
 amp 4.0
 l 100.0
 scaling 4
 strength 0.15
-normalStrength 25
 random 812
-
 fractal_stage3
 amp 4.0
 l 100.0
 scaling 6
 strength 0.04
-normalStrength 15
 random 470
-
 fractal_stage4
 amp 4.0
 l 200.0
 scaling 10
 strength 0.02
-normalStrength 20
 random 158
-
 fractal_stage5
 amp 6.0
 l 400.0
 scaling 20
 strength 0.01
-normalStrength 20
 random 789
-
 fractal_stage6
 amp 4.0
 l 400.0
 scaling 100
 strength 0.002
-normalStrength 2
 random 35

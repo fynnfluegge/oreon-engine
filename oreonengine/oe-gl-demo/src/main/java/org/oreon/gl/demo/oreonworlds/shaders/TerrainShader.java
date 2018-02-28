@@ -4,8 +4,6 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE2;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE3;
-import static org.lwjgl.opengl.GL13.GL_TEXTURE28;
-import static org.lwjgl.opengl.GL13.GL_TEXTURE30;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import org.oreon.core.gl.shaders.GLShader;
@@ -68,19 +66,6 @@ public class TerrainShader extends GLShader{
 		addUniform("heightmap");
 		addUniform("normalmap");
 		
-		for (int i=0; i<1; i++)
-		{
-			addUniform("fractals1[" + i + "].normalmap");
-			addUniform("fractals1[" + i + "].scaling");
-		}
-		
-		for (int i=0; i<1; i++)
-		{
-			addUniform("fractals0[" + i + "].heightmap");
-			addUniform("fractals0[" + i + "].scaling");
-			addUniform("fractals0[" + i + "].strength");
-		}
-		
 		for (int i=0; i<8; i++){
 			addUniform("lod_morph_area[" + i + "]");
 		}
@@ -123,23 +108,6 @@ public class TerrainShader extends GLShader{
 		glActiveTexture(GL_TEXTURE1);
 		terrConfig.getNormalmap().bind();
 		setUniformi("normalmap", 1);
-		
-		for (int i=0; i<1; i++)
-		{
-			glActiveTexture(GL_TEXTURE28 + i);
-			terrConfig.getFractals().get(i).getNormalmap().bind();
-			setUniformi("fractals1[" + i +"].normalmap", 28+i);	
-			setUniformi("fractals1[" + i +"].scaling", terrConfig.getFractals().get(i).getScaling());
-		}
-		
-		for (int i=0; i<1; i++)
-		{
-			glActiveTexture(GL_TEXTURE30 + i);
-			terrConfig.getFractals().get(i).getHeightmap().bind();
-			setUniformi("fractals0[" + i +"].heightmap", 30+i);	
-			setUniformi("fractals0[" + i +"].scaling", terrConfig.getFractals().get(i).getScaling());
-			setUniformf("fractals0[" + i +"].strength", terrConfig.getFractals().get(i).getStrength());
-		}
 		
 		setUniformf("scaleY", terrConfig.getScaleY());
 		setUniformf("scaleXZ", terrConfig.getScaleXZ());

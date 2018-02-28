@@ -4,13 +4,6 @@ layout (location = 0) in vec2 position0;
 
 out vec2 texCoord1;
 
-struct Fractal
-{
-	sampler2D heightmap;
-	int scaling;
-	float strength;
-};
-
 layout (std140, row_major) uniform Camera{
 	vec3 eyePosition;
 	mat4 m_View;
@@ -19,7 +12,6 @@ layout (std140, row_major) uniform Camera{
 };
 
 uniform sampler2D heightmap;
-uniform Fractal fractals0[1];
 uniform float scaleY;
 uniform int lod;
 uniform vec2 index;
@@ -139,7 +131,6 @@ void main()
 	float height = 0;
 
 	height += texture(heightmap, texCoord1).r;
-	height += texture(fractals0[0].heightmap, texCoord1*fractals0[0].scaling).r * fractals0[0].strength;
 					
 	gl_Position = worldMatrix * vec4(localPosition.x,height,localPosition.y,1);
 }

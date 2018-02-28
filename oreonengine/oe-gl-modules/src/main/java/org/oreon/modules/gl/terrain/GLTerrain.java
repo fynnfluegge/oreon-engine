@@ -3,7 +3,6 @@ package org.oreon.modules.gl.terrain;
 import org.oreon.core.gl.shaders.GLShader;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.terrain.Terrain;
-import org.oreon.core.util.Constants;
 
 public class GLTerrain extends Terrain{
 	
@@ -118,53 +117,6 @@ public class GLTerrain extends Terrain{
 		return h;
 	}
 	
-	public float getFractalTerrainHeight(float x, float z)
-	{
-		float h = 0;
-		for (int i =0; i<7; i++){
-			float fractalHeight = 0;
-			Vec2f pos = new Vec2f();
-			pos.setX(x);
-			pos.setY(z);
-			pos = pos.add(configuration.getScaleXZ()/2f);
-			pos = pos.div(configuration.getScaleXZ());
-			pos = pos.mul(configuration.getFractals().get(i).getScaling());
-			Vec2f floor = new Vec2f((int) Math.floor(pos.getX()), (int) Math.floor(pos.getY()));
-			pos = pos.sub(floor);
-			pos = pos.mul(Constants.TERRAIN_FRACTALS_RESOLUTION-1);
-			int x0 = (int) Math.floor(pos.getX());
-			int x1 = x0 + 1;
-			int z0 = (int) Math.floor(pos.getY());
-			int z1 = z0 + 1;
-			
-			float h0 =  configuration.getFractals().get(i).getHeightDataBuffer().get(Constants.TERRAIN_FRACTALS_RESOLUTION * z0 + x0);
-			float h1 =  configuration.getFractals().get(i).getHeightDataBuffer().get(Constants.TERRAIN_FRACTALS_RESOLUTION * z0 + x1);
-			float h2 =  configuration.getFractals().get(i).getHeightDataBuffer().get(Constants.TERRAIN_FRACTALS_RESOLUTION * z1 + x0);
-			float h3 =  configuration.getFractals().get(i).getHeightDataBuffer().get(Constants.TERRAIN_FRACTALS_RESOLUTION * z1 + x1);
-			
-			float percentU = pos.getX() - x0;
-	        float percentV = pos.getY() - z0;
-	        
-	        float dU, dV;
-	        if (percentU > percentV)
-	        {   // bottom triangle
-	            dU = h1 - h0;
-	            dV = h3 - h1;
-	        }
-	        else
-	        {   // top triangle
-	            dU = h3 - h2;
-	            dV = h2 - h0;
-	        }
-	        
-	        fractalHeight = h0 + (dU * percentU) + (dV * percentV );
-	        fractalHeight *= configuration.getScaleY()*configuration.getFractals().get(i).getStrength();
-			h += fractalHeight;
-		}
-
-		return h;
-	}
-
 	public TerrainConfiguration getConfiguration() {
 		return configuration;
 	}

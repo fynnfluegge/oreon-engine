@@ -29,7 +29,7 @@ public class Texture2D extends Texture{
 	private int id;
 	private int width;
 	private int height;
-	
+
 	public Texture2D(){
 	}
 	
@@ -145,5 +145,13 @@ public class Texture2D extends Texture{
 
 	public int getHeight() {
 		return height;
+	}
+	
+	public void setWidth(int width) {
+		this.width = width;
+	}
+	
+	public void setHeight(int height) {
+		this.height = height;
 	}
 }

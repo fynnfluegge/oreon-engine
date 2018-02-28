@@ -1,17 +1,7 @@
 package org.oreon.modules.gl.terrain.fractals;
 
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
-import static org.lwjgl.opengl.GL11.glGetTexImage;
-import static org.lwjgl.opengl.GL11.GL_RED;
-import static org.lwjgl.opengl.GL11.GL_BLUE;
-import static org.lwjgl.opengl.GL11.GL_FLOAT;
-import java.nio.FloatBuffer;
-
 import org.oreon.core.gl.texture.Texture2D;
 import org.oreon.core.math.Vec2f;
-import org.oreon.core.util.BufferUtil;
-import org.oreon.core.util.Constants;
-import org.oreon.modules.gl.gpgpu.NormalMapRenderer;
 
 public class FractalMaps {
 	
@@ -19,15 +9,11 @@ public class FractalMaps {
 	private float amplitude; 
 	private float l;
 	private Texture2D heightmap;
-	private Texture2D normalmap;
-	private FloatBuffer heightDataBuffer;
-	private FloatBuffer slopeDataBuffer;
 	private int scaling;
 	private float strength;
 	private int random;
-	private int normalStrength;
 	
-	public FractalMaps(int N, float amplitude, float l, int scaling, float strength, int normalStrength, int random){
+	public FractalMaps(int N, float amplitude, float l, int scaling, float strength, int random){
 		
 		this.scaling = scaling;
 		this.strength = strength;
@@ -35,7 +21,6 @@ public class FractalMaps {
 		this.random = random;
 		this.l = l;
 		this.N = N;
-		this.normalStrength = normalStrength;
 		int L = 1000;
 		int v = 100;
 		this.scaling = scaling;
@@ -45,17 +30,7 @@ public class FractalMaps {
 		fft.setT(random);
 		fft.init();
 		fft.render();
-		NormalMapRenderer normalmapRenderer = new NormalMapRenderer(N);
-		normalmapRenderer.setStrength(normalStrength);
-		normalmapRenderer.render(fft.getHeightmap());
 		heightmap = fft.getHeightmap();
-		normalmap = normalmapRenderer.getNormalmap();
-		heightDataBuffer = BufferUtil.createFloatBuffer(Constants.TERRAIN_FRACTALS_RESOLUTION * Constants.TERRAIN_FRACTALS_RESOLUTION);
-		heightmap.bind();
-		glGetTexImage(GL_TEXTURE_2D,0,GL_RED,GL_FLOAT,heightDataBuffer);
-		slopeDataBuffer = BufferUtil.createFloatBuffer(Constants.TERRAIN_FRACTALS_RESOLUTION * Constants.TERRAIN_FRACTALS_RESOLUTION);
-		normalmap.bind();
-		glGetTexImage(GL_TEXTURE_2D,0,GL_BLUE,GL_FLOAT,slopeDataBuffer);
 	}
 
 	public Texture2D getHeightmap() {
@@ -64,14 +39,6 @@ public class FractalMaps {
 
 	public void setHeightmap(Texture2D heightmap) {
 		this.heightmap = heightmap;
-	}
-
-	public Texture2D getNormalmap() {
-		return normalmap;
-	}
-
-	public void setNormalmap(Texture2D normalmap) {
-		this.normalmap = normalmap;
 	}
 
 	public int getScaling() {
@@ -84,14 +51,6 @@ public class FractalMaps {
 	
 	public void setStrength(float s) {
 		strength = s;
-	}
-
-	public FloatBuffer getHeightDataBuffer() {
-		return heightDataBuffer;
-	}
-
-	public void setHeightDataBuffer(FloatBuffer heightDataBuffer) {
-		this.heightDataBuffer = heightDataBuffer;
 	}
 
 	public int getRandom() {
@@ -116,21 +75,5 @@ public class FractalMaps {
 
 	public int getN() {
 		return N;
-	}
-
-	public int getNormalStrength() {
-		return normalStrength;
-	}
-
-	public void setNormalStrength(int normalStrength) {
-		this.normalStrength = normalStrength;
-	}
-
-	public FloatBuffer getSlopeDataBuffer() {
-		return slopeDataBuffer;
-	}
-
-	public void setSlopeDataBuffer(FloatBuffer slopeDataBuffer) {
-		this.slopeDataBuffer = slopeDataBuffer;
 	}
 }
