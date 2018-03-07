@@ -106,7 +106,6 @@ public class CommandBuffer {
 		vkCmdBeginRenderPass(commandBuffer, renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
 		vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
 		
-		// TODO
 		LongBuffer offsets = memAllocLong(1);
         offsets.put(0, 0L);
         LongBuffer pBuffers = memAllocLong(1);

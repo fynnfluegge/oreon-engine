@@ -48,7 +48,7 @@ public class VertexBuffer {
 		VkBufferCreateInfo bufInfo = VkBufferCreateInfo.calloc()
 					.sType(VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO)
 					.pNext(0)
-					.size(vertexBuffer.remaining())
+					.size(vertexBuffer.limit())
 					.usage(VK_BUFFER_USAGE_VERTEX_BUFFER_BIT)
 					.sharingMode(VK_SHARING_MODE_EXCLUSIVE)
 					.flags(0);

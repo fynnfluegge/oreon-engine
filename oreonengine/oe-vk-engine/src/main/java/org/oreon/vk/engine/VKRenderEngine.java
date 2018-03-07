@@ -137,8 +137,8 @@ public class VKRenderEngine implements RenderEngine{
 	    int minImageCount = physicalDevice.getDeviceMinImageCount4TripleBuffering();
 	    
 	    ShaderPipeline shaderPipeline = new ShaderPipeline();
-	    shaderPipeline.createVertexShader(logicalDevice.getHandle(), "shaders/vert.spv");
-	    shaderPipeline.createFragmentShader(logicalDevice.getHandle(), "shaders/frag.spv");
+	    shaderPipeline.createVertexShader(logicalDevice.getHandle(), "shaders/triangle.vert.spv");
+	    shaderPipeline.createFragmentShader(logicalDevice.getHandle(), "shaders/triangle.frag.spv");
 	    shaderPipeline.createShaderPipeline();
 	    
 	    PipelineLayout pipeLineLayout = new PipelineLayout();
@@ -152,9 +152,18 @@ public class VKRenderEngine implements RenderEngine{
 	    renderPass.specifyDependency();
 	    renderPass.createRenderPass(logicalDevice.getHandle());
 	    
+	    ByteBuffer buffer = memAlloc(3 * 2 * 4 + 3 * 3 * 4);
+        FloatBuffer fb = buffer.asFloatBuffer();
+        fb.put(-0.5f).put(-0.5f);
+        fb.put(1.0f).put(0.0f).put(0.0f);
+        fb.put( 0.5f).put(-0.5f);
+        fb.put(0.0f).put(1.0f).put(0.0f);
+        fb.put( 0.0f).put( 0.5f);
+        fb.put(1.0f).put(0.0f).put(1.0f);
+	    
 	    pipeline = new Pipeline();
 	    VertexInputInfo vertexInputInfo = new VertexInputInfo();
-	    vertexInputInfo.createBindingDescription();
+	    vertexInputInfo.createBindingDescription(5 * 4);
 	    vertexInputInfo.createAttributeDescription();
 	    pipeline.specifyVertexInput(vertexInputInfo);
 	    pipeline.specifyInputAssembly();
@@ -166,14 +175,8 @@ public class VKRenderEngine implements RenderEngine{
 	    pipeline.specifyDynamicState();
 	    pipeline.createPipeline(logicalDevice.getHandle(), shaderPipeline, renderPass, pipeLineLayout);
 	    
-	    ByteBuffer buffer = memAlloc(3 * 2 * 4);
-        FloatBuffer fb = buffer.asFloatBuffer();
-        // The triangle will showup upside-down, because Vulkan does not do proper viewport transformation to
-        // account for inverted Y axis between the window coordinate system and clip space/NDC
-        fb.put(-0.5f).put(-0.5f);
-        fb.put( 0.5f).put(-0.5f);
-        fb.put( 0.0f).put( 0.5f);
 	    VertexBuffer vertexBuffer = new VertexBuffer();
+	    
 	    vertexBuffer.create(logicalDevice.getHandle(), buffer);
 	    vertexBuffer.allocate(logicalDevice.getHandle(), physicalDevice.getMemoryProperties(), buffer);
 	    
