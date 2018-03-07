@@ -6,6 +6,7 @@ import static org.lwjgl.glfw.GLFWVulkan.glfwCreateWindowSurface;
 import static org.lwjgl.system.MemoryUtil.memUTF8;
 import static org.lwjgl.system.MemoryUtil.memAllocPointer;
 import static org.lwjgl.system.MemoryUtil.memFree;
+import static org.lwjgl.system.MemoryUtil.memAlloc;
 import static org.lwjgl.system.MemoryUtil.memAllocLong;
 import static org.lwjgl.vulkan.EXTDebugReport.VK_EXT_DEBUG_REPORT_EXTENSION_NAME;
 import static org.lwjgl.vulkan.EXTDebugReport.VK_DEBUG_REPORT_ERROR_BIT_EXT;
@@ -28,6 +29,7 @@ import static org.lwjgl.vulkan.VK10.vkQueueWaitIdle;
 import static org.lwjgl.vulkan.VK10.VK_MAKE_VERSION;
 
 import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
 import java.nio.LongBuffer;
 
 import org.lwjgl.PointerBuffer;
@@ -42,6 +44,8 @@ import org.oreon.core.math.Quaternion;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.system.RenderEngine;
 import org.oreon.core.texture.Texture;
+import org.oreon.core.vk.buffers.VertexBuffer;
+import org.oreon.core.vk.buffers.VertexInputInfo;
 import org.oreon.core.vk.device.LogicalDevice;
 import org.oreon.core.vk.device.PhysicalDevice;
 import org.oreon.core.vk.pipeline.Pipeline;
@@ -149,7 +153,10 @@ public class VKRenderEngine implements RenderEngine{
 	    renderPass.createRenderPass(logicalDevice.getHandle());
 	    
 	    pipeline = new Pipeline();
-	    pipeline.specifyVertexInput(null);
+	    VertexInputInfo vertexInputInfo = new VertexInputInfo();
+	    vertexInputInfo.createBindingDescription();
+	    vertexInputInfo.createAttributeDescription();
+	    pipeline.specifyVertexInput(vertexInputInfo);
 	    pipeline.specifyInputAssembly();
 	    pipeline.specifyViewportAndScissor(swapExtent);
 	    pipeline.specifyRasterizer();
@@ -158,6 +165,17 @@ public class VKRenderEngine implements RenderEngine{
 	    pipeline.specifyDepthAndStencilTest();
 	    pipeline.specifyDynamicState();
 	    pipeline.createPipeline(logicalDevice.getHandle(), shaderPipeline, renderPass, pipeLineLayout);
+	    
+	    ByteBuffer buffer = memAlloc(3 * 2 * 4);
+        FloatBuffer fb = buffer.asFloatBuffer();
+        // The triangle will showup upside-down, because Vulkan does not do proper viewport transformation to
+        // account for inverted Y axis between the window coordinate system and clip space/NDC
+        fb.put(-0.5f).put(-0.5f);
+        fb.put( 0.5f).put(-0.5f);
+        fb.put( 0.0f).put( 0.5f);
+	    VertexBuffer vertexBuffer = new VertexBuffer();
+	    vertexBuffer.create(logicalDevice.getHandle(), buffer);
+	    vertexBuffer.allocate(logicalDevice.getHandle(), physicalDevice.getMemoryProperties(), buffer);
 	    
 	    swapChain = new SwapChain(logicalDevice.getHandle(), 
 	    						  surface, 
@@ -169,7 +187,7 @@ public class VKRenderEngine implements RenderEngine{
 	    						  renderPass.getHandle());
 	    
 	    swapChain.createCommandPool(logicalDevice.getHandle(), logicalDevice.getGraphicsAndPresentationQueueFamilyIndex());
-	    swapChain.createRenderCommandBuffers(logicalDevice.getHandle(), pipeline.getHandle(), renderPass.getHandle());
+	    swapChain.createRenderCommandBuffers(logicalDevice.getHandle(), pipeline.getHandle(), renderPass.getHandle(), vertexBuffer.getHandle());
 	    swapChain.createSubmitInfo();
 	}
     

@@ -146,8 +146,6 @@ public class SwapChain {
         	
 			swapChainImageViews.add(imageView);
         }
-        
-        
 	}
 	
 	public void createFrameBuffers(VkDevice device, long renderPass){
@@ -165,14 +163,15 @@ public class SwapChain {
 		  commandPool = new CommandPool(device, queueIndex);
 	}
 	
-	public void createRenderCommandBuffers(VkDevice device, long pipeline, long renderPass){
+	public void createRenderCommandBuffers(VkDevice device, long pipeline, long renderPass,
+										   long vertexBuffer){
 		
 		renderCommandBuffers = new ArrayList<>();
 		
 		for (VkFrameBuffer framebuffer : frameBuffers){
 			CommandBuffer commandBuffer = new CommandBuffer(device, commandPool.getHandle());
 			commandBuffer.beginRecord();
-			commandBuffer.recordRenderPass(pipeline, renderPass, extent, framebuffer.getHandle());
+			commandBuffer.recordRenderPass(pipeline, renderPass, vertexBuffer, extent, framebuffer.getHandle());
 			commandBuffer.finishRecord();
 			renderCommandBuffers.add(commandBuffer);
 		}
