@@ -31,13 +31,14 @@ public class VertexInputInfo {
 	                .offset(0);
 		
 		VkVertexInputAttributeDescription.Buffer location1 = VkVertexInputAttributeDescription.calloc(1)
-                .binding(0)
-                .location(1)
-                .format(VK_FORMAT_R32G32B32_SFLOAT)
-                .offset(8);
+	                .binding(0)
+	                .location(1)
+	                .format(VK_FORMAT_R32G32B32_SFLOAT)
+	                .offset(8);
 		
 		attributeDescription.put(location0);
 		attributeDescription.put(location1);
+		attributeDescription.flip();
 	}
 
 	public VkVertexInputBindingDescription.Buffer getBindingDescription() {

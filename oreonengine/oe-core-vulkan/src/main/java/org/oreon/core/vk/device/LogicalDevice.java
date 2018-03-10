@@ -23,27 +23,58 @@ import org.lwjgl.vulkan.VkDeviceQueueCreateInfo;
 import org.lwjgl.vulkan.VkQueue;
 import org.oreon.core.vk.util.VKUtil;
 
+import lombok.Getter;
+
 public class LogicalDevice {
 
 	private VkDevice handle;
-	private VkQueue graphicsAndPresentationQueue;
+	private VkQueue graphicsQueue;
 	private VkQueue computeQueue;
 	private VkQueue transferQueue;
 	
-	private int graphicsAndPresentationQueueFamilyIndex;
+	@Getter
+	private int graphicsQueueFamilyIndex;
+	@Getter
+	private int computeQueueFamilyIndex;
+	@Getter
+	private int transferQueueFamilyIndex;
 	
-	public void createGraphicsAndPresentationDevice(PhysicalDevice physicalDevice,
-			 										float priority,
-			 										PointerBuffer ppEnabledLayerNames){
+	public void createDevice(PhysicalDevice physicalDevice,
+							 float priority,
+							 PointerBuffer ppEnabledLayerNames){
 		
 		FloatBuffer pQueuePriorities = memAllocFloat(1).put(priority);
         pQueuePriorities.flip();
         
-        graphicsAndPresentationQueueFamilyIndex = physicalDevice.getQueueFamilies().getGraphicsAndPresentationQueueFamily().getIndex();
+        try {
+			graphicsQueueFamilyIndex = physicalDevice.getQueueFamilies().getGraphicsAndPresentationQueueFamily().getIndex();
+		} catch (Exception e1) {
+			throw new AssertionError("no graphics and presentation queue available on device: " + physicalDevice.getProperties().deviceNameString());
+		}
+        try {
+			computeQueueFamilyIndex = physicalDevice.getQueueFamilies().getComputeOnlyQueueFamily().getIndex();
+		} catch (Exception e) {
+			System.out.println("No compute dedicated queue available on device: " + physicalDevice.getProperties().deviceNameString());
+			try {
+				computeQueueFamilyIndex = physicalDevice.getQueueFamilies().getComputeQueueFamily().getIndex();
+			} catch (Exception e1) {
+				throw new AssertionError("no compute queue available on device: " + physicalDevice.getProperties().deviceNameString());
+			}
+		}
+        try {
+			transferQueueFamilyIndex = physicalDevice.getQueueFamilies().getTransferOnlyQueueFamily().getIndex();
+		} catch (Exception e) {
+			System.out.println("No transfer dedicated queue available on device: " + physicalDevice.getProperties().deviceNameString());
+			try {
+				transferQueueFamilyIndex = physicalDevice.getQueueFamilies().getTransferQueueFamily().getIndex();
+			} catch (Exception e1) {
+				throw new AssertionError("no transfer queue available on device: " + physicalDevice.getProperties().deviceNameString());
+			}
+		}
         
         VkDeviceQueueCreateInfo.Buffer queueCreateInfo = VkDeviceQueueCreateInfo.calloc(1)
                 .sType(VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO)
-                .queueFamilyIndex(graphicsAndPresentationQueueFamilyIndex)
+                .queueFamilyIndex(graphicsQueueFamilyIndex)
                 .pQueuePriorities(pQueuePriorities);
 
         PointerBuffer extensions = memAllocPointer(1);
@@ -69,7 +100,13 @@ public class LogicalDevice {
         
         handle = new VkDevice(pDevice.get(0), physicalDevice.getHandle(), deviceCreateInfo);
         
-        graphicsAndPresentationQueue = createDeviceQueue(graphicsAndPresentationQueueFamilyIndex);
+        graphicsQueue = createDeviceQueue(graphicsQueueFamilyIndex,0);
+        if (graphicsQueueFamilyIndex == computeQueueFamilyIndex){
+        	computeQueue = graphicsQueue;
+        }
+        if (graphicsQueueFamilyIndex == transferQueueFamilyIndex){
+        	transferQueue = graphicsQueue;
+        }
         
         deviceCreateInfo.free();
         memFree(pDevice);
@@ -78,27 +115,7 @@ public class LogicalDevice {
         memFree(extensions);
 	}
 	
-	public void createDeviceFullQueueSupport(){
-		
-	}
-	
-	public void createGraphicsDevice(){
-		
-	}
-	
-	public void createComputeDevice(){
-		
-	}
-	
-	public void createComputeAndPresentationDevice(){
-		
-	}
-	
-	public void createTransferDevice(){
-		
-	}
-	
-	private VkQueue createDeviceQueue(int queueFamilyIndex) {
+	private VkQueue createDeviceQueue(int queueFamilyIndex, int queueIndex) {
 		
         PointerBuffer pQueue = memAllocPointer(1);
         vkGetDeviceQueue(handle, queueFamilyIndex, 0, pQueue);
@@ -116,8 +133,8 @@ public class LogicalDevice {
 		return handle;
 	}
 
-	public VkQueue getGraphicsAndPresentationQueue() {
-		return graphicsAndPresentationQueue;
+	public VkQueue getGraphicsQueue() {
+		return graphicsQueue;
 	}
 
 	public VkQueue getComputeQueue() {
@@ -126,10 +143,6 @@ public class LogicalDevice {
 
 	public VkQueue getTransferQueue() {
 		return transferQueue;
-	}
-
-	public int getGraphicsAndPresentationQueueFamilyIndex() {
-		return graphicsAndPresentationQueueFamilyIndex;
 	}
 
 }

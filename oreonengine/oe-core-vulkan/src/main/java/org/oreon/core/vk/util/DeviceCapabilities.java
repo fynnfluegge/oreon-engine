@@ -112,17 +112,21 @@ public class DeviceCapabilities {
 		layers.free();
 	}
 	
-	public static void checkPhysicalDeviceProperties(VkPhysicalDevice physicalDevice){
+	public static VkPhysicalDeviceProperties checkPhysicalDeviceProperties(VkPhysicalDevice physicalDevice){
 		
 		VkPhysicalDeviceProperties properties = VkPhysicalDeviceProperties.create();
 		vkGetPhysicalDeviceProperties(physicalDevice, properties);
 		
 		System.out.println(properties.deviceNameString());
+		
+		return properties;
 	}
 	
-	public static void checkPhysicalDeviceFeatures(VkPhysicalDevice physicalDevice){
+	public static VkPhysicalDeviceFeatures checkPhysicalDeviceFeatures(VkPhysicalDevice physicalDevice){
 		
 		VkPhysicalDeviceFeatures features = VkPhysicalDeviceFeatures.create();
 		vkGetPhysicalDeviceFeatures(physicalDevice, features);
+		
+		return features;
 	}
 }

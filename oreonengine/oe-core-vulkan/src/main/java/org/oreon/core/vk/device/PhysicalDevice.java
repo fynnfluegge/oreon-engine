@@ -13,7 +13,9 @@ import java.util.List;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.vulkan.VkInstance;
 import org.lwjgl.vulkan.VkPhysicalDevice;
+import org.lwjgl.vulkan.VkPhysicalDeviceFeatures;
 import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
+import org.lwjgl.vulkan.VkPhysicalDeviceProperties;
 import org.oreon.core.vk.queue.QueueFamilies;
 import org.oreon.core.vk.swapchain.SwapChainCapabilities;
 import org.oreon.core.vk.util.DeviceCapabilities;
@@ -22,6 +24,8 @@ import org.oreon.core.vk.util.VKUtil;
 public class PhysicalDevice {
 
 	private VkPhysicalDevice handle;
+	private VkPhysicalDeviceProperties properties;
+	private VkPhysicalDeviceFeatures features;
 	private QueueFamilies queueFamilies;
 	private SwapChainCapabilities swapChainCapabilities;
 	private VkPhysicalDeviceMemoryProperties memoryProperties;
@@ -55,6 +59,9 @@ public class PhysicalDevice {
         
         memoryProperties = VkPhysicalDeviceMemoryProperties.calloc();
         vkGetPhysicalDeviceMemoryProperties(handle, memoryProperties);
+        
+        properties = DeviceCapabilities.checkPhysicalDeviceProperties(handle);
+        features = DeviceCapabilities.checkPhysicalDeviceFeatures(handle);
 	}
 	
 	public void checkDeviceExtensionsSupport(PointerBuffer ppEnabledExtensionNames){
@@ -97,6 +104,14 @@ public class PhysicalDevice {
 
 	public VkPhysicalDeviceMemoryProperties getMemoryProperties() {
 		return memoryProperties;
+	}
+
+	public VkPhysicalDeviceProperties getProperties() {
+		return properties;
+	}
+
+	public VkPhysicalDeviceFeatures getFeatures() {
+		return features;
 	}
 
 }

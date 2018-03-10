@@ -73,52 +73,52 @@ public class QueueFamilies {
         queueProps.free();
 	}
 	
-	public QueueFamily getGraphicsQueueFamily(){
+	public QueueFamily getGraphicsQueueFamily() throws Exception{
 		
 		for (QueueFamily queueFamily : queueFamilies){
 			if ((queueFamily.getFlags() & VK_QUEUE_GRAPHICS_BIT) != 0)
 				return queueFamily;
 		}
-		throw new AssertionError("No Queue with graphics support found");
+		throw new Exception("No Queue with graphics support found");
 	}
 	
-	public QueueFamily getComputeQueueFamily(){
+	public QueueFamily getComputeQueueFamily() throws Exception{
 		
 		for (QueueFamily queueFamily : queueFamilies){
 			if ((queueFamily.getFlags() & VK_QUEUE_COMPUTE_BIT) != 0)
 				return queueFamily;
 		}
-		throw new AssertionError("No Queue with compute support found");
+		throw new Exception("No Queue with compute support found");
 	}
 	
-	public QueueFamily getTransferQueueFamily(){
+	public QueueFamily getTransferQueueFamily() throws Exception{
 		
 		for (QueueFamily queueFamily : queueFamilies){
 			if ((queueFamily.getFlags() & VK_QUEUE_TRANSFER_BIT) != 0)
 				return queueFamily;
 		}
-		throw new AssertionError("No Queue with transfer support found");
+		throw new Exception("No Queue with transfer support found");
 	}
 	
-	public QueueFamily getSparseBindingQueueFamily(){
+	public QueueFamily getSparseBindingQueueFamily() throws Exception{
 		
 		for (QueueFamily queueFamily : queueFamilies){
 			if ((queueFamily.getFlags() & VK_QUEUE_SPARSE_BINDING_BIT) != 0)
 				return queueFamily;
 		}
-		throw new AssertionError("No Queue with sparse binding support found");
+		throw new Exception("No Queue with sparse binding support found");
 	}
 	
-	public QueueFamily getPresentationQueueFamily(){
+	public QueueFamily getPresentationQueueFamily() throws Exception{
 		
 		for (QueueFamily queueFamily : queueFamilies){
 			if (queueFamily.getPresentFlag() == VK_TRUE)
 				return queueFamily;
 		}
-		throw new AssertionError("No Queue with presentation support found");
+		throw new Exception("No Queue with presentation support found");
 	}
 	
-	public QueueFamily getGraphicsAndPresentationQueueFamily(){
+	public QueueFamily getGraphicsAndPresentationQueueFamily() throws Exception{
 		
 		for (QueueFamily queueFamily : queueFamilies){
 			
@@ -126,25 +126,25 @@ public class QueueFamilies {
 				 && queueFamily.getPresentFlag() == VK_TRUE)
 				return queueFamily;
 		}
-		throw new AssertionError("No Queue with both graphics and presentation support found");
+		throw new Exception("No Queue with both graphics and presentation support found");
 	}
 	
-	public QueueFamily getComputeOnlyQueueFamily(){
+	public QueueFamily getComputeOnlyQueueFamily() throws Exception{
 		
 		for (QueueFamily queueFamily : queueFamilies){
 			if (queueFamily.getFlags() == VK_QUEUE_COMPUTE_BIT)
 				return queueFamily;
 		}
-		throw new AssertionError("No Queue with compute limited support found");
+		throw new Exception("No Queue with compute limited support found");
 	}
 	
-	public QueueFamily getTransferOnlyQueueFamily(){
+	public QueueFamily getTransferOnlyQueueFamily() throws Exception{
 		
 		for (QueueFamily queueFamily : queueFamilies){
 			if (queueFamily.getFlags() == VK_QUEUE_TRANSFER_BIT)
 				return queueFamily;
 		}
-		throw new AssertionError("No Queue transfer limited support found");
+		throw new Exception("No Queue transfer limited support found");
 	}
 
 }

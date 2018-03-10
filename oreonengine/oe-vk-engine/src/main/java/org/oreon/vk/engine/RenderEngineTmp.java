@@ -391,7 +391,7 @@ public class RenderEngineTmp implements RenderEngine{
         DeviceCapabilities.checkPhysicalDeviceFeatures(physicalDevice.getHandle());
         
 	    logicalDevice = new LogicalDevice();
-	    logicalDevice.createGraphicsAndPresentationDevice(physicalDevice, 0, ppEnabledLayerNames);
+	    logicalDevice.createDevice(physicalDevice, 0, ppEnabledLayerNames);
 	    
 	    VkExtent2D swapExtent = physicalDevice.getSwapChainCapabilities().getSurfaceCapabilities().currentExtent();
 	    swapExtent.height(600);

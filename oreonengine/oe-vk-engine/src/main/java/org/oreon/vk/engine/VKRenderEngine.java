@@ -27,6 +27,8 @@ import static org.lwjgl.vulkan.VK10.vkCreateInstance;
 import static org.lwjgl.vulkan.VK10.vkDestroyInstance;
 import static org.lwjgl.vulkan.VK10.vkQueueWaitIdle;
 import static org.lwjgl.vulkan.VK10.VK_MAKE_VERSION;
+import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
+import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
 
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
@@ -109,11 +111,8 @@ public class VKRenderEngine implements RenderEngine{
 	    
         physicalDevice = new PhysicalDevice(vkInstance, surface);
         
-        DeviceCapabilities.checkPhysicalDeviceProperties(physicalDevice.getHandle());
-        DeviceCapabilities.checkPhysicalDeviceFeatures(physicalDevice.getHandle());
-        
 	    logicalDevice = new LogicalDevice();
-	    logicalDevice.createGraphicsAndPresentationDevice(physicalDevice, 0, ppEnabledLayerNames);
+	    logicalDevice.createDevice(physicalDevice, 0, ppEnabledLayerNames);
 	    
 	    VkExtent2D swapExtent = physicalDevice.getSwapChainCapabilities().getSurfaceCapabilities().currentExtent();
 	    swapExtent.width(1280);
@@ -158,8 +157,8 @@ public class VKRenderEngine implements RenderEngine{
         fb.put(1.0f).put(0.0f).put(0.0f);
         fb.put( 0.5f).put(-0.5f);
         fb.put(0.0f).put(1.0f).put(0.0f);
-        fb.put( 0.0f).put( 0.5f);
-        fb.put(1.0f).put(0.0f).put(1.0f);
+        fb.put(0.0f).put( 0.5f);
+        fb.put(0.0f).put(0.0f).put(1.0f);
 	    
 	    pipeline = new Pipeline();
 	    VertexInputInfo vertexInputInfo = new VertexInputInfo();
@@ -178,7 +177,8 @@ public class VKRenderEngine implements RenderEngine{
 	    VertexBuffer vertexBuffer = new VertexBuffer();
 	    
 	    vertexBuffer.create(logicalDevice.getHandle(), buffer);
-	    vertexBuffer.allocate(logicalDevice.getHandle(), physicalDevice.getMemoryProperties(), buffer);
+	    vertexBuffer.allocate(logicalDevice.getHandle(), physicalDevice.getMemoryProperties(), buffer,
+	    				      VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
 	    
 	    swapChain = new SwapChain(logicalDevice.getHandle(), 
 	    						  surface, 
@@ -189,7 +189,7 @@ public class VKRenderEngine implements RenderEngine{
 	    						  swapExtent,
 	    						  renderPass.getHandle());
 	    
-	    swapChain.createCommandPool(logicalDevice.getHandle(), logicalDevice.getGraphicsAndPresentationQueueFamilyIndex());
+	    swapChain.createCommandPool(logicalDevice.getHandle(), logicalDevice.getGraphicsQueueFamilyIndex());
 	    swapChain.createRenderCommandBuffers(logicalDevice.getHandle(), pipeline.getHandle(), renderPass.getHandle(), vertexBuffer.getHandle());
 	    swapChain.createSubmitInfo();
 	}
@@ -199,9 +199,9 @@ public class VKRenderEngine implements RenderEngine{
 	public void render() {
 		
 		// wait for queues to be finished before start draw command
-		vkQueueWaitIdle(logicalDevice.getGraphicsAndPresentationQueue());
+		vkQueueWaitIdle(logicalDevice.getGraphicsQueue());
 		
-		swapChain.draw(logicalDevice.getHandle(), logicalDevice.getGraphicsAndPresentationQueue());
+		swapChain.draw(logicalDevice.getHandle(), logicalDevice.getGraphicsQueue());
 	}
 
 	@Override
@@ -213,7 +213,7 @@ public class VKRenderEngine implements RenderEngine{
 	public void shutdown() {
 		
 		// wait for queues to be finished before destroy vulkan objects
-		vkQueueWaitIdle(logicalDevice.getGraphicsAndPresentationQueue());
+		vkQueueWaitIdle(logicalDevice.getGraphicsQueue());
 		
 		vkDestroySwapchainKHR(logicalDevice.getHandle(), swapChain.getHandle(), null);
 		swapChain.destroy(logicalDevice.getHandle());

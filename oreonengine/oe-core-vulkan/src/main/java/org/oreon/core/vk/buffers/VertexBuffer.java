@@ -66,7 +66,8 @@ public class VertexBuffer {
 	}
 	
 	public void allocate(VkDevice device, VkPhysicalDeviceMemoryProperties memoryProperties,
-						 ByteBuffer vertexBuffer){
+						 ByteBuffer vertexBuffer,
+						 int memoryPropertyFlags){
 		
 		VkMemoryRequirements memRequirements = VkMemoryRequirements.calloc();
 		vkGetBufferMemoryRequirements(device, handle, memRequirements);
@@ -74,7 +75,7 @@ public class VertexBuffer {
         
         if (!getMemoryTypeIndex(memoryProperties, 
 				   memRequirements.memoryTypeBits(), 
-				   VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+				   memoryPropertyFlags,
 				   memoryTypeIndex)){
         	throw new AssertionError("No memory Type found");
         }
