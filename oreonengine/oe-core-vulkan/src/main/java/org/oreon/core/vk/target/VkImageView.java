@@ -17,7 +17,7 @@ import java.nio.LongBuffer;
 
 import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkImageViewCreateInfo;
-import org.oreon.core.vk.util.VKUtil;
+import org.oreon.core.vk.util.VkUtil;
 
 public class VkImageView {
 	
@@ -48,7 +48,7 @@ public class VkImageView {
         LongBuffer pImageView = memAllocLong(1);
     	int err = vkCreateImageView(device, imageViewCreateInfo, null, pImageView);
 		if (err != VK_SUCCESS) {
-		   throw new AssertionError("Failed to create image view: " + VKUtil.translateVulkanResult(err));
+		   throw new AssertionError("Failed to create image view: " + VkUtil.translateVulkanResult(err));
 		}
 		
 		handle = pImageView.get(0);

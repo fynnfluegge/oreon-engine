@@ -28,14 +28,14 @@ public class DeviceCapabilities {
 		
 		int err = vkEnumerateInstanceExtensionProperties("", extensionCount, null);
 		if (err != VK_SUCCESS) {
-            throw new AssertionError(VKUtil.translateVulkanResult(err));
+            throw new AssertionError(VkUtil.translateVulkanResult(err));
         }
 		
 		VkExtensionProperties.Buffer extensions = VkExtensionProperties.calloc(extensionCount.get(0));
 				
 		err = vkEnumerateInstanceExtensionProperties("", extensionCount, extensions);
 		if (err != VK_SUCCESS) {
-            throw new AssertionError(VKUtil.translateVulkanResult(err));
+            throw new AssertionError(VkUtil.translateVulkanResult(err));
         }
 		
 		List<String> availableExtensions = new ArrayList<>();
@@ -61,14 +61,14 @@ public class DeviceCapabilities {
 		
 		int err = vkEnumerateDeviceExtensionProperties(physicalDevice, "", extensionCount, null);
 		if (err != VK_SUCCESS) {
-            throw new AssertionError(VKUtil.translateVulkanResult(err));
+            throw new AssertionError(VkUtil.translateVulkanResult(err));
         }
 		
 		VkExtensionProperties.Buffer extensions = VkExtensionProperties.calloc(extensionCount.get(0));
 		
 		err = vkEnumerateDeviceExtensionProperties(physicalDevice, "", extensionCount, extensions);
 		if (err != VK_SUCCESS) {
-            throw new AssertionError(VKUtil.translateVulkanResult(err));
+            throw new AssertionError(VkUtil.translateVulkanResult(err));
         }
 		
 		List<String> extensionNames = new ArrayList<>();
@@ -85,14 +85,14 @@ public class DeviceCapabilities {
 		
 		int err = vkEnumerateInstanceLayerProperties(layerCount, null);
 		if (err != VK_SUCCESS) {
-            throw new AssertionError(VKUtil.translateVulkanResult(err));
+            throw new AssertionError(VkUtil.translateVulkanResult(err));
         }
 		
 		VkLayerProperties.Buffer layers = VkLayerProperties.calloc(layerCount.get(0));
 		
 		err = vkEnumerateInstanceLayerProperties(layerCount, layers);
 		if (err != VK_SUCCESS) {
-            throw new AssertionError(VKUtil.translateVulkanResult(err));
+            throw new AssertionError(VkUtil.translateVulkanResult(err));
         }
 		
 		List<String> availableLayers = new ArrayList<>();

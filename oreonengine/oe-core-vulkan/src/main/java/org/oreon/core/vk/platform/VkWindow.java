@@ -13,7 +13,7 @@ import static org.lwjgl.opengl.GL11.GL_TRUE;
 
 import org.oreon.core.platform.Window;
 
-public class VKWindow extends Window{
+public class VkWindow extends Window{
 	
 	@Override
 	public void create() {

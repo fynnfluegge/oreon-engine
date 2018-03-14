@@ -29,7 +29,7 @@ import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkRenderPassCreateInfo;
 import org.lwjgl.vulkan.VkSubpassDependency;
 import org.lwjgl.vulkan.VkSubpassDescription;
-import org.oreon.core.vk.util.VKUtil;
+import org.oreon.core.vk.util.VkUtil;
 
 public class RenderPass {
 	
@@ -62,7 +62,7 @@ public class RenderPass {
         attachments.free();
         
         if (err != VK_SUCCESS) {
-            throw new AssertionError("Failed to create clear render pass: " + VKUtil.translateVulkanResult(err));
+            throw new AssertionError("Failed to create clear render pass: " + VkUtil.translateVulkanResult(err));
         }
 	}
 	

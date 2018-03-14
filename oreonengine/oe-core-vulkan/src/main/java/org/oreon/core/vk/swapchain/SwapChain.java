@@ -35,7 +35,7 @@ import org.oreon.core.vk.command.CommandPool;
 import org.oreon.core.vk.synchronization.VkSemaphore;
 import org.oreon.core.vk.target.VkFrameBuffer;
 import org.oreon.core.vk.target.VkImageView;
-import org.oreon.core.vk.util.VKUtil;
+import org.oreon.core.vk.util.VkUtil;
 
 public class SwapChain {
 	
@@ -45,7 +45,6 @@ public class SwapChain {
 	private List<Long> swapChainImages;
 	private List<VkImageView> swapChainImageViews;
 	private List<VkFrameBuffer> frameBuffers;
-	private CommandPool commandPool;
 	private List<CommandBuffer> renderCommandBuffers;
 	private VkPresentInfoKHR presentInfo;
 	private IntBuffer pAcquiredImageIndex;
@@ -90,7 +89,7 @@ public class SwapChain {
         handle = pHandle.get(0);
         
         if (err != VK_SUCCESS) {
-            throw new AssertionError("Failed to create swap chain: " + VKUtil.translateVulkanResult(err));
+            throw new AssertionError("Failed to create swap chain: " + VkUtil.translateVulkanResult(err));
         }
         
         createImages(device);
@@ -119,13 +118,13 @@ public class SwapChain {
         int err = vkGetSwapchainImagesKHR(device, handle, pImageCount, null);
         int imageCount = pImageCount.get(0);
         if (err != VK_SUCCESS) {
-        	throw new AssertionError("Failed to get number of swapchain images: " + VKUtil.translateVulkanResult(err));
+        	throw new AssertionError("Failed to get number of swapchain images: " + VkUtil.translateVulkanResult(err));
         }
 
         LongBuffer pSwapchainImages = memAllocLong(imageCount);
         err = vkGetSwapchainImagesKHR(device, handle, pImageCount, pSwapchainImages);
         if (err != VK_SUCCESS) {
-            throw new AssertionError("Failed to get swapchain images: " + VKUtil.translateVulkanResult(err));
+            throw new AssertionError("Failed to get swapchain images: " + VkUtil.translateVulkanResult(err));
         }
         
         swapChainImages = new ArrayList<>(imageCount);
@@ -159,20 +158,15 @@ public class SwapChain {
         }
 	}
 	
-	public void createCommandPool(VkDevice device, int queueIndex){
-		
-		  commandPool = new CommandPool(device, queueIndex);
-	}
-	
-	public void createRenderCommandBuffers(VkDevice device, long pipeline, long renderPass,
-										   long vertexBuffer){
+	public void createRenderCommandBuffers(VkDevice device, CommandPool commandPool, long pipeline, long renderPass,
+										   long vertexBuffer, long indexBuffer){
 		
 		renderCommandBuffers = new ArrayList<>();
 		
 		for (VkFrameBuffer framebuffer : frameBuffers){
 			CommandBuffer commandBuffer = new CommandBuffer(device, commandPool.getHandle());
 			commandBuffer.beginRecord(VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT);
-			commandBuffer.recordRenderPass(pipeline, renderPass, vertexBuffer, extent, framebuffer.getHandle());
+			commandBuffer.recordIndexedRenderPass(pipeline, renderPass, vertexBuffer, indexBuffer, extent, framebuffer.getHandle());
 			commandBuffer.finishRecord();
 			renderCommandBuffers.add(commandBuffer);
 		}
@@ -197,7 +191,7 @@ public class SwapChain {
 		
 		int err = vkAcquireNextImageKHR(device, handle, UINT64_MAX, imageAcquiredSemaphore.getHandle(), VK_NULL_HANDLE, pAcquiredImageIndex);
         if (err != VK_SUCCESS) {
-            throw new AssertionError("Failed to acquire next swapchain image: " + VKUtil.translateVulkanResult(err));
+            throw new AssertionError("Failed to acquire next swapchain image: " + VkUtil.translateVulkanResult(err));
         }
         
         CommandBuffer currentRenderCommandBuffer = renderCommandBuffers.get(pAcquiredImageIndex.get(0));
@@ -206,7 +200,7 @@ public class SwapChain {
 		
 		err = vkQueuePresentKHR(queue, presentInfo);
         if (err != VK_SUCCESS) {
-            throw new AssertionError("Failed to present the swapchain image: " + VKUtil.translateVulkanResult(err));
+            throw new AssertionError("Failed to present the swapchain image: " + VkUtil.translateVulkanResult(err));
         }
 	}
 	
@@ -220,7 +214,6 @@ public class SwapChain {
 		}
 		renderCompleteSemaphore.destroy(device);
 		imageAcquiredSemaphore.destroy(device);
-		commandPool.destroy(device);
 	}
 
 	public long getHandle() {

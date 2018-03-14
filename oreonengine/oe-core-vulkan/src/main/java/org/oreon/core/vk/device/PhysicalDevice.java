@@ -19,7 +19,7 @@ import org.lwjgl.vulkan.VkPhysicalDeviceProperties;
 import org.oreon.core.vk.queue.QueueFamilies;
 import org.oreon.core.vk.swapchain.SwapChainCapabilities;
 import org.oreon.core.vk.util.DeviceCapabilities;
-import org.oreon.core.vk.util.VKUtil;
+import org.oreon.core.vk.util.VkUtil;
 
 public class PhysicalDevice {
 
@@ -36,7 +36,7 @@ public class PhysicalDevice {
 		IntBuffer pPhysicalDeviceCount = memAllocInt(1);
         int err = vkEnumeratePhysicalDevices(vkInstance, pPhysicalDeviceCount, null);
         if (err != VK_SUCCESS) {
-            throw new AssertionError("Failed to get number of physical devices: " + VKUtil.translateVulkanResult(err));
+            throw new AssertionError("Failed to get number of physical devices: " + VkUtil.translateVulkanResult(err));
         }
         
         System.out.println("Available Physical Devices: " + pPhysicalDeviceCount.get(0));
@@ -46,7 +46,7 @@ public class PhysicalDevice {
         long physicalDevice = pPhysicalDevices.get(0);
        
         if (err != VK_SUCCESS) {
-            throw new AssertionError("Failed to get physical devices: " + VKUtil.translateVulkanResult(err));
+            throw new AssertionError("Failed to get physical devices: " + VkUtil.translateVulkanResult(err));
         }
         
         memFree(pPhysicalDeviceCount);

@@ -10,7 +10,7 @@ import java.nio.LongBuffer;
 
 import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkSemaphoreCreateInfo;
-import org.oreon.core.vk.util.VKUtil;
+import org.oreon.core.vk.util.VkUtil;
 
 public class VkSemaphore {
 	
@@ -28,7 +28,7 @@ public class VkSemaphore {
 		
 		int err = vkCreateSemaphore(device, semaphoreCreateInfo, null, pHandle);
 		if (err != VK_SUCCESS) {
-			throw new AssertionError("Failed to create semaphore: " + VKUtil.translateVulkanResult(err));
+			throw new AssertionError("Failed to create semaphore: " + VkUtil.translateVulkanResult(err));
 		}
 		
 		handle = pHandle.get(0);

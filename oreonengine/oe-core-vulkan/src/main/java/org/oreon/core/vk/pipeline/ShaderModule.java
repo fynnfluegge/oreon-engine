@@ -17,7 +17,7 @@ import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkPipelineShaderStageCreateInfo;
 import org.lwjgl.vulkan.VkShaderModuleCreateInfo;
 import org.oreon.core.util.ResourceLoader;
-import org.oreon.core.vk.util.VKUtil;
+import org.oreon.core.vk.util.VkUtil;
 
 public class ShaderModule {
 
@@ -50,7 +50,7 @@ public class ShaderModule {
 	    long shaderModule = pShaderModule.get(0);
 	   
 	    if (err != VK_SUCCESS) {
-	        throw new AssertionError("Failed to create shader module: " + VKUtil.translateVulkanResult(err));
+	        throw new AssertionError("Failed to create shader module: " + VkUtil.translateVulkanResult(err));
 	    }
 	    
 	    memFree(pShaderModule);

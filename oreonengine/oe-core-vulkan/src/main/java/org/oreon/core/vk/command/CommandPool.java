@@ -11,7 +11,7 @@ import java.nio.LongBuffer;
 
 import org.lwjgl.vulkan.VkCommandPoolCreateInfo;
 import org.lwjgl.vulkan.VkDevice;
-import org.oreon.core.vk.util.VKUtil;
+import org.oreon.core.vk.util.VkUtil;
 
 public class CommandPool {
 	
@@ -32,7 +32,7 @@ public class CommandPool {
 		memFree(pCmdPool);
 		
 		if (err != VK_SUCCESS) {
-		    throw new AssertionError("Failed to create command pool: " + VKUtil.translateVulkanResult(err));
+		    throw new AssertionError("Failed to create command pool: " + VkUtil.translateVulkanResult(err));
 		}
 	}
 	

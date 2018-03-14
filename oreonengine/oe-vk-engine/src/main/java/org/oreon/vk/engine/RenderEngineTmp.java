@@ -234,7 +234,7 @@ import org.oreon.core.vk.queue.QueueFamilies;
 import org.oreon.core.vk.queue.QueueFamily;
 import org.oreon.core.vk.swapchain.SwapChain;
 import org.oreon.core.vk.util.DeviceCapabilities;
-import org.oreon.core.vk.util.VKUtil;
+import org.oreon.core.vk.util.VkUtil;
 
 public class RenderEngineTmp implements RenderEngine{
 	
@@ -323,7 +323,7 @@ public class RenderEngineTmp implements RenderEngine{
             int err = vkBeginCommandBuffer(setupCommandBuffer, cmdBufInfo);
             cmdBufInfo.free();
             if (err != VK_SUCCESS) {
-                throw new AssertionError("Failed to begin setup command buffer: " + VKUtil.translateVulkanResult(err));
+                throw new AssertionError("Failed to begin setup command buffer: " + VkUtil.translateVulkanResult(err));
             }
             long oldChain = swapchain0 != null ? swapchain0.swapchainHandle : VK_NULL_HANDLE;
             // Create the swapchain (this will also add a memory barrier to initialize the framebuffer images)
@@ -331,7 +331,7 @@ public class RenderEngineTmp implements RenderEngine{
                     width, height, colorFormatAndSpace.colorFormat, colorFormatAndSpace.colorSpace);
             err = vkEndCommandBuffer(setupCommandBuffer);
             if (err != VK_SUCCESS) {
-                throw new AssertionError("Failed to end setup command buffer: " + VKUtil.translateVulkanResult(err));
+                throw new AssertionError("Failed to end setup command buffer: " + VkUtil.translateVulkanResult(err));
             }
             submitCommandBuffer(queue, setupCommandBuffer);
             vkQueueWaitIdle(queue);
@@ -364,7 +364,7 @@ public class RenderEngineTmp implements RenderEngine{
             throw new AssertionError("Failed to find list of required Vulkan extensions");
         }
         
-        ppEnabledLayerNames = VKUtil.getValidationLayerNames(validationEnabled, layers);
+        ppEnabledLayerNames = VkUtil.getValidationLayerNames(validationEnabled, layers);
         
         vkInstance = createVkInstance(requiredExtensions, ppEnabledLayerNames); 
         
@@ -382,7 +382,7 @@ public class RenderEngineTmp implements RenderEngine{
 	    
 	    surface = pSurface.get(0);
 	    if (err != VK_SUCCESS) {
-	        throw new AssertionError("Failed to create surface: " + VKUtil.translateVulkanResult(err));
+	        throw new AssertionError("Failed to create surface: " + VkUtil.translateVulkanResult(err));
 	    }
 	    
         physicalDevice = new PhysicalDevice(vkInstance, surface);
@@ -490,13 +490,13 @@ public class RenderEngineTmp implements RenderEngine{
 		// Create a semaphore to wait for the swapchain to acquire the next image
         int err = vkCreateSemaphore(device, semaphoreCreateInfo, null, pImageAcquiredSemaphore);
         if (err != VK_SUCCESS) {
-            throw new AssertionError("Failed to create image acquired semaphore: " + VKUtil.translateVulkanResult(err));
+            throw new AssertionError("Failed to create image acquired semaphore: " + VkUtil.translateVulkanResult(err));
         }
         
         // Create a semaphore to wait for the render to complete, before presenting
         err = vkCreateSemaphore(device, semaphoreCreateInfo, null, pRenderCompleteSemaphore);
         if (err != VK_SUCCESS) {
-            throw new AssertionError("Failed to create render complete semaphore: " + VKUtil.translateVulkanResult(err));
+            throw new AssertionError("Failed to create render complete semaphore: " + VkUtil.translateVulkanResult(err));
         }
         
         // Get next image from the swap chain (back/front buffer).
@@ -504,7 +504,7 @@ public class RenderEngineTmp implements RenderEngine{
         err = vkAcquireNextImageKHR(device, swapchain0.swapchainHandle, UINT64_MAX, pImageAcquiredSemaphore.get(0), VK_NULL_HANDLE, pImageIndex);
         currentBuffer = pImageIndex.get(0);
         if (err != VK_SUCCESS) {
-            throw new AssertionError("Failed to acquire next swapchain image: " + VKUtil.translateVulkanResult(err));
+            throw new AssertionError("Failed to acquire next swapchain image: " + VkUtil.translateVulkanResult(err));
         }
         
         // Select the command buffer for the current framebuffer image/attachment
@@ -513,7 +513,7 @@ public class RenderEngineTmp implements RenderEngine{
         // Submit to the graphics queue
         err = vkQueueSubmit(queue, submitInfo, VK_NULL_HANDLE);
         if (err != VK_SUCCESS) {
-            throw new AssertionError("Failed to submit render queue: " + VKUtil.translateVulkanResult(err));
+            throw new AssertionError("Failed to submit render queue: " + VkUtil.translateVulkanResult(err));
         }
 
         // Present the current buffer to the swap chain
@@ -521,7 +521,7 @@ public class RenderEngineTmp implements RenderEngine{
         pSwapchains.put(0, swapchain0.swapchainHandle);
         err = vkQueuePresentKHR(queue, presentInfo);
         if (err != VK_SUCCESS) {
-            throw new AssertionError("Failed to present the swapchain image: " + VKUtil.translateVulkanResult(err));
+            throw new AssertionError("Failed to present the swapchain image: " + VkUtil.translateVulkanResult(err));
         }
         
         // Create and submit post present barrier
@@ -580,7 +580,7 @@ public class RenderEngineTmp implements RenderEngine{
         long instance = pInstance.get(0);
     
         if (err != VK_SUCCESS) {
-            throw new AssertionError("Failed to create VkInstance: " + VKUtil.translateVulkanResult(err));
+            throw new AssertionError("Failed to create VkInstance: " + VkUtil.translateVulkanResult(err));
         }
         VkInstance ret = new VkInstance(instance, pCreateInfo);
         
@@ -609,7 +609,7 @@ public class RenderEngineTmp implements RenderEngine{
         long callbackHandle = pCallback.get(0);
         
         if (err != VK_SUCCESS) {
-            throw new AssertionError("Failed to create VkInstance: " + VKUtil.translateVulkanResult(err));
+            throw new AssertionError("Failed to create VkInstance: " + VkUtil.translateVulkanResult(err));
         }
         
         memFree(pCallback);
@@ -661,7 +661,7 @@ public class RenderEngineTmp implements RenderEngine{
         long device = pDevice.get(0);
        
         if (err != VK_SUCCESS) {
-            throw new AssertionError("Failed to create device: " + VKUtil.translateVulkanResult(err));
+            throw new AssertionError("Failed to create device: " + VkUtil.translateVulkanResult(err));
         }
 
         VkPhysicalDeviceMemoryProperties memoryProperties = VkPhysicalDeviceMemoryProperties.calloc();
@@ -744,14 +744,14 @@ public class RenderEngineTmp implements RenderEngine{
         int err = vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, surface, pFormatCount, null);
         int formatCount = pFormatCount.get(0);
         if (err != VK_SUCCESS) {
-            throw new AssertionError("Failed to query number of physical device surface formats: " + VKUtil.translateVulkanResult(err));
+            throw new AssertionError("Failed to query number of physical device surface formats: " + VkUtil.translateVulkanResult(err));
         }
 
         VkSurfaceFormatKHR.Buffer surfFormats = VkSurfaceFormatKHR.calloc(formatCount);
         err = vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, surface, pFormatCount, surfFormats);
         memFree(pFormatCount);
         if (err != VK_SUCCESS) {
-            throw new AssertionError("Failed to query physical device surface formats: " + VKUtil.translateVulkanResult(err));
+            throw new AssertionError("Failed to query physical device surface formats: " + VkUtil.translateVulkanResult(err));
         }
 
         int colorFormat;
@@ -780,7 +780,7 @@ public class RenderEngineTmp implements RenderEngine{
         cmdPoolInfo.free();
         memFree(pCmdPool);
         if (err != VK_SUCCESS) {
-            throw new AssertionError("Failed to create command pool: " + VKUtil.translateVulkanResult(err));
+            throw new AssertionError("Failed to create command pool: " + VkUtil.translateVulkanResult(err));
         }
         return commandPool;
     }
@@ -797,7 +797,7 @@ public class RenderEngineTmp implements RenderEngine{
         long commandBuffer = pCommandBuffer.get(0);
         memFree(pCommandBuffer);
         if (err != VK_SUCCESS) {
-            throw new AssertionError("Failed to allocate command buffer: " + VKUtil.translateVulkanResult(err));
+            throw new AssertionError("Failed to allocate command buffer: " + VkUtil.translateVulkanResult(err));
         }
         return new VkCommandBuffer(commandBuffer, device);
     }
@@ -851,7 +851,7 @@ public class RenderEngineTmp implements RenderEngine{
         subpass.free();
         attachments.free();
         if (err != VK_SUCCESS) {
-            throw new AssertionError("Failed to create clear render pass: " + VKUtil.translateVulkanResult(err));
+            throw new AssertionError("Failed to create clear render pass: " + VkUtil.translateVulkanResult(err));
         }
         
         return renderPass;
@@ -890,7 +890,7 @@ public class RenderEngineTmp implements RenderEngine{
         memFree(pBuffer);
         bufInfo.free();
         if (err != VK_SUCCESS) {
-            throw new AssertionError("Failed to create vertex buffer: " + VKUtil.translateVulkanResult(err));
+            throw new AssertionError("Failed to create vertex buffer: " + VkUtil.translateVulkanResult(err));
         }
 
         vkGetBufferMemoryRequirements(device, verticesBuf, memReqs);
@@ -906,7 +906,7 @@ public class RenderEngineTmp implements RenderEngine{
         long verticesMem = pMemory.get(0);
         memFree(pMemory);
         if (err != VK_SUCCESS) {
-            throw new AssertionError("Failed to allocate vertex memory: " + VKUtil.translateVulkanResult(err));
+            throw new AssertionError("Failed to allocate vertex memory: " + VkUtil.translateVulkanResult(err));
         }
 
         PointerBuffer pData = memAllocPointer(1);
@@ -915,7 +915,7 @@ public class RenderEngineTmp implements RenderEngine{
         long data = pData.get(0);
         memFree(pData);
         if (err != VK_SUCCESS) {
-            throw new AssertionError("Failed to map vertex memory: " + VKUtil.translateVulkanResult(err));
+            throw new AssertionError("Failed to map vertex memory: " + VkUtil.translateVulkanResult(err));
         }
 
         memCopy(memAddress(vertexBuffer), data, vertexBuffer.remaining());
@@ -923,7 +923,7 @@ public class RenderEngineTmp implements RenderEngine{
         vkUnmapMemory(device, verticesMem);
         err = vkBindBufferMemory(device, verticesBuf, verticesMem, 0);
         if (err != VK_SUCCESS) {
-            throw new AssertionError("Failed to bind memory to vertex buffer: " + VKUtil.translateVulkanResult(err));
+            throw new AssertionError("Failed to bind memory to vertex buffer: " + VkUtil.translateVulkanResult(err));
         }
 
         // Binding description
@@ -1045,7 +1045,7 @@ public class RenderEngineTmp implements RenderEngine{
         memFree(pPipelineLayout);
         pPipelineLayoutCreateInfo.free();
         if (err != VK_SUCCESS) {
-            throw new AssertionError("Failed to create pipeline layout: " + VKUtil.translateVulkanResult(err));
+            throw new AssertionError("Failed to create pipeline layout: " + VkUtil.translateVulkanResult(err));
         }
 
         // Assign states
@@ -1078,7 +1078,7 @@ public class RenderEngineTmp implements RenderEngine{
         rasterizationState.free();
         inputAssemblyState.free();
         if (err != VK_SUCCESS) {
-            throw new AssertionError("Failed to create pipeline: " + VKUtil.translateVulkanResult(err));
+            throw new AssertionError("Failed to create pipeline: " + VkUtil.translateVulkanResult(err));
         }
         return pipeline;
     }
@@ -1090,21 +1090,21 @@ public class RenderEngineTmp implements RenderEngine{
 	        VkSurfaceCapabilitiesKHR surfCaps = VkSurfaceCapabilitiesKHR.calloc();
 	        err = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, surface, surfCaps);
 	        if (err != VK_SUCCESS) {
-	            throw new AssertionError("Failed to get physical device surface capabilities: " + VKUtil.translateVulkanResult(err));
+	            throw new AssertionError("Failed to get physical device surface capabilities: " + VkUtil.translateVulkanResult(err));
 	        }
 
 	        IntBuffer pPresentModeCount = memAllocInt(1);
 	        err = vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, surface, pPresentModeCount, null);
 	        int presentModeCount = pPresentModeCount.get(0);
 	        if (err != VK_SUCCESS) {
-	            throw new AssertionError("Failed to get number of physical device surface presentation modes: " + VKUtil.translateVulkanResult(err));
+	            throw new AssertionError("Failed to get number of physical device surface presentation modes: " + VkUtil.translateVulkanResult(err));
 	        }
 
 	        IntBuffer pPresentModes = memAllocInt(presentModeCount);
 	        err = vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, surface, pPresentModeCount, pPresentModes);
 	        memFree(pPresentModeCount);
 	        if (err != VK_SUCCESS) {
-	            throw new AssertionError("Failed to get physical device surface presentation modes: " + VKUtil.translateVulkanResult(err));
+	            throw new AssertionError("Failed to get physical device surface presentation modes: " + VkUtil.translateVulkanResult(err));
 	        }
 
 	        // Try to use mailbox mode. Low latency and non-tearing
@@ -1170,7 +1170,7 @@ public class RenderEngineTmp implements RenderEngine{
 	        long swapChain = pSwapChain.get(0);
 	        memFree(pSwapChain);
 	        if (err != VK_SUCCESS) {
-	            throw new AssertionError("Failed to create swap chain: " + VKUtil.translateVulkanResult(err));
+	            throw new AssertionError("Failed to create swap chain: " + VkUtil.translateVulkanResult(err));
 	        }
 
 	        // If we just re-created an existing swapchain, we should destroy the old swapchain at this point.
@@ -1183,13 +1183,13 @@ public class RenderEngineTmp implements RenderEngine{
 	        err = vkGetSwapchainImagesKHR(device, swapChain, pImageCount, null);
 	        int imageCount = pImageCount.get(0);
 	        if (err != VK_SUCCESS) {
-	            throw new AssertionError("Failed to get number of swapchain images: " + VKUtil.translateVulkanResult(err));
+	            throw new AssertionError("Failed to get number of swapchain images: " + VkUtil.translateVulkanResult(err));
 	        }
 
 	        LongBuffer pSwapchainImages = memAllocLong(imageCount);
 	        err = vkGetSwapchainImagesKHR(device, swapChain, pImageCount, pSwapchainImages);
 	        if (err != VK_SUCCESS) {
-	            throw new AssertionError("Failed to get swapchain images: " + VKUtil.translateVulkanResult(err));
+	            throw new AssertionError("Failed to get swapchain images: " + VkUtil.translateVulkanResult(err));
 	        }
 	        memFree(pImageCount);
 
@@ -1223,7 +1223,7 @@ public class RenderEngineTmp implements RenderEngine{
 	            err = vkCreateImageView(device, colorAttachmentView, null, pBufferView);
 	            imageViews[i] = pBufferView.get(0);
 	            if (err != VK_SUCCESS) {
-	                throw new AssertionError("Failed to create image view: " + VKUtil.translateVulkanResult(err));
+	                throw new AssertionError("Failed to create image view: " + VkUtil.translateVulkanResult(err));
 	            }
 	        }
 	        colorAttachmentView.free();
@@ -1314,7 +1314,7 @@ public class RenderEngineTmp implements RenderEngine{
         int err = vkBeginCommandBuffer(commandBuffer, cmdBufInfo);
         cmdBufInfo.free();
         if (err != VK_SUCCESS) {
-            throw new AssertionError("Failed to begin command buffer: " + VKUtil.translateVulkanResult(err));
+            throw new AssertionError("Failed to begin command buffer: " + VkUtil.translateVulkanResult(err));
         }
 
         VkImageMemoryBarrier.Buffer postPresentBarrier = createPostPresentBarrier(image);
@@ -1330,7 +1330,7 @@ public class RenderEngineTmp implements RenderEngine{
 
         err = vkEndCommandBuffer(commandBuffer);
         if (err != VK_SUCCESS) {
-            throw new AssertionError("Failed to wait for idle queue: " + VKUtil.translateVulkanResult(err));
+            throw new AssertionError("Failed to wait for idle queue: " + VkUtil.translateVulkanResult(err));
         }
 
         // Submit the command buffer
@@ -1351,7 +1351,7 @@ public class RenderEngineTmp implements RenderEngine{
         memFree(pCommandBuffers);
         submitInfo.free();
         if (err != VK_SUCCESS) {
-            throw new AssertionError("Failed to submit command buffer: " + VKUtil.translateVulkanResult(err));
+            throw new AssertionError("Failed to submit command buffer: " + VkUtil.translateVulkanResult(err));
         }
     }
 	
@@ -1366,7 +1366,7 @@ public class RenderEngineTmp implements RenderEngine{
         PointerBuffer pCommandBuffer = memAllocPointer(framebuffers.length);
         int err = vkAllocateCommandBuffers(device, cmdBufAllocateInfo, pCommandBuffer);
         if (err != VK_SUCCESS) {
-            throw new AssertionError("Failed to allocate render command buffer: " + VKUtil.translateVulkanResult(err));
+            throw new AssertionError("Failed to allocate render command buffer: " + VkUtil.translateVulkanResult(err));
         }
         VkCommandBuffer[] renderCommandBuffers = new VkCommandBuffer[framebuffers.length];
         for (int i = 0; i < framebuffers.length; i++) {
@@ -1404,7 +1404,7 @@ public class RenderEngineTmp implements RenderEngine{
 
             err = vkBeginCommandBuffer(renderCommandBuffers[i], cmdBufInfo);
             if (err != VK_SUCCESS) {
-                throw new AssertionError("Failed to begin render command buffer: " + VKUtil.translateVulkanResult(err));
+                throw new AssertionError("Failed to begin render command buffer: " + VkUtil.translateVulkanResult(err));
             }
 
             vkCmdBeginRenderPass(renderCommandBuffers[i], renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
@@ -1457,7 +1457,7 @@ public class RenderEngineTmp implements RenderEngine{
 
             err = vkEndCommandBuffer(renderCommandBuffers[i]);
             if (err != VK_SUCCESS) {
-                throw new AssertionError("Failed to begin render command buffer: " + VKUtil.translateVulkanResult(err));
+                throw new AssertionError("Failed to begin render command buffer: " + VkUtil.translateVulkanResult(err));
             }
         }
         renderPassBeginInfo.free();
@@ -1485,7 +1485,7 @@ public class RenderEngineTmp implements RenderEngine{
             int err = vkCreateFramebuffer(device, fci, null, pFramebuffer);
             long framebuffer = pFramebuffer.get(0);
             if (err != VK_SUCCESS) {
-                throw new AssertionError("Failed to create framebuffer: " + VKUtil.translateVulkanResult(err));
+                throw new AssertionError("Failed to create framebuffer: " + VkUtil.translateVulkanResult(err));
             }
             framebuffers[i] = framebuffer;
         }
@@ -1517,7 +1517,7 @@ public class RenderEngineTmp implements RenderEngine{
 	    long shaderModule = pShaderModule.get(0);
 	    memFree(pShaderModule);
 	    if (err != VK_SUCCESS) {
-	        throw new AssertionError("Failed to create shader module: " + VKUtil.translateVulkanResult(err));
+	        throw new AssertionError("Failed to create shader module: " + VkUtil.translateVulkanResult(err));
 	    }
 	    return shaderModule;
 	}

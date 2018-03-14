@@ -12,7 +12,7 @@ import java.nio.LongBuffer;
 import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkExtent2D;
 import org.lwjgl.vulkan.VkFramebufferCreateInfo;
-import org.oreon.core.vk.util.VKUtil;
+import org.oreon.core.vk.util.VkUtil;
 
 public class VkFrameBuffer {
 	
@@ -37,7 +37,7 @@ public class VkFrameBuffer {
         int err = vkCreateFramebuffer(device, framebufferInfo, null, pFramebuffer);
         
         if (err != VK_SUCCESS) {
-            throw new AssertionError("Failed to create framebuffer: " + VKUtil.translateVulkanResult(err));
+            throw new AssertionError("Failed to create framebuffer: " + VkUtil.translateVulkanResult(err));
         }
         
         handle = pFramebuffer.get(0);

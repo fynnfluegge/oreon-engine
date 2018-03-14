@@ -29,9 +29,16 @@ import static org.lwjgl.vulkan.VK10.vkQueueWaitIdle;
 import static org.lwjgl.vulkan.VK10.VK_MAKE_VERSION;
 import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
 import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
+import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
+import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_TRANSFER_DST_BIT;
+import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
+import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
+import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
+import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
 
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 import java.nio.LongBuffer;
 
 import org.lwjgl.PointerBuffer;
@@ -41,6 +48,7 @@ import org.lwjgl.vulkan.VkDebugReportCallbackEXT;
 import org.lwjgl.vulkan.VkExtent2D;
 import org.lwjgl.vulkan.VkInstance;
 import org.lwjgl.vulkan.VkInstanceCreateInfo;
+import org.lwjgl.vulkan.VkSubmitInfo;
 import org.oreon.core.buffers.Framebuffer;
 import org.oreon.core.math.Quaternion;
 import org.oreon.core.system.CoreSystem;
@@ -48,15 +56,15 @@ import org.oreon.core.system.RenderEngine;
 import org.oreon.core.texture.Texture;
 import org.oreon.core.vk.buffers.VertexBuffer;
 import org.oreon.core.vk.buffers.VertexInputInfo;
+import org.oreon.core.vk.command.CommandBuffer;
 import org.oreon.core.vk.device.LogicalDevice;
 import org.oreon.core.vk.device.PhysicalDevice;
 import org.oreon.core.vk.pipeline.Pipeline;
-import org.oreon.core.vk.pipeline.PipelineLayout;
 import org.oreon.core.vk.pipeline.RenderPass;
 import org.oreon.core.vk.pipeline.ShaderPipeline;
 import org.oreon.core.vk.swapchain.SwapChain;
 import org.oreon.core.vk.util.DeviceCapabilities;
-import org.oreon.core.vk.util.VKUtil;
+import org.oreon.core.vk.util.VkUtil;
 
 public class VKRenderEngine implements RenderEngine{
 	
@@ -88,7 +96,7 @@ public class VKRenderEngine implements RenderEngine{
             throw new AssertionError("Failed to find list of required Vulkan extensions");
         }
         
-        ppEnabledLayerNames = VKUtil.getValidationLayerNames(validationEnabled, layers);
+        ppEnabledLayerNames = VkUtil.getValidationLayerNames(validationEnabled, layers);
         
         vkInstance = createVkInstance(requiredExtensions, ppEnabledLayerNames); 
         
@@ -106,7 +114,7 @@ public class VKRenderEngine implements RenderEngine{
 	    
 	    surface = pSurface.get(0);
 	    if (err != VK_SUCCESS) {
-	        throw new AssertionError("Failed to create surface: " + VKUtil.translateVulkanResult(err));
+	        throw new AssertionError("Failed to create surface: " + VkUtil.translateVulkanResult(err));
 	    }
 	    
         physicalDevice = new PhysicalDevice(vkInstance, surface);
@@ -135,14 +143,84 @@ public class VKRenderEngine implements RenderEngine{
 	    
 	    int minImageCount = physicalDevice.getDeviceMinImageCount4TripleBuffering();
 	    
+	    // TODO
+	    ByteBuffer vertexBuffer = memAlloc(4 * 2 * 4 + 4 * 3 * 4);
+        FloatBuffer fb = vertexBuffer.asFloatBuffer();
+        fb.put(-0.5f).put(-0.5f);
+        fb.put(1.0f).put(0.0f).put(0.0f);
+        fb.put( 0.5f).put(-0.5f);
+        fb.put(0.0f).put(1.0f).put(0.0f);
+        fb.put(0.5f).put( 0.5f);
+        fb.put(0.0f).put(0.0f).put(1.0f);
+        fb.put(-0.5f).put( 0.5f);
+        fb.put(1.0f).put(1.0f).put(1.0f);
+        
+        VertexBuffer vertexBufferObject = new VertexBuffer();
+	    
+	    VertexBuffer stagingVertexBufferObject = new VertexBuffer();
+	    
+	    stagingVertexBufferObject.create(logicalDevice.getHandle(), vertexBuffer.limit(), VK_BUFFER_USAGE_TRANSFER_SRC_BIT);
+	    stagingVertexBufferObject.allocate(logicalDevice.getHandle(), physicalDevice.getMemoryProperties(),
+	    				       VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+	    stagingVertexBufferObject.mapMemory(logicalDevice.getHandle(), vertexBuffer);
+	    
+
+	    vertexBufferObject.create(logicalDevice.getHandle(), vertexBuffer.limit(),
+							VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
+	    vertexBufferObject.allocate(logicalDevice.getHandle(), physicalDevice.getMemoryProperties(),
+				  			  VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+	    
+	    CommandBuffer vertexCopyCommandBuffer = new CommandBuffer(logicalDevice.getHandle(),
+	    												logicalDevice.getTransferCommandPool().getHandle());
+	    vertexCopyCommandBuffer.beginRecord(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
+	    vertexCopyCommandBuffer.recordTransferPass(stagingVertexBufferObject.getHandle(), vertexBufferObject.getHandle(), 0, 0, vertexBuffer.limit());
+	    vertexCopyCommandBuffer.finishRecord();
+	    VkSubmitInfo submitInfo0 = vertexCopyCommandBuffer.createSubmitInfo(null, null, null);
+	    vertexCopyCommandBuffer.submit(logicalDevice.getTransferQueue(), submitInfo0);
+	    vkQueueWaitIdle(logicalDevice.getTransferQueue());
+	    
+	    vertexCopyCommandBuffer.destroy(logicalDevice.getHandle(), logicalDevice.getTransferCommandPool().getHandle());
+	    stagingVertexBufferObject.destroy(logicalDevice.getHandle());
+	    
+	    ByteBuffer indexBuffer = memAlloc(4 * 6);
+        IntBuffer ib = indexBuffer.asIntBuffer();
+        ib.put(0);
+        ib.put(1);
+        ib.put(2);
+        ib.put(2);
+        ib.put(3);
+        ib.put(0);
+        
+        VertexBuffer indexBufferObject = new VertexBuffer();
+        
+        VertexBuffer stagingIndexBufferObject = new VertexBuffer();
+        
+        stagingIndexBufferObject.create(logicalDevice.getHandle(), indexBuffer.limit(), VK_BUFFER_USAGE_TRANSFER_SRC_BIT);
+	    stagingIndexBufferObject.allocate(logicalDevice.getHandle(), physicalDevice.getMemoryProperties(),
+	    				       VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+	    stagingIndexBufferObject.mapMemory(logicalDevice.getHandle(), indexBuffer);
+	    
+	    indexBufferObject.create(logicalDevice.getHandle(), indexBuffer.limit(),
+				VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
+	    indexBufferObject.allocate(logicalDevice.getHandle(), physicalDevice.getMemoryProperties(),
+	  			  VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+	    
+	    CommandBuffer indexCopyCommandBuffer = new CommandBuffer(logicalDevice.getHandle(),
+																  logicalDevice.getTransferCommandPool().getHandle());
+	    indexCopyCommandBuffer.beginRecord(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
+	    indexCopyCommandBuffer.recordTransferPass(stagingIndexBufferObject.getHandle(), indexBufferObject.getHandle(), 0, 0, vertexBuffer.limit());
+	    indexCopyCommandBuffer.finishRecord();
+	    VkSubmitInfo submitInfo1 = indexCopyCommandBuffer.createSubmitInfo(null, null, null);
+	    indexCopyCommandBuffer.submit(logicalDevice.getTransferQueue(), submitInfo1);
+	    vkQueueWaitIdle(logicalDevice.getTransferQueue());
+	    
+	    indexCopyCommandBuffer.destroy(logicalDevice.getHandle(), logicalDevice.getTransferCommandPool().getHandle());
+	    stagingIndexBufferObject.destroy(logicalDevice.getHandle());
+	    
 	    ShaderPipeline shaderPipeline = new ShaderPipeline();
 	    shaderPipeline.createVertexShader(logicalDevice.getHandle(), "shaders/triangle.vert.spv");
 	    shaderPipeline.createFragmentShader(logicalDevice.getHandle(), "shaders/triangle.frag.spv");
 	    shaderPipeline.createShaderPipeline();
-	    
-	    PipelineLayout pipeLineLayout = new PipelineLayout();
-	    pipeLineLayout.specifyPipelineLayout();
-	    pipeLineLayout.createPipelineLayout(logicalDevice.getHandle());
 	    
 	    RenderPass renderPass = new RenderPass();
 	    renderPass.specifyAttachmentDescription(imageFormat);
@@ -151,19 +229,11 @@ public class VKRenderEngine implements RenderEngine{
 	    renderPass.specifyDependency();
 	    renderPass.createRenderPass(logicalDevice.getHandle());
 	    
-	    ByteBuffer buffer = memAlloc(3 * 2 * 4 + 3 * 3 * 4);
-        FloatBuffer fb = buffer.asFloatBuffer();
-        fb.put(-0.5f).put(-0.5f);
-        fb.put(1.0f).put(0.0f).put(0.0f);
-        fb.put( 0.5f).put(-0.5f);
-        fb.put(0.0f).put(1.0f).put(0.0f);
-        fb.put(0.0f).put( 0.5f);
-        fb.put(0.0f).put(0.0f).put(1.0f);
-	    
 	    pipeline = new Pipeline();
 	    VertexInputInfo vertexInputInfo = new VertexInputInfo();
 	    vertexInputInfo.createBindingDescription(5 * 4);
 	    vertexInputInfo.createAttributeDescription();
+	    
 	    pipeline.specifyVertexInput(vertexInputInfo);
 	    pipeline.specifyInputAssembly();
 	    pipeline.specifyViewportAndScissor(swapExtent);
@@ -172,13 +242,8 @@ public class VKRenderEngine implements RenderEngine{
 	    pipeline.specifyColorBlending();
 	    pipeline.specifyDepthAndStencilTest();
 	    pipeline.specifyDynamicState();
-	    pipeline.createPipeline(logicalDevice.getHandle(), shaderPipeline, renderPass, pipeLineLayout);
-	    
-	    VertexBuffer vertexBuffer = new VertexBuffer();
-	    
-	    vertexBuffer.create(logicalDevice.getHandle(), buffer);
-	    vertexBuffer.allocate(logicalDevice.getHandle(), physicalDevice.getMemoryProperties(), buffer,
-	    				      VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+	    pipeline.specifyLayout(logicalDevice.getHandle());
+	    pipeline.createPipeline(logicalDevice.getHandle(), shaderPipeline, renderPass);
 	    
 	    swapChain = new SwapChain(logicalDevice.getHandle(), 
 	    						  surface, 
@@ -189,8 +254,12 @@ public class VKRenderEngine implements RenderEngine{
 	    						  swapExtent,
 	    						  renderPass.getHandle());
 	    
-	    swapChain.createCommandPool(logicalDevice.getHandle(), logicalDevice.getGraphicsQueueFamilyIndex());
-	    swapChain.createRenderCommandBuffers(logicalDevice.getHandle(), pipeline.getHandle(), renderPass.getHandle(), vertexBuffer.getHandle());
+	    swapChain.createRenderCommandBuffers(logicalDevice.getHandle(),
+	    									 logicalDevice.getGraphicsCommandPool(),
+	    									 pipeline.getHandle(),
+	    									 renderPass.getHandle(), 
+	    									 vertexBufferObject.getHandle(),
+	    									 indexBufferObject.getHandle());
 	    swapChain.createSubmitInfo();
 	}
     
@@ -227,8 +296,8 @@ public class VKRenderEngine implements RenderEngine{
 		
         VkApplicationInfo appInfo = VkApplicationInfo.calloc()
                 .sType(VK_STRUCTURE_TYPE_APPLICATION_INFO)
-                .pApplicationName(memUTF8("GLFW Vulkan Demo"))
-                .pEngineName(memUTF8(""))
+                .pApplicationName(memUTF8("Vulkan Demo"))
+                .pEngineName(memUTF8("OREON ENGINE"))
                 .apiVersion(VK_MAKE_VERSION(1, 0, 2));
         
         ByteBuffer VK_EXT_DEBUG_REPORT_EXTENSION = memUTF8(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
@@ -252,7 +321,7 @@ public class VKRenderEngine implements RenderEngine{
         long instance = pInstance.get(0);
     
         if (err != VK_SUCCESS) {
-            throw new AssertionError("Failed to create VkInstance: " + VKUtil.translateVulkanResult(err));
+            throw new AssertionError("Failed to create VkInstance: " + VkUtil.translateVulkanResult(err));
         }
         VkInstance ret = new VkInstance(instance, pCreateInfo);
         
@@ -269,7 +338,7 @@ public class VKRenderEngine implements RenderEngine{
 	
 	private long setupDebugging(VkInstance instance, int flags, VkDebugReportCallbackEXT callback) {
 		
-        VkDebugReportCallbackCreateInfoEXT dbgCreateInfo = VkDebugReportCallbackCreateInfoEXT.calloc()
+        VkDebugReportCallbackCreateInfoEXT debugCreateInfo = VkDebugReportCallbackCreateInfoEXT.calloc()
                 .sType(VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT)
                 .pNext(0)
                 .pfnCallback(callback)
@@ -277,15 +346,15 @@ public class VKRenderEngine implements RenderEngine{
                 .flags(flags);
         
         LongBuffer pCallback = memAllocLong(1);
-        int err = vkCreateDebugReportCallbackEXT(instance, dbgCreateInfo, null, pCallback);
+        int err = vkCreateDebugReportCallbackEXT(instance, debugCreateInfo, null, pCallback);
         long callbackHandle = pCallback.get(0);
         
         if (err != VK_SUCCESS) {
-            throw new AssertionError("Failed to create VkInstance: " + VKUtil.translateVulkanResult(err));
+            throw new AssertionError("Failed to create VkInstance: " + VkUtil.translateVulkanResult(err));
         }
         
         memFree(pCallback);
-        dbgCreateInfo.free();
+        debugCreateInfo.free();
         
         return callbackHandle;
     }

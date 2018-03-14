@@ -13,13 +13,16 @@ import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
+import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import static org.lwjgl.vulkan.VK10.vkCreateGraphicsPipelines;
+import static org.lwjgl.vulkan.VK10.vkCreatePipelineLayout;
 import static org.lwjgl.vulkan.VK10.vkDestroyPipeline;
+import static org.lwjgl.vulkan.VK10.vkDestroyPipelineLayout;
 import static org.lwjgl.vulkan.VK10.VK_NULL_HANDLE;
 
 import java.nio.IntBuffer;
@@ -42,6 +45,7 @@ import org.lwjgl.vulkan.VkPipelineColorBlendStateCreateInfo;
 import org.lwjgl.vulkan.VkPipelineDepthStencilStateCreateInfo;
 import org.lwjgl.vulkan.VkPipelineDynamicStateCreateInfo;
 import org.lwjgl.vulkan.VkPipelineInputAssemblyStateCreateInfo;
+import org.lwjgl.vulkan.VkPipelineLayoutCreateInfo;
 import org.lwjgl.vulkan.VkPipelineMultisampleStateCreateInfo;
 import org.lwjgl.vulkan.VkPipelineRasterizationStateCreateInfo;
 import org.lwjgl.vulkan.VkPipelineVertexInputStateCreateInfo;
@@ -49,7 +53,7 @@ import org.lwjgl.vulkan.VkPipelineViewportStateCreateInfo;
 import org.lwjgl.vulkan.VkRect2D;
 import org.lwjgl.vulkan.VkViewport;
 import org.oreon.core.vk.buffers.VertexInputInfo;
-import org.oreon.core.vk.util.VKUtil;
+import org.oreon.core.vk.util.VkUtil;
 
 public class Pipeline {
 	
@@ -67,15 +71,12 @@ public class Pipeline {
 	
 	private long handle;
 	
-	private ShaderPipeline shaderPipeline;
 	private RenderPass renderPass;
-	private PipelineLayout pipelineLayout;
+	private long layoutHandle;
 	
-	public void createPipeline(VkDevice device, ShaderPipeline shaderPipeline, RenderPass renderPass, PipelineLayout layout){
+	public void createPipeline(VkDevice device, ShaderPipeline shaderPipeline, RenderPass renderPass){
 		
-		this.shaderPipeline = shaderPipeline;
 		this.renderPass = renderPass;
-		this.pipelineLayout = layout;
 		
 		VkGraphicsPipelineCreateInfo.Buffer pipelineCreateInfo = VkGraphicsPipelineCreateInfo.calloc(1)
 				.sType(VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO)
@@ -88,7 +89,7 @@ public class Pipeline {
 				.pDepthStencilState(null)
 				.pColorBlendState(colorBlending)
 				.pDynamicState(null)
-				.layout(layout.getHandle())
+				.layout(layoutHandle)
 				.renderPass(renderPass.getHandle())
 				.subpass(0)
 				.basePipelineHandle(VK_NULL_HANDLE)
@@ -110,11 +111,31 @@ public class Pipeline {
 		viewport.free();
 		scissor.free();
 		memFree(pDynamicStates);
+		
 		shaderPipeline.destroy(device);
 		
 		if (err != VK_SUCCESS) {
-			throw new AssertionError("Failed to create pipeline: " + VKUtil.translateVulkanResult(err));
+			throw new AssertionError("Failed to create pipeline: " + VkUtil.translateVulkanResult(err));
 		}
+	}
+	
+	public void specifyLayout(VkDevice device){
+		
+		VkPipelineLayoutCreateInfo pipelineLayout = VkPipelineLayoutCreateInfo.calloc()
+				.sType(VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO)
+                .pNext(0)
+                .pSetLayouts(null);
+		
+		LongBuffer pPipelineLayout = memAllocLong(1);
+        int err = vkCreatePipelineLayout(device, pipelineLayout, null, pPipelineLayout);
+        
+        layoutHandle = pPipelineLayout.get(0);
+        
+        memFree(pPipelineLayout);
+        pipelineLayout.free();
+        if (err != VK_SUCCESS) {
+            throw new AssertionError("Failed to create pipeline layout: " + VkUtil.translateVulkanResult(err));
+        }
 	}
 	
 	public void specifyVertexInput(VertexInputInfo vertexInput){
@@ -226,7 +247,7 @@ public class Pipeline {
 	
 	public void destroy(VkDevice device){
 		
-		pipelineLayout.destroy(device);
+		vkDestroyPipelineLayout(device, layoutHandle, null);
 		renderPass.destroy(device);
 		vkDestroyPipeline(device, handle, null);
 	}
@@ -235,16 +256,4 @@ public class Pipeline {
 		return handle;
 	}
 
-	public ShaderPipeline getShaderPipeline() {
-		return shaderPipeline;
-	}
-
-	public RenderPass getRenderPass() {
-		return renderPass;
-	}
-
-	public PipelineLayout getPipelineLayout() {
-		return pipelineLayout;
-	}
-	
 }

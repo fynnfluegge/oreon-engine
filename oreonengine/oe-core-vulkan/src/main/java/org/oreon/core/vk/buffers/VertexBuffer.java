@@ -6,7 +6,6 @@ import static org.lwjgl.system.MemoryUtil.memAllocLong;
 import static org.lwjgl.system.MemoryUtil.memAllocPointer;
 import static org.lwjgl.system.MemoryUtil.memCopy;
 import static org.lwjgl.system.MemoryUtil.memFree;
-import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
@@ -14,8 +13,6 @@ import static org.lwjgl.vulkan.VK10.vkAllocateMemory;
 import static org.lwjgl.vulkan.VK10.vkFreeMemory;
 import static org.lwjgl.vulkan.VK10.vkBindBufferMemory;
 import static org.lwjgl.vulkan.VK10.VK_SHARING_MODE_EXCLUSIVE;
-import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
-import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
 import static org.lwjgl.vulkan.VK10.vkCreateBuffer;
 import static org.lwjgl.vulkan.VK10.vkDestroyBuffer;
 import static org.lwjgl.vulkan.VK10.vkGetBufferMemoryRequirements;
@@ -32,24 +29,26 @@ import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkMemoryAllocateInfo;
 import org.lwjgl.vulkan.VkMemoryRequirements;
 import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
-import org.oreon.core.vk.util.VKUtil;
+import org.oreon.core.vk.util.VkUtil;
 
 import lombok.Getter;
 
 public class VertexBuffer {
 
 	@Getter
-	long handle;
+	private long handle;
 	@Getter
-	long memory;
+	private long memory;
 	
-	public void create(VkDevice device, ByteBuffer vertexBuffer){
+	private long allocationSize;
+	
+	public void create(VkDevice device, int size, int usage){
 		
 		VkBufferCreateInfo bufInfo = VkBufferCreateInfo.calloc()
 					.sType(VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO)
 					.pNext(0)
-					.size(vertexBuffer.limit())
-					.usage(VK_BUFFER_USAGE_VERTEX_BUFFER_BIT)
+					.size(size)
+					.usage(usage)
 					.sharingMode(VK_SHARING_MODE_EXCLUSIVE)
 					.flags(0);
 
@@ -61,12 +60,11 @@ public class VertexBuffer {
         bufInfo.free();
         
         if (err != VK_SUCCESS) {
-            throw new AssertionError("Failed to create vertex buffer: " + VKUtil.translateVulkanResult(err));
+            throw new AssertionError("Failed to create vertex buffer: " + VkUtil.translateVulkanResult(err));
         }
 	}
 	
 	public void allocate(VkDevice device, VkPhysicalDeviceMemoryProperties memoryProperties,
-						 ByteBuffer vertexBuffer,
 						 int memoryPropertyFlags){
 		
 		VkMemoryRequirements memRequirements = VkMemoryRequirements.calloc();
@@ -80,32 +78,38 @@ public class VertexBuffer {
         	throw new AssertionError("No memory Type found");
         }
         
+        allocationSize = memRequirements.size();
+        
         VkMemoryAllocateInfo memAlloc = VkMemoryAllocateInfo.calloc()
                 .sType(VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO)
                 .pNext(0)
-                .allocationSize(memRequirements.size())
+                .allocationSize(allocationSize)
                 .memoryTypeIndex(memoryTypeIndex.get(0));
         
         LongBuffer pMemory = memAllocLong(1);
         int err = vkAllocateMemory(device, memAlloc, null, pMemory);
         memory = pMemory.get(0);
         memFree(pMemory);
+        memAlloc.free();
         if (err != VK_SUCCESS) {
-            throw new AssertionError("Failed to allocate vertex memory: " + VKUtil.translateVulkanResult(err));
+            throw new AssertionError("Failed to allocate vertex memory: " + VkUtil.translateVulkanResult(err));
         }
         
         err = vkBindBufferMemory(device, handle, memory, 0);
         if (err != VK_SUCCESS) {
-            throw new AssertionError("Failed to bind memory to vertex buffer: " + VKUtil.translateVulkanResult(err));
+            throw new AssertionError("Failed to bind memory to vertex buffer: " + VkUtil.translateVulkanResult(err));
         }
-        
+	}
+	
+	public void mapMemory(VkDevice device, ByteBuffer vertexBuffer){
+		
         PointerBuffer pData = memAllocPointer(1);
-        err = vkMapMemory(device, memory, 0, memAlloc.allocationSize(), 0, pData);
-        memAlloc.free();
+        int err = vkMapMemory(device, memory, 0, allocationSize, 0, pData);
+        
         long data = pData.get(0);
         memFree(pData);
         if (err != VK_SUCCESS) {
-            throw new AssertionError("Failed to map vertex memory: " + VKUtil.translateVulkanResult(err));
+            throw new AssertionError("Failed to map vertex memory: " + VkUtil.translateVulkanResult(err));
         }
         
         memCopy(memAddress(vertexBuffer), data, vertexBuffer.remaining());
@@ -130,9 +134,9 @@ public class VertexBuffer {
 	}
 	
 	public void destroy(VkDevice device){
-		
-		vkDestroyBuffer(device, handle, null);
+
 		vkFreeMemory(device, memory, null);
+		vkDestroyBuffer(device, handle, null);
 	}
 	
 }

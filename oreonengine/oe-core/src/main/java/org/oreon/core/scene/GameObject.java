@@ -40,7 +40,7 @@ public class GameObject extends Node{
 	
 	public void render()
 	{
-		components.get("Renderer").render();
+		components.get(Constants.RENDERER_COMPONENT).render();
 		
 		super.render();
 	}

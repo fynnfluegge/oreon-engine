@@ -35,7 +35,7 @@ import static org.lwjgl.vulkan.KHRDisplaySwapchain.VK_ERROR_INCOMPATIBLE_DISPLAY
 import static org.lwjgl.system.MemoryUtil.memAllocPointer;
 import static org.lwjgl.vulkan.EXTDebugReport.VK_ERROR_VALIDATION_FAILED_EXT;
 
-public class VKUtil {
+public class VkUtil {
 
 	/**
      * Translates a Vulkan {@code VkResult} value to a String describing the result.

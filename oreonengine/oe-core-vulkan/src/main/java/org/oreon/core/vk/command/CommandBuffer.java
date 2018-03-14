@@ -12,14 +12,17 @@ import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_SUBMIT_INFO;
 import static org.lwjgl.vulkan.VK10.VK_SUBPASS_CONTENTS_INLINE;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
+import static org.lwjgl.vulkan.VK10.VK_INDEX_TYPE_UINT32;
 import static org.lwjgl.vulkan.VK10.vkAllocateCommandBuffers;
 import static org.lwjgl.vulkan.VK10.vkFreeCommandBuffers;
 import static org.lwjgl.vulkan.VK10.vkBeginCommandBuffer;
 import static org.lwjgl.vulkan.VK10.vkCmdBeginRenderPass;
 import static org.lwjgl.vulkan.VK10.vkCmdBindPipeline;
 import static org.lwjgl.vulkan.VK10.vkCmdBindVertexBuffers;
+import static org.lwjgl.vulkan.VK10.vkCmdBindIndexBuffer;
 import static org.lwjgl.vulkan.VK10.vkCmdCopyBuffer;
 import static org.lwjgl.vulkan.VK10.vkCmdDraw;
+import static org.lwjgl.vulkan.VK10.vkCmdDrawIndexed;
 import static org.lwjgl.vulkan.VK10.vkCmdEndRenderPass;
 import static org.lwjgl.vulkan.VK10.vkEndCommandBuffer;
 import static org.lwjgl.vulkan.VK10.vkQueueSubmit;
@@ -39,7 +42,7 @@ import org.lwjgl.vulkan.VkRect2D;
 import org.lwjgl.vulkan.VkRenderPassBeginInfo;
 import org.lwjgl.vulkan.VkSubmitInfo;
 import org.oreon.core.vk.synchronization.VkSemaphore;
-import org.oreon.core.vk.util.VKUtil;
+import org.oreon.core.vk.util.VkUtil;
 
 public class CommandBuffer {
 
@@ -58,7 +61,7 @@ public class CommandBuffer {
 		int err = vkAllocateCommandBuffers(device, cmdBufAllocateInfo, pCommandBuffer);
 		
 		if (err != VK_SUCCESS) {
-		    throw new AssertionError("Failed to allocate command buffer: " + VKUtil.translateVulkanResult(err));
+		    throw new AssertionError("Failed to allocate command buffer: " + VkUtil.translateVulkanResult(err));
 		}
 		
 		commandBuffer = new VkCommandBuffer(pCommandBuffer.get(0), device);
@@ -76,7 +79,7 @@ public class CommandBuffer {
 		int err = vkBeginCommandBuffer(commandBuffer, beginInfo);
 
 		if (err != VK_SUCCESS) {
-			throw new AssertionError("Failed to begin record command buffer: " + VKUtil.translateVulkanResult(err));
+			throw new AssertionError("Failed to begin record command buffer: " + VkUtil.translateVulkanResult(err));
 		}
         
         beginInfo.free();
@@ -87,7 +90,7 @@ public class CommandBuffer {
 		int err = vkEndCommandBuffer(commandBuffer);
 		
         if (err != VK_SUCCESS) {
-            throw new AssertionError("Failed to finish record command buffer: " + VKUtil.translateVulkanResult(err));
+            throw new AssertionError("Failed to finish record command buffer: " + VkUtil.translateVulkanResult(err));
         }
 	}
 	
@@ -101,10 +104,10 @@ public class CommandBuffer {
                 .sType(VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO)
                 .pNext(0)
                 .renderPass(renderPass)
-                .pClearValues(VKUtil.getBlackClearValues());
+                .pClearValues(VkUtil.getBlackClearValues());
 		VkRect2D renderArea = renderPassBeginInfo.renderArea();
-			renderArea.offset().set(0, 0);
-		    renderArea.extent().set(extent.width(), extent.height());
+		renderArea.offset().set(0, 0);
+		renderArea.extent().set(extent.width(), extent.height());
 				
 		renderPassBeginInfo.framebuffer(framebuffer);
 		 
@@ -126,6 +129,44 @@ public class CommandBuffer {
 		renderPassBeginInfo.free();
 	}
 	
+	public void recordIndexedRenderPass(long pipeline,
+										long renderPass,
+										long vertexBuffer,
+										long indexBuffer,
+										VkExtent2D extent,
+										long framebuffer){
+
+		VkRenderPassBeginInfo renderPassBeginInfo = VkRenderPassBeginInfo.calloc()
+					.sType(VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO)
+					.pNext(0)
+					.renderPass(renderPass)
+					.pClearValues(VkUtil.getBlackClearValues());
+			
+		VkRect2D renderArea = renderPassBeginInfo.renderArea();
+		renderArea.offset().set(0, 0);
+		renderArea.extent().set(extent.width(), extent.height());
+		
+		renderPassBeginInfo.framebuffer(framebuffer);
+		
+		vkCmdBeginRenderPass(commandBuffer, renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
+		vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
+		
+		LongBuffer offsets = memAllocLong(1);
+		offsets.put(0, 0L);
+		LongBuffer pVertexBuffers = memAllocLong(1);
+		pVertexBuffers.put(0, vertexBuffer);
+		
+		vkCmdBindVertexBuffers(commandBuffer, 0, pVertexBuffers, offsets);
+		vkCmdBindIndexBuffer(commandBuffer, indexBuffer, 0, VK_INDEX_TYPE_UINT32);
+		
+		vkCmdDrawIndexed(commandBuffer, 6, 1, 0, 0, 0);
+		vkCmdEndRenderPass(commandBuffer);
+		
+		memFree(pVertexBuffers);
+		memFree(offsets);
+		renderPassBeginInfo.free();
+	}
+	
 	public void recordTransferPass(long srcBuffer, long dstBuffer,
 								   long srcOffset, long dstOffset,
 								   long size){
@@ -143,7 +184,7 @@ public class CommandBuffer {
 		int err = vkQueueSubmit(queue, submitInfo, VK_NULL_HANDLE);
 		
 		if (err != VK_SUCCESS) {
-            throw new AssertionError("Failed to submit render queue: " + VKUtil.translateVulkanResult(err));
+            throw new AssertionError("Failed to submit render queue: " + VkUtil.translateVulkanResult(err));
         }
 	}
 	
@@ -159,11 +200,11 @@ public class CommandBuffer {
 		VkSubmitInfo submitInfo = VkSubmitInfo.calloc()
 				.sType(VK_STRUCTURE_TYPE_SUBMIT_INFO)
                 .pNext(0)
-                .waitSemaphoreCount(waitSemaphore.getpHandle().remaining())
-                .pWaitSemaphores(waitSemaphore.getpHandle())
+                .waitSemaphoreCount(waitSemaphore == null ? 0 : waitSemaphore.getpHandle().remaining())
+                .pWaitSemaphores(waitSemaphore == null ? null : waitSemaphore.getpHandle())
                 .pWaitDstStageMask(pWaitDstStageMask)
                 .pCommandBuffers(pCommandBuffer)
-                .pSignalSemaphores(signalSemaphore.getpHandle());
+                .pSignalSemaphores(signalSemaphore == null ? null : signalSemaphore.getpHandle());
 		
 		return submitInfo;
 	}

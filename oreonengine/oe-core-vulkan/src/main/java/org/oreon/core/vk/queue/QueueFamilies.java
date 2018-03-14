@@ -17,7 +17,7 @@ import java.util.List;
 
 import org.lwjgl.vulkan.VkPhysicalDevice;
 import org.lwjgl.vulkan.VkQueueFamilyProperties;
-import org.oreon.core.vk.util.VKUtil;
+import org.oreon.core.vk.util.VkUtil;
 
 public class QueueFamilies {
 	
@@ -54,7 +54,7 @@ public class QueueFamilies {
 						   surface, 
 						   supportsPresent);
 				if (err != VK_SUCCESS) {
-				throw new AssertionError("Failed to physical device surface support: " + VKUtil.translateVulkanResult(err));
+				throw new AssertionError("Failed to physical device surface support: " + VkUtil.translateVulkanResult(err));
 				}
         	}
         	

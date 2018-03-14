@@ -12,7 +12,7 @@ import java.nio.IntBuffer;
 import org.lwjgl.vulkan.VkPhysicalDevice;
 import org.lwjgl.vulkan.VkSurfaceCapabilitiesKHR;
 import org.lwjgl.vulkan.VkSurfaceFormatKHR;
-import org.oreon.core.vk.util.VKUtil;
+import org.oreon.core.vk.util.VkUtil;
 
 public class SwapChainCapabilities {
 	
@@ -25,33 +25,33 @@ public class SwapChainCapabilities {
 		surfaceCapabilities = VkSurfaceCapabilitiesKHR.calloc();
         int err = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, surface, surfaceCapabilities);
         if (err != VK_SUCCESS) {
-            throw new AssertionError("Failed to get physical device surface capabilities: " + VKUtil.translateVulkanResult(err));
+            throw new AssertionError("Failed to get physical device surface capabilities: " + VkUtil.translateVulkanResult(err));
         }
         
         IntBuffer pFormatCount = memAllocInt(1);
         err = vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, surface, pFormatCount, null);
         int formatCount = pFormatCount.get(0);
         if (err != VK_SUCCESS) {
-            throw new AssertionError("Failed to query number of physical device surface formats: " + VKUtil.translateVulkanResult(err));
+            throw new AssertionError("Failed to query number of physical device surface formats: " + VkUtil.translateVulkanResult(err));
         }
 
         surfaceFormats = VkSurfaceFormatKHR.calloc(formatCount);
         err = vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, surface, pFormatCount, surfaceFormats);
         if (err != VK_SUCCESS) {
-            throw new AssertionError("Failed to query physical device surface formats: " + VKUtil.translateVulkanResult(err));
+            throw new AssertionError("Failed to query physical device surface formats: " + VkUtil.translateVulkanResult(err));
         }
         
         IntBuffer pPresentModeCount = memAllocInt(1);
         err = vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, surface, pPresentModeCount, null);
         int presentModeCount = pPresentModeCount.get(0);
         if (err != VK_SUCCESS) {
-            throw new AssertionError("Failed to get number of physical device surface presentation modes: " + VKUtil.translateVulkanResult(err));
+            throw new AssertionError("Failed to get number of physical device surface presentation modes: " + VkUtil.translateVulkanResult(err));
         }
 
         presentModes = memAllocInt(presentModeCount);
         err = vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, surface, pPresentModeCount, presentModes);
         if (err != VK_SUCCESS) {
-            throw new AssertionError("Failed to get physical device surface presentation modes: " + VKUtil.translateVulkanResult(err));
+            throw new AssertionError("Failed to get physical device surface presentation modes: " + VkUtil.translateVulkanResult(err));
         }
         
         memFree(pPresentModeCount);
