@@ -21,15 +21,6 @@ public class Constants {
 	public static final int PSSM_SHADOWMAP_RESOLUTION = 4096;
 	public static final int MULTISAMPLES = 8;
 	
-	// Component keys
-	public static final String MAIN_RENDERINFO = "mainRenderInfo";
-	public static final String SHADOW_RENDERINFO = "shadowRenderInfo";
-	public static final String WIREFRAME_RENDERINFO = "wireframeRenderinfo";
-	public static final String MATERIAL = "material";
-	
-	
-	// Motion Blur settings
-	
 	// Global Uniform Block Bindings
 	public static final int CameraUniformBlockBinding = 51;
 	public static final int DirectionalLightUniformBlockBinding = 52;

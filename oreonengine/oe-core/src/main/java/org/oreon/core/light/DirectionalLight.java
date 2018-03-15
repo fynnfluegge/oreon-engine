@@ -2,7 +2,6 @@ package org.oreon.core.light;
 
 import java.nio.FloatBuffer;
 
-import org.oreon.core.buffers.UBO;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.math.Vec3f;
 import org.oreon.core.shadow.PSSMCamera;
@@ -19,8 +18,6 @@ public abstract class DirectionalLight extends Light{
 	private Vec3f up;
 	private PSSMCamera[] splitLightCameras;
 	
-	private UBO ubo_light;
-	private UBO ubo_matrices;
 	private FloatBuffer floatBufferLight;
 	private FloatBuffer floatBufferMatrices;
 	private final int lightBufferSize = Float.BYTES * 12;
@@ -71,7 +68,6 @@ public abstract class DirectionalLight extends Light{
 				lightCamera.update(m_View, up, right);
 				floatBufferMatrices.put(BufferUtil.createFlippedBuffer(lightCamera.getM_orthographicViewProjection()));
 			}
-			ubo_matrices.updateData(floatBufferMatrices, matricesBufferSize);
 		}
 	}
 	
@@ -118,22 +114,6 @@ public abstract class DirectionalLight extends Light{
 
 	public PSSMCamera[] getSplitLightCameras() {
 		return splitLightCameras;
-	}
-
-	public UBO getUbo_light() {
-		return ubo_light;
-	}
-
-	public void setUbo_light(UBO ubo_light) {
-		this.ubo_light = ubo_light;
-	}
-
-	public UBO getUbo_matrices() {
-		return ubo_matrices;
-	}
-
-	public void setUbo_matrices(UBO ubo_matrices) {
-		this.ubo_matrices = ubo_matrices;
 	}
 	
 	public int getLightBufferSize() {

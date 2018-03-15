@@ -7,19 +7,19 @@ import org.oreon.core.gl.buffers.GLMeshVBO;
 import org.oreon.core.gl.config.CullFaceDisable;
 import org.oreon.core.gl.scene.GLRenderInfo;
 import org.oreon.core.gl.util.modelLoader.obj.OBJLoader;
-import org.oreon.core.instancing.InstancingCluster;
-import org.oreon.core.instancing.InstancingObject;
-import org.oreon.core.instancing.InstancingObjectHandler;
+import org.oreon.core.instanced.InstancedCluster;
+import org.oreon.core.instanced.InstancedObject;
+import org.oreon.core.instanced.InstancedHandler;
 import org.oreon.core.math.Vec3f;
 import org.oreon.core.model.Model;
-import org.oreon.core.scene.Renderable;
+import org.oreon.core.scenegraph.ComponentType;
+import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.system.CoreSystem;
-import org.oreon.core.util.Constants;
 import org.oreon.gl.demo.oreonworlds.shaders.InstancingGridShader;
 import org.oreon.gl.demo.oreonworlds.shaders.assets.plants.GrassShader;
 import org.oreon.gl.demo.oreonworlds.shaders.assets.plants.GrassShadowShader;
 
-public class Plant01ClusterGroup extends InstancingObject{
+public class Plant01ClusterGroup extends InstancedObject{
 	
 	public Plant01ClusterGroup(){
 		
@@ -40,10 +40,10 @@ public class Plant01ClusterGroup extends InstancingObject{
 			GLRenderInfo wireframeRenderInfo = new GLRenderInfo(InstancingGridShader.getInstance(), new CullFaceDisable(), meshBuffer);
 	
 			Renderable object = new Renderable();
-			object.addComponent(Constants.MAIN_RENDERINFO, renderInfo);
-			object.addComponent(Constants.SHADOW_RENDERINFO, shadowRenderInfo);
-			object.addComponent(Constants.WIREFRAME_RENDERINFO, wireframeRenderInfo);
-			object.addComponent(Constants.MATERIAL, model.getMaterial());
+			object.addComponent(ComponentType.MAIN_RENDERINFO, renderInfo);
+			object.addComponent(ComponentType.SHADOW_RENDERINFO, shadowRenderInfo);
+			object.addComponent(ComponentType.WIREFRAME_RENDERINFO, wireframeRenderInfo);
+			object.addComponent(ComponentType.MATERIAL0, model.getMaterial());
 			objects.add(object);
 		}
 		
@@ -58,21 +58,21 @@ public class Plant01ClusterGroup extends InstancingObject{
 	public void run() {
 			while(isRunning()){
 			
-			InstancingObjectHandler.getInstance().getLock().lock();
+			InstancedHandler.getInstance().getLock().lock();
 			try {
-				InstancingObjectHandler.getInstance().getCondition().await();
+				InstancedHandler.getInstance().getCondition().await();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 			finally{
-				InstancingObjectHandler.getInstance().getLock().unlock();
+				InstancedHandler.getInstance().getLock().unlock();
 			}
 			
 			synchronized (getChildren()) {
 				
 				getChildren().clear();
 		
-				for (InstancingCluster cluster : getClusters()){
+				for (InstancedCluster cluster : getClusters()){
 					if (cluster.getCenter().sub(CoreSystem.getInstance().getScenegraph().getCamera().getPosition()).length() < 600){
 						addChild(cluster);
 					}

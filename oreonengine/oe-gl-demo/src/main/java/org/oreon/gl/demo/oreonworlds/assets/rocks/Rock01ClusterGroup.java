@@ -7,16 +7,16 @@ import org.oreon.core.gl.buffers.GLMeshVBO;
 import org.oreon.core.gl.config.Default;
 import org.oreon.core.gl.scene.GLRenderInfo;
 import org.oreon.core.gl.util.modelLoader.obj.OBJLoader;
-import org.oreon.core.instancing.InstancingObject;
+import org.oreon.core.instanced.InstancedObject;
 import org.oreon.core.math.Vec3f;
 import org.oreon.core.model.Model;
-import org.oreon.core.scene.Renderable;
-import org.oreon.core.util.Constants;
+import org.oreon.core.scenegraph.ComponentType;
+import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.util.Util;
 import org.oreon.gl.demo.oreonworlds.shaders.assets.rocks.RockHighPolyShader;
 import org.oreon.gl.demo.oreonworlds.shaders.assets.rocks.RockShadowShader;
 
-public class Rock01ClusterGroup extends InstancingObject{
+public class Rock01ClusterGroup extends InstancedObject{
 	
 	public Rock01ClusterGroup(){
 
@@ -37,9 +37,9 @@ public class Rock01ClusterGroup extends InstancingObject{
 			GLRenderInfo shadowRenderInfo = new GLRenderInfo(RockShadowShader.getInstance(), new Default(), meshBuffer);
 	
 			Renderable object = new Renderable();
-			object.addComponent(Constants.MAIN_RENDERINFO, renderInfo);
-			object.addComponent(Constants.SHADOW_RENDERINFO, shadowRenderInfo);
-			object.addComponent(Constants.MATERIAL, model.getMaterial());
+			object.addComponent(ComponentType.MAIN_RENDERINFO, renderInfo);
+			object.addComponent(ComponentType.SHADOW_RENDERINFO, shadowRenderInfo);
+			object.addComponent(ComponentType.MATERIAL0, model.getMaterial());
 			objects.add(object);
 		}
 		

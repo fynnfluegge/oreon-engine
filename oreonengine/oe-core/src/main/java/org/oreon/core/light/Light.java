@@ -1,10 +1,10 @@
 package org.oreon.core.light;
 
 import org.oreon.core.query.OcclusionQuery;
+import org.oreon.core.scenegraph.Component;
 import org.oreon.core.math.Quaternion;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.math.Vec3f;
-import org.oreon.core.scene.Component;
 import org.oreon.core.system.CoreSystem;
 
 public class Light extends Component{

@@ -1,4 +1,4 @@
-package org.oreon.core.scene;
+package org.oreon.core.scenegraph;
 
 import java.util.ArrayList;
 import java.util.List;

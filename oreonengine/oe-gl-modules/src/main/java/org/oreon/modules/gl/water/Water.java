@@ -11,8 +11,9 @@ import org.oreon.core.gl.shaders.GLShader;
 import org.oreon.core.gl.texture.Texture2D;
 import org.oreon.core.math.Quaternion;
 import org.oreon.core.math.Vec2f;
-import org.oreon.core.scene.Renderable;
-import org.oreon.core.scene.Scenegraph;
+import org.oreon.core.scenegraph.ComponentType;
+import org.oreon.core.scenegraph.Renderable;
+import org.oreon.core.scenegraph.Scenegraph;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.Constants;
 import org.oreon.core.util.Util;
@@ -82,8 +83,8 @@ public class Water extends Renderable{
 		caustics.bind();
 		caustics.trilinearFilter();
 		
-		addComponent(Constants.MAIN_RENDERINFO, renderInfo);
-		addComponent(Constants.WIREFRAME_RENDERINFO, wireframeRenderInfo);
+		addComponent(ComponentType.MAIN_RENDERINFO, renderInfo);
+		addComponent(ComponentType.WIREFRAME_RENDERINFO, wireframeRenderInfo);
 
 		fft = new OceanFFT(fftResolution); 
 		fft.init();
@@ -205,11 +206,11 @@ public class Water extends Renderable{
 		
 		if (CoreSystem.getInstance().getRenderEngine().isWireframe())
 		{
-			getComponents().get(Constants.WIREFRAME_RENDERINFO).render();
+			getComponents().get(ComponentType.WIREFRAME_RENDERINFO).render();
 		}
 		else
 		{
-			getComponents().get(Constants.MAIN_RENDERINFO).render();
+			getComponents().get(ComponentType.MAIN_RENDERINFO).render();
 		}
 		
 		// glFinish() important, to prevent conflicts with following compute shaders

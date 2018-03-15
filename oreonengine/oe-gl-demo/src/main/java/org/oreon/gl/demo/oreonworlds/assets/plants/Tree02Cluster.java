@@ -6,16 +6,16 @@ import java.util.List;
 import org.oreon.core.gl.buffers.GLMeshVBO;
 import org.oreon.core.gl.buffers.GLUBO;
 import org.oreon.core.gl.scene.GLRenderInfo;
-import org.oreon.core.instancing.InstancingCluster;
+import org.oreon.core.instanced.InstancedCluster;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.math.Vec3f;
-import org.oreon.core.scene.Renderable;
+import org.oreon.core.scenegraph.ComponentType;
+import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.BufferUtil;
-import org.oreon.core.util.Constants;
 import org.oreon.core.util.IntegerReference;
 
-public class Tree02Cluster extends InstancingCluster{
+public class Tree02Cluster extends InstancedCluster{
 
 	public Tree02Cluster(int instances, Vec3f pos, List<Renderable> objects){
 		
@@ -72,9 +72,9 @@ public class Tree02Cluster extends InstancingCluster{
 			addChild(object);
 		}
 		
-		((GLMeshVBO) ((GLRenderInfo) ((Renderable) getChildren().get(0)).getComponent(Constants.MAIN_RENDERINFO)).getVbo()).setInstances(getHighPolyInstances());
-		((GLMeshVBO) ((GLRenderInfo) ((Renderable) getChildren().get(1)).getComponent(Constants.MAIN_RENDERINFO)).getVbo()).setInstances(getHighPolyInstances());
-		((GLMeshVBO) ((GLRenderInfo) ((Renderable) getChildren().get(2)).getComponent(Constants.MAIN_RENDERINFO)).getVbo()).setInstances(getLowPolyInstances());
+		((GLMeshVBO) ((GLRenderInfo) ((Renderable) getChildren().get(0)).getComponent(ComponentType.MAIN_RENDERINFO)).getVbo()).setInstances(getHighPolyInstances());
+		((GLMeshVBO) ((GLRenderInfo) ((Renderable) getChildren().get(1)).getComponent(ComponentType.MAIN_RENDERINFO)).getVbo()).setInstances(getHighPolyInstances());
+		((GLMeshVBO) ((GLRenderInfo) ((Renderable) getChildren().get(2)).getComponent(ComponentType.MAIN_RENDERINFO)).getVbo()).setInstances(getLowPolyInstances());
 	}
 	
 	@Override

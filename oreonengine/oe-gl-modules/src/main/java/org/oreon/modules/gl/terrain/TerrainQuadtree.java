@@ -2,7 +2,7 @@ package org.oreon.modules.gl.terrain;
 
 import org.oreon.core.gl.buffers.GLPatchVBO;
 import org.oreon.core.math.Vec2f;
-import org.oreon.core.scene.Node;
+import org.oreon.core.scenegraph.Node;
 import org.oreon.core.util.MeshGenerator;
 
 public class TerrainQuadtree extends Node{

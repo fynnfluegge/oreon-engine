@@ -1,4 +1,4 @@
-package org.oreon.core.scene;
+package org.oreon.core.scenegraph;
 
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_A;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_D;

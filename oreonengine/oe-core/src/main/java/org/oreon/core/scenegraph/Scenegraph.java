@@ -1,4 +1,4 @@
-package org.oreon.core.scene;
+package org.oreon.core.scenegraph;
 
 import org.oreon.core.math.Transform;
 import org.oreon.core.terrain.Terrain;

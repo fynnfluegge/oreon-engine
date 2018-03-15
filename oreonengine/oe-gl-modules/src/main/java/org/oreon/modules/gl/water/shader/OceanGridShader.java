@@ -6,7 +6,7 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE2;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import org.oreon.core.gl.shaders.GLShader;
-import org.oreon.core.scene.Renderable;
+import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.ResourceLoader;
 import org.oreon.modules.gl.water.Water;

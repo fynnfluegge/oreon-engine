@@ -4,7 +4,7 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.oreon.core.scene.Node;
+import org.oreon.core.scenegraph.Node;
 
 public class Terrain extends Node implements Runnable{
 	

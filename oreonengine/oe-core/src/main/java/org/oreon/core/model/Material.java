@@ -1,7 +1,7 @@
 package org.oreon.core.model;
 
 import org.oreon.core.math.Vec3f;
-import org.oreon.core.scene.Component;
+import org.oreon.core.scenegraph.Component;
 import org.oreon.core.texture.Texture;
 
 

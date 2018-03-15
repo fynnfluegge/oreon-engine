@@ -1,21 +1,21 @@
-package org.oreon.core.instancing;
+package org.oreon.core.instanced;
 
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class InstancingObjectHandler {
+public class InstancedHandler {
 	
 	private Lock lock = new ReentrantLock();
 	private Condition condition = lock.newCondition();
 
-	private static InstancingObjectHandler instance = null;
+	private static InstancedHandler instance = null;
 	
-	public static InstancingObjectHandler getInstance() 
+	public static InstancedHandler getInstance() 
 	{
 	    if(instance == null) 
 	    {
-	    	instance = new InstancingObjectHandler();
+	    	instance = new InstancedHandler();
 	    }
 	      return instance;
 	}

@@ -15,7 +15,7 @@ import static org.lwjgl.opengl.GL15.glGetQueryObjectui;
 
 import org.oreon.core.light.Light;
 import org.oreon.core.query.OcclusionQuery;
-import org.oreon.core.scene.Renderable;
+import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.util.BufferUtil;
 
 public class GLOcclusionQuery extends OcclusionQuery{

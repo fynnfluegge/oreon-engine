@@ -5,10 +5,10 @@ import org.oreon.core.gl.config.Default;
 import org.oreon.core.gl.scene.GLRenderInfo;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.math.Vec3f;
-import org.oreon.core.scene.Renderable;
-import org.oreon.core.scene.Node;
+import org.oreon.core.scenegraph.ComponentType;
+import org.oreon.core.scenegraph.Node;
+import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.system.CoreSystem;
-import org.oreon.core.util.Constants;
 
 public class TerrainNode extends Renderable{
 	
@@ -40,8 +40,8 @@ public class TerrainNode extends Renderable{
 														    new Default(),
 														    buffer);
 		
-		addComponent(Constants.MAIN_RENDERINFO, renderInfo);
-		addComponent(Constants.WIREFRAME_RENDERINFO, wireframeRenderInfo);
+		addComponent(ComponentType.MAIN_RENDERINFO, renderInfo);
+		addComponent(ComponentType.WIREFRAME_RENDERINFO, wireframeRenderInfo);
 		
 		Vec3f localScaling = new Vec3f(gap,0,gap);
 		Vec3f localTranslation = new Vec3f(location.getX(),0,location.getY());
@@ -74,10 +74,10 @@ public class TerrainNode extends Renderable{
 		if (isleaf)
 		{	
 			if (CoreSystem.getInstance().getRenderEngine().isWireframe()){
-				getComponents().get(Constants.WIREFRAME_RENDERINFO).render();
+				getComponents().get(ComponentType.WIREFRAME_RENDERINFO).render();
 			}
 			else{
-				getComponents().get(Constants.MAIN_RENDERINFO).render();
+				getComponents().get(ComponentType.MAIN_RENDERINFO).render();
 			}
 		}
 		for(Node child: getChildren())
@@ -87,8 +87,8 @@ public class TerrainNode extends Renderable{
 	public void renderShadows()
 	{
 		if (isleaf){
-			if (getComponents().containsKey(Constants.SHADOW_RENDERINFO)){
-				getComponents().get(Constants.SHADOW_RENDERINFO).render();
+			if (getComponents().containsKey(ComponentType.SHADOW_RENDERINFO)){
+				getComponents().get(ComponentType.SHADOW_RENDERINFO).render();
 			}
 
 		}

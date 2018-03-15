@@ -17,14 +17,14 @@ import org.oreon.core.math.Vec3f;
 import org.oreon.core.texture.Texture;
 import org.oreon.core.util.Util;
 
-public class AssimpStaticModelLoader {
+public class AssimpModelLoader {
 	
 	public static List<Model> loadModel(String path, String file) {
 		
 		List<Model> models = new ArrayList<>();
 		List<Material> materials = new ArrayList<>();
 		
-		path = AssimpStaticModelLoader.class.getClassLoader().getResource(path).getPath().toString();
+		path = AssimpModelLoader.class.getClassLoader().getResource(path).getPath().toString();
 
 		if (path.startsWith("/"))
 			path = path.substring(1);

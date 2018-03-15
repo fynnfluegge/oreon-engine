@@ -10,9 +10,9 @@ import org.oreon.core.light.Light;
 import org.oreon.core.light.LightHandler;
 import org.oreon.core.math.Vec3f;
 import org.oreon.core.model.Material;
-import org.oreon.core.scene.Renderable;
+import org.oreon.core.scenegraph.ComponentType;
+import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.system.CoreSystem;
-import org.oreon.core.util.Constants;
 
 public class Sun extends Renderable{
 	
@@ -39,13 +39,13 @@ public class Sun extends Renderable{
 		GLRenderInfo renderInfo = new GLRenderInfo(SunShader.getInstance(),
 											   new AlphaBlendingSrcAlpha(),
 											   buffer);
-		addComponent(Constants.MAIN_RENDERINFO, renderInfo);
-		addComponent("Material1", material1);
-		addComponent("Material2", material2);
+		addComponent(ComponentType.MAIN_RENDERINFO, renderInfo);
+		addComponent(ComponentType.MATERIAL0, material1);
+		addComponent(ComponentType.MATERIAL1, material2);
 		
 		Light light = new Light();
 		light.setOcclusionQuery(new GLOcclusionQuery());
-		addComponent("Light", light);
+		addComponent(ComponentType.LIGHT, light);
 		LightHandler.getLights().add(light);
 	}
 	

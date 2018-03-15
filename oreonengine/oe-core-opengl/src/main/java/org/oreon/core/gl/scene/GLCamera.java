@@ -4,7 +4,7 @@ import java.nio.FloatBuffer;
 
 import org.oreon.core.gl.buffers.GLUBO;
 import org.oreon.core.platform.GLFWInput;
-import org.oreon.core.scene.Camera;
+import org.oreon.core.scenegraph.Camera;
 import org.oreon.core.util.BufferUtil;
 import org.oreon.core.util.Constants;
 

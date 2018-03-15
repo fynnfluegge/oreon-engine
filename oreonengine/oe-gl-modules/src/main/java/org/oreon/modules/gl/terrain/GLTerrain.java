@@ -53,7 +53,7 @@ public class GLTerrain extends Terrain{
 		
 		updateQuadtreeCounter++;
 		
-		if (updateQuadtreeCounter == 2){
+		if (updateQuadtreeCounter == 1){
 			
 			((TerrainQuadtree) getChildren().get(0)).updateQuadtree();
 			((TerrainQuadtree) getChildren().get(1)).updateQuadtree();

@@ -1,6 +1,6 @@
 package org.oreon.modules.gl.atmosphere;
 
-import org.oreon.core.scene.Node;
+import org.oreon.core.scenegraph.Node;
 import org.oreon.core.util.Constants;
 
 public class SkySphere extends Node{

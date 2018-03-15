@@ -1,4 +1,4 @@
-package org.oreon.core.instancing;
+package org.oreon.core.instanced;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,10 +6,10 @@ import java.util.List;
 import org.oreon.core.buffers.UBO;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.math.Vec3f;
-import org.oreon.core.scene.Node;
+import org.oreon.core.scenegraph.Node;
 import org.oreon.core.util.IntegerReference;
 
-public abstract class InstancingCluster extends Node{
+public abstract class InstancedCluster extends Node{
 	
 	private List<Matrix4f> worldMatrices = new ArrayList<Matrix4f>();
 	private List<Matrix4f> modelMatrices = new ArrayList<Matrix4f>();

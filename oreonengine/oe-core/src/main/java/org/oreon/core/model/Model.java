@@ -1,6 +1,6 @@
 package org.oreon.core.model;
 
-import org.oreon.core.scene.Component;
+import org.oreon.core.scenegraph.Component;
 
 public class Model extends Component{
 

@@ -3,7 +3,7 @@ package org.oreon.core.query;
 import java.nio.IntBuffer;
 
 import org.oreon.core.light.Light;
-import org.oreon.core.scene.Renderable;
+import org.oreon.core.scenegraph.Renderable;
 
 public abstract class OcclusionQuery {
 

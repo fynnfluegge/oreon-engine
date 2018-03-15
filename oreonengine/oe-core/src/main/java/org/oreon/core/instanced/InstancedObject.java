@@ -1,13 +1,13 @@
-package org.oreon.core.instancing;
+package org.oreon.core.instanced;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.oreon.core.scene.Node;
+import org.oreon.core.scenegraph.Node;
 
-public abstract class InstancingObject extends Node implements Runnable{
+public abstract class InstancedObject extends Node implements Runnable{
 	
-	private List<InstancingCluster> clusters = new ArrayList<InstancingCluster>();
+	private List<InstancedCluster> clusters = new ArrayList<InstancedCluster>();
 	
 	private Thread thread;
 	private boolean isRunning = true;
@@ -24,15 +24,15 @@ public abstract class InstancingObject extends Node implements Runnable{
 		this.thread = thread;
 	}
 	
-	public List<InstancingCluster> getClusters() {
+	public List<InstancedCluster> getClusters() {
 		return clusters;
 	}
 
-	public void setClusters(List<InstancingCluster> clusters) {
+	public void setClusters(List<InstancedCluster> clusters) {
 		this.clusters = clusters;
 	}
 	
-	public void addCluster(InstancingCluster cluster){
+	public void addCluster(InstancedCluster cluster){
 		getClusters().add(cluster);
 	}
 

@@ -35,7 +35,7 @@ import org.oreon.core.gl.surface.FullScreenMultisampleQuad;
 import org.oreon.core.gl.surface.FullScreenQuad;
 import org.oreon.core.gl.texture.Texture2D;
 import org.oreon.core.gl.texture.Texture2DMultisample;
-import org.oreon.core.instancing.InstancingObjectHandler;
+import org.oreon.core.instanced.InstancedHandler;
 import org.oreon.core.light.LightHandler;
 import org.oreon.core.math.Quaternion;
 import org.oreon.core.platform.Window;
@@ -64,7 +64,7 @@ public class GLRenderEngine implements RenderEngine{
 	private MSAA msaa;
 	private FXAA fxaa;
 	
-	private InstancingObjectHandler instancingObjectHandler;
+	private InstancedHandler instancingObjectHandler;
 	
 	private GLFramebuffer finalSceneFbo;
 	private Texture2D finalSceneTexture;
@@ -115,7 +115,7 @@ public class GLRenderEngine implements RenderEngine{
 		
 		Default.init();
 		window = CoreSystem.getInstance().getWindow();
-		instancingObjectHandler = InstancingObjectHandler.getInstance();
+		instancingObjectHandler = InstancedHandler.getInstance();
 		
 		if (gui != null){
 			gui.init();

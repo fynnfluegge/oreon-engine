@@ -1,7 +1,7 @@
 package org.oreon.modules.gl.atmosphere;
 
 import org.oreon.core.gl.shaders.GLShader;
-import org.oreon.core.scene.Renderable;
+import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.util.ResourceLoader;
 
 public class AtmosphereShader extends GLShader{

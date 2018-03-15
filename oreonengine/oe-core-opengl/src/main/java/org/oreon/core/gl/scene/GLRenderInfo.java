@@ -3,7 +3,7 @@ package org.oreon.core.gl.scene;
 import org.oreon.core.gl.buffers.VBO;
 import org.oreon.core.gl.config.RenderConfig;
 import org.oreon.core.gl.shaders.GLShader;
-import org.oreon.core.scene.Component;
+import org.oreon.core.scenegraph.Component;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
