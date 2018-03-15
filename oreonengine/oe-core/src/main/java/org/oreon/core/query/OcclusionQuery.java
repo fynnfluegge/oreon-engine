@@ -3,7 +3,7 @@ package org.oreon.core.query;
 import java.nio.IntBuffer;
 
 import org.oreon.core.light.Light;
-import org.oreon.core.scene.GameObject;
+import org.oreon.core.scene.Renderable;
 
 public abstract class OcclusionQuery {
 
@@ -11,7 +11,7 @@ public abstract class OcclusionQuery {
 	private IntBuffer buffer;
 	private int occlusionFactor;
 	
-	public abstract void doQuery(GameObject object);
+	public abstract void doQuery(Renderable object);
 	
 	public abstract void doQuery(Light light);
 	

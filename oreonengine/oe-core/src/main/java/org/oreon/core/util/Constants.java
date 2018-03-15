@@ -22,8 +22,10 @@ public class Constants {
 	public static final int MULTISAMPLES = 8;
 	
 	// Component keys
-	public static final String RENDERER_COMPONENT = "Renderer";
-	public static final String SHADOW_RENDERER_COMPONENT = "ShadowRenderer";
+	public static final String MAIN_RENDERINFO = "mainRenderInfo";
+	public static final String SHADOW_RENDERINFO = "shadowRenderInfo";
+	public static final String WIREFRAME_RENDERINFO = "wireframeRenderinfo";
+	public static final String MATERIAL = "material";
 	
 	
 	// Motion Blur settings

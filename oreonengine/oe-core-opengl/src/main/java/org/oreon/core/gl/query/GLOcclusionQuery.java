@@ -15,7 +15,7 @@ import static org.lwjgl.opengl.GL15.glGetQueryObjectui;
 
 import org.oreon.core.light.Light;
 import org.oreon.core.query.OcclusionQuery;
-import org.oreon.core.scene.GameObject;
+import org.oreon.core.scene.Renderable;
 import org.oreon.core.util.BufferUtil;
 
 public class GLOcclusionQuery extends OcclusionQuery{
@@ -25,7 +25,7 @@ public class GLOcclusionQuery extends OcclusionQuery{
 		setId(glGenQueries());
 	}
 	
-	public void doQuery(GameObject object){
+	public void doQuery(Renderable object){
 		
 		glColorMask(false, false, false, false);
 		glDepthMask(false);

@@ -13,7 +13,7 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import org.oreon.core.gl.light.GLDirectionalLight;
 import org.oreon.core.gl.shaders.GLShader;
-import org.oreon.core.scene.GameObject;
+import org.oreon.core.scene.Renderable;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.ResourceLoader;
 import org.oreon.modules.gl.water.Water;
@@ -88,7 +88,7 @@ public class OceanBRDFShader extends GLShader{
 		}
 	}
 	
-	public void updateUniforms(GameObject object)
+	public void updateUniforms(Renderable object)
 	{
 		setUniform("projectionViewMatrix", CoreSystem.getInstance().getScenegraph().getCamera().getViewProjectionMatrix());
 		setUniform("worldMatrix", object.getWorldTransform().getWorldMatrix());

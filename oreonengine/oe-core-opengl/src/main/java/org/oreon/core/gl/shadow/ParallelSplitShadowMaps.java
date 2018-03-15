@@ -3,8 +3,8 @@ package org.oreon.core.gl.shadow;
 import static org.lwjgl.opengl.GL11.GL_NONE;
 import static org.lwjgl.opengl.GL42.glTexStorage3D;
 
-import org.oreon.core.configs.RenderConfig;
 import org.oreon.core.gl.buffers.GLFramebuffer;
+import org.oreon.core.gl.config.RenderConfig;
 import org.oreon.core.gl.config.ShadowConfig;
 import org.oreon.core.gl.texture.Texture2DArray;
 import org.oreon.core.util.Constants;

@@ -1,15 +1,15 @@
  package org.oreon.core.scene;
 
-
 import java.util.HashMap;
 
+import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.Constants;
 
-public class GameObject extends Node{
+public class Renderable extends Node{
 
 	private HashMap<String, Component> components;
 	
-	public GameObject()
+	public Renderable()
 	{
 		super();
 		components = new HashMap<String, Component>();
@@ -40,15 +40,22 @@ public class GameObject extends Node{
 	
 	public void render()
 	{
-		components.get(Constants.RENDERER_COMPONENT).render();
+		if (CoreSystem.getInstance().getRenderEngine().isWireframe()){
+			if (components.containsKey(Constants.WIREFRAME_RENDERINFO)){
+				components.get(Constants.WIREFRAME_RENDERINFO).render();
+			}
+		}
+		else{
+			components.get(Constants.MAIN_RENDERINFO).render();
+		}
 		
 		super.render();
 	}
 	
 	public void renderShadows()
 	{
-		if (components.containsKey(Constants.SHADOW_RENDERER_COMPONENT)){
-			components.get(Constants.SHADOW_RENDERER_COMPONENT).render();
+		if (components.containsKey(Constants.SHADOW_RENDERINFO)){
+			components.get(Constants.SHADOW_RENDERINFO).render();
 		}
 		
 		super.renderShadows();

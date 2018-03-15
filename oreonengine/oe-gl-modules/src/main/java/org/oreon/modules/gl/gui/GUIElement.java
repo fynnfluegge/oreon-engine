@@ -1,6 +1,6 @@
 package org.oreon.modules.gl.gui;
 
-import org.oreon.core.configs.RenderConfig;
+import org.oreon.core.gl.config.RenderConfig;
 import org.oreon.core.gl.shaders.GLShader;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.math.Transform;

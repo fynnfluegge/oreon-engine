@@ -9,7 +9,7 @@ import org.oreon.core.gl.shaders.GLShader;
 import org.oreon.core.instancing.InstancingCluster;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.model.Material;
-import org.oreon.core.scene.GameObject;
+import org.oreon.core.scene.Renderable;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.Constants;
 import org.oreon.core.util.ResourceLoader;
@@ -56,7 +56,7 @@ private static BushShader instance = null;
 		}
 	}
 	
-	public void updateUniforms(GameObject object)
+	public void updateUniforms(Renderable object)
 	{
 		bindUniformBlock("Camera", Constants.CameraUniformBlockBinding);
 		bindUniformBlock("DirectionalLight", Constants.DirectionalLightUniformBlockBinding);
@@ -73,7 +73,7 @@ private static BushShader instance = null;
 		setUniform("clipplane", CoreSystem.getInstance().getRenderEngine().getClipplane());
 		setUniform("scalingMatrix", new Matrix4f().Scaling(object.getWorldTransform().getScaling()));
 		
-		Material material = (Material) object.getComponent("Material");
+		Material material = (Material) object.getComponent(Constants.MATERIAL);
 		glActiveTexture(GL_TEXTURE0);
 		material.getDiffusemap().bind();
 		setUniformi("material.diffusemap", 0);

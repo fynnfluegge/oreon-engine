@@ -6,13 +6,12 @@ import java.io.FileReader;
 
 import org.oreon.core.gl.buffers.GLPatchVBO;
 import org.oreon.core.gl.config.WaterConfig;
+import org.oreon.core.gl.scene.GLRenderInfo;
 import org.oreon.core.gl.shaders.GLShader;
 import org.oreon.core.gl.texture.Texture2D;
 import org.oreon.core.math.Quaternion;
 import org.oreon.core.math.Vec2f;
-import org.oreon.core.renderer.RenderInfo;
-import org.oreon.core.renderer.Renderer;
-import org.oreon.core.scene.GameObject;
+import org.oreon.core.scene.Renderable;
 import org.oreon.core.scene.Scenegraph;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.Constants;
@@ -31,7 +30,7 @@ import static org.lwjgl.opengl.GL11.glViewport;
 import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.opengl.GL30.GL_CLIP_DISTANCE6;
 
-public class Water extends GameObject{
+public class Water extends Renderable{
 	
 	private Quaternion clipplane;
 	private float clip_offset;
@@ -72,8 +71,8 @@ public class Water extends GameObject{
 		
 		config = new WaterConfig();
 		
-		Renderer renderer = new Renderer(meshBuffer);
-		renderer.setRenderInfo(new RenderInfo(config, shader));
+		GLRenderInfo renderInfo = new GLRenderInfo(shader,config,meshBuffer);
+		GLRenderInfo wireframeRenderInfo = new GLRenderInfo(OceanGridShader.getInstance(),config,meshBuffer);
 		
 		dudv = new Texture2D("textures/water/dudv/dudv1.jpg");
 		dudv.bind();
@@ -83,7 +82,8 @@ public class Water extends GameObject{
 		caustics.bind();
 		caustics.trilinearFilter();
 		
-		addComponent("Renderer", renderer);
+		addComponent(Constants.MAIN_RENDERINFO, renderInfo);
+		addComponent(Constants.WIREFRAME_RENDERINFO, wireframeRenderInfo);
 
 		fft = new OceanFFT(fftResolution); 
 		fft.init();
@@ -99,14 +99,6 @@ public class Water extends GameObject{
 	public void update()
 	{
 		setCameraUnderwater(CoreSystem.getInstance().getScenegraph().getCamera().getPosition().getY() < (getWorldTransform().getTranslation().getY())); 
-		if (CoreSystem.getInstance().getRenderEngine().isGrid())
-		{
-			((Renderer) getComponent("Renderer")).getRenderInfo().setShader(OceanGridShader.getInstance());
-		}
-		else
-		{
-			((Renderer) getComponent("Renderer")).getRenderInfo().setShader(shader);
-		}
 	}
 	
 	public void render()
@@ -127,7 +119,6 @@ public class Water extends GameObject{
 		CoreSystem.getInstance().getRenderEngine().setClipplane(getClipplane());
 			
 		//mirror scene to clipplane
-			
 		scenegraph.getWorldTransform().setScaling(1,-1,1);
 		
 		// TODO
@@ -212,7 +203,15 @@ public class Water extends GameObject{
 		
 		CoreSystem.getInstance().getRenderEngine().getDeferredFbo().bind();
 		
-		getComponents().get("Renderer").render();
+		if (CoreSystem.getInstance().getRenderEngine().isWireframe())
+		{
+			getComponents().get(Constants.WIREFRAME_RENDERINFO).render();
+		}
+		else
+		{
+			getComponents().get(Constants.MAIN_RENDERINFO).render();
+		}
+		
 		// glFinish() important, to prevent conflicts with following compute shaders
 		glFinish();
 		CoreSystem.getInstance().getRenderEngine().getDeferredFbo().unbind();

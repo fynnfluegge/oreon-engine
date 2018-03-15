@@ -19,9 +19,6 @@ import static org.lwjgl.opengl.GL20.GL_POINT_SPRITE;
 import static org.lwjgl.opengl.GL30.GL_FRAMEBUFFER_SRGB;
 import static org.lwjgl.opengl.GL32.GL_PROGRAM_POINT_SIZE;
 import static org.lwjgl.opengl.GL13.GL_MULTISAMPLE;
-
-import org.oreon.core.configs.RenderConfig;
-
 import static org.lwjgl.opengl.GL30.GL_CLIP_DISTANCE0;
 import static org.lwjgl.opengl.GL30.GL_CLIP_DISTANCE1;
 import static org.lwjgl.opengl.GL30.GL_CLIP_DISTANCE2;

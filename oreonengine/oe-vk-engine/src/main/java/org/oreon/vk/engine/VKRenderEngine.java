@@ -360,7 +360,7 @@ public class VKRenderEngine implements RenderEngine{
     }
 	
 	@Override
-	public boolean isGrid() {
+	public boolean isWireframe() {
 		// TODO Auto-generated method stub
 		return false;
 	}

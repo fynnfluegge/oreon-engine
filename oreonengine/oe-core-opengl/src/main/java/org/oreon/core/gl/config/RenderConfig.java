@@ -1,4 +1,4 @@
-package org.oreon.core.configs;
+package org.oreon.core.gl.config;
 
 public interface RenderConfig {
 

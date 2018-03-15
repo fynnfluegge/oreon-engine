@@ -4,7 +4,7 @@ import org.oreon.core.math.Transform;
 
 public abstract class Component{
 	
-	private GameObject parent;
+	private Renderable parent;
 	
 	public void update(){};
 	
@@ -12,11 +12,11 @@ public abstract class Component{
 	
 	public void render(){};
 	
-	public GameObject getParent() {
+	public Renderable getParent() {
 		return parent;
 	}
 
-	public void setParent(GameObject parent) {
+	public void setParent(Renderable parent) {
 		this.parent = parent;
 	}
 

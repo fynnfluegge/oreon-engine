@@ -71,6 +71,7 @@ public class CoreSystem {
 		// thread safety of instancing clusters.
 		// scenegraph sets isRunning to false, render-engine signals all
 		// waiting threads to shutdown
+		
 		scenegraph.shutdown();
 		renderEngine.shutdown();
 		

@@ -9,7 +9,7 @@ import org.oreon.core.gl.shaders.GLShader;
 import org.oreon.core.instancing.InstancingCluster;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.model.Material;
-import org.oreon.core.scene.GameObject;
+import org.oreon.core.scene.Renderable;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.Constants;
 import org.oreon.core.util.ResourceLoader;
@@ -52,7 +52,7 @@ private static TreeBillboardShader instance = null;
 		}
 	}
 	
-	public void updateUniforms(GameObject object){
+	public void updateUniforms(Renderable object){
 				
 		setUniform("clipplane", CoreSystem.getInstance().getRenderEngine().getClipplane());
 		bindUniformBlock("Camera",Constants.CameraUniformBlockBinding);

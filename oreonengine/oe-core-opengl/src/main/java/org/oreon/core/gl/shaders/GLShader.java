@@ -16,12 +16,11 @@ import org.oreon.core.math.Matrix4f;
 import org.oreon.core.math.Quaternion;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.math.Vec3f;
-import org.oreon.core.renderer.Shader;
-import org.oreon.core.scene.GameObject;
+import org.oreon.core.scene.Renderable;
 import org.oreon.core.texture.Texture;
 import org.oreon.core.util.BufferUtil;
 
-public abstract class GLShader implements Shader{
+public abstract class GLShader{
 
 	private int program;
 	private HashMap<String, Integer> uniforms;
@@ -43,7 +42,7 @@ public abstract class GLShader implements Shader{
 		glUseProgram(program);
 	}
 	
-	public void updateUniforms(GameObject object){};
+	public void updateUniforms(Renderable object){};
 	
 	public void updateUniforms(Matrix4f matrix0, Matrix4f matrix1, Matrix4f matrix2){};
 	

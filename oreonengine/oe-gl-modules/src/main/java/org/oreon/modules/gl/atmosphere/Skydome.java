@@ -2,15 +2,15 @@ package org.oreon.modules.gl.atmosphere;
 
 import org.oreon.core.gl.buffers.GLMeshVBO;
 import org.oreon.core.gl.config.CullFaceDisable;
+import org.oreon.core.gl.scene.GLRenderInfo;
 import org.oreon.core.model.AssimpStaticModelLoader;
 import org.oreon.core.model.Mesh;
-import org.oreon.core.renderer.RenderInfo;
-import org.oreon.core.renderer.Renderer;
-import org.oreon.core.scene.GameObject;
+import org.oreon.core.scene.Renderable;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.texture.ProceduralTexturing;
+import org.oreon.core.util.Constants;
 
-public class Skydome extends GameObject{
+public class Skydome extends Renderable{
 	
 	public Skydome()
 	{
@@ -18,9 +18,10 @@ public class Skydome extends GameObject{
 		ProceduralTexturing.dome(mesh);
 		GLMeshVBO meshBuffer = new GLMeshVBO();
 		meshBuffer.addData(mesh);
-		Renderer renderer = new Renderer(meshBuffer);
-		renderer.setRenderInfo(new RenderInfo(new CullFaceDisable(),AtmosphereShader.getInstance()));
-		addComponent("Renderer", renderer);
+		GLRenderInfo renderInfo = new GLRenderInfo(AtmosphereShader.getInstance(),
+												   new CullFaceDisable(),
+												   meshBuffer);
+		addComponent(Constants.MAIN_RENDERINFO, renderInfo);
 	}
 	
 	public void update()
@@ -34,7 +35,7 @@ public class Skydome extends GameObject{
 		if (CoreSystem.getInstance().getRenderEngine().isWaterRefraction() && !CoreSystem.getInstance().getRenderEngine().isCameraUnderWater()){
 			return;
 		}
-		if (CoreSystem.getInstance().getRenderEngine().isGrid()){
+		if (CoreSystem.getInstance().getRenderEngine().isWireframe()){
 			return;
 		}
 		else {

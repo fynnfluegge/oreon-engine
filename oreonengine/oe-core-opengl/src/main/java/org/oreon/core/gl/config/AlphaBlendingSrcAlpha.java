@@ -6,8 +6,6 @@ import static org.lwjgl.opengl.GL11.glBlendFunc;
 import static org.lwjgl.opengl.GL11.glDisable;
 import static org.lwjgl.opengl.GL11.glEnable;
 
-import org.oreon.core.configs.RenderConfig;
-
 public class AlphaBlendingSrcAlpha implements RenderConfig{
 	
 	public AlphaBlendingSrcAlpha(){

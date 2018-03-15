@@ -1,8 +1,8 @@
 package org.oreon.core.gl.surface;
 
-import org.oreon.core.configs.RenderConfig;
 import org.oreon.core.gl.buffers.GLMeshVBO;
 import org.oreon.core.gl.config.Default;
+import org.oreon.core.gl.config.RenderConfig;
 import org.oreon.core.gl.shaders.FullScreenQuadShader;
 import org.oreon.core.gl.shaders.GLShader;
 import org.oreon.core.math.Vec2f;

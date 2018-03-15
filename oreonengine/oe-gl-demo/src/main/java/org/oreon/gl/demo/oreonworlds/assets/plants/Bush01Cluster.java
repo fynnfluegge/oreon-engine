@@ -3,25 +3,17 @@ package org.oreon.gl.demo.oreonworlds.assets.plants;
 import java.nio.FloatBuffer;
 import java.util.List;
 
-import org.oreon.core.gl.buffers.GLMeshVBO;
 import org.oreon.core.gl.buffers.GLUBO;
-import org.oreon.core.instancing.InstancedDataObject;
 import org.oreon.core.instancing.InstancingCluster;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.math.Vec3f;
-import org.oreon.core.renderer.Renderer;
-import org.oreon.core.scene.GameObject;
-import org.oreon.core.scene.Node;
+import org.oreon.core.scene.Renderable;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.BufferUtil;
-import org.oreon.core.util.Constants;
-import org.oreon.core.util.IntegerReference;
-import org.oreon.gl.demo.oreonworlds.shaders.InstancingGridShader;
-import org.oreon.gl.demo.oreonworlds.shaders.assets.plants.BushShader;
 
 public class Bush01Cluster extends InstancingCluster{
 	
-	public Bush01Cluster(int instances, Vec3f pos,  List<InstancedDataObject> objects){
+	public Bush01Cluster(int instances, Vec3f pos,  List<Renderable> objects){
 		
 		setCenter(pos);
 		int buffersize = Float.BYTES * 16 * instances;
@@ -70,20 +62,7 @@ public class Bush01Cluster extends InstancingCluster{
 		getWorldMatricesBuffer().updateData(worldMatricesFloatBuffer, size);
 		getModelMatricesBuffer().updateData(modelMatricesFloatBuffer, size);
 		
-		for (InstancedDataObject dataObject : objects){
-			GameObject object = new GameObject();
-			GLMeshVBO vbo = new GLMeshVBO((GLMeshVBO) dataObject.getVbo());
-			vbo.setInstances(new IntegerReference(instances));
-			
-			Renderer renderer = new Renderer(vbo);
-			renderer.setRenderInfo(dataObject.getRenderInfo());
-			
-			Renderer shadowRenderer = new Renderer(vbo);
-			shadowRenderer.setRenderInfo(dataObject.getShadowRenderInfo());
-			
-			object.addComponent("Material", dataObject.getMaterial());
-			object.addComponent(Constants.RENDERER_COMPONENT, renderer);
-			object.addComponent(Constants.SHADOW_RENDERER_COMPONENT, shadowRenderer);
+		for (Renderable object : objects){
 			addChild(object);
 		}
 		
@@ -92,15 +71,15 @@ public class Bush01Cluster extends InstancingCluster{
 	public void update()
 	{	
 		super.update();
-		
-		if (CoreSystem.getInstance().getRenderEngine().isGrid()){
-			for (Node child : getChildren()){
-				((Renderer) ((GameObject) child).getComponent("Renderer")).getRenderInfo().setShader(InstancingGridShader.getInstance());
-			}
-		}
-		else{
-			((Renderer) ((GameObject) getChildren().get(0)).getComponent("Renderer")).getRenderInfo().setShader(BushShader.getInstance());
-			((Renderer) ((GameObject) getChildren().get(1)).getComponent("Renderer")).getRenderInfo().setShader(BushShader.getInstance());
-		}
+//		
+//		if (CoreSystem.getInstance().getRenderEngine().isGrid()){
+//			for (Node child : getChildren()){
+//				((Renderer) ((Renderable) child).getComponent("Renderer")).getRenderInfo().setShader(InstancingGridShader.getInstance());
+//			}
+//		}
+//		else{
+//			((Renderer) ((Renderable) getChildren().get(0)).getComponent("Renderer")).getRenderInfo().setShader(BushShader.getInstance());
+//			((Renderer) ((Renderable) getChildren().get(1)).getComponent("Renderer")).getRenderInfo().setShader(BushShader.getInstance());
+//		}
 	}
 }

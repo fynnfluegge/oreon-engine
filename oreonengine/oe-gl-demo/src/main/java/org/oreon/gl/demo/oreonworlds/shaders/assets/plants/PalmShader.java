@@ -6,7 +6,7 @@ import org.oreon.core.gl.shaders.GLShader;
 import org.oreon.core.instancing.InstancingCluster;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.model.Material;
-import org.oreon.core.scene.GameObject;
+import org.oreon.core.scene.Renderable;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.Constants;
 import org.oreon.core.util.ResourceLoader;
@@ -48,7 +48,7 @@ public class PalmShader extends GLShader{
 		}
 	}
 	
-	public void updateUniforms(GameObject object)
+	public void updateUniforms(Renderable object)
 	{
 		bindUniformBlock("Camera", Constants.CameraUniformBlockBinding);
 		setUniformi("isReflection", CoreSystem.getInstance().getRenderEngine().isWaterReflection() ? 1 : 0);
@@ -61,7 +61,7 @@ public class PalmShader extends GLShader{
 		setUniform("clipplane", CoreSystem.getInstance().getRenderEngine().getClipplane());
 		setUniform("scalingMatrix", new Matrix4f().Scaling(object.getWorldTransform().getScaling()));
 		
-		Material material = (Material) object.getComponent("Material");
+		Material material = (Material) object.getComponent(Constants.MATERIAL);
 		setUniform("material.color", material.getColor());
 //		setUniformf("material.emission", material.getEmission());
 //		setUniformf("material.shininess", material.getShininess());

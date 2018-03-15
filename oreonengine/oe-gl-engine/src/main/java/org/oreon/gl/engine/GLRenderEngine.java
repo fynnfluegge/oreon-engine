@@ -277,7 +277,7 @@ public class GLRenderEngine implements RenderEngine{
 			postProcessingTexture = sunlightScattering.getSunLightScatteringSceneTexture();
 		}
 		
-		if (isGrid()){
+		if (isWireframe()){
 			fullScreenQuadMultisample.setTexture(deferredRenderer.getGbuffer().getAlbedoTexture());
 			fullScreenQuadMultisample.render();
 		}
@@ -328,7 +328,7 @@ public class GLRenderEngine implements RenderEngine{
 	public void update() {
 		
 		if (CoreSystem.getInstance().getInput().isKeyPushed(GLFW.GLFW_KEY_G)){
-			if (isGrid())
+			if (isWireframe())
 				setGrid(false);
 			else
 				setGrid(true);
@@ -453,7 +453,7 @@ public class GLRenderEngine implements RenderEngine{
 		}
 	}
 	@Override
-	public boolean isGrid() {
+	public boolean isWireframe() {
 		return grid;
 	}
 	@Override

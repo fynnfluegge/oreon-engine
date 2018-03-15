@@ -8,7 +8,7 @@ import java.util.List;
 import org.oreon.core.gl.shaders.GLShader;
 import org.oreon.core.instancing.InstancingCluster;
 import org.oreon.core.model.Material;
-import org.oreon.core.scene.GameObject;
+import org.oreon.core.scene.Renderable;
 import org.oreon.core.util.Constants;
 import org.oreon.core.util.ResourceLoader;
 
@@ -45,7 +45,7 @@ public class PalmBillboardShadowShader extends GLShader{
 		}
 	}
 	
-	public void updateUniforms(GameObject object){
+	public void updateUniforms(Renderable object){
 		
 		bindUniformBlock("Camera",Constants.CameraUniformBlockBinding);
 		bindUniformBlock("LightViewProjections",Constants.LightMatricesUniformBlockBinding);
@@ -53,7 +53,7 @@ public class PalmBillboardShadowShader extends GLShader{
 		((InstancingCluster) object.getParent()).getWorldMatricesBuffer().bindBufferBase(0);
 		bindUniformBlock("InstancedMatrices", 0);
 		
-		Material material = (Material) object.getComponent("Material");
+		Material material = (Material) object.getComponent(Constants.MATERIAL);
 		
 		glActiveTexture(GL_TEXTURE0);
 		material.getDiffusemap().bind();

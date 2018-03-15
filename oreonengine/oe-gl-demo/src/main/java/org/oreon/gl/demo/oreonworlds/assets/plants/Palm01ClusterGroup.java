@@ -1,17 +1,21 @@
 package org.oreon.gl.demo.oreonworlds.assets.plants;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.oreon.core.gl.buffers.GLMeshVBO;
 import org.oreon.core.gl.config.CullFaceDisable;
+import org.oreon.core.gl.scene.GLRenderInfo;
 import org.oreon.core.gl.util.modelLoader.obj.OBJLoader;
-import org.oreon.core.instancing.InstancedDataObject;
 import org.oreon.core.instancing.InstancingCluster;
 import org.oreon.core.instancing.InstancingObject;
 import org.oreon.core.instancing.InstancingObjectHandler;
 import org.oreon.core.math.Vec3f;
 import org.oreon.core.model.Model;
 import org.oreon.core.model.Vertex;
-import org.oreon.core.renderer.RenderInfo;
+import org.oreon.core.scene.Renderable;
 import org.oreon.core.system.CoreSystem;
+import org.oreon.core.util.Constants;
 import org.oreon.gl.demo.oreonworlds.shaders.assets.plants.PalmBillboardShader;
 import org.oreon.gl.demo.oreonworlds.shaders.assets.plants.PalmBillboardShadowShader;
 import org.oreon.gl.demo.oreonworlds.shaders.assets.plants.PalmShader;
@@ -21,26 +25,30 @@ public class Palm01ClusterGroup extends InstancingObject{
 	
 	public Palm01ClusterGroup(){
 		
+		List<Renderable> objects = new ArrayList<>();
+		
 		Model[] models = new OBJLoader().load("oreonworlds/assets/plants/Palm_01","Palma 001.obj","Palma 001.mtl");
 		Model[] billboards = new OBJLoader().load("oreonworlds/assets/plants/Palm_01","billboardmodel.obj","billboardmodel.mtl");
 		
 		for (Model model : models){
 			
-			InstancedDataObject object = new InstancedDataObject();
 			GLMeshVBO meshBuffer = new GLMeshVBO();
 			model.getMesh().setTangentSpace(false);
 			model.getMesh().setInstanced(true);
 			meshBuffer.addData(model.getMesh());
 
-			object.setRenderInfo(new RenderInfo(new CullFaceDisable(), PalmShader.getInstance()));
-			object.setShadowRenderInfo(new RenderInfo(new CullFaceDisable(), PalmShadowShader.getInstance()));
-
-			object.setMaterial(model.getMaterial());
-			object.setVbo(meshBuffer);
-			getObjectData().add(object);
+			GLRenderInfo renderInfo = new GLRenderInfo(PalmShader.getInstance(), new CullFaceDisable(), meshBuffer);
+			GLRenderInfo shadowRenderInfo = new GLRenderInfo(PalmShadowShader.getInstance(), new CullFaceDisable(), meshBuffer);
+	
+			Renderable object = new Renderable();
+			object.addComponent(Constants.MAIN_RENDERINFO, renderInfo);
+			object.addComponent(Constants.SHADOW_RENDERINFO, shadowRenderInfo);
+			object.addComponent(Constants.MATERIAL, model.getMaterial());
+			objects.add(object);
 		}
+		
 		for (Model billboard : billboards){	
-			InstancedDataObject object = new InstancedDataObject();
+
 			GLMeshVBO meshBuffer = new GLMeshVBO();
 			billboard.getMesh().setTangentSpace(false);
 			billboard.getMesh().setInstanced(true);
@@ -53,16 +61,18 @@ public class Palm01ClusterGroup extends InstancingObject{
 			
 			meshBuffer.addData(billboard.getMesh());
 	
-			object.setRenderInfo(new RenderInfo(new CullFaceDisable(), PalmBillboardShader.getInstance()));
-			object.setShadowRenderInfo(new RenderInfo(new CullFaceDisable(), PalmBillboardShadowShader.getInstance()));
+			GLRenderInfo renderInfo = new GLRenderInfo(PalmBillboardShader.getInstance(), new CullFaceDisable(), meshBuffer);
+			GLRenderInfo shadowRenderInfo = new GLRenderInfo(PalmBillboardShadowShader.getInstance(), new CullFaceDisable(), meshBuffer);
 			
-			object.setMaterial(billboard.getMaterial());
-			object.setVbo(meshBuffer);
-			getObjectData().add(object);
+			Renderable object = new Renderable();
+			object.addComponent(Constants.MAIN_RENDERINFO, renderInfo);
+			object.addComponent(Constants.SHADOW_RENDERINFO, shadowRenderInfo);
+			object.addComponent(Constants.MATERIAL, billboard.getMaterial());
+			objects.add(object);
 		}
 	
-		addCluster(new Palm01Cluster(8,new Vec3f(-166,0,-826),getObjectData()));
-//		addCluster(new Palm01Cluster(8,new Vec3f(-290,0,-666),getObjectData()));
+		addCluster(new Palm01Cluster(8,new Vec3f(-166,0,-826),objects));
+		addCluster(new Palm01Cluster(8,new Vec3f(-290,0,-666),objects));
 //		addCluster(new Palm01Cluster(8,new Vec3f(-185,0,-850),getObjectData()));
 //		addCluster(new Palm01Cluster(8,new Vec3f(-314,0,-566),getObjectData()));
 //		addCluster(new Palm01Cluster(10,new Vec3f(-334,0,-667),getObjectData()));

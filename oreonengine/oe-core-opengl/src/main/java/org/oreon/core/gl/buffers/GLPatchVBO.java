@@ -16,7 +16,6 @@ import static org.lwjgl.opengl.GL30.glDeleteVertexArrays;
 import static org.lwjgl.opengl.GL40.GL_PATCH_VERTICES;
 import static org.lwjgl.opengl.GL40.glPatchParameteri;
 
-import org.oreon.core.buffers.VBO;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.math.Vec3f;
 import org.oreon.core.util.BufferUtil;

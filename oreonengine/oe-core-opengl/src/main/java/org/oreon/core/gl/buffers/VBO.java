@@ -1,4 +1,4 @@
-package org.oreon.core.buffers;
+package org.oreon.core.gl.buffers;
 
 /**
  * Vertex Array Object

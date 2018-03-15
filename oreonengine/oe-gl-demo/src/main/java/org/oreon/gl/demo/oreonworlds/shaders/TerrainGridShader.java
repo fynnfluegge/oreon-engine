@@ -5,7 +5,7 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import org.oreon.core.gl.shaders.GLShader;
 import org.oreon.core.math.Vec2f;
-import org.oreon.core.scene.GameObject;
+import org.oreon.core.scene.Renderable;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.Constants;
 import org.oreon.core.util.ResourceLoader;
@@ -71,7 +71,7 @@ private static TerrainGridShader instance = null;
 		addUniformBlock("Camera");
 	}
 	
-	public void updateUniforms(GameObject object)
+	public void updateUniforms(Renderable object)
 	{	
 		bindUniformBlock("Camera", Constants.CameraUniformBlockBinding);
 		

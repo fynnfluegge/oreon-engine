@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.oreon.core.gl.shaders.GLShader;
 import org.oreon.core.instancing.InstancingCluster;
-import org.oreon.core.scene.GameObject;
+import org.oreon.core.scene.Renderable;
 import org.oreon.core.util.Constants;
 import org.oreon.core.util.ResourceLoader;
 
@@ -40,7 +40,7 @@ public class RockShadowShader extends GLShader{
 		}
 	}
 	
-	public void updateUniforms(GameObject object){
+	public void updateUniforms(Renderable object){
 		
 		bindUniformBlock("Camera",Constants.CameraUniformBlockBinding);
 		bindUniformBlock("LightViewProjections",Constants.LightMatricesUniformBlockBinding);

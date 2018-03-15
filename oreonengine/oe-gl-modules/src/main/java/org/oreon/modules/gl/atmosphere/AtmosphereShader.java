@@ -1,7 +1,7 @@
 package org.oreon.modules.gl.atmosphere;
 
 import org.oreon.core.gl.shaders.GLShader;
-import org.oreon.core.scene.GameObject;
+import org.oreon.core.scene.Renderable;
 import org.oreon.core.util.ResourceLoader;
 
 public class AtmosphereShader extends GLShader{
@@ -29,7 +29,7 @@ public class AtmosphereShader extends GLShader{
 		addUniform("worldMatrix");
 	}
 		
-	public void updateUniforms(GameObject object)
+	public void updateUniforms(Renderable object)
 	{
 		setUniform("modelViewProjectionMatrix", object.getWorldTransform().getModelViewProjectionMatrix());
 		setUniform("worldMatrix", object.getWorldTransform().getWorldMatrix());

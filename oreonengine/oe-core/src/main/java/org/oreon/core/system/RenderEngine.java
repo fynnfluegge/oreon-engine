@@ -11,7 +11,7 @@ public interface RenderEngine {
 	public void update();
 	public void shutdown();
 	
-	public boolean isGrid();
+	public boolean isWireframe();
 	public boolean isCameraUnderWater();
 	public boolean isWaterReflection();
 	public boolean isWaterRefraction();

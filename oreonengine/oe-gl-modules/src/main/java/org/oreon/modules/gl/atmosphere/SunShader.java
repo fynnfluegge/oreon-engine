@@ -6,7 +6,7 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import org.oreon.core.gl.shaders.GLShader;
 import org.oreon.core.model.Material;
-import org.oreon.core.scene.GameObject;
+import org.oreon.core.scene.Renderable;
 import org.oreon.core.util.ResourceLoader;
 
 public class SunShader extends GLShader{
@@ -35,7 +35,7 @@ private static SunShader instance = null;
 		addUniform("sunTexture_small");
 	}
 		
-	public void updateUniforms(GameObject object)
+	public void updateUniforms(Renderable object)
 	{
 		setUniform("m_MVP", object.getWorldTransform().getModelViewProjectionMatrix());
 		

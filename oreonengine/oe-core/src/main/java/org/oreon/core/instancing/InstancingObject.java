@@ -7,7 +7,6 @@ import org.oreon.core.scene.Node;
 
 public abstract class InstancingObject extends Node implements Runnable{
 	
-	private List<InstancedDataObject> objectData = new ArrayList<InstancedDataObject>();
 	private List<InstancingCluster> clusters = new ArrayList<InstancingCluster>();
 	
 	private Thread thread;
@@ -15,14 +14,6 @@ public abstract class InstancingObject extends Node implements Runnable{
 	
 	public void shutdown() {
 		setRunning(false);
-	}
-	
-	public List<InstancedDataObject> getObjectData() {
-		return objectData;
-	}
-
-	public void setObjectData(List<InstancedDataObject> objectData) {
-		this.objectData = objectData;
 	}
 
 	public Thread getThread() {

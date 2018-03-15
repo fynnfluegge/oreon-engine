@@ -2,16 +2,15 @@ package org.oreon.modules.gl.terrain;
 
 import org.oreon.core.gl.buffers.GLPatchVBO;
 import org.oreon.core.gl.config.Default;
+import org.oreon.core.gl.scene.GLRenderInfo;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.math.Vec3f;
-import org.oreon.core.renderer.RenderInfo;
-import org.oreon.core.renderer.Renderer;
-import org.oreon.core.scene.GameObject;
+import org.oreon.core.scene.Renderable;
 import org.oreon.core.scene.Node;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.Constants;
 
-public class TerrainNode extends GameObject{
+public class TerrainNode extends Renderable{
 	
 	private GLPatchVBO buffer;
 	private boolean isleaf;
@@ -33,15 +32,16 @@ public class TerrainNode extends GameObject{
 		this.terrConfig = terrConfig;
 		this.gap = 1f/(TerrainQuadtree.getRootPatches() * (float)(Math.pow(2, lod)));
 
-		Renderer renderer = new Renderer(buffer);
-		renderer.setRenderInfo(new RenderInfo(new Default(),terrConfig.getShader()));
+		GLRenderInfo renderInfo = new GLRenderInfo(terrConfig.getShader(),
+												   new Default(),
+												   buffer);
 		
-		if (CoreSystem.getInstance().getRenderEngine().isGrid())
-			renderer.getRenderInfo().setShader(terrConfig.getGridShader());
-		else if (!CoreSystem.getInstance().getRenderEngine().isGrid())
-			renderer.getRenderInfo().setShader(terrConfig.getShader());
+		GLRenderInfo wireframeRenderInfo = new GLRenderInfo(terrConfig.getGridShader(),
+														    new Default(),
+														    buffer);
 		
-		addComponent(Constants.RENDERER_COMPONENT, renderer);
+		addComponent(Constants.MAIN_RENDERINFO, renderInfo);
+		addComponent(Constants.WIREFRAME_RENDERINFO, wireframeRenderInfo);
 		
 		Vec3f localScaling = new Vec3f(gap,0,gap);
 		Vec3f localTranslation = new Vec3f(location.getX(),0,location.getY());
@@ -63,11 +63,6 @@ public class TerrainNode extends GameObject{
 	
 	public void update()
 	{
-		if (CoreSystem.getInstance().getRenderEngine().isGrid())
-			((Renderer) getComponents().get(Constants.RENDERER_COMPONENT)).getRenderInfo().setShader(terrConfig.getGridShader());
-		else if (!CoreSystem.getInstance().getRenderEngine().isGrid())
-			((Renderer) getComponents().get(Constants.RENDERER_COMPONENT)).getRenderInfo().setShader(terrConfig.getShader());
-		
 		getWorldTransform().setScaling(getWorldTransform().getLocalScaling());
 		
 		for(Node child: getChildren())
@@ -78,7 +73,12 @@ public class TerrainNode extends GameObject{
 	{
 		if (isleaf)
 		{	
-			getComponents().get(Constants.RENDERER_COMPONENT).render();
+			if (CoreSystem.getInstance().getRenderEngine().isWireframe()){
+				getComponents().get(Constants.WIREFRAME_RENDERINFO).render();
+			}
+			else{
+				getComponents().get(Constants.MAIN_RENDERINFO).render();
+			}
 		}
 		for(Node child: getChildren())
 			child.render();
@@ -87,8 +87,8 @@ public class TerrainNode extends GameObject{
 	public void renderShadows()
 	{
 		if (isleaf){
-			if (getComponents().containsKey(Constants.SHADOW_RENDERER_COMPONENT)){
-				getComponents().get(Constants.SHADOW_RENDERER_COMPONENT).render();
+			if (getComponents().containsKey(Constants.SHADOW_RENDERINFO)){
+				getComponents().get(Constants.SHADOW_RENDERINFO).render();
 			}
 
 		}
