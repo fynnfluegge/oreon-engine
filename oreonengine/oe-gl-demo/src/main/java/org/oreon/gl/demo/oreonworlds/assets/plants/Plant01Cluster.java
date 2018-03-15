@@ -3,25 +3,17 @@ package org.oreon.gl.demo.oreonworlds.assets.plants;
 import java.nio.FloatBuffer;
 import java.util.List;
 
-import org.oreon.core.gl.buffers.GLMeshVBO;
 import org.oreon.core.gl.buffers.GLUBO;
-import org.oreon.core.instancing.InstancedDataObject;
 import org.oreon.core.instancing.InstancingCluster;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.math.Vec3f;
-import org.oreon.core.renderer.Renderer;
 import org.oreon.core.scene.Renderable;
-import org.oreon.core.scene.Node;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.BufferUtil;
-import org.oreon.core.util.Constants;
-import org.oreon.core.util.IntegerReference;
-import org.oreon.gl.demo.oreonworlds.shaders.InstancingGridShader;
-import org.oreon.gl.demo.oreonworlds.shaders.assets.plants.GrassShader;
 
 public class Plant01Cluster extends InstancingCluster{
 
-	public Plant01Cluster(int instances, Vec3f pos, List<InstancedDataObject> objects){
+	public Plant01Cluster(int instances, Vec3f pos, List<Renderable> objects){
 		
 		setCenter(pos);
 		int buffersize = Float.BYTES * 16 * instances;
@@ -67,35 +59,8 @@ public class Plant01Cluster extends InstancingCluster{
 		getWorldMatricesBuffer().updateData(worldMatricesFloatBuffer, size);
 		getModelMatricesBuffer().updateData(modelMatricesFloatBuffer, size);
 		
-		for (InstancedDataObject dataObject : objects){
-			Renderable object = new Renderable();
-			GLMeshVBO vbo = new GLMeshVBO((GLMeshVBO) dataObject.getVbo());
-			vbo.setInstances(new IntegerReference(instances));
-			
-			Renderer renderer = new Renderer(vbo);
-			renderer.setRenderInfo(dataObject.getRenderInfo());
-			
-			Renderer shadowRenderer = new Renderer(vbo);
-			shadowRenderer.setRenderInfo(dataObject.getShadowRenderInfo());
-			
-			object.addComponent("Material", dataObject.getMaterial());
-			object.addComponent(Constants.MAIN_RENDERINFO, renderer);
-			object.addComponent(Constants.SHADOW_RENDERINFO, shadowRenderer);
+		for (Renderable object : objects){
 			addChild(object);
-		}
-	}
-	
-	public void update()
-	{	
-		if (CoreSystem.getInstance().getRenderEngine().isWireframe()){
-			for (Node child : getChildren()){
-				((Renderer) ((Renderable) child).getComponent("Renderer")).getRenderInfo().setShader(InstancingGridShader.getInstance());
-				((Renderer) ((Renderable) child).getComponent("Renderer")).getRenderInfo().setShader(InstancingGridShader.getInstance());
-			}
-		}
-		else{
-			((Renderer) ((Renderable) getChildren().get(0)).getComponent("Renderer")).getRenderInfo().setShader(GrassShader.getInstance());
-			((Renderer) ((Renderable) getChildren().get(0)).getComponent("Renderer")).getRenderInfo().setShader(GrassShader.getInstance());
 		}
 	}
 	

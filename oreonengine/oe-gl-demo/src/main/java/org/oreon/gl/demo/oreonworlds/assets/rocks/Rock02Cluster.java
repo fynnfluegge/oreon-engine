@@ -3,25 +3,17 @@ package org.oreon.gl.demo.oreonworlds.assets.rocks;
 import java.nio.FloatBuffer;
 import java.util.List;
 
-import org.oreon.core.gl.buffers.GLMeshVBO;
 import org.oreon.core.gl.buffers.GLUBO;
-import org.oreon.core.instancing.InstancedDataObject;
 import org.oreon.core.instancing.InstancingCluster;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.math.Vec3f;
-import org.oreon.core.renderer.Renderer;
 import org.oreon.core.scene.Renderable;
-import org.oreon.core.scene.Node;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.BufferUtil;
-import org.oreon.core.util.Constants;
-import org.oreon.core.util.IntegerReference;
-import org.oreon.gl.demo.oreonworlds.shaders.InstancingGridShader;
-import org.oreon.gl.demo.oreonworlds.shaders.assets.rocks.RockHighPolyShader;
 
 public class Rock02Cluster extends InstancingCluster{
 	
-	public Rock02Cluster(int instances, Vec3f pos, List<InstancedDataObject> objects) {
+	public Rock02Cluster(int instances, Vec3f pos, List<Renderable> objects) {
 		
 		setCenter(pos);
 		int buffersize = Float.BYTES * 16 * instances;
@@ -70,33 +62,8 @@ public class Rock02Cluster extends InstancingCluster{
 		getWorldMatricesBuffer().updateData(worldMatricesFloatBuffer, size);
 		getModelMatricesBuffer().updateData(modelMatricesFloatBuffer, size);
 		
-		for (InstancedDataObject dataObject : objects){
-			Renderable object = new Renderable();
-			GLMeshVBO vao = new GLMeshVBO((GLMeshVBO) dataObject.getVbo());
-			vao.setInstances(new IntegerReference(instances));
-			
-			Renderer renderer = new Renderer(vao);
-			renderer.setRenderInfo(dataObject.getRenderInfo());
-			
-			Renderer shadowRenderer = new Renderer(vao);
-			shadowRenderer.setRenderInfo(dataObject.getShadowRenderInfo());
-			
-			object.addComponent("Material", dataObject.getMaterial());
-			object.addComponent(Constants.MAIN_RENDERINFO, renderer);
-			object.addComponent(Constants.SHADOW_RENDERINFO, shadowRenderer);
+		for (Renderable object : objects){
 			addChild(object);
-		}
-	}
-	
-	public void update()
-	{	
-		if (CoreSystem.getInstance().getRenderEngine().isWireframe()){
-			for (Node child : getChildren()){
-				((Renderer) ((Renderable) child).getComponent("Renderer")).getRenderInfo().setShader(InstancingGridShader.getInstance());
-			}
-		}
-		else{
-			((Renderer) ((Renderable) getChildren().get(0)).getComponent("Renderer")).getRenderInfo().setShader(RockHighPolyShader.getInstance());
 		}
 	}
 	

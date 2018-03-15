@@ -1,18 +1,21 @@
 package org.oreon.gl.demo.oreonworlds.assets.plants;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.oreon.core.gl.buffers.GLMeshVBO;
 import org.oreon.core.gl.config.CullFaceDisable;
-import org.oreon.core.gl.config.Default;
+import org.oreon.core.gl.scene.GLRenderInfo;
 import org.oreon.core.gl.util.modelLoader.obj.OBJLoader;
-import org.oreon.core.instancing.InstancedDataObject;
 import org.oreon.core.instancing.InstancingCluster;
 import org.oreon.core.instancing.InstancingObject;
 import org.oreon.core.instancing.InstancingObjectHandler;
 import org.oreon.core.math.Vec3f;
 import org.oreon.core.model.Model;
 import org.oreon.core.model.Vertex;
-import org.oreon.core.renderer.RenderInfo;
+import org.oreon.core.scene.Renderable;
 import org.oreon.core.system.CoreSystem;
+import org.oreon.core.util.Constants;
 import org.oreon.core.util.Util;
 import org.oreon.gl.demo.oreonworlds.shaders.assets.plants.TreeBillboardShader;
 import org.oreon.gl.demo.oreonworlds.shaders.assets.plants.TreeBillboardShadowShader;
@@ -27,9 +30,10 @@ public class Tree02ClusterGroup extends InstancingObject{
 		Model[] models = new OBJLoader().load("oreonworlds/assets/plants/Tree_02","tree02.obj","tree02.mtl");
 		Model[] billboards = new OBJLoader().load("oreonworlds/assets/plants/Tree_02","billboardmodel.obj","billboardmodel.mtl");
 		
+		List<Renderable> objects = new ArrayList<>();
+		
 		for (Model model : models){
 			
-			InstancedDataObject object = new InstancedDataObject();
 			GLMeshVBO meshBuffer = new GLMeshVBO();
 			
 			if (model.equals(models[0])){
@@ -47,22 +51,27 @@ public class Tree02ClusterGroup extends InstancingObject{
 			
 			meshBuffer.addData(model.getMesh());
 
+			GLRenderInfo renderInfo;
+			GLRenderInfo shadowRenderInfo;
+			
 			if (model.equals(models[0])){
-				object.setRenderInfo(new RenderInfo(new Default(), TreeTrunkShader.getInstance()));
-				object.setShadowRenderInfo(new RenderInfo(new Default(), TreeShadowShader.getInstance()));
+				renderInfo = new GLRenderInfo(TreeTrunkShader.getInstance(), new CullFaceDisable(), meshBuffer);
+				shadowRenderInfo = new GLRenderInfo(TreeShadowShader.getInstance(), new CullFaceDisable(), meshBuffer);
 			}
 			else{
-				object.setRenderInfo(new RenderInfo(new Default(), TreeLeavesShader.getInstance()));
-				object.setShadowRenderInfo(new RenderInfo(new Default(), TreeShadowShader.getInstance()));
+				renderInfo = new GLRenderInfo(TreeLeavesShader.getInstance(), new CullFaceDisable(), meshBuffer);
+				shadowRenderInfo = new GLRenderInfo(TreeShadowShader.getInstance(), new CullFaceDisable(), meshBuffer);
 			}
-				
-			object.setMaterial(model.getMaterial());
-			object.setVbo(meshBuffer);
-			getObjectData().add(object);
+			
+			Renderable object = new Renderable();
+			object.addComponent(Constants.MAIN_RENDERINFO, renderInfo);
+			object.addComponent(Constants.SHADOW_RENDERINFO, shadowRenderInfo);
+			object.addComponent(Constants.MATERIAL, model.getMaterial());
+			objects.add(object);
 		}
 		
 		for (Model billboard : billboards){	
-			InstancedDataObject object = new InstancedDataObject();
+
 			GLMeshVBO meshBuffer = new GLMeshVBO();
 			
 			billboard.getMesh().setTangentSpace(false);
@@ -77,28 +86,30 @@ public class Tree02ClusterGroup extends InstancingObject{
 			
 			meshBuffer.addData(billboard.getMesh());
 	
-			object.setRenderInfo(new RenderInfo(new CullFaceDisable(), TreeBillboardShader.getInstance()));
-			object.setShadowRenderInfo(new RenderInfo(new CullFaceDisable(), TreeBillboardShadowShader.getInstance()));
+			GLRenderInfo renderInfo = new GLRenderInfo(TreeBillboardShader.getInstance(), new CullFaceDisable(), meshBuffer);
+			GLRenderInfo shadowRenderInfo = new GLRenderInfo(TreeBillboardShadowShader.getInstance(), new CullFaceDisable(), meshBuffer);
 			
-			object.setMaterial(billboard.getMaterial());
-			object.setVbo(meshBuffer);
-			getObjectData().add(object);
+			Renderable object = new Renderable();
+			object.addComponent(Constants.MAIN_RENDERINFO, renderInfo);
+			object.addComponent(Constants.SHADOW_RENDERINFO, shadowRenderInfo);
+			object.addComponent(Constants.MATERIAL, billboard.getMaterial());
+			objects.add(object);
 		}
 	
-		addCluster(new Tree02Cluster(6,new Vec3f(-528,0,874),getObjectData()));
-		addCluster(new Tree02Cluster(6,new Vec3f(-696,0,932),getObjectData()));
-		addCluster(new Tree02Cluster(6,new Vec3f(-765,0,976),getObjectData()));
-		addCluster(new Tree02Cluster(6,new Vec3f(-820,0,1035),getObjectData()));
-		addCluster(new Tree02Cluster(6,new Vec3f(-595,0,624),getObjectData()));
-		addCluster(new Tree02Cluster(6,new Vec3f(-462,0,597),getObjectData()));
-		addCluster(new Tree02Cluster(6,new Vec3f(-525,0,704),getObjectData()));
-		addCluster(new Tree02Cluster(6,new Vec3f(-552,0,788),getObjectData()));
-		addCluster(new Tree02Cluster(6,new Vec3f(-608,0,712),getObjectData()));
-		addCluster(new Tree02Cluster(6,new Vec3f(-568,0,894),getObjectData()));
-		addCluster(new Tree02Cluster(6,new Vec3f(-593,0,954),getObjectData()));
-		addCluster(new Tree02Cluster(6,new Vec3f(-663,0,665),getObjectData()));
-		addCluster(new Tree02Cluster(6,new Vec3f(-728,0,654),getObjectData()));
-		addCluster(new Tree02Cluster(6,new Vec3f(-706,0,1103),getObjectData()));
+		addCluster(new Tree02Cluster(6,new Vec3f(-528,0,874),objects));
+		addCluster(new Tree02Cluster(6,new Vec3f(-696,0,932),objects));
+		addCluster(new Tree02Cluster(6,new Vec3f(-765,0,976),objects));
+		addCluster(new Tree02Cluster(6,new Vec3f(-820,0,1035),objects));
+		addCluster(new Tree02Cluster(6,new Vec3f(-595,0,624),objects));
+		addCluster(new Tree02Cluster(6,new Vec3f(-462,0,597),objects));
+		addCluster(new Tree02Cluster(6,new Vec3f(-525,0,704),objects));
+		addCluster(new Tree02Cluster(6,new Vec3f(-552,0,788),objects));
+		addCluster(new Tree02Cluster(6,new Vec3f(-608,0,712),objects));
+		addCluster(new Tree02Cluster(6,new Vec3f(-568,0,894),objects));
+		addCluster(new Tree02Cluster(6,new Vec3f(-593,0,954),objects));
+		addCluster(new Tree02Cluster(6,new Vec3f(-663,0,665),objects));
+		addCluster(new Tree02Cluster(6,new Vec3f(-728,0,654),objects));
+		addCluster(new Tree02Cluster(6,new Vec3f(-706,0,1103),objects));
 		
 		setThread(new Thread(this));
 		getThread().start();

@@ -5,25 +5,19 @@ import java.util.List;
 
 import org.oreon.core.gl.buffers.GLMeshVBO;
 import org.oreon.core.gl.buffers.GLUBO;
-import org.oreon.core.instancing.InstancedDataObject;
+import org.oreon.core.gl.scene.GLRenderInfo;
 import org.oreon.core.instancing.InstancingCluster;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.math.Vec3f;
-import org.oreon.core.renderer.Renderer;
 import org.oreon.core.scene.Renderable;
-import org.oreon.core.scene.Node;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.BufferUtil;
 import org.oreon.core.util.Constants;
 import org.oreon.core.util.IntegerReference;
-import org.oreon.gl.demo.oreonworlds.shaders.InstancingGridShader;
-import org.oreon.gl.demo.oreonworlds.shaders.assets.plants.TreeBillboardShader;
-import org.oreon.gl.demo.oreonworlds.shaders.assets.plants.TreeLeavesShader;
-import org.oreon.gl.demo.oreonworlds.shaders.assets.plants.TreeTrunkShader;
 
 public class Tree02Cluster extends InstancingCluster{
 
-	public Tree02Cluster(int instances, Vec3f pos, List<InstancedDataObject> objects){
+	public Tree02Cluster(int instances, Vec3f pos, List<Renderable> objects){
 		
 		setCenter(pos);
 		setHighPolyInstances(new IntegerReference(0));
@@ -74,28 +68,13 @@ public class Tree02Cluster extends InstancingCluster{
 		getWorldMatricesBuffer().updateData(worldMatricesFloatBuffer, size);
 		getModelMatricesBuffer().updateData(modelMatricesFloatBuffer, size);
 		
-		for (InstancedDataObject dataObject : objects){
-			Renderable object = new Renderable();
-			GLMeshVBO vbo = new GLMeshVBO((GLMeshVBO) dataObject.getVbo());
-			vbo.setInstances(new IntegerReference(instances));
-			
-			Renderer renderer = new Renderer(vbo);
-			renderer.setRenderInfo(dataObject.getRenderInfo());
-			
-			Renderer shadowRenderer = new Renderer(vbo);
-			shadowRenderer.setRenderInfo(dataObject.getShadowRenderInfo());
-			
-			object.addComponent("Material", dataObject.getMaterial());
-			object.addComponent(Constants.MAIN_RENDERINFO, renderer);
-			object.addComponent(Constants.SHADOW_RENDERINFO, shadowRenderer);
-
+		for (Renderable object : objects){
 			addChild(object);
 		}
 		
-		((GLMeshVBO) ((Renderer) ((Renderable) getChildren().get(0)).getComponent("Renderer")).getVbo()).setInstances(getHighPolyInstances());
-		((GLMeshVBO) ((Renderer) ((Renderable) getChildren().get(1)).getComponent("Renderer")).getVbo()).setInstances(getHighPolyInstances());
-		
-		((GLMeshVBO) ((Renderer) ((Renderable) getChildren().get(2)).getComponent("Renderer")).getVbo()).setInstances(getLowPolyInstances());
+		((GLMeshVBO) ((GLRenderInfo) ((Renderable) getChildren().get(0)).getComponent(Constants.MAIN_RENDERINFO)).getVbo()).setInstances(getHighPolyInstances());
+		((GLMeshVBO) ((GLRenderInfo) ((Renderable) getChildren().get(1)).getComponent(Constants.MAIN_RENDERINFO)).getVbo()).setInstances(getHighPolyInstances());
+		((GLMeshVBO) ((GLRenderInfo) ((Renderable) getChildren().get(2)).getComponent(Constants.MAIN_RENDERINFO)).getVbo()).setInstances(getLowPolyInstances());
 	}
 	
 	@Override
@@ -113,22 +92,6 @@ public class Tree02Cluster extends InstancingCluster{
 			index++;
 		}
 		getHighPolyInstances().setValue(getHighPolyIndices().size());
-	}
-
-	public void update()
-	{	
-		super.update();
-		
-		if (CoreSystem.getInstance().getRenderEngine().isWireframe()){
-			for (Node child : getChildren()){
-				((Renderer) ((Renderable) child).getComponent("Renderer")).getRenderInfo().setShader(InstancingGridShader.getInstance());
-			}
-		}
-		else{
-			((Renderer) ((Renderable) getChildren().get(0)).getComponent("Renderer")).getRenderInfo().setShader(TreeTrunkShader.getInstance());
-			((Renderer) ((Renderable) getChildren().get(1)).getComponent("Renderer")).getRenderInfo().setShader(TreeLeavesShader.getInstance());
-			((Renderer) ((Renderable) getChildren().get(2)).getComponent("Renderer")).getRenderInfo().setShader(TreeBillboardShader.getInstance());
-		}
 	}
 	
 	public void renderShadows(){
