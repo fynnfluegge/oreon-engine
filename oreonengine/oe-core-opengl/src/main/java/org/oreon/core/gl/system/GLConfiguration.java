@@ -14,6 +14,10 @@ public class GLConfiguration {
 	
 	public Texture sceneDepthMap;
 	public Framebuffer deferredFbo;
+
+	public Texture underwaterDudvMap;
+	public Texture underwaterCausticsMap;
+	public float underwaterDistortion;
 	
 	public static GLConfiguration getInstance(){
 		

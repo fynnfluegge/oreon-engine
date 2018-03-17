@@ -6,6 +6,7 @@ import org.oreon.core.platform.GLFWInput;
 import org.oreon.core.platform.Window;
 import org.oreon.core.system.CoreEngine;
 import org.oreon.core.system.CoreSystem;
+import org.oreon.gl.demo.oreonworlds.assets.plants.Palm01ClusterGroup;
 import org.oreon.gl.demo.oreonworlds.gui.GUI;
 import org.oreon.gl.demo.oreonworlds.shaders.TerrainWireframeShader;
 import org.oreon.gl.demo.oreonworlds.shaders.TerrainShader;
@@ -48,7 +49,7 @@ public class Main {
 		
 		coreSystem.getScenegraph().addObject(new SkySphere());	
 		coreSystem.getScenegraph().addTransparentObject(new Sun());
-		coreSystem.getScenegraph().setWater(new Ocean());
+//		coreSystem.getScenegraph().setWater(new Ocean());
 		
 //		coreSystem.getScenegraph().getRoot().addChild(new Bush01ClusterGroup());
 //		coreSystem.getScenegraph().getRoot().addChild(new Palm01ClusterGroup());

@@ -9,16 +9,15 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 import java.util.List;
 
 import org.oreon.core.gl.shaders.GLShader;
+import org.oreon.core.gl.system.GLConfiguration;
 import org.oreon.core.instanced.InstancedCluster;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.model.Material;
 import org.oreon.core.scenegraph.ComponentType;
 import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.system.CommonConfig;
-import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.Constants;
 import org.oreon.core.util.ResourceLoader;
-import org.oreon.modules.gl.water.UnderWater;
 
 public class RockHighPolyShader extends GLShader{
 
@@ -95,16 +94,13 @@ public class RockHighPolyShader extends GLShader{
 		setUniformf("material.shininess", material.getShininess());
 		setUniformf("material.emission", material.getEmission());
 		
-		UnderWater underwater = (UnderWater) CoreSystem.getInstance().getRenderEngine().getUnderwater();
-		
 		glActiveTexture(GL_TEXTURE2);
-		underwater.getCausticsMap().bind();
+		GLConfiguration.getInstance().getUnderwaterCausticsMap().bind();
 		setUniformi("caustics", 2);
 		glActiveTexture(GL_TEXTURE3);
-		underwater.getDudvMap().bind();
+		GLConfiguration.getInstance().getUnderwaterDudvMap().bind();
 		setUniformi("dudvCaustics", 3);
-		
-		setUniformf("distortionCaustics", underwater.getDistortion());
+		setUniformf("distortionCaustics", GLConfiguration.getInstance().getUnderwaterDistortion());
 		
 		List<Integer> indices = ((InstancedCluster) object.getParent()).getHighPolyIndices();
 		

@@ -7,15 +7,14 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE3;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import org.oreon.core.gl.shaders.GLShader;
+import org.oreon.core.gl.system.GLConfiguration;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.system.CommonConfig;
-import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.Constants;
 import org.oreon.core.util.ResourceLoader;
 import org.oreon.modules.gl.terrain.TerrainConfiguration;
 import org.oreon.modules.gl.terrain.TerrainNode;
-import org.oreon.modules.gl.water.UnderWater;
 
 public class TerrainShader extends GLShader{
 	
@@ -124,16 +123,13 @@ public class TerrainShader extends GLShader{
 		setUniform("location", location);
 		setUniformi("waterReflectionShift", terrConfig.getWaterReflectionShift());
 		
-		UnderWater underwater = (UnderWater) CoreSystem.getInstance().getRenderEngine().getUnderwater();
-		
 		glActiveTexture(GL_TEXTURE2);
-		underwater.getCausticsMap().bind();
+		GLConfiguration.getInstance().getUnderwaterCausticsMap().bind();
 		setUniformi("caustics", 2);
 		glActiveTexture(GL_TEXTURE3);
-		underwater.getDudvMap().bind();
+		GLConfiguration.getInstance().getUnderwaterDudvMap().bind();
 		setUniformi("dudvCaustics", 3);
-		
-		setUniformf("distortionCaustics", underwater.getDistortion());
+		setUniformf("distortionCaustics", GLConfiguration.getInstance().getUnderwaterDistortion());
 		
 		for (int i=0; i<8; i++){
 			setUniformi("lod_morph_area[" + i + "]", terrConfig.getLod_morphing_area()[i]);

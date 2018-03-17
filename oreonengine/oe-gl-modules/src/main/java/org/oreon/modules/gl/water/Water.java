@@ -8,6 +8,7 @@ import org.oreon.core.gl.buffers.GLPatchVBO;
 import org.oreon.core.gl.config.WaterConfig;
 import org.oreon.core.gl.scenegraph.GLRenderInfo;
 import org.oreon.core.gl.shaders.GLShader;
+import org.oreon.core.gl.system.GLConfiguration;
 import org.oreon.core.gl.texture.Texture2D;
 import org.oreon.core.math.Quaternion;
 import org.oreon.core.math.Vec2f;
@@ -203,7 +204,7 @@ public class Water extends Renderable{
 		fft.render();
 		normalmapRenderer.render(fft.getDy());
 		
-		CoreSystem.getInstance().getRenderEngine().getDeferredFbo().bind();
+		GLConfiguration.getInstance().getDeferredFbo().bind();
 		
 		if (CommonConfig.getInstance().isWireframe())
 		{
@@ -216,7 +217,7 @@ public class Water extends Renderable{
 		
 		// glFinish() important, to prevent conflicts with following compute shaders
 		glFinish();
-		CoreSystem.getInstance().getRenderEngine().getDeferredFbo().unbind();
+		GLConfiguration.getInstance().getDeferredFbo().unbind();
 	}
 		
 	public void loadSettingsFile(String file)

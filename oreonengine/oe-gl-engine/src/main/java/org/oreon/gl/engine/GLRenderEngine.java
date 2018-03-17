@@ -53,7 +53,7 @@ import org.oreon.modules.gl.postprocessfilter.lightscattering.SunLightScattering
 import org.oreon.modules.gl.postprocessfilter.motionblur.MotionBlur;
 import org.oreon.modules.gl.postprocessfilter.ssao.SSAO;
 import org.oreon.modules.gl.terrain.GLTerrain;
-import org.oreon.modules.gl.water.UnderWater;
+import org.oreon.modules.gl.water.UnderWaterRenderer;
 
 import lombok.Setter;
 
@@ -74,7 +74,7 @@ public class GLRenderEngine implements RenderEngine{
 	private Texture2D finalLightScatteringMask;
 	private Texture2D postProcessingTexture;
 	
-	private DeferredLightingRenderer deferredRenderer;
+	private DeferredLightingRenderer deferredLightingRenderer;
 	private TransparencyBlendRenderer transparencyBlendRenderer;
 	private TransparencyLayer transparencyLayer;
 	
@@ -90,7 +90,7 @@ public class GLRenderEngine implements RenderEngine{
 	private SunLightScattering sunlightScattering;
 	private LensFlare lensFlare;
 	private SSAO ssao;
-	private UnderWater underWater;
+	private UnderWaterRenderer underWaterRenderer;
 	private ContrastController contrastController;
 
 	private boolean renderAlbedoBuffer = false;
@@ -132,7 +132,7 @@ public class GLRenderEngine implements RenderEngine{
 		msaa = new MSAA();
 		fxaa = new FXAA();
 		
-		deferredRenderer = new DeferredLightingRenderer(window.getWidth(), window.getHeight());
+		deferredLightingRenderer = new DeferredLightingRenderer(window.getWidth(), window.getHeight());
 		transparencyLayer = new TransparencyLayer(window.getWidth(), window.getHeight());
 		transparencyBlendRenderer = new TransparencyBlendRenderer();
 		
@@ -142,7 +142,7 @@ public class GLRenderEngine implements RenderEngine{
 		sunlightScattering = new SunLightScattering();
 		lensFlare = new LensFlare();
 		ssao = new SSAO(window.getWidth(),window.getHeight());
-		underWater = new UnderWater();
+		underWaterRenderer = new UnderWaterRenderer();
 		contrastController = new ContrastController();
 		
 		deferredLightScatteringMask = new Texture2D();
@@ -183,6 +183,7 @@ public class GLRenderEngine implements RenderEngine{
 		GLDirectionalLight.getInstance().update();
 
 		CommonConfig.getInstance().setClipplane(Constants.PLANE0);
+		GLConfiguration.getInstance().setSceneDepthMap(sceneDepthmap);
 		Default.clearScreen();
 		
 		//render shadow maps
@@ -196,19 +197,19 @@ public class GLRenderEngine implements RenderEngine{
 		shadowMaps.getFBO().unbind();
 		
 		// deferred scene lighting - opaque objects
-		deferredRenderer.getFbo().bind();
+		deferredLightingRenderer.getFbo().bind();
 		Default.clearScreen();
 		CoreSystem.getInstance().getScenegraph().render();
-		deferredRenderer.getFbo().unbind();
+		deferredLightingRenderer.getFbo().unbind();
 		
-		ssao.render(deferredRenderer.getGbuffer().getWorldPositionTexture(),
-					deferredRenderer.getGbuffer().getNormalTexture());
+		ssao.render(deferredLightingRenderer.getGbuffer().getWorldPositionTexture(),
+					deferredLightingRenderer.getGbuffer().getNormalTexture());
 		
-		msaa.renderSampleCoverageMask(deferredRenderer.getGbuffer().getWorldPositionTexture(),
-									  deferredRenderer.getGbuffer().getLightScatteringMask(),
+		msaa.renderSampleCoverageMask(deferredLightingRenderer.getGbuffer().getWorldPositionTexture(),
+									  deferredLightingRenderer.getGbuffer().getLightScatteringMask(),
 									  deferredLightScatteringMask);
 		
-		deferredRenderer.render(msaa.getSampleCoverageMask(),
+		deferredLightingRenderer.render(msaa.getSampleCoverageMask(),
 							    ssao.getSsaoBlurSceneTexture(),
 							    shadowMaps.getDepthMaps(),
 							    renderSSAO);
@@ -221,8 +222,8 @@ public class GLRenderEngine implements RenderEngine{
 		
 		// blend scene/transparent layers
 		finalSceneFbo.bind();
-		transparencyBlendRenderer.render(deferredRenderer.getDeferredLightingSceneTexture(), 
-										 deferredRenderer.getGbuffer().getDepthTexture(),
+		transparencyBlendRenderer.render(deferredLightingRenderer.getDeferredLightingSceneTexture(), 
+										 deferredLightingRenderer.getGbuffer().getDepthTexture(),
 										 deferredLightScatteringMask,
 										 transparencyLayer.getGbuffer().getAlbedoTexture(),
 										 transparencyLayer.getGbuffer().getDepthTexture(),
@@ -241,7 +242,7 @@ public class GLRenderEngine implements RenderEngine{
 		}
 
 		postProcessingTexture = new Texture2D(finalSceneTexture);
-		sceneDepthmap = deferredRenderer.getGbuffer().getDepthTexture();
+		sceneDepthmap = deferredLightingRenderer.getGbuffer().getDepthTexture();
 		
 		boolean doMotionBlur = CoreSystem.getInstance().getScenegraph().getCamera().getPreviousPosition().sub(
 							   CoreSystem.getInstance().getScenegraph().getCamera().getPosition()).length() > 0.04f ||
@@ -256,13 +257,13 @@ public class GLRenderEngine implements RenderEngine{
 			
 		if (renderPostProcessingEffects){
 			// Depth of Field Blur			
-			dofBlur.render(deferredRenderer.getGbuffer().getDepthTexture(), finalLightScatteringMask, postProcessingTexture, window.getWidth(), window.getHeight());
+			dofBlur.render(deferredLightingRenderer.getGbuffer().getDepthTexture(), finalLightScatteringMask, postProcessingTexture, window.getWidth(), window.getHeight());
 			postProcessingTexture = dofBlur.getVerticalBlurSceneTexture();
 			
 			// post processing effects
 			if (CommonConfig.getInstance().isUnderwater()){
-				underWater.render(postProcessingTexture, deferredRenderer.getGbuffer().getDepthTexture());
-				postProcessingTexture = underWater.getUnderwaterSceneTexture();
+				underWaterRenderer.render(postProcessingTexture, deferredLightingRenderer.getGbuffer().getDepthTexture());
+				postProcessingTexture = underWaterRenderer.getUnderwaterSceneTexture();
 			}
 			
 			// Bloom
@@ -271,7 +272,7 @@ public class GLRenderEngine implements RenderEngine{
 			
 			// Motion Blur
 			if (doMotionBlur){
-				motionBlur.render(deferredRenderer.getGbuffer().getDepthTexture(), postProcessingTexture);
+				motionBlur.render(deferredLightingRenderer.getGbuffer().getDepthTexture(), postProcessingTexture);
 				postProcessingTexture = motionBlur.getMotionBlurSceneTexture();
 			}
 			
@@ -280,19 +281,19 @@ public class GLRenderEngine implements RenderEngine{
 		}
 		
 		if (CommonConfig.getInstance().isWireframe()){
-			fullScreenQuadMultisample.setTexture(deferredRenderer.getGbuffer().getAlbedoTexture());
+			fullScreenQuadMultisample.setTexture(deferredLightingRenderer.getGbuffer().getAlbedoTexture());
 			fullScreenQuadMultisample.render();
 		}
 		if (renderAlbedoBuffer){
-			fullScreenQuadMultisample.setTexture(deferredRenderer.getGbuffer().getAlbedoTexture());
+			fullScreenQuadMultisample.setTexture(deferredLightingRenderer.getGbuffer().getAlbedoTexture());
 			fullScreenQuadMultisample.render();
 		}
 		if (renderNormalBuffer){
-			fullScreenQuadMultisample.setTexture(deferredRenderer.getGbuffer().getNormalTexture());
+			fullScreenQuadMultisample.setTexture(deferredLightingRenderer.getGbuffer().getNormalTexture());
 			fullScreenQuadMultisample.render();
 		}
 		if (renderPositionBuffer){
-			fullScreenQuadMultisample.setTexture(deferredRenderer.getGbuffer().getWorldPositionTexture());
+			fullScreenQuadMultisample.setTexture(deferredLightingRenderer.getGbuffer().getWorldPositionTexture());
 			fullScreenQuadMultisample.render();
 		}
 		if (renderSampleCoverageMask){
@@ -304,7 +305,7 @@ public class GLRenderEngine implements RenderEngine{
 			fullScreenQuad.render();
 		}
 		if (renderDeferredLightingScene){
-			fullScreenQuad.setTexture(deferredRenderer.getDeferredLightingSceneTexture());
+			fullScreenQuad.setTexture(deferredLightingRenderer.getDeferredLightingSceneTexture());
 			fullScreenQuad.render();
 		}
 		
@@ -313,9 +314,9 @@ public class GLRenderEngine implements RenderEngine{
 		fullScreenQuad.setTexture(contrastController.getContrastTexture());
 		fullScreenQuad.render();
 		
-		deferredRenderer.getFbo().bind();
+		deferredLightingRenderer.getFbo().bind();
 		LightHandler.doOcclusionQueries();
-		deferredRenderer.getFbo().unbind();
+		deferredLightingRenderer.getFbo().unbind();
 		
 		if (!renderDeferredLightingScene && !renderSSAOBuffer
 			&& !renderSampleCoverageMask && !renderPositionBuffer
