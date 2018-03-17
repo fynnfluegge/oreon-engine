@@ -15,8 +15,6 @@ import static org.lwjgl.opengl.GL32.glFramebufferTexture;
 
 import java.nio.IntBuffer;
 
-import org.oreon.core.buffers.Framebuffer;
-
 import static org.lwjgl.opengl.GL30.glGenFramebuffers;
 import static org.lwjgl.opengl.GL30.glBindFramebuffer;
 import static org.lwjgl.opengl.GL30.GL_FRAMEBUFFER;
@@ -42,7 +40,7 @@ import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL32.GL_TEXTURE_2D_MULTISAMPLE;;
 
 
-public class GLFramebuffer implements Framebuffer{
+public class GLFramebuffer {
 	
 	private int id;
 	

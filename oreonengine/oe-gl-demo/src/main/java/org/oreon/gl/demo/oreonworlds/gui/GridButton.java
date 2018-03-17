@@ -2,6 +2,7 @@ package org.oreon.gl.demo.oreonworlds.gui;
 
 import org.oreon.core.gl.texture.Texture2D;
 import org.oreon.core.math.Vec2f;
+import org.oreon.core.system.CommonConfig;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.modules.gl.gui.elements.Button;
 
@@ -28,6 +29,6 @@ public class GridButton extends Button{
 	@Override
 	public void onClickActionPerformed()
 	{
-		CoreSystem.getInstance().getRenderEngine().setGrid(!CoreSystem.getInstance().getRenderEngine().isWireframe());
+		CommonConfig.getInstance().setWireframe(!CommonConfig.getInstance().isWireframe());
 	}
 }

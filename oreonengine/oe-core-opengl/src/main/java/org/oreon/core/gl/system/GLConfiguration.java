@@ -1,6 +1,6 @@
 package org.oreon.core.gl.system;
 
-import org.oreon.core.buffers.Framebuffer;
+import org.oreon.core.gl.buffers.GLFramebuffer;
 import org.oreon.core.texture.Texture;
 
 import lombok.Getter;
@@ -13,7 +13,7 @@ public class GLConfiguration {
 	protected static GLConfiguration instance = null;
 	
 	public Texture sceneDepthMap;
-	public Framebuffer deferredFbo;
+	public GLFramebuffer deferredFbo;
 
 	public Texture underwaterDudvMap;
 	public Texture underwaterCausticsMap;

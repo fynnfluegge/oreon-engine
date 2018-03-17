@@ -222,7 +222,6 @@ import org.lwjgl.vulkan.VkExtensionProperties;
 import org.lwjgl.vulkan.VkLayerProperties;
 import org.lwjgl.vulkan.VkPhysicalDeviceProperties;
 import org.lwjgl.vulkan.VkPhysicalDeviceFeatures;
-import org.oreon.core.buffers.Framebuffer;
 import org.oreon.core.math.Quaternion;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.system.RenderEngine;
