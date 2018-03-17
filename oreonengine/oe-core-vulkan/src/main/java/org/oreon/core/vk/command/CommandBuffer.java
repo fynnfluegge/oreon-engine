@@ -104,13 +104,13 @@ public class CommandBuffer {
                 .sType(VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO)
                 .pNext(0)
                 .renderPass(renderPass)
-                .pClearValues(VkUtil.getBlackClearValues());
+                .pClearValues(VkUtil.getBlackClearValues())
+                .framebuffer(framebuffer);
+		
 		VkRect2D renderArea = renderPassBeginInfo.renderArea();
 		renderArea.offset().set(0, 0);
 		renderArea.extent().set(extent.width(), extent.height());
 				
-		renderPassBeginInfo.framebuffer(framebuffer);
-		 
 		vkCmdBeginRenderPass(commandBuffer, renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
 		vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
 		

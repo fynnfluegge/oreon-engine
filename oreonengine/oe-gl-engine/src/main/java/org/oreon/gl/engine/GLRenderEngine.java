@@ -20,7 +20,6 @@ import org.lwjgl.opengl.GL31;
 import org.lwjgl.opengl.GL40;
 import org.lwjgl.opengl.GL42;
 import org.lwjgl.opengl.GL43;
-import org.oreon.core.buffers.Framebuffer;
 import org.oreon.core.gl.antialiasing.FXAA;
 import org.oreon.core.gl.antialiasing.MSAA;
 import org.oreon.core.gl.buffers.GLFramebuffer;
@@ -33,15 +32,15 @@ import org.oreon.core.gl.picking.TerrainPicking;
 import org.oreon.core.gl.shadow.ParallelSplitShadowMaps;
 import org.oreon.core.gl.surface.FullScreenMultisampleQuad;
 import org.oreon.core.gl.surface.FullScreenQuad;
+import org.oreon.core.gl.system.GLConfiguration;
 import org.oreon.core.gl.texture.Texture2D;
 import org.oreon.core.gl.texture.Texture2DMultisample;
 import org.oreon.core.instanced.InstancedHandler;
 import org.oreon.core.light.LightHandler;
-import org.oreon.core.math.Quaternion;
 import org.oreon.core.platform.Window;
+import org.oreon.core.system.CommonConfig;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.system.RenderEngine;
-import org.oreon.core.texture.Texture;
 import org.oreon.core.util.BufferUtil;
 import org.oreon.core.util.Constants;
 import org.oreon.modules.gl.gpgpu.ContrastController;
@@ -55,6 +54,8 @@ import org.oreon.modules.gl.postprocessfilter.motionblur.MotionBlur;
 import org.oreon.modules.gl.postprocessfilter.ssao.SSAO;
 import org.oreon.modules.gl.terrain.GLTerrain;
 import org.oreon.modules.gl.water.UnderWater;
+
+import lombok.Setter;
 
 public class GLRenderEngine implements RenderEngine{
 
@@ -76,11 +77,10 @@ public class GLRenderEngine implements RenderEngine{
 	private DeferredLightingRenderer deferredRenderer;
 	private TransparencyBlendRenderer transparencyBlendRenderer;
 	private TransparencyLayer transparencyLayer;
+	
+	@Setter
 	private GUI gui;
-	
-	private boolean grid;
-	
-	private Quaternion clipplane;
+
 	private ParallelSplitShadowMaps shadowMaps;
 	
 	// post processing effects
@@ -92,12 +92,7 @@ public class GLRenderEngine implements RenderEngine{
 	private SSAO ssao;
 	private UnderWater underWater;
 	private ContrastController contrastController;
-	
-	private float sightRangeFactor = 2f;
-	private boolean waterReflection = false;
-	private boolean waterRefraction = false;
-	private boolean cameraUnderWater = false;
-	
+
 	private boolean renderAlbedoBuffer = false;
 	private boolean renderNormalBuffer = false;
 	private boolean renderPositionBuffer = false;
@@ -112,6 +107,13 @@ public class GLRenderEngine implements RenderEngine{
 	public void init() {
 		
 		getDeviceProperties();
+		
+		CommonConfig.getInstance().setWireframe(false);
+		CommonConfig.getInstance().setClipplane(Constants.PLANE0);
+		CommonConfig.getInstance().setSightRange(2f);
+		CommonConfig.getInstance().setReflection(false);
+		CommonConfig.getInstance().setRefraction(false);
+		CommonConfig.getInstance().setUnderwater(false);
 		
 		Default.init();
 		window = CoreSystem.getInstance().getWindow();
@@ -179,8 +181,8 @@ public class GLRenderEngine implements RenderEngine{
 	public void render() {
 
 		GLDirectionalLight.getInstance().update();
-		
-		setClipplane(Constants.PLANE0);
+
+		CommonConfig.getInstance().setClipplane(Constants.PLANE0);
 		Default.clearScreen();
 		
 		//render shadow maps
@@ -258,7 +260,7 @@ public class GLRenderEngine implements RenderEngine{
 			postProcessingTexture = dofBlur.getVerticalBlurSceneTexture();
 			
 			// post processing effects
-			if (isCameraUnderWater()){
+			if (CommonConfig.getInstance().isUnderwater()){
 				underWater.render(postProcessingTexture, deferredRenderer.getGbuffer().getDepthTexture());
 				postProcessingTexture = underWater.getUnderwaterSceneTexture();
 			}
@@ -277,7 +279,7 @@ public class GLRenderEngine implements RenderEngine{
 			postProcessingTexture = sunlightScattering.getSunLightScatteringSceneTexture();
 		}
 		
-		if (isWireframe()){
+		if (CommonConfig.getInstance().isWireframe()){
 			fullScreenQuadMultisample.setTexture(deferredRenderer.getGbuffer().getAlbedoTexture());
 			fullScreenQuadMultisample.render();
 		}
@@ -328,10 +330,10 @@ public class GLRenderEngine implements RenderEngine{
 	public void update() {
 		
 		if (CoreSystem.getInstance().getInput().isKeyPushed(GLFW.GLFW_KEY_G)){
-			if (isWireframe())
-				setGrid(false);
+			if (CommonConfig.getInstance().isWireframe())
+				CommonConfig.getInstance().setWireframe(false);
 			else
-				setGrid(true);
+				CommonConfig.getInstance().setWireframe(true);
 		}
 		
 		if (CoreSystem.getInstance().getInput().isKeyPushed(GLFW.GLFW_KEY_KP_1)){
@@ -452,94 +454,6 @@ public class GLRenderEngine implements RenderEngine{
 			((GLTerrain) CoreSystem.getInstance().getScenegraph().getTerrain()).signal();
 		}
 	}
-	@Override
-	public boolean isWireframe() {
-		return grid;
-	}
-	@Override
-	public boolean isCameraUnderWater() {
-		return cameraUnderWater;
-	}
-	@Override
-	public boolean isWaterReflection() {
-		return waterReflection;
-	}
-	@Override
-	public boolean isWaterRefraction() {
-		return waterRefraction;
-	}
-	@Override
-	public boolean isBloomEnabled() {
-		return false;
-	}
-	@Override
-	public Framebuffer getMultisampledFbo() {
-		return null;
-	}
-	@Override
-	public Texture getSceneDepthmap() {
-		return sceneDepthmap;
-	}
-	@Override
-	public float getSightRangeFactor() {
-		return sightRangeFactor;
-	}
-
-	@Override
-	public void setGrid(boolean flag) {
-		grid = flag;
-	}
-	@Override
-	public void setWaterRefraction(boolean flag) {
-		waterRefraction = flag;
-	}
-	@Override
-	public void setWaterReflection(boolean flag) {
-		waterReflection = flag;
-	}
-	@Override
-	public void setCameraUnderWater(boolean flag) {
-		cameraUnderWater = flag;
-	}
-	@Override
-	public void setSightRangeFactor(float range) {
-		
-	}
-	public ParallelSplitShadowMaps getShadowMaps() {
-		return shadowMaps;
-	}
-	public void setShadowMaps(ParallelSplitShadowMaps shadowMaps) {
-		this.shadowMaps = shadowMaps;
-	}
-	public Quaternion getClipplane() {
-		return clipplane;
-	}
-	public void setClipplane(Quaternion clipplane) {
-		this.clipplane = clipplane;
-	}
-	public GUI getGui() {
-		return gui;
-	}
-	public void setGui(GUI gui) {
-		this.gui = gui;
-	}
-	@Override
-	public Framebuffer getDeferredFbo() {
-		return deferredRenderer.getFbo();
-	}
-
-	public UnderWater getUnderWater() {
-		return underWater;
-	}
-
-	public void setUnderWater(UnderWater underWater) {
-		this.underWater = underWater;
-	}
-
-	@Override
-	public Object getUnderwater() {
-		return underWater;
-	} 
 	
 	private void getDeviceProperties(){
 		System.out.println("OpenGL version: " + GL11.glGetString(GL11.GL_VERSION) + " bytes");

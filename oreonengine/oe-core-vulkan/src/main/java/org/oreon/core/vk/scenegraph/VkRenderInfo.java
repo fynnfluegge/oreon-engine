@@ -1,4 +1,4 @@
-package org.oreon.core.vk.scene;
+package org.oreon.core.vk.scenegraph;
 
 import org.oreon.core.scenegraph.Component;
 import org.oreon.core.vk.command.CommandBuffer;

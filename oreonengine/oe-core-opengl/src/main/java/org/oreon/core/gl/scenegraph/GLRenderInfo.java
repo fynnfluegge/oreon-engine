@@ -1,4 +1,4 @@
-package org.oreon.core.gl.scene;
+package org.oreon.core.gl.scenegraph;
 
 import org.oreon.core.gl.buffers.VBO;
 import org.oreon.core.gl.config.RenderConfig;
@@ -17,6 +17,7 @@ public class GLRenderInfo extends Component{
 	private VBO vbo;
 	
 	public void render(){
+		
 		config.enable();
 		shader.bind();			
 		shader.updateUniforms(getParent());

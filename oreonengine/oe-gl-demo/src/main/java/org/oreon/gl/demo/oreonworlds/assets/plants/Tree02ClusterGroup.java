@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.oreon.core.gl.buffers.GLMeshVBO;
 import org.oreon.core.gl.config.CullFaceDisable;
-import org.oreon.core.gl.scene.GLRenderInfo;
+import org.oreon.core.gl.scenegraph.GLRenderInfo;
 import org.oreon.core.gl.util.modelLoader.obj.OBJLoader;
 import org.oreon.core.instanced.InstancedCluster;
 import org.oreon.core.instanced.InstancedObject;
@@ -17,7 +17,7 @@ import org.oreon.core.scenegraph.ComponentType;
 import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.Util;
-import org.oreon.gl.demo.oreonworlds.shaders.InstancingGridShader;
+import org.oreon.gl.demo.oreonworlds.shaders.InstancedWireframeShader;
 import org.oreon.gl.demo.oreonworlds.shaders.assets.plants.TreeBillboardShader;
 import org.oreon.gl.demo.oreonworlds.shaders.assets.plants.TreeBillboardShadowShader;
 import org.oreon.gl.demo.oreonworlds.shaders.assets.plants.TreeLeavesShader;
@@ -54,7 +54,7 @@ public class Tree02ClusterGroup extends InstancedObject{
 
 			GLRenderInfo renderInfo;
 			GLRenderInfo shadowRenderInfo;
-			GLRenderInfo wireframeRenderInfo = new GLRenderInfo(InstancingGridShader.getInstance(), new CullFaceDisable(), meshBuffer);
+			GLRenderInfo wireframeRenderInfo = new GLRenderInfo(InstancedWireframeShader.getInstance(), new CullFaceDisable(), meshBuffer);
 			
 			if (model.equals(models[0])){
 				renderInfo = new GLRenderInfo(TreeTrunkShader.getInstance(), new CullFaceDisable(), meshBuffer);
@@ -91,7 +91,7 @@ public class Tree02ClusterGroup extends InstancedObject{
 	
 			GLRenderInfo renderInfo = new GLRenderInfo(TreeBillboardShader.getInstance(), new CullFaceDisable(), meshBuffer);
 			GLRenderInfo shadowRenderInfo = new GLRenderInfo(TreeBillboardShadowShader.getInstance(), new CullFaceDisable(), meshBuffer);
-			GLRenderInfo wireframeRenderInfo = new GLRenderInfo(InstancingGridShader.getInstance(), new CullFaceDisable(), meshBuffer);
+			GLRenderInfo wireframeRenderInfo = new GLRenderInfo(InstancedWireframeShader.getInstance(), new CullFaceDisable(), meshBuffer);
 			
 			Renderable object = new Renderable();
 			object.addComponent(ComponentType.MAIN_RENDERINFO, renderInfo);

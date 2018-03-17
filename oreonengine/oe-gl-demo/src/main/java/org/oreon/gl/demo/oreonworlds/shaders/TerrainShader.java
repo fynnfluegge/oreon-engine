@@ -9,6 +9,7 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 import org.oreon.core.gl.shaders.GLShader;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.scenegraph.Renderable;
+import org.oreon.core.system.CommonConfig;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.Constants;
 import org.oreon.core.util.ResourceLoader;
@@ -88,9 +89,9 @@ public class TerrainShader extends GLShader{
 	{	
 		bindUniformBlock("Camera", Constants.CameraUniformBlockBinding);
 		
-		setUniform("clipplane", CoreSystem.getInstance().getRenderEngine().getClipplane());
-		setUniformi("isRefraction", CoreSystem.getInstance().getRenderEngine().isWaterRefraction() ? 1 : 0);
-		setUniformi("isCameraUnderWater", CoreSystem.getInstance().getRenderEngine().isCameraUnderWater() ? 1 : 0);		
+		setUniform("clipplane", CommonConfig.getInstance().getClipplane());
+		setUniformi("isRefraction", CommonConfig.getInstance().isRefraction() ? 1 : 0);
+		setUniformi("isCameraUnderWater", CommonConfig.getInstance().isUnderwater() ? 1 : 0);		
 		
 		TerrainConfiguration terrConfig = ((TerrainNode) object).getTerrConfig();
 		int lod = ((TerrainNode) object).getLod();

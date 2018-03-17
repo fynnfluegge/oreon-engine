@@ -8,6 +8,7 @@ import org.oreon.core.light.Light;
 import org.oreon.core.light.LightHandler;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.math.Vec2f;
+import org.oreon.core.system.CommonConfig;
 import org.oreon.core.system.CoreSystem;
 
 public class LensFlare {
@@ -122,7 +123,7 @@ public class LensFlare {
 	
 	public void render(){
 		
-		if (CoreSystem.getInstance().getRenderEngine().isWireframe())
+		if (CommonConfig.getInstance().isWireframe())
 			return;
 		
 		for (Light light : LightHandler.getLights()){

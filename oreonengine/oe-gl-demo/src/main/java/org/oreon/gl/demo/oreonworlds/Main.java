@@ -1,13 +1,13 @@
 package org.oreon.gl.demo.oreonworlds;
 
 import org.oreon.core.gl.platform.GLWindow;
-import org.oreon.core.gl.scene.GLCamera;
+import org.oreon.core.gl.scenegraph.GLCamera;
 import org.oreon.core.platform.GLFWInput;
 import org.oreon.core.platform.Window;
 import org.oreon.core.system.CoreEngine;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.gl.demo.oreonworlds.gui.GUI;
-import org.oreon.gl.demo.oreonworlds.shaders.TerrainGridShader;
+import org.oreon.gl.demo.oreonworlds.shaders.TerrainWireframeShader;
 import org.oreon.gl.demo.oreonworlds.shaders.TerrainShader;
 import org.oreon.gl.demo.oreonworlds.terrain.Terrain;
 import org.oreon.gl.demo.oreonworlds.water.Ocean;
@@ -42,7 +42,7 @@ public class Main {
 		terrain.init("oreonworlds/terrain/terrain-config.properties",
 				   "oreonworlds/terrain/terrain-lowPoly-config.properties",
 				   TerrainShader.getInstance(),
-				   TerrainGridShader.getInstance(), 
+				   TerrainWireframeShader.getInstance(), 
 				   null);
 		coreSystem.getScenegraph().setTerrain(terrain);
 		

@@ -14,6 +14,7 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 import org.oreon.core.gl.light.GLDirectionalLight;
 import org.oreon.core.gl.shaders.GLShader;
 import org.oreon.core.scenegraph.Renderable;
+import org.oreon.core.system.CommonConfig;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.ResourceLoader;
 import org.oreon.modules.gl.water.Water;
@@ -102,7 +103,7 @@ public class OceanBRDFShader extends GLShader{
 		setUniform("sunlight.color", GLDirectionalLight.getInstance().getColor());
 		setUniform("sunlight.direction", GLDirectionalLight.getInstance().getDirection());	
 		
-		setUniformf("sightRangeFactor", CoreSystem.getInstance().getRenderEngine().getSightRangeFactor());
+		setUniformf("sightRangeFactor", CommonConfig.getInstance().getSightRange());
 		
 		for (int i=0; i<6; i++)
 		{
@@ -125,7 +126,7 @@ public class OceanBRDFShader extends GLShader{
 		setUniformf("emission", ocean.getEmission());
 		setUniformf("shininess", ocean.getShininess());
 		setUniformf("motion", ocean.getMotion());
-		setUniformi("isCameraUnderWater", CoreSystem.getInstance().getRenderEngine().isCameraUnderWater() ? 1 : 0);
+		setUniformi("isCameraUnderWater", CommonConfig.getInstance().isUnderwater() ? 1 : 0);
 				
 		glActiveTexture(GL_TEXTURE0);
 		ocean.getDudv().bind();

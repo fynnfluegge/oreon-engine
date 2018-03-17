@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.oreon.core.gl.buffers.GLMeshVBO;
 import org.oreon.core.gl.buffers.GLUBO;
-import org.oreon.core.gl.scene.GLRenderInfo;
+import org.oreon.core.gl.scenegraph.GLRenderInfo;
 import org.oreon.core.instanced.InstancedCluster;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.math.Vec3f;

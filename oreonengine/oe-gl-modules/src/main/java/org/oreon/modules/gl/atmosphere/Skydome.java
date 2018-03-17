@@ -2,12 +2,12 @@ package org.oreon.modules.gl.atmosphere;
 
 import org.oreon.core.gl.buffers.GLMeshVBO;
 import org.oreon.core.gl.config.CullFaceDisable;
-import org.oreon.core.gl.scene.GLRenderInfo;
+import org.oreon.core.gl.scenegraph.GLRenderInfo;
 import org.oreon.core.model.AssimpModelLoader;
 import org.oreon.core.model.Mesh;
 import org.oreon.core.scenegraph.ComponentType;
 import org.oreon.core.scenegraph.Renderable;
-import org.oreon.core.system.CoreSystem;
+import org.oreon.core.system.CommonConfig;
 import org.oreon.core.texture.ProceduralTexturing;
 
 public class Skydome extends Renderable{
@@ -32,10 +32,10 @@ public class Skydome extends Renderable{
 	}
 	
 	public void render() {
-		if (CoreSystem.getInstance().getRenderEngine().isWaterRefraction() && !CoreSystem.getInstance().getRenderEngine().isCameraUnderWater()){
+		if (CommonConfig.getInstance().isRefraction() && !CommonConfig.getInstance().isUnderwater()){
 			return;
 		}
-		if (CoreSystem.getInstance().getRenderEngine().isWireframe()){
+		if (CommonConfig.getInstance().isWireframe()){
 			return;
 		}
 		else {

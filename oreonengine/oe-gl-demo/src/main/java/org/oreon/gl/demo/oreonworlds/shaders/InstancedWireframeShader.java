@@ -6,24 +6,24 @@ import org.oreon.core.gl.shaders.GLShader;
 import org.oreon.core.instanced.InstancedCluster;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.scenegraph.Renderable;
-import org.oreon.core.system.CoreSystem;
+import org.oreon.core.system.CommonConfig;
 import org.oreon.core.util.Constants;
 import org.oreon.core.util.ResourceLoader;
 
-public class InstancingGridShader extends GLShader{
+public class InstancedWireframeShader extends GLShader{
 
-private static InstancingGridShader instance = null;
+private static InstancedWireframeShader instance = null;
 	
-	public static InstancingGridShader getInstance() 
+	public static InstancedWireframeShader getInstance() 
 	{
 	    if(instance == null) 
 	    {
-	    	instance = new InstancingGridShader();
+	    	instance = new InstancedWireframeShader();
 	    }
 	      return instance;
 	}
 	
-	protected InstancingGridShader()
+	protected InstancedWireframeShader()
 	{
 		super();
 
@@ -49,14 +49,14 @@ private static InstancingGridShader instance = null;
 	public void updateUniforms(Renderable object)
 	{
 		bindUniformBlock("Camera", Constants.CameraUniformBlockBinding);
-		setUniformi("isReflection", CoreSystem.getInstance().getRenderEngine().isWaterReflection() ? 1 : 0);
+		setUniformi("isReflection", CommonConfig.getInstance().isReflection() ? 1 : 0);
 		
 		((InstancedCluster) object.getParent()).getWorldMatricesBuffer().bindBufferBase(0);
 		bindUniformBlock("worldMatrices", 0);
 		((InstancedCluster) object.getParent()).getModelMatricesBuffer().bindBufferBase(1);
 		bindUniformBlock("modelMatrices", 1);
 		
-		setUniform("clipplane", CoreSystem.getInstance().getRenderEngine().getClipplane());
+		setUniform("clipplane", CommonConfig.getInstance().getClipplane());
 		setUniform("scalingMatrix", new Matrix4f().Scaling(object.getWorldTransform().getScaling()));
 		
 		List<Integer> indices = ((InstancedCluster) object.getParent()).getHighPolyIndices();

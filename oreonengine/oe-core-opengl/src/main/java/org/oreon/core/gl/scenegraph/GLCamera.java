@@ -1,4 +1,4 @@
-package org.oreon.core.gl.scene;
+package org.oreon.core.gl.scenegraph;
 
 import java.nio.FloatBuffer;
 

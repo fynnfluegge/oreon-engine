@@ -13,6 +13,7 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import org.oreon.core.gl.shaders.GLShader;
 import org.oreon.core.scenegraph.Renderable;
+import org.oreon.core.system.CommonConfig;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.Constants;
 import org.oreon.core.util.ResourceLoader;
@@ -117,7 +118,7 @@ public class OceanBRDFShader extends GLShader{
 		setUniformf("emission", ocean.getEmission());
 		setUniformf("specular", ocean.getShininess());
 		setUniformf("motion", ocean.getMotion());
-		setUniformi("isCameraUnderWater", CoreSystem.getInstance().getRenderEngine().isCameraUnderWater() ? 1 : 0);
+		setUniformi("isCameraUnderWater", CommonConfig.getInstance().isUnderwater() ? 1 : 0);
 				
 		glActiveTexture(GL_TEXTURE0);
 		ocean.getDudv().bind();

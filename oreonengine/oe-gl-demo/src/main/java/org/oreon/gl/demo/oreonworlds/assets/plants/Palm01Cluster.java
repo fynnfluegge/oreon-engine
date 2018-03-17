@@ -5,12 +5,13 @@ import java.util.List;
 
 import org.oreon.core.gl.buffers.GLMeshVBO;
 import org.oreon.core.gl.buffers.GLUBO;
-import org.oreon.core.gl.scene.GLRenderInfo;
+import org.oreon.core.gl.scenegraph.GLRenderInfo;
 import org.oreon.core.instanced.InstancedCluster;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.math.Vec3f;
 import org.oreon.core.scenegraph.ComponentType;
 import org.oreon.core.scenegraph.Renderable;
+import org.oreon.core.system.CommonConfig;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.BufferUtil;
 import org.oreon.core.util.IntegerReference;
@@ -97,8 +98,8 @@ public class Palm01Cluster extends InstancedCluster{
 	}
 	
 	public void render(){
-		if (!CoreSystem.getInstance().getRenderEngine().isWaterReflection() && 
-					!CoreSystem.getInstance().getRenderEngine().isWaterRefraction()){
+		if (!CommonConfig.getInstance().isReflection() && 
+					!CommonConfig.getInstance().isRefraction()){
 			super.render();
 		}
 	}

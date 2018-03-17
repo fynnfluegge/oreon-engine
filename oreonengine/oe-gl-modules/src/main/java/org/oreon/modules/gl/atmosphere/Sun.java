@@ -4,7 +4,7 @@ import org.oreon.core.gl.buffers.GLPointVBO3D;
 import org.oreon.core.gl.config.AlphaBlendingSrcAlpha;
 import org.oreon.core.gl.light.GLDirectionalLight;
 import org.oreon.core.gl.query.GLOcclusionQuery;
-import org.oreon.core.gl.scene.GLRenderInfo;
+import org.oreon.core.gl.scenegraph.GLRenderInfo;
 import org.oreon.core.gl.texture.Texture2D;
 import org.oreon.core.light.Light;
 import org.oreon.core.light.LightHandler;
@@ -12,7 +12,7 @@ import org.oreon.core.math.Vec3f;
 import org.oreon.core.model.Material;
 import org.oreon.core.scenegraph.ComponentType;
 import org.oreon.core.scenegraph.Renderable;
-import org.oreon.core.system.CoreSystem;
+import org.oreon.core.system.CommonConfig;
 
 public class Sun extends Renderable{
 	
@@ -51,7 +51,7 @@ public class Sun extends Renderable{
 	
 	public void render() {
 		
-		if (!CoreSystem.getInstance().getRenderEngine().isCameraUnderWater() && !CoreSystem.getInstance().getRenderEngine().isWireframe()){
+		if (!CommonConfig.getInstance().isUnderwater() && !CommonConfig.getInstance().isWireframe()){
 			super.render();
 		}
 	}

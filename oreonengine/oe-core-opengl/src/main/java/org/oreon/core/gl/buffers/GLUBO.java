@@ -44,6 +44,7 @@ public class GLUBO implements UBO{
 	}
 	
 	public void updateData(FloatBuffer buffer, int length){
+		
 		glBindBuffer(GL_UNIFORM_BUFFER, ubo);
 		ByteBuffer mappedBuffer = glMapBuffer(GL_UNIFORM_BUFFER, GL_READ_WRITE, length, null);
 		mappedBuffer.clear();
@@ -57,7 +58,6 @@ public class GLUBO implements UBO{
 	public void bind()
 	{
 		glBindBuffer(GL_UNIFORM_BUFFER, ubo);
-
 	}
 	
 	public void bindBufferBase()

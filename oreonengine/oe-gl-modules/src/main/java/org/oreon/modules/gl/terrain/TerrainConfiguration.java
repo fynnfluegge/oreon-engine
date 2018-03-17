@@ -15,7 +15,7 @@ import java.util.Properties;
 import org.oreon.core.gl.shaders.GLShader;
 import org.oreon.core.gl.texture.Texture2D;
 import org.oreon.core.model.Material;
-import org.oreon.core.system.CoreSystem;
+import org.oreon.core.system.CommonConfig;
 import org.oreon.core.util.BufferUtil;
 import org.oreon.core.util.Constants;
 import org.oreon.modules.gl.gpgpu.NormalMapRenderer;
@@ -109,7 +109,7 @@ public class TerrainConfiguration {
 		setTexDetail(Float.valueOf(properties.getProperty("texDetail")));
 		
 		sightRangeFactor = Float.valueOf(properties.getProperty("sightRangeFactor"));
-		CoreSystem.getInstance().getRenderEngine().setSightRangeFactor(sightRangeFactor);
+		CommonConfig.getInstance().setSightRange(sightRangeFactor);
 		
 		setDetailRange(Integer.valueOf(properties.getProperty("detailRange")));
 		

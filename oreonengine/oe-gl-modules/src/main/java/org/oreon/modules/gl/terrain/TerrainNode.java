@@ -2,12 +2,13 @@ package org.oreon.modules.gl.terrain;
 
 import org.oreon.core.gl.buffers.GLPatchVBO;
 import org.oreon.core.gl.config.Default;
-import org.oreon.core.gl.scene.GLRenderInfo;
+import org.oreon.core.gl.scenegraph.GLRenderInfo;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.math.Vec3f;
 import org.oreon.core.scenegraph.ComponentType;
 import org.oreon.core.scenegraph.Node;
 import org.oreon.core.scenegraph.Renderable;
+import org.oreon.core.system.CommonConfig;
 import org.oreon.core.system.CoreSystem;
 
 public class TerrainNode extends Renderable{
@@ -73,7 +74,7 @@ public class TerrainNode extends Renderable{
 	{
 		if (isleaf)
 		{	
-			if (CoreSystem.getInstance().getRenderEngine().isWireframe()){
+			if (CommonConfig.getInstance().isWireframe()){
 				getComponents().get(ComponentType.WIREFRAME_RENDERINFO).render();
 			}
 			else{

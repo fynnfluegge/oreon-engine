@@ -29,6 +29,7 @@ import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkMemoryAllocateInfo;
 import org.lwjgl.vulkan.VkMemoryRequirements;
 import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
+import org.oreon.core.system.CommonConfig;
 import org.oreon.core.vk.util.VkUtil;
 
 import lombok.Getter;
@@ -55,7 +56,7 @@ public class VertexBuffer {
 		LongBuffer pBuffer = memAllocLong(1);
 	    int err = vkCreateBuffer(device, bufInfo, null, pBuffer);
         handle = pBuffer.get(0);
-        
+    
         memFree(pBuffer);
         bufInfo.free();
         

@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.oreon.core.gl.buffers.GLMeshVBO;
 import org.oreon.core.gl.config.CullFaceDisable;
-import org.oreon.core.gl.scene.GLRenderInfo;
+import org.oreon.core.gl.scenegraph.GLRenderInfo;
 import org.oreon.core.gl.util.modelLoader.obj.OBJLoader;
 import org.oreon.core.instanced.InstancedCluster;
 import org.oreon.core.instanced.InstancedObject;
@@ -15,7 +15,7 @@ import org.oreon.core.model.Model;
 import org.oreon.core.scenegraph.ComponentType;
 import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.system.CoreSystem;
-import org.oreon.gl.demo.oreonworlds.shaders.InstancingGridShader;
+import org.oreon.gl.demo.oreonworlds.shaders.InstancedWireframeShader;
 import org.oreon.gl.demo.oreonworlds.shaders.assets.plants.GrassShader;
 import org.oreon.gl.demo.oreonworlds.shaders.assets.plants.GrassShadowShader;
 
@@ -37,7 +37,7 @@ public class Plant01ClusterGroup extends InstancedObject{
 			
 			GLRenderInfo renderInfo = new GLRenderInfo(GrassShader.getInstance(), new CullFaceDisable(), meshBuffer);
 			GLRenderInfo shadowRenderInfo = new GLRenderInfo(GrassShadowShader.getInstance(), new CullFaceDisable(), meshBuffer);
-			GLRenderInfo wireframeRenderInfo = new GLRenderInfo(InstancingGridShader.getInstance(), new CullFaceDisable(), meshBuffer);
+			GLRenderInfo wireframeRenderInfo = new GLRenderInfo(InstancedWireframeShader.getInstance(), new CullFaceDisable(), meshBuffer);
 	
 			Renderable object = new Renderable();
 			object.addComponent(ComponentType.MAIN_RENDERINFO, renderInfo);
