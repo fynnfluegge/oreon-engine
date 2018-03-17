@@ -27,6 +27,4 @@ public class GLConfiguration {
 		return instance;
 	}
 	
-	protected GLConfiguration(){}
-
 }

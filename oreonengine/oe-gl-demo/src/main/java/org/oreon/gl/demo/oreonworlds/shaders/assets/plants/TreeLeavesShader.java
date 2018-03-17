@@ -5,6 +5,7 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import java.util.List;
 
+import org.oreon.core.gl.instanced.GLInstancedCluster;
 import org.oreon.core.gl.shaders.GLShader;
 import org.oreon.core.instanced.InstancedCluster;
 import org.oreon.core.math.Matrix4f;
@@ -61,9 +62,9 @@ public class TreeLeavesShader extends GLShader{
 //		setUniformi("screenHeight", CoreSystem.getInstance().getWindow().getHeight());
 		setUniformi("isReflection", CommonConfig.getInstance().isReflection() ? 1 : 0);
 		
-		((InstancedCluster) object.getParent()).getWorldMatricesBuffer().bindBufferBase(0);
+		((GLInstancedCluster) object.getParent()).getWorldMatricesBuffer().bindBufferBase(0);
 		bindUniformBlock("worldMatrices", 0);
-		((InstancedCluster) object.getParent()).getModelMatricesBuffer().bindBufferBase(1);
+		((GLInstancedCluster) object.getParent()).getModelMatricesBuffer().bindBufferBase(1);
 		bindUniformBlock("modelMatrices", 1);
 		
 		setUniform("clipplane", CommonConfig.getInstance().getClipplane());

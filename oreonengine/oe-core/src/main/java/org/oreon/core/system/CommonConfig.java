@@ -19,7 +19,10 @@ public class CommonConfig {
 		return instance;
 	}
 	
-	protected CommonConfig(){}
+	protected CommonConfig(){
+		
+		// TODO load properties
+	}
 	
 	// render configurations
 	private boolean wireframe;

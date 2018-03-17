@@ -4,14 +4,14 @@ import java.nio.FloatBuffer;
 import java.util.List;
 
 import org.oreon.core.gl.buffers.GLUBO;
-import org.oreon.core.instanced.InstancedCluster;
+import org.oreon.core.gl.instanced.GLInstancedCluster;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.math.Vec3f;
 import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.BufferUtil;
 
-public class Bush01Cluster extends InstancedCluster{
+public class Bush01Cluster extends GLInstancedCluster{
 	
 	public Bush01Cluster(int instances, Vec3f pos,  List<Renderable> objects){
 		

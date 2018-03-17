@@ -13,13 +13,11 @@ import static org.lwjgl.opengl.GL31.GL_UNIFORM_BUFFER;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 
-import org.oreon.core.buffers.UBO;
-
 /**
  * Uniform Buffer Object
  */
 
-public class GLUBO implements UBO{
+public class GLUBO {
 	
 	private int ubo;
 	private int binding_point_index;

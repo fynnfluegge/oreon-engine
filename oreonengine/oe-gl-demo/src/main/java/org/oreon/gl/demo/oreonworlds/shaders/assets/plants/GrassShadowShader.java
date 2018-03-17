@@ -5,6 +5,7 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import java.util.List;
 
+import org.oreon.core.gl.instanced.GLInstancedCluster;
 import org.oreon.core.gl.shaders.GLShader;
 import org.oreon.core.instanced.InstancedCluster;
 import org.oreon.core.model.Material;
@@ -50,7 +51,7 @@ public class GrassShadowShader extends GLShader{
 		
 		bindUniformBlock("Camera",Constants.CameraUniformBlockBinding);
 		bindUniformBlock("LightViewProjections",Constants.LightMatricesUniformBlockBinding);
-		((InstancedCluster) object.getParent()).getWorldMatricesBuffer().bindBufferBase(0);
+		((GLInstancedCluster) object.getParent()).getWorldMatricesBuffer().bindBufferBase(0);
 		bindUniformBlock("worldMatrices", 0);
 		
 		Material material = (Material) object.getComponent(ComponentType.MATERIAL0);

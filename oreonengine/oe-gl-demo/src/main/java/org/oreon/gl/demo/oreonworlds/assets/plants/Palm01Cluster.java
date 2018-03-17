@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.oreon.core.gl.buffers.GLMeshVBO;
 import org.oreon.core.gl.buffers.GLUBO;
+import org.oreon.core.gl.instanced.GLInstancedCluster;
 import org.oreon.core.gl.scenegraph.GLRenderInfo;
-import org.oreon.core.instanced.InstancedCluster;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.math.Vec3f;
 import org.oreon.core.scenegraph.ComponentType;
@@ -16,7 +16,7 @@ import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.BufferUtil;
 import org.oreon.core.util.IntegerReference;
 
-public class Palm01Cluster extends InstancedCluster{
+public class Palm01Cluster extends GLInstancedCluster{
 
 	public Palm01Cluster(int instances, Vec3f pos,  List<Renderable> objects){
 		

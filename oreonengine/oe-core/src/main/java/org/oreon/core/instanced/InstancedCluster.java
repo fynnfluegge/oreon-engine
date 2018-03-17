@@ -3,7 +3,6 @@ package org.oreon.core.instanced;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.oreon.core.buffers.UBO;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.math.Vec3f;
 import org.oreon.core.scenegraph.Node;
@@ -13,9 +12,6 @@ public abstract class InstancedCluster extends Node{
 	
 	private List<Matrix4f> worldMatrices = new ArrayList<Matrix4f>();
 	private List<Matrix4f> modelMatrices = new ArrayList<Matrix4f>();
-	
-	private UBO modelMatricesBuffer;
-	private UBO worldMatricesBuffer;
 	
 	private List<Integer> highPolyIndices = new ArrayList<Integer>();
 	private List<Integer> lowPolyIndices = new ArrayList<Integer>();
@@ -53,23 +49,7 @@ public abstract class InstancedCluster extends Node{
 	public void setWorldMatrices(List<Matrix4f> matrices) {
 		this.worldMatrices = matrices;
 	}
-
-	public UBO getModelMatricesBuffer() {
-		return modelMatricesBuffer;
-	}
-
-	public void setModelMatricesBuffer(UBO modelMatricesBuffer) {
-		this.modelMatricesBuffer = modelMatricesBuffer;
-	}
-
-	public UBO getWorldMatricesBuffer() {
-		return worldMatricesBuffer;
-	}
-
-	public void setWorldMatricesBuffer(UBO worldMatricesBuffer) {
-		this.worldMatricesBuffer = worldMatricesBuffer;
-	}
-
+	
 	public Vec3f getCenter() {
 		return center;
 	}
