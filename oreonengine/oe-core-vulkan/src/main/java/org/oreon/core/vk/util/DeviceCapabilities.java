@@ -20,6 +20,9 @@ import org.lwjgl.vulkan.VkPhysicalDevice;
 import org.lwjgl.vulkan.VkPhysicalDeviceFeatures;
 import org.lwjgl.vulkan.VkPhysicalDeviceProperties;
 
+import lombok.extern.log4j.Log4j;
+
+@Log4j
 public class DeviceCapabilities {
 	
 	public static void checkInstanceExtensionSupport(PointerBuffer ppEnabledExtensionNames){
@@ -117,7 +120,7 @@ public class DeviceCapabilities {
 		VkPhysicalDeviceProperties properties = VkPhysicalDeviceProperties.create();
 		vkGetPhysicalDeviceProperties(physicalDevice, properties);
 		
-		System.out.println(properties.deviceNameString());
+		log.info("Device: " + properties.deviceNameString());
 		
 		return properties;
 	}

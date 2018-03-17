@@ -27,7 +27,6 @@ import org.oreon.core.vk.util.VkUtil;
 
 import lombok.Getter;
 
-
 public class LogicalDevice {
 	
 	static final Logger log = Logger.getLogger(LogicalDevice.class);
