@@ -93,6 +93,7 @@ public class TerrainShader extends GLShader{
 		setUniformi("isCameraUnderWater", CommonConfig.getInstance().isUnderwater() ? 1 : 0);		
 		
 		TerrainConfiguration terrConfig = ((TerrainNode) object).getTerrConfig();
+		
 		int lod = ((TerrainNode) object).getLod();
 		Vec2f index = ((TerrainNode) object).getIndex();
 		float gap = ((TerrainNode) object).getGap();

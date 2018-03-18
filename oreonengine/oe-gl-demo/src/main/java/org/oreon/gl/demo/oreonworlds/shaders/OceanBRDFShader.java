@@ -18,6 +18,7 @@ import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.Constants;
 import org.oreon.core.util.ResourceLoader;
 import org.oreon.modules.gl.water.Water;
+import org.oreon.modules.gl.water.WaterConfiguration;
 
 public class OceanBRDFShader extends GLShader{
 
@@ -103,20 +104,21 @@ public class OceanBRDFShader extends GLShader{
 		}
 		
 		Water ocean = (Water) object;
+		WaterConfiguration configuration = ocean.getWaterConfiguration();
 		
-		setUniformf("displacementScale", ocean.getDisplacementScale());
-		setUniformf("choppiness", ocean.getChoppiness());
-		setUniformi("texDetail", ocean.getTexDetail());
-		setUniformi("tessFactor", ocean.getTessellationFactor());
-		setUniformf("tessSlope", ocean.getTessellationSlope());
-		setUniformf("tessShift", ocean.getTessellationShift());
-		setUniformi("largeDetailRange", ocean.getLargeDetailRange());
+		setUniformf("displacementScale", configuration.getDisplacementScale());
+		setUniformf("choppiness", configuration.getChoppiness());
+		setUniformi("texDetail", configuration.getTexDetail());
+		setUniformi("tessFactor", configuration.getTessellationFactor());
+		setUniformf("tessSlope", configuration.getTessellationSlope());
+		setUniformf("tessShift", configuration.getTessellationShift());
+		setUniformi("largeDetailRange", configuration.getLargeDetailRange());
 		setUniformf("distortionRefracReflec", ocean.getDistortion());
 		setUniformf("distortionCaustics", 0);
-		setUniformf("kReflection", ocean.getkReflection());
-		setUniformf("kRefraction", ocean.getkRefraction());
-		setUniformf("emission", ocean.getEmission());
-		setUniformf("specular", ocean.getShininess());
+		setUniformf("kReflection", configuration.getKReflection());
+		setUniformf("kRefraction", configuration.getKRefraction());
+		setUniformf("emission", configuration.getEmission());
+		setUniformf("specular", configuration.getShininess());
 		setUniformf("motion", ocean.getMotion());
 		setUniformi("isCameraUnderWater", CommonConfig.getInstance().isUnderwater() ? 1 : 0);
 				

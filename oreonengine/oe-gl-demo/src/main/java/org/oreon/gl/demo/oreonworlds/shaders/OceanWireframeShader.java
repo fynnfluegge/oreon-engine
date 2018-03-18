@@ -1,4 +1,4 @@
-package org.oreon.modules.gl.water.shader;
+package org.oreon.gl.demo.oreonworlds.shaders;
 
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
@@ -10,6 +10,7 @@ import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.ResourceLoader;
 import org.oreon.modules.gl.water.Water;
+import org.oreon.modules.gl.water.WaterConfiguration;
 
 public class OceanWireframeShader extends GLShader{
 
@@ -68,12 +69,14 @@ private static OceanWireframeShader instance = null;
 		}
 		
 		Water ocean = (Water) object;
-		setUniformf("displacementScale", ocean.getDisplacementScale());
-		setUniformf("choppiness", ocean.getChoppiness());
-		setUniformi("texDetail", ocean.getTexDetail());
-		setUniformi("tessFactor", ocean.getTessellationFactor());
-		setUniformf("tessSlope", ocean.getTessellationSlope());
-		setUniformf("tessShift", ocean.getTessellationShift());
+		WaterConfiguration configuration = ocean.getWaterConfiguration();
+		
+		setUniformf("displacementScale", configuration.getDisplacementScale());
+		setUniformf("choppiness", configuration.getChoppiness());
+		setUniformi("texDetail", configuration.getTexDetail());
+		setUniformi("tessFactor", configuration.getTessellationFactor());
+		setUniformf("tessSlope", configuration.getTessellationSlope());
+		setUniformf("tessShift", configuration.getTessellationShift());
 		
 		glActiveTexture(GL_TEXTURE0);
 		ocean.getFft().getDy().bind();

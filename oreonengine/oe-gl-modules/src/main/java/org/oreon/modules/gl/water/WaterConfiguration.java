@@ -1,14 +1,8 @@
 package org.oreon.modules.gl.water;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-
-import org.oreon.core.util.Util;
-import org.oreon.modules.gl.terrain.TerrainConfiguration;
 
 import lombok.Getter;
 import lombok.Setter;

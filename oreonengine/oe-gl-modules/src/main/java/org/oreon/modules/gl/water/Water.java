@@ -1,9 +1,5 @@
 package org.oreon.modules.gl.water;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-
 import org.oreon.core.gl.buffers.GLPatchVBO;
 import org.oreon.core.gl.config.WaterRenderConfig;
 import org.oreon.core.gl.scenegraph.GLRenderInfo;
@@ -11,7 +7,6 @@ import org.oreon.core.gl.shaders.GLShader;
 import org.oreon.core.gl.system.GLConfiguration;
 import org.oreon.core.gl.texture.Texture2D;
 import org.oreon.core.math.Quaternion;
-import org.oreon.core.math.Vec2f;
 import org.oreon.core.scenegraph.ComponentType;
 import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.scenegraph.Scenegraph;
@@ -19,11 +14,11 @@ import org.oreon.core.system.CommonConfig;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.Constants;
 import org.oreon.core.util.MeshGenerator;
-import org.oreon.core.util.Util;
 import org.oreon.modules.gl.gpgpu.NormalMapRenderer;
 import org.oreon.modules.gl.terrain.GLTerrain;
 import org.oreon.modules.gl.water.fft.OceanFFT;
-import org.oreon.modules.gl.water.shader.OceanWireframeShader;
+
+import lombok.Getter;
 
 import static org.lwjgl.opengl.GL11.GL_CCW;
 import static org.lwjgl.opengl.GL11.GL_CW;
@@ -51,19 +46,14 @@ public class Water extends Renderable{
 	private boolean cameraUnderwater;
 	
 	private WaterRenderConfig renderConfig;
-	private GLShader shader;
 	
+	@Getter
 	private WaterConfiguration waterConfiguration;
 
-	public Water(String properties, int patches, int fftResolution, GLShader shader)
+	public Water(String properties, int patches, int fftResolution, GLShader shader, GLShader wireframeShader)
 	{		
 		waterConfiguration = new WaterConfiguration();
 		waterConfiguration.loadFile(properties);
-		getNormalmapRenderer().setStrength(waterConfiguration.getNormalStrength());
-		getFft().setT_delta(waterConfiguration.getDelta_T());
-		getFft().setChoppy(waterConfiguration.isChoppy());
-		
-		this.shader = shader;
 		
 		GLPatchVBO meshBuffer = new GLPatchVBO();
 		meshBuffer.addData(MeshGenerator.generatePatch2D4x4(patches),16);
@@ -71,7 +61,7 @@ public class Water extends Renderable{
 		renderConfig = new WaterRenderConfig();
 		
 		GLRenderInfo renderInfo = new GLRenderInfo(shader,renderConfig,meshBuffer);
-		GLRenderInfo wireframeRenderInfo = new GLRenderInfo(OceanWireframeShader.getInstance(),renderConfig,meshBuffer);
+		GLRenderInfo wireframeRenderInfo = new GLRenderInfo(wireframeShader,renderConfig,meshBuffer);
 		
 		dudv = new Texture2D("textures/water/dudv/dudv1.jpg");
 		dudv.bind();
@@ -86,7 +76,11 @@ public class Water extends Renderable{
 
 		fft = new OceanFFT(fftResolution); 
 		fft.init();
+		getFft().setT_delta(waterConfiguration.getDelta_T());
+		getFft().setChoppy(waterConfiguration.isChoppy());
+		
 		normalmapRenderer = new NormalMapRenderer(fftResolution);
+		getNormalmapRenderer().setStrength(waterConfiguration.getNormalStrength());
 		
 		refractionRenderer = new RefracReflecRenderer(CoreSystem.getInstance().getWindow().getWidth()/2,
 													  CoreSystem.getInstance().getWindow().getHeight()/2);
@@ -110,8 +104,8 @@ public class Water extends Renderable{
 			CommonConfig.getInstance().setUnderwater(true);
 		}
 			
-		distortion += getDistortionOffset();
-		motion += getMotionOffset();
+		distortion += waterConfiguration.getDistortion();
+		motion += waterConfiguration.getWaveMotion();
 		
 		Scenegraph scenegraph = ((Scenegraph) getParent());
 		
@@ -282,14 +276,6 @@ public class Water extends Renderable{
 
 	public void setCaustics(Texture2D caustics) {
 		this.caustics = caustics;
-	}
-
-	public GLShader getShader() {
-		return shader;
-	}
-
-	public void setShader(GLShader shader) {
-		this.shader = shader;
 	}
 	
 	public Texture2D getRefractionTexture(){
