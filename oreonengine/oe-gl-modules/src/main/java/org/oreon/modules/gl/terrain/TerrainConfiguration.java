@@ -15,19 +15,22 @@ import java.util.Properties;
 import org.oreon.core.gl.shaders.GLShader;
 import org.oreon.core.gl.texture.Texture2D;
 import org.oreon.core.model.Material;
-import org.oreon.core.system.CommonConfig;
 import org.oreon.core.util.BufferUtil;
 import org.oreon.core.util.Constants;
 import org.oreon.modules.gl.gpgpu.NormalMapRenderer;
 import org.oreon.modules.gl.terrain.fractals.FractalMap;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class TerrainConfiguration {
 
 	private float scaleY;
 	private float scaleXZ;
 	private int bezier;
 	private int waterReflectionShift;
-	private float sightRangeFactor;
 	private float texDetail;
 	private int tessellationFactor;
 	private float tessellationSlope;
@@ -59,18 +62,19 @@ public class TerrainConfiguration {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		setScaleY(Float.valueOf(properties.getProperty("scaleY")));
-		setScaleXZ(Float.valueOf(properties.getProperty("scaleXZ")));
+		
+		scaleY = Float.valueOf(properties.getProperty("scaleY"));
+		scaleXZ = Float.valueOf(properties.getProperty("scaleXZ"));
 		
 		if (!properties.getProperty("heightmap").equals("0")){
-			setHeightmap(new Texture2D(properties.getProperty("heightmap")));
+			heightmap = new Texture2D(properties.getProperty("heightmap"));
 			getHeightmap().bind();
 			getHeightmap().bilinearFilter();
 				
 			NormalMapRenderer normalRenderer = new NormalMapRenderer(getHeightmap().getWidth());
 			normalRenderer.setStrength(Integer.valueOf(properties.getProperty("normalmap.strength")));
 			normalRenderer.render(getHeightmap());
-			setNormalmap(normalRenderer.getNormalmap());	
+			normalmap = normalRenderer.getNormalmap();	
 			createHeightmapDataBuffer();
 		}
 		
@@ -102,16 +106,13 @@ public class TerrainConfiguration {
 			getMaterials().get(materials.size()-1).setHorizontalScaling(Float.valueOf(properties.getProperty("materials.material" + i + "_horizontalScaling")));
 		}
 
-		setTessellationFactor(Integer.valueOf(properties.getProperty("tessellationFactor")));
-		setTessellationSlope(Float.valueOf(properties.getProperty("tessellationSlope")));
-		setTessellationShift(Float.valueOf(properties.getProperty("tessellationShift")));
+		tessellationFactor = Integer.valueOf(properties.getProperty("tessellationFactor"));
+		tessellationSlope = Float.valueOf(properties.getProperty("tessellationSlope"));
+		tessellationShift = Float.valueOf(properties.getProperty("tessellationShift"));
 		
-		setTexDetail(Float.valueOf(properties.getProperty("texDetail")));
+		texDetail = Float.valueOf(properties.getProperty("texDetail"));
 		
-		sightRangeFactor = Float.valueOf(properties.getProperty("sightRangeFactor"));
-		CommonConfig.getInstance().setSightRange(sightRangeFactor);
-		
-		setDetailRange(Integer.valueOf(properties.getProperty("detailRange")));
+		detailRange = Integer.valueOf(properties.getProperty("detailRange"));
 		
 		for (int i=0; i<Integer.valueOf(properties.getProperty("lod.count")); i++){
 			
@@ -151,105 +152,20 @@ public class TerrainConfiguration {
 		
 		FractalMapGenerator fractalMapGenerator = new FractalMapGenerator(Constants.TERRAIN_FRACTALS_RESOLUTION);
 		fractalMapGenerator.render(fractals);
-		setHeightmap(fractalMapGenerator.getFractalmap());
+		heightmap = fractalMapGenerator.getFractalmap();
 		
 		NormalMapRenderer normalRenderer = new NormalMapRenderer(Constants.TERRAIN_FRACTALS_RESOLUTION);
 		normalRenderer.setStrength(4);
 		normalRenderer.render(getHeightmap());
-		setNormalmap(normalRenderer.getNormalmap());
+		normalmap = normalRenderer.getNormalmap();
 		
 		SplatMapGenerator splatMapGenerator = new SplatMapGenerator(Constants.TERRAIN_FRACTALS_RESOLUTION);
 		splatMapGenerator.render(getNormalmap());
-		setSplatmap(splatMapGenerator.getSplatmap());
+		splatmap = splatMapGenerator.getSplatmap();
 	}
 	
 	private int updateMorphingArea(int lod){
 		return (int) ((scaleXZ/TerrainQuadtree.getRootPatches()) / (Math.pow(2, lod)));
-	}
-	
-	public float getScaleY() {
-		return scaleY;
-	}
-	public void setScaleY(float scaleY) {
-		this.scaleY = scaleY;
-	}
-	public float getScaleXZ() {
-		return scaleXZ;
-	}
-	public void setScaleXZ(float scaleXZ) {
-		this.scaleXZ = scaleXZ;
-	}
-	public int getBezier() {
-		return bezier;
-	}
-	public void setBezier(int bezier) {
-		this.bezier = bezier;
-	}
-	public float getSightRangeFactor() {
-		return sightRangeFactor;
-	}
-	public void setSightRangeFactor(float sightRangeFactor) {
-		this.sightRangeFactor = sightRangeFactor;
-	}
-	public float getTexDetail() {
-		return texDetail;
-	}
-	public void setTexDetail(float texDetail) {
-		this.texDetail = texDetail;
-	}
-	public int getTessellationFactor() {
-		return tessellationFactor;
-	}
-	public void setTessellationFactor(int tessellationFactor) {
-		this.tessellationFactor = tessellationFactor;
-	}
-	public float getTessellationSlope() {
-		return tessellationSlope;
-	}
-	public void setTessellationSlope(float tessellationSlope) {
-		this.tessellationSlope = tessellationSlope;
-	}
-	public float getTessellationShift() {
-		return tessellationShift;
-	}
-	public void setTessellationShift(float tessellationShift) {
-		this.tessellationShift = tessellationShift;
-	}
-	public int getDetailRange() {
-		return detailRange;
-	}
-	public void setDetailRange(int detailRange) {
-		this.detailRange = detailRange;
-	}
-	public Texture2D getHeightmap() {
-		return heightmap;
-	}
-	public void setHeightmap(Texture2D heightmap) {
-		this.heightmap = heightmap;
-	}
-	public Texture2D getNormalmap() {
-		return normalmap;
-	}
-	public void setNormalmap(Texture2D normalmap) {
-		this.normalmap = normalmap;
-	}
-	public Texture2D getAmbientmap() {
-		return ambientmap;
-	}
-	public void setAmbientmap(Texture2D ambientmap) {
-		this.ambientmap = ambientmap;
-	}
-
-	public List<FractalMap> getFractals() {
-		return fractals;
-	}
-
-	public GLShader getGridShader() {
-		return wireframeShader;
-	}
-
-	public void setGridShader(GLShader gridShader) {
-		this.wireframeShader = gridShader;
 	}
 
 	public void setLodRange(int index, int lod_range) {
@@ -257,67 +173,4 @@ public class TerrainConfiguration {
 		lod_morphing_area[index] = lod_range - updateMorphingArea(index+1);
 	}
 	
-	public int[] getLod_morphing_area() {
-		return lod_morphing_area;
-	}
-
-	public GLShader getShadowShader() {
-		return shadowShader;
-	}
-
-	public void setShadowShader(GLShader shadowShader) {
-		this.shadowShader = shadowShader;
-	}
-
-	public GLShader getShader() {
-		return shader;
-	}
-
-	public void setShader(GLShader shader) {
-		this.shader = shader;
-	}
-
-	public int[] getLod_range() {
-		return lod_range;
-	}
-
-	public int getWaterReflectionShift() {
-		return waterReflectionShift;
-	}
-
-	public void setWaterReflectionShift(int waterReflectionShift) {
-		this.waterReflectionShift = waterReflectionShift;
-	}
-
-	public List<Texture2D> getSplatmaps() {
-		return splatmaps;
-	}
-
-	public void setSplatmaps(List<Texture2D> splatmaps) {
-		this.splatmaps = splatmaps;
-	}
-
-	public FloatBuffer getHeightmapDataBuffer() {
-		return heightmapDataBuffer;
-	}
-
-	public void setHeightmapDataBuffer(FloatBuffer heightmapDataBuffer) {
-		this.heightmapDataBuffer = heightmapDataBuffer;
-	}
-
-	public List<Material> getMaterials() {
-		return materials;
-	}
-
-	public void setMaterials(List<Material> materials) {
-		this.materials = materials;
-	}
-
-	public Texture2D getSplatmap() {
-		return splatmap;
-	}
-
-	public void setSplatmap(Texture2D splatmap) {
-		this.splatmap = splatmap;
-	}
 }

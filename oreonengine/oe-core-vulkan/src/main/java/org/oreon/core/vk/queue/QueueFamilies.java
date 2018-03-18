@@ -19,6 +19,9 @@ import org.lwjgl.vulkan.VkPhysicalDevice;
 import org.lwjgl.vulkan.VkQueueFamilyProperties;
 import org.oreon.core.vk.util.VkUtil;
 
+import lombok.extern.log4j.Log4j;
+
+@Log4j
 public class QueueFamilies {
 	
 	private List<QueueFamily> queueFamilies;
@@ -34,11 +37,10 @@ public class QueueFamilies {
         VkQueueFamilyProperties.Buffer queueProps = VkQueueFamilyProperties.calloc(queueCount);
         vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, pQueueFamilyPropertyCount, queueProps);
         
-        System.out.println("Available Queues: " + queueCount);
+        log.info("Available Queues: " + queueCount);
         
         IntBuffer supportsPresent = memAllocInt(queueCount);
 
-        System.out.println("QueueFamilies");
         for (int i = 0; i < queueCount; i++) {
 
         	supportsPresent.position(i);
@@ -58,7 +60,7 @@ public class QueueFamilies {
 				}
         	}
         	
-        	System.out.println("Index:" + i + " flags:" + flags + " count:" + count + " presentation:" + supportsPresent.get(i));
+        	log.info("Index:" + i + " flags:" + flags + " count:" + count + " presentation:" + supportsPresent.get(i));
         	
         	QueueFamily queueFamily = new QueueFamily();
         	queueFamily.setIndex(i);

@@ -21,6 +21,11 @@ import org.oreon.core.vk.swapchain.SwapChainCapabilities;
 import org.oreon.core.vk.util.DeviceCapabilities;
 import org.oreon.core.vk.util.VkUtil;
 
+import lombok.Getter;
+import lombok.extern.log4j.Log4j;
+
+@Log4j
+@Getter
 public class PhysicalDevice {
 
 	private VkPhysicalDevice handle;
@@ -39,7 +44,7 @@ public class PhysicalDevice {
             throw new AssertionError("Failed to get number of physical devices: " + VkUtil.translateVulkanResult(err));
         }
         
-        System.out.println("Available Physical Devices: " + pPhysicalDeviceCount.get(0));
+        log.info("Available Physical Devices: " + pPhysicalDeviceCount.get(0));
         
         PointerBuffer pPhysicalDevices = memAllocPointer(pPhysicalDeviceCount.get(0));
         err = vkEnumeratePhysicalDevices(vkInstance, pPhysicalDeviceCount, pPhysicalDevices);
@@ -88,30 +93,6 @@ public class PhysicalDevice {
 	public int getDeviceMinImageCount4TripleBuffering(){
 		
 		return swapChainCapabilities.getMinImageCount4TripleBuffering();
-	}
-
-	public QueueFamilies getQueueFamilies() {
-		return queueFamilies;
-	}
-
-	public VkPhysicalDevice getHandle() {
-		return handle;
-	}
-
-	public SwapChainCapabilities getSwapChainCapabilities() {
-		return swapChainCapabilities;
-	}
-
-	public VkPhysicalDeviceMemoryProperties getMemoryProperties() {
-		return memoryProperties;
-	}
-
-	public VkPhysicalDeviceProperties getProperties() {
-		return properties;
-	}
-
-	public VkPhysicalDeviceFeatures getFeatures() {
-		return features;
 	}
 
 }

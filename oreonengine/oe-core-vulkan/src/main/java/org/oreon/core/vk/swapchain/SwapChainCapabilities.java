@@ -14,6 +14,9 @@ import org.lwjgl.vulkan.VkSurfaceCapabilitiesKHR;
 import org.lwjgl.vulkan.VkSurfaceFormatKHR;
 import org.oreon.core.vk.util.VkUtil;
 
+import lombok.Getter;
+
+@Getter
 public class SwapChainCapabilities {
 	
 	private VkSurfaceCapabilitiesKHR surfaceCapabilities;
@@ -94,16 +97,6 @@ public class SwapChainCapabilities {
         }
         
         return minImageCount;
-	}
-	
-	public VkSurfaceCapabilitiesKHR getSurfaceCapabilities() {
-		return surfaceCapabilities;
-	}
-	public VkSurfaceFormatKHR.Buffer getSurfaceFormats() {
-		return surfaceFormats;
-	}
-	public IntBuffer getPresentModes() {
-		return presentModes;
 	}
 	
 }

@@ -37,7 +37,7 @@ public class TerrainNode extends Renderable{
 												   new Default(),
 												   buffer);
 		
-		GLRenderInfo wireframeRenderInfo = new GLRenderInfo(terrConfig.getGridShader(),
+		GLRenderInfo wireframeRenderInfo = new GLRenderInfo(terrConfig.getWireframeShader(),
 														    new Default(),
 														    buffer);
 		

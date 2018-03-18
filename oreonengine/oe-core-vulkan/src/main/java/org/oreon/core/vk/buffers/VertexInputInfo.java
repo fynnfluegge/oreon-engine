@@ -7,9 +7,13 @@ import static org.lwjgl.vulkan.VK10.VK_VERTEX_INPUT_RATE_VERTEX;
 import org.lwjgl.vulkan.VkVertexInputAttributeDescription;
 import org.lwjgl.vulkan.VkVertexInputBindingDescription;
 
+import lombok.Getter;
+
 public class VertexInputInfo {
 
+	@Getter
 	private VkVertexInputBindingDescription.Buffer bindingDescription;
+	@Getter
 	private VkVertexInputAttributeDescription.Buffer attributeDescription;
 	
 	public void createBindingDescription(int stride){
@@ -39,14 +43,6 @@ public class VertexInputInfo {
 		attributeDescription.put(location0);
 		attributeDescription.put(location1);
 		attributeDescription.flip();
-	}
-
-	public VkVertexInputBindingDescription.Buffer getBindingDescription() {
-		return bindingDescription;
-	}
-
-	public VkVertexInputAttributeDescription.Buffer getAttributeDescription() {
-		return attributeDescription;
 	}
 
 }

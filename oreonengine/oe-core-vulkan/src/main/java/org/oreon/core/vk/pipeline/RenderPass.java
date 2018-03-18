@@ -31,12 +31,16 @@ import org.lwjgl.vulkan.VkSubpassDependency;
 import org.lwjgl.vulkan.VkSubpassDescription;
 import org.oreon.core.vk.util.VkUtil;
 
+import lombok.Getter;
+
 public class RenderPass {
 	
 	private VkAttachmentDescription.Buffer attachments;
 	private VkAttachmentReference.Buffer attachmentReferences;
 	private VkSubpassDescription.Buffer subpass;
 	private VkSubpassDependency.Buffer dependency;
+	
+	@Getter
 	private long handle;
 	
 	public void createRenderPass(VkDevice device){
@@ -113,10 +117,6 @@ public class RenderPass {
 	public void destroy(VkDevice device){
 		
 		vkDestroyRenderPass(device, handle, null);
-	}
-
-	public long getHandle() {
-		return handle;
 	}
 
 }

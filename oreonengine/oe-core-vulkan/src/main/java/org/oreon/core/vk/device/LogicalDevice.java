@@ -16,7 +16,6 @@ import static org.lwjgl.vulkan.VK10.vkDestroyDevice;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 
-import org.apache.log4j.Logger;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkDeviceCreateInfo;
@@ -26,28 +25,23 @@ import org.oreon.core.vk.command.CommandPool;
 import org.oreon.core.vk.util.VkUtil;
 
 import lombok.Getter;
+import lombok.extern.log4j.Log4j;
 
+@Log4j
+@Getter
 public class LogicalDevice {
-	
-	static final Logger log = Logger.getLogger(LogicalDevice.class);
 	
 	private VkDevice handle;
 	private VkQueue graphicsQueue;
 	private VkQueue computeQueue;
 	private VkQueue transferQueue;
 	
-	@Getter
 	private CommandPool graphicsCommandPool;
-	@Getter
 	private CommandPool computeCommandPool;
-	@Getter
 	private CommandPool transferCommandPool;
 	
-	@Getter
 	private int graphicsQueueFamilyIndex;
-	@Getter
 	private int computeQueueFamilyIndex;
-	@Getter
 	private int transferQueueFamilyIndex;
 	
 	public void createDevice(PhysicalDevice physicalDevice,
@@ -196,20 +190,4 @@ public class LogicalDevice {
 		vkDestroyDevice(handle, null);
 	}
 	
-	public VkDevice getHandle() {
-		return handle;
-	}
-
-	public VkQueue getGraphicsQueue() {
-		return graphicsQueue;
-	}
-
-	public VkQueue getComputeQueue() {
-		return computeQueue;
-	}
-
-	public VkQueue getTransferQueue() {
-		return transferQueue;
-	}
-
 }

@@ -19,9 +19,13 @@ import org.lwjgl.vulkan.VkShaderModuleCreateInfo;
 import org.oreon.core.util.ResourceLoader;
 import org.oreon.core.vk.util.VkUtil;
 
+import lombok.Getter;
+
 public class ShaderModule {
 
+	@Getter
 	private VkPipelineShaderStageCreateInfo shaderStageInfo;
+	@Getter
 	private long handle;
 	
 	public ShaderModule(VkDevice device, String filePath, int stage) {
@@ -74,14 +78,6 @@ public class ShaderModule {
 	public void destroy(VkDevice device){
 		
 		vkDestroyShaderModule(device, handle, null);
-	}
-
-	public VkPipelineShaderStageCreateInfo getShaderStageInfo() {
-		return shaderStageInfo;
-	}
-
-	public long getHandle() {
-		return handle;
 	}
 
 }

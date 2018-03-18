@@ -14,8 +14,11 @@ import org.lwjgl.vulkan.VkExtent2D;
 import org.lwjgl.vulkan.VkFramebufferCreateInfo;
 import org.oreon.core.vk.util.VkUtil;
 
+import lombok.Getter;
+
 public class VkFrameBuffer {
 	
+	@Getter
 	private long handle;
 	
 	public VkFrameBuffer(VkDevice device, long imageView, VkExtent2D extent, long renderPass) {
@@ -50,10 +53,6 @@ public class VkFrameBuffer {
 	public void destroy(VkDevice device){
 		
 		vkDestroyFramebuffer(device, handle, null);
-	}
-
-	public long getHandle() {
-		return handle;
 	}
 
 }

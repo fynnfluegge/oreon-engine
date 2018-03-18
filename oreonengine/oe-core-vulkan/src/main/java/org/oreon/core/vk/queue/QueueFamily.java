@@ -1,5 +1,10 @@
 package org.oreon.core.vk.queue;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class QueueFamily {
 	
 	private int index;
@@ -7,29 +12,4 @@ public class QueueFamily {
 	private int flags;
 	private int presentFlag;
 	
-	public int getIndex() {
-		return index;
-	}
-	public void setIndex(int index) {
-		this.index = index;
-	}
-	public int getCount() {
-		return count;
-	}
-	public void setCount(int count) {
-		this.count = count;
-	}
-	public int getFlags() {
-		return flags;
-	}
-	public void setFlags(int flags) {
-		this.flags = flags;
-	}
-	public int getPresentFlag() {
-		return presentFlag;
-	}
-	public void setPresentFlag(int presentFlag) {
-		this.presentFlag = presentFlag;
-	}
-
 }

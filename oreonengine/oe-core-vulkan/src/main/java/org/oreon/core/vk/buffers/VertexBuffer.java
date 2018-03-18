@@ -29,7 +29,6 @@ import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkMemoryAllocateInfo;
 import org.lwjgl.vulkan.VkMemoryRequirements;
 import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
-import org.oreon.core.system.CommonConfig;
 import org.oreon.core.vk.util.VkUtil;
 
 import lombok.Getter;

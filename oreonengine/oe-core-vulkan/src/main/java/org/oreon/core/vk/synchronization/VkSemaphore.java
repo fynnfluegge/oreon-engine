@@ -12,9 +12,13 @@ import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkSemaphoreCreateInfo;
 import org.oreon.core.vk.util.VkUtil;
 
+import lombok.Getter;
+
 public class VkSemaphore {
 	
+	@Getter
 	private long handle;
+	@Getter
 	private LongBuffer pHandle;
 
 	public VkSemaphore(VkDevice device) {
@@ -39,14 +43,6 @@ public class VkSemaphore {
 	public void destroy(VkDevice device){
 		
 		vkDestroySemaphore(device, handle, null);
-	}
-
-	public LongBuffer getpHandle() {
-		return pHandle;
-	}
-
-	public long getHandle() {
-		return handle;
 	}
 
 }

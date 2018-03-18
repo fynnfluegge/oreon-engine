@@ -14,13 +14,13 @@ public class GLTerrain extends Terrain{
 	{
 		configuration = new TerrainConfiguration();
 		configuration.loadFile(config);
-		configuration.setGridShader(grid);
+		configuration.setWireframeShader(grid);
 		configuration.setShader(shader);
 		configuration.setShadowShader(shadow);
 		
 		lowPolyConfiguration = new TerrainConfiguration();
 		lowPolyConfiguration.loadFile(lowPolyConfig);
-		lowPolyConfiguration.setGridShader(grid);
+		lowPolyConfiguration.setWireframeShader(grid);
 		lowPolyConfiguration.setShader(shader);
 		lowPolyConfiguration.setShadowShader(shadow);
 		

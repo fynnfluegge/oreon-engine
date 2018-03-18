@@ -37,9 +37,13 @@ import org.oreon.core.vk.target.VkFrameBuffer;
 import org.oreon.core.vk.target.VkImageView;
 import org.oreon.core.vk.util.VkUtil;
 
+import lombok.Getter;
+
 public class SwapChain {
 	
+	@Getter
 	private long handle;
+	
 	private LongBuffer pHandle;
 	private VkExtent2D extent;
 	private List<Long> swapChainImages;
@@ -103,7 +107,7 @@ public class SwapChain {
         presentInfo = VkPresentInfoKHR.calloc()
                 .sType(VK_STRUCTURE_TYPE_PRESENT_INFO_KHR)
                 .pNext(0)
-                .pWaitSemaphores(renderCompleteSemaphore.getpHandle())
+                .pWaitSemaphores(renderCompleteSemaphore.getPHandle())
                 .swapchainCount(1)
                 .pSwapchains(pHandle)
                 .pImageIndices(pAcquiredImageIndex)
@@ -180,11 +184,11 @@ public class SwapChain {
 		submitInfo = VkSubmitInfo.calloc()
                 .sType(VK_STRUCTURE_TYPE_SUBMIT_INFO)
                 .pNext(0)
-                .waitSemaphoreCount(imageAcquiredSemaphore.getpHandle().remaining())
-                .pWaitSemaphores(imageAcquiredSemaphore.getpHandle())
+                .waitSemaphoreCount(imageAcquiredSemaphore.getPHandle().remaining())
+                .pWaitSemaphores(imageAcquiredSemaphore.getPHandle())
                 .pWaitDstStageMask(pWaitDstStageMask)
                 .pCommandBuffers(null)
-                .pSignalSemaphores(renderCompleteSemaphore.getpHandle());
+                .pSignalSemaphores(renderCompleteSemaphore.getPHandle());
 	}
 	
 	public void draw(VkDevice device, VkQueue queue){
@@ -195,7 +199,7 @@ public class SwapChain {
         }
         
         CommandBuffer currentRenderCommandBuffer = renderCommandBuffers.get(pAcquiredImageIndex.get(0));
-        submitInfo.pCommandBuffers(currentRenderCommandBuffer.getpCommandBuffer());
+        submitInfo.pCommandBuffers(currentRenderCommandBuffer.getPCommandBuffer());
         currentRenderCommandBuffer.submit(queue, submitInfo);
 		
 		err = vkQueuePresentKHR(queue, presentInfo);
@@ -214,10 +218,6 @@ public class SwapChain {
 		}
 		renderCompleteSemaphore.destroy(device);
 		imageAcquiredSemaphore.destroy(device);
-	}
-
-	public long getHandle() {
-		return handle;
 	}
 
 }

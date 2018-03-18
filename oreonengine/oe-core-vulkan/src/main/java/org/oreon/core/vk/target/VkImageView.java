@@ -19,8 +19,11 @@ import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkImageViewCreateInfo;
 import org.oreon.core.vk.util.VkUtil;
 
+import lombok.Getter;
+
 public class VkImageView {
 	
+	@Getter
 	private long handle;
 	
 	public void createImageView(VkDevice device, int imageFormat, long image){
@@ -60,10 +63,6 @@ public class VkImageView {
 	public void destroy(VkDevice device){
 		
 		vkDestroyImageView(device, handle, null);
-	}
-
-	public long getHandle() {
-		return handle;
 	}
 
 }

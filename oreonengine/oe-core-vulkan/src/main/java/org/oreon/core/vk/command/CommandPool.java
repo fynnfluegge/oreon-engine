@@ -13,8 +13,11 @@ import org.lwjgl.vulkan.VkCommandPoolCreateInfo;
 import org.lwjgl.vulkan.VkDevice;
 import org.oreon.core.vk.util.VkUtil;
 
+import lombok.Getter;
+
 public class CommandPool {
 	
+	@Getter
 	private long handle;
 	
 	public CommandPool(VkDevice device, int queueFamilyIndex){
@@ -39,10 +42,6 @@ public class CommandPool {
 	public void destroy(VkDevice device){
 		
 		vkDestroyCommandPool(device, handle, null);
-	}
-
-	public long getHandle() {
-		return handle;
 	}
 
 }

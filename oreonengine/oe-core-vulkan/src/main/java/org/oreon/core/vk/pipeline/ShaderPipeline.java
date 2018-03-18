@@ -6,11 +6,14 @@ import java.util.List;
 import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkPipelineShaderStageCreateInfo;
 
+import lombok.Getter;
+
 import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_VERTEX_BIT;
 import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_FRAGMENT_BIT;
 
 public class ShaderPipeline {
 
+	@Getter
 	private VkPipelineShaderStageCreateInfo.Buffer shaderPipeline;
 	private List<ShaderModule> shaderStages = new ArrayList<ShaderModule>();
 
@@ -42,10 +45,6 @@ public class ShaderPipeline {
 		for (ShaderModule shaderModule : shaderStages){
 			shaderModule.destroy(device);
 		}
-	}
-	
-	public VkPipelineShaderStageCreateInfo.Buffer getShaderPipeline() {
-		return shaderPipeline;
 	}
 	
 }

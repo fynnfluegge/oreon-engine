@@ -55,6 +55,8 @@ import org.lwjgl.vulkan.VkViewport;
 import org.oreon.core.vk.buffers.VertexInputInfo;
 import org.oreon.core.vk.util.VkUtil;
 
+import lombok.Getter;
+
 public class Pipeline {
 	
 	private VkPipelineVertexInputStateCreateInfo vertexInputState;
@@ -69,6 +71,7 @@ public class Pipeline {
 	private VkRect2D.Buffer scissor;
 	private IntBuffer pDynamicStates;
 	
+	@Getter
 	private long handle;
 	
 	private RenderPass renderPass;
@@ -250,10 +253,6 @@ public class Pipeline {
 		vkDestroyPipelineLayout(device, layoutHandle, null);
 		renderPass.destroy(device);
 		vkDestroyPipeline(device, handle, null);
-	}
-
-	public long getHandle() {
-		return handle;
 	}
 
 }

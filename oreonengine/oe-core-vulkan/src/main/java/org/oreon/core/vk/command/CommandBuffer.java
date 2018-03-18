@@ -44,9 +44,13 @@ import org.lwjgl.vulkan.VkSubmitInfo;
 import org.oreon.core.vk.synchronization.VkSemaphore;
 import org.oreon.core.vk.util.VkUtil;
 
+import lombok.Getter;
+
 public class CommandBuffer {
 
+	@Getter
 	private VkCommandBuffer commandBuffer;
+	@Getter
 	private PointerBuffer pCommandBuffer;
 	
 	public CommandBuffer(VkDevice device, long commandPool) {
@@ -200,21 +204,13 @@ public class CommandBuffer {
 		VkSubmitInfo submitInfo = VkSubmitInfo.calloc()
 				.sType(VK_STRUCTURE_TYPE_SUBMIT_INFO)
                 .pNext(0)
-                .waitSemaphoreCount(waitSemaphore == null ? 0 : waitSemaphore.getpHandle().remaining())
-                .pWaitSemaphores(waitSemaphore == null ? null : waitSemaphore.getpHandle())
+                .waitSemaphoreCount(waitSemaphore == null ? 0 : waitSemaphore.getPHandle().remaining())
+                .pWaitSemaphores(waitSemaphore == null ? null : waitSemaphore.getPHandle())
                 .pWaitDstStageMask(pWaitDstStageMask)
                 .pCommandBuffers(pCommandBuffer)
-                .pSignalSemaphores(signalSemaphore == null ? null : signalSemaphore.getpHandle());
+                .pSignalSemaphores(signalSemaphore == null ? null : signalSemaphore.getPHandle());
 		
 		return submitInfo;
-	}
-
-	public VkCommandBuffer getCommandBuffer() {
-		return commandBuffer;
-	}
-
-	public PointerBuffer getpCommandBuffer() {
-		return pCommandBuffer;
 	}
 	
 }
