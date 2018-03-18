@@ -46,7 +46,7 @@ public class TerrainConfiguration {
 	private int[] lod_morphing_area = new int[8];
 	
 	private GLShader shader;
-	private GLShader gridShader;
+	private GLShader wireframeShader;
 	private GLShader shadowShader;
 	
 	public void loadFile(String file)
@@ -245,11 +245,11 @@ public class TerrainConfiguration {
 	}
 
 	public GLShader getGridShader() {
-		return gridShader;
+		return wireframeShader;
 	}
 
 	public void setGridShader(GLShader gridShader) {
-		this.gridShader = gridShader;
+		this.wireframeShader = gridShader;
 	}
 
 	public void setLodRange(int index, int lod_range) {

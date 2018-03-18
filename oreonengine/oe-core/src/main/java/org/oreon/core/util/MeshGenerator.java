@@ -99,4 +99,46 @@ public class MeshGenerator {
 		
 		return vertices;
 	}
+	
+	public static Vec2f[] generatePatch2D4x4(int patches)
+	{
+		
+		int amountx = patches; 
+		int amounty = patches;
+		
+		// 16 vertices for each patch
+		Vec2f[] vertices = new Vec2f[amountx * amounty * 16];
+		
+		int index = 0;
+		float dx = 1f/amountx;
+		float dy = 1f/amounty;
+		
+		for (float i=0; i<1; i+=dx)
+		{
+			for (float j=0; j<1; j+=dy)
+			{	
+				vertices[index++] = new Vec2f(i,j);
+				vertices[index++] = new Vec2f(i+dx*0.33f,j);
+				vertices[index++] = new Vec2f(i+dx*0.66f,j);
+				vertices[index++] = new Vec2f(i+dx,j);
+				
+				vertices[index++] = new Vec2f(i,j+dy*0.33f);
+				vertices[index++] = new Vec2f(i+dx*0.33f,j+dy*0.33f);
+				vertices[index++] = new Vec2f(i+dx*0.66f,j+dy*0.33f);
+				vertices[index++] = new Vec2f(i+dx,j+dy*0.33f);
+				
+				vertices[index++] = new Vec2f(i,j+dy*0.66f);
+				vertices[index++] = new Vec2f(i+dx*0.33f,j+dy*0.66f);
+				vertices[index++] = new Vec2f(i+dx*0.66f,j+dy*0.66f);
+				vertices[index++] = new Vec2f(i+dx,j+dy*0.66f);
+				
+				vertices[index++] = new Vec2f(i,j+dy);
+				vertices[index++] = new Vec2f(i+dx*0.33f,j+dy);
+				vertices[index++] = new Vec2f(i+dx*0.66f,j+dy);
+				vertices[index++] = new Vec2f(i+dx,j+dy);
+			}
+		}
+		
+		return vertices;
+	}
 }

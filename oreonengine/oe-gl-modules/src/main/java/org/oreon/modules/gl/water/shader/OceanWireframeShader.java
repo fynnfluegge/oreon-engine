@@ -11,21 +11,21 @@ import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.ResourceLoader;
 import org.oreon.modules.gl.water.Water;
 
-public class OceanGridShader extends GLShader{
+public class OceanWireframeShader extends GLShader{
 
-private static OceanGridShader instance = null;
+private static OceanWireframeShader instance = null;
 	
 
-	public static OceanGridShader getInstance() 
+	public static OceanWireframeShader getInstance() 
 	{
 	    if(instance == null) 
 	    {
-	    	instance = new OceanGridShader();
+	    	instance = new OceanWireframeShader();
 	    }
 	      return instance;
 	}
 	
-	protected OceanGridShader()
+	protected OceanWireframeShader()
 	{
 		super();
 		
