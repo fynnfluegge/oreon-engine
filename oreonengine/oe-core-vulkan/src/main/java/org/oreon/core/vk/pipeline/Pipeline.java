@@ -1,9 +1,9 @@
 package org.oreon.core.vk.pipeline;
 
-import static org.lwjgl.vulkan.VK10.VK_CULL_MODE_BACK_BIT;
+import static org.lwjgl.vulkan.VK10.VK_CULL_MODE_NONE;
 import static org.lwjgl.vulkan.VK10.VK_DYNAMIC_STATE_SCISSOR;
 import static org.lwjgl.vulkan.VK10.VK_DYNAMIC_STATE_VIEWPORT;
-import static org.lwjgl.vulkan.VK10.VK_FRONT_FACE_CLOCKWISE;
+import static org.lwjgl.vulkan.VK10.VK_FRONT_FACE_COUNTER_CLOCKWISE;
 import static org.lwjgl.vulkan.VK10.VK_POLYGON_MODE_FILL;
 import static org.lwjgl.vulkan.VK10.VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
 import static org.lwjgl.vulkan.VK10.VK_SAMPLE_COUNT_1_BIT;
@@ -52,7 +52,6 @@ import org.lwjgl.vulkan.VkPipelineVertexInputStateCreateInfo;
 import org.lwjgl.vulkan.VkPipelineViewportStateCreateInfo;
 import org.lwjgl.vulkan.VkRect2D;
 import org.lwjgl.vulkan.VkViewport;
-import org.oreon.core.vk.buffers.VertexInputInfo;
 import org.oreon.core.vk.util.VkUtil;
 
 import lombok.Getter;
@@ -73,9 +72,11 @@ public class Pipeline {
 	
 	@Getter
 	private long handle;
+	@Getter
+	private long layoutHandle;
 	
 	private RenderPass renderPass;
-	private long layoutHandle;
+	
 	
 	public void createPipeline(VkDevice device, ShaderPipeline shaderPipeline, RenderPass renderPass){
 		
@@ -185,8 +186,8 @@ public class Pipeline {
 		rasterizer = VkPipelineRasterizationStateCreateInfo.calloc()
 				.sType(VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO)
 				.polygonMode(VK_POLYGON_MODE_FILL)
-				.cullMode(VK_CULL_MODE_BACK_BIT)
-				.frontFace(VK_FRONT_FACE_CLOCKWISE)
+				.cullMode(VK_CULL_MODE_NONE)
+				.frontFace(VK_FRONT_FACE_COUNTER_CLOCKWISE)
 				.rasterizerDiscardEnable(false)
 				.lineWidth(1.0f)
 				.depthClampEnable(false)

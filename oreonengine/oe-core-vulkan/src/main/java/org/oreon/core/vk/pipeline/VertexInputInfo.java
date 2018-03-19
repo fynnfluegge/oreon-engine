@@ -1,4 +1,4 @@
-package org.oreon.core.vk.buffers;
+package org.oreon.core.vk.pipeline;
 
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_R32G32_SFLOAT;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_R32G32B32_SFLOAT;

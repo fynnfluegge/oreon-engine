@@ -31,7 +31,7 @@ public class DescriptorSetLayout {
 		layoutBindings = VkDescriptorSetLayoutBinding.calloc(bindingCount);
 	}
 
-	public void createDescriptorSetLayout(VkDevice device){
+	public void create(VkDevice device){
 		
 		layoutBindings.flip();
 		
@@ -42,11 +42,13 @@ public class DescriptorSetLayout {
 		pHandle = memAllocLong(1);
 		int err = vkCreateDescriptorSetLayout(device, layoutInfo, null, pHandle);
 		
+		handle = pHandle.get(0);
+		layoutBindings.free();
+		layoutInfo.free();
+		
 		if (err != VK_SUCCESS) {
 			throw new AssertionError("Failed to create DescriptorSetLayout: " + VkUtil.translateVulkanResult(err));
 		}
-		
-		handle = pHandle.get(0);
 	}
 	
 	public void setLayoutBinding(){

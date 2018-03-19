@@ -51,19 +51,25 @@ import org.lwjgl.vulkan.VkInstanceCreateInfo;
 import org.lwjgl.vulkan.VkSubmitInfo;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.system.RenderEngine;
-import org.oreon.core.vk.buffers.VertexBuffer;
-import org.oreon.core.vk.buffers.VertexInputInfo;
+import org.oreon.core.util.BufferUtil;
+import org.oreon.core.vk.buffers.VkBuffer;
+import org.oreon.core.vk.buffers.VkUniformBuffer;
 import org.oreon.core.vk.command.CommandBuffer;
+import org.oreon.core.vk.descriptor.DescriptorPool;
+import org.oreon.core.vk.descriptor.DescriptorSet;
+import org.oreon.core.vk.descriptor.DescriptorSetLayout;
 import org.oreon.core.vk.device.LogicalDevice;
 import org.oreon.core.vk.device.PhysicalDevice;
 import org.oreon.core.vk.pipeline.Pipeline;
 import org.oreon.core.vk.pipeline.RenderPass;
 import org.oreon.core.vk.pipeline.ShaderPipeline;
+import org.oreon.core.vk.pipeline.VertexInputInfo;
+import org.oreon.core.vk.scenegraph.VkCamera;
 import org.oreon.core.vk.swapchain.SwapChain;
 import org.oreon.core.vk.util.DeviceCapabilities;
 import org.oreon.core.vk.util.VkUtil;
 
-public class VKRenderEngine implements RenderEngine{
+public class VkRenderEngine implements RenderEngine{
 	
 	private VkInstance vkInstance;
 	private PhysicalDevice physicalDevice;
@@ -72,6 +78,8 @@ public class VKRenderEngine implements RenderEngine{
 	private long surface;
 	
 	private Pipeline pipeline;
+	
+	private VkUniformBuffer uniformBuffer;
 	
 	private ByteBuffer[] layers = {
 	            	memUTF8("VK_LAYER_LUNARG_standard_validation"),
@@ -120,8 +128,8 @@ public class VKRenderEngine implements RenderEngine{
 	    logicalDevice.createDevice(physicalDevice, 0, ppEnabledLayerNames);
 	    
 	    VkExtent2D swapExtent = physicalDevice.getSwapChainCapabilities().getSurfaceCapabilities().currentExtent();
-	    swapExtent.width(1280);
-	    swapExtent.height(720);
+	    swapExtent.width(CoreSystem.getInstance().getWindow().getWidth());
+	    swapExtent.height(CoreSystem.getInstance().getWindow().getHeight());
 	    
 	    int imageFormat = VK_FORMAT_B8G8R8A8_UNORM;
 	    int colorSpace = VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
@@ -151,9 +159,9 @@ public class VKRenderEngine implements RenderEngine{
         fb.put(-0.5f).put( 0.5f);
         fb.put(1.0f).put(1.0f).put(1.0f);
         
-        VertexBuffer vertexBufferObject = new VertexBuffer();
+        VkBuffer vertexBufferObject = new VkBuffer();
 	    
-	    VertexBuffer stagingVertexBufferObject = new VertexBuffer();
+	    VkBuffer stagingVertexBufferObject = new VkBuffer();
 	    
 	    stagingVertexBufferObject.create(logicalDevice.getHandle(), vertexBuffer.limit(), VK_BUFFER_USAGE_TRANSFER_SRC_BIT);
 	    stagingVertexBufferObject.allocate(logicalDevice.getHandle(), physicalDevice.getMemoryProperties(),
@@ -187,9 +195,9 @@ public class VKRenderEngine implements RenderEngine{
         ib.put(3);
         ib.put(0);
         
-        VertexBuffer indexBufferObject = new VertexBuffer();
+        VkBuffer indexBufferObject = new VkBuffer();
         
-        VertexBuffer stagingIndexBufferObject = new VertexBuffer();
+        VkBuffer stagingIndexBufferObject = new VkBuffer();
         
         stagingIndexBufferObject.create(logicalDevice.getHandle(), indexBuffer.limit(), VK_BUFFER_USAGE_TRANSFER_SRC_BIT);
 	    stagingIndexBufferObject.allocate(logicalDevice.getHandle(), physicalDevice.getMemoryProperties(),
@@ -212,6 +220,30 @@ public class VKRenderEngine implements RenderEngine{
 	    
 	    indexCopyCommandBuffer.destroy(logicalDevice.getHandle(), logicalDevice.getTransferCommandPool().getHandle());
 	    stagingIndexBufferObject.destroy(logicalDevice.getHandle());
+	    
+	    // Camera UBO
+	    ByteBuffer cameraBuffer = memAlloc(4 * 16);
+	    FloatBuffer cameraMatrix = cameraBuffer.asFloatBuffer();
+	    VkCamera camera = (VkCamera) CoreSystem.getInstance().getScenegraph().getCamera();
+	    cameraMatrix.put(BufferUtil.createFlippedBuffer(camera.getViewProjectionMatrix()));
+	    
+	    uniformBuffer = new VkUniformBuffer(logicalDevice.getHandle(),
+	    												    physicalDevice.getMemoryProperties(),
+	    												    cameraBuffer);
+	    
+	    DescriptorSetLayout descriptorLayout = new DescriptorSetLayout(1);
+	    descriptorLayout.setLayoutBinding();
+	    descriptorLayout.create(logicalDevice.getHandle());
+	    
+	    DescriptorPool descriptorPool = new DescriptorPool(logicalDevice.getHandle());
+	    
+	    DescriptorSet descriptorSet = new DescriptorSet(logicalDevice.getHandle(), 
+	    												descriptorPool.getHandle(),
+	    												descriptorLayout.getPHandle());
+	    descriptorSet.configureWrite(logicalDevice.getHandle(), uniformBuffer.getHandle(), 0, cameraBuffer.limit());
+	    
+	    long[] descriptorSets = new long[1];
+	    descriptorSets[0] = descriptorSet.getHandle();
 	    
 	    ShaderPipeline shaderPipeline = new ShaderPipeline();
 	    shaderPipeline.createVertexShader(logicalDevice.getHandle(), "shaders/triangle.vert.spv");
@@ -238,7 +270,7 @@ public class VKRenderEngine implements RenderEngine{
 	    pipeline.specifyColorBlending();
 	    pipeline.specifyDepthAndStencilTest();
 	    pipeline.specifyDynamicState();
-	    pipeline.specifyLayout(logicalDevice.getHandle(), null);
+	    pipeline.specifyLayout(logicalDevice.getHandle(), descriptorLayout.getPHandle());
 	    pipeline.createPipeline(logicalDevice.getHandle(), shaderPipeline, renderPass);
 	    
 	    swapChain = new SwapChain(logicalDevice.getHandle(), 
@@ -253,9 +285,11 @@ public class VKRenderEngine implements RenderEngine{
 	    swapChain.createRenderCommandBuffers(logicalDevice.getHandle(),
 	    									 logicalDevice.getGraphicsCommandPool(),
 	    									 pipeline.getHandle(),
+	    									 pipeline.getLayoutHandle(),
 	    									 renderPass.getHandle(), 
 	    									 vertexBufferObject.getHandle(),
-	    									 indexBufferObject.getHandle());
+	    									 indexBufferObject.getHandle(),
+	    									 descriptorSets);
 	    swapChain.createSubmitInfo();
 	}
     
@@ -272,6 +306,12 @@ public class VKRenderEngine implements RenderEngine{
 	@Override
 	public void update() {
 		
+		 VkCamera camera = (VkCamera) CoreSystem.getInstance().getScenegraph().getCamera();
+		 
+		 ByteBuffer cameraBuffer = memAlloc(4 * 16);
+		 FloatBuffer cameraMatrix = cameraBuffer.asFloatBuffer();
+		 cameraMatrix.put(BufferUtil.createFlippedBuffer(camera.getViewProjectionMatrix()));
+		 uniformBuffer.updateData(logicalDevice.getHandle(), cameraBuffer);
 	}
 
 	@Override

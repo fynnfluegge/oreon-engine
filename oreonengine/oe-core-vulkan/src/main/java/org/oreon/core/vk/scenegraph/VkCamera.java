@@ -10,11 +10,20 @@ public class VkCamera extends Camera{
 		super();
 		
 		setInput(input);
+		
+		// flip y-axxis for vulkan coordinate system
+		getProjectionMatrix().set(1, 1, -getProjectionMatrix().get(1, 1));
 	}
 	
 	@Override
 	public void init() {
 		
+	}
+	
+	@Override
+	public void update(){
+		
+		super.update();
 	}
 
 }

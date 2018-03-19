@@ -162,15 +162,19 @@ public class SwapChain {
         }
 	}
 	
-	public void createRenderCommandBuffers(VkDevice device, CommandPool commandPool, long pipeline, long renderPass,
-										   long vertexBuffer, long indexBuffer){
+	public void createRenderCommandBuffers(VkDevice device, CommandPool commandPool, long pipeline,
+			 							   long pipelineLayout, long renderPass,
+										   long vertexBuffer, long indexBuffer,
+										   long[] descriptorSets){
 		
 		renderCommandBuffers = new ArrayList<>();
 		
 		for (VkFrameBuffer framebuffer : frameBuffers){
 			CommandBuffer commandBuffer = new CommandBuffer(device, commandPool.getHandle());
 			commandBuffer.beginRecord(VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT);
-			commandBuffer.recordIndexedRenderPass(pipeline, renderPass, vertexBuffer, indexBuffer, extent, framebuffer.getHandle());
+			commandBuffer.recordIndexedRenderPass(pipeline, pipelineLayout, renderPass,
+												  vertexBuffer, indexBuffer, descriptorSets,
+												  extent, framebuffer.getHandle());
 			commandBuffer.finishRecord();
 			renderCommandBuffers.add(commandBuffer);
 		}

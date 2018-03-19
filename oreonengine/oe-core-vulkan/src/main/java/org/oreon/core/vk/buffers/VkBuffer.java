@@ -33,7 +33,7 @@ import org.oreon.core.vk.util.VkUtil;
 
 import lombok.Getter;
 
-public class VertexBuffer {
+public class VkBuffer {
 
 	@Getter
 	private long handle;

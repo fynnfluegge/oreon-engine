@@ -10,11 +10,14 @@ import static org.lwjgl.glfw.GLFW.GLFW_KEY_UP;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_W;
 import static org.lwjgl.glfw.GLFW.glfwSetCursorPos;
 
+import java.nio.FloatBuffer;
+
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.math.Quaternion;
 import org.oreon.core.math.Vec3f;
 import org.oreon.core.platform.Input;
 import org.oreon.core.system.CoreSystem;
+import org.oreon.core.util.BufferUtil;
 import org.oreon.core.util.Constants;
 import org.oreon.core.util.Util;
 
@@ -55,9 +58,12 @@ private final Vec3f yAxis = new Vec3f(0,1,0);
 	private Quaternion[] frustumPlanes = new Quaternion[6];
 	private Vec3f[] frustumCorners = new Vec3f[8];
 	
+	protected FloatBuffer floatBuffer;
+	protected final int bufferSize = Float.BYTES * (4+16+(6*4));
+	
 	protected Camera()
 	{
-		this(new Vec3f(-447.3447f,265.7899f,923.41846f), new Vec3f(-0.16345039f,0.28538036f,-0.94437385f).normalize(), new Vec3f(0.048669036f,0.9584144f,0.28119972f));
+		this(new Vec3f(0,0,0), new Vec3f(0,0,1).normalize(), new Vec3f(0,1,0));
 		setProjection(70, CoreSystem.getInstance().getWindow().getWidth(), CoreSystem.getInstance().getWindow().getHeight());
 		setViewMatrix(new Matrix4f().View(this.getForward(), this.getUp()).mul(
 				new Matrix4f().Translation(this.getPosition().mul(-1))));
@@ -65,6 +71,7 @@ private final Vec3f yAxis = new Vec3f(0,1,0);
 		previousViewMatrix = new Matrix4f().Zero();
 		viewProjectionMatrix = new Matrix4f().Zero();
 		previousViewProjectionMatrix = new Matrix4f().Zero();
+		floatBuffer = BufferUtil.createFloatBuffer(bufferSize);
 	}
 	
 	private Camera(Vec3f position, Vec3f forward, Vec3f up)
@@ -207,6 +214,13 @@ private final Vec3f yAxis = new Vec3f(0,1,0);
 		setViewMatrix(new Matrix4f().View(this.getForward(), this.getUp()).mul(
 				new Matrix4f().Translation(this.getPosition().mul(-1))));
 		setViewProjectionMatrix(getProjectionMatrix().mul(getViewMatrix()));
+		
+		floatBuffer.clear();
+		floatBuffer.put(BufferUtil.createFlippedBuffer(getPosition()));
+		floatBuffer.put(0);
+		floatBuffer.put(BufferUtil.createFlippedBuffer(getViewMatrix()));
+		floatBuffer.put(BufferUtil.createFlippedBuffer(getViewProjectionMatrix()));
+		floatBuffer.put(BufferUtil.createFlippedBuffer(getFrustumPlanes()));
 	}
 	
 	public void move(Vec3f dir, float amount)

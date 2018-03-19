@@ -20,6 +20,7 @@ import static org.lwjgl.vulkan.VK10.vkCmdBeginRenderPass;
 import static org.lwjgl.vulkan.VK10.vkCmdBindPipeline;
 import static org.lwjgl.vulkan.VK10.vkCmdBindVertexBuffers;
 import static org.lwjgl.vulkan.VK10.vkCmdBindIndexBuffer;
+import static org.lwjgl.vulkan.VK10.vkCmdBindDescriptorSets;
 import static org.lwjgl.vulkan.VK10.vkCmdCopyBuffer;
 import static org.lwjgl.vulkan.VK10.vkCmdDraw;
 import static org.lwjgl.vulkan.VK10.vkCmdDrawIndexed;
@@ -134,9 +135,11 @@ public class CommandBuffer {
 	}
 	
 	public void recordIndexedRenderPass(long pipeline,
+										long pipelineLayout,
 										long renderPass,
 										long vertexBuffer,
 										long indexBuffer,
+										long[] descriptorSets,
 										VkExtent2D extent,
 										long framebuffer){
 
@@ -162,6 +165,8 @@ public class CommandBuffer {
 		
 		vkCmdBindVertexBuffers(commandBuffer, 0, pVertexBuffers, offsets);
 		vkCmdBindIndexBuffer(commandBuffer, indexBuffer, 0, VK_INDEX_TYPE_UINT32);
+		vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout,
+								0, descriptorSets, null);
 		
 		vkCmdDrawIndexed(commandBuffer, 6, 1, 0, 0, 0);
 		vkCmdEndRenderPass(commandBuffer);
