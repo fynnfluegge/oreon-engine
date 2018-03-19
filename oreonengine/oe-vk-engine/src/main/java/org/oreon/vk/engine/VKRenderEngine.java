@@ -140,7 +140,6 @@ public class VKRenderEngine implements RenderEngine{
 	    
 	    int minImageCount = physicalDevice.getDeviceMinImageCount4TripleBuffering();
 	    
-	    // TODO
 	    ByteBuffer vertexBuffer = memAlloc(4 * 2 * 4 + 4 * 3 * 4);
         FloatBuffer fb = vertexBuffer.asFloatBuffer();
         fb.put(-0.5f).put(-0.5f);
@@ -239,7 +238,7 @@ public class VKRenderEngine implements RenderEngine{
 	    pipeline.specifyColorBlending();
 	    pipeline.specifyDepthAndStencilTest();
 	    pipeline.specifyDynamicState();
-	    pipeline.specifyLayout(logicalDevice.getHandle());
+	    pipeline.specifyLayout(logicalDevice.getHandle(), null);
 	    pipeline.createPipeline(logicalDevice.getHandle(), shaderPipeline, renderPass);
 	    
 	    swapChain = new SwapChain(logicalDevice.getHandle(), 

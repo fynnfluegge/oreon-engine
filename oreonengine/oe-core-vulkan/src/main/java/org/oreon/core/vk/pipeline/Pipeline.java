@@ -122,12 +122,12 @@ public class Pipeline {
 		}
 	}
 	
-	public void specifyLayout(VkDevice device){
+	public void specifyLayout(VkDevice device, LongBuffer pLayouts){
 		
 		VkPipelineLayoutCreateInfo pipelineLayout = VkPipelineLayoutCreateInfo.calloc()
 				.sType(VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO)
                 .pNext(0)
-                .pSetLayouts(null);
+                .pSetLayouts(pLayouts);
 		
 		LongBuffer pPipelineLayout = memAllocLong(1);
         int err = vkCreatePipelineLayout(device, pipelineLayout, null, pPipelineLayout);
