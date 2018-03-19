@@ -1,6 +1,7 @@
 package org.oreon.gl.demo.oreonworlds.shaders;
 
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import org.oreon.core.gl.shaders.GLShader;
@@ -32,8 +33,8 @@ private static TerrainWireframeShader instance = null;
 		addVertexShader(ResourceLoader.loadShader("oreonworlds/shaders/Terrain_Shader/Terrain_VS.glsl"));
 		addTessellationControlShader(ResourceLoader.loadShader("oreonworlds/shaders/Terrain_Shader/Terrain_TC.glsl"));
 		addTessellationEvaluationShader(ResourceLoader.loadShader("oreonworlds/shaders/Terrain_Shader/Terrain_TE.glsl"));
-		addGeometryShader(ResourceLoader.loadShader("oreonworlds/shaders/Terrain_Shader/TerrainGrid_GS.glsl"));
-		addFragmentShader(ResourceLoader.loadShader("oreonworlds/shaders/Terrain_Shader/TerrainGrid_FS.glsl"));
+		addGeometryShader(ResourceLoader.loadShader("oreonworlds/shaders/Terrain_Shader/TerrainWireframe_GS.glsl"));
+		addFragmentShader(ResourceLoader.loadShader("oreonworlds/shaders/Terrain_Shader/TerrainWireframe_FS.glsl"));
 		compileShader();
 		
 		addUniform("localMatrix");
@@ -54,13 +55,13 @@ private static TerrainWireframeShader instance = null;
 		addUniform("waterReflectionShift");
 		
 		addUniform("heightmap");
+		addUniform("splatmap");
 		
 		for (int i=0; i<8; i++){
 			addUniform("lod_morph_area[" + i + "]");
 		}
 		
 		for (int i=0; i<4; i++){
-			addUniform("materials[" + i + "].alphamap");
 			addUniform("materials[" + i + "].heightmap");
 			addUniform("materials[" + i + "].heightScaling");
 			addUniform("materials[" + i + "].horizontalScaling");
@@ -90,6 +91,10 @@ private static TerrainWireframeShader instance = null;
 		terrConfig.getHeightmap().bind();
 		setUniformi("heightmap", 0);
 		
+		glActiveTexture(GL_TEXTURE1);
+		terrConfig.getSplatmap().bind();
+		setUniformi("splatmap", 1);
+		
 		setUniformf("scaleY", terrConfig.getScaleY());
 		setUniformf("scaleXZ", terrConfig.getScaleXZ());
 		setUniformi("bezier", terrConfig.getBezier());
@@ -114,11 +119,6 @@ private static TerrainWireframeShader instance = null;
 			glActiveTexture(GL_TEXTURE0 + texUnit);
 			terrConfig.getMaterials().get(i).getHeightmap().bind();
 			setUniformi("materials[" + i + "].heightmap", texUnit);
-			texUnit++;
-			
-			glActiveTexture(GL_TEXTURE0 + texUnit);
-			terrConfig.getMaterials().get(i).getAlphamap().bind();
-			setUniformi("materials[" + i + "].alphamap", texUnit);
 			texUnit++;
 			
 			setUniformf("materials[" + i + "].heightScaling", terrConfig.getMaterials().get(i).getHeightScaling());

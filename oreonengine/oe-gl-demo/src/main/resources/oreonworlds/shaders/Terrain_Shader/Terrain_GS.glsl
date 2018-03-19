@@ -11,7 +11,6 @@ struct Material
 	sampler2D diffusemap;
 	sampler2D normalmap;
 	sampler2D heightmap;
-	sampler2D alphamap;
 	float heightScaling;
 	float horizontalScaling;
 };
@@ -28,6 +27,7 @@ layout (std140, row_major) uniform Camera{
 	vec4 frustumPlanes[6];
 };
 
+uniform sampler2D splatmap;
 uniform Material materials[4];
 uniform int largeDetailRange;
 uniform vec4 clipplane;
@@ -75,13 +75,16 @@ void main() {
 			
 			vec2 mapCoords = (gl_in[k].gl_Position.xz + scaleXZ/2)/scaleXZ; 
 			
+			vec4 v_splatmap = texture(splatmap, mapCoords).rgba;
+			float[4] blendValues = float[](v_splatmap.r,v_splatmap.g,v_splatmap.b,v_splatmap.a);
+			
 			displacement[k] = vec3(0,1,0);
 			
 			float height = gl_in[k].gl_Position.y;
 			
 			float scale = 0;
 			for (int i=0; i<4; i++){
-				scale += texture(materials[i].heightmap, texCoordG[k]/materials[i].horizontalScaling).r * texture(materials[i].alphamap, mapCoords).r * materials[i].heightScaling;
+				scale += texture(materials[i].heightmap, texCoordG[k]/materials[i].horizontalScaling).r * materials[i].heightScaling * blendValues[i];
 			}
 						
 			float attenuation = clamp(- distance(gl_in[k].gl_Position.xyz, eyePosition)/(largeDetailRange-50) + 1,0.0,1.0);

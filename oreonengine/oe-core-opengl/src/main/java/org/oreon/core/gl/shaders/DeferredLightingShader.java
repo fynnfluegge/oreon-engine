@@ -50,6 +50,6 @@ public class DeferredLightingShader extends GLShader{
 		
 		setUniformi("flag", flag ? 1 : 0);
 		
-		setUniformi("numSamples", Constants.MULTISAMPLES);
+		setUniformi("numSamples", CommonConfig.getInstance().getMultisamples());
 	}
 }

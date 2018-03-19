@@ -4,6 +4,7 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE2;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE3;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE4;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import org.oreon.core.gl.shaders.GLShader;
@@ -65,6 +66,7 @@ public class TerrainShader extends GLShader{
 		
 		addUniform("heightmap");
 		addUniform("normalmap");
+		addUniform("splatmap");
 		
 		for (int i=0; i<8; i++){
 			addUniform("lod_morph_area[" + i + "]");
@@ -72,7 +74,6 @@ public class TerrainShader extends GLShader{
 		
 		for (int i=0; i<4; i++){
 			addUniform("materials[" + i + "].diffusemap");
-			addUniform("materials[" + i + "].alphamap");
 			addUniform("materials[" + i + "].normalmap");
 			addUniform("materials[" + i + "].heightmap");
 			addUniform("materials[" + i + "].heightScaling");
@@ -110,6 +111,10 @@ public class TerrainShader extends GLShader{
 		terrConfig.getNormalmap().bind();
 		setUniformi("normalmap", 1);
 		
+		glActiveTexture(GL_TEXTURE2);
+		terrConfig.getSplatmap().bind();
+		setUniformi("splatmap", 2);
+		
 		setUniformf("scaleY", terrConfig.getScaleY());
 		setUniformf("scaleXZ", terrConfig.getScaleXZ());
 		setUniformi("bezier", terrConfig.getBezier());
@@ -124,19 +129,19 @@ public class TerrainShader extends GLShader{
 		setUniform("location", location);
 		setUniformi("waterReflectionShift", terrConfig.getWaterReflectionShift());
 		
-		glActiveTexture(GL_TEXTURE2);
-		GLConfiguration.getInstance().getUnderwaterCausticsMap().bind();
-		setUniformi("caustics", 2);
 		glActiveTexture(GL_TEXTURE3);
+		GLConfiguration.getInstance().getUnderwaterCausticsMap().bind();
+		setUniformi("caustics", 3);
+		glActiveTexture(GL_TEXTURE4);
 		GLConfiguration.getInstance().getUnderwaterDudvMap().bind();
-		setUniformi("dudvCaustics", 3);
+		setUniformi("dudvCaustics", 4);
 		setUniformf("distortionCaustics", GLConfiguration.getInstance().getUnderwaterDistortion());
 		
 		for (int i=0; i<8; i++){
 			setUniformi("lod_morph_area[" + i + "]", terrConfig.getLod_morphing_area()[i]);
 		}
 		
-		int texUnit = 4;
+		int texUnit = 5;
 		for (int i=0; i<4; i++){
 			
 			glActiveTexture(GL_TEXTURE0 + texUnit);
@@ -147,11 +152,6 @@ public class TerrainShader extends GLShader{
 			glActiveTexture(GL_TEXTURE0 + texUnit);
 			terrConfig.getMaterials().get(i).getHeightmap().bind();
 			setUniformi("materials[" + i + "].heightmap", texUnit);
-			texUnit++;
-			
-			glActiveTexture(GL_TEXTURE0 + texUnit);
-			terrConfig.getMaterials().get(i).getAlphamap().bind();
-			setUniformi("materials[" + i + "].alphamap", texUnit);
 			texUnit++;
 			
 			glActiveTexture(GL_TEXTURE0 + texUnit);

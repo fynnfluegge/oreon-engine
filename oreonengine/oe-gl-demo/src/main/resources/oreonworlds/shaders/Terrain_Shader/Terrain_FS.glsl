@@ -16,7 +16,6 @@ struct Material
 	sampler2D diffusemap;
 	sampler2D normalmap;
 	sampler2D heightmap;
-	sampler2D alphamap;
 	float heightScaling;
 	float horizontalScaling;
 };
@@ -29,6 +28,7 @@ layout (std140, row_major) uniform Camera{
 };
 
 uniform sampler2D normalmap;
+uniform sampler2D splatmap;
 uniform float scaleY;
 uniform float scaleXZ;
 uniform Material materials[4];
@@ -59,19 +59,11 @@ void main()
 	
 	// normalmap/occlusionmap/splatmap coords
 	vec2 mapCoords = (position.xz + scaleXZ/2)/scaleXZ; 
-	
 	vec3 normal = texture(normalmap, mapCoords).rgb;
 	normal = normalize(normal);
 	
-	float material0Alpha = texture(materials[0].alphamap, mapCoords).r;
-	float material1Alpha = texture(materials[1].alphamap, mapCoords).r;
-	float material2Alpha = texture(materials[2].alphamap, mapCoords).r;
-	float material3Alpha = texture(materials[3].alphamap, mapCoords).r;
-	
-	vec3 material0Color = texture(materials[0].diffusemap, texCoordF/materials[0].horizontalScaling).rgb;
-	vec3 material1Color = texture(materials[1].diffusemap, texCoordF/materials[1].horizontalScaling).rgb;
-	vec3 material2Color = texture(materials[2].diffusemap, texCoordF/materials[2].horizontalScaling).rgb;
-	vec3 material3Color = texture(materials[3].diffusemap, texCoordF/materials[3].horizontalScaling).rgb;
+	vec4 v_splatmap = texture(splatmap, mapCoords).rgba;
+	float[4] blendValues = float[](v_splatmap.r,v_splatmap.g,v_splatmap.b,v_splatmap.a);
 	
 	if (dist < largeDetailRange-50)
 	{
@@ -83,7 +75,7 @@ void main()
 		vec3 bumpNormal;
 		for (int i=0; i<4; i++){
 			
-			bumpNormal += (2*(texture(materials[i].normalmap, texCoordF/materials[i].horizontalScaling).rgb) - 1) * texture(materials[i].alphamap, mapCoords).r;
+			bumpNormal += (2*(texture(materials[i].normalmap, texCoordF/materials[i].horizontalScaling).rgb) - 1) * blendValues[i];
 		}
 		
 		bumpNormal = normalize(bumpNormal);
@@ -93,10 +85,12 @@ void main()
 		normal = normalize(TBN * bumpNormal);
 	}
 	
-	vec3 fragColor = material0Color * material0Alpha + 
-				     material1Color * material1Alpha + 
-					 material2Color * material2Alpha + 
-					 material3Color * material3Alpha;
+	vec3 fragColor = vec3(0,0,0);
+	
+	for (int i=0; i<4; i++){
+		fragColor +=  texture(materials[i].diffusemap, texCoordF/materials[i].horizontalScaling).rgb
+					* blendValues[i];
+	}
 	
 	// caustics
 	if (isCameraUnderWater == 1 && isRefraction == 0){

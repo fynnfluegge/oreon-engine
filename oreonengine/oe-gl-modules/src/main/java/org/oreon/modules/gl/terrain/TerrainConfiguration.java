@@ -97,10 +97,10 @@ public class TerrainConfiguration {
 			heightmap.trilinearFilter();
 			getMaterials().get(materials.size()-1).setHeightmap(heightmap);
 			
-			Texture2D alphamap = new Texture2D(properties.getProperty("materials.material" + i + "_ALPHA"));
-			alphamap.bind();
-			alphamap.trilinearFilter();
-			getMaterials().get(materials.size()-1).setAlphamap(alphamap);
+//			Texture2D alphamap = new Texture2D(properties.getProperty("materials.material" + i + "_ALPHA"));
+//			alphamap.bind();
+//			alphamap.trilinearFilter();
+//			getMaterials().get(materials.size()-1).setAlphamap(alphamap);
 			
 			getMaterials().get(materials.size()-1).setHeightScaling(Float.valueOf(properties.getProperty("materials.material" + i + "_heightScaling")));
 			getMaterials().get(materials.size()-1).setHorizontalScaling(Float.valueOf(properties.getProperty("materials.material" + i + "_horizontalScaling")));
@@ -155,11 +155,11 @@ public class TerrainConfiguration {
 		heightmap = fractalMapGenerator.getFractalmap();
 		
 		NormalMapRenderer normalRenderer = new NormalMapRenderer(Constants.TERRAIN_FRACTALS_RESOLUTION);
-		normalRenderer.setStrength(4);
+		normalRenderer.setStrength(8);
 		normalRenderer.render(getHeightmap());
 		normalmap = normalRenderer.getNormalmap();
 		
-		SplatMapGenerator splatMapGenerator = new SplatMapGenerator(Constants.TERRAIN_FRACTALS_RESOLUTION);
+		SplatMapGenerator splatMapGenerator = new SplatMapGenerator(2048);
 		splatMapGenerator.render(getNormalmap());
 		splatmap = splatMapGenerator.getSplatmap();
 	}

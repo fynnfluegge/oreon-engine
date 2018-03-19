@@ -19,7 +19,6 @@ public class Constants {
 	
 	public static final int TERRAIN_FRACTALS_RESOLUTION = 512;
 	public static final int PSSM_SHADOWMAP_RESOLUTION = 4096;
-	public static final int MULTISAMPLES = 8;
 	
 	// Global Uniform Block Bindings
 	public static final int CameraUniformBlockBinding = 51;

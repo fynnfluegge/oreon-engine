@@ -18,13 +18,13 @@ void main(void)
 	
 	vec4 blendValues = vec4(0,0,0,0);
 	
-	if (slopeFactor > 0.5){
+	if (slopeFactor > 0.8){
 		blendValues.x = 1.0;
 	}
-	else if (slopeFactor > 0.35){
+	else if (slopeFactor > 0.6){
 		blendValues.y = 1.0;
 	}
-	else if (slopeFactor > 0.15) {
+	else if (slopeFactor > 0.4) {
 		blendValues.z = 1.0;
 	}
 	else {

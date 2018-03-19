@@ -34,14 +34,20 @@ public class Terrain extends GLTerrain{
 				newFractals.add(newfractal);
 			}
 			
+			// update configurations
 			getConfiguration().getFractals().clear();
-			
 			for (FractalMap newFracral : newFractals){
 				getConfiguration().getFractals().add(newFracral);
 			}
-			
 			getConfiguration().renderFractalMap();
 			getConfiguration().createHeightmapDataBuffer();
+			
+			getLowPolyConfiguration().getFractals().clear();
+			for (FractalMap newFracral : newFractals){
+				getLowPolyConfiguration().getFractals().add(newFracral);
+			}
+			getLowPolyConfiguration().renderFractalMap();
+			getLowPolyConfiguration().createHeightmapDataBuffer();
 		}
 	}
 }
