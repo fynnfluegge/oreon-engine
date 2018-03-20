@@ -2,6 +2,7 @@ package org.oreon.modules.gl.terrain;
 
 import org.oreon.core.gl.shaders.GLShader;
 import org.oreon.core.math.Vec2f;
+import org.oreon.core.scenegraph.Node;
 import org.oreon.core.terrain.Terrain;
 
 public class GLTerrain extends Terrain{
@@ -46,15 +47,16 @@ public class GLTerrain extends Terrain{
 	
 	public void updateQuadtree(){
 		
-//		updateQuadtreeCounter++;
-//		
-//		if (updateQuadtreeCounter == 1){
+		updateQuadtreeCounter++;
+		
+		if (updateQuadtreeCounter == 4){
 			
-			((TerrainQuadtree) getChildren().get(0)).updateQuadtree();
-			System.out.println("sdfsfg");
+			for (Node node : getChildren()){
+				((TerrainQuadtree) node).updateQuadtree();
+			}
 			
-//			updateQuadtreeCounter = 0;
-//		}
+			updateQuadtreeCounter = 0;
+		}
 	}
 	
 	@Override
