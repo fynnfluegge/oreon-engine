@@ -21,8 +21,8 @@ import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
 import org.oreon.core.gl.buffers.GLFramebuffer;
+import org.oreon.core.gl.context.GLConfiguration;
 import org.oreon.core.gl.shaders.DeferredLightingShader;
-import org.oreon.core.gl.system.GLConfiguration;
 import org.oreon.core.gl.texture.Texture2D;
 import org.oreon.core.gl.texture.Texture2DArray;
 import org.oreon.core.system.CoreSystem;

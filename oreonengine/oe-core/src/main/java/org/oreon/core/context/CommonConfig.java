@@ -1,4 +1,4 @@
-package org.oreon.core.system;
+package org.oreon.core.context;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,16 +12,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CommonConfig {
-	
-	protected static CommonConfig instance = null;
-	
-	public static CommonConfig getInstance(){
-		
-		if(instance == null){
-			instance = new CommonConfig();
-		}
-		return instance;
-	}
 	
 	// render configurations
 	private boolean wireframe;

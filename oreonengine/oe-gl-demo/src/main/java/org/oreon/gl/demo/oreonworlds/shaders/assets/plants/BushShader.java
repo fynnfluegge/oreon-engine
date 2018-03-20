@@ -5,6 +5,7 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import java.util.List;
 
+import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.instanced.GLInstancedCluster;
 import org.oreon.core.gl.shaders.GLShader;
 import org.oreon.core.instanced.InstancedCluster;
@@ -12,7 +13,6 @@ import org.oreon.core.math.Matrix4f;
 import org.oreon.core.model.Material;
 import org.oreon.core.scenegraph.ComponentType;
 import org.oreon.core.scenegraph.Renderable;
-import org.oreon.core.system.CommonConfig;
 import org.oreon.core.util.Constants;
 import org.oreon.core.util.ResourceLoader;
 
@@ -63,16 +63,16 @@ private static BushShader instance = null;
 		bindUniformBlock("Camera", Constants.CameraUniformBlockBinding);
 		bindUniformBlock("DirectionalLight", Constants.DirectionalLightUniformBlockBinding);
 		bindUniformBlock("LightViewProjections",Constants.LightMatricesUniformBlockBinding);
-		setUniformi("isReflection", CommonConfig.getInstance().isReflection() ? 1 : 0);
-		setUniformi("isRefraction", CommonConfig.getInstance().isRefraction() ? 1 : 0);
-		setUniformi("isCameraUnderWater", CommonConfig.getInstance().isUnderwater() ? 1 : 0);	
+		setUniformi("isReflection", EngineContext.getCommonConfig().isReflection() ? 1 : 0);
+		setUniformi("isRefraction", EngineContext.getCommonConfig().isRefraction() ? 1 : 0);
+		setUniformi("isCameraUnderWater", EngineContext.getCommonConfig().isUnderwater() ? 1 : 0);	
 		
 		((GLInstancedCluster) object.getParent()).getWorldMatricesBuffer().bindBufferBase(0);
 		bindUniformBlock("worldMatrices", 0);
 		((GLInstancedCluster) object.getParent()).getModelMatricesBuffer().bindBufferBase(1);
 		bindUniformBlock("modelMatrices", 1);
 		
-		setUniform("clipplane", CommonConfig.getInstance().getClipplane());
+		setUniform("clipplane", EngineContext.getCommonConfig().getClipplane());
 		setUniform("scalingMatrix", new Matrix4f().Scaling(object.getWorldTransform().getScaling()));
 		
 		Material material = (Material) object.getComponent(ComponentType.MATERIAL0);

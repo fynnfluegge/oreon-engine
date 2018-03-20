@@ -2,11 +2,12 @@ package org.oreon.gl.demo.oreonworlds.shaders.assets.plants;
 
 import java.util.List;
 
+import org.oreon.core.context.CommonConfig;
+import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.instanced.GLInstancedCluster;
 import org.oreon.core.gl.shaders.GLShader;
 import org.oreon.core.instanced.InstancedCluster;
 import org.oreon.core.scenegraph.Renderable;
-import org.oreon.core.system.CommonConfig;
 import org.oreon.core.util.Constants;
 import org.oreon.core.util.ResourceLoader;
 
@@ -45,9 +46,9 @@ public class PalmShadowShader extends GLShader{
 	
 	public void updateUniforms(Renderable object){
 		
-		setUniform("clipplane", CommonConfig.getInstance().getClipplane());
-		bindUniformBlock("Camera",Constants.CameraUniformBlockBinding);
-		bindUniformBlock("LightViewProjections",Constants.LightMatricesUniformBlockBinding);
+		setUniform("clipplane", EngineContext.getCommonConfig().getClipplane());
+		bindUniformBlock("Camera", Constants.CameraUniformBlockBinding);
+		bindUniformBlock("LightViewProjections", Constants.LightMatricesUniformBlockBinding);
 		
 		((GLInstancedCluster) object.getParent()).getWorldMatricesBuffer().bindBufferBase(0);
 		bindUniformBlock("worldMatrices", 0);

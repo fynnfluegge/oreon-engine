@@ -20,10 +20,12 @@ import org.lwjgl.opengl.GL31;
 import org.lwjgl.opengl.GL40;
 import org.lwjgl.opengl.GL42;
 import org.lwjgl.opengl.GL43;
+import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.antialiasing.FXAA;
 import org.oreon.core.gl.antialiasing.MSAA;
 import org.oreon.core.gl.buffers.GLFramebuffer;
 import org.oreon.core.gl.config.Default;
+import org.oreon.core.gl.context.GLConfiguration;
 import org.oreon.core.gl.deferred.DeferredLightingRenderer;
 import org.oreon.core.gl.deferred.TransparencyLayer;
 import org.oreon.core.gl.deferred.TransparencyBlendRenderer;
@@ -32,13 +34,11 @@ import org.oreon.core.gl.picking.TerrainPicking;
 import org.oreon.core.gl.shadow.ParallelSplitShadowMaps;
 import org.oreon.core.gl.surface.FullScreenMultisampleQuad;
 import org.oreon.core.gl.surface.FullScreenQuad;
-import org.oreon.core.gl.system.GLConfiguration;
 import org.oreon.core.gl.texture.Texture2D;
 import org.oreon.core.gl.texture.Texture2DMultisample;
 import org.oreon.core.instanced.InstancedHandler;
 import org.oreon.core.light.LightHandler;
 import org.oreon.core.platform.Window;
-import org.oreon.core.system.CommonConfig;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.system.RenderEngine;
 import org.oreon.core.util.BufferUtil;
@@ -110,12 +110,12 @@ public class GLRenderEngine implements RenderEngine{
 		
 		getDeviceProperties();
 		
-		CommonConfig.getInstance().setWireframe(false);
-		CommonConfig.getInstance().setClipplane(Constants.PLANE0);
-		CommonConfig.getInstance().setSightRange(2f);
-		CommonConfig.getInstance().setReflection(false);
-		CommonConfig.getInstance().setRefraction(false);
-		CommonConfig.getInstance().setUnderwater(false);
+		EngineContext.getCommonConfig().setWireframe(false);
+		EngineContext.getCommonConfig().setClipplane(Constants.PLANE0);
+		EngineContext.getCommonConfig().setSightRange(2f);
+		EngineContext.getCommonConfig().setReflection(false);
+		EngineContext.getCommonConfig().setRefraction(false);
+		EngineContext.getCommonConfig().setUnderwater(false);
 		
 		Default.init();
 		window = CoreSystem.getInstance().getWindow();
@@ -184,7 +184,7 @@ public class GLRenderEngine implements RenderEngine{
 
 		GLDirectionalLight.getInstance().update();
 
-		CommonConfig.getInstance().setClipplane(Constants.PLANE0);
+		EngineContext.getCommonConfig().setClipplane(Constants.PLANE0);
 		GLConfiguration.getInstance().setSceneDepthMap(sceneDepthmap);
 		Default.clearScreen();
 		
@@ -263,7 +263,7 @@ public class GLRenderEngine implements RenderEngine{
 			postProcessingTexture = dofBlur.getVerticalBlurSceneTexture();
 			
 			// post processing effects
-			if (CommonConfig.getInstance().isUnderwater()){
+			if (EngineContext.getCommonConfig().isUnderwater()){
 				underWaterRenderer.render(postProcessingTexture, deferredLightingRenderer.getGbuffer().getDepthTexture());
 				postProcessingTexture = underWaterRenderer.getUnderwaterSceneTexture();
 			}
@@ -282,7 +282,7 @@ public class GLRenderEngine implements RenderEngine{
 			postProcessingTexture = sunlightScattering.getSunLightScatteringSceneTexture();
 		}
 		
-		if (CommonConfig.getInstance().isWireframe()){
+		if (EngineContext.getCommonConfig().isWireframe()){
 			fullScreenQuadMultisample.setTexture(deferredLightingRenderer.getGbuffer().getAlbedoTexture());
 			fullScreenQuadMultisample.render();
 		}
@@ -333,10 +333,10 @@ public class GLRenderEngine implements RenderEngine{
 	public void update() {
 		
 		if (CoreSystem.getInstance().getInput().isKeyPushed(GLFW.GLFW_KEY_G)){
-			if (CommonConfig.getInstance().isWireframe())
-				CommonConfig.getInstance().setWireframe(false);
+			if (EngineContext.getCommonConfig().isWireframe())
+				EngineContext.getCommonConfig().setWireframe(false);
 			else
-				CommonConfig.getInstance().setWireframe(true);
+				EngineContext.getCommonConfig().setWireframe(true);
 		}
 		
 		if (CoreSystem.getInstance().getInput().isKeyPushed(GLFW.GLFW_KEY_KP_1)){

@@ -42,7 +42,6 @@ public class TerrainConfiguration {
 	private Texture2D splatmap;
 	private FloatBuffer heightmapDataBuffer;
 	private List<Material> materials = new ArrayList<>();
-	private List<Texture2D> splatmaps = new ArrayList<>();
 	private List<FractalMap> fractals = new ArrayList<>();
 	
 	private int[] lod_range = new int[8];

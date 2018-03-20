@@ -13,7 +13,7 @@ import static org.lwjgl.opengl.GL43.glDispatchCompute;
 
 import java.nio.ByteBuffer;
 
-import org.oreon.core.gl.system.GLConfiguration;
+import org.oreon.core.gl.context.GLConfiguration;
 import org.oreon.core.gl.texture.Texture2D;
 import org.oreon.core.gl.texture.Texture2DMultisample;
 import org.oreon.core.system.CoreSystem;

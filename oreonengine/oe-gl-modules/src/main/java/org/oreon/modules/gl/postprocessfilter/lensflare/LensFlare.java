@@ -3,12 +3,12 @@ package org.oreon.modules.gl.postprocessfilter.lensflare;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.texture.Texture2D;
 import org.oreon.core.light.Light;
 import org.oreon.core.light.LightHandler;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.math.Vec2f;
-import org.oreon.core.system.CommonConfig;
 import org.oreon.core.system.CoreSystem;
 
 public class LensFlare {
@@ -123,7 +123,7 @@ public class LensFlare {
 	
 	public void render(){
 		
-		if (CommonConfig.getInstance().isWireframe())
+		if (EngineContext.getCommonConfig().isWireframe())
 			return;
 		
 		for (Light light : LightHandler.getLights()){

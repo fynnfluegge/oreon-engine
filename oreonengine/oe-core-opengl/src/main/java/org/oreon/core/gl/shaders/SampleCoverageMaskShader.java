@@ -1,6 +1,6 @@
 package org.oreon.core.gl.shaders;
 
-import org.oreon.core.system.CommonConfig;
+import org.oreon.core.context.EngineContext;
 import org.oreon.core.util.ResourceLoader;
 
 public class SampleCoverageMaskShader extends GLShader{
@@ -29,7 +29,7 @@ public class SampleCoverageMaskShader extends GLShader{
 	
 	public void updateUniforms(){
 		
-		setUniformi("multisamples", CommonConfig.getInstance().getMultisamples());
+		setUniformi("multisamples", EngineContext.getCommonConfig().getMultisamples());
 	}
 
 }

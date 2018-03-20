@@ -2,7 +2,7 @@
 
 import java.util.HashMap;
 
-import org.oreon.core.system.CommonConfig;
+import org.oreon.core.context.EngineContext;
 
 public class Renderable extends Node{
 
@@ -39,7 +39,7 @@ public class Renderable extends Node{
 	
 	public void render()
 	{
-		if (CommonConfig.getInstance().isWireframe()){
+		if (EngineContext.getCommonConfig().isWireframe()){
 			if (components.containsKey(ComponentType.WIREFRAME_RENDERINFO)){
 				components.get(ComponentType.WIREFRAME_RENDERINFO).render();
 			}

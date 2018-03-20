@@ -12,7 +12,7 @@ import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 
 import org.lwjgl.BufferUtils;
-import org.oreon.core.gl.system.GLConfiguration;
+import org.oreon.core.gl.context.GLConfiguration;
 import org.oreon.core.math.Quaternion;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.math.Vec3f;

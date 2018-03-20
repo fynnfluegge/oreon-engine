@@ -33,6 +33,9 @@ public class GLTerrain extends Terrain{
 	
 	@Override
 	public void run() {
+		
+		setRunning(true);
+		
 		while(isRunning()){
 			
 			getLock().lock();

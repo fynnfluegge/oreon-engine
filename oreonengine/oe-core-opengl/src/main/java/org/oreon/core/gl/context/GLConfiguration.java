@@ -1,4 +1,4 @@
-package org.oreon.core.gl.system;
+package org.oreon.core.gl.context;
 
 import org.oreon.core.gl.buffers.GLFramebuffer;
 import org.oreon.core.texture.Texture;

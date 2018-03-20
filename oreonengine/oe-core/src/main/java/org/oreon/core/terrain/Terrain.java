@@ -11,7 +11,7 @@ public class Terrain extends Node implements Runnable{
 	private Thread thread;
 	private Lock lock = new ReentrantLock();
 	private Condition condition = lock.newCondition();
-	private boolean isRunning = true;
+	private boolean isRunning = false;
 
 	@Override
 	public void run(){};
@@ -35,7 +35,7 @@ public class Terrain extends Node implements Runnable{
 	
 	public float getTerrainHeight(float x, float y){
 		return 0;
-	};
+	}
 	
 	public Thread getThread() {
 		return thread;

@@ -1,16 +1,16 @@
 package org.oreon.modules.gl.water;
 
+import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.buffers.GLPatchVBO;
 import org.oreon.core.gl.config.WaterRenderConfig;
+import org.oreon.core.gl.context.GLConfiguration;
 import org.oreon.core.gl.scenegraph.GLRenderInfo;
 import org.oreon.core.gl.shaders.GLShader;
-import org.oreon.core.gl.system.GLConfiguration;
 import org.oreon.core.gl.texture.Texture2D;
 import org.oreon.core.math.Quaternion;
 import org.oreon.core.scenegraph.ComponentType;
 import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.scenegraph.Scenegraph;
-import org.oreon.core.system.CommonConfig;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.Constants;
 import org.oreon.core.util.MeshGenerator;
@@ -98,10 +98,10 @@ public class Water extends Renderable{
 	{
 		if (!isCameraUnderwater()){
 			glEnable(GL_CLIP_DISTANCE6);
-			CommonConfig.getInstance().setUnderwater(false);
+			EngineContext.getCommonConfig().setUnderwater(false);
 		}
 		else {
-			CommonConfig.getInstance().setUnderwater(true);
+			EngineContext.getCommonConfig().setUnderwater(true);
 		}
 			
 		distortion += waterConfiguration.getDistortion();
@@ -109,7 +109,7 @@ public class Water extends Renderable{
 		
 		Scenegraph scenegraph = ((Scenegraph) getParent());
 		
-		CommonConfig.getInstance().setClipplane(getClipplane());
+		EngineContext.getCommonConfig().setClipplane(getClipplane());
 			
 		//mirror scene to clipplane
 		scenegraph.getWorldTransform().setScaling(1,-1,1);
@@ -131,7 +131,7 @@ public class Water extends Renderable{
 
 		glViewport(0,0,CoreSystem.getInstance().getWindow().getWidth()/2, CoreSystem.getInstance().getWindow().getHeight()/2);
 		
-		CommonConfig.getInstance().setReflection(true);
+		EngineContext.getCommonConfig().setReflection(true);
 		
 		reflectionRenderer.getFbo().bind();
 		renderConfig.clearScreenDeepOcean();
@@ -150,7 +150,7 @@ public class Water extends Renderable{
 		reflectionRenderer.getFbo().unbind();
 		reflectionRenderer.render();
 		
-		CommonConfig.getInstance().setReflection(false);
+		EngineContext.getCommonConfig().setReflection(false);
 		
 		// antimirror scene to clipplane
 	
@@ -169,7 +169,7 @@ public class Water extends Renderable{
 		scenegraph.update();
 		
 		// render to refraction texture
-		CommonConfig.getInstance().setRefraction(true);
+		EngineContext.getCommonConfig().setRefraction(true);
 		
 		refractionRenderer.getFbo().bind();
 		renderConfig.clearScreenDeepOcean();
@@ -184,10 +184,10 @@ public class Water extends Renderable{
 		refractionRenderer.getFbo().unbind();
 		refractionRenderer.render();
 		
-		CommonConfig.getInstance().setRefraction(false);
+		EngineContext.getCommonConfig().setRefraction(false);
 		
 		glDisable(GL_CLIP_DISTANCE6);
-		CommonConfig.getInstance().setClipplane(Constants.PLANE0);	
+		EngineContext.getCommonConfig().setClipplane(Constants.PLANE0);	
 	
 		glViewport(0,0,CoreSystem.getInstance().getWindow().getWidth(), CoreSystem.getInstance().getWindow().getHeight());
 		
@@ -196,7 +196,7 @@ public class Water extends Renderable{
 		
 		GLConfiguration.getInstance().getDeferredFbo().bind();
 		
-		if (CommonConfig.getInstance().isWireframe())
+		if (EngineContext.getCommonConfig().isWireframe())
 		{
 			getComponents().get(ComponentType.WIREFRAME_RENDERINFO).render();
 		}

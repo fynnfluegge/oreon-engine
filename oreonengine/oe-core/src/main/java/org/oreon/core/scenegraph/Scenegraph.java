@@ -78,15 +78,16 @@ public class Scenegraph extends Node{
 		transparentObjects.addChild(object);
 	}
 
-	public Terrain getTerrain() {
-		return terrain;
-	}
-
 	public void setTerrain(Terrain terrain) {
 		terrain.setParent(this);
 		setTerrainExists(true);
 		this.terrain = terrain;
 	}
+	
+	public Terrain getTerrain() {
+		return terrain;
+	}
+
 
 	public Node getWater() {
 		return water;

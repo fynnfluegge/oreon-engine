@@ -1,8 +1,8 @@
 package org.oreon.gl.demo.oreonworlds.gui;
 
+import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.texture.Texture2D;
 import org.oreon.core.math.Vec2f;
-import org.oreon.core.system.CommonConfig;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.modules.gl.gui.elements.Button;
 
@@ -29,6 +29,6 @@ public class WireframeButton extends Button{
 	@Override
 	public void onClickActionPerformed()
 	{
-		CommonConfig.getInstance().setWireframe(!CommonConfig.getInstance().isWireframe());
+		EngineContext.getCommonConfig().setWireframe(!EngineContext.getCommonConfig().isWireframe());
 	}
 }
