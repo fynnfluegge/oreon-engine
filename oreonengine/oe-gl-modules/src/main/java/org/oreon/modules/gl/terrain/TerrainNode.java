@@ -110,6 +110,11 @@ public class TerrainNode extends Renderable{
 	
 	public void updateQuadtree(){
 
+		if (CoreSystem.getInstance().getScenegraph().getCamera().getPosition().getY() > (terrConfig.getScaleY())){
+			worldPos.setY(terrConfig.getScaleY());
+		}
+		else worldPos.setY(CoreSystem.getInstance().getScenegraph().getCamera().getPosition().getY());
+		
 		updateChildNodes();
 		
 		for (Node node : getChildren()){
