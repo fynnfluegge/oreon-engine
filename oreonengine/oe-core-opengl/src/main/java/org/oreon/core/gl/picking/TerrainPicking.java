@@ -12,7 +12,7 @@ import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 
 import org.lwjgl.BufferUtils;
-import org.oreon.core.gl.context.GLConfiguration;
+import org.oreon.core.gl.context.GLContext;
 import org.oreon.core.math.Quaternion;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.math.Vec3f;
@@ -48,7 +48,7 @@ public class TerrainPicking {
 			glfwGetCursorPos(CoreSystem.getInstance().getWindow().getId(), xPos, yPos);
 			Vec2f screenPos = new Vec2f((float) xPos.get(),(float) yPos.get());
 			
-			GLConfiguration.getInstance().getSceneDepthMap().bind();
+			GLContext.getGLConfig().getSceneDepthMap().bind();
 			glGetTexImage(GL_TEXTURE_2D,0,GL_DEPTH_COMPONENT,GL_FLOAT,depthmapBuffer);
 			float depth = depthmapBuffer.get((int) (CoreSystem.getInstance().getWindow().getWidth() * screenPos.getY() + screenPos.getX()));
 			

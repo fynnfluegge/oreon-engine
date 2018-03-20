@@ -3,7 +3,7 @@ package org.oreon.modules.gl.water;
 import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.buffers.GLPatchVBO;
 import org.oreon.core.gl.config.WaterRenderConfig;
-import org.oreon.core.gl.context.GLConfiguration;
+import org.oreon.core.gl.context.GLContext;
 import org.oreon.core.gl.scenegraph.GLRenderInfo;
 import org.oreon.core.gl.shaders.GLShader;
 import org.oreon.core.gl.texture.Texture2D;
@@ -121,8 +121,8 @@ public class Water extends Renderable{
 		if (scenegraph.terrainExists()){
 				
 				GLTerrain terrain = (GLTerrain) scenegraph.getTerrain();
-				terrain.getLowPolyConfiguration().setScaleY(terrain.getLowPolyConfiguration().getScaleY() * -1f);
-				terrain.getLowPolyConfiguration().setWaterReflectionShift((int) (getClipplane().getW() * 2f));
+				terrain.getConfiguration().setScaleY(terrain.getConfiguration().getScaleY() * -1f);
+				terrain.getConfiguration().setWaterReflectionShift((int) (getClipplane().getW() * 2f));
 		}
 		
 		scenegraph.update();
@@ -140,7 +140,7 @@ public class Water extends Renderable{
 		if (!isCameraUnderwater()){
 			scenegraph.getRoot().render();
 			if (scenegraph.terrainExists()){
-				((GLTerrain) scenegraph.getTerrain()).renderLowPoly();
+				((GLTerrain) scenegraph.getTerrain()).render();
 			}
 		}
 		
@@ -162,8 +162,8 @@ public class Water extends Renderable{
 
 		if (scenegraph.terrainExists()){
 				GLTerrain terrain = (GLTerrain) scenegraph.getTerrain();
-				terrain.getLowPolyConfiguration().setScaleY(terrain.getLowPolyConfiguration().getScaleY() / -1f);
-				terrain.getLowPolyConfiguration().setWaterReflectionShift(0);
+				terrain.getConfiguration().setScaleY(terrain.getConfiguration().getScaleY() / -1f);
+				terrain.getConfiguration().setWaterReflectionShift(0);
 		}
 
 		scenegraph.update();
@@ -176,7 +176,7 @@ public class Water extends Renderable{
 	
 		scenegraph.getRoot().render();
 		if (scenegraph.terrainExists()){
-			((GLTerrain) scenegraph.getTerrain()).renderLowPoly();
+			((GLTerrain) scenegraph.getTerrain()).render();
 		}
 		
 		// glFinish() important, to prevent conflicts with following compute shaders
@@ -194,7 +194,7 @@ public class Water extends Renderable{
 		fft.render();
 		normalmapRenderer.render(fft.getDy());
 		
-		GLConfiguration.getInstance().getDeferredFbo().bind();
+		GLContext.getGLConfig().getDeferredFbo().bind();
 		
 		if (EngineContext.getCommonConfig().isWireframe())
 		{
@@ -207,7 +207,7 @@ public class Water extends Renderable{
 		
 		// glFinish() important, to prevent conflicts with following compute shaders
 		glFinish();
-		GLConfiguration.getInstance().getDeferredFbo().unbind();
+		GLContext.getGLConfig().getDeferredFbo().unbind();
 	}
 		
 	public Quaternion getClipplane() {

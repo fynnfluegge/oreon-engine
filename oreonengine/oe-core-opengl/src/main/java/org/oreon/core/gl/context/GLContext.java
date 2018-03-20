@@ -10,4 +10,9 @@ public class GLContext {
 	public static void initialize(){
 		context = new ClassPathXmlApplicationContext("gl-context.xml");
 	}
+	
+	public static GLConfiguration getGLConfig(){
+		
+		return context.getBean(GLConfiguration.class);
+	}
 }

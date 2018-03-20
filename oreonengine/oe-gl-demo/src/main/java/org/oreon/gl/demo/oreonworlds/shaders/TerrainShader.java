@@ -8,7 +8,7 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE4;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import org.oreon.core.context.EngineContext;
-import org.oreon.core.gl.context.GLConfiguration;
+import org.oreon.core.gl.context.GLContext;
 import org.oreon.core.gl.shaders.GLShader;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.scenegraph.Renderable;
@@ -130,12 +130,12 @@ public class TerrainShader extends GLShader{
 		setUniformi("waterReflectionShift", terrConfig.getWaterReflectionShift());
 		
 		glActiveTexture(GL_TEXTURE3);
-		GLConfiguration.getInstance().getUnderwaterCausticsMap().bind();
+		GLContext.getGLConfig().getUnderwaterCausticsMap().bind();
 		setUniformi("caustics", 3);
 		glActiveTexture(GL_TEXTURE4);
-		GLConfiguration.getInstance().getUnderwaterDudvMap().bind();
+		GLContext.getGLConfig().getUnderwaterDudvMap().bind();
 		setUniformi("dudvCaustics", 4);
-		setUniformf("distortionCaustics", GLConfiguration.getInstance().getUnderwaterDistortion());
+		setUniformf("distortionCaustics", GLContext.getGLConfig().getUnderwaterDistortion());
 		
 		for (int i=0; i<8; i++){
 			setUniformi("lod_morph_area[" + i + "]", terrConfig.getLod_morphing_area()[i]);

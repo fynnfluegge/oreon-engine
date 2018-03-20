@@ -1,6 +1,5 @@
 package org.oreon.modules.gl.terrain;
 
-import org.oreon.core.context.CommonConfig;
 import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.buffers.GLPatchVBO;
 import org.oreon.core.gl.config.Default;
@@ -73,7 +72,17 @@ public class TerrainNode extends Renderable{
 	
 	public void render()
 	{
-		if (isleaf)
+		boolean renderChunk = false;
+		if (EngineContext.getCommonConfig().isReflection() || EngineContext.getCommonConfig().isRefraction()){
+			
+			// render only first lod for reflection/refraction
+			renderChunk = (isleaf && lod == 0) || (!isleaf && lod == 0);
+		}
+		else{
+			renderChunk = isleaf;
+		}
+		
+		if (renderChunk)
 		{	
 			if (EngineContext.getCommonConfig().isWireframe()){
 				getComponents().get(ComponentType.WIREFRAME_RENDERINFO).render();
@@ -82,6 +91,7 @@ public class TerrainNode extends Renderable{
 				getComponents().get(ComponentType.MAIN_RENDERINFO).render();
 			}
 		}
+		
 		for(Node child: getChildren())
 			child.render();
 	}

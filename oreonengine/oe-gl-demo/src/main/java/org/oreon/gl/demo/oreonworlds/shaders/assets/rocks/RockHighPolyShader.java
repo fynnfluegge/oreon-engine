@@ -9,7 +9,7 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 import java.util.List;
 
 import org.oreon.core.context.EngineContext;
-import org.oreon.core.gl.context.GLConfiguration;
+import org.oreon.core.gl.context.GLContext;
 import org.oreon.core.gl.instanced.GLInstancedCluster;
 import org.oreon.core.gl.shaders.GLShader;
 import org.oreon.core.instanced.InstancedCluster;
@@ -96,12 +96,12 @@ public class RockHighPolyShader extends GLShader{
 		setUniformf("material.emission", material.getEmission());
 		
 		glActiveTexture(GL_TEXTURE2);
-		GLConfiguration.getInstance().getUnderwaterCausticsMap().bind();
+		GLContext.getGLConfig().getUnderwaterCausticsMap().bind();
 		setUniformi("caustics", 2);
 		glActiveTexture(GL_TEXTURE3);
-		GLConfiguration.getInstance().getUnderwaterDudvMap().bind();
+		GLContext.getGLConfig().getUnderwaterDudvMap().bind();
 		setUniformi("dudvCaustics", 3);
-		setUniformf("distortionCaustics", GLConfiguration.getInstance().getUnderwaterDistortion());
+		setUniformf("distortionCaustics", GLContext.getGLConfig().getUnderwaterDistortion());
 		
 		List<Integer> indices = ((InstancedCluster) object.getParent()).getHighPolyIndices();
 		

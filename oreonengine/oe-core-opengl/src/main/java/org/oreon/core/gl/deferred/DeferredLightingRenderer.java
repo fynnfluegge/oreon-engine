@@ -21,7 +21,7 @@ import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
 import org.oreon.core.gl.buffers.GLFramebuffer;
-import org.oreon.core.gl.context.GLConfiguration;
+import org.oreon.core.gl.context.GLContext;
 import org.oreon.core.gl.shaders.DeferredLightingShader;
 import org.oreon.core.gl.texture.Texture2D;
 import org.oreon.core.gl.texture.Texture2DArray;
@@ -69,7 +69,7 @@ public class DeferredLightingRenderer {
 		fbo.checkStatus();
 		fbo.unbind();
 		
-		GLConfiguration.getInstance().setDeferredFbo(fbo);
+		GLContext.getGLConfig().setDeferredFbo(fbo);
 	}
 	
 	public void render(Texture2D sampleCoverageMask, Texture2D ssaoBlurTexture, Texture2DArray pssm, boolean flag){

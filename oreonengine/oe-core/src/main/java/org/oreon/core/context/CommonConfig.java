@@ -29,6 +29,9 @@ public class CommonConfig {
 	
 	private int multisamples;
 	
+	private int screenWidth;
+	private int screenHeight;
+	
 	protected CommonConfig(){
 		
 		Properties properties = new Properties();

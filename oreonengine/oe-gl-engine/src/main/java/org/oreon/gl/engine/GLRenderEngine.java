@@ -25,7 +25,7 @@ import org.oreon.core.gl.antialiasing.FXAA;
 import org.oreon.core.gl.antialiasing.MSAA;
 import org.oreon.core.gl.buffers.GLFramebuffer;
 import org.oreon.core.gl.config.Default;
-import org.oreon.core.gl.context.GLConfiguration;
+import org.oreon.core.gl.context.GLContext;
 import org.oreon.core.gl.deferred.DeferredLightingRenderer;
 import org.oreon.core.gl.deferred.TransparencyLayer;
 import org.oreon.core.gl.deferred.TransparencyBlendRenderer;
@@ -45,7 +45,6 @@ import org.oreon.core.util.BufferUtil;
 import org.oreon.core.util.Constants;
 import org.oreon.modules.gl.gpgpu.ContrastController;
 import org.oreon.modules.gl.gui.GUI;
-import org.oreon.modules.gl.gui.GUIs.VoidGUI;
 import org.oreon.modules.gl.postprocessfilter.bloom.Bloom;
 import org.oreon.modules.gl.postprocessfilter.dofblur.DepthOfFieldBlur;
 import org.oreon.modules.gl.postprocessfilter.lensflare.LensFlare;
@@ -124,9 +123,6 @@ public class GLRenderEngine implements RenderEngine{
 		if (gui != null){
 			gui.init();
 		}
-		else {
-			gui = new VoidGUI();
-		}
 		
 		fullScreenQuad = new FullScreenQuad();
 		fullScreenQuadMultisample = new FullScreenMultisampleQuad();
@@ -185,7 +181,7 @@ public class GLRenderEngine implements RenderEngine{
 		GLDirectionalLight.getInstance().update();
 
 		EngineContext.getCommonConfig().setClipplane(Constants.PLANE0);
-		GLConfiguration.getInstance().setSceneDepthMap(sceneDepthmap);
+		GLContext.getGLConfig().setSceneDepthMap(sceneDepthmap);
 		Default.clearScreen();
 		
 		//render shadow maps
@@ -326,7 +322,9 @@ public class GLRenderEngine implements RenderEngine{
 			lensFlare.render();
 		}
 		
-		gui.render();
+		if (gui != null){
+			gui.render();
+		}
 	}
 	
 	@Override
@@ -442,7 +440,10 @@ public class GLRenderEngine implements RenderEngine{
 			}
 		}
 		
-		gui.update();
+		if (gui != null){
+			gui.update();
+		}
+		
 		contrastController.update();
 		
 		if (CoreSystem.getInstance().getScenegraph().terrainExists()){

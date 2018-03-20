@@ -5,7 +5,6 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import java.util.List;
 
-import org.oreon.core.context.CommonConfig;
 import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.instanced.GLInstancedCluster;
 import org.oreon.core.gl.shaders.GLShader;

@@ -3,7 +3,6 @@ package org.oreon.core.gl.shaders;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
-import org.oreon.core.context.CommonConfig;
 import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.texture.Texture2DArray;
 import org.oreon.core.util.Constants;

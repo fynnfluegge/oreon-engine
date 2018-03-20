@@ -7,10 +7,9 @@ import org.oreon.core.terrain.Terrain;
 public class GLTerrain extends Terrain{
 	
 	private TerrainConfiguration configuration;
-	private TerrainConfiguration lowPolyConfiguration;
 	private int updateQuadtreeCounter = 0;	
 		
-	public void init (String config, String lowPolyConfig, GLShader shader, GLShader grid, GLShader shadow)
+	public void init (String config, GLShader shader, GLShader grid, GLShader shadow)
 	{
 		configuration = new TerrainConfiguration();
 		configuration.loadFile(config);
@@ -18,14 +17,7 @@ public class GLTerrain extends Terrain{
 		configuration.setShader(shader);
 		configuration.setShadowShader(shadow);
 		
-		lowPolyConfiguration = new TerrainConfiguration();
-		lowPolyConfiguration.loadFile(lowPolyConfig);
-		lowPolyConfiguration.setWireframeShader(grid);
-		lowPolyConfiguration.setShader(shader);
-		lowPolyConfiguration.setShadowShader(shadow);
-		
 		addChild(new TerrainQuadtree(configuration));
-		addChild(new TerrainQuadtree(lowPolyConfiguration));
 		
 		setThread(new Thread(this));
 		getThread().start();
@@ -54,26 +46,15 @@ public class GLTerrain extends Terrain{
 	
 	public void updateQuadtree(){
 		
-		updateQuadtreeCounter++;
-		
-		if (updateQuadtreeCounter == 1){
+//		updateQuadtreeCounter++;
+//		
+//		if (updateQuadtreeCounter == 1){
 			
 			((TerrainQuadtree) getChildren().get(0)).updateQuadtree();
-			((TerrainQuadtree) getChildren().get(1)).updateQuadtree();
+			System.out.println("sdfsfg");
 			
-			updateQuadtreeCounter = 0;
-		}
-	}
-	
-	@Override
-	public void render() {
-		// render high poly terrain (first child)
-		getChildren().get(0).render();
-	}
-	
-	public void renderLowPoly() {
-		// render low poly terrain (second child)
-		getChildren().get(1).render();
+//			updateQuadtreeCounter = 0;
+//		}
 	}
 	
 	@Override
@@ -128,11 +109,4 @@ public class GLTerrain extends Terrain{
 		this.configuration = configuration;
 	}
 
-	public TerrainConfiguration getLowPolyConfiguration() {
-		return lowPolyConfiguration;
-	}
-
-	public void setLowPolyConfiguration(TerrainConfiguration lowPolyConfiguration) {
-		this.lowPolyConfiguration = lowPolyConfiguration;
-	}
 }

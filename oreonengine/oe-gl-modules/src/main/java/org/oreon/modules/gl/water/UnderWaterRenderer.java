@@ -13,7 +13,7 @@ import static org.lwjgl.opengl.GL43.glDispatchCompute;
 
 import java.nio.ByteBuffer;
 
-import org.oreon.core.gl.context.GLConfiguration;
+import org.oreon.core.gl.context.GLContext;
 import org.oreon.core.gl.texture.Texture2D;
 import org.oreon.core.gl.texture.Texture2DMultisample;
 import org.oreon.core.system.CoreSystem;
@@ -50,11 +50,12 @@ public class UnderWaterRenderer {
 		causticsMap.bind();
 		causticsMap.trilinearFilter();
 		
-		GLConfiguration.getInstance().setUnderwaterCausticsMap(causticsMap);
-		GLConfiguration.getInstance().setUnderwaterDudvMap(dudvMap);
+		GLContext.getGLConfig().setUnderwaterCausticsMap(causticsMap);
+		GLContext.getGLConfig().setUnderwaterDudvMap(dudvMap);
 	}
 	
 	public void render(Texture2D sceneTexture, Texture2DMultisample sceneDepthMap) {
+		
 		underWaterShader.bind();
 		glBindImageTexture(0, sceneTexture.getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA16F);
 		glBindImageTexture(1, underwaterSceneTexture.getId(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
@@ -64,7 +65,7 @@ public class UnderWaterRenderer {
 		
 		distortion += distortion_delta;
 		
-		GLConfiguration.getInstance().setUnderwaterDistortion(distortion);
+		GLContext.getGLConfig().setUnderwaterDistortion(distortion);
 	}
 
 	public Texture2D getUnderwaterSceneTexture() {
