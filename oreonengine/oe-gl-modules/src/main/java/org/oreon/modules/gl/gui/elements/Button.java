@@ -4,7 +4,7 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 import java.nio.DoubleBuffer;
 import org.lwjgl.BufferUtils;
-import org.oreon.core.gl.config.Default;
+import org.oreon.core.gl.parameter.Default;
 import org.oreon.core.gl.texture.Texture2D;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.math.Quaternion;

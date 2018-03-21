@@ -39,7 +39,7 @@ public class Renderable extends Node{
 	
 	public void render()
 	{
-		if (EngineContext.getCommonConfig().isWireframe()){
+		if (EngineContext.getRenderConfig().isWireframe()){
 			if (components.containsKey(ComponentType.WIREFRAME_RENDERINFO)){
 				components.get(ComponentType.WIREFRAME_RENDERINFO).render();
 			}

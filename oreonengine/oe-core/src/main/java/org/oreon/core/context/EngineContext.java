@@ -11,9 +11,13 @@ public class EngineContext {
 		context = new ClassPathXmlApplicationContext("application-context.xml");
 	}
 	
-	public static CommonConfig getCommonConfig(){
+	public static RenderConfig getRenderConfig(){
 		
-		return context.getBean(CommonConfig.class);
+		return context.getBean(RenderConfig.class);
+	}
+	
+	public static void getInput(){
+		
 	}
 
 }

@@ -1,8 +1,8 @@
 package org.oreon.core.gl.surface;
 
 import org.oreon.core.gl.buffers.GLMeshVBO;
-import org.oreon.core.gl.config.Default;
-import org.oreon.core.gl.config.RenderConfig;
+import org.oreon.core.gl.parameter.Default;
+import org.oreon.core.gl.parameter.RenderParameter;
 import org.oreon.core.gl.shaders.FullScreenQuadShader;
 import org.oreon.core.gl.shaders.GLShader;
 import org.oreon.core.math.Vec2f;
@@ -14,7 +14,7 @@ public class FullScreenQuad {
 	private Texture texture;
 	private GLShader shader;
 	private GLMeshVBO vao;
-	private RenderConfig config;
+	private RenderParameter config;
 	protected Vec2f[] texCoords;
 	
 	public FullScreenQuad(){
@@ -46,12 +46,12 @@ public class FullScreenQuad {
 	}
 
 
-	public RenderConfig getConfig() {
+	public RenderParameter getConfig() {
 		return config;
 	}
 
 
-	public void setConfig(RenderConfig config) {
+	public void setConfig(RenderParameter config) {
 		this.config = config;
 	}
 

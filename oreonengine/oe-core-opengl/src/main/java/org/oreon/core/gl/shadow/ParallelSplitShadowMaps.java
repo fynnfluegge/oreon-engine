@@ -4,8 +4,8 @@ import static org.lwjgl.opengl.GL11.GL_NONE;
 import static org.lwjgl.opengl.GL42.glTexStorage3D;
 
 import org.oreon.core.gl.buffers.GLFramebuffer;
-import org.oreon.core.gl.config.RenderConfig;
-import org.oreon.core.gl.config.ShadowConfig;
+import org.oreon.core.gl.parameter.RenderParameter;
+import org.oreon.core.gl.parameter.ShadowConfig;
 import org.oreon.core.gl.texture.Texture2DArray;
 import org.oreon.core.util.Constants;
 
@@ -20,7 +20,7 @@ public class ParallelSplitShadowMaps {
 
 	private GLFramebuffer fbo;
 	private Texture2DArray depthMaps;
-	private RenderConfig config;
+	private RenderParameter config;
 
 	public ParallelSplitShadowMaps(){
 		
@@ -58,11 +58,11 @@ public class ParallelSplitShadowMaps {
 		return depthMaps;
 	}
 
-	public RenderConfig getConfig() {
+	public RenderParameter getConfig() {
 		return config;
 	}
 	
-	public void setConfig(RenderConfig config) {
+	public void setConfig(RenderParameter config) {
 		this.config = config;
 	}
 }

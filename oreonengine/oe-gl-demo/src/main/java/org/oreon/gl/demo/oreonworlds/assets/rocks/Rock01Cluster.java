@@ -10,6 +10,7 @@ import org.oreon.core.math.Vec3f;
 import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.BufferUtil;
+import org.oreon.modules.gl.terrain.TerrainHelper;
 
 public class Rock01Cluster extends GLInstancedCluster{
 	
@@ -25,7 +26,7 @@ public class Rock01Cluster extends GLInstancedCluster{
 			Vec3f scaling = new Vec3f(s,s,s);
 			Vec3f rotation = new Vec3f(0,(float) Math.random()*360f,0);
 			
-			float terrainHeight = CoreSystem.getInstance().getScenegraph().getTerrain().getTerrainHeight(translation.getX(),translation.getZ());
+			float terrainHeight = TerrainHelper.getTerrainHeight(translation.getX(),translation.getZ());
 			terrainHeight -= 2;
 			translation.setY(terrainHeight);
 			

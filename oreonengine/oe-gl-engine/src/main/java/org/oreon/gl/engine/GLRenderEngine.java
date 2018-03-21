@@ -24,12 +24,12 @@ import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.antialiasing.FXAA;
 import org.oreon.core.gl.antialiasing.MSAA;
 import org.oreon.core.gl.buffers.GLFramebuffer;
-import org.oreon.core.gl.config.Default;
 import org.oreon.core.gl.context.GLContext;
 import org.oreon.core.gl.deferred.DeferredLightingRenderer;
 import org.oreon.core.gl.deferred.TransparencyLayer;
 import org.oreon.core.gl.deferred.TransparencyBlendRenderer;
 import org.oreon.core.gl.light.GLDirectionalLight;
+import org.oreon.core.gl.parameter.Default;
 import org.oreon.core.gl.picking.TerrainPicking;
 import org.oreon.core.gl.shadow.ParallelSplitShadowMaps;
 import org.oreon.core.gl.surface.FullScreenMultisampleQuad;
@@ -109,12 +109,12 @@ public class GLRenderEngine implements RenderEngine{
 		
 		getDeviceProperties();
 		
-		EngineContext.getCommonConfig().setWireframe(false);
-		EngineContext.getCommonConfig().setClipplane(Constants.PLANE0);
-		EngineContext.getCommonConfig().setSightRange(2f);
-		EngineContext.getCommonConfig().setReflection(false);
-		EngineContext.getCommonConfig().setRefraction(false);
-		EngineContext.getCommonConfig().setUnderwater(false);
+		EngineContext.getRenderConfig().setWireframe(false);
+		EngineContext.getRenderConfig().setClipplane(Constants.PLANE0);
+		EngineContext.getRenderConfig().setSightRange(2f);
+		EngineContext.getRenderConfig().setReflection(false);
+		EngineContext.getRenderConfig().setRefraction(false);
+		EngineContext.getRenderConfig().setUnderwater(false);
 		
 		Default.init();
 		window = CoreSystem.getInstance().getWindow();
@@ -180,8 +180,8 @@ public class GLRenderEngine implements RenderEngine{
 
 		GLDirectionalLight.getInstance().update();
 
-		EngineContext.getCommonConfig().setClipplane(Constants.PLANE0);
-		GLContext.getGLConfig().setSceneDepthMap(sceneDepthmap);
+		EngineContext.getRenderConfig().setClipplane(Constants.PLANE0);
+		GLContext.getRenderContext().setSceneDepthMap(sceneDepthmap);
 		Default.clearScreen();
 		
 		//render shadow maps
@@ -235,7 +235,7 @@ public class GLRenderEngine implements RenderEngine{
 		// update Terrain Quadtree
 		if (CoreSystem.getInstance().getScenegraph().getCamera().isCameraMoved()){
 			if (CoreSystem.getInstance().getScenegraph().terrainExists()){
-				((GLTerrain) CoreSystem.getInstance().getScenegraph().getTerrain()).signal();
+				((GLTerrain) CoreSystem.getInstance().getScenegraph().getTerrain()).getQuadtree().signal();
 			}
 		}
 
@@ -259,7 +259,7 @@ public class GLRenderEngine implements RenderEngine{
 			postProcessingTexture = dofBlur.getVerticalBlurSceneTexture();
 			
 			// post processing effects
-			if (EngineContext.getCommonConfig().isUnderwater()){
+			if (EngineContext.getRenderConfig().isUnderwater()){
 				underWaterRenderer.render(postProcessingTexture, deferredLightingRenderer.getGbuffer().getDepthTexture());
 				postProcessingTexture = underWaterRenderer.getUnderwaterSceneTexture();
 			}
@@ -278,7 +278,7 @@ public class GLRenderEngine implements RenderEngine{
 			postProcessingTexture = sunlightScattering.getSunLightScatteringSceneTexture();
 		}
 		
-		if (EngineContext.getCommonConfig().isWireframe()){
+		if (EngineContext.getRenderConfig().isWireframe()){
 			fullScreenQuadMultisample.setTexture(deferredLightingRenderer.getGbuffer().getAlbedoTexture());
 			fullScreenQuadMultisample.render();
 		}
@@ -331,10 +331,10 @@ public class GLRenderEngine implements RenderEngine{
 	public void update() {
 		
 		if (CoreSystem.getInstance().getInput().isKeyPushed(GLFW.GLFW_KEY_G)){
-			if (EngineContext.getCommonConfig().isWireframe())
-				EngineContext.getCommonConfig().setWireframe(false);
+			if (EngineContext.getRenderConfig().isWireframe())
+				EngineContext.getRenderConfig().setWireframe(false);
 			else
-				EngineContext.getCommonConfig().setWireframe(true);
+				EngineContext.getRenderConfig().setWireframe(true);
 		}
 		
 		if (CoreSystem.getInstance().getInput().isKeyPushed(GLFW.GLFW_KEY_KP_1)){
@@ -455,7 +455,7 @@ public class GLRenderEngine implements RenderEngine{
 		
 		instancingObjectHandler.signalAll();
 		if (CoreSystem.getInstance().getScenegraph().terrainExists()){
-			((GLTerrain) CoreSystem.getInstance().getScenegraph().getTerrain()).signal();
+			((GLTerrain) CoreSystem.getInstance().getScenegraph().getTerrain()).getQuadtree().signal();
 		}
 	}
 	

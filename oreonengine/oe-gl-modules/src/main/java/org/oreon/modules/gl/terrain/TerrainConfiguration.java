@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import org.oreon.core.gl.shaders.GLShader;
 import org.oreon.core.gl.texture.Texture2D;
 import org.oreon.core.model.Material;
 import org.oreon.core.util.BufferUtil;
@@ -47,15 +46,11 @@ public class TerrainConfiguration {
 	private int[] lod_range = new int[8];
 	private int[] lod_morphing_area = new int[8];
 	
-	private GLShader shader;
-	private GLShader wireframeShader;
-	private GLShader shadowShader;
-	
-	public void loadFile(String file)
-	{
+	public TerrainConfiguration() {
+		
 		Properties properties = new Properties();
 		try {
-			InputStream stream = TerrainConfiguration.class.getClassLoader().getResourceAsStream(file);
+			InputStream stream = TerrainConfiguration.class.getClassLoader().getResourceAsStream("terrain-config.properties");
 			properties.load(stream);
 			stream.close();
 		} catch (IOException e) {
@@ -95,11 +90,6 @@ public class TerrainConfiguration {
 			heightmap.bind();
 			heightmap.trilinearFilter();
 			getMaterials().get(materials.size()-1).setHeightmap(heightmap);
-			
-//			Texture2D alphamap = new Texture2D(properties.getProperty("materials.material" + i + "_ALPHA"));
-//			alphamap.bind();
-//			alphamap.trilinearFilter();
-//			getMaterials().get(materials.size()-1).setAlphamap(alphamap);
 			
 			getMaterials().get(materials.size()-1).setHeightScaling(Float.valueOf(properties.getProperty("materials.material" + i + "_heightScaling")));
 			getMaterials().get(materials.size()-1).setHorizontalScaling(Float.valueOf(properties.getProperty("materials.material" + i + "_horizontalScaling")));

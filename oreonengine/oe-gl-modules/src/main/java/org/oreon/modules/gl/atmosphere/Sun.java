@@ -2,8 +2,8 @@ package org.oreon.modules.gl.atmosphere;
 
 import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.buffers.GLPointVBO3D;
-import org.oreon.core.gl.config.AlphaBlendingSrcAlpha;
 import org.oreon.core.gl.light.GLDirectionalLight;
+import org.oreon.core.gl.parameter.AlphaBlendingSrcAlpha;
 import org.oreon.core.gl.query.GLOcclusionQuery;
 import org.oreon.core.gl.scenegraph.GLRenderInfo;
 import org.oreon.core.gl.texture.Texture2D;
@@ -51,7 +51,7 @@ public class Sun extends Renderable{
 	
 	public void render() {
 		
-		if (!EngineContext.getCommonConfig().isUnderwater() && !EngineContext.getCommonConfig().isWireframe()){
+		if (!EngineContext.getRenderConfig().isUnderwater() && !EngineContext.getRenderConfig().isWireframe()){
 			super.render();
 		}
 	}

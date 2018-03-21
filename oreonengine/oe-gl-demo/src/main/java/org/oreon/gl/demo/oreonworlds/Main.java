@@ -1,9 +1,9 @@
 package org.oreon.gl.demo.oreonworlds;
 
 import org.oreon.core.context.EngineContext;
+import org.oreon.core.gl.context.GLCamera;
 import org.oreon.core.gl.context.GLContext;
 import org.oreon.core.gl.platform.GLWindow;
-import org.oreon.core.gl.scenegraph.GLCamera;
 import org.oreon.core.platform.GLFWInput;
 import org.oreon.core.platform.Window;
 import org.oreon.core.system.CoreEngine;
@@ -40,20 +40,20 @@ public class Main {
 		coreSystem.setRenderEngine(renderEngine);
 		coreSystem.setWindow(window);
 		coreSystem.setInput(input);
-		coreSystem.getScenegraph().setCamera(new GLCamera(input));
+		coreSystem.getScenegraph().setCamera(new GLCamera());
+		coreSystem.getScenegraph().getCamera().setInput(input);
 
 		coreEngine.init(coreSystem);
 		
 		GLTerrain terrain = new Terrain();
-		terrain.init("oreonworlds/terrain/terrain-config.properties",
-				   TerrainShader.getInstance(),
-				   TerrainWireframeShader.getInstance(), 
-				   null);
+		terrain.init(TerrainShader.getInstance(),
+				     TerrainWireframeShader.getInstance(), 
+				     null);
 		coreSystem.getScenegraph().setTerrain(terrain);
 		
 		coreSystem.getScenegraph().addObject(new SkySphere());	
 		coreSystem.getScenegraph().addTransparentObject(new Sun());
-		coreSystem.getScenegraph().setWater(new Ocean("oreonworlds/water/water-config.properties"));
+		coreSystem.getScenegraph().setWater(new Ocean());
 		
 //		coreSystem.getScenegraph().getRoot().addChild(new Bush01ClusterGroup());
 //		coreSystem.getScenegraph().getRoot().addChild(new Palm01ClusterGroup());

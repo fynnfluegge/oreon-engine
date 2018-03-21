@@ -55,16 +55,17 @@ import org.oreon.core.util.BufferUtil;
 import org.oreon.core.vk.buffers.VkBuffer;
 import org.oreon.core.vk.buffers.VkUniformBuffer;
 import org.oreon.core.vk.command.CommandBuffer;
+import org.oreon.core.vk.context.VkCamera;
 import org.oreon.core.vk.descriptor.DescriptorPool;
 import org.oreon.core.vk.descriptor.DescriptorSet;
 import org.oreon.core.vk.descriptor.DescriptorSetLayout;
 import org.oreon.core.vk.device.LogicalDevice;
 import org.oreon.core.vk.device.PhysicalDevice;
+import org.oreon.core.vk.image.VkImageLoader;
 import org.oreon.core.vk.pipeline.Pipeline;
 import org.oreon.core.vk.pipeline.RenderPass;
 import org.oreon.core.vk.pipeline.ShaderPipeline;
 import org.oreon.core.vk.pipeline.VertexInputInfo;
-import org.oreon.core.vk.scenegraph.VkCamera;
 import org.oreon.core.vk.swapchain.SwapChain;
 import org.oreon.core.vk.util.DeviceCapabilities;
 import org.oreon.core.vk.util.VkUtil;
@@ -228,8 +229,11 @@ public class VkRenderEngine implements RenderEngine{
 	    cameraMatrix.put(BufferUtil.createFlippedBuffer(camera.getViewProjectionMatrix()));
 	    
 	    uniformBuffer = new VkUniformBuffer(logicalDevice.getHandle(),
-	    												    physicalDevice.getMemoryProperties(),
-	    												    cameraBuffer);
+	    									physicalDevice.getMemoryProperties(),
+	    									cameraBuffer);
+	    
+	    // Image
+	    VkImageLoader.loadImage("images/vulkan-logo.jpg");
 	    
 	    DescriptorSetLayout descriptorLayout = new DescriptorSetLayout(1);
 	    descriptorLayout.setLayoutBinding();

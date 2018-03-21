@@ -1,4 +1,4 @@
-package org.oreon.core.gl.config;
+package org.oreon.core.gl.parameter;
 
 import static org.lwjgl.opengl.GL11.GL_BLEND;
 import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
@@ -6,7 +6,7 @@ import static org.lwjgl.opengl.GL11.glBlendFunc;
 import static org.lwjgl.opengl.GL11.glDisable;
 import static org.lwjgl.opengl.GL11.glEnable;
 
-public class AlphaBlendingSrcAlpha implements RenderConfig{
+public class AlphaBlendingSrcAlpha implements RenderParameter{
 	
 	public AlphaBlendingSrcAlpha(){
 	}

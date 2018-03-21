@@ -1,7 +1,7 @@
 package org.oreon.core.gl.scenegraph;
 
 import org.oreon.core.gl.buffers.VBO;
-import org.oreon.core.gl.config.RenderConfig;
+import org.oreon.core.gl.parameter.RenderParameter;
 import org.oreon.core.gl.shaders.GLShader;
 import org.oreon.core.scenegraph.Component;
 
@@ -12,7 +12,7 @@ import lombok.Getter;
 public class GLRenderInfo extends Component{
 	
 	private GLShader shader;
-	private RenderConfig config;
+	private RenderParameter config;
 	@Getter
 	private VBO vbo;
 	

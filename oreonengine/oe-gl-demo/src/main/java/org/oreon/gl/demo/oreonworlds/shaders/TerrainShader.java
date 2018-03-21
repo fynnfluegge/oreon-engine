@@ -43,7 +43,6 @@ public class TerrainShader extends GLShader{
 		
 		addUniform("localMatrix");
 		addUniform("worldMatrix");
-		addUniform("scaleY");
 		addUniform("scaleXZ");
 		
 		addUniform("bezier");
@@ -89,9 +88,9 @@ public class TerrainShader extends GLShader{
 	{	
 		bindUniformBlock("Camera", Constants.CameraUniformBlockBinding);
 		
-		setUniform("clipplane", EngineContext.getCommonConfig().getClipplane());
-		setUniformi("isRefraction", EngineContext.getCommonConfig().isRefraction() ? 1 : 0);
-		setUniformi("isCameraUnderWater", EngineContext.getCommonConfig().isUnderwater() ? 1 : 0);		
+		setUniform("clipplane", EngineContext.getRenderConfig().getClipplane());
+		setUniformi("isRefraction", EngineContext.getRenderConfig().isRefraction() ? 1 : 0);
+		setUniformi("isCameraUnderWater", EngineContext.getRenderConfig().isUnderwater() ? 1 : 0);		
 		
 		TerrainConfiguration terrConfig = ((TerrainNode) object).getTerrConfig();
 		
@@ -115,7 +114,6 @@ public class TerrainShader extends GLShader{
 		terrConfig.getSplatmap().bind();
 		setUniformi("splatmap", 2);
 		
-		setUniformf("scaleY", terrConfig.getScaleY());
 		setUniformf("scaleXZ", terrConfig.getScaleXZ());
 		setUniformi("bezier", terrConfig.getBezier());
 		setUniformi("tessFactor", terrConfig.getTessellationFactor());
@@ -130,12 +128,12 @@ public class TerrainShader extends GLShader{
 		setUniformi("waterReflectionShift", terrConfig.getWaterReflectionShift());
 		
 		glActiveTexture(GL_TEXTURE3);
-		GLContext.getGLConfig().getUnderwaterCausticsMap().bind();
+		GLContext.getRenderContext().getUnderwaterCausticsMap().bind();
 		setUniformi("caustics", 3);
 		glActiveTexture(GL_TEXTURE4);
-		GLContext.getGLConfig().getUnderwaterDudvMap().bind();
+		GLContext.getRenderContext().getUnderwaterDudvMap().bind();
 		setUniformi("dudvCaustics", 4);
-		setUniformf("distortionCaustics", GLContext.getGLConfig().getUnderwaterDistortion());
+		setUniformf("distortionCaustics", GLContext.getRenderContext().getUnderwaterDistortion());
 		
 		for (int i=0; i<8; i++){
 			setUniformi("lod_morph_area[" + i + "]", terrConfig.getLod_morphing_area()[i]);

@@ -1,6 +1,6 @@
 package org.oreon.modules.gl.gui;
 
-import org.oreon.core.gl.config.RenderConfig;
+import org.oreon.core.gl.parameter.RenderParameter;
 import org.oreon.core.gl.shaders.GLShader;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.math.Transform;
@@ -12,7 +12,7 @@ public abstract class GUIElement {
 	private Matrix4f orthographicMatrix;
 	private GLShader shader;
 	private GUIVAO vao;
-	private RenderConfig config;
+	private RenderParameter config;
 	protected Vec2f[] texCoords;
 	
 	public abstract void render();
@@ -61,11 +61,11 @@ public abstract class GUIElement {
 		this.texCoords = texCoords;
 	}
 
-	public RenderConfig getConfig() {
+	public RenderParameter getConfig() {
 		return config;
 	}
 
-	public void setConfig(RenderConfig config) {
+	public void setConfig(RenderParameter config) {
 		this.config = config;
 	}
 }

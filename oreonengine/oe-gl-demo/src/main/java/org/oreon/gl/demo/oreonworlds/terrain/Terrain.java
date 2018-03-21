@@ -8,6 +8,7 @@ import org.lwjgl.glfw.GLFW;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.Constants;
 import org.oreon.modules.gl.terrain.GLTerrain;
+import org.oreon.modules.gl.terrain.GLTerrainContext;
 import org.oreon.modules.gl.terrain.fractals.FractalMap;
 
 public class Terrain extends GLTerrain{
@@ -22,7 +23,7 @@ public class Terrain extends GLTerrain{
 			
 			List<FractalMap> newFractals = new ArrayList<>();
 			
-			for (FractalMap fractal : getConfiguration().getFractals()){
+			for (FractalMap fractal : GLTerrainContext.getConfiguration().getFractals()){
 				fractal.getHeightmap().delete();
 				
 				FractalMap newfractal = new FractalMap(Constants.TERRAIN_FRACTALS_RESOLUTION,
@@ -35,12 +36,12 @@ public class Terrain extends GLTerrain{
 			}
 			
 			// update configurations
-			getConfiguration().getFractals().clear();
+			GLTerrainContext.getConfiguration().getFractals().clear();
 			for (FractalMap newFracral : newFractals){
-				getConfiguration().getFractals().add(newFracral);
+				GLTerrainContext.getConfiguration().getFractals().add(newFracral);
 			}
-			getConfiguration().renderFractalMap();
-			getConfiguration().createHeightmapDataBuffer();
+			GLTerrainContext.getConfiguration().renderFractalMap();
+			GLTerrainContext.getConfiguration().createHeightmapDataBuffer();
 		}
 	}
 }

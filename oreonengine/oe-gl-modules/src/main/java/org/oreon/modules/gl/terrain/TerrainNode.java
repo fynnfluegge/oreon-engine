@@ -1,11 +1,11 @@
 package org.oreon.modules.gl.terrain;
 
+import java.util.HashMap;
+
 import org.oreon.core.context.EngineContext;
-import org.oreon.core.gl.buffers.GLPatchVBO;
-import org.oreon.core.gl.config.Default;
-import org.oreon.core.gl.scenegraph.GLRenderInfo;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.math.Vec3f;
+import org.oreon.core.scenegraph.Component;
 import org.oreon.core.scenegraph.ComponentType;
 import org.oreon.core.scenegraph.Node;
 import org.oreon.core.scenegraph.Renderable;
@@ -13,7 +13,6 @@ import org.oreon.core.system.CoreSystem;
 
 public class TerrainNode extends Renderable{
 	
-	private GLPatchVBO buffer;
 	private boolean isleaf;
 	private TerrainConfiguration terrConfig;
 	private int lod;
@@ -23,27 +22,17 @@ public class TerrainNode extends Renderable{
 	private float gap;
 	
 	
-	public TerrainNode(GLPatchVBO buffer, TerrainConfiguration terrConfig, Vec2f location, int lod, Vec2f index){
+	public TerrainNode(HashMap<ComponentType, Component> components, TerrainConfiguration terrConfig, Vec2f location, int lod, Vec2f index){
 		
-		this.buffer = buffer;
 		this.isleaf = true;
 		this.index = index;
 		this.lod = lod;
 		this.location = location;
 		this.terrConfig = terrConfig;
 		this.gap = 1f/(TerrainQuadtree.getRootPatches() * (float)(Math.pow(2, lod)));
+		
+		getComponents().putAll(components);
 
-		GLRenderInfo renderInfo = new GLRenderInfo(terrConfig.getShader(),
-												   new Default(),
-												   buffer);
-		
-		GLRenderInfo wireframeRenderInfo = new GLRenderInfo(terrConfig.getWireframeShader(),
-														    new Default(),
-														    buffer);
-		
-		addComponent(ComponentType.MAIN_RENDERINFO, renderInfo);
-		addComponent(ComponentType.WIREFRAME_RENDERINFO, wireframeRenderInfo);
-		
 		Vec3f localScaling = new Vec3f(gap,0,gap);
 		Vec3f localTranslation = new Vec3f(location.getX(),0,location.getY());
 		
@@ -73,8 +62,7 @@ public class TerrainNode extends Renderable{
 	public void render()
 	{
 		boolean renderChunk = false;
-		if (EngineContext.getCommonConfig().isReflection() || EngineContext.getCommonConfig().isRefraction()){
-			
+		if (EngineContext.getRenderConfig().isReflection() || EngineContext.getRenderConfig().isRefraction()){
 			// render only first lod for reflection/refraction
 			renderChunk = (isleaf && lod == 0) || (!isleaf && lod == 0);
 		}
@@ -84,7 +72,7 @@ public class TerrainNode extends Renderable{
 		
 		if (renderChunk)
 		{	
-			if (EngineContext.getCommonConfig().isWireframe()){
+			if (EngineContext.getRenderConfig().isWireframe()){
 				getComponents().get(ComponentType.WIREFRAME_RENDERINFO).render();
 			}
 			else{
@@ -109,11 +97,6 @@ public class TerrainNode extends Renderable{
 	}
 	
 	public void updateQuadtree(){
-
-		if (CoreSystem.getInstance().getScenegraph().getCamera().getPosition().getY() > (terrConfig.getScaleY())){
-			worldPos.setY(terrConfig.getScaleY());
-		}
-		else worldPos.setY(CoreSystem.getInstance().getScenegraph().getCamera().getPosition().getY());
 		
 		updateChildNodes();
 		
@@ -142,7 +125,7 @@ public class TerrainNode extends Renderable{
 		if(getChildren().size() == 0){
 			for (int i=0; i<2; i++){
 				for (int j=0; j<2; j++){
-					addChild(new TerrainNode(buffer, terrConfig, location.add(new Vec2f(i*gap/2f,j*gap/2f)), lod, new Vec2f(i,j)));
+					addChild(new TerrainNode(getComponents(), terrConfig, location.add(new Vec2f(i*gap/2f,j*gap/2f)), lod, new Vec2f(i,j)));
 				}
 			}
 		}	
@@ -156,12 +139,12 @@ public class TerrainNode extends Renderable{
 		if(getChildren().size() != 0){
 			getChildren().clear();
 		}
-}
+	}
 	
 	public void computeWorldPos(){
 		
 		Vec2f loc = location.add(gap/2f).mul(terrConfig.getScaleXZ()).sub(terrConfig.getScaleXZ()/2f);
-		float height = CoreSystem.getInstance().getScenegraph().getTerrain().getTerrainHeight(loc.getX(), loc.getY());
+		float height = TerrainHelper.getTerrainHeight(loc.getX(), loc.getY());
 		this.worldPos = new Vec3f(loc.getX(),height,loc.getY());
 	}
 

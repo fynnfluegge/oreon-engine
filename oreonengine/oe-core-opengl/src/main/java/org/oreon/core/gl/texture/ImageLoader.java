@@ -48,7 +48,7 @@ public class ImageLoader {
         if (!stbi_info_from_memory(imageBuffer, w, h, c)) {
             throw new RuntimeException("Failed to read image information: " + stbi_failure_reason());
         }
-  
+        
 //        System.out.println("Image width: " + w.get(0));
 //        System.out.println("Image height: " + h.get(0));
 //        System.out.println("Image components: " + c.get(0));

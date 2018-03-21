@@ -1,4 +1,4 @@
-package org.oreon.core.gl.config;
+package org.oreon.core.gl.parameter;
 
 import static org.lwjgl.opengl.GL11.GL_BACK;
 import static org.lwjgl.opengl.GL32.GL_SAMPLE_MASK;
@@ -27,7 +27,7 @@ import static org.lwjgl.opengl.GL30.GL_CLIP_DISTANCE4;
 import static org.lwjgl.opengl.GL30.GL_CLIP_DISTANCE5;
 
 
-public class Default implements RenderConfig{
+public class Default implements RenderParameter{
 
 	public void enable() {
 		

@@ -1,15 +1,14 @@
-package org.oreon.core.vk.scenegraph;
+package org.oreon.core.vk.context;
 
-import org.oreon.core.platform.GLFWInput;
-import org.oreon.core.scenegraph.Camera;
+import org.oreon.core.context.Camera;
 
 public class VkCamera extends Camera{
+	
+//	private VkUniformBuffer uniformBuffer;
 
-	public VkCamera(GLFWInput input) {
+	public VkCamera() {
 		
 		super();
-		
-		setInput(input);
 		
 		// flip y-axxis for vulkan coordinate system
 		getProjectionMatrix().set(1, 1, -getProjectionMatrix().get(1, 1));

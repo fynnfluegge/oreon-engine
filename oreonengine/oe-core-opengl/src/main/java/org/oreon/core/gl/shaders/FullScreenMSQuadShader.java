@@ -43,6 +43,6 @@ public class FullScreenMSQuadShader extends GLShader{
 		
 		setUniformi("width", CoreSystem.getInstance().getWindow().getWidth());
 		setUniformi("height", CoreSystem.getInstance().getWindow().getHeight());
-		setUniformi("multisamples", EngineContext.getCommonConfig().getMultisamples());		
+		setUniformi("multisamples", EngineContext.getRenderConfig().getMultisamples());		
 	}
 }

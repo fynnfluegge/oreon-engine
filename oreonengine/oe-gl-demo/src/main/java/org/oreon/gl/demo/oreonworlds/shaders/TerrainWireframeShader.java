@@ -39,7 +39,6 @@ private static TerrainWireframeShader instance = null;
 		
 		addUniform("localMatrix");
 		addUniform("worldMatrix");
-		addUniform("scaleY");
 		addUniform("scaleXZ");
 		
 		addUniform("bezier");
@@ -76,7 +75,7 @@ private static TerrainWireframeShader instance = null;
 	{	
 		bindUniformBlock("Camera", Constants.CameraUniformBlockBinding);
 		
-		setUniform("clipplane", EngineContext.getCommonConfig().getClipplane());
+		setUniform("clipplane", EngineContext.getRenderConfig().getClipplane());
 		
 		TerrainConfiguration terrConfig = ((TerrainNode) object).getTerrConfig();
 		int lod = ((TerrainNode) object).getLod();
@@ -95,7 +94,6 @@ private static TerrainWireframeShader instance = null;
 		terrConfig.getSplatmap().bind();
 		setUniformi("splatmap", 1);
 		
-		setUniformf("scaleY", terrConfig.getScaleY());
 		setUniformf("scaleXZ", terrConfig.getScaleXZ());
 		setUniformi("bezier", terrConfig.getBezier());
 		setUniformi("tessFactor", terrConfig.getTessellationFactor());

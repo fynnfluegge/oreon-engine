@@ -11,8 +11,13 @@ public class GLContext {
 		context = new ClassPathXmlApplicationContext("gl-context.xml");
 	}
 	
-	public static GLConfiguration getGLConfig(){
+	public static GLRenderContext getRenderContext(){
 		
-		return context.getBean(GLConfiguration.class);
+		return context.getBean(GLRenderContext.class);
+	}
+	
+	public static GLCamera getCamera(){
+		
+		return context.getBean(GLCamera.class);
 	}
 }

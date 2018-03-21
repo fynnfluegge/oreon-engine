@@ -1,20 +1,16 @@
-package org.oreon.core.gl.scenegraph;
+package org.oreon.core.gl.context;
 
+import org.oreon.core.context.Camera;
 import org.oreon.core.gl.buffers.GLUBO;
-import org.oreon.core.platform.GLFWInput;
-import org.oreon.core.scenegraph.Camera;
 import org.oreon.core.util.Constants;
 
 public class GLCamera extends Camera{
 
 	private GLUBO ubo;
 	
-	
-	public GLCamera(GLFWInput input) {
+	public GLCamera() {
 		
 		super();
-		
-		setInput(input);
 	}
 	
 	@Override

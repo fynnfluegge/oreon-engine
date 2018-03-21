@@ -1,6 +1,6 @@
 package org.oreon.modules.gl.postprocessfilter.lensflare;
 
-import org.oreon.core.gl.config.AdditiveBlending;
+import org.oreon.core.gl.parameter.AdditiveBlending;
 import org.oreon.core.gl.surface.FullScreenQuad;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.math.Transform;

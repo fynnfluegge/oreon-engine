@@ -50,8 +50,8 @@ public class UnderWaterRenderer {
 		causticsMap.bind();
 		causticsMap.trilinearFilter();
 		
-		GLContext.getGLConfig().setUnderwaterCausticsMap(causticsMap);
-		GLContext.getGLConfig().setUnderwaterDudvMap(dudvMap);
+		GLContext.getRenderContext().setUnderwaterCausticsMap(causticsMap);
+		GLContext.getRenderContext().setUnderwaterDudvMap(dudvMap);
 	}
 	
 	public void render(Texture2D sceneTexture, Texture2DMultisample sceneDepthMap) {
@@ -65,7 +65,7 @@ public class UnderWaterRenderer {
 		
 		distortion += distortion_delta;
 		
-		GLContext.getGLConfig().setUnderwaterDistortion(distortion);
+		GLContext.getRenderContext().setUnderwaterDistortion(distortion);
 	}
 
 	public Texture2D getUnderwaterSceneTexture() {

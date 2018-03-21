@@ -11,7 +11,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class CommonConfig {
+public class RenderConfig {
 	
 	// render configurations
 	private boolean wireframe;
@@ -29,14 +29,14 @@ public class CommonConfig {
 	
 	private int multisamples;
 	
-	private int screenWidth;
-	private int screenHeight;
+	private int displayWidth;
+	private int displayHeight;
 	
-	protected CommonConfig(){
+	protected RenderConfig(){
 		
 		Properties properties = new Properties();
 		try {
-			InputStream stream = CommonConfig.class.getClassLoader().getResourceAsStream("common-config.properties");
+			InputStream stream = RenderConfig.class.getClassLoader().getResourceAsStream("render-config.properties");
 			properties.load(stream);
 			stream.close();
 		} catch (IOException e) {
@@ -44,5 +44,7 @@ public class CommonConfig {
 		}
 		
 		multisamples = Integer.valueOf(properties.getProperty("multisamples"));
+		displayWidth = Integer.valueOf(properties.getProperty("display.width"));
+		displayHeight = Integer.valueOf(properties.getProperty("display.height"));
 	}
 }
