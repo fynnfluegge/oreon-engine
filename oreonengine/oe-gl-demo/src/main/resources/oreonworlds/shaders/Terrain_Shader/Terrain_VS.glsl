@@ -77,37 +77,38 @@ float morphLongitude(vec2 position)
 }
 
 vec2 morph(vec2 localPosition, float height, int morph_area){
-
+	
 	vec2 morphing = vec2(0,0);
 	
-	vec2 fixPointLatitude;
-	vec2 fixPointLongitude;float distLatitude;
+	vec2 fixPointLatitude = vec2(0,0);
+	vec2 fixPointLongitude = vec2(0,0);
+	float distLatitude;
 	float distLongitude;
 	
-	if(index == vec2(0,0)){
+	if (index == vec2(0,0)) {
 		fixPointLatitude = location + vec2(gap,0);
 		fixPointLongitude = location + vec2(0,gap);
 	}
-	else if(index == vec2(1,0)){
+	else if (index == vec2(1,0)) {
 		fixPointLatitude = location;
 		fixPointLongitude = location + vec2(gap,gap);
 	}
-	else if(index == vec2(0,1)){
+	else if (index == vec2(0,1)) {
 		fixPointLatitude = location + vec2(gap,gap);
 		fixPointLongitude = location;
 	}
-	else if(index == vec2(1,1)){
+	else if (index == vec2(1,1)) {
 		fixPointLatitude = location + vec2(0,gap);
 		fixPointLongitude = location + vec2(gap,0);
 	}
-	
-	distLatitude = length(eyePosition - (worldMatrix *
-			vec4(fixPointLatitude.x,height,fixPointLatitude.y,1)).xyz);
-	distLongitude = length(eyePosition - (worldMatrix *
-			vec4(fixPointLongitude.x,height,fixPointLongitude.y,1)).xyz);
-			
+		
+	distLatitude = length(eyePosition - (worldMatrix * 
+					vec4(fixPointLatitude.x,height,fixPointLatitude.y,1)).xyz);
+	distLongitude = length(eyePosition - (worldMatrix * 
+					vec4(fixPointLongitude.x,height,fixPointLongitude.y,1)).xyz);
+					
 	if (distLatitude > morph_area)
-			morphing.x = morphLatitude(localPosition.xy);
+		morphing.x = morphLatitude(localPosition.xy);
 	if (distLongitude > morph_area)
 		morphing.y = morphLongitude(localPosition.xy);
 		
@@ -117,8 +118,8 @@ vec2 morph(vec2 localPosition, float height, int morph_area){
 void main()
 {
 	vec2 localPosition = (localMatrix * vec4(position0.x,0,position0.y,1)).xz;
-
-	float height += texture(heightmap, texCoord1).r;
+	
+	float height = texture(heightmap, localPosition).r;
 	
 	if (lod > 0)
 		localPosition += morph(localPosition,height,lod_morph_area[lod-1]);

@@ -2,7 +2,7 @@ package org.oreon.core.scenegraph;
 
 import org.oreon.core.math.Transform;
 
-public abstract class Component{
+public abstract class Component implements Cloneable{
 	
 	private Renderable parent;
 	
@@ -23,5 +23,9 @@ public abstract class Component{
 	public Transform getTransform()
 	{
 		return getParent().getWorldTransform();
+	}
+	
+	public Component clone() throws CloneNotSupportedException{
+		return (Component) super.clone();
 	}
 }

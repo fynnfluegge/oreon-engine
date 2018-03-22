@@ -64,7 +64,7 @@ public class TerrainConfiguration {
 			heightmap = new Texture2D(properties.getProperty("heightmap"));
 			getHeightmap().bind();
 			getHeightmap().bilinearFilter();
-				
+			
 			NormalMapRenderer normalRenderer = new NormalMapRenderer(getHeightmap().getWidth());
 			normalRenderer.setStrength(Integer.valueOf(properties.getProperty("normalmap.strength")));
 			normalRenderer.render(getHeightmap());

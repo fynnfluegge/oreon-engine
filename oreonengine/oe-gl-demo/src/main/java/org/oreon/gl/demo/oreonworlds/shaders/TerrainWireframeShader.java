@@ -40,6 +40,7 @@ private static TerrainWireframeShader instance = null;
 		addUniform("localMatrix");
 		addUniform("worldMatrix");
 		addUniform("scaleXZ");
+		addUniform("scaleY");
 		
 		addUniform("bezier");
 		addUniform("tessFactor");
@@ -95,6 +96,7 @@ private static TerrainWireframeShader instance = null;
 		setUniformi("splatmap", 1);
 		
 		setUniformf("scaleXZ", terrConfig.getScaleXZ());
+		setUniformf("scaleY", terrConfig.getScaleY());
 		setUniformi("bezier", terrConfig.getBezier());
 		setUniformi("tessFactor", terrConfig.getTessellationFactor());
 		setUniformf("tessSlope", terrConfig.getTessellationSlope());

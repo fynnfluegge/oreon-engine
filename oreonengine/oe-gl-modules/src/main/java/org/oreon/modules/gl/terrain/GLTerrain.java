@@ -22,22 +22,24 @@ public class GLTerrain extends Node{
 	{
 		GLTerrainContext.initialize();
 		
-		GLPatchVBO buffer  = new GLPatchVBO();
-		buffer.addData(MeshGenerator.TerrainChunkMesh(),16);
+//		TerrainConfiguration config = new TerrainConfiguration();
 		
-		GLRenderInfo renderInfo = new GLRenderInfo(shader,
-				   new Default(),
-				   buffer);
-
-		GLRenderInfo wireframeRenderInfo = new GLRenderInfo(wireframe,
-						    new Default(),
-						    buffer);
-		HashMap<ComponentType, Component> components = new HashMap<ComponentType, Component>();;
+//		GLPatchVBO buffer  = new GLPatchVBO();
+//		buffer.addData(MeshGenerator.TerrainChunkMesh(),16);
+//		
+//		GLRenderInfo renderInfo = new GLRenderInfo(shader,
+//				   new Default(),
+//				   buffer);
+//
+//		GLRenderInfo wireframeRenderInfo = new GLRenderInfo(wireframe,
+//						    new Default(),
+//						    buffer);
+//		HashMap<ComponentType, Component> components = new HashMap<ComponentType, Component>();
+//		
+//		components.put(ComponentType.MAIN_RENDERINFO, renderInfo);
+//		components.put(ComponentType.WIREFRAME_RENDERINFO, wireframeRenderInfo);
 		
-		components.put(ComponentType.MAIN_RENDERINFO, renderInfo);
-		components.put(ComponentType.WIREFRAME_RENDERINFO, wireframeRenderInfo);
-		
-		quadtree = new TerrainQuadtree(GLTerrainContext.getConfiguration(), components);
+		quadtree = new TerrainQuadtree(shader,wireframe,GLTerrainContext.getConfiguration(), null);
 		
 		addChild(quadtree);
 		

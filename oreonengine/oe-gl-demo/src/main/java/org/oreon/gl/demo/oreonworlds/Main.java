@@ -45,11 +45,11 @@ public class Main {
 
 		coreEngine.init(coreSystem);
 		
-		GLTerrain terrain = new Terrain();
-		terrain.init(TerrainShader.getInstance(),
-				     TerrainWireframeShader.getInstance(), 
-				     null);
-		coreSystem.getScenegraph().setTerrain(terrain);
+//		GLTerrain terrain = new Terrain();
+//		terrain.init(TerrainShader.getInstance(),
+//				     TerrainWireframeShader.getInstance(), 
+//				     null);
+//		coreSystem.getScenegraph().setTerrain(terrain);
 		
 		coreSystem.getScenegraph().addObject(new SkySphere());	
 		coreSystem.getScenegraph().addTransparentObject(new Sun());

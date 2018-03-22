@@ -111,7 +111,7 @@ public class GLRenderEngine implements RenderEngine{
 		
 		EngineContext.getRenderConfig().setWireframe(false);
 		EngineContext.getRenderConfig().setClipplane(Constants.PLANE0);
-		EngineContext.getRenderConfig().setSightRange(2f);
+		EngineContext.getRenderConfig().setSightRange(1f);
 		EngineContext.getRenderConfig().setReflection(false);
 		EngineContext.getRenderConfig().setRefraction(false);
 		EngineContext.getRenderConfig().setUnderwater(false);

@@ -44,6 +44,7 @@ public class TerrainShader extends GLShader{
 		addUniform("localMatrix");
 		addUniform("worldMatrix");
 		addUniform("scaleXZ");
+		addUniform("scaleY");
 		
 		addUniform("bezier");
 		addUniform("tessFactor");
@@ -115,6 +116,7 @@ public class TerrainShader extends GLShader{
 		setUniformi("splatmap", 2);
 		
 		setUniformf("scaleXZ", terrConfig.getScaleXZ());
+		setUniformf("scaleY", terrConfig.getScaleY());
 		setUniformi("bezier", terrConfig.getBezier());
 		setUniformi("tessFactor", terrConfig.getTessellationFactor());
 		setUniformf("tessSlope", terrConfig.getTessellationSlope());

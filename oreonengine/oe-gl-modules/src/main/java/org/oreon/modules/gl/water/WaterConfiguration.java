@@ -55,6 +55,6 @@ public class WaterConfiguration {
 		normalStrength = Float.valueOf(properties.getProperty("normalStrength"));
 		largeDetailRange = Integer.valueOf(properties.getProperty("detailRange"));
 		delta_T = Float.valueOf(properties.getProperty("delta_T"));
-		choppy = properties.getProperty("choppy") == "1" ? true : false;
+		choppy = Boolean.valueOf(properties.getProperty("choppy"));
 	}
 }
