@@ -1,5 +1,6 @@
 package org.oreon.core.context;
 
+import org.oreon.core.platform.GLFWInput;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -16,8 +17,9 @@ public class EngineContext {
 		return context.getBean(RenderConfig.class);
 	}
 	
-	public static void getInput(){
+	public static GLFWInput getInput(){
 		
+		return context.getBean(GLFWInput.class);
 	}
 
 }

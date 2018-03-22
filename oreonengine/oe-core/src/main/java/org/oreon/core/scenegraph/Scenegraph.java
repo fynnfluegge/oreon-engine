@@ -11,7 +11,7 @@ public class Scenegraph extends Node{
 	private Node water;
 	private Node transparentObjects;
 	
-	private boolean terrainExists = false;
+	private boolean renderTerrain = false;
 	
 	public Scenegraph(){
 		
@@ -80,7 +80,7 @@ public class Scenegraph extends Node{
 
 	public void setTerrain(Node terrain) {
 		terrain.setParent(this);
-		setTerrainExists(true);
+		renderTerrain = true;
 		this.terrain = terrain;
 	}
 	
@@ -98,12 +98,8 @@ public class Scenegraph extends Node{
 		this.water = water;
 	}
 
-	public boolean terrainExists() {
-		return terrainExists;
-	}
-
-	public void setTerrainExists(boolean terrainExists) {
-		this.terrainExists = terrainExists;
+	public boolean isRenderTerrain() {
+		return renderTerrain;
 	}
 
 	public Camera getCamera() {

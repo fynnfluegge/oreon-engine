@@ -7,4 +7,6 @@
 
    <bean id = "render-config" class = "org.oreon.core.context.RenderConfig"/>
 
+	<bean id = "input" class = "org.oreon.core.platform.GLFWInput"/>
+	
 </beans>

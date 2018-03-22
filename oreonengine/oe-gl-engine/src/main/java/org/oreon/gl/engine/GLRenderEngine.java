@@ -234,7 +234,7 @@ public class GLRenderEngine implements RenderEngine{
 		
 		// update Terrain Quadtree
 		if (CoreSystem.getInstance().getScenegraph().getCamera().isCameraMoved()){
-			if (CoreSystem.getInstance().getScenegraph().terrainExists()){
+			if (CoreSystem.getInstance().getScenegraph().isRenderTerrain()){
 				((GLTerrain) CoreSystem.getInstance().getScenegraph().getTerrain()).getQuadtree().signal();
 			}
 		}
@@ -446,7 +446,7 @@ public class GLRenderEngine implements RenderEngine{
 		
 		contrastController.update();
 		
-		if (CoreSystem.getInstance().getScenegraph().terrainExists()){
+		if (CoreSystem.getInstance().getScenegraph().isRenderTerrain()){
 			TerrainPicking.getInstance().getTerrainPosition();
 		}
 	}
@@ -454,7 +454,7 @@ public class GLRenderEngine implements RenderEngine{
 	public void shutdown() {
 		
 		instancingObjectHandler.signalAll();
-		if (CoreSystem.getInstance().getScenegraph().terrainExists()){
+		if (CoreSystem.getInstance().getScenegraph().isRenderTerrain()){
 			((GLTerrain) CoreSystem.getInstance().getScenegraph().getTerrain()).getQuadtree().signal();
 		}
 	}

@@ -124,6 +124,8 @@ void main()
 	if (lod > 0)
 		localPosition += morph(localPosition,height,lod_morph_area[lod-1]);
 	
+	height = texture(heightmap, localPosition).r;
+	
 	texCoord1 = localPosition;
 					
 	gl_Position = worldMatrix * vec4(localPosition.x,height,localPosition.y,1);

@@ -16,6 +16,4 @@ public class GLRenderContext {
 	private Texture underwaterDudvMap;
 	private Texture underwaterCausticsMap;
 	private float underwaterDistortion;
-	
-	private GLCamera camera;
 }

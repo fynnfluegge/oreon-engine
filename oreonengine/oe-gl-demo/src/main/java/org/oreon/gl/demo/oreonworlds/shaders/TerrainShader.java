@@ -34,11 +34,11 @@ public class TerrainShader extends GLShader{
 	{
 		super();
 
-		addVertexShader(ResourceLoader.loadShader("oreonworlds/shaders/Terrain_Shader/Terrain_VS.glsl"));
-		addTessellationControlShader(ResourceLoader.loadShader("oreonworlds/shaders/Terrain_Shader/Terrain_TC.glsl"));
-		addTessellationEvaluationShader(ResourceLoader.loadShader("oreonworlds/shaders/Terrain_Shader/Terrain_TE.glsl"));
-		addGeometryShader(ResourceLoader.loadShader("oreonworlds/shaders/Terrain_Shader/Terrain_GS.glsl"));
-		addFragmentShader(ResourceLoader.loadShader("oreonworlds/shaders/Terrain_Shader/Terrain_FS.glsl"));
+		addVertexShader(ResourceLoader.loadShader("oreonworlds/shaders/terrain/Terrain_VS.glsl"));
+		addTessellationControlShader(ResourceLoader.loadShader("oreonworlds/shaders/terrain/Terrain_TC.glsl"));
+		addTessellationEvaluationShader(ResourceLoader.loadShader("oreonworlds/shaders/terrain/Terrain_TE.glsl"));
+		addGeometryShader(ResourceLoader.loadShader("oreonworlds/shaders/terrain/Terrain_GS.glsl"));
+		addFragmentShader(ResourceLoader.loadShader("oreonworlds/shaders/terrain/Terrain_FS.glsl"));
 		compileShader();
 		
 		addUniform("localMatrix");

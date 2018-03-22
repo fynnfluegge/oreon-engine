@@ -119,7 +119,7 @@ public class Water extends Renderable{
 //		scenegraph.getTransform().getTranslation().setY(RenderingEngine.getClipplane().getW() - 
 //				(scenegraph.getTransform().getTranslation().getY() - RenderingEngine.getClipplane().getW()));
 			
-		if (scenegraph.terrainExists()){
+		if (scenegraph.isRenderTerrain()){
 				
 				GLTerrainContext.getConfiguration().setScaleY(GLTerrainContext.getConfiguration().getScaleY() * -1f);
 				GLTerrainContext.getConfiguration().setWaterReflectionShift((int) (getClipplane().getW() * 2f));
@@ -139,7 +139,7 @@ public class Water extends Renderable{
 		
 		if (!isCameraUnderwater()){
 			scenegraph.getRoot().render();
-			if (scenegraph.terrainExists()){
+			if (scenegraph.isRenderTerrain()){
 				((GLTerrain) scenegraph.getTerrain()).render();
 			}
 		}
@@ -160,7 +160,7 @@ public class Water extends Renderable{
 //		scenegraph.getTransform().getTranslation().setY(RenderingEngine.getClipplane().getW() - 
 //				(scenegraph.getTransform().getTranslation().getY() - RenderingEngine.getClipplane().getW()));
 
-		if (scenegraph.terrainExists()){
+		if (scenegraph.isRenderTerrain()){
 				GLTerrainContext.getConfiguration().setScaleY(GLTerrainContext.getConfiguration().getScaleY() / -1f);
 				GLTerrainContext.getConfiguration().setWaterReflectionShift(0);
 		}
@@ -174,7 +174,7 @@ public class Water extends Renderable{
 		renderConfig.clearScreenDeepOcean();
 	
 		scenegraph.getRoot().render();
-		if (scenegraph.terrainExists()){
+		if (scenegraph.isRenderTerrain()){
 			((GLTerrain) scenegraph.getTerrain()).render();
 		}
 		

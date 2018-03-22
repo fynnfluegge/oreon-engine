@@ -30,11 +30,11 @@ private static OceanWireframeShader instance = null;
 	{
 		super();
 		
-		addVertexShader(ResourceLoader.loadShader("oreonworlds/shaders/Ocean_Shader/Ocean_VS.glsl"));
-		addTessellationControlShader(ResourceLoader.loadShader("oreonworlds/shaders/Ocean_Shader/Ocean_TC.glsl"));
-		addTessellationEvaluationShader(ResourceLoader.loadShader("oreonworlds/shaders/Ocean_Shader/Ocean_TE.glsl"));
-		addGeometryShader(ResourceLoader.loadShader("oreonworlds/shaders/Ocean_Shader/OceanGrid_GS.glsl"));
-		addFragmentShader(ResourceLoader.loadShader("oreonworlds/shaders/Ocean_Shader/OceanGrid_FS.glsl"));
+		addVertexShader(ResourceLoader.loadShader("oreonworlds/shaders/ocean/Ocean_VS.glsl"));
+		addTessellationControlShader(ResourceLoader.loadShader("oreonworlds/shaders/ocean/Ocean_TC.glsl"));
+		addTessellationEvaluationShader(ResourceLoader.loadShader("oreonworlds/shaders/ocean/Ocean_TE.glsl"));
+		addGeometryShader(ResourceLoader.loadShader("oreonworlds/shaders/ocean/OceanGrid_GS.glsl"));
+		addFragmentShader(ResourceLoader.loadShader("oreonworlds/shaders/ocean/OceanGrid_FS.glsl"));
 		compileShader();
 		
 		addUniform("viewProjectionMatrix");

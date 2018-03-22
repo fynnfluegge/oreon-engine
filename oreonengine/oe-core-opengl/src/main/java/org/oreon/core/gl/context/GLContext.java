@@ -1,5 +1,6 @@
 package org.oreon.core.gl.context;
 
+import org.oreon.core.gl.platform.GLWindow;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -19,5 +20,10 @@ public class GLContext {
 	public static GLCamera getCamera(){
 		
 		return context.getBean(GLCamera.class);
+	}
+	
+	public static GLWindow getWindow(){
+		
+		return context.getBean(GLWindow.class);
 	}
 }

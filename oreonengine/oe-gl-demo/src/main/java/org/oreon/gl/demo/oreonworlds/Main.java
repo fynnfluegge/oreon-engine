@@ -42,14 +42,11 @@ public class Main {
 		coreSystem.setInput(input);
 		coreSystem.getScenegraph().setCamera(new GLCamera());
 		coreSystem.getScenegraph().getCamera().setInput(input);
-
 		coreEngine.init(coreSystem);
 		
-//		GLTerrain terrain = new Terrain();
-//		terrain.init(TerrainShader.getInstance(),
-//				     TerrainWireframeShader.getInstance(), 
-//				     null);
-//		coreSystem.getScenegraph().setTerrain(terrain);
+//		coreSystem.getScenegraph().setTerrain(new Terrain(TerrainShader.getInstance(),
+//													      TerrainWireframeShader.getInstance(), 
+//													      null));
 		
 		coreSystem.getScenegraph().addObject(new SkySphere());	
 		coreSystem.getScenegraph().addTransparentObject(new Sun());
