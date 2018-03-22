@@ -21,8 +21,4 @@ private static ApplicationContext context;
 		return context.getBean(VkDeviceContext.class);
 	}
 	
-	public static VkCamera getCamera(){
-		
-		return context.getBean(VkCamera.class);
-	}
 }

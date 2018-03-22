@@ -29,6 +29,6 @@ public class WireframeButton extends Button{
 	@Override
 	public void onClickActionPerformed()
 	{
-		EngineContext.getRenderConfig().setWireframe(!EngineContext.getRenderConfig().isWireframe());
+		EngineContext.getConfig().setWireframe(!EngineContext.getConfig().isWireframe());
 	}
 }

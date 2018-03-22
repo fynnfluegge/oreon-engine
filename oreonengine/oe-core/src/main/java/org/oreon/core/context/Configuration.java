@@ -11,7 +11,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class RenderConfig {
+public class Configuration {
 	
 	// render configurations
 	private boolean wireframe;
@@ -33,11 +33,11 @@ public class RenderConfig {
 	private int displayWidth;
 	private int displayHeight;
 	
-	protected RenderConfig(){
+	protected Configuration(){
 		
 		Properties properties = new Properties();
 		try {
-			InputStream stream = RenderConfig.class.getClassLoader().getResourceAsStream("render-config.properties");
+			InputStream stream = Configuration.class.getClassLoader().getResourceAsStream("render-config.properties");
 			properties.load(stream);
 			stream.close();
 		} catch (IOException e) {

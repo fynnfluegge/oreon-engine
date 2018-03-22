@@ -99,8 +99,8 @@ public class Palm01Cluster extends GLInstancedCluster{
 	}
 	
 	public void render(){
-		if (!EngineContext.getRenderConfig().isReflection() && 
-					!EngineContext.getRenderConfig().isRefraction()){
+		if (!EngineContext.getConfig().isReflection() && 
+					!EngineContext.getConfig().isRefraction()){
 			super.render();
 		}
 	}

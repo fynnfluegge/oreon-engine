@@ -62,10 +62,10 @@ public class GrassShader extends GLShader{
 		bindUniformBlock("worldMatrices", 0);
 		((GLInstancedCluster) object.getParent()).getModelMatricesBuffer().bindBufferBase(1);
 		bindUniformBlock("modelMatrices", 1);
-		setUniformi("isReflection", EngineContext.getRenderConfig().isReflection() ? 1 : 0);
+		setUniformi("isReflection", EngineContext.getConfig().isReflection() ? 1 : 0);
 		setUniform("scalingMatrix", new Matrix4f().Scaling(object.getWorldTransform().getScaling()));
 		
-		setUniform("clipplane", EngineContext.getRenderConfig().getClipplane());
+		setUniform("clipplane", EngineContext.getConfig().getClipplane());
 		
 		Material material = (Material) object.getComponent(ComponentType.MATERIAL0);
 

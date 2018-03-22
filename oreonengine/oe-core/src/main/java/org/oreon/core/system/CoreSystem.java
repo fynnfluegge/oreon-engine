@@ -5,6 +5,7 @@ import static org.lwjgl.glfw.GLFW.glfwSetErrorCallback;
 import static org.lwjgl.glfw.GLFW.glfwTerminate;
 
 import org.lwjgl.glfw.GLFWErrorCallback;
+import org.oreon.core.context.EngineContext;
 import org.oreon.core.platform.Input;
 import org.oreon.core.platform.Window;
 import org.oreon.core.scenegraph.Scenegraph;
@@ -52,7 +53,7 @@ public class CoreSystem {
 		
 		input.update();
 		scenegraph.update();
-		scenegraph.getCamera().update();
+		EngineContext.getCamera().update();
 		renderEngine.update();
 	}
 	

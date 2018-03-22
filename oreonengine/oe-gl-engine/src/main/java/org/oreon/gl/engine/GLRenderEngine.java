@@ -109,12 +109,12 @@ public class GLRenderEngine implements RenderEngine{
 		
 		getDeviceProperties();
 		
-		EngineContext.getRenderConfig().setWireframe(false);
-		EngineContext.getRenderConfig().setClipplane(Constants.PLANE0);
-		EngineContext.getRenderConfig().setSightRange(1f);
-		EngineContext.getRenderConfig().setReflection(false);
-		EngineContext.getRenderConfig().setRefraction(false);
-		EngineContext.getRenderConfig().setUnderwater(false);
+		EngineContext.getConfig().setWireframe(false);
+		EngineContext.getConfig().setClipplane(Constants.PLANE0);
+		EngineContext.getConfig().setSightRange(1f);
+		EngineContext.getConfig().setReflection(false);
+		EngineContext.getConfig().setRefraction(false);
+		EngineContext.getConfig().setUnderwater(false);
 		
 		Default.init();
 		window = CoreSystem.getInstance().getWindow();
@@ -180,7 +180,7 @@ public class GLRenderEngine implements RenderEngine{
 
 		GLDirectionalLight.getInstance().update();
 
-		EngineContext.getRenderConfig().setClipplane(Constants.PLANE0);
+		EngineContext.getConfig().setClipplane(Constants.PLANE0);
 		GLContext.getRenderContext().setSceneDepthMap(sceneDepthmap);
 		Default.clearScreen();
 		
@@ -259,7 +259,7 @@ public class GLRenderEngine implements RenderEngine{
 			postProcessingTexture = dofBlur.getVerticalBlurSceneTexture();
 			
 			// post processing effects
-			if (EngineContext.getRenderConfig().isUnderwater()){
+			if (EngineContext.getConfig().isUnderwater()){
 				underWaterRenderer.render(postProcessingTexture, deferredLightingRenderer.getGbuffer().getDepthTexture());
 				postProcessingTexture = underWaterRenderer.getUnderwaterSceneTexture();
 			}
@@ -278,7 +278,7 @@ public class GLRenderEngine implements RenderEngine{
 			postProcessingTexture = sunlightScattering.getSunLightScatteringSceneTexture();
 		}
 		
-		if (EngineContext.getRenderConfig().isWireframe()){
+		if (EngineContext.getConfig().isWireframe()){
 			fullScreenQuadMultisample.setTexture(deferredLightingRenderer.getGbuffer().getAlbedoTexture());
 			fullScreenQuadMultisample.render();
 		}
@@ -331,10 +331,10 @@ public class GLRenderEngine implements RenderEngine{
 	public void update() {
 		
 		if (CoreSystem.getInstance().getInput().isKeyPushed(GLFW.GLFW_KEY_G)){
-			if (EngineContext.getRenderConfig().isWireframe())
-				EngineContext.getRenderConfig().setWireframe(false);
+			if (EngineContext.getConfig().isWireframe())
+				EngineContext.getConfig().setWireframe(false);
 			else
-				EngineContext.getRenderConfig().setWireframe(true);
+				EngineContext.getConfig().setWireframe(true);
 		}
 		
 		if (CoreSystem.getInstance().getInput().isKeyPushed(GLFW.GLFW_KEY_KP_1)){

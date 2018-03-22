@@ -1,8 +1,8 @@
 package org.oreon.gl.demo.oreonworlds;
 
 import org.oreon.core.context.EngineContext;
-import org.oreon.core.gl.context.GLCamera;
 import org.oreon.core.gl.context.GLContext;
+import org.oreon.core.gl.platform.GLCamera;
 import org.oreon.core.gl.platform.GLWindow;
 import org.oreon.core.platform.GLFWInput;
 import org.oreon.core.platform.Window;
@@ -26,13 +26,15 @@ public class Main {
 		GLRenderEngine renderEngine = new GLRenderEngine();
 		Window window = new GLWindow();
 		GLFWInput input = new GLFWInput();
+		GLCamera camera = new GLCamera();
+		EngineContext.registerCamera(camera);
 		
 		renderEngine.setGui(new GUI());
 		
 		coreSystem.setRenderEngine(renderEngine);
 		coreSystem.setWindow(window);
 		coreSystem.setInput(input);
-		coreSystem.getScenegraph().setCamera(new GLCamera());
+		coreSystem.getScenegraph().setCamera(camera);
 		coreSystem.getScenegraph().getCamera().setInput(input);
 		coreEngine.init(coreSystem);
 		

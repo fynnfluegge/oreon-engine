@@ -49,6 +49,7 @@ import org.lwjgl.vulkan.VkExtent2D;
 import org.lwjgl.vulkan.VkInstance;
 import org.lwjgl.vulkan.VkInstanceCreateInfo;
 import org.lwjgl.vulkan.VkSubmitInfo;
+import org.oreon.core.context.EngineContext;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.system.RenderEngine;
 import org.oreon.core.util.BufferUtil;
@@ -61,6 +62,7 @@ import org.oreon.core.vk.descriptor.DescriptorSet;
 import org.oreon.core.vk.descriptor.DescriptorSetLayout;
 import org.oreon.core.vk.device.LogicalDevice;
 import org.oreon.core.vk.device.PhysicalDevice;
+import org.oreon.core.vk.image.VkImage;
 import org.oreon.core.vk.image.VkImageLoader;
 import org.oreon.core.vk.pipeline.Pipeline;
 import org.oreon.core.vk.pipeline.RenderPass;
@@ -233,7 +235,16 @@ public class VkRenderEngine implements RenderEngine{
 	    									cameraBuffer);
 	    
 	    // Image
-	    VkImageLoader.loadImage("images/vulkan-logo.jpg");
+	    ByteBuffer imageBuffer = VkImageLoader.loadImage("images/vulkan-logo.jpg");
+	    VkBuffer imageStagingBuffer = new VkBuffer();
+	    imageStagingBuffer.create(logicalDevice.getHandle(), imageBuffer.limit(), VK_BUFFER_USAGE_TRANSFER_SRC_BIT);
+	    imageStagingBuffer.allocate(logicalDevice.getHandle(),
+	    							physicalDevice.getMemoryProperties(),
+	    							VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+	    imageStagingBuffer.mapMemory(logicalDevice.getHandle(), imageBuffer);
+	    
+	    VkImage image = new VkImage();
+	    image.create(logicalDevice.getHandle(), 512, 512, 1);
 	    
 	    DescriptorSetLayout descriptorLayout = new DescriptorSetLayout(1);
 	    descriptorLayout.setLayoutBinding();
@@ -310,11 +321,9 @@ public class VkRenderEngine implements RenderEngine{
 	@Override
 	public void update() {
 		
-		 VkCamera camera = (VkCamera) CoreSystem.getInstance().getScenegraph().getCamera();
-		 
 		 ByteBuffer cameraBuffer = memAlloc(4 * 16);
 		 FloatBuffer cameraMatrix = cameraBuffer.asFloatBuffer();
-		 cameraMatrix.put(BufferUtil.createFlippedBuffer(camera.getViewProjectionMatrix()));
+		 cameraMatrix.put(BufferUtil.createFlippedBuffer(EngineContext.getCamera().getViewProjectionMatrix()));
 		 uniformBuffer.updateData(logicalDevice.getHandle(), cameraBuffer);
 	}
 

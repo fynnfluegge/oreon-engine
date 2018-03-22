@@ -17,11 +17,6 @@ public class GLContext {
 		return context.getBean(GLRenderContext.class);
 	}
 	
-	public static GLCamera getCamera(){
-		
-		return context.getBean(GLCamera.class);
-	}
-	
 	public static GLWindow getWindow(){
 		
 		return context.getBean(GLWindow.class);

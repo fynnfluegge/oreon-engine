@@ -1,6 +1,6 @@
 package org.oreon.core.vk.context;
 
-import org.oreon.core.context.Camera;
+import org.oreon.core.platform.Camera;
 
 public class VkCamera extends Camera{
 	

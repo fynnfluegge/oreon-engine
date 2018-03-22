@@ -76,7 +76,7 @@ private static TerrainWireframeShader instance = null;
 	{	
 		bindUniformBlock("Camera", Constants.CameraUniformBlockBinding);
 		
-		setUniform("clipplane", EngineContext.getRenderConfig().getClipplane());
+		setUniform("clipplane", EngineContext.getConfig().getClipplane());
 		
 		TerrainConfiguration terrConfig = ((TerrainNode) object).getTerrConfig();
 		int lod = ((TerrainNode) object).getLod();

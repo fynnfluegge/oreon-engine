@@ -51,7 +51,7 @@ public class Sun extends Renderable{
 	
 	public void render() {
 		
-		if (!EngineContext.getRenderConfig().isUnderwater() && !EngineContext.getRenderConfig().isWireframe()){
+		if (!EngineContext.getConfig().isUnderwater() && !EngineContext.getConfig().isWireframe()){
 			super.render();
 		}
 	}

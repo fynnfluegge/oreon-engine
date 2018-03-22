@@ -21,16 +21,15 @@ import org.lwjgl.opengl.GLCapabilities;
 import org.oreon.core.context.EngineContext;
 import org.oreon.core.platform.Window;
 
+import lombok.Getter;
+
 public class GLWindow extends Window{
 
-	GLCapabilities capabilities;
+	@Getter
+	private GLCapabilities capabilities;
 	
 	public void create()
 	{
-		setHeight(EngineContext.getRenderConfig().getDisplayHeight());
-		setWidth(EngineContext.getRenderConfig().getDisplayWidth());
-		setTitle(EngineContext.getRenderConfig().getDisplayTitle());
-		
 		glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);	
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);	
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);	
@@ -69,6 +68,8 @@ public class GLWindow extends Window{
 		glfwSetWindowSize(getId(), width, height);
 		setHeight(height);
 		setWidth(width);
-//		CoreSystem.getInstance().getScenegraph().getCamera().setProjection(70, width, height);
+		EngineContext.getConfig().setDisplayWidth(width);
+		EngineContext.getConfig().setDisplayHeight(height);
+		// TODO set camera projection
 	}
 }

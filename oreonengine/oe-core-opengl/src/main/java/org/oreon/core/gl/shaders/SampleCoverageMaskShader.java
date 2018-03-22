@@ -29,7 +29,7 @@ public class SampleCoverageMaskShader extends GLShader{
 	
 	public void updateUniforms(){
 		
-		setUniformi("multisamples", EngineContext.getRenderConfig().getMultisamples());
+		setUniformi("multisamples", EngineContext.getConfig().getMultisamples());
 	}
 
 }

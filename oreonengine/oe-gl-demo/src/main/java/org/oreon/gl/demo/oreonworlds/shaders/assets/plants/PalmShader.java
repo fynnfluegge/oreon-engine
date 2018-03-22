@@ -53,14 +53,14 @@ public class PalmShader extends GLShader{
 	public void updateUniforms(Renderable object)
 	{
 		bindUniformBlock("Camera", Constants.CameraUniformBlockBinding);
-		setUniformi("isReflection", EngineContext.getRenderConfig().isReflection() ? 1 : 0);
+		setUniformi("isReflection", EngineContext.getConfig().isReflection() ? 1 : 0);
 		
 		((GLInstancedCluster) object.getParent()).getWorldMatricesBuffer().bindBufferBase(0);
 		bindUniformBlock("worldMatrices", 0);
 		((GLInstancedCluster) object.getParent()).getModelMatricesBuffer().bindBufferBase(1);
 		bindUniformBlock("modelMatrices", 1);
 		
-		setUniform("clipplane", EngineContext.getRenderConfig().getClipplane());
+		setUniform("clipplane", EngineContext.getConfig().getClipplane());
 		setUniform("scalingMatrix", new Matrix4f().Scaling(object.getWorldTransform().getScaling()));
 		
 		Material material = (Material) object.getComponent(ComponentType.MATERIAL0);

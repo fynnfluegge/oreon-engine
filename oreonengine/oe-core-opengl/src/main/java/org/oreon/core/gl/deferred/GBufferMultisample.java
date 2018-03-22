@@ -24,32 +24,32 @@ public class GBufferMultisample {
 		albedoTexture = new Texture2DMultisample();
 		albedoTexture.generate();
 		albedoTexture.bind();
-		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, EngineContext.getRenderConfig().getMultisamples(), GL_RGBA16F, width, height, true);
+		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, EngineContext.getConfig().getMultisamples(), GL_RGBA16F, width, height, true);
 		
 		worldPositionTexture = new Texture2DMultisample();
 		worldPositionTexture.generate();
 		worldPositionTexture.bind();
-		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, EngineContext.getRenderConfig().getMultisamples(), GL_RGBA32F, width, height, true);
+		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, EngineContext.getConfig().getMultisamples(), GL_RGBA32F, width, height, true);
 		
 		normalTexture = new Texture2DMultisample();
 		normalTexture.generate();
 		normalTexture.bind();
-		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, EngineContext.getRenderConfig().getMultisamples(), GL_RGBA32F, width, height, true);
+		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, EngineContext.getConfig().getMultisamples(), GL_RGBA32F, width, height, true);
 		
 		specularEmissionTexture = new Texture2DMultisample();
 		specularEmissionTexture.generate();
 		specularEmissionTexture.bind();
-		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, EngineContext.getRenderConfig().getMultisamples(), GL_RGBA16F, width, height, true);
+		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, EngineContext.getConfig().getMultisamples(), GL_RGBA16F, width, height, true);
 		
 		lightScatteringMask = new Texture2DMultisample();
 		lightScatteringMask.generate();
 		lightScatteringMask.bind();
-		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, EngineContext.getRenderConfig().getMultisamples(), GL_RGBA16F, width, height, true);
+		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, EngineContext.getConfig().getMultisamples(), GL_RGBA16F, width, height, true);
 		
 		depthTexture = new Texture2DMultisample();
 		depthTexture.generate();
 		depthTexture.bind();
-		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, EngineContext.getRenderConfig().getMultisamples(), GL_DEPTH_COMPONENT32F, width, height, true);
+		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, EngineContext.getConfig().getMultisamples(), GL_DEPTH_COMPONENT32F, width, height, true);
 	}
 		
 	public Texture2DMultisample getAlbedoTexture() {

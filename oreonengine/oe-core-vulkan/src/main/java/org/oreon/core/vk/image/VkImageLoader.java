@@ -18,8 +18,6 @@ public class VkImageLoader {
 	    IntBuffer channels = BufferUtils.createIntBuffer(1);
 	    
 	    ByteBuffer image = stbi_load(relativePath, x, y, channels, STBI_rgb_alpha);
-
-	    System.out.println(x.get(0));
 	    
 	    return image;
 	}

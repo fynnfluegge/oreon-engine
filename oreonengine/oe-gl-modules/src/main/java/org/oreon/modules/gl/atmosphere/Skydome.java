@@ -32,10 +32,10 @@ public class Skydome extends Renderable{
 	}
 	
 	public void render() {
-		if (EngineContext.getRenderConfig().isRefraction() && !EngineContext.getRenderConfig().isUnderwater()){
+		if (EngineContext.getConfig().isRefraction() && !EngineContext.getConfig().isUnderwater()){
 			return;
 		}
-		if (EngineContext.getRenderConfig().isWireframe()){
+		if (EngineContext.getConfig().isWireframe()){
 			return;
 		}
 		else {

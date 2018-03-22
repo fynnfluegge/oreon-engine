@@ -22,7 +22,6 @@ import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWMouseButtonCallback;
 import org.lwjgl.glfw.GLFWScrollCallback;
 import org.oreon.core.math.Vec2f;
-import org.oreon.core.system.CoreSystem;
 import org.lwjgl.glfw.GLFWFramebufferSizeCallback;
 
 public class GLFWInput implements Input{
@@ -61,7 +60,7 @@ public class GLFWInput implements Input{
 		glfwSetFramebufferSizeCallback(window, (framebufferSizeCallback = new GLFWFramebufferSizeCallback() {
 		    @Override
 		    public void invoke(long window, int width, int height) {
-		        CoreSystem.getInstance().getWindow().resize(width, height);
+		        // Todo
 		    }
 		}));
 		

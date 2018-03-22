@@ -1,7 +1,7 @@
 package org.oreon.core.scenegraph;
 
-import org.oreon.core.context.Camera;
 import org.oreon.core.math.Transform;
+import org.oreon.core.platform.Camera;
 
 public class Scenegraph extends Node{
 	

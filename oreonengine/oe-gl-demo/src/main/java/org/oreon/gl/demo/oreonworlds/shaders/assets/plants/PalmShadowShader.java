@@ -45,7 +45,7 @@ public class PalmShadowShader extends GLShader{
 	
 	public void updateUniforms(Renderable object){
 		
-		setUniform("clipplane", EngineContext.getRenderConfig().getClipplane());
+		setUniform("clipplane", EngineContext.getConfig().getClipplane());
 		bindUniformBlock("Camera", Constants.CameraUniformBlockBinding);
 		bindUniformBlock("LightViewProjections", Constants.LightMatricesUniformBlockBinding);
 		
