@@ -64,7 +64,7 @@ private final Vec3f yAxis = new Vec3f(0,1,0);
 	protected Camera()
 	{
 		this(new Vec3f(0,0,0), new Vec3f(0,0,1).normalize(), new Vec3f(0,1,0));
-		setProjection(70, CoreSystem.getInstance().getWindow().getWidth(), CoreSystem.getInstance().getWindow().getHeight());
+		setProjection(70, EngineContext.getRenderConfig().getDisplayWidth(), EngineContext.getRenderConfig().getDisplayWidth());
 		setViewMatrix(new Matrix4f().View(this.getForward(), this.getUp()).mul(
 				new Matrix4f().Translation(this.getPosition().mul(-1))));
 		initfrustumPlanes();
@@ -235,7 +235,7 @@ private final Vec3f yAxis = new Vec3f(0,1,0);
 		
 		//left plane
 		Quaternion leftPlane = new Quaternion(
-				this.projectionMatrix.get(3, 0) + this.projectionMatrix.get(0, 0) * (float) ((Math.tan(Math.toRadians(this.fovY/2)) * ((double) CoreSystem.getInstance().getWindow().getWidth()/ (double) CoreSystem.getInstance().getWindow().getHeight()))),
+				this.projectionMatrix.get(3, 0) + this.projectionMatrix.get(0, 0) * (float) ((Math.tan(Math.toRadians(this.fovY/2)) * ((double) EngineContext.getRenderConfig().getDisplayWidth()/ (double) EngineContext.getRenderConfig().getDisplayHeight()))),
 				this.projectionMatrix.get(3, 1) + this.projectionMatrix.get(0, 1),
 				this.projectionMatrix.get(3, 2) + this.projectionMatrix.get(0, 2),
 				this.projectionMatrix.get(3, 3) + this.projectionMatrix.get(0, 3));
@@ -244,7 +244,7 @@ private final Vec3f yAxis = new Vec3f(0,1,0);
 		
 		//right plane
 		Quaternion rightPlane = new Quaternion(
-				this.projectionMatrix.get(3, 0) - this.projectionMatrix.get(0, 0) * (float) ((Math.tan(Math.toRadians(this.fovY/2)) * ((double) CoreSystem.getInstance().getWindow().getWidth()/ (double) CoreSystem.getInstance().getWindow().getHeight()))),
+				this.projectionMatrix.get(3, 0) - this.projectionMatrix.get(0, 0) * (float) ((Math.tan(Math.toRadians(this.fovY/2)) * ((double) EngineContext.getRenderConfig().getDisplayWidth()/ (double) EngineContext.getRenderConfig().getDisplayHeight()))),
 				this.projectionMatrix.get(3, 1) - this.projectionMatrix.get(0, 1),
 				this.projectionMatrix.get(3, 2) - this.projectionMatrix.get(0, 2),
 				this.projectionMatrix.get(3, 3) - this.projectionMatrix.get(0, 3));

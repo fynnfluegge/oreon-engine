@@ -29,6 +29,7 @@ public class RenderConfig {
 	
 	private int multisamples;
 	
+	private String displayTitle;
 	private int displayWidth;
 	private int displayHeight;
 	
@@ -46,5 +47,6 @@ public class RenderConfig {
 		multisamples = Integer.valueOf(properties.getProperty("multisamples"));
 		displayWidth = Integer.valueOf(properties.getProperty("display.width"));
 		displayHeight = Integer.valueOf(properties.getProperty("display.height"));
+		displayTitle = properties.getProperty("display.title");
 	}
 }

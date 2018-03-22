@@ -18,6 +18,7 @@ import static org.lwjgl.opengl.GL11.GL_TRUE;
 
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GLCapabilities;
+import org.oreon.core.context.EngineContext;
 import org.oreon.core.platform.Window;
 
 public class GLWindow extends Window{
@@ -26,12 +27,16 @@ public class GLWindow extends Window{
 	
 	public void create()
 	{
+		setHeight(EngineContext.getRenderConfig().getDisplayHeight());
+		setWidth(EngineContext.getRenderConfig().getDisplayWidth());
+		setTitle(EngineContext.getRenderConfig().getDisplayTitle());
+		
 		glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);	
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);	
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);	
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);	
 		
-		setId(glfwCreateWindow(getWidth(), getHeight(), "OE3", 0, 0));
+		setId(glfwCreateWindow(getWidth(), getHeight(), getTitle(), 0, 0));
 		
 		if(getId() == 0) {
 		    throw new RuntimeException("Failed to create window");

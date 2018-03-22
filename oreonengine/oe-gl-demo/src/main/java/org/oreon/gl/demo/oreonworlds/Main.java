@@ -8,16 +8,11 @@ import org.oreon.core.platform.GLFWInput;
 import org.oreon.core.platform.Window;
 import org.oreon.core.system.CoreEngine;
 import org.oreon.core.system.CoreSystem;
-import org.oreon.gl.demo.oreonworlds.assets.plants.Palm01ClusterGroup;
 import org.oreon.gl.demo.oreonworlds.gui.GUI;
-import org.oreon.gl.demo.oreonworlds.shaders.TerrainWireframeShader;
-import org.oreon.gl.demo.oreonworlds.shaders.TerrainShader;
-import org.oreon.gl.demo.oreonworlds.terrain.Terrain;
 import org.oreon.gl.demo.oreonworlds.water.Ocean;
 import org.oreon.gl.engine.GLRenderEngine;
 import org.oreon.modules.gl.atmosphere.SkySphere;
 import org.oreon.modules.gl.atmosphere.Sun;
-import org.oreon.modules.gl.terrain.GLTerrain;
 
 public class Main {
 
@@ -33,9 +28,6 @@ public class Main {
 		GLFWInput input = new GLFWInput();
 		
 		renderEngine.setGui(new GUI());
-		window.setWidth(1280);
-		window.setHeight(720);
-		window.setTitle("OREON ENGINE oreonworlds 2.0");
 		
 		coreSystem.setRenderEngine(renderEngine);
 		coreSystem.setWindow(window);
