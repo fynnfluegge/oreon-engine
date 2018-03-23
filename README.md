@@ -11,10 +11,13 @@ Documentation: http://oreonengine.github.io/oreon-engine
 
 * Getting started guide for Eclipse available [here](http://oreonengine.github.io/oreon-engine/_navigation/Getting_Started.html).
 
-## Running Oreonworlds Open World Simulation
-* Run apps.oreonworlds.Main as Java Application
+## Running Oreonworlds Open World OpenGL Demo
+* Run oe-gl-demo org.oreon.gl.demo.oreonworlds.Main as Java Application
 
 <img src="docs/_images/thumbnail4.png" width="500px">
+
+## WIP Vulkan Demo
+* Run oe-vk-demo org.oreon.vk.demo.SimpleVulkanDemo
 
 ## Camera Control
 * Move: W, A, S, D
