@@ -9,7 +9,7 @@ Documentation: http://oreonengine.github.io/oreon-engine
 * Oreon Engine project uses [lombok](https://github.com/rzwitserloot/lombok/commits?author=rzwitserloot).
   Please download the latest [release](https://projectlombok.org/download) of lombok and run the .jar to install lombok plugin into Eclipse.
 
-* Getting started with Eclipse: [here](http://oreonengine.github.io/oreon-engine/_navigation/Getting_Started.html)
+* Getting started guide for Eclipse available [here](http://oreonengine.github.io/oreon-engine/_navigation/Getting_Started.html).
 
 ## Running Oreonworlds Open World Simulation
 * Run apps.oreonworlds.Main as Java Application
