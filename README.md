@@ -64,3 +64,5 @@ height displacement and Choppy displacement
 
 ### GUI
 ## Credits
+* [Nvidia Corporation](https://developer.nvidia.com/)
+* [World Creator](https://www.world-creator.com/)
