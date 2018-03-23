@@ -6,8 +6,10 @@ As OpenGL and Vulkan Binding for Java the [LWJGL 3](https://www.lwjgl.org/) API 
 Documentation: http://oreonengine.github.io/oreon-engine
 
 ## Build Manual
-Eclipse-Tutorial: http://oreonengine.github.io/oreon-engine/_navigation/Getting_Started.html
+* Oreon Engine project uses [lombok] (https://github.com/rzwitserloot/lombok/commits?author=rzwitserloot).
+  Download the latest [release] (https://projectlombok.org/download) of lombok and run it and your Eclipse will be compatible.
 
+* Eclipse-Tutorial: http://oreonengine.github.io/oreon-engine/_navigation/Getting_Started.html
 
 ## Running Oreonworlds Open World Simulation
 * Run apps.oreonworlds.Main as Java Application
