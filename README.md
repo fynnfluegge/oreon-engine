@@ -13,12 +13,13 @@ Documentation: http://oreonengine.github.io/oreon-engine
 
 ## Running Oreonworlds Open World OpenGL Demo
 * [oe-gl-demo](https://github.com/oreonengine/oreon-engine/tree/master/oreonengine/oe-gl-demo)
-  [org.oreon.gl.demo.oreonworlds.Main](https://github.com/oreonengine/oreon-engine/blob/master/oreonengine/oe-gl-demo/src/main/java/org/oreon/gl/demo/oreonworlds/Main.java)
+  [OreonWorlds](https://github.com/oreonengine/oreon-engine/blob/master/oreonengine/oe-gl-demo/src/main/java/org/oreon/gl/demo/oreonworlds/Main.java)
 
 <img src="docs/_images/thumbnail4.png" width="500px">
 
 ## WIP Vulkan Demo
-* oe-vk-demo org.oreon.vk.demo.SimpleVulkanDemo
+* [oe-vk-demo](https://github.com/oreonengine/oreon-engine/tree/master/oreonengine/oe-vk-demo)
+  [SimpleVulkanDemo](https://github.com/oreonengine/oreon-engine/blob/master/oreonengine/oe-vk-demo/src/main/java/org/oreon/vk/demo/SimpleVulkanDemo.java)
 
 ## Camera Control
 * Move: W, A, S, D
