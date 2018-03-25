@@ -15,8 +15,9 @@ public class VkUniformBuffer extends VkBuffer{
 						   ByteBuffer data) {
 		
 		create(device, data.limit(), VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT);
-		allocate(device, memoryProperties,
+		allocateBuffer(device, memoryProperties,
 				 VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+		bindBufferMemory(device);
 		mapMemory(device, data);
 	}
 	

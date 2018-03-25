@@ -8,7 +8,6 @@ import lombok.Getter;
 
 import static org.lwjgl.system.MemoryUtil.memAllocLong;
 import static org.lwjgl.system.MemoryUtil.memFree;
-import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import static org.lwjgl.vulkan.VK10.vkCreateDescriptorPool;
@@ -22,16 +21,21 @@ public class DescriptorPool {
 	
 	@Getter
 	private long handle;
+	
+	private VkDescriptorPoolSize.Buffer poolSizes;
 
-	public DescriptorPool(VkDevice device) {
+	public DescriptorPool(int size) {
 		
-		VkDescriptorPoolSize.Buffer poolSize = VkDescriptorPoolSize.calloc(1)
-					.type(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER)
-					.descriptorCount(1);
+		poolSizes = VkDescriptorPoolSize.calloc(2);
+	}
+	
+	public void create(VkDevice device) {
+		
+		poolSizes.flip();
 		
 		VkDescriptorPoolCreateInfo createInfo = VkDescriptorPoolCreateInfo.calloc()
 					.sType(VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO)
-					.pPoolSizes(poolSize)
+					.pPoolSizes(poolSizes)
 					.maxSets(1)
 					.flags(0);
 		LongBuffer pDescriptorPool = memAllocLong(1);
@@ -39,13 +43,22 @@ public class DescriptorPool {
 		
 		handle = pDescriptorPool.get(0);
 		
-		poolSize.free();
+		poolSizes.free();
 		createInfo.free();
 		memFree(pDescriptorPool);
 		
 		if (err != VK_SUCCESS) {
 		    throw new AssertionError("Failed to create Descriptor pool: " + VkUtil.translateVulkanResult(err));
 		}
+	}
+	
+	public void addPoolSize(int type){
+	
+		VkDescriptorPoolSize poolSize = VkDescriptorPoolSize.calloc()
+					.type(type)
+					.descriptorCount(1);
+		
+		poolSizes.put(poolSize);
 	}
 	
 	public void destroy(VkDevice device){

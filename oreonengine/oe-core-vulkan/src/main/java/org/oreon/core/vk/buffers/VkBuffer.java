@@ -29,6 +29,7 @@ import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkMemoryAllocateInfo;
 import org.lwjgl.vulkan.VkMemoryRequirements;
 import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
+import org.oreon.core.vk.util.DeviceCapabilities;
 import org.oreon.core.vk.util.VkUtil;
 
 import lombok.Getter;
@@ -64,14 +65,14 @@ public class VkBuffer {
         }
 	}
 	
-	public void allocate(VkDevice device, VkPhysicalDeviceMemoryProperties memoryProperties,
+	public void allocateBuffer(VkDevice device, VkPhysicalDeviceMemoryProperties memoryProperties,
 						 int memoryPropertyFlags){
 		
 		VkMemoryRequirements memRequirements = VkMemoryRequirements.calloc();
 		vkGetBufferMemoryRequirements(device, handle, memRequirements);
         IntBuffer memoryTypeIndex = memAllocInt(1);
         
-        if (!getMemoryTypeIndex(memoryProperties, 
+        if (!DeviceCapabilities.getMemoryTypeIndex(memoryProperties, 
 				   memRequirements.memoryTypeBits(), 
 				   memoryPropertyFlags,
 				   memoryTypeIndex)){
@@ -94,8 +95,11 @@ public class VkBuffer {
         if (err != VK_SUCCESS) {
             throw new AssertionError("Failed to allocate vertex memory: " + VkUtil.translateVulkanResult(err));
         }
-        
-        err = vkBindBufferMemory(device, handle, memory, 0);
+	}
+	
+	public void bindBufferMemory(VkDevice device){
+	
+		int err = vkBindBufferMemory(device, handle, memory, 0);
         if (err != VK_SUCCESS) {
             throw new AssertionError("Failed to bind memory to vertex buffer: " + VkUtil.translateVulkanResult(err));
         }
@@ -115,22 +119,6 @@ public class VkBuffer {
         memCopy(memAddress(vertexBuffer), data, vertexBuffer.remaining());
         memFree(vertexBuffer);
         vkUnmapMemory(device, memory);
-	}
-	
-	public boolean getMemoryTypeIndex(VkPhysicalDeviceMemoryProperties memoryProperties,
-								   int memoryTypeBits,
-								   int properties,
-								   IntBuffer memoryTypeIndex){
-		
-		 for (int i = 0; i < memoryProperties.memoryTypeCount(); i++) {
-			if ((memoryTypeBits & (1 << i)) != 0 &&
-				(memoryProperties.memoryTypes(i).propertyFlags() & properties) == properties){
-	                memoryTypeIndex.put(0, i);
-	                return true;
-	        }
-		 }
-		 
-		 return false;
 	}
 	
 	public void destroy(VkDevice device){

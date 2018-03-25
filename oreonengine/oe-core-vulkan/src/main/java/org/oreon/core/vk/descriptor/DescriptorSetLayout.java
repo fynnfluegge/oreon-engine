@@ -8,8 +8,6 @@ import org.oreon.core.vk.util.VkUtil;
 import lombok.Getter;
 
 import static org.lwjgl.system.MemoryUtil.memAllocLong;
-import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_VERTEX_BIT;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import static org.lwjgl.vulkan.VK10.vkCreateDescriptorSetLayout;
@@ -19,12 +17,12 @@ import java.nio.LongBuffer;
 
 public class DescriptorSetLayout {
 	
-	private VkDescriptorSetLayoutBinding.Buffer layoutBindings;
-	
 	@Getter
 	private long handle;
 	@Getter
 	private LongBuffer pHandle;
+	
+	private VkDescriptorSetLayoutBinding.Buffer layoutBindings;
 	
 	public DescriptorSetLayout(int bindingCount) {
 		
@@ -51,13 +49,13 @@ public class DescriptorSetLayout {
 		}
 	}
 	
-	public void setLayoutBinding(){
+	public void addLayoutBinding(int binding, int type, int stageflags){
 		
 		VkDescriptorSetLayoutBinding layoutBinding = VkDescriptorSetLayoutBinding.calloc()
-					.binding(0)
-					.descriptorType(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER)
+					.binding(binding)
+					.descriptorType(type)
 					.descriptorCount(1)
-					.stageFlags(VK_SHADER_STAGE_VERTEX_BIT)
+					.stageFlags(stageflags)
 					.pImmutableSamplers(null);
 		
 		layoutBindings.put(layoutBinding);

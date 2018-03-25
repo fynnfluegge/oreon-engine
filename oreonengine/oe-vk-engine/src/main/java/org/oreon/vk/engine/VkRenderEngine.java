@@ -23,6 +23,8 @@ import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_APPLICATION_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_B8G8R8A8_UNORM;
+import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_SAMPLED_BIT;
+import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_TRANSFER_DST_BIT;
 import static org.lwjgl.vulkan.VK10.vkCreateInstance;
 import static org.lwjgl.vulkan.VK10.vkDestroyInstance;
 import static org.lwjgl.vulkan.VK10.vkQueueWaitIdle;
@@ -35,6 +37,14 @@ import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
 import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
 import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
 import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_UNDEFINED;
+import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+import static org.lwjgl.vulkan.VK10.VK_FORMAT_R8G8B8A8_UNORM;
+import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_VERTEX_BIT;
+import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_FRAGMENT_BIT;
 
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
@@ -64,6 +74,8 @@ import org.oreon.core.vk.device.LogicalDevice;
 import org.oreon.core.vk.device.PhysicalDevice;
 import org.oreon.core.vk.image.VkImage;
 import org.oreon.core.vk.image.VkImageLoader;
+import org.oreon.core.vk.image.VkImageView;
+import org.oreon.core.vk.image.VkSampler;
 import org.oreon.core.vk.pipeline.Pipeline;
 import org.oreon.core.vk.pipeline.RenderPass;
 import org.oreon.core.vk.pipeline.ShaderPipeline;
@@ -167,20 +179,22 @@ public class VkRenderEngine implements RenderEngine{
 	    VkBuffer stagingVertexBufferObject = new VkBuffer();
 	    
 	    stagingVertexBufferObject.create(logicalDevice.getHandle(), vertexBuffer.limit(), VK_BUFFER_USAGE_TRANSFER_SRC_BIT);
-	    stagingVertexBufferObject.allocate(logicalDevice.getHandle(), physicalDevice.getMemoryProperties(),
+	    stagingVertexBufferObject.allocateBuffer(logicalDevice.getHandle(), physicalDevice.getMemoryProperties(),
 	    				       VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+	    stagingVertexBufferObject.bindBufferMemory(logicalDevice.getHandle());
 	    stagingVertexBufferObject.mapMemory(logicalDevice.getHandle(), vertexBuffer);
 	    
 
 	    vertexBufferObject.create(logicalDevice.getHandle(), vertexBuffer.limit(),
 							VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
-	    vertexBufferObject.allocate(logicalDevice.getHandle(), physicalDevice.getMemoryProperties(),
+	    vertexBufferObject.allocateBuffer(logicalDevice.getHandle(), physicalDevice.getMemoryProperties(),
 				  			  VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+	    vertexBufferObject.bindBufferMemory(logicalDevice.getHandle());
 	    
 	    CommandBuffer vertexCopyCommandBuffer = new CommandBuffer(logicalDevice.getHandle(),
 	    												logicalDevice.getTransferCommandPool().getHandle());
 	    vertexCopyCommandBuffer.beginRecord(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
-	    vertexCopyCommandBuffer.recordTransferPass(stagingVertexBufferObject.getHandle(), vertexBufferObject.getHandle(), 0, 0, vertexBuffer.limit());
+	    vertexCopyCommandBuffer.recordCopyBufferCmd(stagingVertexBufferObject.getHandle(), vertexBufferObject.getHandle(), 0, 0, vertexBuffer.limit());
 	    vertexCopyCommandBuffer.finishRecord();
 	    VkSubmitInfo submitInfo0 = vertexCopyCommandBuffer.createSubmitInfo(null, null, null);
 	    vertexCopyCommandBuffer.submit(logicalDevice.getTransferQueue(), submitInfo0);
@@ -203,19 +217,21 @@ public class VkRenderEngine implements RenderEngine{
         VkBuffer stagingIndexBufferObject = new VkBuffer();
         
         stagingIndexBufferObject.create(logicalDevice.getHandle(), indexBuffer.limit(), VK_BUFFER_USAGE_TRANSFER_SRC_BIT);
-	    stagingIndexBufferObject.allocate(logicalDevice.getHandle(), physicalDevice.getMemoryProperties(),
+	    stagingIndexBufferObject.allocateBuffer(logicalDevice.getHandle(), physicalDevice.getMemoryProperties(),
 	    				       VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+	    stagingIndexBufferObject.bindBufferMemory(logicalDevice.getHandle());
 	    stagingIndexBufferObject.mapMemory(logicalDevice.getHandle(), indexBuffer);
 	    
 	    indexBufferObject.create(logicalDevice.getHandle(), indexBuffer.limit(),
 				VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
-	    indexBufferObject.allocate(logicalDevice.getHandle(), physicalDevice.getMemoryProperties(),
+	    indexBufferObject.allocateBuffer(logicalDevice.getHandle(), physicalDevice.getMemoryProperties(),
 	  			  VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+	    indexBufferObject.bindBufferMemory(logicalDevice.getHandle());
 	    
 	    CommandBuffer indexCopyCommandBuffer = new CommandBuffer(logicalDevice.getHandle(),
 																  logicalDevice.getTransferCommandPool().getHandle());
 	    indexCopyCommandBuffer.beginRecord(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
-	    indexCopyCommandBuffer.recordTransferPass(stagingIndexBufferObject.getHandle(), indexBufferObject.getHandle(), 0, 0, vertexBuffer.limit());
+	    indexCopyCommandBuffer.recordCopyBufferCmd(stagingIndexBufferObject.getHandle(), indexBufferObject.getHandle(), 0, 0, vertexBuffer.limit());
 	    indexCopyCommandBuffer.finishRecord();
 	    VkSubmitInfo submitInfo1 = indexCopyCommandBuffer.createSubmitInfo(null, null, null);
 	    indexCopyCommandBuffer.submit(logicalDevice.getTransferQueue(), submitInfo1);
@@ -236,26 +252,83 @@ public class VkRenderEngine implements RenderEngine{
 	    
 	    // Image
 	    ByteBuffer imageBuffer = VkImageLoader.loadImage("images/vulkan-logo.jpg");
+	    
 	    VkBuffer imageStagingBuffer = new VkBuffer();
-	    imageStagingBuffer.create(logicalDevice.getHandle(), imageBuffer.limit(), VK_BUFFER_USAGE_TRANSFER_SRC_BIT);
-	    imageStagingBuffer.allocate(logicalDevice.getHandle(),
-	    							physicalDevice.getMemoryProperties(),
-	    							VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+	    imageStagingBuffer.create(logicalDevice.getHandle(), imageBuffer.limit(),
+	    						  VK_BUFFER_USAGE_TRANSFER_SRC_BIT);
+	    imageStagingBuffer.allocateBuffer(logicalDevice.getHandle(),
+	    								  physicalDevice.getMemoryProperties(),
+	    								  VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+	    imageStagingBuffer.bindBufferMemory(logicalDevice.getHandle());
 	    imageStagingBuffer.mapMemory(logicalDevice.getHandle(), imageBuffer);
 	    
 	    VkImage image = new VkImage();
-	    image.create(logicalDevice.getHandle(), 512, 512, 1);
+	    image.create(logicalDevice.getHandle(), 512, 512, 1, VK_FORMAT_R8G8B8A8_UNORM,
+	    			 VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT);
+	    image.allocate(logicalDevice.getHandle(), physicalDevice.getMemoryProperties(),
+	    			   VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+	    image.bindImageMemory(logicalDevice.getHandle());
 	    
-	    DescriptorSetLayout descriptorLayout = new DescriptorSetLayout(1);
-	    descriptorLayout.setLayoutBinding();
+	    // transition layout
+	    CommandBuffer transitionImageCommandBuffer = new CommandBuffer(logicalDevice.getHandle(),
+	    												  			   logicalDevice.getTransferCommandPool().getHandle());
+	    transitionImageCommandBuffer.beginRecord(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
+	    transitionImageCommandBuffer.recordImageLayoutTransitionCmd(image.getHandle(),
+	    						VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+	    transitionImageCommandBuffer.finishRecord();
+	    VkSubmitInfo submitInfo2 = transitionImageCommandBuffer.createSubmitInfo(null, null, null);
+	    transitionImageCommandBuffer.submit(logicalDevice.getTransferQueue(), submitInfo2);
+	    vkQueueWaitIdle(logicalDevice.getTransferQueue());
+	    
+	    // copy buffer to image
+	    CommandBuffer imageCopyCommandBuffer = new CommandBuffer(logicalDevice.getHandle(),
+				  										         logicalDevice.getTransferCommandPool().getHandle());
+	    imageCopyCommandBuffer.beginRecord(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
+	    imageCopyCommandBuffer.recordCopyBufferToImageCmd(imageStagingBuffer.getHandle(), image.getHandle(),
+	    												  512, 512, 1);
+	    imageCopyCommandBuffer.finishRecord();
+	    VkSubmitInfo submitInfo3 = imageCopyCommandBuffer.createSubmitInfo(null, null, null);
+	    imageCopyCommandBuffer.submit(logicalDevice.getTransferQueue(), submitInfo3);
+	    vkQueueWaitIdle(logicalDevice.getTransferQueue());
+	    
+	    // transition layout
+	    CommandBuffer transitionImageCommandBuffer2 = new CommandBuffer(logicalDevice.getHandle(),
+			  			   											   logicalDevice.getTransferCommandPool().getHandle());
+		transitionImageCommandBuffer2.beginRecord(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
+		transitionImageCommandBuffer2.recordImageLayoutTransitionCmd(image.getHandle(),
+							VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+							VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+		transitionImageCommandBuffer2.finishRecord();
+		VkSubmitInfo submitInfo4 = transitionImageCommandBuffer2.createSubmitInfo(null, null, null);
+		transitionImageCommandBuffer.submit(logicalDevice.getTransferQueue(), submitInfo4);
+		vkQueueWaitIdle(logicalDevice.getTransferQueue());
+		
+		// image view
+		VkImageView imageView = new VkImageView();
+		imageView.createImageView(logicalDevice.getHandle(), VK_FORMAT_R8G8B8A8_UNORM, image.getHandle());
+		
+		// sampler
+		VkSampler sampler = new VkSampler();
+		sampler.create(logicalDevice.getHandle());
+	    
+		// descriptors
+	    DescriptorSetLayout descriptorLayout = new DescriptorSetLayout(2);
+	    descriptorLayout.addLayoutBinding(0,VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+	    								  VK_SHADER_STAGE_VERTEX_BIT);
+	    descriptorLayout.addLayoutBinding(1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+	    								  VK_SHADER_STAGE_FRAGMENT_BIT);
 	    descriptorLayout.create(logicalDevice.getHandle());
 	    
-	    DescriptorPool descriptorPool = new DescriptorPool(logicalDevice.getHandle());
+	    DescriptorPool descriptorPool = new DescriptorPool(2);
+	    descriptorPool.addPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);
+	    descriptorPool.addPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
+	    descriptorPool.create(logicalDevice.getHandle());
 	    
 	    DescriptorSet descriptorSet = new DescriptorSet(logicalDevice.getHandle(), 
 	    												descriptorPool.getHandle(),
 	    												descriptorLayout.getPHandle());
-	    descriptorSet.configureWrite(logicalDevice.getHandle(), uniformBuffer.getHandle(), 0, cameraBuffer.limit());
+	    descriptorSet.configureWriteBuffer(logicalDevice.getHandle(), uniformBuffer.getHandle(), cameraBuffer.limit(), 0, 0);
+	    descriptorSet.configureWriteImage(logicalDevice.getHandle(), imageView.getHandle(), sampler.getHandle(), 1);
 	    
 	    long[] descriptorSets = new long[1];
 	    descriptorSets[0] = descriptorSet.getHandle();

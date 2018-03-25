@@ -32,9 +32,9 @@ import org.lwjgl.vulkan.VkSubmitInfo;
 import org.lwjgl.vulkan.VkSwapchainCreateInfoKHR;
 import org.oreon.core.vk.command.CommandBuffer;
 import org.oreon.core.vk.command.CommandPool;
+import org.oreon.core.vk.image.VkImageView;
 import org.oreon.core.vk.synchronization.VkSemaphore;
 import org.oreon.core.vk.target.VkFrameBuffer;
-import org.oreon.core.vk.target.VkImageView;
 import org.oreon.core.vk.util.VkUtil;
 
 import lombok.Getter;
@@ -172,7 +172,7 @@ public class SwapChain {
 		for (VkFrameBuffer framebuffer : frameBuffers){
 			CommandBuffer commandBuffer = new CommandBuffer(device, commandPool.getHandle());
 			commandBuffer.beginRecord(VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT);
-			commandBuffer.recordIndexedRenderPass(pipeline, pipelineLayout, renderPass,
+			commandBuffer.recordIndexedRenderCmd(pipeline, pipelineLayout, renderPass,
 												  vertexBuffer, indexBuffer, descriptorSets,
 												  extent, framebuffer.getHandle());
 			commandBuffer.finishRecord();

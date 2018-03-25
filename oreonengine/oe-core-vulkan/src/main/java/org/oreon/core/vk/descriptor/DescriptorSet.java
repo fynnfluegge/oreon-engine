@@ -1,6 +1,7 @@
 package org.oreon.core.vk.descriptor;
 
 import org.lwjgl.vulkan.VkDescriptorBufferInfo;
+import org.lwjgl.vulkan.VkDescriptorImageInfo;
 import org.lwjgl.vulkan.VkDescriptorSetAllocateInfo;
 import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkWriteDescriptorSet;
@@ -14,6 +15,8 @@ import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_IN
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 import static org.lwjgl.vulkan.VK10.vkAllocateDescriptorSets;
 import static org.lwjgl.vulkan.VK10.vkUpdateDescriptorSets;
 
@@ -44,23 +47,39 @@ public class DescriptorSet {
 		}
 	}
 	
-	public void configureWrite(VkDevice device, long buffer, long offset, long range){
+	public void configureWriteBuffer(VkDevice device, long buffer, long range, long offset, int binding){
 		
 		VkDescriptorBufferInfo.Buffer bufferInfo = VkDescriptorBufferInfo.calloc(1)
 						.buffer(buffer)
 						.offset(offset)
 						.range(range);
 
-		VkWriteDescriptorSet.Buffer descriptorWrite = VkWriteDescriptorSet.calloc(1)
+		VkWriteDescriptorSet.Buffer writeDescriptor = VkWriteDescriptorSet.calloc(1)
 						.sType(VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET)
 						.dstSet(handle)
-						.dstBinding(0)
+						.dstBinding(binding)
 						.dstArrayElement(0)
 						.descriptorType(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER)
-						.pBufferInfo(bufferInfo)
-						.pImageInfo(null)
-						.pTexelBufferView(null);
+						.pBufferInfo(bufferInfo);
 
-		vkUpdateDescriptorSets(device, descriptorWrite, null);
+		vkUpdateDescriptorSets(device, writeDescriptor, null);
+	}
+	
+	public void configureWriteImage(VkDevice device, long imageView, long sampler, int binding){
+		
+		VkDescriptorImageInfo.Buffer imageInfo = VkDescriptorImageInfo.calloc(1)
+						.imageLayout(VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL)
+						.imageView(imageView)
+						.sampler(sampler);
+		
+		VkWriteDescriptorSet.Buffer writeDescriptor = VkWriteDescriptorSet.calloc(1)
+						.sType(VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET)
+						.dstSet(handle)
+						.dstBinding(binding)
+						.dstArrayElement(0)
+						.descriptorType(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
+				 		.pImageInfo(imageInfo);
+		
+		vkUpdateDescriptorSets(device, writeDescriptor, null);
 	}
 }

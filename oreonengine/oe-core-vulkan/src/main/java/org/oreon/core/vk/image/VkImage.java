@@ -1,27 +1,42 @@
 package org.oreon.core.vk.image;
 
 import org.lwjgl.vulkan.VkImageCreateInfo;
+import org.lwjgl.vulkan.VkMemoryAllocateInfo;
+import org.lwjgl.vulkan.VkMemoryRequirements;
+import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
+import org.oreon.core.vk.util.DeviceCapabilities;
 import org.oreon.core.vk.util.VkUtil;
 
 import lombok.Getter;
 
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
+import static org.lwjgl.vulkan.VK10.vkAllocateMemory;
+import static org.lwjgl.vulkan.VK10.vkBindImageMemory;
 import static org.lwjgl.vulkan.VK10.vkCreateImage;
+import static org.lwjgl.vulkan.VK10.vkDestroyImage;
+import static org.lwjgl.vulkan.VK10.vkGetImageMemoryRequirements;
+import static org.lwjgl.vulkan.VK10.vkMapMemory;
+import static org.lwjgl.vulkan.VK10.vkUnmapMemory;
 
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 import java.nio.LongBuffer;
 
+import org.lwjgl.PointerBuffer;
 import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkExtent3D;
 
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_TYPE_2D;
+import static org.lwjgl.system.MemoryUtil.memAddress;
+import static org.lwjgl.system.MemoryUtil.memAllocInt;
 import static org.lwjgl.system.MemoryUtil.memAllocLong;
+import static org.lwjgl.system.MemoryUtil.memAllocPointer;
+import static org.lwjgl.system.MemoryUtil.memCopy;
 import static org.lwjgl.system.MemoryUtil.memFree;
-import static org.lwjgl.vulkan.VK10.VK_FORMAT_R8G8B8A8_UNORM;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_TILING_OPTIMAL;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_UNDEFINED;
-import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_SAMPLED_BIT;
-import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_TRANSFER_DST_BIT;
 import static org.lwjgl.vulkan.VK10.VK_SHARING_MODE_EXCLUSIVE;
 import static org.lwjgl.vulkan.VK10.VK_SAMPLE_COUNT_1_BIT;
 
@@ -29,8 +44,12 @@ public class VkImage {
 	
 	@Getter
 	private long handle;
+	@Getter
+	private long memory;
+	
+	private long allocationSize;
 
-	public void create(VkDevice device, int width, int height, int depth){
+	public void create(VkDevice device, int width, int height, int depth, int format, int usage){
 		
 		VkExtent3D extent = VkExtent3D.calloc()
 				.width(width)
@@ -43,10 +62,10 @@ public class VkImage {
 				.extent(extent)
 				.mipLevels(1)
 				.arrayLayers(1)
-				.format(VK_FORMAT_R8G8B8A8_UNORM)
+				.format(format)
 				.tiling(VK_IMAGE_TILING_OPTIMAL)
 				.initialLayout(VK_IMAGE_LAYOUT_UNDEFINED)
-				.usage(VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT)
+				.usage(usage)
 				.sharingMode(VK_SHARING_MODE_EXCLUSIVE)
 				.samples(VK_SAMPLE_COUNT_1_BIT)
 				.flags(0);
@@ -61,5 +80,66 @@ public class VkImage {
         if (err != VK_SUCCESS) {
             throw new AssertionError("Failed to create image: " + VkUtil.translateVulkanResult(err));
         }
+	}
+	
+	public void allocate(VkDevice device, VkPhysicalDeviceMemoryProperties memoryProperties,
+			 int memoryPropertyFlags){
+		
+		VkMemoryRequirements memRequirements = VkMemoryRequirements.calloc();
+		vkGetImageMemoryRequirements(device, handle, memRequirements);
+		IntBuffer memoryTypeIndex = memAllocInt(1);
+		
+		if (!DeviceCapabilities.getMemoryTypeIndex(memoryProperties, 
+				   memRequirements.memoryTypeBits(), 
+				   memoryPropertyFlags,
+				   memoryTypeIndex)){
+			throw new AssertionError("No memory Type found");
+		}
+     
+		allocationSize = memRequirements.size();
+     
+	    VkMemoryAllocateInfo memAlloc = VkMemoryAllocateInfo.calloc()
+	             .sType(VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO)
+	             .pNext(0)
+	             .allocationSize(allocationSize)
+	             .memoryTypeIndex(memoryTypeIndex.get(0));
+	     
+	    LongBuffer pMemory = memAllocLong(1);
+	    int err = vkAllocateMemory(device, memAlloc, null, pMemory);
+	    memory = pMemory.get(0);
+	    memFree(pMemory);
+	    memAlloc.free();
+	    if (err != VK_SUCCESS) {
+	    	throw new AssertionError("Failed to allocate vertex memory: " + VkUtil.translateVulkanResult(err));
+	    }
+	}
+	
+	public void bindImageMemory(VkDevice device){
+		
+		int err = vkBindImageMemory(device, handle, memory, 0);
+        if (err != VK_SUCCESS) {
+            throw new AssertionError("Failed to bind memory to vertex buffer: " + VkUtil.translateVulkanResult(err));
+        }
+	}
+	
+	public void mapMemory(VkDevice device, ByteBuffer imageBuffer){
+		
+        PointerBuffer pData = memAllocPointer(1);
+        int err = vkMapMemory(device, memory, 0, allocationSize, 0, pData);
+        
+        long data = pData.get(0);
+        memFree(pData);
+        if (err != VK_SUCCESS) {
+            throw new AssertionError("Failed to map vertex memory: " + VkUtil.translateVulkanResult(err));
+        }
+        
+        memCopy(memAddress(imageBuffer), data, imageBuffer.remaining());
+        memFree(imageBuffer);
+        vkUnmapMemory(device, memory);
+	}
+	
+	public void destroy(VkDevice device){
+
+		vkDestroyImage(device, handle, null);
 	}
 }

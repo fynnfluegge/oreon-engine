@@ -1,4 +1,4 @@
-package org.oreon.core.vk.target;
+package org.oreon.core.vk.image;
 
 import static org.lwjgl.system.MemoryUtil.memAllocLong;
 import static org.lwjgl.system.MemoryUtil.memFree;

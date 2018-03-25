@@ -18,6 +18,7 @@ import org.lwjgl.vulkan.VkExtensionProperties;
 import org.lwjgl.vulkan.VkLayerProperties;
 import org.lwjgl.vulkan.VkPhysicalDevice;
 import org.lwjgl.vulkan.VkPhysicalDeviceFeatures;
+import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
 import org.lwjgl.vulkan.VkPhysicalDeviceProperties;
 
 import lombok.extern.log4j.Log4j;
@@ -132,4 +133,21 @@ public class DeviceCapabilities {
 		
 		return features;
 	}
+	
+	public static boolean getMemoryTypeIndex(VkPhysicalDeviceMemoryProperties memoryProperties,
+			   int memoryTypeBits,
+			   int properties,
+			   IntBuffer memoryTypeIndex){
+
+		for (int i = 0; i < memoryProperties.memoryTypeCount(); i++) {
+			if ((memoryTypeBits & (1 << i)) != 0 &&
+				(memoryProperties.memoryTypes(i).propertyFlags() & properties) == properties){
+					memoryTypeIndex.put(0, i);
+					return true;
+			}
+		}
+		
+		return false;
+	}
+	
 }
