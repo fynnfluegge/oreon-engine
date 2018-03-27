@@ -9,11 +9,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @AllArgsConstructor
+@Getter
 public class GLRenderInfo extends Component{
 	
 	private GLShader shader;
 	private RenderParameter config;
-	@Getter
 	private VBO vbo;
 	
 	public void render(){

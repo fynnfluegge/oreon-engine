@@ -5,9 +5,9 @@ import org.oreon.core.platform.GLFWInput;
 import org.oreon.core.platform.Window;
 import org.oreon.core.system.CoreEngine;
 import org.oreon.core.system.CoreSystem;
-import org.oreon.core.vk.context.VkCamera;
-import org.oreon.core.vk.context.VkContext;
-import org.oreon.core.vk.platform.VkWindow;
+import org.oreon.core.vk.core.context.VkCamera;
+import org.oreon.core.vk.core.context.VkContext;
+import org.oreon.core.vk.core.platform.VkWindow;
 import org.oreon.vk.engine.VkRenderEngine;
 
 public class SimpleVulkanDemo {

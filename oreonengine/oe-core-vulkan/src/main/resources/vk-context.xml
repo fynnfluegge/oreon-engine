@@ -5,8 +5,7 @@
    xsi:schemaLocation = "http://www.springframework.org/schema/beans
    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-   <bean id = "vk-render-context" class = "org.oreon.core.vk.context.VkRenderContext"/>
-   <bean id = "vk-device-context" class = "org.oreon.core.vk.context.VkDeviceContext"/>
-   <!--    <bean id = "vk-camera" class = "org.oreon.core.vk.context.VkCamera"/> -->
+   <bean id = "vk-render-context" class = "org.oreon.core.vk.core.context.VkRenderContext"/>
+   <bean id = "vk-device-context" class = "org.oreon.core.vk.core.context.VkDeviceContext"/>
 
 </beans>

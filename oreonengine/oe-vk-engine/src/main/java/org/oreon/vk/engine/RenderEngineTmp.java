@@ -227,13 +227,13 @@ import org.oreon.core.system.CoreSystem;
 import org.oreon.core.system.RenderEngine;
 import org.oreon.core.texture.Texture;
 import org.oreon.core.util.ResourceLoader;
-import org.oreon.core.vk.device.LogicalDevice;
-import org.oreon.core.vk.device.PhysicalDevice;
-import org.oreon.core.vk.queue.QueueFamilies;
-import org.oreon.core.vk.queue.QueueFamily;
-import org.oreon.core.vk.swapchain.SwapChain;
-import org.oreon.core.vk.util.DeviceCapabilities;
-import org.oreon.core.vk.util.VkUtil;
+import org.oreon.core.vk.core.device.LogicalDevice;
+import org.oreon.core.vk.core.device.PhysicalDevice;
+import org.oreon.core.vk.core.queue.QueueFamilies;
+import org.oreon.core.vk.core.queue.QueueFamily;
+import org.oreon.core.vk.core.swapchain.SwapChain;
+import org.oreon.core.vk.core.util.DeviceCapabilities;
+import org.oreon.core.vk.core.util.VkUtil;
 
 public class RenderEngineTmp implements RenderEngine{
 	

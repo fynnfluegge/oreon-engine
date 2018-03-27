@@ -45,6 +45,8 @@ import static org.lwjgl.vulkan.VK10.VK_FORMAT_R8G8B8A8_UNORM;
 import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_VERTEX_BIT;
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_FRAGMENT_BIT;
+import static org.lwjgl.vulkan.VK10.VK_FORMAT_R32G32_SFLOAT;
+import static org.lwjgl.vulkan.VK10.VK_FORMAT_R32G32B32_SFLOAT;
 
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
@@ -63,26 +65,26 @@ import org.oreon.core.context.EngineContext;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.system.RenderEngine;
 import org.oreon.core.util.BufferUtil;
-import org.oreon.core.vk.buffers.VkBuffer;
-import org.oreon.core.vk.buffers.VkUniformBuffer;
-import org.oreon.core.vk.command.CommandBuffer;
-import org.oreon.core.vk.context.VkCamera;
-import org.oreon.core.vk.descriptor.DescriptorPool;
-import org.oreon.core.vk.descriptor.DescriptorSet;
-import org.oreon.core.vk.descriptor.DescriptorSetLayout;
-import org.oreon.core.vk.device.LogicalDevice;
-import org.oreon.core.vk.device.PhysicalDevice;
-import org.oreon.core.vk.image.VkImage;
-import org.oreon.core.vk.image.VkImageLoader;
-import org.oreon.core.vk.image.VkImageView;
-import org.oreon.core.vk.image.VkSampler;
-import org.oreon.core.vk.pipeline.Pipeline;
-import org.oreon.core.vk.pipeline.RenderPass;
-import org.oreon.core.vk.pipeline.ShaderPipeline;
-import org.oreon.core.vk.pipeline.VertexInputInfo;
-import org.oreon.core.vk.swapchain.SwapChain;
-import org.oreon.core.vk.util.DeviceCapabilities;
-import org.oreon.core.vk.util.VkUtil;
+import org.oreon.core.vk.core.buffers.VkBuffer;
+import org.oreon.core.vk.core.buffers.VkUniformBuffer;
+import org.oreon.core.vk.core.command.CommandBuffer;
+import org.oreon.core.vk.core.context.VkCamera;
+import org.oreon.core.vk.core.descriptor.DescriptorPool;
+import org.oreon.core.vk.core.descriptor.DescriptorSet;
+import org.oreon.core.vk.core.descriptor.DescriptorSetLayout;
+import org.oreon.core.vk.core.device.LogicalDevice;
+import org.oreon.core.vk.core.device.PhysicalDevice;
+import org.oreon.core.vk.core.image.VkImage;
+import org.oreon.core.vk.core.image.VkImageLoader;
+import org.oreon.core.vk.core.image.VkImageView;
+import org.oreon.core.vk.core.image.VkSampler;
+import org.oreon.core.vk.core.pipeline.Pipeline;
+import org.oreon.core.vk.core.pipeline.RenderPass;
+import org.oreon.core.vk.core.pipeline.ShaderPipeline;
+import org.oreon.core.vk.core.pipeline.VertexInputInfo;
+import org.oreon.core.vk.core.swapchain.SwapChain;
+import org.oreon.core.vk.core.util.DeviceCapabilities;
+import org.oreon.core.vk.core.util.VkUtil;
 
 public class VkRenderEngine implements RenderEngine{
 	
@@ -163,16 +165,23 @@ public class VkRenderEngine implements RenderEngine{
 	    
 	    int minImageCount = physicalDevice.getDeviceMinImageCount4TripleBuffering();
 	    
-	    ByteBuffer vertexBuffer = memAlloc(4 * 2 * 4 + 4 * 3 * 4);
+	    ByteBuffer vertexBuffer = memAlloc(4 * 2 * 4 + 4 * 3 * 4 + 4 * 2 * 4);
         FloatBuffer fb = vertexBuffer.asFloatBuffer();
         fb.put(-0.5f).put(-0.5f);
         fb.put(1.0f).put(0.0f).put(0.0f);
-        fb.put( 0.5f).put(-0.5f);
+        fb.put(0.0f).put(1.0f);
+        
+        fb.put(0.5f).put(-0.5f);
         fb.put(0.0f).put(1.0f).put(0.0f);
+        fb.put(1.0f).put(1.0f);
+        
         fb.put(0.5f).put( 0.5f);
         fb.put(0.0f).put(0.0f).put(1.0f);
+        fb.put(1.0f).put(0.0f);
+        
         fb.put(-0.5f).put( 0.5f);
         fb.put(1.0f).put(1.0f).put(1.0f);
+        fb.put(0.0f).put(0.0f);
         
         VkBuffer vertexBufferObject = new VkBuffer();
 	    
@@ -334,8 +343,8 @@ public class VkRenderEngine implements RenderEngine{
 	    descriptorSets[0] = descriptorSet.getHandle();
 	    
 	    ShaderPipeline shaderPipeline = new ShaderPipeline();
-	    shaderPipeline.createVertexShader(logicalDevice.getHandle(), "shaders/triangle.vert.spv");
-	    shaderPipeline.createFragmentShader(logicalDevice.getHandle(), "shaders/triangle.frag.spv");
+	    shaderPipeline.createVertexShader(logicalDevice.getHandle(), "shaders/vert.spv");
+	    shaderPipeline.createFragmentShader(logicalDevice.getHandle(), "shaders/frag.spv");
 	    shaderPipeline.createShaderPipeline();
 	    
 	    RenderPass renderPass = new RenderPass();
@@ -347,8 +356,10 @@ public class VkRenderEngine implements RenderEngine{
 	    
 	    pipeline = new Pipeline();
 	    VertexInputInfo vertexInputInfo = new VertexInputInfo();
-	    vertexInputInfo.createBindingDescription(5 * 4);
-	    vertexInputInfo.createAttributeDescription();
+	    vertexInputInfo.createBindingDescription(0, 3, 7 * 4);
+	    vertexInputInfo.addVertexAttributeDescription(0, VK_FORMAT_R32G32_SFLOAT, 0);
+	    vertexInputInfo.addVertexAttributeDescription(1, VK_FORMAT_R32G32B32_SFLOAT, 8);
+	    vertexInputInfo.addVertexAttributeDescription(2, VK_FORMAT_R32G32_SFLOAT, 20);
 	    
 	    pipeline.specifyVertexInput(vertexInputInfo);
 	    pipeline.specifyInputAssembly();
@@ -440,12 +451,12 @@ public class VkRenderEngine implements RenderEngine{
                 .ppEnabledLayerNames(enabledLayerNames);
         PointerBuffer pInstance = memAllocPointer(1);
         int err = vkCreateInstance(pCreateInfo, null, pInstance);
-        long instance = pInstance.get(0);
+        long handle = pInstance.get(0);
     
         if (err != VK_SUCCESS) {
             throw new AssertionError("Failed to create VkInstance: " + VkUtil.translateVulkanResult(err));
         }
-        VkInstance ret = new VkInstance(instance, pCreateInfo);
+        VkInstance instance = new VkInstance(handle, pCreateInfo);
         
         pCreateInfo.free();
         memFree(pInstance);
@@ -455,7 +466,7 @@ public class VkRenderEngine implements RenderEngine{
         memFree(appInfo.pEngineName());
         appInfo.free();
         
-        return ret;
+        return instance;
     }
 	
 	private long setupDebugging(VkInstance instance, int flags, VkDebugReportCallbackEXT callback) {
