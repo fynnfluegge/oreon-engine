@@ -1,8 +1,8 @@
 package org.oreon.gl.demo.oreonworlds.gui;
 
+import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.texture.Texture2D;
 import org.oreon.core.math.Vec2f;
-import org.oreon.core.system.CoreSystem;
 import org.oreon.modules.gl.gui.elements.Button;
 
 public class OpenCloseButton extends Button{
@@ -31,7 +31,7 @@ public class OpenCloseButton extends Button{
 		
 		buttonMap = openArrow;
 		buttonClickMap = openArrowClicked;
-		getOrthoTransform().setTranslation(5, CoreSystem.getInstance().getWindow().getHeight()-25, 0);
+		getOrthoTransform().setTranslation(5, EngineContext.getWindow().getHeight()-25, 0);
 		getOrthoTransform().setScaling(15,30,0);
 		Vec2f[] texCoords = new Vec2f[4];
 		texCoords[0] = new Vec2f(0,1f);

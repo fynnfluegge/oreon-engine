@@ -13,8 +13,8 @@ import static org.lwjgl.opengl.GL43.glDispatchCompute;
 
 import java.nio.ByteBuffer;
 
+import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.texture.Texture2D;
-import org.oreon.core.system.CoreSystem;
 
 public class SunLightScattering {
 
@@ -32,8 +32,8 @@ public class SunLightScattering {
 		sunLightScatteringTexture.generate();
 		sunLightScatteringTexture.bind();
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F,
-						CoreSystem.getInstance().getWindow().getWidth(),
-						CoreSystem.getInstance().getWindow().getHeight(),
+						EngineContext.getWindow().getWidth(),
+						EngineContext.getWindow().getHeight(),
 						0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
 		sunLightScatteringTexture.bilinearFilter();
 		sunLightScatteringTexture.clampToEdge();
@@ -42,8 +42,8 @@ public class SunLightScattering {
 		sunLightScatteringSceneTexture.generate();
 		sunLightScatteringSceneTexture.bind();
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F,
-						CoreSystem.getInstance().getWindow().getWidth(),
-						CoreSystem.getInstance().getWindow().getHeight(),
+						EngineContext.getWindow().getWidth(),
+						EngineContext.getWindow().getHeight(),
 						0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
 		sunLightScatteringSceneTexture.bilinearFilter();
 		sunLightScatteringSceneTexture.clampToEdge();
@@ -54,17 +54,17 @@ public class SunLightScattering {
 		lightScatteringShader.bind();
 		glBindImageTexture(0, lightScatteringMask.getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA16F);
 		glBindImageTexture(1, sunLightScatteringTexture.getId(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
-		lightScatteringShader.updateUniforms(CoreSystem.getInstance().getWindow().getWidth(), 
-											 CoreSystem.getInstance().getWindow().getHeight(), 
-										     CoreSystem.getInstance().getScenegraph().getCamera().getViewProjectionMatrix());
-		glDispatchCompute(CoreSystem.getInstance().getWindow().getWidth()/8, CoreSystem.getInstance().getWindow().getHeight()/8, 1);	
+		lightScatteringShader.updateUniforms(EngineContext.getWindow().getWidth(), 
+											 EngineContext.getWindow().getHeight(), 
+										     EngineContext.getCamera().getViewProjectionMatrix());
+		glDispatchCompute(EngineContext.getWindow().getWidth()/8, EngineContext.getWindow().getHeight()/8, 1);	
 		glFinish();
 		
 		additiveBlendShader.bind();
 		glBindImageTexture(0, sunLightScatteringTexture.getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA16F);
 		glBindImageTexture(1, sceneSampler.getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA16F);
 		glBindImageTexture(2, sunLightScatteringSceneTexture.getId(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
-		glDispatchCompute(CoreSystem.getInstance().getWindow().getWidth()/8, CoreSystem.getInstance().getWindow().getHeight()/8, 1);	
+		glDispatchCompute(EngineContext.getWindow().getWidth()/8, EngineContext.getWindow().getHeight()/8, 1);	
 		glFinish();
 	}
 	

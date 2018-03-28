@@ -1,5 +1,6 @@
 package org.oreon.core.system;
 
+import org.oreon.core.context.EngineContext;
 import org.oreon.core.util.Constants;
 
 public class CoreEngine{
@@ -52,7 +53,7 @@ public class CoreEngine{
 				render = true;
 				unprocessedTime -= frameTime;
 				
-				if(coreSystem.getWindow().isCloseRequested()){
+				if(EngineContext.getWindow().isCloseRequested()){
 					stop();
 				}
 				

@@ -1,11 +1,9 @@
 package org.oreon.core.scenegraph;
 
 import org.oreon.core.math.Transform;
-import org.oreon.core.platform.Camera;
 
 public class Scenegraph extends Node{
 	
-	private Camera camera;
 	private Node rootObject;
 	private Node terrain;
 	private Node water;
@@ -100,14 +98,6 @@ public class Scenegraph extends Node{
 
 	public boolean isRenderTerrain() {
 		return renderTerrain;
-	}
-
-	public Camera getCamera() {
-		return camera;
-	}
-
-	public void setCamera(Camera camera) {
-		this.camera = camera;
 	}
 
 	public Node getTransparentObjects() {

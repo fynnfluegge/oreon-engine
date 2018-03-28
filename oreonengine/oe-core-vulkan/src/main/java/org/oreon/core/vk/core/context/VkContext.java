@@ -1,5 +1,6 @@
 package org.oreon.core.vk.core.context;
 
+import org.oreon.core.context.EngineContext;
 import org.oreon.core.vk.core.device.LogicalDevice;
 import org.oreon.core.vk.core.device.PhysicalDevice;
 import org.oreon.core.vk.core.platform.VkWindow;
@@ -14,6 +15,8 @@ private static ApplicationContext context;
 	
 	public static void initialize(){
 		context = new ClassPathXmlApplicationContext("vk-context.xml");
+		EngineContext.registerWindow(new VkWindow());
+		EngineContext.registerCamera(new VkCamera());
 	}
 	
 	public static VkRenderContext getRenderContext(){
@@ -39,6 +42,11 @@ private static ApplicationContext context;
 	public static VkCamera getVkCamera(){
 		
 		 return context.getBean(VkCamera.class);
+	}
+	
+	public static VulkanInstance getVulkanInstance(){
+		
+		return context.getBean(VulkanInstance.class);
 	}
 	
 	public static void registerInstance(VulkanInstance instance){

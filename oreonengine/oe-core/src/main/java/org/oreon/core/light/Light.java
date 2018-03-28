@@ -2,10 +2,10 @@ package org.oreon.core.light;
 
 import org.oreon.core.query.OcclusionQuery;
 import org.oreon.core.scenegraph.Component;
+import org.oreon.core.context.EngineContext;
 import org.oreon.core.math.Quaternion;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.math.Vec3f;
-import org.oreon.core.system.CoreSystem;
 
 public class Light extends Component{
 	
@@ -32,7 +32,7 @@ public class Light extends Component{
 		}
 		
 		Vec2f windowSpacePos = (new Vec2f(ndcSpacePos.getX(), ndcSpacePos.getY()).add(1.0f)).div(2.0f).mul(
-									new Vec2f(CoreSystem.getInstance().getWindow().getWidth(),CoreSystem.getInstance().getWindow().getHeight()));
+									new Vec2f(EngineContext.getWindow().getWidth(),EngineContext.getWindow().getHeight()));
 		
 		return windowSpacePos;
 	}

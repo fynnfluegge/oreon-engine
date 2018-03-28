@@ -4,17 +4,18 @@ import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import static org.lwjgl.opengl.GL11.GL_RGBA;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.glTexImage2D;
-import static org.lwjgl.opengl.GL15.GL_WRITE_ONLY;
 import static org.lwjgl.opengl.GL15.GL_READ_ONLY;
+import static org.lwjgl.opengl.GL15.GL_WRITE_ONLY;
 import static org.lwjgl.opengl.GL30.GL_RGBA32F;
 import static org.lwjgl.opengl.GL42.glBindImageTexture;
 import static org.lwjgl.opengl.GL43.glDispatchCompute;
 
 import java.nio.ByteBuffer;
+
+import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.texture.Texture2D;
 import org.oreon.core.gl.texture.Texture2DMultisample;
 import org.oreon.core.math.Vec3f;
-import org.oreon.core.system.CoreSystem;
 
 public class SSAO {
 	
@@ -96,8 +97,8 @@ public class SSAO {
 		glBindImageTexture(1, worldPositionSceneTexture.getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA32F);
 		glBindImageTexture(2, normalSceneTexture.getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA32F);
 		glBindImageTexture(3, noiseTexture.getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA32F);
-		ssaoShader.updateUniforms(CoreSystem.getInstance().getScenegraph().getCamera().getViewMatrix(),
-								  CoreSystem.getInstance().getScenegraph().getCamera().getProjectionMatrix(),
+		ssaoShader.updateUniforms(EngineContext.getCamera().getViewMatrix(),
+								  EngineContext.getCamera().getProjectionMatrix(),
 								  width, height, kernel);
 		glDispatchCompute(width/16,height/16,1);
 		blurShader.bind();

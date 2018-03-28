@@ -15,11 +15,11 @@ import static org.lwjgl.opengl.GL43.glDispatchCompute;
 
 import java.nio.ByteBuffer;
 
+import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.buffers.GLFramebuffer;
 import org.oreon.core.gl.surface.FullScreenQuad;
 import org.oreon.core.gl.texture.Texture2D;
 import org.oreon.core.gl.texture.Texture2DMultisample;
-import org.oreon.core.system.CoreSystem;
 
 public class DepthOfFieldBlur {
 	
@@ -44,19 +44,19 @@ public class DepthOfFieldBlur {
 		horizontalBlurSceneTexture = new Texture2D();
 		horizontalBlurSceneTexture.generate();
 		horizontalBlurSceneTexture.bind();
-		glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA16F, CoreSystem.getInstance().getWindow().getWidth(), CoreSystem.getInstance().getWindow().getHeight());
+		glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA16F, EngineContext.getWindow().getWidth(), EngineContext.getWindow().getHeight());
 		
 		verticalBlurSceneTexture = new Texture2D();
 		verticalBlurSceneTexture.generate();
 		verticalBlurSceneTexture.bind();
-		glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA16F, CoreSystem.getInstance().getWindow().getWidth(), CoreSystem.getInstance().getWindow().getHeight());
+		glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA16F, EngineContext.getWindow().getWidth(), EngineContext.getWindow().getHeight());
 		
 		lowResSceneSampler = new Texture2D();
 		lowResSceneSampler.generate();
 		lowResSceneSampler.bind();
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F,
-						(int)(CoreSystem.getInstance().getWindow().getWidth()/1.2f),
-						(int)(CoreSystem.getInstance().getWindow().getHeight()/1.2f),
+						(int)(EngineContext.getWindow().getWidth()/1.2f),
+						(int)(EngineContext.getWindow().getHeight()/1.2f),
 						0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
 		lowResSceneSampler.bilinearFilter();
 		lowResSceneSampler.clampToEdge();
@@ -83,7 +83,7 @@ public class DepthOfFieldBlur {
 		glBindImageTexture(2, lightScatteringMask.getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA16F);
 		glBindImageTexture(3, horizontalBlurSceneTexture.getId(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
 		horizontalBlurShader.updateUniforms(depthmap);
-		glDispatchCompute(CoreSystem.getInstance().getWindow().getWidth()/8, CoreSystem.getInstance().getWindow().getHeight()/8, 1);	
+		glDispatchCompute(EngineContext.getWindow().getWidth()/8, EngineContext.getWindow().getHeight()/8, 1);	
 		glFinish();
 		
 		verticalBlurShader.bind();
@@ -91,7 +91,7 @@ public class DepthOfFieldBlur {
 		glBindImageTexture(1, lightScatteringMask.getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA16F);
 		glBindImageTexture(2, verticalBlurSceneTexture.getId(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
 		verticalBlurShader.updateUniforms(depthmap);
-		glDispatchCompute(CoreSystem.getInstance().getWindow().getWidth()/8, CoreSystem.getInstance().getWindow().getHeight()/8, 1);	
+		glDispatchCompute(EngineContext.getWindow().getWidth()/8, EngineContext.getWindow().getHeight()/8, 1);	
 		glFinish();
 	}
 

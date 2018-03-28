@@ -1,6 +1,6 @@
 package org.oreon.core.math;
 
-import org.oreon.core.system.CoreSystem;
+import org.oreon.core.context.EngineContext;
 
 public class Transform {
 	
@@ -41,7 +41,7 @@ public class Transform {
 	
 	public Matrix4f getModelViewProjectionMatrix()
 	{
-		return CoreSystem.getInstance().getScenegraph().getCamera().getViewProjectionMatrix().mul(getWorldMatrix());
+		return EngineContext.getCamera().getViewProjectionMatrix().mul(getWorldMatrix());
 	}
 
 	public Vec3f getTranslation() {

@@ -3,19 +3,18 @@ package org.oreon.gl.demo.oreonworlds.gui;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
+import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.parameter.Default;
 import org.oreon.core.gl.texture.Texture2D;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.math.Transform;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.system.CoreEngine;
-import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.Util;
 import org.oreon.modules.gl.gui.GUIElement;
 import org.oreon.modules.gl.gui.GUIObjectLoader;
 import org.oreon.modules.gl.gui.GUIVAO;
 import org.oreon.modules.gl.gui.GuiShader;
-
 
 public class FPSPanel extends GUIElement{
 	
@@ -39,7 +38,7 @@ public class FPSPanel extends GUIElement{
 		int size = 20;
 		setOrthoTransform(new Transform());
 		setOrthographicMatrix(new Matrix4f().Orthographic2D());
-		getOrthoTransform().setTranslation(CoreSystem.getInstance().getWindow().getWidth()-75, CoreSystem.getInstance().getWindow().getHeight()-20, 0);
+		getOrthoTransform().setTranslation(EngineContext.getWindow().getWidth()-75, EngineContext.getWindow().getHeight()-20, 0);
 		getOrthoTransform().setScaling(size, size, 0);
 		setOrthographicMatrix(getOrthographicMatrix().mul(getOrthoTransform().getWorldMatrix()));
 		Vec2f[] texCoords = new Vec2f[4];

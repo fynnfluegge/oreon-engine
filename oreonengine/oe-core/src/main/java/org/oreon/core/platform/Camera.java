@@ -16,7 +16,6 @@ import org.oreon.core.context.EngineContext;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.math.Quaternion;
 import org.oreon.core.math.Vec3f;
-import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.BufferUtil;
 import org.oreon.core.util.Constants;
 import org.oreon.core.util.Util;
@@ -72,6 +71,8 @@ private final Vec3f yAxis = new Vec3f(0,1,0);
 		viewProjectionMatrix = new Matrix4f().Zero();
 		previousViewProjectionMatrix = new Matrix4f().Zero();
 		floatBuffer = BufferUtil.createFloatBuffer(bufferSize);
+		
+		input = EngineContext.getInput();
 	}
 	
 	private Camera(Vec3f position, Vec3f forward, Vec3f up)
@@ -196,7 +197,7 @@ private final Vec3f yAxis = new Vec3f(0,1,0);
 				}
 			}
 			
-			glfwSetCursorPos(CoreSystem.getInstance().getWindow().getId(),
+			glfwSetCursorPos(EngineContext.getWindow().getId(),
 					input.getLockedCursorPosition().getX(),
 					input.getLockedCursorPosition().getY());
 		}
@@ -532,13 +533,5 @@ private final Vec3f yAxis = new Vec3f(0,1,0);
 
 	public void setRightRotation(boolean isRightRotation) {
 		this.isRightRotation = isRightRotation;
-	}
-
-	public Input getInput() {
-		return input;
-	}
-
-	public void setInput(Input input) {
-		this.input = input;
 	}
 }

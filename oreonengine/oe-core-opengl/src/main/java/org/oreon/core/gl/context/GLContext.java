@@ -1,5 +1,7 @@
 package org.oreon.core.gl.context;
 
+import org.oreon.core.context.EngineContext;
+import org.oreon.core.gl.platform.GLCamera;
 import org.oreon.core.gl.platform.GLWindow;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -10,15 +12,13 @@ public class GLContext {
 	
 	public static void initialize(){
 		context = new ClassPathXmlApplicationContext("gl-context.xml");
+		EngineContext.registerWindow(new GLWindow());
+		EngineContext.registerCamera(new GLCamera());
 	}
 	
 	public static GLRenderContext getRenderContext(){
 		
 		return context.getBean(GLRenderContext.class);
 	}
-	
-	public static GLWindow getWindow(){
-		
-		return context.getBean(GLWindow.class);
-	}
+
 }

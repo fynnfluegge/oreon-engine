@@ -3,10 +3,10 @@ package org.oreon.gl.engine;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import static org.lwjgl.opengl.GL11.GL_RGBA;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glTexImage2D;
 import static org.lwjgl.opengl.GL11.glViewport;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT0;
 import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT1;
 import static org.lwjgl.opengl.GL30.GL_RGBA16F;
@@ -26,8 +26,8 @@ import org.oreon.core.gl.antialiasing.MSAA;
 import org.oreon.core.gl.buffers.GLFramebuffer;
 import org.oreon.core.gl.context.GLContext;
 import org.oreon.core.gl.deferred.DeferredLightingRenderer;
-import org.oreon.core.gl.deferred.TransparencyLayer;
 import org.oreon.core.gl.deferred.TransparencyBlendRenderer;
+import org.oreon.core.gl.deferred.TransparencyLayer;
 import org.oreon.core.gl.light.GLDirectionalLight;
 import org.oreon.core.gl.parameter.Default;
 import org.oreon.core.gl.picking.TerrainPicking;
@@ -38,8 +38,7 @@ import org.oreon.core.gl.texture.Texture2D;
 import org.oreon.core.gl.texture.Texture2DMultisample;
 import org.oreon.core.instanced.InstancedHandler;
 import org.oreon.core.light.LightHandler;
-import org.oreon.core.platform.Window;
-import org.oreon.core.system.CoreSystem;
+import org.oreon.core.scenegraph.Scenegraph;
 import org.oreon.core.system.RenderEngine;
 import org.oreon.core.util.BufferUtil;
 import org.oreon.core.util.Constants;
@@ -58,9 +57,8 @@ import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 
 @Log4j
-public class GLRenderEngine implements RenderEngine{
-
-	private Window window;
+public class GLRenderEngine extends RenderEngine{
+	
 	private FullScreenQuad fullScreenQuad;
 	private FullScreenMultisampleQuad fullScreenQuadMultisample;
 	private MSAA msaa;
@@ -107,6 +105,8 @@ public class GLRenderEngine implements RenderEngine{
 	@Override
 	public void init() {
 		
+		super.init();
+		
 		getDeviceProperties();
 		
 		EngineContext.getConfig().setWireframe(false);
@@ -117,7 +117,9 @@ public class GLRenderEngine implements RenderEngine{
 		EngineContext.getConfig().setUnderwater(false);
 		
 		Default.init();
-		window = CoreSystem.getInstance().getWindow();
+		window = EngineContext.getWindow();
+		camera = EngineContext.getCamera();
+		camera.init();
 		instancingObjectHandler = InstancedHandler.getInstance();
 		
 		if (gui != null){
@@ -189,15 +191,15 @@ public class GLRenderEngine implements RenderEngine{
 		shadowMaps.getConfig().enable();
 		glClear(GL_DEPTH_BUFFER_BIT);
 		glViewport(0,0,Constants.PSSM_SHADOWMAP_RESOLUTION,Constants.PSSM_SHADOWMAP_RESOLUTION);
-		CoreSystem.getInstance().getScenegraph().renderShadows();
-		glViewport(0,0,CoreSystem.getInstance().getWindow().getWidth(), CoreSystem.getInstance().getWindow().getHeight());
+		sceneGraph.renderShadows();
+		glViewport(0,0,window.getWidth(), window.getHeight());
 		shadowMaps.getConfig().disable();
 		shadowMaps.getFBO().unbind();
 		
 		// deferred scene lighting - opaque objects
 		deferredLightingRenderer.getFbo().bind();
 		Default.clearScreen();
-		CoreSystem.getInstance().getScenegraph().render();
+		sceneGraph.render();
 		deferredLightingRenderer.getFbo().unbind();
 		
 		ssao.render(deferredLightingRenderer.getGbuffer().getWorldPositionTexture(),
@@ -215,7 +217,7 @@ public class GLRenderEngine implements RenderEngine{
 		// forward scene lighting - transparent objects
 		transparencyLayer.getFbo().bind();
 		Default.clearScreen();
-		CoreSystem.getInstance().getScenegraph().renderTransparentObejcts();
+		sceneGraph.renderTransparentObejcts();
 		transparencyLayer.getFbo().unbind();
 		
 		// blend scene/transparent layers
@@ -233,19 +235,18 @@ public class GLRenderEngine implements RenderEngine{
 		instancingObjectHandler.signalAll();
 		
 		// update Terrain Quadtree
-		if (CoreSystem.getInstance().getScenegraph().getCamera().isCameraMoved()){
-			if (CoreSystem.getInstance().getScenegraph().isRenderTerrain()){
-				((GLTerrain) CoreSystem.getInstance().getScenegraph().getTerrain()).getQuadtree().signal();
+		if (camera.isCameraMoved()){
+			if (sceneGraph.isRenderTerrain()){
+				((GLTerrain) sceneGraph.getTerrain()).getQuadtree().signal();
 			}
 		}
 
 		postProcessingTexture = new Texture2D(finalSceneTexture);
 		sceneDepthmap = deferredLightingRenderer.getGbuffer().getDepthTexture();
 		
-		boolean doMotionBlur = CoreSystem.getInstance().getScenegraph().getCamera().getPreviousPosition().sub(
-							   CoreSystem.getInstance().getScenegraph().getCamera().getPosition()).length() > 0.04f ||
-							   CoreSystem.getInstance().getScenegraph().getCamera().getForward().sub(
-							   CoreSystem.getInstance().getScenegraph().getCamera().getPreviousForward()).length() > 0.01f;
+		boolean doMotionBlur = camera.getPreviousPosition().sub(
+							   camera.getPosition()).length() > 0.04f ||
+							   camera.getForward().sub(camera.getPreviousForward()).length() > 0.01f;
 				
 		// perform FXAA
 		if (!doMotionBlur && renderFXAA){
@@ -330,14 +331,16 @@ public class GLRenderEngine implements RenderEngine{
 	@Override
 	public void update() {
 		
-		if (CoreSystem.getInstance().getInput().isKeyPushed(GLFW.GLFW_KEY_G)){
+		super.update();
+		
+		if (EngineContext.getInput().isKeyPushed(GLFW.GLFW_KEY_G)){
 			if (EngineContext.getConfig().isWireframe())
 				EngineContext.getConfig().setWireframe(false);
 			else
 				EngineContext.getConfig().setWireframe(true);
 		}
 		
-		if (CoreSystem.getInstance().getInput().isKeyPushed(GLFW.GLFW_KEY_KP_1)){
+		if (EngineContext.getInput().isKeyPushed(GLFW.GLFW_KEY_KP_1)){
 			if (renderAlbedoBuffer){
 				renderAlbedoBuffer = false;
 			}
@@ -350,7 +353,7 @@ public class GLRenderEngine implements RenderEngine{
 				renderDeferredLightingScene = false;
 			}
 		}
-		if (CoreSystem.getInstance().getInput().isKeyPushed(GLFW.GLFW_KEY_KP_2)){
+		if (EngineContext.getInput().isKeyPushed(GLFW.GLFW_KEY_KP_2)){
 			if (renderNormalBuffer){
 				renderNormalBuffer = false;
 			}
@@ -363,7 +366,7 @@ public class GLRenderEngine implements RenderEngine{
 				renderDeferredLightingScene = false;
 			}
 		}
-		if (CoreSystem.getInstance().getInput().isKeyPushed(GLFW.GLFW_KEY_KP_3)){
+		if (EngineContext.getInput().isKeyPushed(GLFW.GLFW_KEY_KP_3)){
 			if (renderPositionBuffer){
 				renderPositionBuffer = false;
 			}
@@ -376,7 +379,7 @@ public class GLRenderEngine implements RenderEngine{
 				renderDeferredLightingScene = false;
 			}
 		}
-		if (CoreSystem.getInstance().getInput().isKeyPushed(GLFW.GLFW_KEY_KP_4)){
+		if (EngineContext.getInput().isKeyPushed(GLFW.GLFW_KEY_KP_4)){
 			if (renderSampleCoverageMask){
 				renderSampleCoverageMask = false;
 			}
@@ -389,7 +392,7 @@ public class GLRenderEngine implements RenderEngine{
 				renderDeferredLightingScene = false;
 			}
 		}
-		if (CoreSystem.getInstance().getInput().isKeyPushed(GLFW.GLFW_KEY_KP_5)){
+		if (EngineContext.getInput().isKeyPushed(GLFW.GLFW_KEY_KP_5)){
 			if (renderSSAOBuffer){
 				renderSSAOBuffer = false;
 			}
@@ -402,7 +405,7 @@ public class GLRenderEngine implements RenderEngine{
 				renderDeferredLightingScene = false;
 			}
 		}
-		if (CoreSystem.getInstance().getInput().isKeyPushed(GLFW.GLFW_KEY_KP_6)){
+		if (EngineContext.getInput().isKeyPushed(GLFW.GLFW_KEY_KP_6)){
 			if (renderDeferredLightingScene){
 				renderDeferredLightingScene = false;
 			}
@@ -415,7 +418,7 @@ public class GLRenderEngine implements RenderEngine{
 				renderSSAOBuffer = false;
 			}
 		}
-		if (CoreSystem.getInstance().getInput().isKeyPushed(GLFW.GLFW_KEY_KP_7)){
+		if (EngineContext.getInput().isKeyPushed(GLFW.GLFW_KEY_KP_7)){
 			if (renderFXAA){
 				renderFXAA = false;
 			}
@@ -423,7 +426,7 @@ public class GLRenderEngine implements RenderEngine{
 				renderFXAA = true;
 			}
 		}
-		if (CoreSystem.getInstance().getInput().isKeyPushed(GLFW.GLFW_KEY_KP_8)){
+		if (EngineContext.getInput().isKeyPushed(GLFW.GLFW_KEY_KP_8)){
 			if (renderSSAO){
 				renderSSAO = false;
 			}
@@ -431,7 +434,7 @@ public class GLRenderEngine implements RenderEngine{
 				renderSSAO = true;
 			}
 		}
-		if (CoreSystem.getInstance().getInput().isKeyPushed(GLFW.GLFW_KEY_KP_9)){
+		if (EngineContext.getInput().isKeyPushed(GLFW.GLFW_KEY_KP_9)){
 			if (renderPostProcessingEffects){
 				renderPostProcessingEffects = false;
 			}
@@ -446,16 +449,18 @@ public class GLRenderEngine implements RenderEngine{
 		
 		contrastController.update();
 		
-		if (CoreSystem.getInstance().getScenegraph().isRenderTerrain()){
+		if (sceneGraph.isRenderTerrain()){
 			TerrainPicking.getInstance().getTerrainPosition();
 		}
 	}
 	@Override
 	public void shutdown() {
 		
+		super.shutdown();
+		
 		instancingObjectHandler.signalAll();
-		if (CoreSystem.getInstance().getScenegraph().isRenderTerrain()){
-			((GLTerrain) CoreSystem.getInstance().getScenegraph().getTerrain()).getQuadtree().signal();
+		if (sceneGraph.isRenderTerrain()){
+			((GLTerrain) sceneGraph.getTerrain()).getQuadtree().signal();
 		}
 	}
 	
@@ -468,5 +473,9 @@ public class GLRenderEngine implements RenderEngine{
 		log.info("Max Uniform Block Size: " + GL11.glGetInteger(GL31.GL_MAX_UNIFORM_BLOCK_SIZE) + " bytes");
 		log.info("Max SSBO Block Size: " + GL11.glGetInteger(GL43.GL_MAX_SHADER_STORAGE_BLOCK_SIZE) + " bytes");	
 		log.info("Max Image Bindings: " + GL11.glGetInteger(GL42.GL_MAX_IMAGE_UNITS));
+	}
+
+	public Scenegraph getScenegraph() {
+		return sceneGraph;
 	}
 }

@@ -3,19 +3,19 @@ package org.oreon.gl.demo.oreonworlds.assets.plants;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.buffers.GLMeshVBO;
 import org.oreon.core.gl.parameter.CullFaceDisable;
 import org.oreon.core.gl.scenegraph.GLRenderInfo;
 import org.oreon.core.gl.util.modelLoader.obj.OBJLoader;
 import org.oreon.core.instanced.InstancedCluster;
-import org.oreon.core.instanced.InstancedObject;
 import org.oreon.core.instanced.InstancedHandler;
+import org.oreon.core.instanced.InstancedObject;
 import org.oreon.core.math.Vec3f;
 import org.oreon.core.model.Model;
 import org.oreon.core.model.Vertex;
 import org.oreon.core.scenegraph.ComponentType;
 import org.oreon.core.scenegraph.Renderable;
-import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.Util;
 import org.oreon.gl.demo.oreonworlds.shaders.assets.plants.TreeBillboardShader;
 import org.oreon.gl.demo.oreonworlds.shaders.assets.plants.TreeBillboardShadowShader;
@@ -129,7 +129,7 @@ public class Tree01ClusterGroup extends InstancedObject{
 				getChildren().clear();
 				
 				for (InstancedCluster cluster : getClusters()){
-					if (cluster.getCenter().sub(CoreSystem.getInstance().getScenegraph().getCamera().getPosition()).length() < 2000){
+					if (cluster.getCenter().sub(EngineContext.getCamera().getPosition()).length() < 2000){
 						cluster.updateUBOs();
 						addChild(cluster);
 					}

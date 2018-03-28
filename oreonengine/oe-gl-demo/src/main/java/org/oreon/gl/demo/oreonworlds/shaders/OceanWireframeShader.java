@@ -5,9 +5,9 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE2;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
+import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.shaders.GLShader;
 import org.oreon.core.scenegraph.Renderable;
-import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.ResourceLoader;
 import org.oreon.modules.gl.water.Water;
 import org.oreon.modules.gl.water.WaterConfiguration;
@@ -59,13 +59,13 @@ private static OceanWireframeShader instance = null;
 	
 	public void updateUniforms(Renderable object)
 	{
-		setUniform("viewProjectionMatrix", CoreSystem.getInstance().getScenegraph().getCamera().getViewProjectionMatrix());
+		setUniform("viewProjectionMatrix", EngineContext.getCamera().getViewProjectionMatrix());
 		setUniform("worldMatrix", object.getWorldTransform().getWorldMatrix());
-		setUniform("eyePosition", CoreSystem.getInstance().getScenegraph().getCamera().getPosition());
+		setUniform("eyePosition", EngineContext.getCamera().getPosition());
 		
 		for (int i=0; i<6; i++)
 		{
-			setUniform("frustumPlanes[" + i +"]", CoreSystem.getInstance().getScenegraph().getCamera().getFrustumPlanes()[i]);
+			setUniform("frustumPlanes[" + i +"]", EngineContext.getCamera().getFrustumPlanes()[i]);
 		}
 		
 		Water ocean = (Water) object;

@@ -12,7 +12,6 @@ import org.oreon.core.math.Matrix4f;
 import org.oreon.core.math.Vec3f;
 import org.oreon.core.scenegraph.ComponentType;
 import org.oreon.core.scenegraph.Renderable;
-import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.BufferUtil;
 import org.oreon.core.util.IntegerReference;
 import org.oreon.modules.gl.terrain.TerrainHelper;
@@ -89,7 +88,7 @@ public class Palm01Cluster extends GLInstancedCluster{
 		int index = 0;
 		
 		for (Matrix4f transform : getWorldMatrices()){
-			if (transform.getTranslation().sub(CoreSystem.getInstance().getScenegraph().getCamera().getPosition()).length() < 500){
+			if (transform.getTranslation().sub(EngineContext.getCamera().getPosition()).length() < 500){
 				getHighPolyIndices().add(index);
 			}
 

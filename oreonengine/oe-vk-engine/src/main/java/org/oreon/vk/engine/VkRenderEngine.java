@@ -1,41 +1,39 @@
 package org.oreon.vk.engine;
 
+import static org.lwjgl.glfw.GLFWVulkan.glfwCreateWindowSurface;
 import static org.lwjgl.glfw.GLFWVulkan.glfwGetRequiredInstanceExtensions;
 import static org.lwjgl.glfw.GLFWVulkan.glfwVulkanSupported;
-import static org.lwjgl.glfw.GLFWVulkan.glfwCreateWindowSurface;
-import static org.lwjgl.system.MemoryUtil.memUTF8;
 import static org.lwjgl.system.MemoryUtil.memAlloc;
 import static org.lwjgl.system.MemoryUtil.memAllocLong;
-import static org.lwjgl.vulkan.EXTDebugReport.vkDestroyDebugReportCallbackEXT;
-import static org.lwjgl.vulkan.KHRSwapchain.vkDestroySwapchainKHR;
-import static org.lwjgl.vulkan.KHRSurface.VK_PRESENT_MODE_FIFO_KHR;
-import static org.lwjgl.vulkan.KHRSurface.VK_PRESENT_MODE_MAILBOX_KHR;
-import static org.lwjgl.vulkan.KHRSurface.VK_PRESENT_MODE_IMMEDIATE_KHR;
+import static org.lwjgl.system.MemoryUtil.memUTF8;
 import static org.lwjgl.vulkan.KHRSurface.VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
-import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
-import static org.lwjgl.vulkan.VK10.VK_FORMAT_B8G8R8A8_UNORM;
-import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_SAMPLED_BIT;
-import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_TRANSFER_DST_BIT;
-import static org.lwjgl.vulkan.VK10.vkDestroyInstance;
-import static org.lwjgl.vulkan.VK10.vkQueueWaitIdle;
-import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
-import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
-import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
+import static org.lwjgl.vulkan.KHRSurface.VK_PRESENT_MODE_FIFO_KHR;
+import static org.lwjgl.vulkan.KHRSurface.VK_PRESENT_MODE_IMMEDIATE_KHR;
+import static org.lwjgl.vulkan.KHRSurface.VK_PRESENT_MODE_MAILBOX_KHR;
+import static org.lwjgl.vulkan.KHRSwapchain.vkDestroySwapchainKHR;
+import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
 import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_TRANSFER_DST_BIT;
 import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
 import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
-import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
 import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
-import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_UNDEFINED;
-import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
-import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-import static org.lwjgl.vulkan.VK10.VK_FORMAT_R8G8B8A8_UNORM;
-import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_VERTEX_BIT;
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_FRAGMENT_BIT;
-import static org.lwjgl.vulkan.VK10.VK_FORMAT_R32G32_SFLOAT;
+import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+import static org.lwjgl.vulkan.VK10.VK_FORMAT_B8G8R8A8_UNORM;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_R32G32B32_SFLOAT;
+import static org.lwjgl.vulkan.VK10.VK_FORMAT_R32G32_SFLOAT;
+import static org.lwjgl.vulkan.VK10.VK_FORMAT_R8G8B8A8_UNORM;
+import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_UNDEFINED;
+import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_SAMPLED_BIT;
+import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_TRANSFER_DST_BIT;
+import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
+import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
+import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
+import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_FRAGMENT_BIT;
+import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_VERTEX_BIT;
+import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
+import static org.lwjgl.vulkan.VK10.vkQueueWaitIdle;
 
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
@@ -47,11 +45,9 @@ import org.lwjgl.vulkan.VkExtent2D;
 import org.lwjgl.vulkan.VkInstance;
 import org.lwjgl.vulkan.VkSubmitInfo;
 import org.oreon.core.context.EngineContext;
-import org.oreon.core.system.CoreSystem;
 import org.oreon.core.system.RenderEngine;
 import org.oreon.core.vk.core.buffers.VkBuffer;
 import org.oreon.core.vk.core.command.CommandBuffer;
-import org.oreon.core.vk.core.context.VkCamera;
 import org.oreon.core.vk.core.context.VkContext;
 import org.oreon.core.vk.core.context.VulkanInstance;
 import org.oreon.core.vk.core.descriptor.DescriptorPool;
@@ -70,7 +66,7 @@ import org.oreon.core.vk.core.pipeline.VertexInputInfo;
 import org.oreon.core.vk.core.swapchain.SwapChain;
 import org.oreon.core.vk.core.util.VkUtil;
 
-public class VkRenderEngine implements RenderEngine{
+public class VkRenderEngine extends RenderEngine{
 	
 	private VkInstance vkInstance;
 	private PhysicalDevice physicalDevice;
@@ -86,10 +82,10 @@ public class VkRenderEngine implements RenderEngine{
 	private final boolean validationEnabled = Boolean.parseBoolean(System.getProperty("vulkan.validation", "true"));
 	private PointerBuffer ppEnabledLayerNames;
 	
-	private long debugCallbackHandle;
-	
 	@Override
 	public void init() {
+		
+		super.init();
 		
 		if (!glfwVulkanSupported()) {
 	            throw new AssertionError("GLFW failed to find the Vulkan loader");
@@ -103,11 +99,12 @@ public class VkRenderEngine implements RenderEngine{
         ppEnabledLayerNames = VkUtil.getValidationLayerNames(validationEnabled, layers);
         
         VulkanInstance vulkanInstance = new VulkanInstance();
+        VkContext.registerInstance(vulkanInstance);
         
         vkInstance = vulkanInstance.getHandle();
        
         LongBuffer pSurface = memAllocLong(1);
-	    int err = glfwCreateWindowSurface(vkInstance, CoreSystem.getInstance().getWindow().getId(), null, pSurface);
+	    int err = glfwCreateWindowSurface(vkInstance, EngineContext.getWindow().getId(), null, pSurface);
 	    
 	    surface = pSurface.get(0);
 	    if (err != VK_SUCCESS) {
@@ -122,16 +119,14 @@ public class VkRenderEngine implements RenderEngine{
 	    VkContext.registerPhysicalDevice(physicalDevice);
 	    VkContext.registerLogicalDevice(logicalDevice);
 	    
-	    VkCamera camera = new VkCamera();
+	    camera = EngineContext.getCamera();
 	    camera.init();
-	    camera.setInput(CoreSystem.getInstance().getInput());
-		EngineContext.registerCamera(camera);
 		
 		//-----------------------------------------------------------------------------------
 	    
 	    VkExtent2D swapExtent = physicalDevice.getSwapChainCapabilities().getSurfaceCapabilities().currentExtent();
-	    swapExtent.width(CoreSystem.getInstance().getWindow().getWidth());
-	    swapExtent.height(CoreSystem.getInstance().getWindow().getHeight());
+	    swapExtent.width(EngineContext.getWindow().getWidth());
+	    swapExtent.height(EngineContext.getWindow().getHeight());
 	    
 	    int imageFormat = VK_FORMAT_B8G8R8A8_UNORM;
 	    int colorSpace = VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
@@ -380,10 +375,13 @@ public class VkRenderEngine implements RenderEngine{
 	@Override
 	public void update() {
 
+		super.update();
 	}
 
 	@Override
 	public void shutdown() {
+		
+		super.shutdown();
 		
 		// wait for queues to be finished before destroy vulkan objects
 		vkQueueWaitIdle(logicalDevice.getGraphicsQueue());
@@ -392,8 +390,8 @@ public class VkRenderEngine implements RenderEngine{
 		swapChain.destroy(logicalDevice.getHandle());
 		pipeline.destroy(logicalDevice.getHandle());
 		logicalDevice.destroy();
-		vkDestroyDebugReportCallbackEXT(vkInstance, debugCallbackHandle, null);
-        vkDestroyInstance(vkInstance, null);		
+
+		VkContext.getVulkanInstance().destroy();		
 	}
 	
 }

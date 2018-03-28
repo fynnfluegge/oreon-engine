@@ -3,12 +3,12 @@ package org.oreon.gl.demo.oreonworlds.assets.plants;
 import java.nio.FloatBuffer;
 import java.util.List;
 
+import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.buffers.GLUBO;
 import org.oreon.core.gl.instanced.GLInstancedCluster;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.math.Vec3f;
 import org.oreon.core.scenegraph.Renderable;
-import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.BufferUtil;
 import org.oreon.modules.gl.terrain.TerrainHelper;
 
@@ -66,7 +66,7 @@ public class Plant01Cluster extends GLInstancedCluster{
 	}
 	
 	public void render(){
-		if (getCenter().sub(CoreSystem.getInstance().getScenegraph().getCamera().getPosition()).length() < 600){
+		if (getCenter().sub(EngineContext.getCamera().getPosition()).length() < 600){
 			super.render();
 		}
 	}

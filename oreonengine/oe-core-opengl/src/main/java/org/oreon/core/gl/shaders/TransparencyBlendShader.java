@@ -9,7 +9,7 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE5;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE6;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
-import org.oreon.core.system.CoreSystem;
+import org.oreon.core.context.EngineContext;
 import org.oreon.core.texture.Texture;
 import org.oreon.core.util.ResourceLoader;
 
@@ -50,8 +50,8 @@ public class TransparencyBlendShader extends GLShader{
 							   Texture transparencyLayer, Texture transparencyLayerDepthMap,
 							   Texture alphaMap, Texture transparencyLayerLightScatteringTexture)
 	{
-		setUniformi("width", CoreSystem.getInstance().getWindow().getWidth());
-		setUniformi("height", CoreSystem.getInstance().getWindow().getHeight());
+		setUniformi("width", EngineContext.getWindow().getWidth());
+		setUniformi("height", EngineContext.getWindow().getHeight());
 		
 		glActiveTexture(GL_TEXTURE0);
 		opaqueSceneTexture.bind();

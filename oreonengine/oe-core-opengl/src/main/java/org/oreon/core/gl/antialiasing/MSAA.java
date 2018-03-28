@@ -14,10 +14,10 @@ import static org.lwjgl.opengl.GL43.glDispatchCompute;
 
 import java.nio.ByteBuffer;
 
+import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.shaders.SampleCoverageMaskShader;
 import org.oreon.core.gl.texture.Texture2D;
 import org.oreon.core.gl.texture.Texture2DMultisample;
-import org.oreon.core.system.CoreSystem;
 
 public class MSAA {
 
@@ -32,8 +32,8 @@ public class MSAA {
 		sampleCoverageMask.generate();
 		sampleCoverageMask.bind();
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_R16F,
-						CoreSystem.getInstance().getWindow().getWidth(),
-						CoreSystem.getInstance().getWindow().getHeight(),
+						EngineContext.getWindow().getWidth(),
+						EngineContext.getWindow().getHeight(),
 						0, GL_RED, GL_FLOAT, (ByteBuffer) null);
 		sampleCoverageMask.noFilter();
 	}
@@ -48,7 +48,7 @@ public class MSAA {
 		glBindImageTexture(2, LightScatteringMask.getId(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
 		glBindImageTexture(3, LightScatteringMaskMS.getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA16F);
 		shader.updateUniforms();
-		glDispatchCompute(CoreSystem.getInstance().getWindow().getWidth()/16, CoreSystem.getInstance().getWindow().getHeight()/16, 1);	
+		glDispatchCompute(EngineContext.getWindow().getWidth()/16, EngineContext.getWindow().getHeight()/16, 1);	
 	}
 	
 	public Texture2D getSampleCoverageMask() {

@@ -14,7 +14,6 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.shaders.GLShader;
 import org.oreon.core.scenegraph.Renderable;
-import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.Constants;
 import org.oreon.core.util.ResourceLoader;
 import org.oreon.modules.gl.water.Water;
@@ -91,16 +90,16 @@ public class OceanBRDFShader extends GLShader{
 	{
 		bindUniformBlock("DirectionalLight", Constants.DirectionalLightUniformBlockBinding);	
 		
-		setUniform("projectionViewMatrix", CoreSystem.getInstance().getScenegraph().getCamera().getViewProjectionMatrix());
+		setUniform("projectionViewMatrix", EngineContext.getCamera().getViewProjectionMatrix());
 		setUniform("worldMatrix", object.getWorldTransform().getWorldMatrix());
 				
-		setUniform("eyePosition", CoreSystem.getInstance().getScenegraph().getCamera().getPosition());
-		setUniformi("windowWidth", CoreSystem.getInstance().getWindow().getWidth());
-		setUniformi("windowHeight", CoreSystem.getInstance().getWindow().getHeight());
+		setUniform("eyePosition", EngineContext.getCamera().getPosition());
+		setUniformi("windowWidth", EngineContext.getWindow().getWidth());
+		setUniformi("windowHeight", EngineContext.getWindow().getHeight());
 		
 		for (int i=0; i<6; i++)
 		{
-			setUniform("frustumPlanes[" + i +"]", CoreSystem.getInstance().getScenegraph().getCamera().getFrustumPlanes()[i]);
+			setUniform("frustumPlanes[" + i +"]", EngineContext.getCamera().getFrustumPlanes()[i]);
 		}
 		
 		Water ocean = (Water) object;

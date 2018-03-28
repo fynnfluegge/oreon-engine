@@ -3,7 +3,6 @@ package org.oreon.gl.demo.oreonworlds.gui;
 import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.texture.Texture2D;
 import org.oreon.core.math.Vec2f;
-import org.oreon.core.system.CoreSystem;
 import org.oreon.modules.gl.gui.elements.Button;
 
 public class WireframeButton extends Button{
@@ -16,7 +15,7 @@ public class WireframeButton extends Button{
 		buttonClickMap = new Texture2D("gui/tex/buttonsClicked.png");
 		buttonClickMap.bind();
 		buttonClickMap.bilinearFilter();
-		getOrthoTransform().setTranslation(5, CoreSystem.getInstance().getWindow().getHeight()-60, 0);
+		getOrthoTransform().setTranslation(5, EngineContext.getWindow().getHeight()-60, 0);
 		getOrthoTransform().setScaling(50, 25, 0);
 		Vec2f[] texCoordsgb = new Vec2f[4];
 		texCoordsgb[0] = new Vec2f(0,0.4f);

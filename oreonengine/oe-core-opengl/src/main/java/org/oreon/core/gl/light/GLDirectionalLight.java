@@ -1,8 +1,8 @@
 package org.oreon.core.gl.light;
 
+import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.buffers.GLUBO;
 import org.oreon.core.light.DirectionalLight;
-import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.BufferUtil;
 import org.oreon.core.util.Constants;
 
@@ -50,8 +50,8 @@ public class GLDirectionalLight extends DirectionalLight{
 		
 		super.update();
 		
-		if (CoreSystem.getInstance().getScenegraph().getCamera().isCameraRotated() || 
-				CoreSystem.getInstance().getScenegraph().getCamera().isCameraMoved()){
+		if (EngineContext.getCamera().isCameraRotated() || 
+				EngineContext.getCamera().isCameraMoved()){
 			
 			getUbo_matrices().updateData(getFloatBufferMatrices(), getMatricesBufferSize());
 		}

@@ -1,5 +1,14 @@
 package org.oreon.modules.gl.water;
 
+import static org.lwjgl.opengl.GL11.GL_CCW;
+import static org.lwjgl.opengl.GL11.GL_CW;
+import static org.lwjgl.opengl.GL11.glDisable;
+import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL11.glFinish;
+import static org.lwjgl.opengl.GL11.glFrontFace;
+import static org.lwjgl.opengl.GL11.glViewport;
+import static org.lwjgl.opengl.GL30.GL_CLIP_DISTANCE6;
+
 import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.buffers.GLPatchVBO;
 import org.oreon.core.gl.context.GLContext;
@@ -11,7 +20,6 @@ import org.oreon.core.math.Quaternion;
 import org.oreon.core.scenegraph.ComponentType;
 import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.scenegraph.Scenegraph;
-import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.Constants;
 import org.oreon.core.util.MeshGenerator;
 import org.oreon.modules.gl.gpgpu.NormalMapRenderer;
@@ -20,15 +28,6 @@ import org.oreon.modules.gl.terrain.GLTerrainContext;
 import org.oreon.modules.gl.water.fft.OceanFFT;
 
 import lombok.Getter;
-
-import static org.lwjgl.opengl.GL11.GL_CCW;
-import static org.lwjgl.opengl.GL11.GL_CW;
-import static org.lwjgl.opengl.GL11.glFinish;
-import static org.lwjgl.opengl.GL11.glFrontFace;
-import static org.lwjgl.opengl.GL11.glDisable;
-import static org.lwjgl.opengl.GL11.glViewport;
-import static org.lwjgl.opengl.GL11.glEnable;
-import static org.lwjgl.opengl.GL30.GL_CLIP_DISTANCE6;
 
 public class Water extends Renderable{
 	
@@ -83,16 +82,16 @@ public class Water extends Renderable{
 		normalmapRenderer = new NormalMapRenderer(fftResolution);
 		getNormalmapRenderer().setStrength(waterConfiguration.getNormalStrength());
 		
-		refractionRenderer = new RefracReflecRenderer(CoreSystem.getInstance().getWindow().getWidth()/2,
-													  CoreSystem.getInstance().getWindow().getHeight()/2);
+		refractionRenderer = new RefracReflecRenderer(EngineContext.getWindow().getWidth()/2,
+													  EngineContext.getWindow().getHeight()/2);
 		
-		reflectionRenderer = new RefracReflecRenderer(CoreSystem.getInstance().getWindow().getWidth()/2,
-												 	  CoreSystem.getInstance().getWindow().getHeight()/2);
+		reflectionRenderer = new RefracReflecRenderer(EngineContext.getWindow().getWidth()/2,
+												 	  EngineContext.getWindow().getHeight()/2);
 	}	
 	
 	public void update()
 	{
-		setCameraUnderwater(CoreSystem.getInstance().getScenegraph().getCamera().getPosition().getY() < (getWorldTransform().getTranslation().getY())); 
+		setCameraUnderwater(EngineContext.getCamera().getPosition().getY() < (getWorldTransform().getTranslation().getY())); 
 	}
 	
 	public void render()
@@ -129,7 +128,7 @@ public class Water extends Renderable{
 		
 		//render reflection to texture
 
-		glViewport(0,0,CoreSystem.getInstance().getWindow().getWidth()/2, CoreSystem.getInstance().getWindow().getHeight()/2);
+		glViewport(0,0,EngineContext.getWindow().getWidth()/2, EngineContext.getWindow().getHeight()/2);
 		
 		EngineContext.getConfig().setReflection(true);
 		
@@ -188,7 +187,7 @@ public class Water extends Renderable{
 		glDisable(GL_CLIP_DISTANCE6);
 		EngineContext.getConfig().setClipplane(Constants.PLANE0);	
 	
-		glViewport(0,0,CoreSystem.getInstance().getWindow().getWidth(), CoreSystem.getInstance().getWindow().getHeight());
+		glViewport(0,0,EngineContext.getWindow().getWidth(), EngineContext.getWindow().getHeight());
 		
 		fft.render();
 		normalmapRenderer.render(fft.getDy());

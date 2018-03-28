@@ -3,6 +3,7 @@ package org.oreon.gl.demo.oreonworlds.assets.plants;
 import java.nio.FloatBuffer;
 import java.util.List;
 
+import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.buffers.GLMeshVBO;
 import org.oreon.core.gl.buffers.GLUBO;
 import org.oreon.core.gl.instanced.GLInstancedCluster;
@@ -11,7 +12,6 @@ import org.oreon.core.math.Matrix4f;
 import org.oreon.core.math.Vec3f;
 import org.oreon.core.scenegraph.ComponentType;
 import org.oreon.core.scenegraph.Renderable;
-import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.BufferUtil;
 import org.oreon.core.util.IntegerReference;
 import org.oreon.modules.gl.terrain.TerrainHelper;
@@ -86,7 +86,7 @@ public class Tree02Cluster extends GLInstancedCluster{
 		int index = 0;
 		
 		for (Matrix4f transform : getWorldMatrices()){
-			if (transform.getTranslation().sub(CoreSystem.getInstance().getScenegraph().getCamera().getPosition()).length() < 220){
+			if (transform.getTranslation().sub(EngineContext.getCamera().getPosition()).length() < 220){
 				getHighPolyIndices().add(index);
 			}
 

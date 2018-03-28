@@ -9,7 +9,6 @@ import org.oreon.core.scenegraph.Component;
 import org.oreon.core.scenegraph.ComponentType;
 import org.oreon.core.scenegraph.Node;
 import org.oreon.core.scenegraph.Renderable;
-import org.oreon.core.system.CoreSystem;
 
 public class TerrainNode extends Renderable{
 	
@@ -112,7 +111,7 @@ public class TerrainNode extends Renderable{
 	
 	private void updateChildNodes(){
 		
-		float distance = (CoreSystem.getInstance().getScenegraph().getCamera().getPosition().sub(worldPos)).length();
+		float distance = (EngineContext.getCamera().getPosition().sub(worldPos)).length();
 		
 		if (distance < config.getLod_range()[lod]){
 			add4ChildNodes(lod+1);

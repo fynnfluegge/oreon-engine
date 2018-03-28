@@ -3,10 +3,10 @@ package org.oreon.modules.gl.postprocessfilter.motionblur;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
+import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.shaders.GLShader;
 import org.oreon.core.gl.texture.Texture2DMultisample;
 import org.oreon.core.math.Matrix4f;
-import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.ResourceLoader;
 
 public class PixelVelocityShader extends GLShader{
@@ -46,8 +46,8 @@ public class PixelVelocityShader extends GLShader{
 		glActiveTexture(GL_TEXTURE0);
 		depthmap.bind();
 		setUniformi("depthmap", 0);
-		setUniformf("windowWidth", CoreSystem.getInstance().getWindow().getWidth());
-		setUniformf("windowHeight", CoreSystem.getInstance().getWindow().getHeight());
+		setUniformf("windowWidth", EngineContext.getWindow().getWidth());
+		setUniformf("windowHeight", EngineContext.getWindow().getHeight());
 		setUniform("projectionMatrix", projectionMatrix);
 		setUniform("inverseViewProjectionMatrix", inverseViewProjectionMatrix);
 		setUniform("previousViewProjectionMatrix", previousViewProjectionMatrix);

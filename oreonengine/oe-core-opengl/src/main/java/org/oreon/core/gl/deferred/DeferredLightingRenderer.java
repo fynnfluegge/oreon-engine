@@ -20,12 +20,12 @@ import static org.lwjgl.opengl.GL43.glDispatchCompute;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
+import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.buffers.GLFramebuffer;
 import org.oreon.core.gl.context.GLContext;
 import org.oreon.core.gl.shaders.DeferredLightingShader;
 import org.oreon.core.gl.texture.Texture2D;
 import org.oreon.core.gl.texture.Texture2DArray;
-import org.oreon.core.system.CoreSystem;
 import org.oreon.core.util.BufferUtil;
 
 public class DeferredLightingRenderer {
@@ -83,7 +83,7 @@ public class DeferredLightingRenderer {
 		glBindImageTexture(6, sampleCoverageMask.getId(), 0, false, 0, GL_READ_ONLY, GL_R16F);
 		glBindImageTexture(7, ssaoBlurTexture.getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA32F);
 		shader.updateUniforms(pssm, flag);
-		glDispatchCompute(CoreSystem.getInstance().getWindow().getWidth()/16, CoreSystem.getInstance().getWindow().getHeight()/16,1);
+		glDispatchCompute(EngineContext.getWindow().getWidth()/16, EngineContext.getWindow().getHeight()/16,1);
 	}
 
 	public GBufferMultisample getGbuffer() {

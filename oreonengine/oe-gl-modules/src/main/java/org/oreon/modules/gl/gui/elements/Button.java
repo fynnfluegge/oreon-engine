@@ -1,9 +1,13 @@
 package org.oreon.modules.gl.gui.elements;
 
+import static org.lwjgl.glfw.GLFW.glfwGetCursorPos;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
+
 import java.nio.DoubleBuffer;
+
 import org.lwjgl.BufferUtils;
+import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.parameter.Default;
 import org.oreon.core.gl.texture.Texture2D;
 import org.oreon.core.math.Matrix4f;
@@ -11,13 +15,10 @@ import org.oreon.core.math.Quaternion;
 import org.oreon.core.math.Transform;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.model.Mesh;
-import org.oreon.core.system.CoreSystem;
 import org.oreon.modules.gl.gui.GUIElement;
 import org.oreon.modules.gl.gui.GUIObjectLoader;
 import org.oreon.modules.gl.gui.GUIVAO;
 import org.oreon.modules.gl.gui.GuiShader;
-
-import static org.lwjgl.glfw.GLFW.glfwGetCursorPos;
 
 public abstract class Button extends GUIElement{
 
@@ -72,7 +73,7 @@ public abstract class Button extends GUIElement{
 	
 	public void update()
 	{
-		if(CoreSystem.getInstance().getInput().isButtonPushed(0))
+		if(EngineContext.getInput().isButtonPushed(0))
 		{
 			if(onClick())
 			{
@@ -81,7 +82,7 @@ public abstract class Button extends GUIElement{
 			}
 		}
 		
-		if(CoreSystem.getInstance().getInput().isButtonReleased(0)){
+		if(EngineContext.getInput().isButtonReleased(0)){
 			onClick = false;
 		}
 	}
@@ -91,7 +92,7 @@ public abstract class Button extends GUIElement{
 		DoubleBuffer xPos = BufferUtils.createDoubleBuffer(1);
 		DoubleBuffer yPos = BufferUtils.createDoubleBuffer(1);
 		
-		glfwGetCursorPos(CoreSystem.getInstance().getWindow().getId(), xPos, yPos);
+		glfwGetCursorPos(EngineContext.getWindow().getId(), xPos, yPos);
 		
 		Vec2f mousePos = new Vec2f((float) xPos.get(),(float) yPos.get());
 		
@@ -99,10 +100,10 @@ public abstract class Button extends GUIElement{
 		   pos[1].getX() < mousePos.getX() && 
 		   pos[2].getX() > mousePos.getX() && 
 		   pos[3].getX() > mousePos.getX() &&
-		   pos[0].getY() < CoreSystem.getInstance().getWindow().getHeight() - mousePos.getY() && 
-		   pos[3].getY() < CoreSystem.getInstance().getWindow().getHeight() - mousePos.getY() && 
-		   pos[1].getY() > CoreSystem.getInstance().getWindow().getHeight() - mousePos.getY() && 
-		   pos[2].getY() > CoreSystem.getInstance().getWindow().getHeight() - mousePos.getY()) {
+		   pos[0].getY() < EngineContext.getWindow().getHeight() - mousePos.getY() && 
+		   pos[3].getY() < EngineContext.getWindow().getHeight() - mousePos.getY() && 
+		   pos[1].getY() > EngineContext.getWindow().getHeight() - mousePos.getY() && 
+		   pos[2].getY() > EngineContext.getWindow().getHeight() - mousePos.getY()) {
 			
 			return true;
 		}
