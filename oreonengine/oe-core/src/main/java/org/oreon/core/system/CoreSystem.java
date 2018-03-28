@@ -45,7 +45,7 @@ public class CoreSystem {
 		
 		window.create();
 		input.create(window.getId());
-		scenegraph.getCamera().init();
+//		scenegraph.getCamera().init();
 		renderEngine.init();
 	}
 	

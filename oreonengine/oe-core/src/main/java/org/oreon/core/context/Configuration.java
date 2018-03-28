@@ -33,7 +33,7 @@ public class Configuration {
 	private int displayWidth;
 	private int displayHeight;
 	
-	protected Configuration(){
+	private Configuration(){
 		
 		Properties properties = new Properties();
 		try {

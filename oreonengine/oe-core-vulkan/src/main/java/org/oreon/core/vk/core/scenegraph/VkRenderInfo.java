@@ -13,4 +13,14 @@ public class VkRenderInfo extends Component{
 
 	private Pipeline pipeline;
 	private CommandBuffer commandBuffer;
+	
+	@Override
+	public void render(){
+		
+	}
+	
+	@Override
+	public void update() {
+		
+	}
 }

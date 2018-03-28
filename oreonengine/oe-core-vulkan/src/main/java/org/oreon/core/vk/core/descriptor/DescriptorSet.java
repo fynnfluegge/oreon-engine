@@ -47,7 +47,7 @@ public class DescriptorSet {
 		}
 	}
 	
-	public void configureWriteBuffer(VkDevice device, long buffer, long range, long offset, int binding){
+	public void updateDescriptorBuffer(VkDevice device, long buffer, long range, long offset, int binding){
 		
 		VkDescriptorBufferInfo.Buffer bufferInfo = VkDescriptorBufferInfo.calloc(1)
 						.buffer(buffer)
@@ -65,7 +65,7 @@ public class DescriptorSet {
 		vkUpdateDescriptorSets(device, writeDescriptor, null);
 	}
 	
-	public void configureWriteImage(VkDevice device, long imageView, long sampler, int binding){
+	public void updateDescriptorImageBuffer(VkDevice device, long imageView, long sampler, int binding){
 		
 		VkDescriptorImageInfo.Buffer imageInfo = VkDescriptorImageInfo.calloc(1)
 						.imageLayout(VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL)

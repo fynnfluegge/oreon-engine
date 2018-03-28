@@ -16,6 +16,7 @@ public class GLRenderInfo extends Component{
 	private RenderParameter config;
 	private VBO vbo;
 	
+	@Override
 	public void render(){
 		
 		config.enable();

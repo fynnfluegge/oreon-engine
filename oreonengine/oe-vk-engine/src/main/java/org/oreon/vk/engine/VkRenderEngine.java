@@ -4,31 +4,20 @@ import static org.lwjgl.glfw.GLFWVulkan.glfwGetRequiredInstanceExtensions;
 import static org.lwjgl.glfw.GLFWVulkan.glfwVulkanSupported;
 import static org.lwjgl.glfw.GLFWVulkan.glfwCreateWindowSurface;
 import static org.lwjgl.system.MemoryUtil.memUTF8;
-import static org.lwjgl.system.MemoryUtil.memAllocPointer;
-import static org.lwjgl.system.MemoryUtil.memFree;
 import static org.lwjgl.system.MemoryUtil.memAlloc;
 import static org.lwjgl.system.MemoryUtil.memAllocLong;
-import static org.lwjgl.vulkan.EXTDebugReport.VK_EXT_DEBUG_REPORT_EXTENSION_NAME;
-import static org.lwjgl.vulkan.EXTDebugReport.VK_DEBUG_REPORT_ERROR_BIT_EXT;
-import static org.lwjgl.vulkan.EXTDebugReport.VK_DEBUG_REPORT_WARNING_BIT_EXT;
-import static org.lwjgl.vulkan.EXTDebugReport.VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT;
 import static org.lwjgl.vulkan.EXTDebugReport.vkDestroyDebugReportCallbackEXT;
-import static org.lwjgl.vulkan.EXTDebugReport.vkCreateDebugReportCallbackEXT;
 import static org.lwjgl.vulkan.KHRSwapchain.vkDestroySwapchainKHR;
 import static org.lwjgl.vulkan.KHRSurface.VK_PRESENT_MODE_FIFO_KHR;
 import static org.lwjgl.vulkan.KHRSurface.VK_PRESENT_MODE_MAILBOX_KHR;
 import static org.lwjgl.vulkan.KHRSurface.VK_PRESENT_MODE_IMMEDIATE_KHR;
 import static org.lwjgl.vulkan.KHRSurface.VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
-import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_APPLICATION_INFO;
-import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_B8G8R8A8_UNORM;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_SAMPLED_BIT;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_TRANSFER_DST_BIT;
-import static org.lwjgl.vulkan.VK10.vkCreateInstance;
 import static org.lwjgl.vulkan.VK10.vkDestroyInstance;
 import static org.lwjgl.vulkan.VK10.vkQueueWaitIdle;
-import static org.lwjgl.vulkan.VK10.VK_MAKE_VERSION;
 import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
 import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
 import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
@@ -54,21 +43,17 @@ import java.nio.IntBuffer;
 import java.nio.LongBuffer;
 
 import org.lwjgl.PointerBuffer;
-import org.lwjgl.vulkan.VkApplicationInfo;
-import org.lwjgl.vulkan.VkDebugReportCallbackCreateInfoEXT;
-import org.lwjgl.vulkan.VkDebugReportCallbackEXT;
 import org.lwjgl.vulkan.VkExtent2D;
 import org.lwjgl.vulkan.VkInstance;
-import org.lwjgl.vulkan.VkInstanceCreateInfo;
 import org.lwjgl.vulkan.VkSubmitInfo;
 import org.oreon.core.context.EngineContext;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.system.RenderEngine;
-import org.oreon.core.util.BufferUtil;
 import org.oreon.core.vk.core.buffers.VkBuffer;
-import org.oreon.core.vk.core.buffers.VkUniformBuffer;
 import org.oreon.core.vk.core.command.CommandBuffer;
 import org.oreon.core.vk.core.context.VkCamera;
+import org.oreon.core.vk.core.context.VkContext;
+import org.oreon.core.vk.core.context.VulkanInstance;
 import org.oreon.core.vk.core.descriptor.DescriptorPool;
 import org.oreon.core.vk.core.descriptor.DescriptorSet;
 import org.oreon.core.vk.core.descriptor.DescriptorSetLayout;
@@ -83,7 +68,6 @@ import org.oreon.core.vk.core.pipeline.RenderPass;
 import org.oreon.core.vk.core.pipeline.ShaderPipeline;
 import org.oreon.core.vk.core.pipeline.VertexInputInfo;
 import org.oreon.core.vk.core.swapchain.SwapChain;
-import org.oreon.core.vk.core.util.DeviceCapabilities;
 import org.oreon.core.vk.core.util.VkUtil;
 
 public class VkRenderEngine implements RenderEngine{
@@ -95,8 +79,6 @@ public class VkRenderEngine implements RenderEngine{
 	private long surface;
 	
 	private Pipeline pipeline;
-	
-	private VkUniformBuffer uniformBuffer;
 	
 	private ByteBuffer[] layers = {
 	            	memUTF8("VK_LAYER_LUNARG_standard_validation"),
@@ -120,17 +102,10 @@ public class VkRenderEngine implements RenderEngine{
         
         ppEnabledLayerNames = VkUtil.getValidationLayerNames(validationEnabled, layers);
         
-        vkInstance = createVkInstance(requiredExtensions, ppEnabledLayerNames); 
+        VulkanInstance vulkanInstance = new VulkanInstance();
         
-        VkDebugReportCallbackEXT debugCallback = new VkDebugReportCallbackEXT() {
-            public int invoke(int flags, int objectType, long object, long location, int messageCode, long pLayerPrefix, long pMessage, long pUserData) {
-                System.err.println("ERROR OCCURED: " + VkDebugReportCallbackEXT.getString(pMessage));
-                return 0;
-            }
-        };
-        
-        debugCallbackHandle = setupDebugging(vkInstance, VK_DEBUG_REPORT_ERROR_BIT_EXT | VK_DEBUG_REPORT_WARNING_BIT_EXT, debugCallback);
-        
+        vkInstance = vulkanInstance.getHandle();
+       
         LongBuffer pSurface = memAllocLong(1);
 	    int err = glfwCreateWindowSurface(vkInstance, CoreSystem.getInstance().getWindow().getId(), null, pSurface);
 	    
@@ -143,6 +118,16 @@ public class VkRenderEngine implements RenderEngine{
         
 	    logicalDevice = new LogicalDevice();
 	    logicalDevice.createDevice(physicalDevice, 0, ppEnabledLayerNames);
+	    
+	    VkContext.registerPhysicalDevice(physicalDevice);
+	    VkContext.registerLogicalDevice(logicalDevice);
+	    
+	    VkCamera camera = new VkCamera();
+	    camera.init();
+	    camera.setInput(CoreSystem.getInstance().getInput());
+		EngineContext.registerCamera(camera);
+		
+		//-----------------------------------------------------------------------------------
 	    
 	    VkExtent2D swapExtent = physicalDevice.getSwapChainCapabilities().getSurfaceCapabilities().currentExtent();
 	    swapExtent.width(CoreSystem.getInstance().getWindow().getWidth());
@@ -249,16 +234,6 @@ public class VkRenderEngine implements RenderEngine{
 	    indexCopyCommandBuffer.destroy(logicalDevice.getHandle(), logicalDevice.getTransferCommandPool().getHandle());
 	    stagingIndexBufferObject.destroy(logicalDevice.getHandle());
 	    
-	    // Camera UBO
-	    ByteBuffer cameraBuffer = memAlloc(4 * 16);
-	    FloatBuffer cameraMatrix = cameraBuffer.asFloatBuffer();
-	    VkCamera camera = (VkCamera) CoreSystem.getInstance().getScenegraph().getCamera();
-	    cameraMatrix.put(BufferUtil.createFlippedBuffer(camera.getViewProjectionMatrix()));
-	    
-	    uniformBuffer = new VkUniformBuffer(logicalDevice.getHandle(),
-	    									physicalDevice.getMemoryProperties(),
-	    									cameraBuffer);
-	    
 	    // Image
 	    ByteBuffer imageBuffer = VkImageLoader.loadImage("images/vulkan-logo.jpg");
 	    
@@ -336,8 +311,8 @@ public class VkRenderEngine implements RenderEngine{
 	    DescriptorSet descriptorSet = new DescriptorSet(logicalDevice.getHandle(), 
 	    												descriptorPool.getHandle(),
 	    												descriptorLayout.getPHandle());
-	    descriptorSet.configureWriteBuffer(logicalDevice.getHandle(), uniformBuffer.getHandle(), cameraBuffer.limit(), 0, 0);
-	    descriptorSet.configureWriteImage(logicalDevice.getHandle(), imageView.getHandle(), sampler.getHandle(), 1);
+	    descriptorSet.updateDescriptorBuffer(logicalDevice.getHandle(), VkContext.getVkCamera().getUniformBuffer().getHandle(), 4 * 16, 0, 0);
+	    descriptorSet.updateDescriptorImageBuffer(logicalDevice.getHandle(), imageView.getHandle(), sampler.getHandle(), 1);
 	    
 	    long[] descriptorSets = new long[1];
 	    descriptorSets[0] = descriptorSet.getHandle();
@@ -361,15 +336,15 @@ public class VkRenderEngine implements RenderEngine{
 	    vertexInputInfo.addVertexAttributeDescription(1, VK_FORMAT_R32G32B32_SFLOAT, 8);
 	    vertexInputInfo.addVertexAttributeDescription(2, VK_FORMAT_R32G32_SFLOAT, 20);
 	    
-	    pipeline.specifyVertexInput(vertexInputInfo);
-	    pipeline.specifyInputAssembly();
-	    pipeline.specifyViewportAndScissor(swapExtent);
-	    pipeline.specifyRasterizer();
-	    pipeline.specifyMultisampling();
-	    pipeline.specifyColorBlending();
-	    pipeline.specifyDepthAndStencilTest();
-	    pipeline.specifyDynamicState();
-	    pipeline.specifyLayout(logicalDevice.getHandle(), descriptorLayout.getPHandle());
+	    pipeline.setVertexInput(vertexInputInfo);
+	    pipeline.setInputAssembly();
+	    pipeline.setViewportAndScissor(swapExtent);
+	    pipeline.setRasterizer();
+	    pipeline.setMultisampling();
+	    pipeline.setColorBlending();
+	    pipeline.setDepthAndStencilTest();
+	    pipeline.setDynamicState();
+	    pipeline.setLayout(logicalDevice.getHandle(), descriptorLayout.getPHandle());
 	    pipeline.createPipeline(logicalDevice.getHandle(), shaderPipeline, renderPass);
 	    
 	    swapChain = new SwapChain(logicalDevice.getHandle(), 
@@ -404,11 +379,7 @@ public class VkRenderEngine implements RenderEngine{
 
 	@Override
 	public void update() {
-		
-		 ByteBuffer cameraBuffer = memAlloc(4 * 16);
-		 FloatBuffer cameraMatrix = cameraBuffer.asFloatBuffer();
-		 cameraMatrix.put(BufferUtil.createFlippedBuffer(EngineContext.getCamera().getViewProjectionMatrix()));
-		 uniformBuffer.updateData(logicalDevice.getHandle(), cameraBuffer);
+
 	}
 
 	@Override
@@ -425,71 +396,4 @@ public class VkRenderEngine implements RenderEngine{
         vkDestroyInstance(vkInstance, null);		
 	}
 	
-	private VkInstance createVkInstance(PointerBuffer requiredExtensions, PointerBuffer enabledLayerNames) {
-		
-        VkApplicationInfo appInfo = VkApplicationInfo.calloc()
-                .sType(VK_STRUCTURE_TYPE_APPLICATION_INFO)
-                .pApplicationName(memUTF8("Vulkan Demo"))
-                .pEngineName(memUTF8("OREON ENGINE"))
-                .apiVersion(VK_MAKE_VERSION(1, 0, 2));
-        
-        ByteBuffer VK_EXT_DEBUG_REPORT_EXTENSION = memUTF8(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
-        
-        // +1 due to VK_EXT_DEBUG_REPORT_EXTENSION
-        PointerBuffer ppEnabledExtensionNames = memAllocPointer(requiredExtensions.remaining() + 1);
-        ppEnabledExtensionNames.put(requiredExtensions);
-        ppEnabledExtensionNames.put(VK_EXT_DEBUG_REPORT_EXTENSION);
-        ppEnabledExtensionNames.flip();
-        
-        DeviceCapabilities.checkInstanceExtensionSupport(ppEnabledExtensionNames);
-        
-        VkInstanceCreateInfo pCreateInfo = VkInstanceCreateInfo.calloc()
-                .sType(VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO)
-                .pNext(0)
-                .pApplicationInfo(appInfo)
-                .ppEnabledExtensionNames(ppEnabledExtensionNames)
-                .ppEnabledLayerNames(enabledLayerNames);
-        PointerBuffer pInstance = memAllocPointer(1);
-        int err = vkCreateInstance(pCreateInfo, null, pInstance);
-        long handle = pInstance.get(0);
-    
-        if (err != VK_SUCCESS) {
-            throw new AssertionError("Failed to create VkInstance: " + VkUtil.translateVulkanResult(err));
-        }
-        VkInstance instance = new VkInstance(handle, pCreateInfo);
-        
-        pCreateInfo.free();
-        memFree(pInstance);
-        memFree(VK_EXT_DEBUG_REPORT_EXTENSION);
-        memFree(ppEnabledExtensionNames);
-        memFree(appInfo.pApplicationName());
-        memFree(appInfo.pEngineName());
-        appInfo.free();
-        
-        return instance;
-    }
-	
-	private long setupDebugging(VkInstance instance, int flags, VkDebugReportCallbackEXT callback) {
-		
-        VkDebugReportCallbackCreateInfoEXT debugCreateInfo = VkDebugReportCallbackCreateInfoEXT.calloc()
-                .sType(VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT)
-                .pNext(0)
-                .pfnCallback(callback)
-                .pUserData(0)
-                .flags(flags);
-        
-        LongBuffer pCallback = memAllocLong(1);
-        int err = vkCreateDebugReportCallbackEXT(instance, debugCreateInfo, null, pCallback);
-        long callbackHandle = pCallback.get(0);
-        
-        if (err != VK_SUCCESS) {
-            throw new AssertionError("Failed to create VkInstance: " + VkUtil.translateVulkanResult(err));
-        }
-        
-        memFree(pCallback);
-        debugCreateInfo.free();
-        
-        return callbackHandle;
-    }
-
 }

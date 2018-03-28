@@ -44,17 +44,6 @@ public class GLMeshVBO implements VBO{
 		instances = new IntegerReference();
 	}
 	
-	public GLMeshVBO(GLMeshVBO copy)
-	{
-		vbo = copy.vbo;
-		ibo = copy.ibo;
-		vaoId = copy.vaoId;
-		size = copy.size;
-		hasTangentsBitangents = copy.hasTangentsBitangents;
-		isInstanced = copy.isInstanced;
-		instances = copy.instances;
-	}
-	
 	public void addData(Mesh mesh)
 	{
 			size = mesh.getIndices().length;

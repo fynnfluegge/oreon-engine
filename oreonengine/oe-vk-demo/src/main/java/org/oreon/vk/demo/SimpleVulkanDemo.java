@@ -22,14 +22,10 @@ public class SimpleVulkanDemo {
 		VkRenderEngine renderEngine = new VkRenderEngine();
 		Window window = new VkWindow();
 		GLFWInput input = new GLFWInput();
-		VkCamera camera = new VkCamera();
-		EngineContext.registerCamera(camera);
 		
 		coreSystem.setRenderEngine(renderEngine);
 		coreSystem.setWindow(window);
 		coreSystem.setInput(input);
-		coreSystem.getScenegraph().setCamera(camera);
-		coreSystem.getScenegraph().getCamera().setInput(input);
 
 		coreEngine.init(coreSystem);
 		

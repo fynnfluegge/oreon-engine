@@ -123,7 +123,7 @@ public class Pipeline {
 		}
 	}
 	
-	public void specifyLayout(VkDevice device, LongBuffer pLayouts){
+	public void setLayout(VkDevice device, LongBuffer pLayouts){
 		
 		VkPipelineLayoutCreateInfo pipelineLayout = VkPipelineLayoutCreateInfo.calloc()
 				.sType(VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO)
@@ -142,7 +142,7 @@ public class Pipeline {
         }
 	}
 	
-	public void specifyVertexInput(VertexInputInfo vertexInput){
+	public void setVertexInput(VertexInputInfo vertexInput){
 		
 		vertexInputState = VkPipelineVertexInputStateCreateInfo.calloc()
 				.sType(VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO)
@@ -151,7 +151,7 @@ public class Pipeline {
 				.pVertexAttributeDescriptions(vertexInput.getAttributeDescriptions());
 	}
 	
-	public void specifyInputAssembly(){
+	public void setInputAssembly(){
 		
 		inputAssembly = VkPipelineInputAssemblyStateCreateInfo.calloc()
 		        .sType(VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO)
@@ -159,7 +159,7 @@ public class Pipeline {
 		        .primitiveRestartEnable(false);
 	}
 	
-	public void specifyViewportAndScissor(VkExtent2D extent){
+	public void setViewportAndScissor(VkExtent2D extent){
 		
 		viewport = VkViewport.calloc(1)
 				.x(0)
@@ -181,7 +181,7 @@ public class Pipeline {
 		        .pScissors(scissor);
 	}
 	
-	public void specifyRasterizer(){
+	public void setRasterizer(){
 		
 		rasterizer = VkPipelineRasterizationStateCreateInfo.calloc()
 				.sType(VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO)
@@ -197,7 +197,7 @@ public class Pipeline {
 				.depthBiasClamp(0);
 	}
 	
-	public void specifyMultisampling(){
+	public void setMultisampling(){
 		
 		multisampling = VkPipelineMultisampleStateCreateInfo.calloc()
                 .sType(VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO)
@@ -209,7 +209,7 @@ public class Pipeline {
                 .alphaToOneEnable(false);
 	}
 	
-	public void specifyColorBlending(){
+	public void setColorBlending(){
 	
 		VkPipelineColorBlendAttachmentState.Buffer colorWriteMask = VkPipelineColorBlendAttachmentState.calloc(1)
                 .blendEnable(false)
@@ -221,7 +221,7 @@ public class Pipeline {
                 .pAttachments(colorWriteMask);
 	}
 	
-	public void specifyDepthAndStencilTest(){
+	public void setDepthAndStencilTest(){
 		
 		depthStencil = VkPipelineDepthStencilStateCreateInfo.calloc()
                 .sType(VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO)
@@ -237,7 +237,7 @@ public class Pipeline {
         depthStencil.front(depthStencil.back());
 	}
 	
-	public void specifyDynamicState(){
+	public void setDynamicState(){
 		
 		pDynamicStates = memAllocInt(2);
         pDynamicStates.put(VK_DYNAMIC_STATE_VIEWPORT);
