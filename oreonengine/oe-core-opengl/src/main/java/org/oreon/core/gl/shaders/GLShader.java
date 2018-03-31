@@ -44,6 +44,8 @@ public abstract class GLShader{
 	
 	public void updateUniforms(Renderable object){};
 	
+	public <C> void updateUniforms(C clazz){};
+	
 	public void updateUniforms(Matrix4f matrix0, Matrix4f matrix1, Matrix4f matrix2){};
 	
 	public void updateUniforms(Texture2D texture, int i, float j){};

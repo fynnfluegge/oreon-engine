@@ -18,9 +18,7 @@ import java.nio.LongBuffer;
 public class DescriptorSetLayout {
 	
 	@Getter
-	private long handle;
-	@Getter
-	private LongBuffer pHandle;
+	private LongBuffer handle;
 	
 	private VkDescriptorSetLayoutBinding.Buffer layoutBindings;
 	
@@ -37,10 +35,9 @@ public class DescriptorSetLayout {
 					.sType(VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO)
 					.pBindings(layoutBindings);
 		
-		pHandle = memAllocLong(1);
-		int err = vkCreateDescriptorSetLayout(device, layoutInfo, null, pHandle);
+		handle = memAllocLong(1);
+		int err = vkCreateDescriptorSetLayout(device, layoutInfo, null, handle);
 		
-		handle = pHandle.get(0);
 		layoutBindings.free();
 		layoutInfo.free();
 		
@@ -63,6 +60,6 @@ public class DescriptorSetLayout {
 	
 	public void destroy(VkDevice device){
 		
-		vkDestroyDescriptorSetLayout(device, handle, null);
+		vkDestroyDescriptorSetLayout(device, handle.get(0), null);
 	}
 }

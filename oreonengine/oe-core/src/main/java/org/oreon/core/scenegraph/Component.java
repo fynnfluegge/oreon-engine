@@ -22,7 +22,7 @@ public abstract class Component implements Cloneable{
 
 	public Transform getTransform()
 	{
-		return getParent().getWorldTransform();
+		return parent.getWorldTransform();
 	}
 	
 	public Component clone() throws CloneNotSupportedException{

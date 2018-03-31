@@ -17,7 +17,6 @@ import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
 import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
 import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_B8G8R8A8_UNORM;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_R32G32B32_SFLOAT;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_R32G32_SFLOAT;
@@ -31,7 +30,6 @@ import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
 import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
 import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
 import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_FRAGMENT_BIT;
-import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_VERTEX_BIT;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import static org.lwjgl.vulkan.VK10.vkQueueWaitIdle;
 
@@ -65,6 +63,7 @@ import org.oreon.core.vk.core.pipeline.ShaderPipeline;
 import org.oreon.core.vk.core.pipeline.VertexInputInfo;
 import org.oreon.core.vk.core.swapchain.SwapChain;
 import org.oreon.core.vk.core.util.VkUtil;
+import org.oreon.core.vk.wrapper.descriptor.CameraDescriptor;
 
 public class VkRenderEngine extends RenderEngine{
 	
@@ -99,7 +98,7 @@ public class VkRenderEngine extends RenderEngine{
         ppEnabledLayerNames = VkUtil.getValidationLayerNames(validationEnabled, layers);
         
         VulkanInstance vulkanInstance = new VulkanInstance();
-        VkContext.registerInstance(vulkanInstance);
+        VkContext.registerObject(vulkanInstance);
         
         vkInstance = vulkanInstance.getHandle();
        
@@ -116,9 +115,9 @@ public class VkRenderEngine extends RenderEngine{
 	    logicalDevice = new LogicalDevice();
 	    logicalDevice.createDevice(physicalDevice, 0, ppEnabledLayerNames);
 	    
-	    VkContext.registerPhysicalDevice(physicalDevice);
-	    VkContext.registerLogicalDevice(logicalDevice);
-	    
+	    VkContext.registerObject(physicalDevice);
+	    VkContext.registerObject(logicalDevice);
+
 	    camera = EngineContext.getCamera();
 	    camera.init();
 		
@@ -291,26 +290,29 @@ public class VkRenderEngine extends RenderEngine{
 		sampler.create(logicalDevice.getHandle());
 	    
 		// descriptors
-	    DescriptorSetLayout descriptorLayout = new DescriptorSetLayout(2);
-	    descriptorLayout.addLayoutBinding(0,VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
-	    								  VK_SHADER_STAGE_VERTEX_BIT);
-	    descriptorLayout.addLayoutBinding(1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
-	    								  VK_SHADER_STAGE_FRAGMENT_BIT);
+	    DescriptorSetLayout descriptorLayout = new DescriptorSetLayout(1);
+	    descriptorLayout.addLayoutBinding(0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+	    								     VK_SHADER_STAGE_FRAGMENT_BIT);
 	    descriptorLayout.create(logicalDevice.getHandle());
 	    
-	    DescriptorPool descriptorPool = new DescriptorPool(2);
-	    descriptorPool.addPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);
-	    descriptorPool.addPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
-	    descriptorPool.create(logicalDevice.getHandle());
+	    DescriptorPool descriptorPool2 = new DescriptorPool(1);
+	    descriptorPool2.addPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
+	    descriptorPool2.create(logicalDevice.getHandle());
+
 	    
 	    DescriptorSet descriptorSet = new DescriptorSet(logicalDevice.getHandle(), 
-	    												descriptorPool.getHandle(),
-	    												descriptorLayout.getPHandle());
-	    descriptorSet.updateDescriptorBuffer(logicalDevice.getHandle(), VkContext.getVkCamera().getUniformBuffer().getHandle(), 4 * 16, 0, 0);
-	    descriptorSet.updateDescriptorImageBuffer(logicalDevice.getHandle(), imageView.getHandle(), sampler.getHandle(), 1);
+	    												descriptorPool2.getHandle(),
+	    												descriptorLayout.getHandle());
+	    descriptorSet.updateDescriptorImageBuffer(logicalDevice.getHandle(), imageView.getHandle(), sampler.getHandle(), 0);
 	    
-	    long[] descriptorSets = new long[1];
-	    descriptorSets[0] = descriptorSet.getHandle();
+	    long[] descriptorSets = new long[2];
+	    descriptorSets[0] = VkContext.getObject(CameraDescriptor.class).getSet();
+	    descriptorSets[1] = descriptorSet.getHandle();
+	    
+	    LongBuffer descriptorSetLayouts = memAllocLong(2);
+	    descriptorSetLayouts.put(VkContext.getObject(CameraDescriptor.class).getLayout());
+	    descriptorSetLayouts.put(descriptorLayout.getHandle());
+	    descriptorSetLayouts.flip();
 	    
 	    ShaderPipeline shaderPipeline = new ShaderPipeline();
 	    shaderPipeline.createVertexShader(logicalDevice.getHandle(), "shaders/vert.spv");
@@ -339,7 +341,7 @@ public class VkRenderEngine extends RenderEngine{
 	    pipeline.setColorBlending();
 	    pipeline.setDepthAndStencilTest();
 	    pipeline.setDynamicState();
-	    pipeline.setLayout(logicalDevice.getHandle(), descriptorLayout.getPHandle());
+	    pipeline.setLayout(logicalDevice.getHandle(), descriptorSetLayouts);
 	    pipeline.createPipeline(logicalDevice.getHandle(), shaderPipeline, renderPass);
 	    
 	    swapChain = new SwapChain(logicalDevice.getHandle(), 

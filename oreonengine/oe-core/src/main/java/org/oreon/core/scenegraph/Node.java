@@ -62,6 +62,12 @@ public class Node {
 	public Node getParent() {
 		return parent;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public <T> T getParent(Class<T> clazz){
+		
+		return (T) parent;
+	}
 
 	public void setParent(Node parent) {
 		this.parent = parent;

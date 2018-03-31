@@ -26,7 +26,7 @@ public class DescriptorPool {
 
 	public DescriptorPool(int size) {
 		
-		poolSizes = VkDescriptorPoolSize.calloc(2);
+		poolSizes = VkDescriptorPoolSize.calloc(size);
 	}
 	
 	public void create(VkDevice device) {

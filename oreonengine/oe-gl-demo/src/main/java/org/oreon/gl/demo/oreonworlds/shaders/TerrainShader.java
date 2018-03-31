@@ -85,8 +85,11 @@ public class TerrainShader extends GLShader{
 		addUniformBlock("Camera");
 	}
 	
+	@Override
 	public void updateUniforms(Renderable object)
 	{	
+		System.out.println("TERRAIN SHADER");
+		
 		bindUniformBlock("Camera", Constants.CameraUniformBlockBinding);
 		
 		setUniform("clipplane", EngineContext.getConfig().getClipplane());
