@@ -26,13 +26,12 @@ public class Main {
 		coreSystem.setRenderEngine(renderEngine);
 		coreEngine.init(coreSystem);
 		
-//		coreSystem.getScenegraph().setTerrain(new Terrain(TerrainShader.getInstance(),
-//													      TerrainWireframeShader.getInstance(), 
-//													      null));
-		
 		renderEngine.getScenegraph().addObject(new SkySphere());	
 		renderEngine.getScenegraph().addTransparentObject(new Sun());
 		renderEngine.getScenegraph().setWater(new Ocean());
+//		renderEngine.getScenegraph().setTerrain(new Terrain(TerrainShader.getInstance(),
+//													        TerrainWireframeShader.getInstance(), 
+//													        null));
 		
 //		coreSystem.getScenegraph().getRoot().addChild(new Bush01ClusterGroup());
 //		coreSystem.getScenegraph().getRoot().addChild(new Palm01ClusterGroup());
