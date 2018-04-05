@@ -15,6 +15,7 @@ public class VkContext {
 private static ApplicationContext context;
 	
 	public static void initialize(){
+		
 		context = new ClassPathXmlApplicationContext("vk-context.xml");
 		EngineContext.registerWindow(new VkWindow());
 		EngineContext.registerCamera(new VkCamera());

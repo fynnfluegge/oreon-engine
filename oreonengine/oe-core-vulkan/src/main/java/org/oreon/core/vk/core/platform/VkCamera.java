@@ -9,13 +9,11 @@ import org.oreon.core.platform.Camera;
 import org.oreon.core.util.BufferUtil;
 import org.oreon.core.vk.core.buffers.VkUniformBuffer;
 import org.oreon.core.vk.core.context.VkContext;
+import org.oreon.core.vk.core.descriptor.DescriptorKeys.DescriptorSetKey;
 import org.oreon.core.vk.wrapper.descriptor.CameraDescriptor;
-
-import lombok.Getter;
 
 public class VkCamera extends Camera{
 	
-	@Getter
 	private VkUniformBuffer uniformBuffer;
 	private CameraDescriptor descriptor;
 
@@ -36,10 +34,11 @@ public class VkCamera extends Camera{
 		
 	    uniformBuffer = new VkUniformBuffer(VkContext.getLogicalDevice().getHandle(),
 	    									VkContext.getPhysicalDevice().getMemoryProperties(),
-	    									cameraBuffer);
+	    									BufferUtil.createByteBuffer(getViewProjectionMatrix()));
 	    
-	    descriptor = new CameraDescriptor(uniformBuffer.getHandle());
-	    VkContext.registerObject(descriptor);
+	    descriptor = new CameraDescriptor(VkContext.getLogicalDevice().getHandle(),
+	    									 uniformBuffer.getHandle());
+	    VkContext.getEnvironment().addDescriptorSet(DescriptorSetKey.CAMERA,descriptor);
 	}
 	
 	@Override
@@ -47,10 +46,13 @@ public class VkCamera extends Camera{
 		
 		super.update();
 		
-		ByteBuffer cameraBuffer = memAlloc(4 * 16);
-		FloatBuffer cameraMatrix = cameraBuffer.asFloatBuffer();
-		cameraMatrix.put(BufferUtil.createFlippedBuffer(getViewProjectionMatrix()));
-		uniformBuffer.updateData(VkContext.getLogicalDevice().getHandle(), cameraBuffer);
+		uniformBuffer.updateData(VkContext.getLogicalDevice().getHandle(),
+								 BufferUtil.createByteBuffer(getViewProjectionMatrix()));
+	}
+	
+	public void shutdown(){
+
+		uniformBuffer.destroy();
 	}
 
 }

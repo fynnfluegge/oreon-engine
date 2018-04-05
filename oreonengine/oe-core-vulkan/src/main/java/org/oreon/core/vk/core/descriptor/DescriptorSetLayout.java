@@ -1,12 +1,5 @@
 package org.oreon.core.vk.core.descriptor;
 
-import org.lwjgl.vulkan.VkDescriptorSetLayoutBinding;
-import org.lwjgl.vulkan.VkDescriptorSetLayoutCreateInfo;
-import org.lwjgl.vulkan.VkDevice;
-import org.oreon.core.vk.core.util.VkUtil;
-
-import lombok.Getter;
-
 import static org.lwjgl.system.MemoryUtil.memAllocLong;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
@@ -15,19 +8,28 @@ import static org.lwjgl.vulkan.VK10.vkDestroyDescriptorSetLayout;
 
 import java.nio.LongBuffer;
 
+import org.lwjgl.vulkan.VkDescriptorSetLayoutBinding;
+import org.lwjgl.vulkan.VkDescriptorSetLayoutCreateInfo;
+import org.lwjgl.vulkan.VkDevice;
+import org.oreon.core.vk.core.util.VkUtil;
+
+import lombok.Getter;
+
 public class DescriptorSetLayout {
 	
 	@Getter
 	private LongBuffer handle;
 	
 	private VkDescriptorSetLayoutBinding.Buffer layoutBindings;
+	private VkDevice device;
 	
-	public DescriptorSetLayout(int bindingCount) {
+	public DescriptorSetLayout(VkDevice device, int bindingCount) {
 		
+		this.device = device;
 		layoutBindings = VkDescriptorSetLayoutBinding.calloc(bindingCount);
 	}
 
-	public void create(VkDevice device){
+	public void create(){
 		
 		layoutBindings.flip();
 		
@@ -58,7 +60,7 @@ public class DescriptorSetLayout {
 		layoutBindings.put(layoutBinding);
 	}
 	
-	public void destroy(VkDevice device){
+	public void destroy(){
 		
 		vkDestroyDescriptorSetLayout(device, handle.get(0), null);
 	}

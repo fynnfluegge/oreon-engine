@@ -20,7 +20,11 @@ public class CommandPool {
 	@Getter
 	private long handle;
 	
+	private VkDevice device;
+	
 	public CommandPool(VkDevice device, int queueFamilyIndex){
+		
+		this.device = device;
 		
 		VkCommandPoolCreateInfo cmdPoolInfo = VkCommandPoolCreateInfo.calloc()
 	                .sType(VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO)
@@ -39,7 +43,7 @@ public class CommandPool {
 		}
 	}
 	
-	public void destroy(VkDevice device){
+	public void destroy(){
 		
 		vkDestroyCommandPool(device, handle, null);
 	}

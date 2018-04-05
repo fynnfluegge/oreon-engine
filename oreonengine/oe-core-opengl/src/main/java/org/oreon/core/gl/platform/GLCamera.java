@@ -30,4 +30,10 @@ public class GLCamera extends Camera{
 		ubo.updateData(floatBuffer, bufferSize);
 	}
 
+	@Override
+	public void shutdown() {
+		// TODO Auto-generated method stub
+		// destroy ubo
+	}
+
 }

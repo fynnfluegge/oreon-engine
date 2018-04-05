@@ -62,7 +62,7 @@ private final Vec3f yAxis = new Vec3f(0,1,0);
 	
 	protected Camera()
 	{
-		this(new Vec3f(0,0,-0.5f), new Vec3f(0,0,1).normalize(), new Vec3f(0,1,0));
+		this(new Vec3f(0,0,-1f), new Vec3f(0,0,1).normalize(), new Vec3f(0,1,0));
 		setProjection(70, EngineContext.getConfig().getDisplayWidth(), EngineContext.getConfig().getDisplayWidth());
 		setViewMatrix(new Matrix4f().View(this.getForward(), this.getUp()).mul(
 				new Matrix4f().Translation(this.getPosition().mul(-1))));
@@ -85,6 +85,8 @@ private final Vec3f yAxis = new Vec3f(0,1,0);
 	}
 	
 	public abstract void init();
+	
+	public abstract void shutdown();
 	
 	public void update(){
 		

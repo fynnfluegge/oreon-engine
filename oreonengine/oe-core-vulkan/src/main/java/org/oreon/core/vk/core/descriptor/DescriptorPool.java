@@ -1,13 +1,8 @@
 package org.oreon.core.vk.core.descriptor;
 
-import org.lwjgl.vulkan.VkDescriptorPoolSize;
-import org.lwjgl.vulkan.VkDevice;
-import org.oreon.core.vk.core.util.VkUtil;
-
-import lombok.Getter;
-
 import static org.lwjgl.system.MemoryUtil.memAllocLong;
 import static org.lwjgl.system.MemoryUtil.memFree;
+import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import static org.lwjgl.vulkan.VK10.vkCreateDescriptorPool;
@@ -16,6 +11,11 @@ import static org.lwjgl.vulkan.VK10.vkDestroyDescriptorPool;
 import java.nio.LongBuffer;
 
 import org.lwjgl.vulkan.VkDescriptorPoolCreateInfo;
+import org.lwjgl.vulkan.VkDescriptorPoolSize;
+import org.lwjgl.vulkan.VkDevice;
+import org.oreon.core.vk.core.util.VkUtil;
+
+import lombok.Getter;
 
 public class DescriptorPool {
 	
@@ -23,21 +23,24 @@ public class DescriptorPool {
 	private long handle;
 	
 	private VkDescriptorPoolSize.Buffer poolSizes;
+	private VkDevice device;
 
-	public DescriptorPool(int size) {
+	public DescriptorPool() {
 		
-		poolSizes = VkDescriptorPoolSize.calloc(size);
+		poolSizes = VkDescriptorPoolSize.calloc(1);
 	}
 	
-	public void create(VkDevice device) {
+	public void create(VkDevice device, int maxSets) {
+		
+		this.device = device;
 		
 		poolSizes.flip();
 		
 		VkDescriptorPoolCreateInfo createInfo = VkDescriptorPoolCreateInfo.calloc()
 					.sType(VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO)
 					.pPoolSizes(poolSizes)
-					.maxSets(1)
-					.flags(0);
+					.maxSets(maxSets)
+					.flags(VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT);
 		LongBuffer pDescriptorPool = memAllocLong(1);
 		int err = vkCreateDescriptorPool(device, createInfo, null, pDescriptorPool);
 		
@@ -52,16 +55,16 @@ public class DescriptorPool {
 		}
 	}
 	
-	public void addPoolSize(int type){
+	public void addPoolSize(int type, int descriptorCount){
 	
 		VkDescriptorPoolSize poolSize = VkDescriptorPoolSize.calloc()
 					.type(type)
-					.descriptorCount(1);
+					.descriptorCount(descriptorCount);
 		
 		poolSizes.put(poolSize);
 	}
 	
-	public void destroy(VkDevice device){
+	public void destroy(){
 		
 		vkDestroyDescriptorPool(device, handle, null);
 	}

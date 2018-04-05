@@ -3,42 +3,42 @@ package org.oreon.core.vk.core.command;
 import static org.lwjgl.system.MemoryUtil.memAllocLong;
 import static org.lwjgl.system.MemoryUtil.memAllocPointer;
 import static org.lwjgl.system.MemoryUtil.memFree;
+import static org.lwjgl.vulkan.VK10.VK_ACCESS_SHADER_READ_BIT;
+import static org.lwjgl.vulkan.VK10.VK_ACCESS_TRANSFER_WRITE_BIT;
 import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+import static org.lwjgl.vulkan.VK10.VK_IMAGE_ASPECT_COLOR_BIT;
+import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_UNDEFINED;
+import static org.lwjgl.vulkan.VK10.VK_INDEX_TYPE_UINT32;
 import static org.lwjgl.vulkan.VK10.VK_NULL_HANDLE;
 import static org.lwjgl.vulkan.VK10.VK_PIPELINE_BIND_POINT_GRAPHICS;
+import static org.lwjgl.vulkan.VK10.VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
+import static org.lwjgl.vulkan.VK10.VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
+import static org.lwjgl.vulkan.VK10.VK_PIPELINE_STAGE_TRANSFER_BIT;
 import static org.lwjgl.vulkan.VK10.VK_QUEUE_FAMILY_IGNORED;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_SUBMIT_INFO;
 import static org.lwjgl.vulkan.VK10.VK_SUBPASS_CONTENTS_INLINE;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
-import static org.lwjgl.vulkan.VK10.VK_INDEX_TYPE_UINT32;
-import static org.lwjgl.vulkan.VK10.VK_IMAGE_ASPECT_COLOR_BIT;
-import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
-import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_UNDEFINED;
-import static org.lwjgl.vulkan.VK10.VK_ACCESS_TRANSFER_WRITE_BIT;
-import static org.lwjgl.vulkan.VK10.VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
-import static org.lwjgl.vulkan.VK10.VK_PIPELINE_STAGE_TRANSFER_BIT;
-import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-import static org.lwjgl.vulkan.VK10.VK_ACCESS_SHADER_READ_BIT;
-import static org.lwjgl.vulkan.VK10.VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
 import static org.lwjgl.vulkan.VK10.vkAllocateCommandBuffers;
-import static org.lwjgl.vulkan.VK10.vkFreeCommandBuffers;
 import static org.lwjgl.vulkan.VK10.vkBeginCommandBuffer;
 import static org.lwjgl.vulkan.VK10.vkCmdBeginRenderPass;
+import static org.lwjgl.vulkan.VK10.vkCmdBindDescriptorSets;
+import static org.lwjgl.vulkan.VK10.vkCmdBindIndexBuffer;
 import static org.lwjgl.vulkan.VK10.vkCmdBindPipeline;
 import static org.lwjgl.vulkan.VK10.vkCmdBindVertexBuffers;
-import static org.lwjgl.vulkan.VK10.vkCmdBindIndexBuffer;
-import static org.lwjgl.vulkan.VK10.vkCmdBindDescriptorSets;
 import static org.lwjgl.vulkan.VK10.vkCmdCopyBuffer;
 import static org.lwjgl.vulkan.VK10.vkCmdCopyBufferToImage;
-import static org.lwjgl.vulkan.VK10.vkCmdPipelineBarrier;
 import static org.lwjgl.vulkan.VK10.vkCmdDraw;
 import static org.lwjgl.vulkan.VK10.vkCmdDrawIndexed;
 import static org.lwjgl.vulkan.VK10.vkCmdEndRenderPass;
+import static org.lwjgl.vulkan.VK10.vkCmdPipelineBarrier;
 import static org.lwjgl.vulkan.VK10.vkEndCommandBuffer;
+import static org.lwjgl.vulkan.VK10.vkFreeCommandBuffers;
 import static org.lwjgl.vulkan.VK10.vkQueueSubmit;
 
 import java.nio.IntBuffer;
@@ -73,7 +73,13 @@ public class CommandBuffer {
 	@Getter
 	private PointerBuffer pCommandBuffer;
 	
+	private VkDevice device;
+	private long commandPool;
+	
 	public CommandBuffer(VkDevice device, long commandPool) {
+		
+		this.device = device;
+		this.commandPool = commandPool;
 		
 		VkCommandBufferAllocateInfo cmdBufAllocateInfo = VkCommandBufferAllocateInfo.calloc()
 	                .sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO)
@@ -119,10 +125,10 @@ public class CommandBuffer {
 	}
 	
 	public void recordRenderCmd(long pipeline,
-								 long renderPass,
-								 long vertexBuffer,
-								 VkExtent2D extent,
-								 long framebuffer){
+								long renderPass,
+								long vertexBuffer,
+								VkExtent2D extent,
+								long framebuffer){
 		
 		VkRenderPassBeginInfo renderPassBeginInfo = VkRenderPassBeginInfo.calloc()
                 .sType(VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO)
@@ -154,13 +160,14 @@ public class CommandBuffer {
 	}
 	
 	public void recordIndexedRenderCmd(long pipeline,
-										long pipelineLayout,
-										long renderPass,
-										long vertexBuffer,
-										long indexBuffer,
-										long[] descriptorSets,
-										VkExtent2D extent,
-										long framebuffer){
+									   long pipelineLayout,
+									   long renderPass,
+									   long vertexBuffer,
+									   long indexBuffer,
+									   int indexCount,
+									   long[] descriptorSets,
+									   VkExtent2D extent,
+									   long framebuffer){
 
 		VkRenderPassBeginInfo renderPassBeginInfo = VkRenderPassBeginInfo.calloc()
 					.sType(VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO)
@@ -181,13 +188,13 @@ public class CommandBuffer {
 		offsets.put(0, 0L);
 		LongBuffer pVertexBuffers = memAllocLong(1);
 		pVertexBuffers.put(0, vertexBuffer);
-		
+
 		vkCmdBindVertexBuffers(commandBuffer, 0, pVertexBuffers, offsets);
 		vkCmdBindIndexBuffer(commandBuffer, indexBuffer, 0, VK_INDEX_TYPE_UINT32);
 		vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout,
 								0, descriptorSets, null);
 		
-		vkCmdDrawIndexed(commandBuffer, 6, 1, 0, 0, 0);
+		vkCmdDrawIndexed(commandBuffer, indexCount, 1, 0, 0, 0);
 		vkCmdEndRenderPass(commandBuffer);
 		
 		memFree(pVertexBuffers);
@@ -196,8 +203,8 @@ public class CommandBuffer {
 	}
 	
 	public void recordCopyBufferCmd(long srcBuffer, long dstBuffer,
-								   long srcOffset, long dstOffset,
-								   long size){
+								    long srcOffset, long dstOffset,
+								    long size){
 		
 		VkBufferCopy.Buffer copyRegion = VkBufferCopy.calloc(1)
 					.srcOffset(srcOffset)
@@ -290,7 +297,7 @@ public class CommandBuffer {
         }
 	}
 	
-	public void destroy(VkDevice device, long commandPool){
+	public void destroy(){
 		
 		vkFreeCommandBuffers(device, commandPool, pCommandBuffer);
 	}

@@ -1,5 +1,19 @@
 package org.oreon.core.vk.core.descriptor;
 
+import static org.lwjgl.system.MemoryUtil.memAllocLong;
+import static org.lwjgl.system.MemoryUtil.memFree;
+import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
+import static org.lwjgl.vulkan.VK10.vkAllocateDescriptorSets;
+import static org.lwjgl.vulkan.VK10.vkFreeDescriptorSets;
+import static org.lwjgl.vulkan.VK10.vkUpdateDescriptorSets;
+
+import java.nio.LongBuffer;
+
 import org.lwjgl.vulkan.VkDescriptorBufferInfo;
 import org.lwjgl.vulkan.VkDescriptorImageInfo;
 import org.lwjgl.vulkan.VkDescriptorSetAllocateInfo;
@@ -9,26 +23,19 @@ import org.oreon.core.vk.core.util.VkUtil;
 
 import lombok.Getter;
 
-import static org.lwjgl.system.MemoryUtil.memAllocLong;
-import static org.lwjgl.system.MemoryUtil.memFree;
-import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
-import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-import static org.lwjgl.vulkan.VK10.vkAllocateDescriptorSets;
-import static org.lwjgl.vulkan.VK10.vkUpdateDescriptorSets;
-
-import java.nio.LongBuffer;
-
 public class DescriptorSet {
 	
 	@Getter
 	private long handle;
+	
+	private VkDevice device;
+	private long descriptorPool;
 
 	public DescriptorSet(VkDevice device, long descriptorPool, LongBuffer layouts) {
 	
+		this.device = device;
+		this.descriptorPool = descriptorPool;
+		
 		VkDescriptorSetAllocateInfo allocateInfo = VkDescriptorSetAllocateInfo.calloc()
 						.sType(VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO)
 						.descriptorPool(descriptorPool)
@@ -47,7 +54,7 @@ public class DescriptorSet {
 		}
 	}
 	
-	public void updateDescriptorBuffer(VkDevice device, long buffer, long range, long offset, int binding){
+	public void updateDescriptorBuffer(long buffer, long range, long offset, int binding){
 		
 		VkDescriptorBufferInfo.Buffer bufferInfo = VkDescriptorBufferInfo.calloc(1)
 						.buffer(buffer)
@@ -65,7 +72,7 @@ public class DescriptorSet {
 		vkUpdateDescriptorSets(device, writeDescriptor, null);
 	}
 	
-	public void updateDescriptorImageBuffer(VkDevice device, long imageView, long sampler, int binding){
+	public void updateDescriptorImageBuffer(long imageView, long sampler, int binding){
 		
 		VkDescriptorImageInfo.Buffer imageInfo = VkDescriptorImageInfo.calloc(1)
 						.imageLayout(VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL)
@@ -81,5 +88,10 @@ public class DescriptorSet {
 				 		.pImageInfo(imageInfo);
 		
 		vkUpdateDescriptorSets(device, writeDescriptor, null);
+	}
+	
+	public void destroy(){
+		
+		vkFreeDescriptorSets(device,descriptorPool,handle);
 	}
 }

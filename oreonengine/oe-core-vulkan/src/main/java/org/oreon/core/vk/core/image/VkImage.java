@@ -1,14 +1,16 @@
 package org.oreon.core.vk.core.image;
 
-import org.lwjgl.vulkan.VkImageCreateInfo;
-import org.lwjgl.vulkan.VkMemoryAllocateInfo;
-import org.lwjgl.vulkan.VkMemoryRequirements;
-import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
-import org.oreon.core.vk.core.util.DeviceCapabilities;
-import org.oreon.core.vk.core.util.VkUtil;
-
-import lombok.Getter;
-
+import static org.lwjgl.system.MemoryUtil.memAddress;
+import static org.lwjgl.system.MemoryUtil.memAllocInt;
+import static org.lwjgl.system.MemoryUtil.memAllocLong;
+import static org.lwjgl.system.MemoryUtil.memAllocPointer;
+import static org.lwjgl.system.MemoryUtil.memCopy;
+import static org.lwjgl.system.MemoryUtil.memFree;
+import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_UNDEFINED;
+import static org.lwjgl.vulkan.VK10.VK_IMAGE_TILING_OPTIMAL;
+import static org.lwjgl.vulkan.VK10.VK_IMAGE_TYPE_2D;
+import static org.lwjgl.vulkan.VK10.VK_SAMPLE_COUNT_1_BIT;
+import static org.lwjgl.vulkan.VK10.VK_SHARING_MODE_EXCLUSIVE;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
@@ -16,6 +18,7 @@ import static org.lwjgl.vulkan.VK10.vkAllocateMemory;
 import static org.lwjgl.vulkan.VK10.vkBindImageMemory;
 import static org.lwjgl.vulkan.VK10.vkCreateImage;
 import static org.lwjgl.vulkan.VK10.vkDestroyImage;
+import static org.lwjgl.vulkan.VK10.vkFreeMemory;
 import static org.lwjgl.vulkan.VK10.vkGetImageMemoryRequirements;
 import static org.lwjgl.vulkan.VK10.vkMapMemory;
 import static org.lwjgl.vulkan.VK10.vkUnmapMemory;
@@ -27,18 +30,14 @@ import java.nio.LongBuffer;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkExtent3D;
+import org.lwjgl.vulkan.VkImageCreateInfo;
+import org.lwjgl.vulkan.VkMemoryAllocateInfo;
+import org.lwjgl.vulkan.VkMemoryRequirements;
+import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
+import org.oreon.core.vk.core.util.DeviceCapabilities;
+import org.oreon.core.vk.core.util.VkUtil;
 
-import static org.lwjgl.vulkan.VK10.VK_IMAGE_TYPE_2D;
-import static org.lwjgl.system.MemoryUtil.memAddress;
-import static org.lwjgl.system.MemoryUtil.memAllocInt;
-import static org.lwjgl.system.MemoryUtil.memAllocLong;
-import static org.lwjgl.system.MemoryUtil.memAllocPointer;
-import static org.lwjgl.system.MemoryUtil.memCopy;
-import static org.lwjgl.system.MemoryUtil.memFree;
-import static org.lwjgl.vulkan.VK10.VK_IMAGE_TILING_OPTIMAL;
-import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_UNDEFINED;
-import static org.lwjgl.vulkan.VK10.VK_SHARING_MODE_EXCLUSIVE;
-import static org.lwjgl.vulkan.VK10.VK_SAMPLE_COUNT_1_BIT;
+import lombok.Getter;
 
 public class VkImage {
 	
@@ -48,8 +47,11 @@ public class VkImage {
 	private long memory;
 	
 	private long allocationSize;
+	private VkDevice device;
 
-	public void create(VkDevice device, int width, int height, int depth, int format, int usage){
+	public VkImage(VkDevice device, int width, int height, int depth, int format, int usage){
+		
+		this.device = device;
 		
 		VkExtent3D extent = VkExtent3D.calloc()
 				.width(width)
@@ -82,8 +84,8 @@ public class VkImage {
         }
 	}
 	
-	public void allocate(VkDevice device, VkPhysicalDeviceMemoryProperties memoryProperties,
-			 int memoryPropertyFlags){
+	public void allocate(VkPhysicalDeviceMemoryProperties memoryProperties,
+			 			 int memoryPropertyFlags){
 		
 		VkMemoryRequirements memRequirements = VkMemoryRequirements.calloc();
 		vkGetImageMemoryRequirements(device, handle, memRequirements);
@@ -114,7 +116,7 @@ public class VkImage {
 	    }
 	}
 	
-	public void bindImageMemory(VkDevice device){
+	public void bindImageMemory(){
 		
 		int err = vkBindImageMemory(device, handle, memory, 0);
         if (err != VK_SUCCESS) {
@@ -122,7 +124,7 @@ public class VkImage {
         }
 	}
 	
-	public void mapMemory(VkDevice device, ByteBuffer imageBuffer){
+	public void mapMemory(ByteBuffer imageBuffer){
 		
         PointerBuffer pData = memAllocPointer(1);
         int err = vkMapMemory(device, memory, 0, allocationSize, 0, pData);
@@ -138,8 +140,9 @@ public class VkImage {
         vkUnmapMemory(device, memory);
 	}
 	
-	public void destroy(VkDevice device){
+	public void destroy(){
 
+		vkFreeMemory(device, memory, null);
 		vkDestroyImage(device, handle, null);
 	}
 }

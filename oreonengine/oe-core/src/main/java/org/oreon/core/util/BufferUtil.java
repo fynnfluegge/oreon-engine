@@ -1,5 +1,8 @@
 package org.oreon.core.util;
 
+import static org.lwjgl.system.MemoryUtil.memAlloc;
+
+import java.nio.ByteBuffer;
 import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -10,6 +13,7 @@ import org.oreon.core.math.Quaternion;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.math.Vec3f;
 import org.oreon.core.model.Vertex;
+import org.oreon.core.model.Vertex.VertexAlignment;
 
 public class BufferUtil {
 
@@ -215,6 +219,78 @@ public class BufferUtil {
 		buffer.flip();
 		
 		return buffer;
+	}
+	
+	public static ByteBuffer createByteBuffer(Matrix4f matrix){
+		
+		ByteBuffer byteBuffer = memAlloc(Float.BYTES * 16);
+		FloatBuffer floatBuffer = byteBuffer.asFloatBuffer();
+		floatBuffer.put(BufferUtil.createFlippedBuffer(matrix));
+		
+		return byteBuffer;
+	}
+	
+	public static ByteBuffer createByteBuffer(Vertex[] vertices, VertexAlignment alignment){
+		
+		ByteBuffer byteBuffer = allocateVertexByteBuffer(alignment, vertices.length);
+		FloatBuffer floatBuffer = byteBuffer.asFloatBuffer();
+		putVertices(alignment, floatBuffer, vertices);
+		
+		return byteBuffer;
+	}
+	
+	public static ByteBuffer allocateVertexByteBuffer(VertexAlignment alignment, int vertexCount){
+		
+		ByteBuffer byteBuffer;
+		
+		switch(alignment){
+			case POS: byteBuffer = memAlloc(Float.BYTES * 3 * vertexCount);
+			case POS_UV: byteBuffer = memAlloc(Float.BYTES * 5 * vertexCount);
+			case POS_NORMAL: byteBuffer = memAlloc(Float.BYTES * 6 * vertexCount);
+			case POS_NORMAL_UV: byteBuffer = memAlloc(Float.BYTES * 8 * vertexCount);
+			case POS_NORMAL_UV_TAN_BITAN: byteBuffer = memAlloc(Float.BYTES * 14 * vertexCount);
+			default: byteBuffer = memAlloc(0);
+		}
+		
+		return byteBuffer;
+	}
+	
+	public static void putVertices(VertexAlignment alignment, FloatBuffer floatBuffer, Vertex[] vertices){
+		
+		for(int i = 0; i < vertices.length; i++)
+		{
+			
+			floatBuffer.put(vertices[i].getPosition().getX());
+			floatBuffer.put(vertices[i].getPosition().getY());
+			floatBuffer.put(vertices[i].getPosition().getZ());
+			
+			if (alignment == VertexAlignment.POS_NORMAL ||
+				alignment == VertexAlignment.POS_NORMAL_UV ||
+				alignment == VertexAlignment.POS_NORMAL_UV_TAN_BITAN){
+				
+				floatBuffer.put(vertices[i].getNormal().getX());
+				floatBuffer.put(vertices[i].getNormal().getY());
+				floatBuffer.put(vertices[i].getNormal().getZ());
+			}
+			
+			if (alignment == VertexAlignment.POS_NORMAL_UV ||
+				alignment == VertexAlignment.POS_UV ||
+				alignment == VertexAlignment.POS_NORMAL_UV_TAN_BITAN){
+				
+				floatBuffer.put(vertices[i].getTextureCoord().getX());
+				floatBuffer.put(vertices[i].getTextureCoord().getY());
+			}
+			
+			if (alignment == VertexAlignment.POS_NORMAL_UV_TAN_BITAN){
+				
+				floatBuffer.put(vertices[i].getTangent().getX());
+				floatBuffer.put(vertices[i].getTangent().getY());
+				floatBuffer.put(vertices[i].getTangent().getZ());
+				floatBuffer.put(vertices[i].getBitangent().getX());
+				floatBuffer.put(vertices[i].getBitangent().getY());
+				floatBuffer.put(vertices[i].getBitangent().getZ());
+			}
+		}
 	}
 
 }

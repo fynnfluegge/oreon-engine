@@ -3,6 +3,9 @@ package org.oreon.core.model;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.math.Vec3f;
 
+import lombok.Getter;
+
+@Getter
 public class Vertex {
 
 	public static final int BYTES = 14 * Float.BYTES;
@@ -13,6 +16,17 @@ public class Vertex {
 	private Vec2f textureCoord;
 	private Vec3f tangent;
 	private Vec3f bitangent;
+	
+	private VertexAlignment alignment;
+	
+	public enum VertexAlignment{
+		
+		POS_NORMAL_UV_TAN_BITAN,
+		POS_NORMAL,
+		POS_UV,
+		POS,
+		POS_NORMAL_UV;
+	}
 	
 	public Vertex(){	
 	}

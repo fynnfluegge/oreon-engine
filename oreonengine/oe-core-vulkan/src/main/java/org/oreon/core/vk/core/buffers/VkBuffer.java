@@ -6,15 +6,15 @@ import static org.lwjgl.system.MemoryUtil.memAllocLong;
 import static org.lwjgl.system.MemoryUtil.memAllocPointer;
 import static org.lwjgl.system.MemoryUtil.memCopy;
 import static org.lwjgl.system.MemoryUtil.memFree;
+import static org.lwjgl.vulkan.VK10.VK_SHARING_MODE_EXCLUSIVE;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import static org.lwjgl.vulkan.VK10.vkAllocateMemory;
-import static org.lwjgl.vulkan.VK10.vkFreeMemory;
 import static org.lwjgl.vulkan.VK10.vkBindBufferMemory;
-import static org.lwjgl.vulkan.VK10.VK_SHARING_MODE_EXCLUSIVE;
 import static org.lwjgl.vulkan.VK10.vkCreateBuffer;
 import static org.lwjgl.vulkan.VK10.vkDestroyBuffer;
+import static org.lwjgl.vulkan.VK10.vkFreeMemory;
 import static org.lwjgl.vulkan.VK10.vkGetBufferMemoryRequirements;
 import static org.lwjgl.vulkan.VK10.vkMapMemory;
 import static org.lwjgl.vulkan.VK10.vkUnmapMemory;
@@ -43,7 +43,11 @@ public class VkBuffer {
 	
 	private long allocationSize;
 	
+	private VkDevice device;
+	
 	public void create(VkDevice device, int size, int usage){
+		
+		this.device = device;
 		
 		VkBufferCreateInfo bufInfo = VkBufferCreateInfo.calloc()
 					.sType(VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO)
@@ -54,7 +58,7 @@ public class VkBuffer {
 					.flags(0);
 
 		LongBuffer pBuffer = memAllocLong(1);
-	    int err = vkCreateBuffer(device, bufInfo, null, pBuffer);
+	    int err = vkCreateBuffer(this.device, bufInfo, null, pBuffer);
         handle = pBuffer.get(0);
     
         memFree(pBuffer);
@@ -65,7 +69,7 @@ public class VkBuffer {
         }
 	}
 	
-	public void allocateBuffer(VkDevice device, VkPhysicalDeviceMemoryProperties memoryProperties,
+	public void allocateBuffer(VkPhysicalDeviceMemoryProperties memoryProperties,
 						 int memoryPropertyFlags){
 		
 		VkMemoryRequirements memRequirements = VkMemoryRequirements.calloc();
@@ -97,7 +101,7 @@ public class VkBuffer {
         }
 	}
 	
-	public void bindBufferMemory(VkDevice device){
+	public void bindBufferMemory(){
 	
 		int err = vkBindBufferMemory(device, handle, memory, 0);
         if (err != VK_SUCCESS) {
@@ -105,7 +109,7 @@ public class VkBuffer {
         }
 	}
 	
-	public void mapMemory(VkDevice device, ByteBuffer vertexBuffer){
+	public void mapMemory(ByteBuffer vertexBuffer){
 		
         PointerBuffer pData = memAllocPointer(1);
         int err = vkMapMemory(device, memory, 0, allocationSize, 0, pData);
@@ -121,7 +125,7 @@ public class VkBuffer {
         vkUnmapMemory(device, memory);
 	}
 	
-	public void destroy(VkDevice device){
+	public void destroy(){
 
 		vkFreeMemory(device, memory, null);
 		vkDestroyBuffer(device, handle, null);

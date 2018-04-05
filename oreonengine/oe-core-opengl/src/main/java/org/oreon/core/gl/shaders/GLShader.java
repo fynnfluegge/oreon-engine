@@ -44,7 +44,7 @@ public abstract class GLShader{
 	
 	public void updateUniforms(Renderable object){};
 	
-	public <C> void updateUniforms(C clazz){};
+	public <T> void updateUniforms(Class<T> clazz){};
 	
 	public void updateUniforms(Matrix4f matrix0, Matrix4f matrix1, Matrix4f matrix2){};
 	

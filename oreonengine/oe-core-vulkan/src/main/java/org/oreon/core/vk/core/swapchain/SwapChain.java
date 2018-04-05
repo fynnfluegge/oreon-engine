@@ -11,13 +11,13 @@ import static org.lwjgl.vulkan.KHRSwapchain.vkAcquireNextImageKHR;
 import static org.lwjgl.vulkan.KHRSwapchain.vkCreateSwapchainKHR;
 import static org.lwjgl.vulkan.KHRSwapchain.vkGetSwapchainImagesKHR;
 import static org.lwjgl.vulkan.KHRSwapchain.vkQueuePresentKHR;
-import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 import static org.lwjgl.vulkan.VK10.VK_NULL_HANDLE;
 import static org.lwjgl.vulkan.VK10.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
 import static org.lwjgl.vulkan.VK10.VK_SHARING_MODE_EXCLUSIVE;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_SUBMIT_INFO;
+import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 
 import java.nio.IntBuffer;
 import java.nio.LongBuffer;
@@ -56,6 +56,8 @@ public class SwapChain {
 	private VkSemaphore imageAcquiredSemaphore;
 	private VkSubmitInfo submitInfo;
 	
+	private VkDevice device;
+	
 	private final long UINT64_MAX = 0xFFFFFFFFFFFFFFFFL;
 	
 	public SwapChain(VkDevice device,
@@ -67,6 +69,7 @@ public class SwapChain {
 					 VkExtent2D swapExtend,
 					 long renderPass) {
 		
+		this.device = device;
 		extent = swapExtend;
 		
 		VkSwapchainCreateInfoKHR swapchainCreateInfo = VkSwapchainCreateInfoKHR.calloc()
@@ -96,9 +99,9 @@ public class SwapChain {
             throw new AssertionError("Failed to create swap chain: " + VkUtil.translateVulkanResult(err));
         }
         
-        createImages(device);
-        createImageViews(device, imageFormat);
-        createFrameBuffers(device, renderPass);
+        createImages();
+        createImageViews(imageFormat);
+        createFrameBuffers(renderPass);
         
         renderCompleteSemaphore = new VkSemaphore(device);
         imageAcquiredSemaphore = new VkSemaphore(device);
@@ -116,7 +119,7 @@ public class SwapChain {
         swapchainCreateInfo.free();
 	}
 	
-	public void createImages(VkDevice device){
+	public void createImages(){
 		
 		IntBuffer pImageCount = memAllocInt(1);
         int err = vkGetSwapchainImagesKHR(device, handle, pImageCount, null);
@@ -140,7 +143,7 @@ public class SwapChain {
         memFree(pSwapchainImages);
 	}
 	
-	public void createImageViews(VkDevice device, int imageFormat){
+	public void createImageViews(int imageFormat){
         
         swapChainImageViews = new ArrayList<>(swapChainImages.size());
         for (long swapChainImage : swapChainImages){
@@ -152,7 +155,7 @@ public class SwapChain {
         }
 	}
 	
-	public void createFrameBuffers(VkDevice device, long renderPass){
+	public void createFrameBuffers(long renderPass){
 		
 		frameBuffers = new ArrayList<>(swapChainImages.size());
         for (VkImageView imageView : swapChainImageViews){
@@ -162,9 +165,9 @@ public class SwapChain {
         }
 	}
 	
-	public void createRenderCommandBuffers(VkDevice device, CommandPool commandPool, long pipeline,
+	public void createRenderCommandBuffers(CommandPool commandPool, long pipeline,
 			 							   long pipelineLayout, long renderPass,
-										   long vertexBuffer, long indexBuffer,
+										   long vertexBuffer, long indexBuffer, int indexCount,
 										   long[] descriptorSets){
 		
 		renderCommandBuffers = new ArrayList<>();
@@ -173,7 +176,7 @@ public class SwapChain {
 			CommandBuffer commandBuffer = new CommandBuffer(device, commandPool.getHandle());
 			commandBuffer.beginRecord(VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT);
 			commandBuffer.recordIndexedRenderCmd(pipeline, pipelineLayout, renderPass,
-												  vertexBuffer, indexBuffer, descriptorSets,
+												  vertexBuffer, indexBuffer, indexCount, descriptorSets,
 												  extent, framebuffer.getHandle());
 			commandBuffer.finishRecord();
 			renderCommandBuffers.add(commandBuffer);
@@ -195,7 +198,7 @@ public class SwapChain {
                 .pSignalSemaphores(renderCompleteSemaphore.getPHandle());
 	}
 	
-	public void draw(VkDevice device, VkQueue queue){
+	public void draw(VkQueue queue){
 		
 		int err = vkAcquireNextImageKHR(device, handle, UINT64_MAX, imageAcquiredSemaphore.getHandle(), VK_NULL_HANDLE, pAcquiredImageIndex);
         if (err != VK_SUCCESS) {
@@ -212,7 +215,7 @@ public class SwapChain {
         }
 	}
 	
-	public void destroy(VkDevice device){
+	public void destroy(){
 		
 		for (VkImageView imageView : swapChainImageViews){
 			imageView.destroy(device);

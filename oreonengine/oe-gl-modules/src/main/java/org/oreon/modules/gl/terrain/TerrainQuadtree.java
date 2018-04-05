@@ -5,12 +5,10 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.oreon.core.gl.buffers.GLPatchVBO;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.scenegraph.Component;
 import org.oreon.core.scenegraph.ComponentType;
 import org.oreon.core.scenegraph.Node;
-import org.oreon.core.util.MeshGenerator;
 
 public class TerrainQuadtree extends Node implements Runnable{
 	
@@ -24,9 +22,6 @@ public class TerrainQuadtree extends Node implements Runnable{
 	private static int rootPatches = 8;
 		
 	public TerrainQuadtree(HashMap<ComponentType, Component> components){
-		
-		GLPatchVBO buffer  = new GLPatchVBO();
-		buffer.addData(MeshGenerator.TerrainChunkMesh(),16);
 		
 		for (int i=0; i<rootPatches; i++){
 			for (int j=0; j<rootPatches; j++){
