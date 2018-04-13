@@ -3,10 +3,11 @@ package org.oreon.core.gl.shaders;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
+import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.texture.Texture;
 import org.oreon.core.util.ResourceLoader;
 
-public class FullScreenQuadShader extends GLShader{
+public class FullScreenQuadShader extends GLShaderProgram{
 
 	private static FullScreenQuadShader instance = null;
 	

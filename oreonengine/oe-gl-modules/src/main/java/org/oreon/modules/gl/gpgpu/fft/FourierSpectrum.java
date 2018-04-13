@@ -1,13 +1,13 @@
 package org.oreon.modules.gl.gpgpu.fft;
 
-import org.oreon.core.gl.shaders.GLShader;
+import org.oreon.core.gl.pipeline.GLShaderProgram;
 
 
 public abstract class FourierSpectrum {
 	
 	protected int N;
 	protected int L;
-	private GLShader shader;
+	private GLShaderProgram shader;
 	
 	protected FourierSpectrum(int N, int L){
 		this.N = N;
@@ -25,11 +25,11 @@ public abstract class FourierSpectrum {
 		N = n;
 	}
 
-	public GLShader getShader() {
+	public GLShaderProgram getShader() {
 		return shader;
 	}
 
-	public void setShader(GLShader shader) {
+	public void setShader(GLShaderProgram shader) {
 		this.shader = shader;
 	}
 

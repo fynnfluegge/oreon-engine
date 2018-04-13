@@ -1,10 +1,10 @@
 package org.oreon.core.gl.surface;
 
-import org.oreon.core.gl.buffers.GLMeshVBO;
+import org.oreon.core.gl.buffer.GLMeshVBO;
 import org.oreon.core.gl.parameter.Default;
 import org.oreon.core.gl.parameter.RenderParameter;
+import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.gl.shaders.FullScreenQuadShader;
-import org.oreon.core.gl.shaders.GLShader;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.texture.Texture;
 import org.oreon.core.util.MeshGenerator;
@@ -12,7 +12,7 @@ import org.oreon.core.util.MeshGenerator;
 public class FullScreenQuad {
 	
 	private Texture texture;
-	private GLShader shader;
+	private GLShaderProgram shader;
 	private GLMeshVBO vao;
 	private RenderParameter config;
 	protected Vec2f[] texCoords;
@@ -56,12 +56,12 @@ public class FullScreenQuad {
 	}
 
 
-	public GLShader getShader() {
+	public GLShaderProgram getShader() {
 		return shader;
 	}
 
 
-	public void setShader(GLShader shader) {
+	public void setShader(GLShaderProgram shader) {
 		this.shader = shader;
 	}
 

@@ -6,13 +6,13 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE2;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import org.oreon.core.context.EngineContext;
-import org.oreon.core.gl.shaders.GLShader;
+import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.util.ResourceLoader;
 import org.oreon.modules.gl.water.Water;
 import org.oreon.modules.gl.water.WaterConfiguration;
 
-public class OceanWireframeShader extends GLShader{
+public class OceanWireframeShader extends GLShaderProgram{
 
 private static OceanWireframeShader instance = null;
 	

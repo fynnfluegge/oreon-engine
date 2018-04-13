@@ -23,7 +23,7 @@ import org.lwjgl.opengl.GL43;
 import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.antialiasing.FXAA;
 import org.oreon.core.gl.antialiasing.MSAA;
-import org.oreon.core.gl.buffers.GLFramebuffer;
+import org.oreon.core.gl.buffer.GLFramebuffer;
 import org.oreon.core.gl.context.GLContext;
 import org.oreon.core.gl.deferred.DeferredLightingRenderer;
 import org.oreon.core.gl.deferred.TransparencyBlendRenderer;
@@ -31,7 +31,7 @@ import org.oreon.core.gl.deferred.TransparencyLayer;
 import org.oreon.core.gl.light.GLDirectionalLight;
 import org.oreon.core.gl.parameter.Default;
 import org.oreon.core.gl.picking.TerrainPicking;
-import org.oreon.core.gl.shadow.ParallelSplitShadowMaps;
+import org.oreon.core.gl.shadow.ParallelSplitShadowMapsFbo;
 import org.oreon.core.gl.surface.FullScreenMultisampleQuad;
 import org.oreon.core.gl.surface.FullScreenQuad;
 import org.oreon.core.gl.texture.Texture2D;
@@ -80,7 +80,7 @@ public class GLRenderEngine extends RenderEngine{
 	@Setter
 	private GUI gui;
 
-	private ParallelSplitShadowMaps shadowMaps;
+	private ParallelSplitShadowMapsFbo pssmFbo;
 	
 	// post processing effects
 	private MotionBlur motionBlur;
@@ -128,7 +128,7 @@ public class GLRenderEngine extends RenderEngine{
 		
 		fullScreenQuad = new FullScreenQuad();
 		fullScreenQuadMultisample = new FullScreenMultisampleQuad();
-		shadowMaps = new ParallelSplitShadowMaps();
+		pssmFbo = new ParallelSplitShadowMapsFbo();
 		msaa = new MSAA();
 		fxaa = new FXAA();
 		
@@ -186,41 +186,47 @@ public class GLRenderEngine extends RenderEngine{
 		GLContext.getRenderContext().setSceneDepthMap(sceneDepthmap);
 		Default.clearScreen();
 		
-		//render shadow maps
-		shadowMaps.getFBO().bind();
-		shadowMaps.getConfig().enable();
+		// render shadow maps into pssm framebuffer
+		pssmFbo.getFBO().bind();
+		pssmFbo.getConfig().enable();
 		glClear(GL_DEPTH_BUFFER_BIT);
 		glViewport(0,0,Constants.PSSM_SHADOWMAP_RESOLUTION,Constants.PSSM_SHADOWMAP_RESOLUTION);
 		sceneGraph.renderShadows();
 		glViewport(0,0,window.getWidth(), window.getHeight());
-		shadowMaps.getConfig().disable();
-		shadowMaps.getFBO().unbind();
+		pssmFbo.getConfig().disable();
+		pssmFbo.getFBO().unbind();
 		
 		// deferred scene lighting - opaque objects
+		// render into GBuffer of deffered lighting framebuffer
 		deferredLightingRenderer.getFbo().bind();
 		Default.clearScreen();
 		sceneGraph.render();
 		deferredLightingRenderer.getFbo().unbind();
 		
+		// render post processing screen space ambient occlusion
 		ssao.render(deferredLightingRenderer.getGbuffer().getWorldPositionTexture(),
 					deferredLightingRenderer.getGbuffer().getNormalTexture());
 		
+		// render post processing sample coverage mask
 		msaa.renderSampleCoverageMask(deferredLightingRenderer.getGbuffer().getWorldPositionTexture(),
 									  deferredLightingRenderer.getGbuffer().getLightScatteringMask(),
 									  deferredLightScatteringMask);
 		
+		// render deferred lighting scene with multisampling
 		deferredLightingRenderer.render(msaa.getSampleCoverageMask(),
 							    ssao.getSsaoBlurSceneTexture(),
-							    shadowMaps.getDepthMaps(),
+							    pssmFbo.getDepthMaps(),
 							    renderSSAO);
 		
 		// forward scene lighting - transparent objects
+		// render transparent objects into GBuffer of transparency framebuffer
 		transparencyLayer.getFbo().bind();
 		Default.clearScreen();
 		sceneGraph.renderTransparentObejcts();
 		transparencyLayer.getFbo().unbind();
 		
 		// blend scene/transparent layers
+		// render opaque + transparent (final scene) objects into main offscreen framebuffer
 		finalSceneFbo.bind();
 		transparencyBlendRenderer.render(deferredLightingRenderer.getDeferredLightingSceneTexture(), 
 										 deferredLightingRenderer.getGbuffer().getDepthTexture(),
@@ -241,6 +247,8 @@ public class GLRenderEngine extends RenderEngine{
 			}
 		}
 
+		
+		// render post processing filters
 		postProcessingTexture = new Texture2D(finalSceneTexture);
 		sceneDepthmap = deferredLightingRenderer.getGbuffer().getDepthTexture();
 		

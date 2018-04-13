@@ -1,9 +1,9 @@
 package org.oreon.modules.gl.terrain.fractals;
 
-import org.oreon.core.gl.shaders.GLShader;
+import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.util.ResourceLoader;
 
-public class FractalFourierComponentsShader extends GLShader{
+public class FractalFourierComponentsShader extends GLShaderProgram{
 
 private static FractalFourierComponentsShader instance = null;
 	

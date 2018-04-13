@@ -1,15 +1,10 @@
 package org.oreon.core.vk.core.platform;
 
-import static org.lwjgl.system.MemoryUtil.memAlloc;
-
-import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
-
 import org.oreon.core.platform.Camera;
 import org.oreon.core.util.BufferUtil;
-import org.oreon.core.vk.core.buffers.VkUniformBuffer;
 import org.oreon.core.vk.core.context.VkContext;
 import org.oreon.core.vk.core.descriptor.DescriptorKeys.DescriptorSetKey;
+import org.oreon.core.vk.wrapper.buffer.VkUniformBuffer;
 import org.oreon.core.vk.wrapper.descriptor.CameraDescriptor;
 
 public class VkCamera extends Camera{
@@ -28,9 +23,9 @@ public class VkCamera extends Camera{
 	@Override
 	public void init() {
 		
-		ByteBuffer cameraBuffer = memAlloc(4 * 16);
-		FloatBuffer cameraMatrix = cameraBuffer.asFloatBuffer();
-		cameraMatrix.put(BufferUtil.createFlippedBuffer(getViewProjectionMatrix()));
+//		ByteBuffer cameraBuffer = memAlloc(4 * 16);
+//		FloatBuffer cameraMatrix = cameraBuffer.asFloatBuffer();
+//		cameraMatrix.put(BufferUtil.createFlippedBuffer(getViewProjectionMatrix()));
 		
 	    uniformBuffer = new VkUniformBuffer(VkContext.getLogicalDevice().getHandle(),
 	    									VkContext.getPhysicalDevice().getMemoryProperties(),
@@ -38,7 +33,7 @@ public class VkCamera extends Camera{
 	    
 	    descriptor = new CameraDescriptor(VkContext.getLogicalDevice().getHandle(),
 	    									 uniformBuffer.getHandle());
-	    VkContext.getEnvironment().addDescriptorSet(DescriptorSetKey.CAMERA,descriptor);
+	    VkContext.getEnvironment().addDescriptor(DescriptorSetKey.CAMERA, descriptor);
 	}
 	
 	@Override

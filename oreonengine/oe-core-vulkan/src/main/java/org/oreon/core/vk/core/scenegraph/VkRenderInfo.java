@@ -1,9 +1,10 @@
 package org.oreon.core.vk.core.scenegraph;
 
+import org.lwjgl.vulkan.VkQueue;
 import org.oreon.core.scenegraph.Component;
 import org.oreon.core.vk.core.command.CommandBuffer;
-import org.oreon.core.vk.core.pipeline.Pipeline;
-import org.oreon.core.vk.wrapper.descriptor.VkDescriptor;
+import org.oreon.core.vk.core.command.SubmitInfo;
+import org.oreon.core.vk.core.pipeline.VkPipeline;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,17 +13,15 @@ import lombok.Getter;
 @Getter
 public class VkRenderInfo extends Component{
 
-	private Pipeline pipeline;
+	private VkPipeline pipeline;
 	private CommandBuffer commandBuffer;
-	private VkDescriptor descriptor;
+	private SubmitInfo submitInfo;
+	private VkQueue queue;
 	
 	@Override
 	public void render(){
 		
+		submitInfo.submit(queue);
 	}
-	
-	@Override
-	public void update() {
-		
-	}
+
 }

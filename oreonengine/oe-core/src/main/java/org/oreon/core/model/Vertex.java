@@ -17,9 +17,7 @@ public class Vertex {
 	private Vec3f tangent;
 	private Vec3f bitangent;
 	
-	private VertexAlignment alignment;
-	
-	public enum VertexAlignment{
+	public enum VertexLayout{
 		
 		POS_NORMAL_UV_TAN_BITAN,
 		POS_NORMAL,

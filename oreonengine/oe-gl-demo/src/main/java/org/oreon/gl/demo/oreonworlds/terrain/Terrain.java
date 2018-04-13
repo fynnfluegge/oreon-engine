@@ -6,7 +6,7 @@ import java.util.Random;
 
 import org.lwjgl.glfw.GLFW;
 import org.oreon.core.context.EngineContext;
-import org.oreon.core.gl.shaders.GLShader;
+import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.util.Constants;
 import org.oreon.modules.gl.terrain.GLTerrain;
 import org.oreon.modules.gl.terrain.GLTerrainContext;
@@ -14,7 +14,7 @@ import org.oreon.modules.gl.terrain.fractals.FractalMap;
 
 public class Terrain extends GLTerrain{
 
-	public Terrain(GLShader shader, GLShader wireframe, GLShader shadow) {
+	public Terrain(GLShaderProgram shader, GLShaderProgram wireframe, GLShaderProgram shadow) {
 		super(shader, wireframe, shadow);
 	}
 

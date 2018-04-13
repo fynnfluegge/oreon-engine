@@ -1,10 +1,10 @@
 package org.oreon.modules.gl.water.shader;
 
-import org.oreon.core.gl.shaders.GLShader;
+import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.util.Constants;
 import org.oreon.core.util.ResourceLoader;
 
-public class RefracReflecDeferredLightingShader extends GLShader{
+public class RefracReflecDeferredLightingShader extends GLShaderProgram{
 
 	private static RefracReflecDeferredLightingShader instance = null;
 	

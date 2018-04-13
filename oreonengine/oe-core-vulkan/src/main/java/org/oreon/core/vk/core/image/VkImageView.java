@@ -26,7 +26,11 @@ public class VkImageView {
 	@Getter
 	private long handle;
 	
-	public void createImageView(VkDevice device, int imageFormat, long image){
+	private VkDevice device;
+	
+	public VkImageView(VkDevice device, int imageFormat, long image){
+		
+		this.device = device;
 		
 		VkImageViewCreateInfo imageViewCreateInfo = VkImageViewCreateInfo.calloc()
         		.sType(VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO)
@@ -60,7 +64,7 @@ public class VkImageView {
         imageViewCreateInfo.free();
 	}
 	
-	public void destroy(VkDevice device){
+	public void destroy(){
 		
 		vkDestroyImageView(device, handle, null);
 	}

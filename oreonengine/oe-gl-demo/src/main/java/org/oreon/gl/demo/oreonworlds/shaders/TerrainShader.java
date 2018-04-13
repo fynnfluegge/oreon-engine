@@ -9,7 +9,7 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.context.GLContext;
-import org.oreon.core.gl.shaders.GLShader;
+import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.util.Constants;
@@ -17,7 +17,7 @@ import org.oreon.core.util.ResourceLoader;
 import org.oreon.modules.gl.terrain.TerrainConfiguration;
 import org.oreon.modules.gl.terrain.TerrainNode;
 
-public class TerrainShader extends GLShader{
+public class TerrainShader extends GLShaderProgram{
 	
 	private static TerrainShader instance = null;
 	

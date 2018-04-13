@@ -1,5 +1,11 @@
 package org.oreon.core.vk.core.pipeline;
 
+import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_FRAGMENT_BIT;
+import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_GEOMETRY_BIT;
+import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT;
+import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT;
+import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_VERTEX_BIT;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,39 +14,58 @@ import org.lwjgl.vulkan.VkPipelineShaderStageCreateInfo;
 
 import lombok.Getter;
 
-import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_VERTEX_BIT;
-import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_FRAGMENT_BIT;
-
 public class ShaderPipeline {
 
 	@Getter
-	private VkPipelineShaderStageCreateInfo.Buffer shaderPipeline;
+	private VkPipelineShaderStageCreateInfo.Buffer stages;
 	private List<ShaderModule> shaderStages = new ArrayList<ShaderModule>();
+	
+	private VkDevice device;
+	
+	public ShaderPipeline(VkDevice device) {
+		
+		this.device = device;
+	}
 
 	public void createShaderPipeline(){
 		
-		shaderPipeline = VkPipelineShaderStageCreateInfo.calloc(shaderStages.size());
+		stages = VkPipelineShaderStageCreateInfo.calloc(shaderStages.size());
 		
 		for (ShaderModule shaderStage : shaderStages){
-			shaderPipeline.put(shaderStage.getShaderStageInfo());
+			stages.put(shaderStage.getShaderStageInfo());
 		}
 		
-		shaderPipeline.flip();
+		stages.flip();
 	}
 	
-	public void createVertexShader(VkDevice device, String filePath){
+	public void createVertexShader(String filePath){
 		
 		shaderStages.add(new ShaderModule(device, filePath, VK_SHADER_STAGE_VERTEX_BIT));
 	}
 	
-	public void createFragmentShader(VkDevice device, String filePath){
+	public void createTessellationControlShader(String filePath){
+		
+		shaderStages.add(new ShaderModule(device, filePath, VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT));
+	}
+	
+	public void createTessellationEvaluationShader(String filePath){
+		
+		shaderStages.add(new ShaderModule(device, filePath, VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT));
+	}
+	
+	public void createGeometryShader(String filePath){
+		
+		shaderStages.add(new ShaderModule(device, filePath, VK_SHADER_STAGE_GEOMETRY_BIT));
+	}
+	
+	public void createFragmentShader(String filePath){
 		
 		shaderStages.add(new ShaderModule(device, filePath, VK_SHADER_STAGE_FRAGMENT_BIT));
 	}
 	
-	public void destroy(VkDevice device){
+	public void destroy(){
 		
-		shaderPipeline.free();
+		stages.free();
 		
 		for (ShaderModule shaderModule : shaderStages){
 			shaderModule.destroy(device);

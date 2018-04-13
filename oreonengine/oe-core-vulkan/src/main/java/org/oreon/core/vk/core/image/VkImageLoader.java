@@ -1,6 +1,7 @@
 package org.oreon.core.vk.core.image;
 
-import static org.lwjgl.stb.STBImage.*;
+import static org.lwjgl.stb.STBImage.STBI_rgb_alpha;
+import static org.lwjgl.stb.STBImage.stbi_load;
 
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;

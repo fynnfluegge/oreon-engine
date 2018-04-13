@@ -1,14 +1,14 @@
 package org.oreon.core.vk.core.platform;
 
+import static org.lwjgl.glfw.GLFW.GLFW_CLIENT_API;
+import static org.lwjgl.glfw.GLFW.GLFW_NO_API;
 import static org.lwjgl.glfw.GLFW.GLFW_RESIZABLE;
+import static org.lwjgl.glfw.GLFW.glfwCreateWindow;
 import static org.lwjgl.glfw.GLFW.glfwDefaultWindowHints;
 import static org.lwjgl.glfw.GLFW.glfwDestroyWindow;
 import static org.lwjgl.glfw.GLFW.glfwShowWindow;
 import static org.lwjgl.glfw.GLFW.glfwWindowHint;
 import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
-import static org.lwjgl.glfw.GLFW.glfwCreateWindow;
-import static org.lwjgl.glfw.GLFW.GLFW_CLIENT_API;
-import static org.lwjgl.glfw.GLFW.GLFW_NO_API;
 import static org.lwjgl.opengl.GL11.GL_TRUE;
 
 import org.oreon.core.platform.Window;
@@ -34,7 +34,7 @@ public class VkWindow extends Window{
 
 	@Override
 	public void draw() {
-		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub 
 		
 	}
 

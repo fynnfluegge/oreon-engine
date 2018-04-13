@@ -1,9 +1,9 @@
 package org.oreon.modules.gl.postprocessfilter.lightscattering;
 
-import org.oreon.core.gl.shaders.GLShader;
+import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.util.ResourceLoader;
 
-public class SunLightScatteringAdditiveBlendShader extends GLShader{
+public class SunLightScatteringAdditiveBlendShader extends GLShaderProgram{
 
 	private static SunLightScatteringAdditiveBlendShader instance = null;
 	

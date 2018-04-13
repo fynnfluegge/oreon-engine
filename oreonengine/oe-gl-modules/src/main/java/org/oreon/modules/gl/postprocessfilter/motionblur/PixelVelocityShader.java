@@ -4,12 +4,12 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import org.oreon.core.context.EngineContext;
-import org.oreon.core.gl.shaders.GLShader;
+import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.gl.texture.Texture2DMultisample;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.util.ResourceLoader;
 
-public class PixelVelocityShader extends GLShader{
+public class PixelVelocityShader extends GLShaderProgram{
 	
 	private static PixelVelocityShader instance = null;
 	

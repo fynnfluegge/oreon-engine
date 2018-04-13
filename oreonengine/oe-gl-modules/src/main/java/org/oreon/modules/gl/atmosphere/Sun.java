@@ -1,7 +1,7 @@
 package org.oreon.modules.gl.atmosphere;
 
 import org.oreon.core.context.EngineContext;
-import org.oreon.core.gl.buffers.GLPointVBO3D;
+import org.oreon.core.gl.buffer.GLPointVBO3D;
 import org.oreon.core.gl.light.GLDirectionalLight;
 import org.oreon.core.gl.parameter.AlphaBlendingSrcAlpha;
 import org.oreon.core.gl.query.GLOcclusionQuery;

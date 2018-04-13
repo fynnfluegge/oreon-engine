@@ -10,10 +10,11 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE6;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import org.oreon.core.context.EngineContext;
+import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.texture.Texture;
 import org.oreon.core.util.ResourceLoader;
 
-public class TransparencyBlendShader extends GLShader{
+public class TransparencyBlendShader extends GLShaderProgram{
 
 	private static TransparencyBlendShader instance = null;
 	

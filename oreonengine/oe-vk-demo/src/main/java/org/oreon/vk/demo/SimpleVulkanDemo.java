@@ -20,6 +20,8 @@ public class SimpleVulkanDemo {
 		coreSystem.setRenderEngine(renderEngine);
 		coreEngine.init(coreSystem);
 		
+		renderEngine.getSceneGraph().addObject(new VkTestObject());
+		
 		coreEngine.start();
 	}
 }

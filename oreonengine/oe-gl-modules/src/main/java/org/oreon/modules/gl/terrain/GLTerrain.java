@@ -2,10 +2,10 @@ package org.oreon.modules.gl.terrain;
 
 import java.util.HashMap;
 
-import org.oreon.core.gl.buffers.GLPatchVBO;
+import org.oreon.core.gl.buffer.GLPatchVBO;
 import org.oreon.core.gl.parameter.Default;
+import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.gl.scenegraph.GLRenderInfo;
-import org.oreon.core.gl.shaders.GLShader;
 import org.oreon.core.scenegraph.Component;
 import org.oreon.core.scenegraph.ComponentType;
 import org.oreon.core.scenegraph.Node;
@@ -18,7 +18,7 @@ public class GLTerrain extends Node{
 	@Getter
 	private TerrainQuadtree quadtree;
 		
-	public GLTerrain(GLShader shader, GLShader wireframe, GLShader shadow)
+	public GLTerrain(GLShaderProgram shader, GLShaderProgram wireframe, GLShaderProgram shadow)
 	{
 		GLTerrainContext.initialize();
 		

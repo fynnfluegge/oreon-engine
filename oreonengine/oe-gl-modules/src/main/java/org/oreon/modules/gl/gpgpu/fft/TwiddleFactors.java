@@ -7,7 +7,7 @@ import static org.lwjgl.opengl.GL42.glBindImageTexture;
 import static org.lwjgl.opengl.GL42.glTexStorage2D;
 import static org.lwjgl.opengl.GL43.glDispatchCompute;
 
-import org.oreon.core.gl.buffers.GLSSBO;
+import org.oreon.core.gl.buffer.GLSSBO;
 import org.oreon.core.gl.texture.Texture2D;
 
 public class TwiddleFactors {

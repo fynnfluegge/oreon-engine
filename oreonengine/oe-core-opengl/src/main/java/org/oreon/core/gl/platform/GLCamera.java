@@ -1,6 +1,6 @@
 package org.oreon.core.gl.platform;
 
-import org.oreon.core.gl.buffers.GLUBO;
+import org.oreon.core.gl.buffer.GLUBO;
 import org.oreon.core.platform.Camera;
 import org.oreon.core.util.Constants;
 

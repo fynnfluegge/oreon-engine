@@ -1,9 +1,10 @@
 package org.oreon.core.gl.shaders;
 
 import org.oreon.core.context.EngineContext;
+import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.util.ResourceLoader;
 
-public class SampleCoverageMaskShader extends GLShader{
+public class SampleCoverageMaskShader extends GLShaderProgram{
 	
 	private static SampleCoverageMaskShader instance = null;
 

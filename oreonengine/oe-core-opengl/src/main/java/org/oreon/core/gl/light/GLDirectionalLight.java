@@ -1,7 +1,7 @@
 package org.oreon.core.gl.light;
 
 import org.oreon.core.context.EngineContext;
-import org.oreon.core.gl.buffers.GLUBO;
+import org.oreon.core.gl.buffer.GLUBO;
 import org.oreon.core.light.DirectionalLight;
 import org.oreon.core.util.BufferUtil;
 import org.oreon.core.util.Constants;

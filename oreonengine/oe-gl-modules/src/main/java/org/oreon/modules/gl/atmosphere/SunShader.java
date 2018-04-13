@@ -4,13 +4,13 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
-import org.oreon.core.gl.shaders.GLShader;
+import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.model.Material;
 import org.oreon.core.scenegraph.ComponentType;
 import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.util.ResourceLoader;
 
-public class SunShader extends GLShader{
+public class SunShader extends GLShaderProgram{
 	
 private static SunShader instance = null;
 	

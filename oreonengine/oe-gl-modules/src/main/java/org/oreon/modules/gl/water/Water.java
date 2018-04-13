@@ -10,11 +10,11 @@ import static org.lwjgl.opengl.GL11.glViewport;
 import static org.lwjgl.opengl.GL30.GL_CLIP_DISTANCE6;
 
 import org.oreon.core.context.EngineContext;
-import org.oreon.core.gl.buffers.GLPatchVBO;
+import org.oreon.core.gl.buffer.GLPatchVBO;
 import org.oreon.core.gl.context.GLContext;
 import org.oreon.core.gl.parameter.WaterRenderConfig;
+import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.gl.scenegraph.GLRenderInfo;
-import org.oreon.core.gl.shaders.GLShader;
 import org.oreon.core.gl.texture.Texture2D;
 import org.oreon.core.math.Quaternion;
 import org.oreon.core.scenegraph.ComponentType;
@@ -50,7 +50,7 @@ public class Water extends Renderable{
 	@Getter
 	private WaterConfiguration waterConfiguration;
 
-	public Water(int patches, int fftResolution, GLShader shader, GLShader wireframeShader)
+	public Water(int patches, int fftResolution, GLShaderProgram shader, GLShaderProgram wireframeShader)
 	{		
 		waterConfiguration = new WaterConfiguration();
 		waterConfiguration.loadFile("water-config.properties");

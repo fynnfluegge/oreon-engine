@@ -4,8 +4,29 @@
  **************************************************/
 package org.oreon.core.vk.core.util;
 
-import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
+import static org.lwjgl.system.MemoryUtil.memAllocPointer;
+import static org.lwjgl.vulkan.EXTDebugReport.VK_ERROR_VALIDATION_FAILED_EXT;
+import static org.lwjgl.vulkan.KHRDisplaySwapchain.VK_ERROR_INCOMPATIBLE_DISPLAY_KHR;
+import static org.lwjgl.vulkan.KHRSurface.VK_ERROR_NATIVE_WINDOW_IN_USE_KHR;
+import static org.lwjgl.vulkan.KHRSurface.VK_ERROR_SURFACE_LOST_KHR;
+import static org.lwjgl.vulkan.KHRSwapchain.VK_ERROR_OUT_OF_DATE_KHR;
+import static org.lwjgl.vulkan.KHRSwapchain.VK_SUBOPTIMAL_KHR;
+import static org.lwjgl.vulkan.VK10.VK_ERROR_DEVICE_LOST;
+import static org.lwjgl.vulkan.VK10.VK_ERROR_EXTENSION_NOT_PRESENT;
+import static org.lwjgl.vulkan.VK10.VK_ERROR_FEATURE_NOT_PRESENT;
+import static org.lwjgl.vulkan.VK10.VK_ERROR_FORMAT_NOT_SUPPORTED;
+import static org.lwjgl.vulkan.VK10.VK_ERROR_INCOMPATIBLE_DRIVER;
+import static org.lwjgl.vulkan.VK10.VK_ERROR_INITIALIZATION_FAILED;
+import static org.lwjgl.vulkan.VK10.VK_ERROR_LAYER_NOT_PRESENT;
+import static org.lwjgl.vulkan.VK10.VK_ERROR_MEMORY_MAP_FAILED;
+import static org.lwjgl.vulkan.VK10.VK_ERROR_OUT_OF_DEVICE_MEMORY;
+import static org.lwjgl.vulkan.VK10.VK_ERROR_OUT_OF_HOST_MEMORY;
+import static org.lwjgl.vulkan.VK10.VK_ERROR_TOO_MANY_OBJECTS;
+import static org.lwjgl.vulkan.VK10.VK_EVENT_RESET;
+import static org.lwjgl.vulkan.VK10.VK_EVENT_SET;
+import static org.lwjgl.vulkan.VK10.VK_INCOMPLETE;
 import static org.lwjgl.vulkan.VK10.VK_NOT_READY;
+import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import static org.lwjgl.vulkan.VK10.VK_TIMEOUT;
 
 import java.nio.ByteBuffer;
@@ -13,29 +34,14 @@ import java.nio.ByteBuffer;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.vulkan.VkClearValue;
 
-import static org.lwjgl.vulkan.VK10.VK_EVENT_SET;
-import static org.lwjgl.vulkan.VK10.VK_EVENT_RESET;
-import static org.lwjgl.vulkan.VK10.VK_INCOMPLETE;
-import static org.lwjgl.vulkan.VK10.VK_ERROR_OUT_OF_HOST_MEMORY;
-import static org.lwjgl.vulkan.VK10.VK_ERROR_OUT_OF_DEVICE_MEMORY;
-import static org.lwjgl.vulkan.VK10.VK_ERROR_INITIALIZATION_FAILED;
-import static org.lwjgl.vulkan.VK10.VK_ERROR_DEVICE_LOST;
-import static org.lwjgl.vulkan.VK10.VK_ERROR_MEMORY_MAP_FAILED;
-import static org.lwjgl.vulkan.VK10.VK_ERROR_LAYER_NOT_PRESENT;
-import static org.lwjgl.vulkan.VK10.VK_ERROR_EXTENSION_NOT_PRESENT;
-import static org.lwjgl.vulkan.VK10.VK_ERROR_FEATURE_NOT_PRESENT;
-import static org.lwjgl.vulkan.VK10.VK_ERROR_INCOMPATIBLE_DRIVER;
-import static org.lwjgl.vulkan.VK10.VK_ERROR_TOO_MANY_OBJECTS;
-import static org.lwjgl.vulkan.VK10.VK_ERROR_FORMAT_NOT_SUPPORTED;
-import static org.lwjgl.vulkan.KHRSwapchain.VK_SUBOPTIMAL_KHR;
-import static org.lwjgl.vulkan.KHRSwapchain.VK_ERROR_OUT_OF_DATE_KHR;
-import static org.lwjgl.vulkan.KHRSurface.VK_ERROR_SURFACE_LOST_KHR;
-import static org.lwjgl.vulkan.KHRSurface.VK_ERROR_NATIVE_WINDOW_IN_USE_KHR;
-import static org.lwjgl.vulkan.KHRDisplaySwapchain.VK_ERROR_INCOMPATIBLE_DISPLAY_KHR;
-import static org.lwjgl.system.MemoryUtil.memAllocPointer;
-import static org.lwjgl.vulkan.EXTDebugReport.VK_ERROR_VALIDATION_FAILED_EXT;
-
 public class VkUtil {
+	
+	public static void vkCheckResult(int err){
+		
+		if (err != VK_SUCCESS) {
+            throw new AssertionError(VkUtil.translateVulkanResult(err));
+        }
+	}
 
 	/**
      * Translates a Vulkan {@code VkResult} value to a String describing the result.

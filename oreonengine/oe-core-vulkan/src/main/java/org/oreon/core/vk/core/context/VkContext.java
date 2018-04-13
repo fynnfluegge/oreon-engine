@@ -21,11 +21,6 @@ private static ApplicationContext context;
 		EngineContext.registerCamera(new VkCamera());
 	}
 	
-	public static VkRenderContext getRenderContext(){
-		
-		return context.getBean(VkRenderContext.class);
-	}
-	
 	public static VkWindow getWindow(){
 		
 		return context.getBean(VkWindow.class);

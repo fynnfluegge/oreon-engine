@@ -1,9 +1,9 @@
 package org.oreon.modules.gl.gpgpu;
 
-import org.oreon.core.gl.shaders.GLShader;
+import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.util.ResourceLoader;
 
-public class ContrastShader extends GLShader{
+public class ContrastShader extends GLShaderProgram{
 
 	private static ContrastShader instance = null;
 

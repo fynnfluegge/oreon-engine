@@ -7,27 +7,27 @@ import java.util.Map.Entry;
 import org.oreon.core.vk.core.descriptor.DescriptorKeys.DescriptorPoolType;
 import org.oreon.core.vk.core.descriptor.DescriptorKeys.DescriptorSetKey;
 import org.oreon.core.vk.core.descriptor.DescriptorPool;
-import org.oreon.core.vk.wrapper.descriptor.VkDescriptor;
+import org.oreon.core.vk.core.descriptor.Descriptor;
 
 public class VkEnvironment {
 	
-	private HashMap<DescriptorSetKey, VkDescriptor> descriptorsSets; 
+	private HashMap<DescriptorSetKey, Descriptor> descriptors; 
 	private HashMap<DescriptorPoolType, DescriptorPool> descriptorPools;
 	
 	public VkEnvironment() {
 		
-		descriptorsSets = new HashMap<DescriptorSetKey, VkDescriptor>();
+		descriptors = new HashMap<DescriptorSetKey, Descriptor>();
 		descriptorPools = new HashMap<DescriptorPoolType, DescriptorPool>();
 	}
 	
-	public void addDescriptorSet(DescriptorSetKey key, VkDescriptor descriptorSet){
+	public void addDescriptor(DescriptorSetKey key, Descriptor descriptor){
 		
-		descriptorsSets.put(key, descriptorSet);
+		descriptors.put(key, descriptor);
 	}
 	
-	public VkDescriptor getDescriptorSet(DescriptorSetKey key){
+	public Descriptor getDescriptor(DescriptorSetKey key){
 		
-		return descriptorsSets.get(key);
+		return descriptors.get(key);
 	}
 	
 	public void addDescriptorPool(DescriptorPoolType type, DescriptorPool descriptorPool){
@@ -42,7 +42,7 @@ public class VkEnvironment {
 	
 	public void shutdown(){
 		
-		Iterator<Entry<DescriptorSetKey, VkDescriptor>> setIterator = descriptorsSets.entrySet().iterator();
+		Iterator<Entry<DescriptorSetKey, Descriptor>> setIterator = descriptors.entrySet().iterator();
 		while (setIterator.hasNext()) {
 			setIterator.next().getValue().destroy();
 		}

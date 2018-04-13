@@ -16,7 +16,7 @@ import static org.lwjgl.opengl.GL43.glDispatchCompute;
 import java.nio.ByteBuffer;
 
 import org.oreon.core.context.EngineContext;
-import org.oreon.core.gl.buffers.GLFramebuffer;
+import org.oreon.core.gl.buffer.GLFramebuffer;
 import org.oreon.core.gl.surface.FullScreenQuad;
 import org.oreon.core.gl.texture.Texture2D;
 import org.oreon.core.gl.texture.Texture2DMultisample;

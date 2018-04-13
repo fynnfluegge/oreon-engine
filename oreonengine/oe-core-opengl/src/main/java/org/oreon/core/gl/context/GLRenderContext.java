@@ -1,6 +1,6 @@
 package org.oreon.core.gl.context;
 
-import org.oreon.core.gl.buffers.GLFramebuffer;
+import org.oreon.core.gl.buffer.GLFramebuffer;
 import org.oreon.core.texture.Texture;
 
 import lombok.Getter;

@@ -3,12 +3,12 @@ package org.oreon.modules.gl.postprocessfilter.lensflare;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
-import org.oreon.core.gl.shaders.GLShader;
+import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.texture.Texture;
 import org.oreon.core.util.ResourceLoader;
 
-public class LensFlareShader extends GLShader{
+public class LensFlareShader extends GLShaderProgram{
 
 	private static LensFlareShader instance = null;
 	

@@ -8,31 +8,19 @@ import java.nio.ByteBuffer;
 
 import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
-import org.oreon.core.vk.core.buffers.VkBuffer;
+import org.oreon.core.vk.core.buffer.VkBuffer;
 
-import lombok.Getter;
-
-public class StagingBuffer {
-	
-	@Getter
-	private VkBuffer buffer;
+public class StagingBuffer extends VkBuffer{
 	
 	public StagingBuffer(VkDevice device,
 						 VkPhysicalDeviceMemoryProperties memoryProperties, 
 						 ByteBuffer dataBuffer) {
-		
-		buffer = new VkBuffer();
 	    
-		buffer.create(device, dataBuffer.limit(), VK_BUFFER_USAGE_TRANSFER_SRC_BIT);
-		buffer.allocateBuffer(memoryProperties,
-	    				       VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-		buffer.bindBufferMemory();
-		buffer.mapMemory(dataBuffer);
-	}
-	
-	public void destroy(){
-		
-		buffer.destroy();
+		create(device, dataBuffer.limit(), VK_BUFFER_USAGE_TRANSFER_SRC_BIT);
+		allocateBuffer(memoryProperties,
+				VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+		bindBufferMemory();
+		mapMemory(dataBuffer);
 	}
 
 }

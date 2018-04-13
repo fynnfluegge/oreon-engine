@@ -20,8 +20,12 @@ public class VkSemaphore {
 	private long handle;
 	@Getter
 	private LongBuffer pHandle;
+	
+	private VkDevice device;
 
 	public VkSemaphore(VkDevice device) {
+		
+		this.device = device;
 		
 		VkSemaphoreCreateInfo semaphoreCreateInfo = VkSemaphoreCreateInfo.calloc()
                 .sType(VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO)
@@ -40,7 +44,7 @@ public class VkSemaphore {
 		semaphoreCreateInfo.free();
 	}
 	
-	public void destroy(VkDevice device){
+	public void destroy(){
 		
 		vkDestroySemaphore(device, handle, null);
 	}

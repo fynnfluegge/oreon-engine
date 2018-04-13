@@ -17,7 +17,7 @@ import static org.lwjgl.opengl.GL43.glDispatchCompute;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
-import org.oreon.core.gl.buffers.GLFramebuffer;
+import org.oreon.core.gl.buffer.GLFramebuffer;
 import org.oreon.core.gl.texture.Texture2D;
 import org.oreon.core.util.BufferUtil;
 import org.oreon.modules.gl.water.shader.RefracReflecDeferredLightingShader;

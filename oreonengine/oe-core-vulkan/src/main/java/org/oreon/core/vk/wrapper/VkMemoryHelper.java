@@ -7,13 +7,14 @@ import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_UNDEFINED;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_SAMPLED_BIT;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_TRANSFER_DST_BIT;
 import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
+import static org.lwjgl.vulkan.VK10.vkQueueWaitIdle;
 
 import java.nio.ByteBuffer;
 
 import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
 import org.lwjgl.vulkan.VkQueue;
-import org.oreon.core.vk.core.buffers.VkBuffer;
+import org.oreon.core.vk.core.buffer.VkBuffer;
 import org.oreon.core.vk.core.image.VkImage;
 import org.oreon.core.vk.core.image.VkImageLoader;
 import org.oreon.core.vk.wrapper.buffer.DeviceLocalBuffer;
@@ -36,17 +37,19 @@ public class VkMemoryHelper {
 														dataBuffer.limit(), usage);
 	    
 	    BufferCopyCmd bufferCopyCommand = new BufferCopyCmd(device, commandPool);
-	    bufferCopyCommand.record(stagingBuffer.getBuffer().getHandle(),
-	    					     deviceLocalBuffer.getBuffer().getHandle(), 0, 0, dataBuffer.limit());
+	    bufferCopyCommand.record(stagingBuffer.getHandle(),
+	    					     deviceLocalBuffer.getHandle(), 0, 0, dataBuffer.limit());
 	    bufferCopyCommand.submit(queue);
+	    
+	    vkQueueWaitIdle(queue);
 	    
 	    bufferCopyCommand.destroy();
 	    stagingBuffer.destroy();
 	    
-	    return deviceLocalBuffer.getBuffer();
+	    return deviceLocalBuffer;
 	}
 	
-	public static VkImage createImage(VkDevice device, 
+	public static VkImage createImageFromFile(VkDevice device, 
 		   	   						  VkPhysicalDeviceMemoryProperties memoryProperties,
 		   	   						  long commandPool,
 		   	   						  VkQueue queue,
@@ -70,7 +73,7 @@ public class VkMemoryHelper {
 	    
 	    // copy buffer to image
 	    ImageCopyCmd imageCopyCmd = new ImageCopyCmd(device, commandPool);
-	    imageCopyCmd.record(stagingBuffer.getBuffer().getHandle(), image.getHandle());
+	    imageCopyCmd.record(stagingBuffer.getHandle(), image.getHandle());
 	    imageCopyCmd.submit(queue);
 	    
 	    // transition layout
@@ -78,6 +81,8 @@ public class VkMemoryHelper {
 		imageLayoutTransitionCmd2.record(image.getHandle(),
 				VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 		imageLayoutTransitionCmd2.submit(queue);
+		
+		vkQueueWaitIdle(queue);
 		
 		imageLayoutTransitionCmd1.destroy();
 		imageLayoutTransitionCmd2.destroy();

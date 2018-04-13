@@ -1,11 +1,11 @@
 package org.oreon.modules.gl.postprocessfilter.lightscattering;
 
 import org.oreon.core.gl.light.GLDirectionalLight;
-import org.oreon.core.gl.shaders.GLShader;
+import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.util.ResourceLoader;
 
-public class SunLightScatteringShader extends GLShader{
+public class SunLightScatteringShader extends GLShaderProgram{
 	
 	private static SunLightScatteringShader instance = null;
 	

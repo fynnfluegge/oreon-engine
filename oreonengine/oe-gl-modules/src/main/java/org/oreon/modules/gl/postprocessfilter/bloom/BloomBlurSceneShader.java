@@ -1,9 +1,9 @@
 package org.oreon.modules.gl.postprocessfilter.bloom;
 
-import org.oreon.core.gl.shaders.GLShader;
+import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.util.ResourceLoader;
 
-public class BloomBlurSceneShader extends GLShader{
+public class BloomBlurSceneShader extends GLShaderProgram{
 
 	private static BloomBlurSceneShader instance = null;
 	

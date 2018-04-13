@@ -15,13 +15,13 @@ import java.nio.ByteBuffer;
 
 import org.lwjgl.glfw.GLFW;
 import org.oreon.core.context.EngineContext;
-import org.oreon.core.gl.shaders.GLShader;
+import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.gl.texture.Texture2D;
 
 public class ContrastController {
 
 	private Texture2D contrastTexture;
-	private GLShader contrastShader;
+	private GLShaderProgram contrastShader;
 	
 	private float contrastFactor = 1.0f;
 	private float brightnessFactor = 2.0f;

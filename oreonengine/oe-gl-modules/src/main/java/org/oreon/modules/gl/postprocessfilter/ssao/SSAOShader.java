@@ -1,11 +1,11 @@
 package org.oreon.modules.gl.postprocessfilter.ssao;
 
-import org.oreon.core.gl.shaders.GLShader;
+import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.math.Vec3f;
 import org.oreon.core.util.ResourceLoader;
 
-public class SSAOShader extends GLShader{
+public class SSAOShader extends GLShaderProgram{
 
 	private static SSAOShader instance = null;
 	

@@ -1,9 +1,9 @@
 package org.oreon.modules.gl.gpgpu.fft;
 
-import org.oreon.core.gl.shaders.GLShader;
+import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.util.ResourceLoader;
 
-public class FFTTwiddleFactorsShader extends GLShader{
+public class FFTTwiddleFactorsShader extends GLShaderProgram{
 
 	private static FFTTwiddleFactorsShader instance = null;
 	

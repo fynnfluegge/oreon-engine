@@ -3,11 +3,11 @@ package org.oreon.modules.gl.terrain;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
-import org.oreon.core.gl.shaders.GLShader;
+import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.gl.texture.Texture2D;
 import org.oreon.core.util.ResourceLoader;
 
-public class SplatMapShader extends GLShader{
+public class SplatMapShader extends GLShaderProgram{
 
 	private static SplatMapShader instance = null;
 

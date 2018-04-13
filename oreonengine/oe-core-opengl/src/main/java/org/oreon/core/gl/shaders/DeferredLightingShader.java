@@ -4,11 +4,12 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import org.oreon.core.context.EngineContext;
+import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.gl.texture.Texture2DArray;
 import org.oreon.core.util.Constants;
 import org.oreon.core.util.ResourceLoader;
 
-public class DeferredLightingShader extends GLShader{
+public class DeferredLightingShader extends GLShaderProgram{
 
 	private static DeferredLightingShader instance = null;
 	

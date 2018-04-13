@@ -1,7 +1,7 @@
 package org.oreon.modules.gl.gui;
 
 import org.oreon.core.gl.parameter.RenderParameter;
-import org.oreon.core.gl.shaders.GLShader;
+import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.math.Transform;
 import org.oreon.core.math.Vec2f;
@@ -10,7 +10,7 @@ public abstract class GUIElement {
 
 	private Transform orthoTransform;
 	private Matrix4f orthographicMatrix;
-	private GLShader shader;
+	private GLShaderProgram shader;
 	private GUIVAO vao;
 	private RenderParameter config;
 	protected Vec2f[] texCoords;
@@ -37,11 +37,11 @@ public abstract class GUIElement {
 		this.orthographicMatrix = orthographicMatrix;
 	}
 
-	public GLShader getShader() {
+	public GLShaderProgram getShader() {
 		return shader;
 	}
 
-	public void setShader(GLShader shader) {
+	public void setShader(GLShaderProgram shader) {
 		this.shader = shader;
 	}
 
