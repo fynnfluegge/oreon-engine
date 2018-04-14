@@ -2,13 +2,11 @@ package org.oreon.core.vk.core.pipeline;
 
 import static org.lwjgl.system.MemoryUtil.memAllocLong;
 import static org.lwjgl.system.MemoryUtil.memFree;
-import static org.lwjgl.vulkan.KHRSwapchain.VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 import static org.lwjgl.vulkan.VK10.VK_ATTACHMENT_LOAD_OP_CLEAR;
 import static org.lwjgl.vulkan.VK10.VK_ATTACHMENT_LOAD_OP_DONT_CARE;
 import static org.lwjgl.vulkan.VK10.VK_ATTACHMENT_STORE_OP_DONT_CARE;
 import static org.lwjgl.vulkan.VK10.VK_ATTACHMENT_STORE_OP_STORE;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_UNDEFINED;
 import static org.lwjgl.vulkan.VK10.VK_PIPELINE_BIND_POINT_GRAPHICS;
 import static org.lwjgl.vulkan.VK10.VK_SAMPLE_COUNT_1_BIT;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
@@ -80,9 +78,7 @@ public class RenderPass {
 				.storeOp(VK_ATTACHMENT_STORE_OP_STORE)
 				.stencilLoadOp(VK_ATTACHMENT_LOAD_OP_DONT_CARE)
 				.stencilStoreOp(VK_ATTACHMENT_STORE_OP_DONT_CARE)
-				.initialLayout(VK_IMAGE_LAYOUT_UNDEFINED)
 				.initialLayout(initialLayout)
-				.finalLayout(VK_IMAGE_LAYOUT_PRESENT_SRC_KHR)
 				.finalLayout(finalLayout);
 	}
 	

@@ -8,7 +8,7 @@ import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.instanced.InstancedCluster;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.model.Material;
-import org.oreon.core.scenegraph.ComponentType;
+import org.oreon.core.scenegraph.NodeComponentType;
 import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.util.Constants;
 import org.oreon.core.util.ResourceLoader;
@@ -63,7 +63,7 @@ public class PalmShader extends GLShaderProgram{
 		setUniform("clipplane", EngineContext.getConfig().getClipplane());
 		setUniform("scalingMatrix", new Matrix4f().Scaling(object.getWorldTransform().getScaling()));
 		
-		Material material = (Material) object.getComponent(ComponentType.MATERIAL0);
+		Material material = (Material) object.getComponent(NodeComponentType.MATERIAL0);
 		setUniform("material.color", material.getColor());
 //		setUniformf("material.emission", material.getEmission());
 //		setUniformf("material.shininess", material.getShininess());

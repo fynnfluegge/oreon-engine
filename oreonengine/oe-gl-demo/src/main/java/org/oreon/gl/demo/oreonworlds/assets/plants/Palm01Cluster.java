@@ -10,11 +10,11 @@ import org.oreon.core.gl.instanced.GLInstancedCluster;
 import org.oreon.core.gl.scenegraph.GLRenderInfo;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.math.Vec3f;
-import org.oreon.core.scenegraph.ComponentType;
+import org.oreon.core.scenegraph.NodeComponentType;
 import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.util.BufferUtil;
 import org.oreon.core.util.IntegerReference;
-import org.oreon.modules.gl.terrain.TerrainHelper;
+import org.oreon.gl.components.terrain.TerrainHelper;
 
 public class Palm01Cluster extends GLInstancedCluster{
 
@@ -74,11 +74,11 @@ public class Palm01Cluster extends GLInstancedCluster{
 			addChild(object);
 		}
 		
-		((GLMeshVBO) ((GLRenderInfo) ((Renderable) getChildren().get(0)).getComponent(ComponentType.MAIN_RENDERINFO)).getVbo()).setInstances(getHighPolyInstances());
-		((GLMeshVBO) ((GLRenderInfo) ((Renderable) getChildren().get(1)).getComponent(ComponentType.MAIN_RENDERINFO)).getVbo()).setInstances(getHighPolyInstances());
-		((GLMeshVBO) ((GLRenderInfo) ((Renderable) getChildren().get(2)).getComponent(ComponentType.MAIN_RENDERINFO)).getVbo()).setInstances(getHighPolyInstances());
-		((GLMeshVBO) ((GLRenderInfo) ((Renderable) getChildren().get(3)).getComponent(ComponentType.MAIN_RENDERINFO)).getVbo()).setInstances(getHighPolyInstances());
-		((GLMeshVBO) ((GLRenderInfo) ((Renderable) getChildren().get(4)).getComponent(ComponentType.MAIN_RENDERINFO)).getVbo()).setInstances(getLowPolyInstances());
+		((GLMeshVBO) ((GLRenderInfo) ((Renderable) getChildren().get(0)).getComponent(NodeComponentType.MAIN_RENDERINFO)).getVbo()).setInstances(getHighPolyInstances());
+		((GLMeshVBO) ((GLRenderInfo) ((Renderable) getChildren().get(1)).getComponent(NodeComponentType.MAIN_RENDERINFO)).getVbo()).setInstances(getHighPolyInstances());
+		((GLMeshVBO) ((GLRenderInfo) ((Renderable) getChildren().get(2)).getComponent(NodeComponentType.MAIN_RENDERINFO)).getVbo()).setInstances(getHighPolyInstances());
+		((GLMeshVBO) ((GLRenderInfo) ((Renderable) getChildren().get(3)).getComponent(NodeComponentType.MAIN_RENDERINFO)).getVbo()).setInstances(getHighPolyInstances());
+		((GLMeshVBO) ((GLRenderInfo) ((Renderable) getChildren().get(4)).getComponent(NodeComponentType.MAIN_RENDERINFO)).getVbo()).setInstances(getLowPolyInstances());
 	}
 	
 	public void updateUBOs(){

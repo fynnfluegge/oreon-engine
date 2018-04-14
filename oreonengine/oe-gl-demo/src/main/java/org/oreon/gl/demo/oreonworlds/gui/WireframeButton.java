@@ -3,7 +3,7 @@ package org.oreon.gl.demo.oreonworlds.gui;
 import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.texture.Texture2D;
 import org.oreon.core.math.Vec2f;
-import org.oreon.modules.gl.gui.elements.Button;
+import org.oreon.gl.components.ui.elements.Button;
 
 public class WireframeButton extends Button{
 	

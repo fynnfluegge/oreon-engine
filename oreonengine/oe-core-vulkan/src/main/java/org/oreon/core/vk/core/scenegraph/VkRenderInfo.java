@@ -1,7 +1,7 @@
 package org.oreon.core.vk.core.scenegraph;
 
 import org.lwjgl.vulkan.VkQueue;
-import org.oreon.core.scenegraph.Component;
+import org.oreon.core.scenegraph.NodeComponent;
 import org.oreon.core.vk.core.command.CommandBuffer;
 import org.oreon.core.vk.core.command.SubmitInfo;
 import org.oreon.core.vk.core.pipeline.VkPipeline;
@@ -11,7 +11,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class VkRenderInfo extends Component{
+public class VkRenderInfo extends NodeComponent{
 
 	private VkPipeline pipeline;
 	private CommandBuffer commandBuffer;

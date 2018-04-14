@@ -2,9 +2,9 @@ package org.oreon.gl.demo.oreonworlds.water;
 
 import org.oreon.core.math.Quaternion;
 import org.oreon.core.util.Constants;
+import org.oreon.gl.components.water.Water;
 import org.oreon.gl.demo.oreonworlds.shaders.OceanBRDFShader;
 import org.oreon.gl.demo.oreonworlds.shaders.OceanWireframeShader;
-import org.oreon.modules.gl.water.Water;
 
 public class Ocean extends Water{
 

@@ -9,7 +9,7 @@ import org.oreon.core.math.Matrix4f;
 import org.oreon.core.math.Vec3f;
 import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.util.BufferUtil;
-import org.oreon.modules.gl.terrain.TerrainHelper;
+import org.oreon.gl.components.terrain.TerrainHelper;
 
 public class Grass01Cluster extends GLInstancedCluster{
 

@@ -1,13 +1,13 @@
 package org.oreon.core.light;
 
 import org.oreon.core.query.OcclusionQuery;
-import org.oreon.core.scenegraph.Component;
+import org.oreon.core.scenegraph.NodeComponent;
 import org.oreon.core.context.EngineContext;
 import org.oreon.core.math.Quaternion;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.math.Vec3f;
 
-public class Light extends Component{
+public class Light extends NodeComponent{
 	
 	protected Vec3f color;
 	protected float intensity;

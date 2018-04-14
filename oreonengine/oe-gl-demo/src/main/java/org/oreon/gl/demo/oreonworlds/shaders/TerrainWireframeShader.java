@@ -10,8 +10,8 @@ import org.oreon.core.math.Vec2f;
 import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.util.Constants;
 import org.oreon.core.util.ResourceLoader;
-import org.oreon.modules.gl.terrain.TerrainConfiguration;
-import org.oreon.modules.gl.terrain.TerrainNode;
+import org.oreon.gl.components.terrain.TerrainConfiguration;
+import org.oreon.gl.components.terrain.TerrainNode;
 
 public class TerrainWireframeShader extends GLShaderProgram{
 	

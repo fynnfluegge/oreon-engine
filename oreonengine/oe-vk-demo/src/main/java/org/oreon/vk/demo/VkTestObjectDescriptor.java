@@ -5,10 +5,10 @@ import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_FRAGMENT_BIT;
 
 import org.lwjgl.vulkan.VkDevice;
 import org.oreon.core.vk.core.context.VkContext;
+import org.oreon.core.vk.core.descriptor.Descriptor;
 import org.oreon.core.vk.core.descriptor.DescriptorKeys.DescriptorPoolType;
 import org.oreon.core.vk.core.descriptor.DescriptorSet;
 import org.oreon.core.vk.core.descriptor.DescriptorSetLayout;
-import org.oreon.core.vk.core.descriptor.Descriptor;
 import org.oreon.core.vk.core.image.VkSampler;
 
 public class VkTestObjectDescriptor extends Descriptor{
@@ -22,8 +22,7 @@ public class VkTestObjectDescriptor extends Descriptor{
 	    						VK_SHADER_STAGE_FRAGMENT_BIT);
 	    layout.create();
 	    
-	    sampler = new VkSampler();
-		sampler.create(device);
+	    sampler = new VkSampler(device);
 	    
 	    set = new DescriptorSet(device,
 	    		VkContext.getEnvironment().getDescriptorPool(DescriptorPoolType.COMBINED_IMAGE_SAMPLER).getHandle(),

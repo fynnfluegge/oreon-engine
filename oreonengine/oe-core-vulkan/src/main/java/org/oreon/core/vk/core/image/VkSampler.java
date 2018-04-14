@@ -27,7 +27,7 @@ public class VkSampler {
 	
 	private VkDevice device;
 	
-	public void create(VkDevice device){
+	public VkSampler(VkDevice device){
 		
 		this.device = device;
 		

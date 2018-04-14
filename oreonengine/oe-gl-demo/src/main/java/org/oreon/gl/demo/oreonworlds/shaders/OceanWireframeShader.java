@@ -9,8 +9,8 @@ import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.util.ResourceLoader;
-import org.oreon.modules.gl.water.Water;
-import org.oreon.modules.gl.water.WaterConfiguration;
+import org.oreon.gl.components.water.Water;
+import org.oreon.gl.components.water.WaterConfiguration;
 
 public class OceanWireframeShader extends GLShaderProgram{
 

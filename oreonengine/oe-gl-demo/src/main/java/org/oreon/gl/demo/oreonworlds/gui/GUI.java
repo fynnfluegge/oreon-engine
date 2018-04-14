@@ -1,9 +1,9 @@
 package org.oreon.gl.demo.oreonworlds.gui;
 
-import org.oreon.modules.gl.gui.GUIElement;
-import org.oreon.modules.gl.gui.Screen;
+import org.oreon.gl.components.ui.GUIElement;
+import org.oreon.gl.components.ui.Screen;
 
-public class GUI extends org.oreon.modules.gl.gui.GUI{
+public class GUI extends org.oreon.gl.components.ui.GUI{
 
 //	private OpenCloseButton openCloseButton;
 //	private Screen guiButtonsPanel;

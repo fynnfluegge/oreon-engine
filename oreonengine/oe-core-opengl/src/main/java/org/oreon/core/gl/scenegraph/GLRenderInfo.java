@@ -3,14 +3,14 @@ package org.oreon.core.gl.scenegraph;
 import org.oreon.core.gl.buffer.VBO;
 import org.oreon.core.gl.parameter.RenderParameter;
 import org.oreon.core.gl.pipeline.GLShaderProgram;
-import org.oreon.core.scenegraph.Component;
+import org.oreon.core.scenegraph.NodeComponent;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class GLRenderInfo extends Component{
+public class GLRenderInfo extends NodeComponent{
 	
 	private GLShaderProgram shader;
 	private RenderParameter config;

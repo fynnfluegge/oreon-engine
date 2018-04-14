@@ -26,7 +26,6 @@ import org.oreon.core.vk.core.device.LogicalDevice;
 import org.oreon.core.vk.core.device.PhysicalDevice;
 import org.oreon.core.vk.core.swapchain.SwapChain;
 import org.oreon.core.vk.core.util.VkUtil;
-import org.oreon.core.vk.wrapper.framebuffer.OffScreenFbo;
 
 public class VkRenderEngine extends RenderEngine{
 	

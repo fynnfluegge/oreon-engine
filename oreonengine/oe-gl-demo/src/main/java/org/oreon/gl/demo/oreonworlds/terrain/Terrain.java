@@ -8,9 +8,9 @@ import org.lwjgl.glfw.GLFW;
 import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.util.Constants;
-import org.oreon.modules.gl.terrain.GLTerrain;
-import org.oreon.modules.gl.terrain.GLTerrainContext;
-import org.oreon.modules.gl.terrain.fractals.FractalMap;
+import org.oreon.gl.components.terrain.GLTerrain;
+import org.oreon.gl.components.terrain.GLTerrainContext;
+import org.oreon.gl.components.terrain.fractals.FractalMap;
 
 public class Terrain extends GLTerrain{
 

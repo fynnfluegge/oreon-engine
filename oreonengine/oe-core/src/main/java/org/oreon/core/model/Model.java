@@ -1,8 +1,8 @@
 package org.oreon.core.model;
 
-import org.oreon.core.scenegraph.Component;
+import org.oreon.core.scenegraph.NodeComponent;
 
-public class Model extends Component{
+public class Model extends NodeComponent{
 
 	private Mesh mesh;
 	private Material material;

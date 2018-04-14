@@ -24,7 +24,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.oreon.gl</groupId>
-			<artifactId>oe-gl-modules</artifactId>
+			<artifactId>oe-gl-components</artifactId>
 			<version>${oreon.version}</version>
 		</dependency>
 	</dependencies>

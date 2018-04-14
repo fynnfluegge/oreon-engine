@@ -4,7 +4,7 @@ import static org.lwjgl.vulkan.VK10.VK_FORMAT_R8G8B8A8_UNORM;
 
 import org.lwjgl.vulkan.VkDevice;
 import org.oreon.core.model.Mesh;
-import org.oreon.core.scenegraph.ComponentType;
+import org.oreon.core.scenegraph.NodeComponentType;
 import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.util.MeshGenerator;
 import org.oreon.core.vk.core.command.SubmitInfo;
@@ -18,8 +18,8 @@ import org.oreon.core.vk.core.pipeline.VkVertexInput;
 import org.oreon.core.vk.core.scenegraph.VkRenderInfo;
 import org.oreon.core.vk.wrapper.VkMemoryHelper;
 import org.oreon.core.vk.wrapper.command.RenderCommandBuffer;
-import org.oreon.core.vk.wrapper.framebuffer.OffScreenFbo;
 import org.oreon.core.vk.wrapper.pipeline.OffScreenRenderPipeline;
+import org.oreon.vk.engine.OffScreenFbo;
 
 public class VkTestObject extends Renderable{
 	
@@ -62,8 +62,6 @@ public class VkTestObject extends Renderable{
 	    
 	    OffScreenFbo fbo = VkContext.getObject(OffScreenFbo.class);
 	    
-	    System.out.println(fbo.getHeight());
-	    
 	    OffScreenRenderPipeline pipeline = new OffScreenRenderPipeline(VkContext.getLogicalDevice().getHandle(),
 	    						resource,
 	    						fbo);
@@ -76,6 +74,6 @@ public class VkTestObject extends Renderable{
 	    VkRenderInfo renderInfo = new VkRenderInfo(pipeline, commandBuffer, submitInfo,
 	    		VkContext.getLogicalDevice().getGraphicsQueue());
 	    
-	    addComponent(ComponentType.MAIN_RENDERINFO, renderInfo);
+	    addComponent(NodeComponentType.MAIN_RENDERINFO, renderInfo);
 	}
 }

@@ -13,7 +13,7 @@ import org.oreon.core.instanced.InstancedHandler;
 import org.oreon.core.instanced.InstancedObject;
 import org.oreon.core.math.Vec3f;
 import org.oreon.core.model.Model;
-import org.oreon.core.scenegraph.ComponentType;
+import org.oreon.core.scenegraph.NodeComponentType;
 import org.oreon.core.scenegraph.Renderable;
 import org.oreon.gl.demo.oreonworlds.shaders.InstancedWireframeShader;
 import org.oreon.gl.demo.oreonworlds.shaders.assets.plants.GrassShader;
@@ -40,10 +40,10 @@ public class Plant01ClusterGroup extends InstancedObject{
 			GLRenderInfo wireframeRenderInfo = new GLRenderInfo(InstancedWireframeShader.getInstance(), new CullFaceDisable(), meshBuffer);
 	
 			Renderable object = new Renderable();
-			object.addComponent(ComponentType.MAIN_RENDERINFO, renderInfo);
-			object.addComponent(ComponentType.SHADOW_RENDERINFO, shadowRenderInfo);
-			object.addComponent(ComponentType.WIREFRAME_RENDERINFO, wireframeRenderInfo);
-			object.addComponent(ComponentType.MATERIAL0, model.getMaterial());
+			object.addComponent(NodeComponentType.MAIN_RENDERINFO, renderInfo);
+			object.addComponent(NodeComponentType.SHADOW_RENDERINFO, shadowRenderInfo);
+			object.addComponent(NodeComponentType.WIREFRAME_RENDERINFO, wireframeRenderInfo);
+			object.addComponent(NodeComponentType.MATERIAL0, model.getMaterial());
 			objects.add(object);
 		}
 		

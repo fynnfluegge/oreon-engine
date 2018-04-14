@@ -4,11 +4,11 @@ import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.context.GLContext;
 import org.oreon.core.system.CoreEngine;
 import org.oreon.core.system.CoreSystem;
+import org.oreon.gl.components.atmosphere.SkySphere;
+import org.oreon.gl.components.atmosphere.Sun;
 import org.oreon.gl.demo.oreonworlds.gui.GUI;
 import org.oreon.gl.demo.oreonworlds.water.Ocean;
 import org.oreon.gl.engine.GLRenderEngine;
-import org.oreon.modules.gl.atmosphere.SkySphere;
-import org.oreon.modules.gl.atmosphere.Sun;
 
 public class Main {
 

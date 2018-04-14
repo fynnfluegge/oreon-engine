@@ -17,7 +17,7 @@ import org.lwjgl.vulkan.VkQueue;
 import org.oreon.core.vk.core.buffer.VkBuffer;
 import org.oreon.core.vk.core.image.VkImage;
 import org.oreon.core.vk.core.image.VkImageLoader;
-import org.oreon.core.vk.wrapper.buffer.DeviceLocalBuffer;
+import org.oreon.core.vk.wrapper.buffer.LocalBuffer;
 import org.oreon.core.vk.wrapper.buffer.StagingBuffer;
 import org.oreon.core.vk.wrapper.command.BufferCopyCmd;
 import org.oreon.core.vk.wrapper.command.ImageCopyCmd;
@@ -33,7 +33,7 @@ public class VkMemoryHelper {
 											   	   int usage){
 		
 		StagingBuffer stagingBuffer = new StagingBuffer(device, memoryProperties, dataBuffer);
-		DeviceLocalBuffer deviceLocalBuffer = new DeviceLocalBuffer(device, memoryProperties,
+		LocalBuffer deviceLocalBuffer = new LocalBuffer(device, memoryProperties,
 														dataBuffer.limit(), usage);
 	    
 	    BufferCopyCmd bufferCopyCommand = new BufferCopyCmd(device, commandPool);

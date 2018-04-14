@@ -154,11 +154,12 @@
   		<module>oe-core-opengl</module>
   		<module>oe-core-vulkan</module>
   		<module>oe-gl-demo</module>
-  		<module>oe-gl-modules</module>
+  		<module>oe-gl-components</module>
   		<module>oe-gl-engine</module>
   		<module>oe-vk-demo</module>
-  		<module>oe-vk-modules</module>
+  		<module>oe-vk-components</module>
   		<module>oe-vk-engine</module>
+  		<module>oe-component-terrain</module>
   </modules>
 
 </project>

@@ -45,13 +45,15 @@ public class VkImage {
 	private long handle;
 	@Getter
 	private long memory;
-	
+	@Getter
+	private int format;
 	private long allocationSize;
 	private VkDevice device;
 
 	public VkImage(VkDevice device, int width, int height, int depth, int format, int usage){
 		
 		this.device = device;
+		this.format = format;
 		
 		VkExtent3D extent = VkExtent3D.calloc()
 				.width(width)
