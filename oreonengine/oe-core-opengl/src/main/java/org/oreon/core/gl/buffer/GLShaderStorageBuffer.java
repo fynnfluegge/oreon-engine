@@ -14,11 +14,11 @@ import org.oreon.core.util.BufferUtil;
  * Shader Storage Buffer Object
  */
 
-public class GLSSBO {
+public class GLShaderStorageBuffer {
 	
 	private int ssbo;
 	
-	public GLSSBO()
+	public GLShaderStorageBuffer()
 	{
 		ssbo = glGenBuffers();
 	}

@@ -5,7 +5,7 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.pipeline.GLShaderProgram;
-import org.oreon.core.gl.texture.Texture2D;
+import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.util.ResourceLoader;
 
 public class FXAAShader extends GLShaderProgram{
@@ -34,7 +34,7 @@ public class FXAAShader extends GLShaderProgram{
 		addUniform("height");
 	} 
 	
-	public void updateUniforms(Texture2D sceneTexture){
+	public void updateUniforms(GLTexture sceneTexture){
 		
 		glActiveTexture(GL_TEXTURE0);
 		sceneTexture.bind();

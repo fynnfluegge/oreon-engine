@@ -1,14 +1,18 @@
 package org.oreon.gl.components.terrain.fractals;
 
-import org.oreon.core.gl.texture.Texture2D;
+import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.math.Vec2f;
 
+import lombok.Getter;
+
 public class FractalMap {
+	
+	@Getter
+	private GLTexture heightmap;
 	
 	private int N;
 	private float amplitude; 
 	private float l;
-	private Texture2D heightmap;
 	private int scaling;
 	private float strength;
 	private int random;
@@ -31,14 +35,6 @@ public class FractalMap {
 		fft.init();
 		fft.render();
 		heightmap = fft.getHeightmap();
-	}
-
-	public Texture2D getHeightmap() {
-		return heightmap;
-	}
-
-	public void setHeightmap(Texture2D heightmap) {
-		this.heightmap = heightmap;
 	}
 
 	public int getScaling() {

@@ -1,37 +1,36 @@
 package org.oreon.gl.components.gpgpu.fft;
 
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL15.GL_WRITE_ONLY;
 import static org.lwjgl.opengl.GL30.GL_RGBA32F;
 import static org.lwjgl.opengl.GL42.glBindImageTexture;
-import static org.lwjgl.opengl.GL42.glTexStorage2D;
 import static org.lwjgl.opengl.GL43.glDispatchCompute;
 
-import org.oreon.core.gl.buffer.GLSSBO;
-import org.oreon.core.gl.texture.Texture2D;
+import org.oreon.core.gl.buffer.GLShaderStorageBuffer;
+import org.oreon.core.gl.texture.GLTexture;
+import org.oreon.core.gl.wrapper.texture.Texture2DStorageRGBA32F;
+
+import lombok.Getter;
 
 public class TwiddleFactors {
 
+	@Getter
+	private GLTexture texture;
+	
 	private int N;
 	private int log_2_N;
 	private FFTTwiddleFactorsShader shader;
-	private GLSSBO bitReversedSSBO;
-	private Texture2D texture;
+	private GLShaderStorageBuffer bitReversedSSBO;
 	
 	public TwiddleFactors(int N)
 	{
 		this.N = N;
 		
-		bitReversedSSBO = new GLSSBO();
+		bitReversedSSBO = new GLShaderStorageBuffer();
 		bitReversedSSBO.addData(initBitReversedIndices());
 		
 		log_2_N = (int) (Math.log(N)/Math.log(2));
 		shader = FFTTwiddleFactorsShader.getInstance();
-		texture = new Texture2D();
-		texture.generate();
-		texture.bind();
-		texture.noFilter();
-		glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA32F, log_2_N, N);
+		texture = new Texture2DStorageRGBA32F(log_2_N,N,1);
 	}
 	
 	public void render()
@@ -39,7 +38,7 @@ public class TwiddleFactors {
 		shader.bind();
 		bitReversedSSBO.bindBufferBase(1);
 		shader.updateUniforms(N);
-		glBindImageTexture(0, texture.getId(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA32F);
+		glBindImageTexture(0, texture.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA32F);
 		glDispatchCompute(log_2_N,N/16,1);	
 	}
 	
@@ -58,7 +57,4 @@ public class TwiddleFactors {
 		return bitReversedIndices;
 	}
 
-	public Texture2D getTexture() {
-		return texture;
-	}
 }

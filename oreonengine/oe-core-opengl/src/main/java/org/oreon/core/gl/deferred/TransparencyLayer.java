@@ -20,7 +20,7 @@ public class TransparencyLayer {
 	
 		gbuffer = new TransparencyGBuffer(width, height);
 		
-		IntBuffer drawBuffers = BufferUtil.createIntBuffer(6);
+		IntBuffer drawBuffers = BufferUtil.createIntBuffer(5);
 		drawBuffers.put(GL_COLOR_ATTACHMENT0);
 		drawBuffers.put(GL_COLOR_ATTACHMENT1);
 		drawBuffers.put(GL_COLOR_ATTACHMENT2);
@@ -30,10 +30,10 @@ public class TransparencyLayer {
 		
 		fbo = new GLFramebuffer();
 		fbo.bind();
-		fbo.createColorTextureAttachment(gbuffer.getAlbedoTexture().getId(),0);
-		fbo.createColorTextureAttachment(gbuffer.getAlphaTexture().getId(),1);
-		fbo.createColorTextureAttachment(gbuffer.getLightScatteringMask().getId(),4);
-		fbo.createDepthTextureAttachment(gbuffer.getDepthTexture().getId());
+		fbo.createColorTextureAttachment(gbuffer.getAlbedoTexture().getHandle(),0);
+		fbo.createColorTextureAttachment(gbuffer.getAlphaTexture().getHandle(),1);
+		fbo.createColorTextureAttachment(gbuffer.getLightScatteringMask().getHandle(),4);
+		fbo.createDepthTextureAttachment(gbuffer.getDepthTexture().getHandle());
 		fbo.setDrawBuffers(drawBuffers);
 		fbo.checkStatus();
 		fbo.unbind();

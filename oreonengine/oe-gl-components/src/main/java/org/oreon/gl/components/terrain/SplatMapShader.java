@@ -4,7 +4,7 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import org.oreon.core.gl.pipeline.GLShaderProgram;
-import org.oreon.core.gl.texture.Texture2D;
+import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.util.ResourceLoader;
 
 public class SplatMapShader extends GLShaderProgram{
@@ -31,7 +31,7 @@ public class SplatMapShader extends GLShaderProgram{
 		addUniform("N");
 	}
 	
-	public void updateUniforms(Texture2D normalmap, int N)
+	public void updateUniforms(GLTexture normalmap, int N)
 	{
 		glActiveTexture(GL_TEXTURE0);
 		normalmap.bind();

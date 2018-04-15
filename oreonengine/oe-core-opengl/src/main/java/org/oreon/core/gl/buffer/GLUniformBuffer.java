@@ -17,13 +17,13 @@ import java.nio.FloatBuffer;
  * Uniform Buffer Object
  */
 
-public class GLUBO {
+public class GLUniformBuffer {
 	
 	private int ubo;
 	private int binding_point_index;
 	private String bindingName;
 	
-	public GLUBO()
+	public GLUniformBuffer()
 	{
 		ubo = glGenBuffers();
 		bindingName = new String();

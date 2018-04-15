@@ -9,7 +9,7 @@ import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
 import org.oreon.core.context.EngineContext;
 import org.oreon.core.vk.core.image.VkImageWrapper;
-import org.oreon.core.vk.wrapper.image.LocalImage2D;
+import org.oreon.core.vk.wrapper.image.Image2DLocal;
 
 import lombok.Getter;
 
@@ -29,11 +29,11 @@ public class GBuffer {
 		int height = EngineContext.getConfig().getDisplayHeight();
 		
 		albedoBuffer = new VkImageWrapper(device,
-				new LocalImage2D(device, memoryProperties, width, height, VK_FORMAT_B8G8R8A8_UNORM,
+				new Image2DLocal(device, memoryProperties, width, height, VK_FORMAT_B8G8R8A8_UNORM,
 					VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT));
 		
 		normalBuffer = new VkImageWrapper(device,
-				new LocalImage2D(device, memoryProperties, width, height, VK_FORMAT_R32G32B32_SFLOAT,
+				new Image2DLocal(device, memoryProperties, width, height, VK_FORMAT_R32G32B32_SFLOAT,
 					VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT));
 	}
 }

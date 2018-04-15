@@ -3,7 +3,7 @@ package org.oreon.gl.demo.oreonworlds.assets.plants;
 import java.nio.FloatBuffer;
 import java.util.List;
 
-import org.oreon.core.gl.buffer.GLUBO;
+import org.oreon.core.gl.buffer.GLUniformBuffer;
 import org.oreon.core.gl.instanced.GLInstancedCluster;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.math.Vec3f;
@@ -38,10 +38,10 @@ public class Bush01Cluster extends GLInstancedCluster{
 			getHighPolyIndices().add(i);
 		}
 		
-		setModelMatricesBuffer(new GLUBO());
+		setModelMatricesBuffer(new GLUniformBuffer());
 		getModelMatricesBuffer().allocate(buffersize);
 		
-		setWorldMatricesBuffer(new GLUBO());
+		setWorldMatricesBuffer(new GLUniformBuffer());
 		getWorldMatricesBuffer().allocate(buffersize);	
 		
 		/**

@@ -17,16 +17,16 @@ public class TerrainHelper {
 		pos = pos.div(config.getScaleXZ());
 		Vec2f floor = new Vec2f((int) Math.floor(pos.getX()), (int) Math.floor(pos.getY()));
 		pos = pos.sub(floor);
-		pos = pos.mul(config.getHeightmap().getWidth());
+		pos = pos.mul(config.getHeightmap().getMetaData().getWidth());
 		int x0 = (int) Math.floor(pos.getX());
 		int x1 = x0 + 1;
 		int z0 = (int) Math.floor(pos.getY());
 		int z1 = z0 + 1;
 		
-		float h0 =  config.getHeightmapDataBuffer().get(config.getHeightmap().getWidth() * z0 + x0);
-		float h1 =  config.getHeightmapDataBuffer().get(config.getHeightmap().getWidth() * z0 + x1);
-		float h2 =  config.getHeightmapDataBuffer().get(config.getHeightmap().getWidth() * z1 + x0);
-		float h3 =  config.getHeightmapDataBuffer().get(config.getHeightmap().getWidth() * z1 + x1);
+		float h0 =  config.getHeightmapDataBuffer().get(config.getHeightmap().getMetaData().getWidth() * z0 + x0);
+		float h1 =  config.getHeightmapDataBuffer().get(config.getHeightmap().getMetaData().getWidth() * z0 + x1);
+		float h2 =  config.getHeightmapDataBuffer().get(config.getHeightmap().getMetaData().getWidth() * z1 + x0);
+		float h3 =  config.getHeightmapDataBuffer().get(config.getHeightmap().getMetaData().getWidth() * z1 + x1);
 		
 		float percentU = pos.getX() - x0;
         float percentV = pos.getY() - z0;

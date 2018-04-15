@@ -1,4 +1,4 @@
-package org.oreon.core.texture;
+package org.oreon.core.util;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;

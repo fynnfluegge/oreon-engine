@@ -1,6 +1,6 @@
 package org.oreon.core.gl.instanced;
 
-import org.oreon.core.gl.buffer.GLUBO;
+import org.oreon.core.gl.buffer.GLUniformBuffer;
 import org.oreon.core.instanced.InstancedCluster;
 
 import lombok.Getter;
@@ -10,6 +10,6 @@ import lombok.Setter;
 @Setter
 public class GLInstancedCluster extends InstancedCluster{
 
-	private GLUBO modelMatricesBuffer;
-	private GLUBO worldMatricesBuffer;
+	private GLUniformBuffer modelMatricesBuffer;
+	private GLUniformBuffer worldMatricesBuffer;
 }

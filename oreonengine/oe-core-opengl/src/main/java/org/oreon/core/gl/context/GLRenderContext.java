@@ -1,7 +1,7 @@
 package org.oreon.core.gl.context;
 
 import org.oreon.core.gl.buffer.GLFramebuffer;
-import org.oreon.core.texture.Texture;
+import org.oreon.core.gl.texture.GLTexture;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -10,10 +10,10 @@ import lombok.Setter;
 @Setter
 public class GLRenderContext {
 	
-	private Texture sceneDepthMap;
+	private GLTexture sceneDepthMap;
 	private GLFramebuffer deferredFbo;
 
-	private Texture underwaterDudvMap;
-	private Texture underwaterCausticsMap;
+	private GLTexture underwaterDudvMap;
+	private GLTexture underwaterCausticsMap;
 	private float underwaterDistortion;
 }

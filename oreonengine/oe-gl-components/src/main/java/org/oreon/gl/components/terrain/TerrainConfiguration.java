@@ -12,7 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import org.oreon.core.gl.texture.Texture2D;
+import org.oreon.core.gl.texture.GLTexture;
+import org.oreon.core.gl.wrapper.texture.Texture2DTrilinearFilter;
 import org.oreon.core.model.Material;
 import org.oreon.core.util.BufferUtil;
 import org.oreon.core.util.Constants;
@@ -35,12 +36,12 @@ public class TerrainConfiguration {
 	private float tessellationSlope;
 	private float tessellationShift;
 	private int detailRange;
-	private Texture2D heightmap;
-	private Texture2D normalmap;
-	private Texture2D ambientmap;
-	private Texture2D splatmap;
+	private GLTexture heightmap;
+	private GLTexture normalmap;
+	private GLTexture ambientmap;
+	private GLTexture splatmap;
 	private FloatBuffer heightmapDataBuffer;
-	private List<Material> materials = new ArrayList<>();
+	private List<Material<GLTexture>> materials = new ArrayList<>();
 	private List<FractalMap> fractals = new ArrayList<>();
 	
 	private int[] lod_range = new int[8];
@@ -61,11 +62,11 @@ public class TerrainConfiguration {
 		scaleXZ = Float.valueOf(properties.getProperty("scaleXZ"));
 		
 		if (!properties.getProperty("heightmap").equals("0")){
-			heightmap = new Texture2D(properties.getProperty("heightmap"));
+			heightmap = new GLTexture(properties.getProperty("heightmap"));
 			getHeightmap().bind();
 			getHeightmap().bilinearFilter();
 			
-			NormalMapRenderer normalRenderer = new NormalMapRenderer(getHeightmap().getWidth());
+			NormalMapRenderer normalRenderer = new NormalMapRenderer(getHeightmap().getMetaData().getWidth());
 			normalRenderer.setStrength(Integer.valueOf(properties.getProperty("normalmap.strength")));
 			normalRenderer.render(getHeightmap());
 			normalmap = normalRenderer.getNormalmap();	
@@ -74,21 +75,15 @@ public class TerrainConfiguration {
 		
 		for (int i=0; i<Integer.valueOf(properties.getProperty("materials.count")); i++){
 			
-			getMaterials().add(new Material());
+			getMaterials().add(new Material<GLTexture>());
 			
-			Texture2D diffusemap = new Texture2D(properties.getProperty("materials.material" + i + "_DIF"));
-			diffusemap.bind();
-			diffusemap.trilinearFilter();
+			GLTexture diffusemap = new Texture2DTrilinearFilter(properties.getProperty("materials.material" + i + "_DIF"));
 			getMaterials().get(materials.size()-1).setDiffusemap(diffusemap);
 			
-			Texture2D normalmap = new Texture2D(properties.getProperty("materials.material" + i + "_NRM"));
-			normalmap.bind();
-			normalmap.trilinearFilter();
+			GLTexture normalmap = new Texture2DTrilinearFilter(properties.getProperty("materials.material" + i + "_NRM"));
 			getMaterials().get(materials.size()-1).setNormalmap(normalmap);
 			
-			Texture2D heightmap = new Texture2D(properties.getProperty("materials.material" + i + "_DISP"));
-			heightmap.bind();
-			heightmap.trilinearFilter();
+			GLTexture heightmap = new Texture2DTrilinearFilter(properties.getProperty("materials.material" + i + "_DISP"));
 			getMaterials().get(materials.size()-1).setHeightmap(heightmap);
 			
 			getMaterials().get(materials.size()-1).setHeightScaling(Float.valueOf(properties.getProperty("materials.material" + i + "_heightScaling")));
@@ -132,7 +127,7 @@ public class TerrainConfiguration {
 	
 	public void createHeightmapDataBuffer(){
 		
-		heightmapDataBuffer = BufferUtil.createFloatBuffer(getHeightmap().getWidth() * getHeightmap().getHeight());
+		heightmapDataBuffer = BufferUtil.createFloatBuffer(getHeightmap().getMetaData().getWidth() * getHeightmap().getMetaData().getHeight());
 		heightmap.bind();
 		glGetTexImage(GL_TEXTURE_2D,0,GL_RED,GL_FLOAT,heightmapDataBuffer);
 	}

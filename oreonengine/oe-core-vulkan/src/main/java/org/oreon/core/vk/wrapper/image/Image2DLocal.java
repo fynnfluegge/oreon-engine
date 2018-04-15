@@ -6,9 +6,9 @@ import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
 import org.oreon.core.vk.core.image.VkImage;
 
-public class LocalImage2D extends VkImage{
+public class Image2DLocal extends VkImage{
 
-	public LocalImage2D(VkDevice device, VkPhysicalDeviceMemoryProperties memoryProperties,
+	public Image2DLocal(VkDevice device, VkPhysicalDeviceMemoryProperties memoryProperties,
 							  int width, int height, int format, int usage) {
 		
 		super(device, width, height, 1, format, usage);

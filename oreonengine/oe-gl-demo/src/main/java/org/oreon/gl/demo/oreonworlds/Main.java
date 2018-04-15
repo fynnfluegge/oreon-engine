@@ -6,7 +6,11 @@ import org.oreon.core.system.CoreEngine;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.gl.components.atmosphere.SkySphere;
 import org.oreon.gl.components.atmosphere.Sun;
+import org.oreon.gl.demo.oreonworlds.assets.plants.Palm01ClusterGroup;
 import org.oreon.gl.demo.oreonworlds.gui.GUI;
+import org.oreon.gl.demo.oreonworlds.shaders.TerrainShader;
+import org.oreon.gl.demo.oreonworlds.shaders.TerrainWireframeShader;
+import org.oreon.gl.demo.oreonworlds.terrain.Terrain;
 import org.oreon.gl.demo.oreonworlds.water.Ocean;
 import org.oreon.gl.engine.GLRenderEngine;
 
@@ -29,16 +33,16 @@ public class Main {
 		renderEngine.getScenegraph().addObject(new SkySphere());	
 		renderEngine.getScenegraph().addTransparentObject(new Sun());
 		renderEngine.getScenegraph().setWater(new Ocean());
-//		renderEngine.getScenegraph().setTerrain(new Terrain(TerrainShader.getInstance(),
-//													        TerrainWireframeShader.getInstance(), 
-//													        null));
+		renderEngine.getScenegraph().setTerrain(new Terrain(TerrainShader.getInstance(),
+													        TerrainWireframeShader.getInstance(), 
+													        null));
 		
 //		coreSystem.getScenegraph().getRoot().addChild(new Bush01ClusterGroup());
-//		coreSystem.getScenegraph().getRoot().addChild(new Palm01ClusterGroup());
+		renderEngine.getScenegraph().getRoot().addChild(new Palm01ClusterGroup());
 //		coreSystem.getScenegraph().getRoot().addChild(new Plant01ClusterGroup());
 //		coreSystem.getScenegraph().getRoot().addChild(new Grass01ClusterGroup());
-//		coreSystem.getScenegraph().getRoot().addChild(new Tree02ClusterGroup());
-//		coreSystem.getScenegraph().getRoot().addChild(new Tree01ClusterGroup());
+//		renderEngine.getScenegraph().getRoot().addChild(new Tree02ClusterGroup());
+//		renderEngine.getScenegraph().getRoot().addChild(new Tree01ClusterGroup());
 //		coreSystem.getScenegraph().getRoot().addChild(new Rock01ClusterGroup());
 //		coreSystem.getScenegraph().getRoot().addChild(new Rock02ClusterGroup());
 		

@@ -4,7 +4,7 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import org.oreon.core.gl.pipeline.GLShaderProgram;
-import org.oreon.core.gl.texture.Texture2D;
+import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.util.ResourceLoader;
 
 public class HorizontalBloomBlurShader extends GLShaderProgram{
@@ -33,7 +33,7 @@ public class HorizontalBloomBlurShader extends GLShaderProgram{
 		addUniform("windowHeight");
 	}
 	
-	public void updateUniforms(Texture2D bloomTexture, int width, int height)
+	public void updateUniforms(GLTexture bloomTexture, int width, int height)
 	{
 		glActiveTexture(GL_TEXTURE0);
 		bloomTexture.bind();

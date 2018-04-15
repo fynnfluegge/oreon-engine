@@ -1,24 +1,27 @@
 package org.oreon.gl.components.water.fft;
 
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.glFinish;
 import static org.lwjgl.opengl.GL15.GL_READ_WRITE;
 import static org.lwjgl.opengl.GL30.GL_RGBA32F;
 import static org.lwjgl.opengl.GL42.glBindImageTexture;
-import static org.lwjgl.opengl.GL42.glTexStorage2D;
 import static org.lwjgl.opengl.GL43.glDispatchCompute;
 
-import org.oreon.core.gl.texture.Texture2D;
+import org.oreon.core.gl.texture.GLTexture;
+import org.oreon.core.gl.wrapper.texture.Texture2DStorageRGBA32F;
 import org.oreon.gl.components.gpgpu.fft.FFTButterflyShader;
 import org.oreon.gl.components.gpgpu.fft.FFTInversionShader;
 import org.oreon.gl.components.gpgpu.fft.FastFourierTransform;
 
-import static org.lwjgl.opengl.GL11.glFinish;
+import lombok.Getter;
 
 public class OceanFFT extends FastFourierTransform{
-		
-	private Texture2D Dy;
-	private Texture2D Dx;
-	private Texture2D Dz;
+	
+	@Getter
+	private GLTexture Dy;
+	@Getter
+	private GLTexture Dx;
+	@Getter
+	private GLTexture Dz;
 	private boolean choppy;
 		
 	public OceanFFT(int N)
@@ -31,27 +34,13 @@ public class OceanFFT extends FastFourierTransform{
 		setButterflyShader(FFTButterflyShader.getInstance());
 		setInversionShader(FFTInversionShader.getInstance());
 		
-		Dy = new Texture2D();
-		Dy.generate();
-		Dy.bind();
-		glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA32F, N, N);
+		Dy = new Texture2DStorageRGBA32F(N,N,1);
 		
+		Dx = new Texture2DStorageRGBA32F(N,N,1);;
 		
+		Dz = new Texture2DStorageRGBA32F(N,N,1);
 		
-		Dx = new Texture2D();
-		Dx.generate();
-		Dx.bind();
-		glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA32F, N, N);
-		
-		Dz = new Texture2D();
-		Dz.generate();
-		Dz.bind();
-		glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA32F, N, N);
-		
-		setPingpongTexture(new Texture2D());
-		getPingpongTexture().generate();
-		getPingpongTexture().bind();
-		glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA32F, N, N);
+		setPingpongTexture(new Texture2DStorageRGBA32F(N,N,1));
 	}
 		
 	public void render()
@@ -64,9 +53,9 @@ public class OceanFFT extends FastFourierTransform{
 		
 		getButterflyShader().bind();
 		
-		glBindImageTexture(0, getTwiddles().getTexture().getId(), 0, false, 0, GL_READ_WRITE, GL_RGBA32F);
-		glBindImageTexture(1, ((Tilde_hkt) getFourierComponents()).getDyComponents().getId(), 0, false, 0, GL_READ_WRITE, GL_RGBA32F);
-		glBindImageTexture(2, getPingpongTexture().getId(), 0, false, 0, GL_READ_WRITE, GL_RGBA32F);
+		glBindImageTexture(0, getTwiddles().getTexture().getHandle(), 0, false, 0, GL_READ_WRITE, GL_RGBA32F);
+		glBindImageTexture(1, ((Tilde_hkt) getFourierComponents()).getDyComponents().getHandle(), 0, false, 0, GL_READ_WRITE, GL_RGBA32F);
+		glBindImageTexture(2, getPingpongTexture().getHandle(), 0, false, 0, GL_READ_WRITE, GL_RGBA32F);
 		
 		// 1D FFT horizontal 
 		for (int i=0; i<log_2_N; i++)
@@ -90,7 +79,7 @@ public class OceanFFT extends FastFourierTransform{
 		
 		getInversionShader().bind();
 		getInversionShader().updateUniforms(N,pingpong);
-		glBindImageTexture(0, Dy.getId(), 0, false, 0, GL_READ_WRITE, GL_RGBA32F);
+		glBindImageTexture(0, Dy.getHandle(), 0, false, 0, GL_READ_WRITE, GL_RGBA32F);
 		glDispatchCompute(N/16,N/16,1);
 		glFinish();
 		
@@ -103,9 +92,9 @@ public class OceanFFT extends FastFourierTransform{
 					
 			getButterflyShader().bind();
 			
-			glBindImageTexture(0, getTwiddles().getTexture().getId(), 0, false, 0, GL_READ_WRITE, GL_RGBA32F);
-			glBindImageTexture(1, ((Tilde_hkt) getFourierComponents()).getDxComponents().getId(), 0, false, 0, GL_READ_WRITE, GL_RGBA32F);
-			glBindImageTexture(2, getPingpongTexture().getId(), 0, false, 0, GL_READ_WRITE, GL_RGBA32F);
+			glBindImageTexture(0, getTwiddles().getTexture().getHandle(), 0, false, 0, GL_READ_WRITE, GL_RGBA32F);
+			glBindImageTexture(1, ((Tilde_hkt) getFourierComponents()).getDxComponents().getHandle(), 0, false, 0, GL_READ_WRITE, GL_RGBA32F);
+			glBindImageTexture(2, getPingpongTexture().getHandle(), 0, false, 0, GL_READ_WRITE, GL_RGBA32F);
 					
 			// 1D FFT horizontal 
 			for (int i=0; i<log_2_N; i++)
@@ -129,7 +118,7 @@ public class OceanFFT extends FastFourierTransform{
 					
 			getInversionShader().bind();
 			getInversionShader().updateUniforms(getN(),pingpong);
-			glBindImageTexture(0, Dx.getId(), 0, false, 0, GL_READ_WRITE, GL_RGBA32F);
+			glBindImageTexture(0, Dx.getHandle(), 0, false, 0, GL_READ_WRITE, GL_RGBA32F);
 			glDispatchCompute(N/16,N/16,1);	
 			glFinish();
 		
@@ -139,9 +128,9 @@ public class OceanFFT extends FastFourierTransform{
 							
 			getButterflyShader().bind();
 			
-			glBindImageTexture(0, getTwiddles().getTexture().getId(), 0, false, 0, GL_READ_WRITE, GL_RGBA32F);
-			glBindImageTexture(1, ((Tilde_hkt) getFourierComponents()).getDzComponents().getId(), 0, false, 0, GL_READ_WRITE, GL_RGBA32F);
-			glBindImageTexture(2, getPingpongTexture().getId(), 0, false, 0, GL_READ_WRITE, GL_RGBA32F);
+			glBindImageTexture(0, getTwiddles().getTexture().getHandle(), 0, false, 0, GL_READ_WRITE, GL_RGBA32F);
+			glBindImageTexture(1, ((Tilde_hkt) getFourierComponents()).getDzComponents().getHandle(), 0, false, 0, GL_READ_WRITE, GL_RGBA32F);
+			glBindImageTexture(2, getPingpongTexture().getHandle(), 0, false, 0, GL_READ_WRITE, GL_RGBA32F);
 							
 			// 1D FFT horizontal 
 			for (int i=0; i<log_2_N; i++)
@@ -165,24 +154,12 @@ public class OceanFFT extends FastFourierTransform{
 							
 			getInversionShader().bind();
 			getInversionShader().updateUniforms(N,pingpong);
-			glBindImageTexture(0, Dz.getId(), 0, false, 0, GL_READ_WRITE, GL_RGBA32F);
+			glBindImageTexture(0, Dz.getHandle(), 0, false, 0, GL_READ_WRITE, GL_RGBA32F);
 			glDispatchCompute(N/16,N/16,1);
 			glFinish();
 		}
 			
 		t += t_delta;
-	}
-
-	public Texture2D getDy() {
-		return Dy;
-	}
-
-	public Texture2D getDx() {
-		return Dx;
-	}
-
-	public Texture2D getDz() {
-		return Dz;
 	}
 
 	public boolean isChoppy() {

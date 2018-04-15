@@ -11,7 +11,7 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.pipeline.GLShaderProgram;
-import org.oreon.core.texture.Texture;
+import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.util.ResourceLoader;
 
 public class TransparencyBlendShader extends GLShaderProgram{
@@ -46,10 +46,10 @@ public class TransparencyBlendShader extends GLShaderProgram{
 		addUniform("height");
 	}
 	
-	public void updateUniforms(Texture opaqueSceneTexture, Texture opaqueSceneDepthMap,
-							   Texture opaqueSceneLightScatteringTexture,
-							   Texture transparencyLayer, Texture transparencyLayerDepthMap,
-							   Texture alphaMap, Texture transparencyLayerLightScatteringTexture)
+	public void updateUniforms(GLTexture opaqueSceneTexture, GLTexture opaqueSceneDepthMap,
+			GLTexture opaqueSceneLightScatteringTexture,
+			GLTexture transparencyLayer, GLTexture transparencyLayerDepthMap,
+			GLTexture alphaMap, GLTexture transparencyLayerLightScatteringTexture)
 	{
 		setUniformi("width", EngineContext.getWindow().getWidth());
 		setUniformi("height", EngineContext.getWindow().getHeight());

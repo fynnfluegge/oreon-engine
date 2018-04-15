@@ -1,22 +1,24 @@
 package org.oreon.gl.components.terrain.fractals;
 
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.glFinish;
 import static org.lwjgl.opengl.GL15.GL_READ_WRITE;
 import static org.lwjgl.opengl.GL30.GL_RGBA32F;
 import static org.lwjgl.opengl.GL42.glBindImageTexture;
-import static org.lwjgl.opengl.GL42.glTexStorage2D;
 import static org.lwjgl.opengl.GL43.glDispatchCompute;
 
-import org.oreon.core.gl.texture.Texture2D;
+import org.oreon.core.gl.texture.GLTexture;
+import org.oreon.core.gl.wrapper.texture.Texture2DStorageRGBA32F;
 import org.oreon.core.math.Vec2f;
 import org.oreon.gl.components.gpgpu.fft.FFTButterflyShader;
 import org.oreon.gl.components.gpgpu.fft.FFTInversionShader;
 import org.oreon.gl.components.gpgpu.fft.FastFourierTransform;
 
+import lombok.Getter;
+
 public class FractalFFT extends FastFourierTransform{
 
-	private Texture2D heightmap;
+	@Getter
+	private GLTexture heightmap;
 	
 	public FractalFFT(int N, int L, float A, float v, Vec2f w, float l) {
 			
@@ -25,16 +27,12 @@ public class FractalFFT extends FastFourierTransform{
 		setFourierComponents(new FractalFourierComponents(N, L, A, v, w, l));
 		setButterflyShader(FFTButterflyShader.getInstance());
 		setInversionShader(FFTInversionShader.getInstance());
-		heightmap = new Texture2D();
-		heightmap.generate();
+		heightmap = new Texture2DStorageRGBA32F(N,N,1);
 		heightmap.bind();
 		heightmap.trilinearFilter();
-		glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA32F, N, N);
+		heightmap.unbind();
 		
-		setPingpongTexture(new Texture2D());
-		getPingpongTexture().generate();
-		getPingpongTexture().bind();
-		glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA32F, N, N);	
+		setPingpongTexture(new Texture2DStorageRGBA32F(N,N,1));
 	}
 
 	public void render()
@@ -45,9 +43,9 @@ public class FractalFFT extends FastFourierTransform{
 		
 		getButterflyShader().bind();
 		
-		glBindImageTexture(0, getTwiddles().getTexture().getId(), 0, false, 0, GL_READ_WRITE, GL_RGBA32F);
-		glBindImageTexture(1, ((FractalFourierComponents) getFourierComponents()).getFourierComponents().getId(), 0, false, 0, GL_READ_WRITE, GL_RGBA32F);
-		glBindImageTexture(2, getPingpongTexture().getId(), 0, false, 0, GL_READ_WRITE, GL_RGBA32F);
+		glBindImageTexture(0, getTwiddles().getTexture().getHandle(), 0, false, 0, GL_READ_WRITE, GL_RGBA32F);
+		glBindImageTexture(1, ((FractalFourierComponents) getFourierComponents()).getFourierComponents().getHandle(), 0, false, 0, GL_READ_WRITE, GL_RGBA32F);
+		glBindImageTexture(2, getPingpongTexture().getHandle(), 0, false, 0, GL_READ_WRITE, GL_RGBA32F);
 		
 		// 1D FFT horizontal 
 		for (int i=0; i<log_2_N; i++)
@@ -71,15 +69,11 @@ public class FractalFFT extends FastFourierTransform{
 		
 		getInversionShader().bind();
 		getInversionShader().updateUniforms(N,pingpong);
-		glBindImageTexture(0, heightmap.getId(), 0, false, 0, GL_READ_WRITE, GL_RGBA32F);
+		glBindImageTexture(0, heightmap.getHandle(), 0, false, 0, GL_READ_WRITE, GL_RGBA32F);
 		glDispatchCompute(N/16,N/16,1);
 		glFinish();
 		heightmap.bind();
 		heightmap.trilinearFilter();
-	}
-
-	public Texture2D getHeightmap() {
-		return heightmap;
 	}
 
 	public float getT(){

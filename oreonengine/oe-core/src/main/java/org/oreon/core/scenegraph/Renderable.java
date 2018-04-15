@@ -6,15 +6,15 @@ import org.oreon.core.context.EngineContext;
 
 public class Renderable extends Node{
 
-	private HashMap<NodeComponentType, NodeComponent> components;
+	private HashMap<NodeComponentKey, NodeComponent> components;
 	
 	public Renderable()
 	{
 		super();
-		components = new HashMap<NodeComponentType, NodeComponent>();
+		components = new HashMap<NodeComponentKey, NodeComponent>();
 	}
 	
-	public void addComponent(NodeComponentType type, NodeComponent component)
+	public void addComponent(NodeComponentKey type, NodeComponent component)
 	{
 		component.setParent(this);
 		components.put(type, component);
@@ -22,7 +22,7 @@ public class Renderable extends Node{
 	
 	public void update()
 	{	
-		for (NodeComponentType key : components.keySet()) {
+		for (NodeComponentKey key : components.keySet()) {
 			components.get(key).update();
 		}
 		super.update();
@@ -30,7 +30,7 @@ public class Renderable extends Node{
 	
 	public void input()
 	{
-		for (NodeComponentType key : components.keySet()) {
+		for (NodeComponentKey key : components.keySet()) {
 			components.get(key).input();
 		}
 		
@@ -40,12 +40,12 @@ public class Renderable extends Node{
 	public void render()
 	{
 		if (EngineContext.getConfig().isWireframe()){
-			if (components.containsKey(NodeComponentType.WIREFRAME_RENDERINFO)){
-				components.get(NodeComponentType.WIREFRAME_RENDERINFO).render();
+			if (components.containsKey(NodeComponentKey.WIREFRAME_RENDERINFO)){
+				components.get(NodeComponentKey.WIREFRAME_RENDERINFO).render();
 			}
 		}
 		else{
-			components.get(NodeComponentType.MAIN_RENDERINFO).render();
+			components.get(NodeComponentKey.MAIN_RENDERINFO).render();
 		}
 		
 		super.render();
@@ -53,22 +53,22 @@ public class Renderable extends Node{
 	
 	public void renderShadows()
 	{
-		if (components.containsKey(NodeComponentType.SHADOW_RENDERINFO)){
-			components.get(NodeComponentType.SHADOW_RENDERINFO).render();
+		if (components.containsKey(NodeComponentKey.SHADOW_RENDERINFO)){
+			components.get(NodeComponentKey.SHADOW_RENDERINFO).render();
 		}
 		
 		super.renderShadows();
 	}
 
-	public HashMap<NodeComponentType, NodeComponent> getComponents() {
+	public HashMap<NodeComponentKey, NodeComponent> getComponents() {
 		return components;
 	}
 	
-	public void setComponent(NodeComponentType type, NodeComponent component) {
+	public void setComponent(NodeComponentKey type, NodeComponent component) {
 		this.components.replace(type, component);
 	}
 	
-	public NodeComponent getComponent(NodeComponentType type)
+	public NodeComponent getComponent(NodeComponentKey type)
 	{
 		return this.components.get(type);
 	}

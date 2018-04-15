@@ -15,9 +15,10 @@ import org.oreon.core.gl.context.GLContext;
 import org.oreon.core.gl.parameter.WaterRenderConfig;
 import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.gl.scenegraph.GLRenderInfo;
-import org.oreon.core.gl.texture.Texture2D;
+import org.oreon.core.gl.texture.GLTexture;
+import org.oreon.core.gl.wrapper.texture.Texture2DTrilinearFilter;
 import org.oreon.core.math.Quaternion;
-import org.oreon.core.scenegraph.NodeComponentType;
+import org.oreon.core.scenegraph.NodeComponentKey;
 import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.scenegraph.Scenegraph;
 import org.oreon.core.util.Constants;
@@ -35,8 +36,8 @@ public class Water extends Renderable{
 	private float clip_offset;
 	private float motion;
 	private float distortion;
-	private Texture2D dudv;
-	private Texture2D caustics;
+	private GLTexture dudv;
+	private GLTexture caustics;
 	
 	private RefracReflecRenderer refractionRenderer;
 	private RefracReflecRenderer reflectionRenderer;
@@ -63,16 +64,11 @@ public class Water extends Renderable{
 		GLRenderInfo renderInfo = new GLRenderInfo(shader,renderConfig,meshBuffer);
 		GLRenderInfo wireframeRenderInfo = new GLRenderInfo(wireframeShader,renderConfig,meshBuffer);
 		
-		dudv = new Texture2D("textures/water/dudv/dudv1.jpg");
-		dudv.bind();
-		dudv.trilinearFilter();
+		dudv = new Texture2DTrilinearFilter("textures/water/dudv/dudv1.jpg");
+		caustics = new Texture2DTrilinearFilter("textures/water/caustics/caustics.jpg");
 		
-		caustics = new Texture2D("textures/water/caustics/caustics.jpg");
-		caustics.bind();
-		caustics.trilinearFilter();
-		
-		addComponent(NodeComponentType.MAIN_RENDERINFO, renderInfo);
-		addComponent(NodeComponentType.WIREFRAME_RENDERINFO, wireframeRenderInfo);
+		addComponent(NodeComponentKey.MAIN_RENDERINFO, renderInfo);
+		addComponent(NodeComponentKey.WIREFRAME_RENDERINFO, wireframeRenderInfo);
 
 		fft = new OceanFFT(fftResolution); 
 		fft.init();
@@ -196,11 +192,11 @@ public class Water extends Renderable{
 		
 		if (EngineContext.getConfig().isWireframe())
 		{
-			getComponents().get(NodeComponentType.WIREFRAME_RENDERINFO).render();
+			getComponents().get(NodeComponentKey.WIREFRAME_RENDERINFO).render();
 		}
 		else
 		{
-			getComponents().get(NodeComponentType.MAIN_RENDERINFO).render();
+			getComponents().get(NodeComponentKey.MAIN_RENDERINFO).render();
 		}
 		
 		// glFinish() important, to prevent conflicts with following compute shaders
@@ -236,14 +232,6 @@ public class Water extends Renderable{
 		this.clip_offset = clip_offset;
 	}
 
-	public Texture2D getDudv() {
-		return dudv;
-	}
-
-	public void setDudv(Texture2D dudv) {
-		this.dudv = dudv;
-	}
-
 	public OceanFFT getFft() {
 		return fft;
 	}
@@ -267,20 +255,21 @@ public class Water extends Renderable{
 	public boolean isCameraUnderwater() {
 		return cameraUnderwater;
 	}
-	
-	public Texture2D getCaustics() {
-		return caustics;
-	}
 
-	public void setCaustics(Texture2D caustics) {
-		this.caustics = caustics;
-	}
 	
-	public Texture2D getRefractionTexture(){
+	public GLTexture getRefractionTexture(){
 		return refractionRenderer.getDeferredLightingSceneTexture();
 	}
 	
-	public Texture2D getReflectionTexture(){
+	public GLTexture getReflectionTexture(){
 		return reflectionRenderer.getDeferredLightingSceneTexture();
+	}
+
+	public GLTexture getDudv() {
+		return dudv;
+	}
+
+	public GLTexture getCaustics() {
+		return caustics;
 	}
 }

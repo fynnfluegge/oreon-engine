@@ -1,26 +1,24 @@
 package org.oreon.gl.components.filter.contrast;
 
-import static org.lwjgl.opengl.GL11.GL_FLOAT;
-import static org.lwjgl.opengl.GL11.GL_RGBA;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.glFinish;
-import static org.lwjgl.opengl.GL11.glTexImage2D;
 import static org.lwjgl.opengl.GL15.GL_READ_ONLY;
 import static org.lwjgl.opengl.GL15.GL_WRITE_ONLY;
 import static org.lwjgl.opengl.GL30.GL_RGBA16F;
 import static org.lwjgl.opengl.GL42.glBindImageTexture;
 import static org.lwjgl.opengl.GL43.glDispatchCompute;
 
-import java.nio.ByteBuffer;
-
 import org.lwjgl.glfw.GLFW;
 import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.pipeline.GLShaderProgram;
-import org.oreon.core.gl.texture.Texture2D;
+import org.oreon.core.gl.texture.GLTexture;
+import org.oreon.core.gl.wrapper.texture.Texture2DBilinearFilterRGBA16F;
+
+import lombok.Getter;
 
 public class ContrastController {
 
-	private Texture2D contrastTexture;
+	@Getter
+	private GLTexture contrastTexture;
 	private GLShaderProgram contrastShader;
 	
 	private float contrastFactor = 1.0f;
@@ -30,22 +28,17 @@ public class ContrastController {
 	
 		contrastShader = ContrastShader.getInstance();
 		
-		contrastTexture = new Texture2D();
-		contrastTexture.generate();
+		contrastTexture = new Texture2DBilinearFilterRGBA16F(EngineContext.getWindow().getWidth(), EngineContext.getWindow().getHeight());
 		contrastTexture.bind();
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F,
-						EngineContext.getWindow().getWidth(),
-						EngineContext.getWindow().getHeight(),
-						0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
-		contrastTexture.bilinearFilter();
 		contrastTexture.clampToEdge();
+		contrastTexture.unbind();
 	}
 	
-	public void render(Texture2D sceneSampler) {
+	public void render(GLTexture sceneSampler) {
 		
 		contrastShader.bind();
-		glBindImageTexture(0, sceneSampler.getId(), 0, false, 0, GL_READ_ONLY, GL_RGBA16F);
-		glBindImageTexture(1, contrastTexture.getId(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
+		glBindImageTexture(0, sceneSampler.getHandle(), 0, false, 0, GL_READ_ONLY, GL_RGBA16F);
+		glBindImageTexture(1, contrastTexture.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
 		contrastShader.updateUniforms(contrastFactor, brightnessFactor);
 		glDispatchCompute(EngineContext.getWindow().getWidth()/16, EngineContext.getWindow().getHeight()/16, 1);	
 		glFinish();
@@ -65,8 +58,5 @@ public class ContrastController {
 			brightnessFactor -= 1f;
 		}
 	}
-
-	public Texture2D getContrastTexture() {
-		return contrastTexture;
-	}
+	
 }

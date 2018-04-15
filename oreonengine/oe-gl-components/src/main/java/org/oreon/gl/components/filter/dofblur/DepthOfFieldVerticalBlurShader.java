@@ -5,7 +5,7 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.pipeline.GLShaderProgram;
-import org.oreon.core.gl.texture.Texture2DMultisample;
+import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.util.ResourceLoader;
 
 public class DepthOfFieldVerticalBlurShader extends GLShaderProgram{
@@ -34,7 +34,7 @@ private static DepthOfFieldVerticalBlurShader instance = null;
 		addUniform("windowHeight");
 	}
 	
-	public void updateUniforms(Texture2DMultisample depthmap)
+	public void updateUniforms(GLTexture depthmap)
 	{
 		glActiveTexture(GL_TEXTURE0);
 		depthmap.bind();

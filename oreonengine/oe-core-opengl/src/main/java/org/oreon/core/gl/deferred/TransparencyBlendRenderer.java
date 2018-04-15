@@ -2,7 +2,7 @@ package org.oreon.core.gl.deferred;
 
 import org.oreon.core.gl.shaders.TransparencyBlendShader;
 import org.oreon.core.gl.surface.FullScreenQuad;
-import org.oreon.core.texture.Texture;
+import org.oreon.core.gl.texture.GLTexture;
 
 public class TransparencyBlendRenderer extends FullScreenQuad{
 	
@@ -15,10 +15,10 @@ public class TransparencyBlendRenderer extends FullScreenQuad{
 		shader = TransparencyBlendShader.getInstance();
 	}
 	
-	public void render(Texture opaqueScene, Texture opaqueSceneDepthMap,
-					   Texture opaqueSceneLightScatteringTexture,
-					   Texture transparencyLayer, Texture transparencyLayerDepthMap,
-					   Texture alphaMap, Texture transparencyLayerLightScatteringTexture){
+	public void render(GLTexture opaqueScene, GLTexture opaqueSceneDepthMap,
+			GLTexture opaqueSceneLightScatteringTexture,
+			GLTexture transparencyLayer, GLTexture transparencyLayerDepthMap,
+			GLTexture alphaMap, GLTexture transparencyLayerLightScatteringTexture){
 		
 		getConfig().enable();
 		shader.bind();

@@ -1,9 +1,15 @@
 package org.oreon.gl.components.gpgpu.fft;
 
 import org.oreon.core.gl.pipeline.GLShaderProgram;
-import org.oreon.core.gl.texture.Texture2D;
+import org.oreon.core.gl.texture.GLTexture;
+
+import lombok.Getter;
+import lombok.Setter;
 
 public abstract class FastFourierTransform {
+	
+	@Getter @Setter
+	protected GLTexture pingpongTexture;
 	
 	protected int log_2_N;
 	protected int pingpong;
@@ -12,7 +18,6 @@ public abstract class FastFourierTransform {
 	protected float t_delta;
 	private GLShaderProgram butterflyShader;
 	private GLShaderProgram inversionShader;
-	private Texture2D pingpongTexture;
 	private TwiddleFactors twiddles;
 	private FourierComponents fourierComponents;
 	
@@ -96,14 +101,6 @@ public abstract class FastFourierTransform {
 
 	public void setInversionShader(GLShaderProgram inversionShader) {
 		this.inversionShader = inversionShader;
-	}
-
-	public Texture2D getPingpongTexture() {
-		return pingpongTexture;
-	}
-
-	public void setPingpongTexture(Texture2D pingpongTexture) {
-		this.pingpongTexture = pingpongTexture;
 	}
 	
 }

@@ -1,4 +1,4 @@
-package org.oreon.core.model;
+package org.oreon.core.gl.util;
 
 import java.nio.IntBuffer;
 import java.util.ArrayList;
@@ -12,19 +12,24 @@ import org.lwjgl.assimp.AIScene;
 import org.lwjgl.assimp.AIString;
 import org.lwjgl.assimp.AIVector3D;
 import org.lwjgl.assimp.Assimp;
+import org.oreon.core.gl.texture.GLTexture;
+import org.oreon.core.gl.wrapper.texture.Texture2DTrilinearFilter;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.math.Vec3f;
-import org.oreon.core.texture.Texture;
+import org.oreon.core.model.Material;
+import org.oreon.core.model.Mesh;
+import org.oreon.core.model.Model;
+import org.oreon.core.model.Vertex;
 import org.oreon.core.util.Util;
 
-public class AssimpModelLoader {
+public class GLAssimpModelLoader {
 	
-	public static List<Model> loadModel(String path, String file) {
+	public static List<Model<GLTexture>> loadModel(String path, String file) {
 		
-		List<Model> models = new ArrayList<>();
-		List<Material> materials = new ArrayList<>();
+		List<Model<GLTexture>> models = new ArrayList<>();
+		List<Material<GLTexture>> materials = new ArrayList<>();
 		
-		path = AssimpModelLoader.class.getClassLoader().getResource(path).getPath().toString();
+		path = GLAssimpModelLoader.class.getClassLoader().getResource(path).getPath().toString();
 
 		if (path.startsWith("/"))
 			path = path.substring(1);
@@ -34,7 +39,7 @@ public class AssimpModelLoader {
 		if (aiScene.mMaterials() != null){
 			for (int i=0; i<aiScene.mNumMaterials(); i++){
 				AIMaterial aiMaterial = AIMaterial.create(aiScene.mMaterials().get(i));
-				Material material = processMaterial(aiMaterial, path);
+				Material<GLTexture> material = processMaterial(aiMaterial, path);
 				materials.add(material);
 			}
 		}
@@ -42,7 +47,7 @@ public class AssimpModelLoader {
 		for (int i=0; i<aiScene.mNumMeshes(); i++){
 			AIMesh aiMesh = AIMesh.create(aiScene.mMeshes().get(i));
 			Mesh mesh = processMesh(aiMesh);
-			Model model = new Model();
+			Model<GLTexture> model = new Model<GLTexture>();
 			model.setMesh(mesh);
 			int materialIndex = aiMesh.mMaterialIndex();
 			model.setMaterial(materials.get(materialIndex));
@@ -102,13 +107,26 @@ public class AssimpModelLoader {
 		AIFace.Buffer aifaces = aiMesh.mFaces();
 		while (aifaces.remaining() > 0) {
 	       AIFace aiface = aifaces.get();
-	       if (aiface.mNumIndices() != 3) {
-               throw new IllegalStateException("AIFace.mNumIndices() != 3");
+	       
+	       if (aiface.mNumIndices() == 3) {
+	    	   IntBuffer indicesBuffer = aiface.mIndices();
+		       indices.add(indicesBuffer.get(0));
+		       indices.add(indicesBuffer.get(1));
+		       indices.add(indicesBuffer.get(2));
            }
-	       IntBuffer indicesBuffer = aiface.mIndices();
-	       indices.add(indicesBuffer.get(0));
-	       indices.add(indicesBuffer.get(1));
-	       indices.add(indicesBuffer.get(2));
+	       if (aiface.mNumIndices() == 4) {
+	    	   IntBuffer indicesBuffer = aiface.mIndices();
+		       indices.add(indicesBuffer.get(0));
+		       indices.add(indicesBuffer.get(1));
+		       indices.add(indicesBuffer.get(2));
+		       indices.add(indicesBuffer.get(0));
+		       indices.add(indicesBuffer.get(1));
+		       indices.add(indicesBuffer.get(3));
+		       indices.add(indicesBuffer.get(1));
+		       indices.add(indicesBuffer.get(2));
+		       indices.add(indicesBuffer.get(3));
+	       }
+	       
 		}
 		
 		for(int i=0; i<vertices.size(); i++){
@@ -141,16 +159,15 @@ public class AssimpModelLoader {
 		return new Mesh(vertexData, facesData);
 	}
 	
-	private static Material processMaterial(AIMaterial aiMaterial, String texturesDir) {
+	private static Material<GLTexture> processMaterial(AIMaterial aiMaterial, String texturesDir) {
 
 	    AIString path = AIString.calloc();
 	    Assimp.aiGetMaterialTexture(aiMaterial, Assimp.aiTextureType_DIFFUSE, 0, path, (IntBuffer) null, null, null, null, null, null);
 	    String textPath = path.dataString();
 
-	    Texture diffuseTexture = null;
+	    GLTexture diffuseTexture = null;
 	    if (textPath != null && textPath.length() > 0) {
-	    	diffuseTexture = new Texture();
-	    	diffuseTexture.setPath(texturesDir + "/" + textPath);
+	    	diffuseTexture = new Texture2DTrilinearFilter(texturesDir + "/" + textPath);
 	    }
 
 	    AIColor4D color = AIColor4D.create();
@@ -160,15 +177,11 @@ public class AssimpModelLoader {
 	    	diffuseColor = new Vec3f(color.r(), color.g(), color.b());
 	    }
 
-	    Material material = new Material();
+	    Material<GLTexture> material = new Material<GLTexture>();
 	    material.setDiffusemap(diffuseTexture);
 	    material.setColor(diffuseColor);
 	    
 	    return material;
 	}
 	
-	public static void main(String[] args) {
-		
-//		List<Model> models = loadModel("models/obj/Nanosuit", "nanosuit.obj");
-	}
 }

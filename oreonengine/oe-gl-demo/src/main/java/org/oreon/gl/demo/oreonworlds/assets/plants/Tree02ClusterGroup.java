@@ -7,14 +7,15 @@ import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.buffer.GLMeshVBO;
 import org.oreon.core.gl.parameter.CullFaceDisable;
 import org.oreon.core.gl.scenegraph.GLRenderInfo;
-import org.oreon.core.gl.util.modelLoader.obj.OBJLoader;
+import org.oreon.core.gl.texture.GLTexture;
+import org.oreon.core.gl.util.GLAssimpModelLoader;
 import org.oreon.core.instanced.InstancedCluster;
 import org.oreon.core.instanced.InstancedHandler;
 import org.oreon.core.instanced.InstancedObject;
 import org.oreon.core.math.Vec3f;
 import org.oreon.core.model.Model;
 import org.oreon.core.model.Vertex;
-import org.oreon.core.scenegraph.NodeComponentType;
+import org.oreon.core.scenegraph.NodeComponentKey;
 import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.util.Util;
 import org.oreon.gl.demo.oreonworlds.shaders.InstancedWireframeShader;
@@ -28,16 +29,16 @@ public class Tree02ClusterGroup extends InstancedObject{
 	
 	public Tree02ClusterGroup(){
 		
-		Model[] models = new OBJLoader().load("oreonworlds/assets/plants/Tree_02","tree02.obj","tree02.mtl");
-		Model[] billboards = new OBJLoader().load("oreonworlds/assets/plants/Tree_02","billboardmodel.obj","billboardmodel.mtl");
+		List<Model<GLTexture>> models = GLAssimpModelLoader.loadModel("oreonworlds/assets/plants/Tree_02","tree02.obj");
+		List<Model<GLTexture>> billboards = GLAssimpModelLoader.loadModel("oreonworlds/assets/plants/Tree_02","billboardmodel.obj");
 		
 		List<Renderable> objects = new ArrayList<>();
 		
-		for (Model model : models){
+		for (Model<GLTexture> model : models){
 			
 			GLMeshVBO meshBuffer = new GLMeshVBO();
 			
-			if (model.equals(models[0])){
+			if (model.equals(models.get(0))){
 				model.getMesh().setTangentSpace(true);
 				Util.generateTangentsBitangents(model.getMesh());
 			}
@@ -56,7 +57,7 @@ public class Tree02ClusterGroup extends InstancedObject{
 			GLRenderInfo shadowRenderInfo;
 			GLRenderInfo wireframeRenderInfo = new GLRenderInfo(InstancedWireframeShader.getInstance(), new CullFaceDisable(), meshBuffer);
 			
-			if (model.equals(models[0])){
+			if (model.equals(models.get(0))){
 				renderInfo = new GLRenderInfo(TreeTrunkShader.getInstance(), new CullFaceDisable(), meshBuffer);
 				shadowRenderInfo = new GLRenderInfo(TreeShadowShader.getInstance(), new CullFaceDisable(), meshBuffer);
 			}
@@ -66,14 +67,14 @@ public class Tree02ClusterGroup extends InstancedObject{
 			}
 			
 			Renderable object = new Renderable();
-			object.addComponent(NodeComponentType.MAIN_RENDERINFO, renderInfo);
-			object.addComponent(NodeComponentType.SHADOW_RENDERINFO, shadowRenderInfo);
-			object.addComponent(NodeComponentType.WIREFRAME_RENDERINFO, wireframeRenderInfo);
-			object.addComponent(NodeComponentType.MATERIAL0, model.getMaterial());
+			object.addComponent(NodeComponentKey.MAIN_RENDERINFO, renderInfo);
+			object.addComponent(NodeComponentKey.SHADOW_RENDERINFO, shadowRenderInfo);
+			object.addComponent(NodeComponentKey.WIREFRAME_RENDERINFO, wireframeRenderInfo);
+			object.addComponent(NodeComponentKey.MATERIAL0, model.getMaterial());
 			objects.add(object);
 		}
 		
-		for (Model billboard : billboards){	
+		for (Model<GLTexture> billboard : billboards){	
 
 			GLMeshVBO meshBuffer = new GLMeshVBO();
 			
@@ -94,10 +95,10 @@ public class Tree02ClusterGroup extends InstancedObject{
 			GLRenderInfo wireframeRenderInfo = new GLRenderInfo(InstancedWireframeShader.getInstance(), new CullFaceDisable(), meshBuffer);
 			
 			Renderable object = new Renderable();
-			object.addComponent(NodeComponentType.MAIN_RENDERINFO, renderInfo);
-			object.addComponent(NodeComponentType.SHADOW_RENDERINFO, shadowRenderInfo);
-			object.addComponent(NodeComponentType.WIREFRAME_RENDERINFO, wireframeRenderInfo);
-			object.addComponent(NodeComponentType.MATERIAL0, billboard.getMaterial());
+			object.addComponent(NodeComponentKey.MAIN_RENDERINFO, renderInfo);
+			object.addComponent(NodeComponentKey.SHADOW_RENDERINFO, shadowRenderInfo);
+			object.addComponent(NodeComponentKey.WIREFRAME_RENDERINFO, wireframeRenderInfo);
+			object.addComponent(NodeComponentKey.MATERIAL0, billboard.getMaterial());
 			objects.add(object);
 		}
 	

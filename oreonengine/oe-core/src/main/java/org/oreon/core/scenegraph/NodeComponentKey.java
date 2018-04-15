@@ -1,6 +1,6 @@
 package org.oreon.core.scenegraph;
 
-public enum NodeComponentType {
+public enum NodeComponentKey {
 
 	MAIN_RENDERINFO,
 	WIREFRAME_RENDERINFO,

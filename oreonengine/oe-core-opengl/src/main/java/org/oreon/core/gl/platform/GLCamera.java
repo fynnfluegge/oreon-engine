@@ -1,12 +1,12 @@
 package org.oreon.core.gl.platform;
 
-import org.oreon.core.gl.buffer.GLUBO;
+import org.oreon.core.gl.buffer.GLUniformBuffer;
 import org.oreon.core.platform.Camera;
 import org.oreon.core.util.Constants;
 
 public class GLCamera extends Camera{
 
-	private GLUBO ubo;
+	private GLUniformBuffer ubo;
 	
 	public GLCamera() {
 		
@@ -16,7 +16,7 @@ public class GLCamera extends Camera{
 	@Override
 	public void init(){
 
-		ubo = new GLUBO();
+		ubo = new GLUniformBuffer();
 		ubo.setBinding_point_index(Constants.CameraUniformBlockBinding);
 		ubo.bindBufferBase();
 		ubo.allocate(bufferSize);

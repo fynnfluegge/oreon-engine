@@ -6,12 +6,13 @@ import org.oreon.core.gl.light.GLDirectionalLight;
 import org.oreon.core.gl.parameter.AlphaBlendingSrcAlpha;
 import org.oreon.core.gl.query.GLOcclusionQuery;
 import org.oreon.core.gl.scenegraph.GLRenderInfo;
-import org.oreon.core.gl.texture.Texture2D;
+import org.oreon.core.gl.texture.GLTexture;
+import org.oreon.core.gl.wrapper.texture.Texture2DTrilinearFilter;
 import org.oreon.core.light.Light;
 import org.oreon.core.light.LightHandler;
 import org.oreon.core.math.Vec3f;
 import org.oreon.core.model.Material;
-import org.oreon.core.scenegraph.NodeComponentType;
+import org.oreon.core.scenegraph.NodeComponentKey;
 import org.oreon.core.scenegraph.Renderable;
 
 public class Sun extends Renderable{
@@ -26,26 +27,22 @@ public class Sun extends Renderable{
 		GLPointVBO3D buffer = new GLPointVBO3D();
 		buffer.addData(array);
 		
-		Material material1 = new Material();
-		material1.setDiffusemap(new Texture2D("textures/sun/sun.png"));
-		material1.getDiffusemap().bind();
-		material1.getDiffusemap().trilinearFilter();
+		Material<GLTexture> material1 = new Material<GLTexture>();
+		material1.setDiffusemap(new Texture2DTrilinearFilter("textures/sun/sun.png"));
 		
-		Material material2 = new Material();
-		material2.setDiffusemap(new Texture2D("textures/sun/sun_small1.png"));
-		material2.getDiffusemap().bind();
-		material2.getDiffusemap().trilinearFilter();
+		Material<GLTexture> material2 = new Material<GLTexture>();
+		material2.setDiffusemap(new Texture2DTrilinearFilter("textures/sun/sun_small1.png"));
 		
 		GLRenderInfo renderInfo = new GLRenderInfo(SunShader.getInstance(),
 											   new AlphaBlendingSrcAlpha(),
 											   buffer);
-		addComponent(NodeComponentType.MAIN_RENDERINFO, renderInfo);
-		addComponent(NodeComponentType.MATERIAL0, material1);
-		addComponent(NodeComponentType.MATERIAL1, material2);
+		addComponent(NodeComponentKey.MAIN_RENDERINFO, renderInfo);
+		addComponent(NodeComponentKey.MATERIAL0, material1);
+		addComponent(NodeComponentKey.MATERIAL1, material2);
 		
 		Light light = new Light();
 		light.setOcclusionQuery(new GLOcclusionQuery());
-		addComponent(NodeComponentType.LIGHT, light);
+		addComponent(NodeComponentKey.LIGHT, light);
 		LightHandler.getLights().add(light);
 	}
 	

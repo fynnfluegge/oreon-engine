@@ -5,7 +5,8 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.parameter.Default;
-import org.oreon.core.gl.texture.Texture2D;
+import org.oreon.core.gl.texture.GLTexture;
+import org.oreon.core.gl.wrapper.texture.Texture2DBilinearFilter;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.math.Transform;
 import org.oreon.core.math.Vec2f;
@@ -19,16 +20,14 @@ import org.oreon.gl.components.ui.GuiShader;
 public class FPSPanel extends GUIElement{
 	
 	private Vec2f[] fps;
-	private Texture2D texture;
+	private GLTexture texture;
 	
 	@Override
 	public void init() {
 	}
 	
 	public FPSPanel(){
-		texture = new Texture2D("gui/tex/Fonts.png");
-		texture.bind();
-		texture.noFilter();
+		texture = new Texture2DBilinearFilter("gui/tex/Fonts.png");
 		texCoords = new Vec2f[24];
 		fps = new Vec2f[24];
 		setShader(GuiShader.getInstance());

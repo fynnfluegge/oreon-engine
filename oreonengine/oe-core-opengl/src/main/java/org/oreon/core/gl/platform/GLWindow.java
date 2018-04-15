@@ -6,27 +6,21 @@ import static org.lwjgl.glfw.GLFW.GLFW_OPENGL_CORE_PROFILE;
 import static org.lwjgl.glfw.GLFW.GLFW_OPENGL_PROFILE;
 import static org.lwjgl.glfw.GLFW.GLFW_RESIZABLE;
 import static org.lwjgl.glfw.GLFW.glfwCreateWindow;
-import static org.lwjgl.glfw.GLFW.glfwSwapInterval;
 import static org.lwjgl.glfw.GLFW.glfwDestroyWindow;
 import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowSize;
 import static org.lwjgl.glfw.GLFW.glfwShowWindow;
 import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
+import static org.lwjgl.glfw.GLFW.glfwSwapInterval;
 import static org.lwjgl.glfw.GLFW.glfwWindowHint;
 import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
 import static org.lwjgl.opengl.GL11.GL_TRUE;
 
 import org.lwjgl.opengl.GL;
-import org.lwjgl.opengl.GLCapabilities;
 import org.oreon.core.context.EngineContext;
 import org.oreon.core.platform.Window;
 
-import lombok.Getter;
-
 public class GLWindow extends Window{
-
-	@Getter
-	private GLCapabilities capabilities;
 	
 	public void create()
 	{
@@ -46,7 +40,7 @@ public class GLWindow extends Window{
 		glfwMakeContextCurrent(getId());
 		glfwSwapInterval(0);
 		glfwShowWindow(getId());
-		capabilities = GL.createCapabilities();
+		GL.createCapabilities();
 	}
 	
 	public void draw()

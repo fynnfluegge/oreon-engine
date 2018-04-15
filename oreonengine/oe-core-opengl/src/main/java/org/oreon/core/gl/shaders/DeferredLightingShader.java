@@ -5,7 +5,7 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.pipeline.GLShaderProgram;
-import org.oreon.core.gl.texture.Texture2DArray;
+import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.util.Constants;
 import org.oreon.core.util.ResourceLoader;
 
@@ -38,7 +38,7 @@ public class DeferredLightingShader extends GLShaderProgram{
 		addUniform("flag");
 	}
 	
-	public void updateUniforms(Texture2DArray pssm, boolean flag){
+	public void updateUniforms(GLTexture pssm, boolean flag){
 		
 		bindUniformBlock("Camera", Constants.CameraUniformBlockBinding);
 		bindUniformBlock("DirectionalLight", Constants.DirectionalLightUniformBlockBinding);	

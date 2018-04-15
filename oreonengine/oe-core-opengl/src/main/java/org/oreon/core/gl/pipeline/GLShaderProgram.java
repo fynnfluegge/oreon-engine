@@ -34,13 +34,12 @@ import static org.lwjgl.opengl.GL43.GL_COMPUTE_SHADER;
 
 import java.util.HashMap;
 
-import org.oreon.core.gl.texture.Texture2D;
+import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.math.Quaternion;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.math.Vec3f;
 import org.oreon.core.scenegraph.Renderable;
-import org.oreon.core.texture.Texture;
 import org.oreon.core.util.BufferUtil;
 
 public abstract class GLShaderProgram{
@@ -71,15 +70,11 @@ public abstract class GLShaderProgram{
 	
 	public void updateUniforms(Matrix4f matrix0, Matrix4f matrix1, Matrix4f matrix2){};
 	
-	public void updateUniforms(Texture2D texture, int i, float j){};
+	public void updateUniforms(GLTexture texture, int i, float j){};
 	
-	public void updateUniforms(Texture2D texture, float j){};
+	public void updateUniforms(GLTexture texture, float j){};
 	
-	public void updateUniforms(Texture2D texture){};
-	
-	public void updateUniforms(Texture texture, float j){};
-	
-	public void updateUniforms(Texture texture){};
+	public void updateUniforms(GLTexture texture){};
 	
 	public void updateUniforms(Matrix4f matrix0, Matrix4f matrix1){};
 	

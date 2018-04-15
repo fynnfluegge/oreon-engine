@@ -1,7 +1,7 @@
 package org.oreon.gl.demo.oreonworlds.gui;
 
 import org.oreon.core.context.EngineContext;
-import org.oreon.core.gl.texture.Texture2D;
+import org.oreon.core.gl.wrapper.texture.Texture2DBilinearFilter;
 import org.oreon.core.math.Vec2f;
 import org.oreon.gl.components.ui.elements.Button;
 
@@ -9,12 +9,10 @@ public class FullScreenButton  extends Button{
 
 	private boolean isFullScreenMode = false;
 	
-	
-	
 	public FullScreenButton()
 	{
-		buttonMap = new Texture2D("./res/gui/tex/maximize.png");
-		buttonClickMap = new Texture2D("./res/gui/tex/maximize.png");
+		buttonMap = new Texture2DBilinearFilter("./res/gui/tex/maximize.png");
+		buttonClickMap = new Texture2DBilinearFilter("./res/gui/tex/maximize.png");
 		getOrthoTransform().setTranslation(10, EngineContext.getWindow().getHeight()-90, 0);
 		getOrthoTransform().setScaling(15,30,0);
 		Vec2f[] texCoords = new Vec2f[4];
@@ -29,14 +27,14 @@ public class FullScreenButton  extends Button{
 	public void onClickActionPerformed()
 	{
 		if (!isFullScreenMode){
-			buttonMap = new Texture2D("./res/gui/tex/minimize.png");
-			buttonClickMap = new Texture2D("./res/gui/tex/minimize.png");
+			buttonMap = new Texture2DBilinearFilter("./res/gui/tex/minimize.png");
+			buttonClickMap = new Texture2DBilinearFilter("./res/gui/tex/minimize.png");
 //			Display.setFullscreen(true);
 			isFullScreenMode = true;
 		}
 		else {
-			buttonMap = new Texture2D("./res/gui/tex/maximize.png");
-			buttonClickMap = new Texture2D("./res/gui/tex/maximize.png");
+			buttonMap = new Texture2DBilinearFilter("./res/gui/tex/maximize.png");
+			buttonClickMap = new Texture2DBilinearFilter("./res/gui/tex/maximize.png");
 //			Display.setFullscreen(false);
 			isFullScreenMode = true;
 			isFullScreenMode = false;

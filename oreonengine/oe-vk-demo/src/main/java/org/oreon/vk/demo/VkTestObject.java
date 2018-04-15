@@ -4,7 +4,7 @@ import static org.lwjgl.vulkan.VK10.VK_FORMAT_R8G8B8A8_UNORM;
 
 import org.lwjgl.vulkan.VkDevice;
 import org.oreon.core.model.Mesh;
-import org.oreon.core.scenegraph.NodeComponentType;
+import org.oreon.core.scenegraph.NodeComponentKey;
 import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.util.MeshGenerator;
 import org.oreon.core.vk.core.command.SubmitInfo;
@@ -74,6 +74,6 @@ public class VkTestObject extends Renderable{
 	    VkRenderInfo renderInfo = new VkRenderInfo(pipeline, commandBuffer, submitInfo,
 	    		VkContext.getLogicalDevice().getGraphicsQueue());
 	    
-	    addComponent(NodeComponentType.MAIN_RENDERINFO, renderInfo);
+	    addComponent(NodeComponentKey.MAIN_RENDERINFO, renderInfo);
 	}
 }

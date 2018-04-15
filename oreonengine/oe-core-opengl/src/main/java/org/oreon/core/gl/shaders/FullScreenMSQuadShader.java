@@ -5,7 +5,7 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.pipeline.GLShaderProgram;
-import org.oreon.core.texture.Texture;
+import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.util.ResourceLoader;
 
 public class FullScreenMSQuadShader extends GLShaderProgram{
@@ -35,7 +35,7 @@ public class FullScreenMSQuadShader extends GLShaderProgram{
 		addUniform("multisamples");
 	}
 	
-	public void updateUniforms(Texture texture)
+	public void updateUniforms(GLTexture texture)
 	{
 		glActiveTexture(GL_TEXTURE0);
 		texture.bind();

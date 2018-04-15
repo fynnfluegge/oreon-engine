@@ -4,24 +4,24 @@ import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.buffer.GLMeshVBO;
 import org.oreon.core.gl.parameter.CullFaceDisable;
 import org.oreon.core.gl.scenegraph.GLRenderInfo;
-import org.oreon.core.model.AssimpModelLoader;
+import org.oreon.core.gl.util.GLAssimpModelLoader;
 import org.oreon.core.model.Mesh;
-import org.oreon.core.scenegraph.NodeComponentType;
+import org.oreon.core.scenegraph.NodeComponentKey;
 import org.oreon.core.scenegraph.Renderable;
-import org.oreon.core.texture.ProceduralTexturing;
+import org.oreon.core.util.ProceduralTexturing;
 
 public class Skydome extends Renderable{
 	
 	public Skydome()
 	{
-		Mesh mesh = AssimpModelLoader.loadModel("models/obj/dome", "dome.obj").get(0).getMesh();
+		Mesh mesh = GLAssimpModelLoader.loadModel("models/obj/dome", "dome.obj").get(0).getMesh();
 		ProceduralTexturing.dome(mesh);
 		GLMeshVBO meshBuffer = new GLMeshVBO();
 		meshBuffer.addData(mesh);
 		GLRenderInfo renderInfo = new GLRenderInfo(AtmosphereShader.getInstance(),
 												   new CullFaceDisable(),
 												   meshBuffer);
-		addComponent(NodeComponentType.MAIN_RENDERINFO, renderInfo);
+		addComponent(NodeComponentKey.MAIN_RENDERINFO, renderInfo);
 	}
 	
 	public void update()

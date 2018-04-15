@@ -1,37 +1,39 @@
 package org.oreon.gl.components.gpgpu;
 
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.glFinish;
 import static org.lwjgl.opengl.GL15.GL_WRITE_ONLY;
 import static org.lwjgl.opengl.GL30.GL_RGBA32F;
 import static org.lwjgl.opengl.GL42.glBindImageTexture;
-import static org.lwjgl.opengl.GL42.glTexStorage2D;
 import static org.lwjgl.opengl.GL43.glDispatchCompute;
 
 import org.oreon.core.gl.pipeline.GLShaderProgram;
-import org.oreon.core.gl.texture.Texture2D;
+import org.oreon.core.gl.texture.GLTexture;
+import org.oreon.core.gl.wrapper.texture.Texture2DStorageRGBA32F;
+
+import lombok.Getter;
 
 public class NormalMapRenderer {
 
+	@Getter
+	private GLTexture normalmap;
+	
 	private float strength;
-	private Texture2D normalmap;
 	private GLShaderProgram computeShader;
 	private int N;
 	
 	public NormalMapRenderer(int N){
 		this.N = N;
 		computeShader = NormalMapShader.getInstance();
-		normalmap = new Texture2D();
-		normalmap.generate();
+		normalmap = new Texture2DStorageRGBA32F(N, N, (int) (Math.log(N)/Math.log(2)));
 		normalmap.bind();
 		normalmap.trilinearFilter();
-		glTexStorage2D(GL_TEXTURE_2D, (int) (Math.log(N)/Math.log(2)), GL_RGBA32F, N, N);
+		normalmap.unbind();
 	}
 	
-	public void render(Texture2D heightmap){
+	public void render(GLTexture heightmap){
 		computeShader.bind();
 		computeShader.updateUniforms(heightmap, N, strength);
-		glBindImageTexture(0, normalmap.getId(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA32F);
+		glBindImageTexture(0, normalmap.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA32F);
 		glDispatchCompute(N/16,N/16,1);
 		glFinish();
 		normalmap.bind();
@@ -45,12 +47,5 @@ public class NormalMapRenderer {
 	public void setStrength(float strength) {
 		this.strength = strength;
 	}
-
-	public Texture2D getNormalmap() {
-		return normalmap;
-	}
-
-	public void setNormalmap(Texture2D normalmap) {
-		this.normalmap = normalmap;
-	}
+	
 }

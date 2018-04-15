@@ -1,17 +1,11 @@
 package org.oreon.gl.engine;
 
 import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_FLOAT;
-import static org.lwjgl.opengl.GL11.GL_RGBA;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.glClear;
-import static org.lwjgl.opengl.GL11.glTexImage2D;
 import static org.lwjgl.opengl.GL11.glViewport;
 import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT0;
 import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT1;
-import static org.lwjgl.opengl.GL30.GL_RGBA16F;
 
-import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
 import org.lwjgl.glfw.GLFW;
@@ -34,8 +28,9 @@ import org.oreon.core.gl.picking.TerrainPicking;
 import org.oreon.core.gl.shadow.ParallelSplitShadowMapsFbo;
 import org.oreon.core.gl.surface.FullScreenMultisampleQuad;
 import org.oreon.core.gl.surface.FullScreenQuad;
-import org.oreon.core.gl.texture.Texture2D;
-import org.oreon.core.gl.texture.Texture2DMultisample;
+import org.oreon.core.gl.texture.GLTexture;
+import org.oreon.core.gl.wrapper.texture.Texture2DBilinearFilterRGBA16F;
+import org.oreon.core.gl.wrapper.texture.Texture2DNoFilterRGBA16F;
 import org.oreon.core.instanced.InstancedHandler;
 import org.oreon.core.light.LightHandler;
 import org.oreon.core.scenegraph.Scenegraph;
@@ -67,11 +62,11 @@ public class GLRenderEngine extends RenderEngine{
 	private InstancedHandler instancingObjectHandler;
 	
 	private GLFramebuffer finalSceneFbo;
-	private Texture2D finalSceneTexture;
-	private Texture2DMultisample sceneDepthmap;
-	private Texture2D deferredLightScatteringMask;
-	private Texture2D finalLightScatteringMask;
-	private Texture2D postProcessingTexture;
+	private GLTexture finalSceneTexture;
+	private GLTexture sceneDepthmap;
+	private GLTexture deferredLightScatteringMask;
+	private GLTexture finalLightScatteringMask;
+	private GLTexture postProcessingTexture;
 	
 	private DeferredLightingRenderer deferredLightingRenderer;
 	private TransparencyBlendRenderer transparencyBlendRenderer;
@@ -145,23 +140,9 @@ public class GLRenderEngine extends RenderEngine{
 		underWaterRenderer = new UnderWaterRenderer();
 		contrastController = new ContrastController();
 		
-		deferredLightScatteringMask = new Texture2D();
-		deferredLightScatteringMask.generate();
-		deferredLightScatteringMask.bind();
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, window.getWidth(), window.getHeight(), 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
-		deferredLightScatteringMask.bilinearFilter();
-		
-		finalSceneTexture = new Texture2D();
-		finalSceneTexture.generate();
-		finalSceneTexture.bind();
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, window.getWidth(), window.getHeight(), 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
-		finalSceneTexture.bilinearFilter();
-		
-		finalLightScatteringMask = new Texture2D();
-		finalLightScatteringMask.generate();
-		finalLightScatteringMask.bind();
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, window.getWidth(), window.getHeight(), 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
-		finalLightScatteringMask.noFilter();
+		deferredLightScatteringMask = new Texture2DBilinearFilterRGBA16F(window.getWidth(), window.getHeight());
+		finalSceneTexture = new Texture2DBilinearFilterRGBA16F(window.getWidth(), window.getHeight());
+		finalLightScatteringMask = new Texture2DNoFilterRGBA16F(window.getWidth(), window.getHeight());
 		
 		IntBuffer drawBuffers = BufferUtil.createIntBuffer(2);
 		drawBuffers.put(GL_COLOR_ATTACHMENT0);
@@ -170,8 +151,8 @@ public class GLRenderEngine extends RenderEngine{
 		
 		finalSceneFbo = new GLFramebuffer();
 		finalSceneFbo.bind();
-		finalSceneFbo.createColorTextureAttachment(finalSceneTexture.getId(),0);
-		finalSceneFbo.createColorTextureAttachment(finalLightScatteringMask.getId(),1);
+		finalSceneFbo.createColorTextureAttachment(finalSceneTexture.getHandle(),0);
+		finalSceneFbo.createColorTextureAttachment(finalLightScatteringMask.getHandle(),1);
 		finalSceneFbo.setDrawBuffers(drawBuffers);
 		finalSceneFbo.checkStatus();
 		finalSceneFbo.unbind();
@@ -249,7 +230,7 @@ public class GLRenderEngine extends RenderEngine{
 
 		
 		// render post processing filters
-		postProcessingTexture = new Texture2D(finalSceneTexture);
+		postProcessingTexture = finalSceneTexture;
 		sceneDepthmap = deferredLightingRenderer.getGbuffer().getDepthTexture();
 		
 		boolean doMotionBlur = camera.getPreviousPosition().sub(

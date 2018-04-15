@@ -9,7 +9,7 @@ import java.nio.DoubleBuffer;
 import org.lwjgl.BufferUtils;
 import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.parameter.Default;
-import org.oreon.core.gl.texture.Texture2D;
+import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.math.Quaternion;
 import org.oreon.core.math.Transform;
@@ -22,8 +22,8 @@ import org.oreon.gl.components.ui.GuiShader;
 
 public abstract class Button extends GUIElement{
 
-	protected Texture2D buttonMap;
-	protected Texture2D buttonClickMap;
+	protected GLTexture buttonMap;
+	protected GLTexture buttonClickMap;
 	private boolean onClick = false;
 	private Vec2f[] pos;
 	

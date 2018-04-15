@@ -7,13 +7,14 @@ import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.buffer.GLMeshVBO;
 import org.oreon.core.gl.parameter.CullFaceDisable;
 import org.oreon.core.gl.scenegraph.GLRenderInfo;
-import org.oreon.core.gl.util.modelLoader.obj.OBJLoader;
+import org.oreon.core.gl.texture.GLTexture;
+import org.oreon.core.gl.util.GLAssimpModelLoader;
 import org.oreon.core.instanced.InstancedCluster;
 import org.oreon.core.instanced.InstancedHandler;
 import org.oreon.core.instanced.InstancedObject;
 import org.oreon.core.math.Vec3f;
 import org.oreon.core.model.Model;
-import org.oreon.core.scenegraph.NodeComponentType;
+import org.oreon.core.scenegraph.NodeComponentKey;
 import org.oreon.core.scenegraph.Renderable;
 import org.oreon.gl.demo.oreonworlds.shaders.InstancedWireframeShader;
 import org.oreon.gl.demo.oreonworlds.shaders.assets.plants.GrassShader;
@@ -23,11 +24,11 @@ public class Plant01ClusterGroup extends InstancedObject{
 	
 	public Plant01ClusterGroup(){
 		
-		Model[] models = new OBJLoader().load("oreonworlds/assets/plants/Plant_01","billboardmodel.obj","billboardmodel.mtl");
+		List<Model<GLTexture>> models = GLAssimpModelLoader.loadModel("oreonworlds/assets/plants/Plant_01","billboardmodel.obj");
 	
 		List<Renderable> objects = new ArrayList<>();
 		
-		for (Model model : models){
+		for (Model<GLTexture> model : models){
 			
 			GLMeshVBO meshBuffer = new GLMeshVBO();
 			model.getMesh().setTangentSpace(false);
@@ -40,10 +41,10 @@ public class Plant01ClusterGroup extends InstancedObject{
 			GLRenderInfo wireframeRenderInfo = new GLRenderInfo(InstancedWireframeShader.getInstance(), new CullFaceDisable(), meshBuffer);
 	
 			Renderable object = new Renderable();
-			object.addComponent(NodeComponentType.MAIN_RENDERINFO, renderInfo);
-			object.addComponent(NodeComponentType.SHADOW_RENDERINFO, shadowRenderInfo);
-			object.addComponent(NodeComponentType.WIREFRAME_RENDERINFO, wireframeRenderInfo);
-			object.addComponent(NodeComponentType.MATERIAL0, model.getMaterial());
+			object.addComponent(NodeComponentKey.MAIN_RENDERINFO, renderInfo);
+			object.addComponent(NodeComponentKey.SHADOW_RENDERINFO, shadowRenderInfo);
+			object.addComponent(NodeComponentKey.WIREFRAME_RENDERINFO, wireframeRenderInfo);
+			object.addComponent(NodeComponentKey.MATERIAL0, model.getMaterial());
 			objects.add(object);
 		}
 		

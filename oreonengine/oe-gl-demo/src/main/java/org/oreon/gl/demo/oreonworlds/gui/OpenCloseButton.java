@@ -1,7 +1,8 @@
 package org.oreon.gl.demo.oreonworlds.gui;
 
 import org.oreon.core.context.EngineContext;
-import org.oreon.core.gl.texture.Texture2D;
+import org.oreon.core.gl.texture.GLTexture;
+import org.oreon.core.gl.wrapper.texture.Texture2DBilinearFilter;
 import org.oreon.core.math.Vec2f;
 import org.oreon.gl.components.ui.elements.Button;
 
@@ -9,25 +10,17 @@ public class OpenCloseButton extends Button{
 	
 	private boolean isClosed = true;
 	
-	private Texture2D openArrow;
-	private Texture2D openArrowClicked;
-	private Texture2D closeArrow;
-	private Texture2D closeArrowClicked;
+	private GLTexture openArrow;
+	private GLTexture openArrowClicked;
+	private GLTexture closeArrow;
+	private GLTexture closeArrowClicked;
 	
 	public OpenCloseButton()
 	{
-		openArrow = new Texture2D("gui/tex/open_arrow.png");
-		openArrow.bind();
-		openArrow.bilinearFilter();
-		openArrowClicked = new Texture2D("gui/tex/open_arrow.png");
-		openArrowClicked.bind();
-		openArrowClicked.bilinearFilter();
-		closeArrow = new Texture2D("gui/tex/close_arrow.png");
-		closeArrow.bind();
-		closeArrow.bilinearFilter();
-		closeArrowClicked = new Texture2D("gui/tex/close_arrow.png");
-		closeArrowClicked.bind();
-		closeArrowClicked.bilinearFilter();
+		openArrow = new Texture2DBilinearFilter("gui/tex/open_arrow.png");
+		openArrowClicked = new Texture2DBilinearFilter("gui/tex/open_arrow.png");
+		closeArrow = new Texture2DBilinearFilter("gui/tex/close_arrow.png");
+		closeArrowClicked = new Texture2DBilinearFilter("gui/tex/close_arrow.png");
 		
 		buttonMap = openArrow;
 		buttonClickMap = openArrowClicked;

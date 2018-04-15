@@ -5,9 +5,9 @@ import java.util.HashMap;
 import org.oreon.core.context.EngineContext;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.math.Vec3f;
-import org.oreon.core.scenegraph.NodeComponent;
-import org.oreon.core.scenegraph.NodeComponentType;
 import org.oreon.core.scenegraph.Node;
+import org.oreon.core.scenegraph.NodeComponent;
+import org.oreon.core.scenegraph.NodeComponentKey;
 import org.oreon.core.scenegraph.Renderable;
 
 public class TerrainNode extends Renderable{
@@ -21,7 +21,7 @@ public class TerrainNode extends Renderable{
 	private float gap;
 	
 	
-	public TerrainNode(HashMap<NodeComponentType, NodeComponent> components, Vec2f location, int lod, Vec2f index){
+	public TerrainNode(HashMap<NodeComponentKey, NodeComponent> components, Vec2f location, int lod, Vec2f index){
 		
 		this.isleaf = true;
 		this.index = index;
@@ -31,8 +31,8 @@ public class TerrainNode extends Renderable{
 		this.gap = 1f/(TerrainQuadtree.getRootPatches() * (float)(Math.pow(2, lod)));
 		
 		try {
-			addComponent(NodeComponentType.MAIN_RENDERINFO, components.get(NodeComponentType.MAIN_RENDERINFO).clone());
-			addComponent(NodeComponentType.WIREFRAME_RENDERINFO, components.get(NodeComponentType.WIREFRAME_RENDERINFO).clone());
+			addComponent(NodeComponentKey.MAIN_RENDERINFO, components.get(NodeComponentKey.MAIN_RENDERINFO).clone());
+			addComponent(NodeComponentKey.WIREFRAME_RENDERINFO, components.get(NodeComponentKey.WIREFRAME_RENDERINFO).clone());
 		} catch (CloneNotSupportedException e) {
 			e.printStackTrace();
 		}
@@ -77,10 +77,10 @@ public class TerrainNode extends Renderable{
 		if (renderChunk)
 		{	
 			if (EngineContext.getConfig().isWireframe()){
-				getComponents().get(NodeComponentType.WIREFRAME_RENDERINFO).render();
+				getComponents().get(NodeComponentKey.WIREFRAME_RENDERINFO).render();
 			}
 			else{
-				getComponents().get(NodeComponentType.MAIN_RENDERINFO).render();
+				getComponents().get(NodeComponentKey.MAIN_RENDERINFO).render();
 			}
 		}
 		
@@ -91,8 +91,8 @@ public class TerrainNode extends Renderable{
 	public void renderShadows()
 	{
 		if (isleaf){
-			if (getComponents().containsKey(NodeComponentType.SHADOW_RENDERINFO)){
-				getComponents().get(NodeComponentType.SHADOW_RENDERINFO).render();
+			if (getComponents().containsKey(NodeComponentKey.SHADOW_RENDERINFO)){
+				getComponents().get(NodeComponentKey.SHADOW_RENDERINFO).render();
 			}
 
 		}
@@ -163,16 +163,16 @@ public class TerrainNode extends Renderable{
 		pos = pos.div(config.getScaleXZ());
 		Vec2f floor = new Vec2f((int) Math.floor(pos.getX()), (int) Math.floor(pos.getY()));
 		pos = pos.sub(floor);
-		pos = pos.mul(config.getHeightmap().getWidth());
+		pos = pos.mul(config.getHeightmap().getMetaData().getWidth());
 		int x0 = (int) Math.floor(pos.getX());
 		int x1 = x0 + 1;
 		int z0 = (int) Math.floor(pos.getY());
 		int z1 = z0 + 1;
 		
-		float h0 =  config.getHeightmapDataBuffer().get(config.getHeightmap().getWidth() * z0 + x0);
-		float h1 =  config.getHeightmapDataBuffer().get(config.getHeightmap().getWidth() * z0 + x1);
-		float h2 =  config.getHeightmapDataBuffer().get(config.getHeightmap().getWidth() * z1 + x0);
-		float h3 =  config.getHeightmapDataBuffer().get(config.getHeightmap().getWidth() * z1 + x1);
+		float h0 =  config.getHeightmapDataBuffer().get(config.getHeightmap().getMetaData().getWidth() * z0 + x0);
+		float h1 =  config.getHeightmapDataBuffer().get(config.getHeightmap().getMetaData().getWidth() * z0 + x1);
+		float h2 =  config.getHeightmapDataBuffer().get(config.getHeightmap().getMetaData().getWidth() * z1 + x0);
+		float h3 =  config.getHeightmapDataBuffer().get(config.getHeightmap().getMetaData().getWidth() * z1 + x1);
 		
 		float percentU = pos.getX() - x0;
         float percentV = pos.getY() - z0;
