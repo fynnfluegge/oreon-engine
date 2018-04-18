@@ -1,4 +1,4 @@
-package org.oreon.core.vk.wrapper.pipeline;
+package org.oreon.vk.engine;
 
 import org.lwjgl.vulkan.VkDevice;
 import org.oreon.core.vk.core.framebuffer.FrameBufferObject;

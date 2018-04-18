@@ -19,8 +19,8 @@ import org.oreon.core.vk.core.pipeline.VkVertexInput;
 import org.oreon.core.vk.core.scenegraph.VkRenderInfo;
 import org.oreon.core.vk.wrapper.VkMemoryHelper;
 import org.oreon.core.vk.wrapper.command.RenderCommandBuffer;
-import org.oreon.core.vk.wrapper.pipeline.OffScreenRenderPipeline;
 import org.oreon.vk.engine.OffScreenFbo;
+import org.oreon.vk.engine.OffScreenRenderPipeline;
 
 public class VkTestObject extends Renderable{
 	
