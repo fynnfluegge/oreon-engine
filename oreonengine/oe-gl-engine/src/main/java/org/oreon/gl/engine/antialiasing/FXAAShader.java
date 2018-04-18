@@ -1,4 +1,4 @@
-package org.oreon.core.gl.shaders;
+package org.oreon.gl.engine.antialiasing;
 
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
@@ -25,7 +25,7 @@ public class FXAAShader extends GLShaderProgram{
 	{
 		super();
 		
-		addComputeShader(ResourceLoader.loadShader("shaders/anti-aliasing/fxaa_CS.glsl"));
+		addComputeShader(ResourceLoader.loadShader("shaders/fxaa_CS.glsl"));
 		
 		compileShader();
 		

@@ -1,4 +1,4 @@
-package org.oreon.core.gl.shaders;
+package org.oreon.gl.engine.deferred;
 
 import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
@@ -26,7 +26,7 @@ public class DeferredLightingShader extends GLShaderProgram{
 	{
 		super();
 		
-		addComputeShader(ResourceLoader.loadShader("shaders/deferred/deferredLighting_CS.glsl"));
+		addComputeShader(ResourceLoader.loadShader("shaders/deferredLighting_CS.glsl"));
 		compileShader();
 		
 		addUniformBlock("Camera");

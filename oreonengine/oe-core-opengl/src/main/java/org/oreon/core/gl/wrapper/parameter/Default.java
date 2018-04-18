@@ -1,7 +1,10 @@
-package org.oreon.core.gl.parameter;
+package org.oreon.core.gl.wrapper.parameter;
 
 import static org.lwjgl.opengl.GL11.GL_BACK;
 import static org.lwjgl.opengl.GL32.GL_SAMPLE_MASK;
+
+import org.oreon.core.gl.pipeline.RenderParameter;
+
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_CULL_FACE;
 import static org.lwjgl.opengl.GL11.GL_CW;

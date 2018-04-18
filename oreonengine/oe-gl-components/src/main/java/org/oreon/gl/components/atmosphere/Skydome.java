@@ -2,9 +2,9 @@ package org.oreon.gl.components.atmosphere;
 
 import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.buffer.GLMeshVBO;
-import org.oreon.core.gl.parameter.CullFaceDisable;
 import org.oreon.core.gl.scenegraph.GLRenderInfo;
 import org.oreon.core.gl.util.GLAssimpModelLoader;
+import org.oreon.core.gl.wrapper.parameter.CullFaceDisable;
 import org.oreon.core.model.Mesh;
 import org.oreon.core.scenegraph.NodeComponentKey;
 import org.oreon.core.scenegraph.Renderable;

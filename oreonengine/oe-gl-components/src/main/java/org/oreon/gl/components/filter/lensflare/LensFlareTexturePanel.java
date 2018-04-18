@@ -1,7 +1,7 @@
 package org.oreon.gl.components.filter.lensflare;
 
-import org.oreon.core.gl.parameter.AdditiveBlending;
 import org.oreon.core.gl.surface.FullScreenQuad;
+import org.oreon.core.gl.wrapper.parameter.AdditiveBlending;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.math.Transform;
 

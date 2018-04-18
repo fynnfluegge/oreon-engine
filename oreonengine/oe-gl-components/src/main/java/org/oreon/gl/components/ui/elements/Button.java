@@ -8,8 +8,8 @@ import java.nio.DoubleBuffer;
 
 import org.lwjgl.BufferUtils;
 import org.oreon.core.context.EngineContext;
-import org.oreon.core.gl.parameter.Default;
 import org.oreon.core.gl.texture.GLTexture;
+import org.oreon.core.gl.wrapper.parameter.Default;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.math.Quaternion;
 import org.oreon.core.math.Transform;

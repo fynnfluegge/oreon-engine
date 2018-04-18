@@ -1,7 +1,7 @@
 package org.oreon.gl.components.ui;
 
-import org.oreon.core.gl.parameter.RenderParameter;
 import org.oreon.core.gl.pipeline.GLShaderProgram;
+import org.oreon.core.gl.pipeline.RenderParameter;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.math.Transform;
 import org.oreon.core.math.Vec2f;

@@ -1,4 +1,4 @@
-package org.oreon.core.gl.shaders;
+package org.oreon.gl.engine.antialiasing;
 
 import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.pipeline.GLShaderProgram;
@@ -21,7 +21,7 @@ public class SampleCoverageMaskShader extends GLShaderProgram{
 	{
 		super();
 		
-		addComputeShader(ResourceLoader.loadShader("shaders/anti-aliasing/sampleCoverageMask_CS.glsl"));
+		addComputeShader(ResourceLoader.loadShader("shaders/sampleCoverageMask_CS.glsl"));
 		
 		compileShader();
 		

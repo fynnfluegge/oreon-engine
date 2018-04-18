@@ -4,8 +4,8 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import org.oreon.core.context.EngineContext;
-import org.oreon.core.gl.parameter.Default;
 import org.oreon.core.gl.texture.GLTexture;
+import org.oreon.core.gl.wrapper.parameter.Default;
 import org.oreon.core.gl.wrapper.texture.Texture2DBilinearFilter;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.math.Transform;

@@ -1,4 +1,4 @@
-package org.oreon.core.gl.deferred;
+package org.oreon.gl.engine.deferred;
 
 import static org.lwjgl.opengl.GL15.GL_READ_ONLY;
 import static org.lwjgl.opengl.GL15.GL_WRITE_ONLY;
@@ -18,7 +18,6 @@ import java.nio.IntBuffer;
 import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.buffer.GLFramebuffer;
 import org.oreon.core.gl.context.GLContext;
-import org.oreon.core.gl.shaders.DeferredLightingShader;
 import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.gl.wrapper.texture.Texture2DNoFilterRGBA16F;
 import org.oreon.core.util.BufferUtil;

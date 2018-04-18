@@ -1,4 +1,4 @@
-package org.oreon.core.gl.deferred;
+package org.oreon.gl.engine.deferred;
 
 import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.gl.wrapper.texture.Texture2DMultisampleDepth32F;

@@ -7,9 +7,9 @@ import static org.lwjgl.opengl.GL30.GL_FRAMEBUFFER;
 import static org.lwjgl.opengl.GL32.glFramebufferTexture;
 
 import org.oreon.core.gl.buffer.GLFramebuffer;
-import org.oreon.core.gl.parameter.RenderParameter;
-import org.oreon.core.gl.parameter.ShadowConfig;
+import org.oreon.core.gl.pipeline.RenderParameter;
 import org.oreon.core.gl.texture.GLTexture;
+import org.oreon.core.gl.wrapper.parameter.ShadowConfig;
 import org.oreon.core.gl.wrapper.texture.Texture2DArrayDepth32F;
 import org.oreon.core.util.Constants;
 

@@ -1,4 +1,4 @@
-package org.oreon.core.gl.antialiasing;
+package org.oreon.gl.engine.antialiasing;
 
 import static org.lwjgl.opengl.GL15.GL_READ_ONLY;
 import static org.lwjgl.opengl.GL15.GL_WRITE_ONLY;
@@ -7,7 +7,6 @@ import static org.lwjgl.opengl.GL42.glBindImageTexture;
 import static org.lwjgl.opengl.GL43.glDispatchCompute;
 
 import org.oreon.core.context.EngineContext;
-import org.oreon.core.gl.shaders.FXAAShader;
 import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.gl.wrapper.texture.Texture2DNoFilterRGBA16F;
 

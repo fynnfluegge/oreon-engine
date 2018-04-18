@@ -1,11 +1,10 @@
 package org.oreon.core.gl.surface;
 
 import org.oreon.core.gl.buffer.GLMeshVBO;
-import org.oreon.core.gl.parameter.Default;
-import org.oreon.core.gl.parameter.RenderParameter;
 import org.oreon.core.gl.pipeline.GLShaderProgram;
-import org.oreon.core.gl.shaders.FullScreenQuadShader;
+import org.oreon.core.gl.pipeline.RenderParameter;
 import org.oreon.core.gl.texture.GLTexture;
+import org.oreon.core.gl.wrapper.parameter.Default;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.util.MeshGenerator;
 

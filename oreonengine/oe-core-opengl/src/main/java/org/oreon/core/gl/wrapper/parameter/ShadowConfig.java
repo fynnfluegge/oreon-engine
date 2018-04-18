@@ -1,7 +1,10 @@
-package org.oreon.core.gl.parameter;
+package org.oreon.core.gl.wrapper.parameter;
 
 import static org.lwjgl.opengl.GL11.GL_POLYGON_OFFSET_FILL;
 import static org.lwjgl.opengl.GL11.glPolygonOffset;
+
+import org.oreon.core.gl.pipeline.RenderParameter;
+
 import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.opengl.GL11.glDisable;
 

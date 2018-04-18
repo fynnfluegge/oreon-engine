@@ -3,9 +3,9 @@ package org.oreon.gl.components.terrain;
 import java.util.HashMap;
 
 import org.oreon.core.gl.buffer.GLPatchVBO;
-import org.oreon.core.gl.parameter.Default;
 import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.gl.scenegraph.GLRenderInfo;
+import org.oreon.core.gl.wrapper.parameter.Default;
 import org.oreon.core.scenegraph.Node;
 import org.oreon.core.scenegraph.NodeComponent;
 import org.oreon.core.scenegraph.NodeComponentKey;

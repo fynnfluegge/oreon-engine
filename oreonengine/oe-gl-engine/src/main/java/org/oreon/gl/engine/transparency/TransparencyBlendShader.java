@@ -1,4 +1,4 @@
-package org.oreon.core.gl.shaders;
+package org.oreon.gl.engine.transparency;
 
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
@@ -31,8 +31,8 @@ public class TransparencyBlendShader extends GLShaderProgram{
 		
 		super();
 		
-		addVertexShader(ResourceLoader.loadShader("shaders/deferred/transparencyBlend_VS.glsl"));
-		addFragmentShader(ResourceLoader.loadShader("shaders/deferred/transparencyBlend_FS.glsl"));
+		addVertexShader(ResourceLoader.loadShader("shaders/transparencyBlend_VS.glsl"));
+		addFragmentShader(ResourceLoader.loadShader("shaders/transparencyBlend_FS.glsl"));
 		compileShader();
 		
 		addUniform("opaqueSceneTexture");

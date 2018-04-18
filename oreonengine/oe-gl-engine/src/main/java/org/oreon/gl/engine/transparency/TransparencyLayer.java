@@ -1,4 +1,4 @@
-package org.oreon.core.gl.deferred;
+package org.oreon.gl.engine.transparency;
 
 import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT0;
 import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT1;

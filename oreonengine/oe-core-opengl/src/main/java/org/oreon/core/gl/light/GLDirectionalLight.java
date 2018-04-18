@@ -6,6 +6,9 @@ import org.oreon.core.light.DirectionalLight;
 import org.oreon.core.util.BufferUtil;
 import org.oreon.core.util.Constants;
 
+import lombok.Getter;
+
+@Getter
 public class GLDirectionalLight extends DirectionalLight{
 
 	private static GLDirectionalLight instance = null;
@@ -25,7 +28,7 @@ public class GLDirectionalLight extends DirectionalLight{
 		
 		super(); 
 		
-		setUbo_light(new GLUniformBuffer());
+		ubo_light = new GLUniformBuffer();
 		getUbo_light().setBinding_point_index(Constants.DirectionalLightUniformBlockBinding);
 		getUbo_light().bindBufferBase();
 		getUbo_light().allocate(getLightBufferSize());
@@ -38,7 +41,7 @@ public class GLDirectionalLight extends DirectionalLight{
 		getFloatBufferLight().put(0);
 		getUbo_light().updateData(getFloatBufferLight(), getLightBufferSize());
 		
-		setUbo_matrices(new GLUniformBuffer());
+		ubo_matrices = new GLUniformBuffer();
 		getUbo_matrices().setBinding_point_index(Constants.LightMatricesUniformBlockBinding);
 		getUbo_matrices().bindBufferBase();
 		getUbo_matrices().allocate(getMatricesBufferSize());
@@ -57,19 +60,4 @@ public class GLDirectionalLight extends DirectionalLight{
 		}
 	}
 
-	public GLUniformBuffer getUbo_light() {
-		return ubo_light;
-	}
-
-	public void setUbo_light(GLUniformBuffer ubo_light) {
-		this.ubo_light = ubo_light;
-	}
-
-	public GLUniformBuffer getUbo_matrices() {
-		return ubo_matrices;
-	}
-
-	public void setUbo_matrices(GLUniformBuffer ubo_matrices) {
-		this.ubo_matrices = ubo_matrices;
-	}
 }

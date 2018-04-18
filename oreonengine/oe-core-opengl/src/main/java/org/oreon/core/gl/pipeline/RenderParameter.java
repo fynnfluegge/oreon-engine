@@ -1,4 +1,4 @@
-package org.oreon.core.gl.parameter;
+package org.oreon.core.gl.pipeline;
 
 public interface RenderParameter {
 

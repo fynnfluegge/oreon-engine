@@ -1,6 +1,5 @@
-package org.oreon.core.gl.deferred;
+package org.oreon.gl.engine.transparency;
 
-import org.oreon.core.gl.shaders.TransparencyBlendShader;
 import org.oreon.core.gl.surface.FullScreenQuad;
 import org.oreon.core.gl.texture.GLTexture;
 
