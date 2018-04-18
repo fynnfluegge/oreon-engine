@@ -11,7 +11,7 @@ public class Image2DLocal extends VkImage{
 	public Image2DLocal(VkDevice device, VkPhysicalDeviceMemoryProperties memoryProperties,
 							  int width, int height, int format, int usage) {
 		
-		super(device, width, height, 1, format, usage);
+		super(device, width, height, 1, format, usage, 1);
 		allocate(memoryProperties, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 		bindImageMemory();
 	}

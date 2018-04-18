@@ -35,6 +35,8 @@ import static org.lwjgl.vulkan.VK10.vkDestroyPipelineLayout;
 
 import java.nio.IntBuffer;
 import java.nio.LongBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkGraphicsPipelineCreateInfo;
@@ -75,6 +77,8 @@ public class VkPipeline {
 	private VkRect2D.Buffer scissor;
 	private IntBuffer pDynamicStates;
 	
+	public List<VkPipelineColorBlendAttachmentState> colorBlendAttachments = new ArrayList<>();
+	
 	public VkPipeline(VkDevice device) {
 	
 		this.device = device;
@@ -90,7 +94,7 @@ public class VkPipeline {
 				.pViewportState(viewportAndScissorState)
 				.pRasterizationState(rasterizer)
 				.pMultisampleState(multisampling)
-				.pDepthStencilState(null)
+				.pDepthStencilState(depthStencil)
 				.pColorBlendState(colorBlending)
 				.pDynamicState(null)
 				.layout(layoutHandle)
@@ -209,16 +213,30 @@ public class VkPipeline {
                 .alphaToOneEnable(false);
 	}
 	
-	public void setColorBlending(){
-	
-		VkPipelineColorBlendAttachmentState.Buffer colorWriteMask = VkPipelineColorBlendAttachmentState.calloc(1)
+	public void addColorBlendAttachment(){
+		
+		VkPipelineColorBlendAttachmentState colorWriteMask = VkPipelineColorBlendAttachmentState.calloc()
                 .blendEnable(false)
                 .colorWriteMask(VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT
                 				| VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT);
+		
+		colorBlendAttachments.add(colorWriteMask);
+	}
+	
+	public void setColorBlendState(){
+		
+		VkPipelineColorBlendAttachmentState.Buffer colorBlendStates =
+				VkPipelineColorBlendAttachmentState.calloc(colorBlendAttachments.size());
+		
+		for (VkPipelineColorBlendAttachmentState colorBlendAttachment : colorBlendAttachments){
+			colorBlendStates.put(colorBlendAttachment);
+		}
+		colorBlendStates.flip();
+	
         colorBlending = VkPipelineColorBlendStateCreateInfo.calloc()
                 .sType(VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO)
                 .logicOpEnable(false)
-                .pAttachments(colorWriteMask);
+                .pAttachments(colorBlendStates);
 	}
 	
 	public void setDepthAndStencilTest(){

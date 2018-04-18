@@ -23,14 +23,10 @@ public class VkFrameBuffer {
 	private VkDevice device;
 	
 	public VkFrameBuffer(VkDevice device, int width, int height, int layers, 
-						 long imageView, long renderPass) {
+						 LongBuffer pAttachments, long renderPass) {
 		
 		this.device = device;
 		
-		LongBuffer pFramebuffer = memAllocLong(1);
-        LongBuffer pAttachments = memAllocLong(1);
-    	pAttachments.put(0, imageView);
-    	
         VkFramebufferCreateInfo framebufferInfo = VkFramebufferCreateInfo.calloc()
                 .sType(VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO)
                 .pAttachments(pAttachments)
@@ -41,6 +37,7 @@ public class VkFrameBuffer {
                 .pNext(0)
                 .renderPass(renderPass);
         
+        LongBuffer pFramebuffer = memAllocLong(1);
         int err = vkCreateFramebuffer(device, framebufferInfo, null, pFramebuffer);
         
         if (err != VK_SUCCESS) {

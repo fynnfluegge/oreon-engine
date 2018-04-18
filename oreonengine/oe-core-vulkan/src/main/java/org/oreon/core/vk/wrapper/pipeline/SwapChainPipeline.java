@@ -5,13 +5,13 @@ import java.nio.LongBuffer;
 import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkExtent2D;
 import org.oreon.core.model.Vertex.VertexLayout;
-import org.oreon.core.vk.core.pipeline.VkPipeline;
 import org.oreon.core.vk.core.pipeline.ShaderPipeline;
+import org.oreon.core.vk.core.pipeline.VkPipeline;
 import org.oreon.core.vk.core.pipeline.VkVertexInput;
 
 public class SwapChainPipeline extends VkPipeline{
 
-	public SwapChainPipeline(VkDevice device, long renderPass, VkExtent2D extent, int imageFormat, LongBuffer layouts) {
+	public SwapChainPipeline(VkDevice device, long renderPass, VkExtent2D extent, LongBuffer layouts) {
 		
 		super(device);
 	    
@@ -27,7 +27,8 @@ public class SwapChainPipeline extends VkPipeline{
 	    setViewportAndScissor(extent.width(), extent.height());
 	    setRasterizer();
 	    setMultisampling();
-	    setColorBlending();
+	    addColorBlendAttachment();
+	    setColorBlendState();
 	    setDepthAndStencilTest();
 	    setDynamicState();
 	    setLayout(layouts);

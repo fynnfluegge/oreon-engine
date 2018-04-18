@@ -131,7 +131,7 @@ public class VkRenderEngine extends RenderEngine{
 	    swapChain = new SwapChain(logicalDevice,
 	    						  physicalDevice,
 	    						  surface, 
-	    						  offScreenFbo.getImageView().getHandle());
+	    						  offScreenFbo.getGBuffer().getAlbedoBuffer().getImageView().getHandle());
 	}
     
 

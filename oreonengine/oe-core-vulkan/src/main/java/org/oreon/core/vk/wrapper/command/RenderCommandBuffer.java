@@ -13,8 +13,8 @@ import org.oreon.core.vk.core.buffer.VkBuffer;
 import org.oreon.core.vk.core.command.CommandBuffer;
 import org.oreon.core.vk.core.context.VkContext;
 import org.oreon.core.vk.core.framebuffer.FrameBufferObject;
-import org.oreon.core.vk.core.pipeline.VkPipeline;
 import org.oreon.core.vk.core.pipeline.PipelineResources;
+import org.oreon.core.vk.core.pipeline.VkPipeline;
 import org.oreon.core.vk.wrapper.VkMemoryHelper;
 
 public class RenderCommandBuffer extends CommandBuffer{
@@ -43,7 +43,8 @@ public class RenderCommandBuffer extends CommandBuffer{
 		beginRecord(VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT);
 	    recordIndexedRenderCmd(pipeline, fbo.getRenderPass().getHandle(),
 	    		vertexBufferObject.getHandle(), indexBufferObject.getHandle(), mesh.getIndices().length,
-	    		resources.getDescriporSets(), fbo.getWidth(), fbo.getHeight(), fbo.getFrameBuffer().getHandle());
+	    		resources.getDescriporSets(), fbo.getWidth(), fbo.getHeight(), fbo.getFrameBuffer().getHandle(),
+	    		fbo.getAttachmentCount());
 	    finishRecord();
 	}
 

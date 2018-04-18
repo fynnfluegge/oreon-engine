@@ -1,6 +1,7 @@
 package org.oreon.vk.demo;
 
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_R8G8B8A8_UNORM;
+import static org.lwjgl.vulkan.VK10.VK_IMAGE_ASPECT_COLOR_BIT;
 
 import org.lwjgl.vulkan.VkDevice;
 import org.oreon.core.model.Mesh;
@@ -37,7 +38,7 @@ public class VkTestObject extends Renderable{
 					"images/vulkan-logo.jpg");
 			
 			VkImageView imageView = new VkImageView(device,
-					VK_FORMAT_R8G8B8A8_UNORM, image.getHandle());
+					VK_FORMAT_R8G8B8A8_UNORM, image.getHandle(), VK_IMAGE_ASPECT_COLOR_BIT);
 			
 			VkTestObjectDescriptor descriptor = new VkTestObjectDescriptor(device, imageView.getHandle());
 			

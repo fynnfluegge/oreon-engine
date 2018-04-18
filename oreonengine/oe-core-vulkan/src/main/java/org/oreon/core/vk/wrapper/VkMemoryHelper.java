@@ -60,7 +60,7 @@ public class VkMemoryHelper {
 		StagingBuffer stagingBuffer = new StagingBuffer(device, memoryProperties, imageBuffer);
 		
 		VkImage image = new VkImage(device, 512, 512, 1, VK_FORMAT_R8G8B8A8_UNORM,
-	    			 VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT);
+	    			 VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, 1);
 	    image.allocate(memoryProperties,
 	    			   VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 	    image.bindImageMemory();

@@ -31,7 +31,6 @@ import static org.lwjgl.vulkan.VK10.vkCmdBindPipeline;
 import static org.lwjgl.vulkan.VK10.vkCmdBindVertexBuffers;
 import static org.lwjgl.vulkan.VK10.vkCmdCopyBuffer;
 import static org.lwjgl.vulkan.VK10.vkCmdCopyBufferToImage;
-import static org.lwjgl.vulkan.VK10.vkCmdDraw;
 import static org.lwjgl.vulkan.VK10.vkCmdDrawIndexed;
 import static org.lwjgl.vulkan.VK10.vkCmdEndRenderPass;
 import static org.lwjgl.vulkan.VK10.vkCmdPipelineBarrier;
@@ -43,6 +42,7 @@ import java.nio.LongBuffer;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.vulkan.VkBufferCopy;
 import org.lwjgl.vulkan.VkBufferImageCopy;
+import org.lwjgl.vulkan.VkClearValue;
 import org.lwjgl.vulkan.VkCommandBuffer;
 import org.lwjgl.vulkan.VkCommandBufferAllocateInfo;
 import org.lwjgl.vulkan.VkCommandBufferBeginInfo;
@@ -117,42 +117,6 @@ public class CommandBuffer {
         }
 	}
 	
-	public void recordRenderCmd(long pipeline,
-								long renderPass,
-								long vertexBuffer,
-								int width,
-								int height,
-								long framebuffer){
-		
-		VkRenderPassBeginInfo renderPassBeginInfo = VkRenderPassBeginInfo.calloc()
-                .sType(VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO)
-                .pNext(0)
-                .renderPass(renderPass)
-                .pClearValues(VkUtil.getBlackClearValues())
-                .framebuffer(framebuffer);
-		
-		VkRect2D renderArea = renderPassBeginInfo.renderArea();
-		renderArea.offset().set(0, 0);
-		renderArea.extent().set(width, height);
-				
-		vkCmdBeginRenderPass(handle, renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
-		vkCmdBindPipeline(handle, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
-		
-		LongBuffer offsets = memAllocLong(1);
-        offsets.put(0, 0L);
-        LongBuffer pBuffers = memAllocLong(1);
-        pBuffers.put(0, vertexBuffer);
-        
-        vkCmdBindVertexBuffers(handle, 0, pBuffers, offsets);
-		
-		vkCmdDraw(handle, 3, 1, 0, 0);
-		vkCmdEndRenderPass(handle);
-		
-		memFree(pBuffers);
-        memFree(offsets);
-		renderPassBeginInfo.free();
-	}
-	
 	public void recordIndexedRenderCmd(VkPipeline pipeline,
 									   long renderPass,
 									   long vertexBuffer,
@@ -161,13 +125,21 @@ public class CommandBuffer {
 									   long[] descriptorSets,
 									   int width,
 									   int height,
-									   long framebuffer){
+									   long framebuffer,
+									   int attachments){
 
+		VkClearValue.Buffer clearValues = VkClearValue.calloc(attachments);
+		
+		for (int i=0; i<attachments; i++){
+			clearValues.put(VkUtil.getBlackClearValues());
+		}
+		clearValues.flip();
+		
 		VkRenderPassBeginInfo renderPassBeginInfo = VkRenderPassBeginInfo.calloc()
 					.sType(VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO)
 					.pNext(0)
 					.renderPass(renderPass)
-					.pClearValues(VkUtil.getBlackClearValues());
+					.pClearValues(clearValues);
 			
 		VkRect2D renderArea = renderPassBeginInfo.renderArea();
 		renderArea.offset().set(0, 0);

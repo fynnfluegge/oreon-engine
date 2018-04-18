@@ -6,7 +6,6 @@ import static org.lwjgl.vulkan.VK10.VK_ATTACHMENT_LOAD_OP_CLEAR;
 import static org.lwjgl.vulkan.VK10.VK_ATTACHMENT_LOAD_OP_DONT_CARE;
 import static org.lwjgl.vulkan.VK10.VK_ATTACHMENT_STORE_OP_DONT_CARE;
 import static org.lwjgl.vulkan.VK10.VK_ATTACHMENT_STORE_OP_STORE;
-import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 import static org.lwjgl.vulkan.VK10.VK_PIPELINE_BIND_POINT_GRAPHICS;
 import static org.lwjgl.vulkan.VK10.VK_SAMPLE_COUNT_1_BIT;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
@@ -15,6 +14,8 @@ import static org.lwjgl.vulkan.VK10.vkCreateRenderPass;
 import static org.lwjgl.vulkan.VK10.vkDestroyRenderPass;
 
 import java.nio.LongBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.lwjgl.vulkan.VkAttachmentDescription;
 import org.lwjgl.vulkan.VkAttachmentReference;
@@ -28,10 +29,11 @@ import lombok.Getter;
 
 public class RenderPass {
 	
-	private VkAttachmentDescription.Buffer attachments;
-	private VkAttachmentReference.Buffer attachmentReferences;
-	private VkSubpassDescription.Buffer subpass;
-	private VkSubpassDependency.Buffer dependencies;
+	private List<VkAttachmentReference> colorReferences = new ArrayList<>();
+	private VkAttachmentReference depthReference;
+	private List<VkAttachmentDescription> attachmentDescriptions = new ArrayList<>();
+	private List<VkSubpassDependency> subpassDependendies = new ArrayList<>();
+	private List<VkSubpassDescription> subpassDescriptions = new ArrayList<>();
 	
 	@Getter
 	private long handle;
@@ -45,11 +47,32 @@ public class RenderPass {
 	
 	public void createRenderPass(){
 		
+		VkAttachmentDescription.Buffer attachments =
+				VkAttachmentDescription.calloc(attachmentDescriptions.size());
+		for (VkAttachmentDescription attachment : attachmentDescriptions){
+			attachments.put(attachment);
+		}
+		attachments.flip();
+		
+		VkSubpassDescription.Buffer subpasses =
+				VkSubpassDescription.calloc(subpassDescriptions.size());
+		for (VkSubpassDescription subpass : subpassDescriptions){
+			subpasses.put(subpass);
+		}
+		subpasses.flip();
+		
+		VkSubpassDependency.Buffer dependencies =
+				VkSubpassDependency.calloc(subpassDependendies.size());
+		for (VkSubpassDependency dependency : subpassDependendies){
+			dependencies.put(dependency);
+		}
+		dependencies.flip();
+		
 		VkRenderPassCreateInfo renderPassInfo = VkRenderPassCreateInfo.calloc()
 	            .sType(VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO)
 	            .pNext(0)
 	            .pAttachments(attachments)
-	            .pSubpasses(subpass)
+	            .pSubpasses(subpasses)
 	            .pDependencies(dependencies);
 		
 		LongBuffer pRenderPass = memAllocLong(1);
@@ -59,8 +82,8 @@ public class RenderPass {
         
         memFree(pRenderPass);
         renderPassInfo.free();
-        attachmentReferences.free();
-        subpass.free();
+//        colorAttachmentReferences.free();
+        subpasses.free();
         dependencies.free();
         attachments.free();
         
@@ -69,9 +92,9 @@ public class RenderPass {
         }
 	}
 	
-	public void setAttachmentDescription(int format, int initialLayout, int finalLayout){
+	public void setAttachment(int format, int initialLayout, int finalLayout){
 		
-		attachments = VkAttachmentDescription.calloc(1)
+		VkAttachmentDescription attachment = VkAttachmentDescription.calloc()
 				.format(format)
 				.samples(VK_SAMPLE_COUNT_1_BIT)
 				.loadOp(VK_ATTACHMENT_LOAD_OP_CLEAR)
@@ -80,41 +103,70 @@ public class RenderPass {
 				.stencilStoreOp(VK_ATTACHMENT_STORE_OP_DONT_CARE)
 				.initialLayout(initialLayout)
 				.finalLayout(finalLayout);
-	}
-	
-	public void setAttachmentReferences(){
 		
-		attachmentReferences = VkAttachmentReference.calloc(1)
-                .attachment(0)
-                .layout(VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
-	}
-	
-	public void setSubpass(){
-		
-		subpass = VkSubpassDescription.calloc(1)
-                .pipelineBindPoint(VK_PIPELINE_BIND_POINT_GRAPHICS)
-                .flags(0)
-                .pInputAttachments(null)
-                .colorAttachmentCount(attachmentReferences.remaining())
-                .pColorAttachments(attachmentReferences)
-                .pResolveAttachments(null)
-                .pDepthStencilAttachment(null)
-                .pPreserveAttachments(null);
+		attachmentDescriptions.add(attachment);
 	}
 	
 	public void setSubpassDependency(int srcSubpass, int dstSubpass,
-									 int srcStageMask, int dstStageMask,
-									 int srcAccessMask, int dstAccessMask,
-									 int dependencyFlags){
+			int srcStageMask, int dstStageMask, int srcAccessMask,
+			int dstAccessMask, int dependencyFlags){
+
+		VkSubpassDependency dependencies = VkSubpassDependency.calloc()
+			.srcSubpass(srcSubpass)
+			.dstSubpass(dstSubpass)
+			.srcStageMask(srcStageMask)
+			.dstStageMask(dstStageMask)
+			.srcAccessMask(srcStageMask)
+			.dstAccessMask(dstStageMask)
+			.dependencyFlags(dependencyFlags);
 		
-		dependencies = VkSubpassDependency.calloc(1)
-				.srcSubpass(srcSubpass)
-				.dstSubpass(dstSubpass)
-				.srcStageMask(srcStageMask)
-				.dstStageMask(dstStageMask)
-				.srcAccessMask(srcStageMask)
-				.dstAccessMask(dstStageMask)
-				.dependencyFlags(dependencyFlags);
+		subpassDependendies.add(dependencies);
+	}
+	
+	public void addColorAttachmentReference(int location, int layout){
+		
+		VkAttachmentReference attachmentReference = VkAttachmentReference.calloc()
+                .attachment(location)
+                .layout(layout);
+		
+		colorReferences.add(attachmentReference);
+	}
+	
+	public void addDepthAttachmentReference(int location, int layout){
+		
+		depthReference = VkAttachmentReference.calloc()
+                .attachment(location)
+                .layout(layout);
+	}
+	
+	public void createSubpass(){
+		
+		VkAttachmentReference.Buffer attachmentReferenceBuffer = 
+				VkAttachmentReference.calloc(colorReferences.size());
+		
+		for (VkAttachmentReference reference : colorReferences){
+			attachmentReferenceBuffer.put(reference);
+		}
+		
+		attachmentReferenceBuffer.flip();
+		
+		VkSubpassDescription subpass = VkSubpassDescription.calloc()
+			.pipelineBindPoint(VK_PIPELINE_BIND_POINT_GRAPHICS)
+			.flags(0)
+			.pInputAttachments(null)
+			.colorAttachmentCount(attachmentReferenceBuffer.limit())
+			.pColorAttachments(attachmentReferenceBuffer)
+			.pResolveAttachments(null)
+			.pDepthStencilAttachment(depthReference)
+			.pPreserveAttachments(null);
+		
+		for (VkAttachmentReference reference : colorReferences){
+			reference.free();
+		}
+		colorReferences.clear();
+//		depthReference.free();
+		
+		subpassDescriptions.add(subpass);
 	}
 	
 	public void destroy(){

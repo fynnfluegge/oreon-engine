@@ -9,7 +9,6 @@ import static org.lwjgl.system.MemoryUtil.memFree;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_UNDEFINED;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_TILING_OPTIMAL;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_TYPE_2D;
-import static org.lwjgl.vulkan.VK10.VK_SAMPLE_COUNT_1_BIT;
 import static org.lwjgl.vulkan.VK10.VK_SHARING_MODE_EXCLUSIVE;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
@@ -50,7 +49,8 @@ public class VkImage {
 	private long allocationSize;
 	private VkDevice device;
 
-	public VkImage(VkDevice device, int width, int height, int depth, int format, int usage){
+	public VkImage(VkDevice device, int width, int height, int depth,
+			int format, int usage, int samples){
 		
 		this.device = device;
 		this.format = format;
@@ -71,7 +71,7 @@ public class VkImage {
 				.initialLayout(VK_IMAGE_LAYOUT_UNDEFINED)
 				.usage(usage)
 				.sharingMode(VK_SHARING_MODE_EXCLUSIVE)
-				.samples(VK_SAMPLE_COUNT_1_BIT)
+				.samples(1)
 				.flags(0);
 		
 		LongBuffer pBuffer = memAllocLong(1);

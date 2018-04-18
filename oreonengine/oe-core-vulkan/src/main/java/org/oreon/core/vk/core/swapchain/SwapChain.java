@@ -18,7 +18,8 @@ import static org.lwjgl.vulkan.KHRSwapchain.vkQueuePresentKHR;
 import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
 import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
 import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
-import static org.lwjgl.vulkan.VK10.VK_FORMAT_B8G8R8A8_UNORM;
+import static org.lwjgl.vulkan.VK10.VK_FORMAT_R8G8B8A8_UNORM;
+import static org.lwjgl.vulkan.VK10.VK_IMAGE_ASPECT_COLOR_BIT;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 import static org.lwjgl.vulkan.VK10.VK_NULL_HANDLE;
 import static org.lwjgl.vulkan.VK10.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
@@ -96,7 +97,7 @@ public class SwapChain {
 	    extent.width(EngineContext.getWindow().getWidth());
 	    extent.height(EngineContext.getWindow().getHeight());
 		
-		int imageFormat = VK_FORMAT_B8G8R8A8_UNORM;
+		int imageFormat = VK_FORMAT_R8G8B8A8_UNORM;
 	    int colorSpace = VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
 	    
 	    VkContext.getPhysicalDevice().checkDeviceFormatAndColorSpaceSupport(imageFormat, colorSpace);
@@ -118,7 +119,7 @@ public class SwapChain {
 	    descriptorSets[0] = descriptor.getSet().getHandle();
 	    
 	    renderPass = new SwapChainRenderPass(device, imageFormat);
-	    pipeline = new SwapChainPipeline(device, renderPass.getHandle(), extent, imageFormat, descriptor.getLayout().getHandle());
+	    pipeline = new SwapChainPipeline(device, renderPass.getHandle(), extent, descriptor.getLayout().getHandle());
 		
 		VkSwapchainCreateInfoKHR swapchainCreateInfo = VkSwapchainCreateInfoKHR.calloc()
 				.sType(VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR)
@@ -220,7 +221,8 @@ public class SwapChain {
         swapChainImageViews = new ArrayList<>(swapChainImages.size());
         for (long swapChainImage : swapChainImages){
         	
-        	VkImageView imageView = new VkImageView(device, imageFormat, swapChainImage);
+        	VkImageView imageView = new VkImageView(device, imageFormat, swapChainImage,
+        			VK_IMAGE_ASPECT_COLOR_BIT);
         	
 			swapChainImageViews.add(imageView);
         }
@@ -231,8 +233,11 @@ public class SwapChain {
 		frameBuffers = new ArrayList<>(swapChainImages.size());
         for (VkImageView imageView : swapChainImageViews){
         	
+        	LongBuffer pAttachments = memAllocLong(1);
+        	pAttachments.put(0, imageView.getHandle());
+        	
         	VkFrameBuffer frameBuffer = new VkFrameBuffer(device,
-        			extent.width(), extent.height(), 1, imageView.getHandle(), renderPass);
+        			extent.width(), extent.height(), 1, pAttachments, renderPass);
         	frameBuffers.add(frameBuffer);
         }
 	}
@@ -248,7 +253,8 @@ public class SwapChain {
 			commandBuffer.beginRecord(VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT);
 			commandBuffer.recordIndexedRenderCmd(pipeline, renderPass,
 												 vertexBuffer, indexBuffer, indexCount, descriptorSets,
-												 extent.width(), extent.height(), framebuffer.getHandle());
+												 extent.width(), extent.height(), framebuffer.getHandle(),
+												 1);
 			commandBuffer.finishRecord();
 			renderCommandBuffers.add(commandBuffer);
 		}

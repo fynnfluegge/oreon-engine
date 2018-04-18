@@ -2,8 +2,8 @@ package org.oreon.core.vk.wrapper.pipeline;
 
 import org.lwjgl.vulkan.VkDevice;
 import org.oreon.core.vk.core.framebuffer.FrameBufferObject;
-import org.oreon.core.vk.core.pipeline.VkPipeline;
 import org.oreon.core.vk.core.pipeline.PipelineResources;
+import org.oreon.core.vk.core.pipeline.VkPipeline;
 
 public class OffScreenRenderPipeline extends VkPipeline{
 	
@@ -17,7 +17,9 @@ public class OffScreenRenderPipeline extends VkPipeline{
 	    setViewportAndScissor(fbo.getWidth(), fbo.getHeight());
 	    setRasterizer();
 	    setMultisampling();
-	    setColorBlending();
+	    addColorBlendAttachment();
+	    addColorBlendAttachment();
+	    setColorBlendState();
 	    setDepthAndStencilTest();
 	    setDynamicState();
 	    setLayout(resources.getDescriporSetLayouts());

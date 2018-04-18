@@ -118,9 +118,9 @@ public class VkUtil {
         return ppEnabledLayerNames;
 	}
     
-    public static VkClearValue.Buffer getBlackClearValues(){
+    public static VkClearValue getBlackClearValues(){
     	
-    	VkClearValue.Buffer clearValues = VkClearValue.calloc(1);
+    	VkClearValue clearValues = VkClearValue.calloc();
         clearValues.color()
                 .float32(0, 0.0f)
                 .float32(1, 0.0f)

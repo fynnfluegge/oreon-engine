@@ -1,39 +1,50 @@
 package org.oreon.vk.engine;
 
-import static org.lwjgl.vulkan.VK10.VK_FORMAT_B8G8R8A8_UNORM;
-import static org.lwjgl.vulkan.VK10.VK_FORMAT_R32G32B32_SFLOAT;
-import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
-import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_SAMPLED_BIT;
+import static org.lwjgl.system.MemoryUtil.memAllocLong;
+import static org.lwjgl.vulkan.VK10.VK_FORMAT_R16G16B16A16_SFLOAT;
+import static org.lwjgl.vulkan.VK10.VK_FORMAT_R8G8B8A8_UNORM;
+
+import java.nio.LongBuffer;
 
 import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
 import org.oreon.core.context.EngineContext;
-import org.oreon.core.vk.core.image.VkImageWrapper;
-import org.oreon.core.vk.wrapper.image.Image2DLocal;
+import org.oreon.core.vk.core.framebuffer.FrameBufferColorAttachment;
+import org.oreon.core.vk.core.framebuffer.FrameBufferDepthAttachment;
 
 import lombok.Getter;
 
 @Getter
 public class GBuffer {
 	
-	private VkImageWrapper albedoBuffer;
-	private VkImageWrapper normalBuffer;
-	private VkImageWrapper worldPositionBuffer;
-	private VkImageWrapper specularEmissionWrapper;
-	private VkImageWrapper lightScatteringMask;
-	private VkImageWrapper depthBuffer;
+	private FrameBufferColorAttachment albedoBuffer;
+	private FrameBufferColorAttachment normalBuffer;
+	private FrameBufferColorAttachment worldPositionBuffer;
+	private FrameBufferColorAttachment specularEmissionWrapper;
+	private FrameBufferColorAttachment lightScatteringMask;
+	private FrameBufferDepthAttachment depthBuffer;
 	
 	public GBuffer(VkDevice device, VkPhysicalDeviceMemoryProperties memoryProperties) {
 		
 		int width = EngineContext.getConfig().getDisplayWidth();
 		int height = EngineContext.getConfig().getDisplayHeight();
 		
-		albedoBuffer = new VkImageWrapper(device,
-				new Image2DLocal(device, memoryProperties, width, height, VK_FORMAT_B8G8R8A8_UNORM,
-					VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT));
+		albedoBuffer = new FrameBufferColorAttachment(device, memoryProperties, width, height,
+				VK_FORMAT_R8G8B8A8_UNORM);
 		
-		normalBuffer = new VkImageWrapper(device,
-				new Image2DLocal(device, memoryProperties, width, height, VK_FORMAT_R32G32B32_SFLOAT,
-					VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT));
+		normalBuffer = new FrameBufferColorAttachment(device, memoryProperties, width, height, 
+				VK_FORMAT_R16G16B16A16_SFLOAT);
+		
+		depthBuffer = new FrameBufferDepthAttachment(device, memoryProperties, width, height);
+	}
+	
+	public LongBuffer getpImageViews(){
+		
+		LongBuffer pImageViews = memAllocLong(3);
+		pImageViews.put(0, albedoBuffer.getImageView().getHandle());
+		pImageViews.put(1, normalBuffer.getImageView().getHandle());
+		pImageViews.put(2, depthBuffer.getImageView().getHandle());
+		
+		return pImageViews;
 	}
 }
