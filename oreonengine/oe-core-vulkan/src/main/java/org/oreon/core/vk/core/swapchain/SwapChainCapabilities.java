@@ -5,8 +5,9 @@ import static org.lwjgl.system.MemoryUtil.memFree;
 import static org.lwjgl.vulkan.KHRSurface.vkGetPhysicalDeviceSurfaceCapabilitiesKHR;
 import static org.lwjgl.vulkan.KHRSurface.vkGetPhysicalDeviceSurfaceFormatsKHR;
 import static org.lwjgl.vulkan.KHRSurface.vkGetPhysicalDeviceSurfacePresentModesKHR;
-import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_UNDEFINED;
+import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
+
 import java.nio.IntBuffer;
 
 import org.lwjgl.vulkan.VkPhysicalDevice;
@@ -15,7 +16,9 @@ import org.lwjgl.vulkan.VkSurfaceFormatKHR;
 import org.oreon.core.vk.core.util.VkUtil;
 
 import lombok.Getter;
+import lombok.extern.log4j.Log4j;
 
+@Log4j
 @Getter
 public class SwapChainCapabilities {
 	
@@ -63,8 +66,10 @@ public class SwapChainCapabilities {
 	
 	public void checkVkSurfaceFormatKHRSupport(int format, int colorSpace){
 		
+		log.info(surfaceFormats.get(0).format());
+		
 		if (surfaceFormats.get(0).format() == VK_FORMAT_UNDEFINED){
-			// surface has not format restrictions
+			// surface has no format restrictions
 			return;
 		}
 		
