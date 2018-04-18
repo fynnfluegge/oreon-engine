@@ -219,17 +219,21 @@ public class CommandBuffer {
 		int dstAccessMask = 0;
 
 		if (oldLayout == VK_IMAGE_LAYOUT_UNDEFINED && newLayout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL) {
+			
 		    srcAccessMask = 0;
 		    dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
 
 		    srcStageMask = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
 		    dstStageMask = VK_PIPELINE_STAGE_TRANSFER_BIT;
+		    
 		} else if (oldLayout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL && newLayout == VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL) {
+			
 		    srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
 		    dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
 
 		    srcStageMask = VK_PIPELINE_STAGE_TRANSFER_BIT;
 		    dstStageMask = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
+		    
 		}
 		
 		VkImageMemoryBarrier.Buffer barrier = VkImageMemoryBarrier.calloc(1)
