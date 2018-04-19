@@ -249,4 +249,19 @@ public class Util {
 		
 		return texCoords;
 	}
+	
+	public static int[] initBitReversedIndices(int n)
+	{
+		int[] bitReversedIndices = new int[n];
+		int bits = (int) (Math.log(n)/Math.log(2));
+		
+		for (int i = 0; i<n; i++)
+		{
+			int x = Integer.reverse(i);
+			x = Integer.rotateLeft(x, bits);
+			bitReversedIndices[i] = x;
+		}
+		
+		return bitReversedIndices;
+	}
 }

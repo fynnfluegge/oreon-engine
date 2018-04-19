@@ -93,7 +93,7 @@ public class SwapChain {
 		
 		this.device = logicalDevice.getHandle();
 		
-		extent = VkContext.getPhysicalDevice().getSwapChainCapabilities().getSurfaceCapabilities().currentExtent();
+		extent = physicalDevice.getSwapChainCapabilities().getSurfaceCapabilities().currentExtent();
 	    extent.width(EngineContext.getWindow().getWidth());
 	    extent.height(EngineContext.getWindow().getHeight());
 		
@@ -172,16 +172,16 @@ public class SwapChain {
         ByteBuffer indexBuffer = BufferUtil.createByteBuffer(fullScreenQuad.getIndices());
         
         VkBuffer vertexBufferObject = VkMemoryHelper.createDeviceLocalBuffer(device,
-        													physicalDevice.getMemoryProperties(),
-        													logicalDevice.getTransferCommandPool().getHandle(),
-        													logicalDevice.getTransferQueue(),
-        													vertexBuffer, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
+        		physicalDevice.getMemoryProperties(),
+        		logicalDevice.getTransferCommandPool().getHandle(),
+        		logicalDevice.getTransferQueue(),
+        		vertexBuffer, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
         
         VkBuffer indexBufferObject = VkMemoryHelper.createDeviceLocalBuffer(device,
-        													physicalDevice.getMemoryProperties(),
-        													logicalDevice.getTransferCommandPool().getHandle(),
-        													logicalDevice.getTransferQueue(),
-        													indexBuffer, VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
+        		physicalDevice.getMemoryProperties(),
+        		logicalDevice.getTransferCommandPool().getHandle(),
+        		logicalDevice.getTransferQueue(),
+        		indexBuffer, VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
         
         createRenderCommandBuffers(logicalDevice.getGraphicsCommandPool(),
         		renderPass.getHandle(), 

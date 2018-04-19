@@ -34,9 +34,11 @@ import static org.lwjgl.vulkan.VK10.vkCmdCopyBufferToImage;
 import static org.lwjgl.vulkan.VK10.vkCmdDrawIndexed;
 import static org.lwjgl.vulkan.VK10.vkCmdEndRenderPass;
 import static org.lwjgl.vulkan.VK10.vkCmdPipelineBarrier;
+import static org.lwjgl.vulkan.VK10.vkCmdPushConstants;
 import static org.lwjgl.vulkan.VK10.vkEndCommandBuffer;
 import static org.lwjgl.vulkan.VK10.vkFreeCommandBuffers;
 
+import java.nio.ByteBuffer;
 import java.nio.LongBuffer;
 
 import org.lwjgl.PointerBuffer;
@@ -68,6 +70,8 @@ public class CommandBuffer {
 	
 	private VkDevice device;
 	private long commandPool;
+	
+	private VkRenderPassBeginInfo renderPassBeginInfo;
 	
 	public CommandBuffer(VkDevice device, long commandPool) {
 		
@@ -117,16 +121,47 @@ public class CommandBuffer {
         }
 	}
 	
-	public void recordIndexedRenderCmd(VkPipeline pipeline,
-									   long renderPass,
-									   long vertexBuffer,
-									   long indexBuffer,
-									   int indexCount,
-									   long[] descriptorSets,
-									   int width,
-									   int height,
-									   long framebuffer,
-									   int attachments){
+	public void beginRenderPassCmd(long pipeline, long renderPass, int attachments){
+		
+		VkClearValue.Buffer clearValues = VkClearValue.calloc(attachments);
+		
+		for (int i=0; i<attachments; i++){
+			clearValues.put(VkUtil.getBlackClearValues());
+		}
+		clearValues.flip();
+		
+		renderPassBeginInfo = VkRenderPassBeginInfo.calloc()
+				.sType(VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO)
+				.pNext(0)
+				.renderPass(renderPass)
+				.pClearValues(clearValues);
+		
+		vkCmdBeginRenderPass(handle, renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
+		vkCmdBindPipeline(handle, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
+	}
+	
+	public void setViewPortCmd(){
+		
+		// TODO
+	}
+	
+	public void setScissorCmd(){
+		
+		// TODO
+	}
+	
+	public void pushConstantsCmd(long pipelineLayout, int stageFlags, ByteBuffer data){
+		
+		vkCmdPushConstants(handle,
+				pipelineLayout,
+				stageFlags,
+				0,
+				data);
+	}
+	
+	public void recordIndexedRenderCmd(VkPipeline pipeline, long renderPass, long vertexBuffer,
+			long indexBuffer, int indexCount, long[] descriptorSets, int width, int height,
+			long framebuffer, int attachments){
 
 		VkClearValue.Buffer clearValues = VkClearValue.calloc(attachments);
 		

@@ -35,6 +35,9 @@ public class RenderPass {
 	private List<VkSubpassDependency> subpassDependendies = new ArrayList<>();
 	private List<VkSubpassDescription> subpassDescriptions = new ArrayList<>();
 	
+	// Buffer storage to free after vkCreateRenderPass
+	private List<VkAttachmentReference.Buffer> attachmentReferenceBuffers = new ArrayList<>();
+	
 	@Getter
 	private long handle;
 	
@@ -80,12 +83,31 @@ public class RenderPass {
 
         handle = pRenderPass.get(0);
         
+        for (VkAttachmentDescription attachment : attachmentDescriptions){
+			attachment.free();
+		}
+        
+        for (VkSubpassDescription subpass : subpassDescriptions){
+			subpass.free();
+		}
+        
+        for (VkSubpassDependency dependency : subpassDependendies){
+			dependency.free();
+		}
+        
+        for (VkAttachmentReference.Buffer attachmentReferencesBuffer : attachmentReferenceBuffers){
+			attachmentReferencesBuffer.free();
+		}
+        
         memFree(pRenderPass);
         renderPassInfo.free();
-//        colorAttachmentReferences.free();
         subpasses.free();
         dependencies.free();
         attachments.free();
+        
+		if (depthReference != null){
+			depthReference.free();
+		}
         
         if (err != VK_SUCCESS) {
             throw new AssertionError("Failed to create clear render pass: " + VkUtil.translateVulkanResult(err));
@@ -163,9 +185,9 @@ public class RenderPass {
 		for (VkAttachmentReference reference : colorReferences){
 			reference.free();
 		}
-		colorReferences.clear();
-//		depthReference.free();
 		
+		colorReferences.clear();
+		attachmentReferenceBuffers.add(attachmentReferenceBuffer);
 		subpassDescriptions.add(subpass);
 	}
 	

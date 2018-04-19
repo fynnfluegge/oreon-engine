@@ -16,9 +16,7 @@ import org.lwjgl.vulkan.VkSurfaceFormatKHR;
 import org.oreon.core.vk.core.util.VkUtil;
 
 import lombok.Getter;
-import lombok.extern.log4j.Log4j;
 
-@Log4j
 @Getter
 public class SwapChainCapabilities {
 	
@@ -65,8 +63,6 @@ public class SwapChainCapabilities {
 	}
 	
 	public void checkVkSurfaceFormatKHRSupport(int format, int colorSpace){
-		
-		log.info(surfaceFormats.get(0).format());
 		
 		if (surfaceFormats.get(0).format() == VK_FORMAT_UNDEFINED){
 			// surface has no format restrictions

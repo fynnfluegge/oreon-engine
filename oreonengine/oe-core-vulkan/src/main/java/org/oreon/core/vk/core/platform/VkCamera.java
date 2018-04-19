@@ -23,10 +23,6 @@ public class VkCamera extends Camera{
 	@Override
 	public void init() {
 		
-//		ByteBuffer cameraBuffer = memAlloc(4 * 16);
-//		FloatBuffer cameraMatrix = cameraBuffer.asFloatBuffer();
-//		cameraMatrix.put(BufferUtil.createFlippedBuffer(getViewProjectionMatrix()));
-		
 	    uniformBuffer = new VkUniformBuffer(VkContext.getLogicalDevice().getHandle(),
 	    									VkContext.getPhysicalDevice().getMemoryProperties(),
 	    									BufferUtil.createByteBuffer(getViewProjectionMatrix()));

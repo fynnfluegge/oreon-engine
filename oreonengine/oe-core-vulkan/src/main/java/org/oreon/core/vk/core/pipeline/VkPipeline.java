@@ -71,6 +71,7 @@ public class VkPipeline {
 	private VkPipelineRasterizationStateCreateInfo rasterizer;
 	private VkPipelineMultisampleStateCreateInfo multisampling;
 	private VkPipelineColorBlendStateCreateInfo colorBlending;
+	private VkPipelineColorBlendAttachmentState.Buffer colorBlendStates;
 	private VkPipelineDepthStencilStateCreateInfo depthStencil;
 	private VkPipelineDynamicStateCreateInfo dynamicState;
 	private VkViewport.Buffer viewport;
@@ -114,6 +115,7 @@ public class VkPipeline {
 		rasterizer.free();
 		multisampling.free();
 		colorBlending.free();
+		colorBlendStates.free();
 		depthStencil.free();
 		dynamicState.free();
 		viewport.free();
@@ -225,7 +227,7 @@ public class VkPipeline {
 	
 	public void setColorBlendState(){
 		
-		VkPipelineColorBlendAttachmentState.Buffer colorBlendStates =
+		colorBlendStates =
 				VkPipelineColorBlendAttachmentState.calloc(colorBlendAttachments.size());
 		
 		for (VkPipelineColorBlendAttachmentState colorBlendAttachment : colorBlendAttachments){
@@ -237,6 +239,11 @@ public class VkPipeline {
                 .sType(VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO)
                 .logicOpEnable(false)
                 .pAttachments(colorBlendStates);
+        
+        for (VkPipelineColorBlendAttachmentState colorBlendAttachment : colorBlendAttachments){
+			colorBlendAttachment.free();
+		}
+        
 	}
 	
 	public void setDepthAndStencilTest(){

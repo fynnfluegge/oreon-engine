@@ -11,4 +11,17 @@
 	<artifactId>oe-vk-components</artifactId>
 	<packaging>jar</packaging>
 	
+	<dependencies>
+		<dependency>
+			<groupId>org.oreon.core</groupId>
+			<artifactId>oe-core</artifactId>
+			<version>${oreon.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.oreon.core</groupId>
+			<artifactId>oe-core-vulkan</artifactId>
+			<version>${oreon.version}</version>
+		</dependency>
+	</dependencies>
+	
 </project>
