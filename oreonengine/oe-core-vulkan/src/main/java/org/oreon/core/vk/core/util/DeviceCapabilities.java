@@ -3,9 +3,9 @@ package org.oreon.core.vk.core.util;
 import static org.lwjgl.system.MemoryUtil.memAllocInt;
 import static org.lwjgl.system.MemoryUtil.memFree;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
+import static org.lwjgl.vulkan.VK10.vkEnumerateDeviceExtensionProperties;
 import static org.lwjgl.vulkan.VK10.vkEnumerateInstanceExtensionProperties;
 import static org.lwjgl.vulkan.VK10.vkEnumerateInstanceLayerProperties;
-import static org.lwjgl.vulkan.VK10.vkEnumerateDeviceExtensionProperties;
 import static org.lwjgl.vulkan.VK10.vkGetPhysicalDeviceFeatures;
 import static org.lwjgl.vulkan.VK10.vkGetPhysicalDeviceProperties;
 
@@ -48,8 +48,8 @@ public class DeviceCapabilities {
 		}
 		
 		for (int i=0; i<ppEnabledExtensionNames.limit(); i++){
-			if (!availableExtensions.contains(ppEnabledExtensionNames.getStringUTF8())){
-				throw new AssertionError("Extension " + ppEnabledExtensionNames.getStringUTF8() + " not supported");
+			if (!availableExtensions.contains(ppEnabledExtensionNames.getStringUTF8(i))){
+				throw new AssertionError("Extension " + ppEnabledExtensionNames.getStringUTF8(i) + " not supported");
 			}
 		}
 		

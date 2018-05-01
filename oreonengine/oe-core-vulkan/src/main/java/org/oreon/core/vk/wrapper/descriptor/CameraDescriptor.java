@@ -5,12 +5,16 @@ import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_ALL_GRAPHICS;
 
 import org.lwjgl.vulkan.VkDevice;
 import org.oreon.core.vk.core.context.VkContext;
-import org.oreon.core.vk.core.descriptor.DescriptorKeys.DescriptorPoolType;
 import org.oreon.core.vk.core.descriptor.DescriptorSet;
 import org.oreon.core.vk.core.descriptor.DescriptorSetLayout;
-import org.oreon.core.vk.core.descriptor.Descriptor;
 
-public class CameraDescriptor extends Descriptor{
+import lombok.Getter;
+
+@Getter
+public class CameraDescriptor {
+	
+	private DescriptorSet set;
+	private DescriptorSetLayout layout;
 	
 	public CameraDescriptor(VkDevice device, long buffer) {
 		
@@ -19,9 +23,9 @@ public class CameraDescriptor extends Descriptor{
 	    layout.create();
 		
 	    set = new DescriptorSet(device,
-	    		VkContext.getEnvironment().getDescriptorPool(DescriptorPoolType.UNIFORM_BUFFER).getHandle(),
-	    		layout.getHandle());
-	    set.updateDescriptorBuffer(buffer, Float.BYTES * 16, 0, 0);
+	    		VkContext.getDescriptorPoolManager().getDescriptorPool("POOL_1").getHandle(),
+	    		layout.getHandlePointer());
+	    set.updateDescriptorBuffer(buffer, Float.BYTES * 16, 0, 0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);
 	}
 
 }

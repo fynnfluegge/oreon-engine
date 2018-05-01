@@ -18,7 +18,9 @@ import lombok.Getter;
 public class DescriptorSetLayout {
 	
 	@Getter
-	private LongBuffer handle;
+	private long handle;
+	@Getter
+	private LongBuffer handlePointer;
 	
 	private VkDescriptorSetLayoutBinding.Buffer layoutBindings;
 	private VkDevice device;
@@ -35,10 +37,13 @@ public class DescriptorSetLayout {
 		
 		VkDescriptorSetLayoutCreateInfo layoutInfo = VkDescriptorSetLayoutCreateInfo.calloc()
 					.sType(VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO)
-					.pBindings(layoutBindings);
+					.pBindings(layoutBindings)
+					.flags(0);
 		
-		handle = memAllocLong(1);
-		int err = vkCreateDescriptorSetLayout(device, layoutInfo, null, handle);
+		handlePointer = memAllocLong(1);
+		int err = vkCreateDescriptorSetLayout(device, layoutInfo, null, handlePointer);
+		
+		handle = handlePointer.get(0);
 		
 		layoutBindings.free();
 		layoutInfo.free();
@@ -62,6 +67,6 @@ public class DescriptorSetLayout {
 	
 	public void destroy(){
 		
-		vkDestroyDescriptorSetLayout(device, handle.get(0), null);
+		vkDestroyDescriptorSetLayout(device, handle, null);
 	}
 }

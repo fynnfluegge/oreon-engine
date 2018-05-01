@@ -4,9 +4,8 @@ import static org.lwjgl.system.MemoryUtil.memAllocLong;
 import static org.lwjgl.system.MemoryUtil.memFree;
 import static org.lwjgl.vulkan.VK10.VK_BORDER_COLOR_INT_OPAQUE_BLACK;
 import static org.lwjgl.vulkan.VK10.VK_COMPARE_OP_ALWAYS;
-import static org.lwjgl.vulkan.VK10.VK_FILTER_LINEAR;
 import static org.lwjgl.vulkan.VK10.VK_SAMPLER_ADDRESS_MODE_REPEAT;
-import static org.lwjgl.vulkan.VK10.VK_SAMPLER_MIPMAP_MODE_LINEAR;
+import static org.lwjgl.vulkan.VK10.VK_SAMPLER_MIPMAP_MODE_NEAREST;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import static org.lwjgl.vulkan.VK10.vkCreateSampler;
@@ -27,14 +26,14 @@ public class VkSampler {
 	
 	private VkDevice device;
 	
-	public VkSampler(VkDevice device){
+	public VkSampler(VkDevice device, int filterMode){
 		
 		this.device = device;
 		
 		VkSamplerCreateInfo createInfo = VkSamplerCreateInfo.calloc()
 						.sType(VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO)
-						.magFilter(VK_FILTER_LINEAR)
-						.minFilter(VK_FILTER_LINEAR)
+						.magFilter(filterMode)
+						.minFilter(filterMode)
 						.addressModeU(VK_SAMPLER_ADDRESS_MODE_REPEAT)
 						.addressModeV(VK_SAMPLER_ADDRESS_MODE_REPEAT)
 						.addressModeW(VK_SAMPLER_ADDRESS_MODE_REPEAT)
@@ -44,7 +43,7 @@ public class VkSampler {
 						.unnormalizedCoordinates(false)
 						.compareEnable(false)
 						.compareOp(VK_COMPARE_OP_ALWAYS)
-						.mipmapMode(VK_SAMPLER_MIPMAP_MODE_LINEAR)
+						.mipmapMode(VK_SAMPLER_MIPMAP_MODE_NEAREST)
 						.mipLodBias(0)
 						.minLod(0)
 						.maxLod(0);

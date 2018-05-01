@@ -5,7 +5,7 @@ import java.nio.FloatBuffer;
 import org.oreon.core.context.EngineContext;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.math.Vec3f;
-import org.oreon.core.shadow.PSSMCamera;
+import org.oreon.core.shadow.PssmCamera;
 import org.oreon.core.util.BufferUtil;
 import org.oreon.core.util.Constants;
 
@@ -16,7 +16,7 @@ public abstract class DirectionalLight extends Light{
 	private Matrix4f m_View;
 	private Vec3f right;
 	private Vec3f up;
-	private PSSMCamera[] splitLightCameras;
+	private PssmCamera[] splitLightCameras;
 	
 	private FloatBuffer floatBufferLight;
 	private FloatBuffer floatBufferMatrices;
@@ -43,10 +43,10 @@ public abstract class DirectionalLight extends Light{
 		
 		floatBufferMatrices = BufferUtil.createFloatBuffer(matricesBufferSize);
 		
-		splitLightCameras = new PSSMCamera[Constants.PSSM_SPLITS];
+		splitLightCameras = new PssmCamera[Constants.PSSM_SPLITS];
 		
 		for (int i = 0; i<Constants.PSSM_SPLITS*2; i += 2){
-			splitLightCameras[i/2] = new PSSMCamera(Constants.PSSM_SPLIT_SHEME[i]*Constants.ZFAR,
+			splitLightCameras[i/2] = new PssmCamera(Constants.PSSM_SPLIT_SHEME[i]*Constants.ZFAR,
 											 Constants.PSSM_SPLIT_SHEME[i+1]*Constants.ZFAR);
 			splitLightCameras[i/2].update(m_View, up, right);
 			floatBufferMatrices.put(BufferUtil.createFlippedBuffer(splitLightCameras[i/2].getM_orthographicViewProjection()));
@@ -64,7 +64,7 @@ public abstract class DirectionalLight extends Light{
 		if (EngineContext.getCamera().isCameraRotated() || 
 				EngineContext.getCamera().isCameraMoved()){
 			floatBufferMatrices.clear();
-			for (PSSMCamera lightCamera : splitLightCameras){
+			for (PssmCamera lightCamera : splitLightCameras){
 				lightCamera.update(m_View, up, right);
 				floatBufferMatrices.put(BufferUtil.createFlippedBuffer(lightCamera.getM_orthographicViewProjection()));
 			}
@@ -112,7 +112,7 @@ public abstract class DirectionalLight extends Light{
 		this.m_View = m_view;
 	}
 
-	public PSSMCamera[] getSplitLightCameras() {
+	public PssmCamera[] getSplitLightCameras() {
 		return splitLightCameras;
 	}
 	

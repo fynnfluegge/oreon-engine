@@ -5,7 +5,7 @@ import org.oreon.core.math.Matrix4f;
 import org.oreon.core.math.Quaternion;
 import org.oreon.core.math.Vec3f;
 
-public class PSSMCamera {
+public class PssmCamera {
 	
 	private Vec3f[] frustumCorners;
 	private float zNear;
@@ -13,7 +13,7 @@ public class PSSMCamera {
 	
 	private Matrix4f m_orthographicViewProjection;
 	
-	public PSSMCamera(float near, float far){
+	public PssmCamera(float near, float far){
 		this.zNear = near;
 		this.zFar = far;
 		frustumCorners = new Vec3f[8];

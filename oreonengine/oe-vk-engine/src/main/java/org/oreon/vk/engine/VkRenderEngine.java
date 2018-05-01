@@ -7,6 +7,8 @@ import static org.lwjgl.system.MemoryUtil.memAllocLong;
 import static org.lwjgl.system.MemoryUtil.memUTF8;
 import static org.lwjgl.vulkan.KHRSwapchain.vkDestroySwapchainKHR;
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_STORAGE_IMAGE;
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import static org.lwjgl.vulkan.VK10.vkQueueWaitIdle;
@@ -20,7 +22,6 @@ import org.oreon.core.context.EngineContext;
 import org.oreon.core.system.RenderEngine;
 import org.oreon.core.vk.core.context.VkContext;
 import org.oreon.core.vk.core.context.VulkanInstance;
-import org.oreon.core.vk.core.descriptor.DescriptorKeys.DescriptorPoolType;
 import org.oreon.core.vk.core.descriptor.DescriptorPool;
 import org.oreon.core.vk.core.device.LogicalDevice;
 import org.oreon.core.vk.core.device.PhysicalDevice;
@@ -34,7 +35,7 @@ public class VkRenderEngine extends RenderEngine{
 	private LogicalDevice logicalDevice;
 	private SwapChain swapChain;
 	private long surface;
-	
+
 	private OffScreenFbo offScreenFbo;
 	
 	private ByteBuffer[] layers = {
@@ -51,7 +52,7 @@ public class VkRenderEngine extends RenderEngine{
 		if (!glfwVulkanSupported()) {
 	            throw new AssertionError("GLFW failed to find the Vulkan loader");
 	        }
-		
+        
 		PointerBuffer requiredExtensions = glfwGetRequiredInstanceExtensions();
         if (requiredExtensions == null) {
             throw new AssertionError("Failed to find list of required Vulkan extensions");
@@ -80,18 +81,15 @@ public class VkRenderEngine extends RenderEngine{
 	    VkContext.registerObject(physicalDevice);
 	    VkContext.registerObject(logicalDevice);
 
-	    DescriptorPool imageSamplerDescriptorPool = new DescriptorPool();
-	    imageSamplerDescriptorPool.addPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 2);
-	    imageSamplerDescriptorPool.create(logicalDevice.getHandle(), 2);
+	    DescriptorPool imageSamplerDescriptorPool = new DescriptorPool(4);
+	    imageSamplerDescriptorPool.addPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 6);
+	    imageSamplerDescriptorPool.addPoolSize(VK_DESCRIPTOR_TYPE_STORAGE_IMAGE, 30);
+	    imageSamplerDescriptorPool.addPoolSize(VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 1);
+	    imageSamplerDescriptorPool.addPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 8);
+	    imageSamplerDescriptorPool.create(logicalDevice.getHandle(), 45);
 	    
-	    DescriptorPool uniformBufferDescriptorPool = new DescriptorPool();
-	    uniformBufferDescriptorPool.addPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1);
-	    uniformBufferDescriptorPool.create(logicalDevice.getHandle(), 1);
-	    
-	    VkContext.getEnvironment().addDescriptorPool(DescriptorPoolType.COMBINED_IMAGE_SAMPLER,
+	    VkContext.getDescriptorPoolManager().addDescriptorPool("POOL_1",
 	    											 imageSamplerDescriptorPool);
-	    VkContext.getEnvironment().addDescriptorPool(DescriptorPoolType.UNIFORM_BUFFER,
-	    											 uniformBufferDescriptorPool);
 	    
 	    camera = EngineContext.getCamera();
 	    camera.init();
@@ -130,7 +128,7 @@ public class VkRenderEngine extends RenderEngine{
 	    
 	    swapChain = new SwapChain(logicalDevice,
 	    						  physicalDevice,
-	    						  surface, 
+	    						  surface,
 	    						  offScreenFbo.getGBuffer().getAlbedoBuffer().getImageView().getHandle());
 	}
     
@@ -164,7 +162,7 @@ public class VkRenderEngine extends RenderEngine{
 		vkDestroySwapchainKHR(logicalDevice.getHandle(), swapChain.getHandle(), null);
 		swapChain.destroy();
 		EngineContext.getCamera().shutdown();
-		VkContext.getEnvironment().shutdown();
+		VkContext.getDescriptorPoolManager().shutdown();
 		logicalDevice.destroy();
 
 		VkContext.getVulkanInstance().destroy();		

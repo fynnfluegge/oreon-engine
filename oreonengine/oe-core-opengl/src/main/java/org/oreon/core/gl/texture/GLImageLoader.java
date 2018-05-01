@@ -27,7 +27,7 @@ import java.nio.file.Paths;
 import org.lwjgl.BufferUtils;
 import org.oreon.core.image.ImageMetaData;
 
-public class ImageLoader {
+public class GLImageLoader {
 	
 	public static ImageMetaData loadImage(String file, int handle) {
 		
@@ -93,7 +93,7 @@ public class ImageLoader {
             }
         } else {
             try (
-                    InputStream source = ImageLoader.class.getClassLoader().getResourceAsStream(resource);
+                    InputStream source = GLImageLoader.class.getClassLoader().getResourceAsStream(resource);
                     ReadableByteChannel rbc = Channels.newChannel(source)
                 ) {
                     buffer = BufferUtils.createByteBuffer(bufferSize);

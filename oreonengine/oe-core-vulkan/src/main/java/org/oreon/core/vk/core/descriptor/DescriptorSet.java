@@ -2,9 +2,6 @@ package org.oreon.core.vk.core.descriptor;
 
 import static org.lwjgl.system.MemoryUtil.memAllocLong;
 import static org.lwjgl.system.MemoryUtil.memFree;
-import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
@@ -54,7 +51,8 @@ public class DescriptorSet {
 		}
 	}
 	
-	public void updateDescriptorBuffer(long buffer, long range, long offset, int binding){
+	public void updateDescriptorBuffer(long buffer, long range, long offset,
+			int binding, int descriptorType){
 		
 		VkDescriptorBufferInfo.Buffer bufferInfo = VkDescriptorBufferInfo.calloc(1)
 						.buffer(buffer)
@@ -66,16 +64,17 @@ public class DescriptorSet {
 						.dstSet(handle)
 						.dstBinding(binding)
 						.dstArrayElement(0)
-						.descriptorType(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER)
+						.descriptorType(descriptorType)
 						.pBufferInfo(bufferInfo);
 
 		vkUpdateDescriptorSets(device, writeDescriptor, null);
 	}
 	
-	public void updateDescriptorImageBuffer(long imageView, long sampler, int binding){
+	public void updateDescriptorImageBuffer(long imageView, int imageLayout,
+			long sampler, int binding, int descriptorType){
 		
 		VkDescriptorImageInfo.Buffer imageInfo = VkDescriptorImageInfo.calloc(1)
-						.imageLayout(VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL)
+						.imageLayout(imageLayout)
 						.imageView(imageView)
 						.sampler(sampler);
 		
@@ -84,7 +83,7 @@ public class DescriptorSet {
 						.dstSet(handle)
 						.dstBinding(binding)
 						.dstArrayElement(0)
-						.descriptorType(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
+						.descriptorType(descriptorType)
 				 		.pImageInfo(imageInfo);
 		
 		vkUpdateDescriptorSets(device, writeDescriptor, null);

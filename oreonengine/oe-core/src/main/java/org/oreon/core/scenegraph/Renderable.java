@@ -11,6 +11,7 @@ public class Renderable extends Node{
 	public Renderable()
 	{
 		super();
+		
 		components = new HashMap<NodeComponentKey, NodeComponent>();
 	}
 	
@@ -59,17 +60,21 @@ public class Renderable extends Node{
 		
 		super.renderShadows();
 	}
+	
+	public void shutdown(){
+		
+		for (NodeComponentKey key : components.keySet()) {
+			components.get(key).shutdown();
+		}
+		
+		super.shutdown();
+	}
 
 	public HashMap<NodeComponentKey, NodeComponent> getComponents() {
 		return components;
 	}
 	
-	public void setComponent(NodeComponentKey type, NodeComponent component) {
-		this.components.replace(type, component);
-	}
-	
-	public NodeComponent getComponent(NodeComponentKey type)
-	{
+	public NodeComponent getComponent(NodeComponentKey type) {
 		return this.components.get(type);
 	}
 }

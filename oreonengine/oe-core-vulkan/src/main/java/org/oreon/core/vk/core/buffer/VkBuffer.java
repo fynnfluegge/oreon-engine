@@ -109,7 +109,7 @@ public class VkBuffer {
         }
 	}
 	
-	public void mapMemory(ByteBuffer vertexBuffer){
+	public void mapMemory(ByteBuffer buffer){
 		
         PointerBuffer pData = memAllocPointer(1);
         int err = vkMapMemory(device, memory, 0, allocationSize, 0, pData);
@@ -120,8 +120,8 @@ public class VkBuffer {
             throw new AssertionError("Failed to map vertex memory: " + VkUtil.translateVulkanResult(err));
         }
         
-        memCopy(memAddress(vertexBuffer), data, vertexBuffer.remaining());
-        memFree(vertexBuffer);
+        memCopy(memAddress(buffer), data, buffer.remaining());
+        memFree(buffer);
         vkUnmapMemory(device, memory);
 	}
 	

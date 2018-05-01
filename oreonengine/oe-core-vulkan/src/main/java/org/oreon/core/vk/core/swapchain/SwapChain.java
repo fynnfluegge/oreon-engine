@@ -17,7 +17,6 @@ import static org.lwjgl.vulkan.KHRSwapchain.vkGetSwapchainImagesKHR;
 import static org.lwjgl.vulkan.KHRSwapchain.vkQueuePresentKHR;
 import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
 import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
-import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_B8G8R8A8_UNORM;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_ASPECT_COLOR_BIT;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
@@ -47,14 +46,14 @@ import org.oreon.core.vk.core.command.CommandBuffer;
 import org.oreon.core.vk.core.command.CommandPool;
 import org.oreon.core.vk.core.command.SubmitInfo;
 import org.oreon.core.vk.core.context.VkContext;
-import org.oreon.core.vk.core.descriptor.Descriptor;
 import org.oreon.core.vk.core.device.LogicalDevice;
 import org.oreon.core.vk.core.device.PhysicalDevice;
 import org.oreon.core.vk.core.framebuffer.VkFrameBuffer;
 import org.oreon.core.vk.core.image.VkImageView;
 import org.oreon.core.vk.core.synchronization.VkSemaphore;
 import org.oreon.core.vk.core.util.VkUtil;
-import org.oreon.core.vk.wrapper.VkMemoryHelper;
+import org.oreon.core.vk.wrapper.buffer.VkBufferHelper;
+import org.oreon.core.vk.wrapper.command.DrawCmdBuffer;
 import org.oreon.core.vk.wrapper.descriptor.SwapChainDescriptor;
 import org.oreon.core.vk.wrapper.pipeline.SwapChainPipeline;
 import org.oreon.core.vk.wrapper.renderpass.SwapChainRenderPass;
@@ -80,7 +79,7 @@ public class SwapChain {
 	
 	private SwapChainPipeline pipeline;
 	private SwapChainRenderPass renderPass;
-	private Descriptor descriptor;
+	private SwapChainDescriptor descriptor;
 	
 	private VkDevice device;
 	
@@ -115,11 +114,10 @@ public class SwapChain {
 	    int minImageCount = VkContext.getPhysicalDevice().getDeviceMinImageCount4TripleBuffering();
 	    
 	    descriptor = new SwapChainDescriptor(device, imageView);
-	    long[] descriptorSets = new long[1];
-	    descriptorSets[0] = descriptor.getSet().getHandle();
 	    
 	    renderPass = new SwapChainRenderPass(device, imageFormat);
-	    pipeline = new SwapChainPipeline(device, renderPass.getHandle(), extent, descriptor.getLayout().getHandle());
+	    pipeline = new SwapChainPipeline(device, renderPass.getHandle(),
+	    		extent, descriptor.getLayout().getHandlePointer());
 		
 		VkSwapchainCreateInfoKHR swapchainCreateInfo = VkSwapchainCreateInfoKHR.calloc()
 				.sType(VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR)
@@ -159,7 +157,7 @@ public class SwapChain {
         presentInfo = VkPresentInfoKHR.calloc()
                 .sType(VK_STRUCTURE_TYPE_PRESENT_INFO_KHR)
                 .pNext(0)
-                .pWaitSemaphores(renderCompleteSemaphore.getPHandle())
+                .pWaitSemaphores(renderCompleteSemaphore.getHandlePointer())
                 .swapchainCount(1)
                 .pSwapchains(pHandle)
                 .pImageIndices(pAcquiredImageIndex)
@@ -171,13 +169,13 @@ public class SwapChain {
         ByteBuffer vertexBuffer = BufferUtil.createByteBuffer(fullScreenQuad.getVertices(), VertexLayout.POS_UV);
         ByteBuffer indexBuffer = BufferUtil.createByteBuffer(fullScreenQuad.getIndices());
         
-        VkBuffer vertexBufferObject = VkMemoryHelper.createDeviceLocalBuffer(device,
+        VkBuffer vertexBufferObject = VkBufferHelper.createDeviceLocalBuffer(device,
         		physicalDevice.getMemoryProperties(),
         		logicalDevice.getTransferCommandPool().getHandle(),
         		logicalDevice.getTransferQueue(),
         		vertexBuffer, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
         
-        VkBuffer indexBufferObject = VkMemoryHelper.createDeviceLocalBuffer(device,
+        VkBuffer indexBufferObject = VkBufferHelper.createDeviceLocalBuffer(device,
         		physicalDevice.getMemoryProperties(),
         		logicalDevice.getTransferCommandPool().getHandle(),
         		logicalDevice.getTransferQueue(),
@@ -187,7 +185,8 @@ public class SwapChain {
         		renderPass.getHandle(), 
         		vertexBufferObject.getHandle(),
 				indexBufferObject.getHandle(),
-				6, descriptorSets);
+				fullScreenQuad.getIndices().length,
+				VkUtil.createLongArray(descriptor.getSet()));
         
         createSubmitInfo();
 	}
@@ -248,14 +247,14 @@ public class SwapChain {
 		
 		renderCommandBuffers = new ArrayList<>();
 		
-		for (VkFrameBuffer framebuffer : frameBuffers){
-			CommandBuffer commandBuffer = new CommandBuffer(device, commandPool.getHandle());
-			commandBuffer.beginRecord(VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT);
-			commandBuffer.recordIndexedRenderCmd(pipeline, renderPass,
-												 vertexBuffer, indexBuffer, indexCount, descriptorSets,
-												 extent.width(), extent.height(), framebuffer.getHandle(),
-												 1);
-			commandBuffer.finishRecord();
+		for (VkFrameBuffer frameBuffer : frameBuffers){
+			
+			CommandBuffer commandBuffer = new DrawCmdBuffer(
+					device, commandPool.getHandle(), pipeline.getHandle(),
+					pipeline.getLayoutHandle(), renderPass,
+					frameBuffer.getHandle(), extent.width(), extent.height(),
+					1, descriptorSets, vertexBuffer, indexBuffer, indexCount);
+			
 			renderCommandBuffers.add(commandBuffer);
 		}
 	}
@@ -267,8 +266,8 @@ public class SwapChain {
 		
         submitInfo = new SubmitInfo();
         submitInfo.setWaitDstStageMask(pWaitDstStageMask);
-        submitInfo.setWaitSemaphores(imageAcquiredSemaphore.getPHandle());
-        submitInfo.setSignalSemaphores(renderCompleteSemaphore.getPHandle());
+        submitInfo.setWaitSemaphores(imageAcquiredSemaphore.getHandlePointer());
+        submitInfo.setSignalSemaphores(renderCompleteSemaphore.getHandlePointer());
 	}
 	
 	public void draw(VkQueue queue){
@@ -279,7 +278,7 @@ public class SwapChain {
         }
         
         CommandBuffer currentRenderCommandBuffer = renderCommandBuffers.get(pAcquiredImageIndex.get(0));
-        submitInfo.setCommandBuffers(currentRenderCommandBuffer.getPHandle());
+        submitInfo.setCommandBuffers(currentRenderCommandBuffer.getHandlePointer());
 
         submitInfo.submit(queue);
 		VkUtil.vkCheckResult(vkQueuePresentKHR(queue, presentInfo));

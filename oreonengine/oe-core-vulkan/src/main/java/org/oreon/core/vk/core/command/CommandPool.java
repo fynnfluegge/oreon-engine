@@ -2,6 +2,7 @@ package org.oreon.core.vk.core.command;
 
 import static org.lwjgl.system.MemoryUtil.memAllocLong;
 import static org.lwjgl.system.MemoryUtil.memFree;
+import static org.lwjgl.vulkan.VK10.VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import static org.lwjgl.vulkan.VK10.vkCreateCommandPool;
@@ -29,7 +30,7 @@ public class CommandPool {
 		VkCommandPoolCreateInfo cmdPoolInfo = VkCommandPoolCreateInfo.calloc()
 	                .sType(VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO)
 	                .queueFamilyIndex(queueFamilyIndex)
-	                .flags(0);
+	                .flags(VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT);
 		
 		LongBuffer pCmdPool = memAllocLong(1);
 		int err = vkCreateCommandPool(device, cmdPoolInfo, null, pCmdPool);

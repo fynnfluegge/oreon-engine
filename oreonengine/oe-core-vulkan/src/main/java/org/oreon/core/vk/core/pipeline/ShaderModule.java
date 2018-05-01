@@ -28,13 +28,16 @@ public class ShaderModule {
 	@Getter
 	private long handle;
 	
+	private VkDevice device;
+	
 	public ShaderModule(VkDevice device, String filePath, int stage) {
 		
-		handle = createShaderModule(filePath, device);
-		shaderStageInfo = createShaderStage(handle, device, stage);
+		this.device = device;
+		handle = createShaderModule(filePath);
+		shaderStageInfo = createShaderStage(handle, stage);
 	}
 	
-	public long createShaderModule(String filePath, VkDevice device) {
+	public long createShaderModule(String filePath) {
 		
 		ByteBuffer shaderCode = null;
 		try {
@@ -63,7 +66,7 @@ public class ShaderModule {
 	    return shaderModule;
 	}
 	
-	public VkPipelineShaderStageCreateInfo createShaderStage(long module, VkDevice device, int stage){
+	public VkPipelineShaderStageCreateInfo createShaderStage(long module, int stage){
 		
 		 VkPipelineShaderStageCreateInfo shaderStage = VkPipelineShaderStageCreateInfo.calloc()
 	                .sType(VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO)
@@ -75,7 +78,7 @@ public class ShaderModule {
 		 return shaderStage;
 	}
 	
-	public void destroy(VkDevice device){
+	public void destroy(){
 		
 		vkDestroyShaderModule(device, handle, null);
 	}

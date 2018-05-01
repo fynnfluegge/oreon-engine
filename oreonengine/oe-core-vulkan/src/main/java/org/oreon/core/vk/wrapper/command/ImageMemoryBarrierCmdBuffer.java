@@ -7,23 +7,23 @@ import org.lwjgl.vulkan.VkQueue;
 import org.oreon.core.vk.core.command.CommandBuffer;
 import org.oreon.core.vk.core.command.SubmitInfo;
 
-public class BufferCopyCmd extends CommandBuffer{
+public class ImageMemoryBarrierCmdBuffer extends CommandBuffer{
 	
-	public BufferCopyCmd(VkDevice device, long commandPool) {
+	public ImageMemoryBarrierCmdBuffer(VkDevice device, long commandPool) {
 		super(device, commandPool);
 	}
 
-	public void record(long srcBuffer, long dstBuffer, long srcOffset, long dstOffset, long size){
+	public void record(long image, int oldLayout, int newLayout, int dstStageMask){
 		
 		beginRecord(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
-		recordCopyBufferCmd(srcBuffer, dstBuffer, srcOffset, dstOffset, size);
+		recordImageMemoryBarrierCmd(image, oldLayout, newLayout, dstStageMask);
 		finishRecord();
 	}
 	
 	public void submit(VkQueue queue){
 		
-		SubmitInfo submitInfo = new SubmitInfo(getPHandle());
+		SubmitInfo submitInfo = new SubmitInfo(getHandlePointer());
 		submitInfo.submit(queue);
 	}
-	
+
 }

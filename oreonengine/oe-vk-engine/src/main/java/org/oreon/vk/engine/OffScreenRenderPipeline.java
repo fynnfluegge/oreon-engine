@@ -1,18 +1,21 @@
 package org.oreon.vk.engine;
 
+import java.nio.LongBuffer;
+
 import org.lwjgl.vulkan.VkDevice;
 import org.oreon.core.vk.core.framebuffer.FrameBufferObject;
-import org.oreon.core.vk.core.pipeline.PipelineResources;
+import org.oreon.core.vk.core.pipeline.ShaderPipeline;
 import org.oreon.core.vk.core.pipeline.VkPipeline;
+import org.oreon.core.vk.core.pipeline.VkVertexInput;
 
 public class OffScreenRenderPipeline extends VkPipeline{
 	
-	public OffScreenRenderPipeline(VkDevice device, PipelineResources resources,
-								   FrameBufferObject fbo) {
+	public OffScreenRenderPipeline(VkDevice device, FrameBufferObject fbo, LongBuffer layout,
+			ShaderPipeline shaderPipeline, VkVertexInput vertexInput) {
 		
 		super(device);
 		
-		setVertexInput(resources.getVertexInput());
+		setVertexInput(vertexInput);
 		setInputAssembly();
 	    setViewportAndScissor(fbo.getWidth(), fbo.getHeight());
 	    setRasterizer();
@@ -22,8 +25,8 @@ public class OffScreenRenderPipeline extends VkPipeline{
 	    setColorBlendState();
 	    setDepthAndStencilTest();
 	    setDynamicState();
-	    setLayout(resources.getDescriporSetLayouts());
-	    createPipeline(resources.getShaderPipeline(), fbo.getRenderPass().getHandle());
+	    setLayout(layout);
+	    createGraphicsPipeline(shaderPipeline, fbo.getRenderPass().getHandle());
 	}
 
 }

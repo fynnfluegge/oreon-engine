@@ -19,7 +19,7 @@ public class VkSemaphore {
 	@Getter
 	private long handle;
 	@Getter
-	private LongBuffer pHandle;
+	private LongBuffer handlePointer;
 	
 	private VkDevice device;
 
@@ -32,14 +32,14 @@ public class VkSemaphore {
                 .pNext(0)
                 .flags(0);
 		
-		pHandle = memAllocLong(1);
+		handlePointer = memAllocLong(1);
 		
-		int err = vkCreateSemaphore(device, semaphoreCreateInfo, null, pHandle);
+		int err = vkCreateSemaphore(device, semaphoreCreateInfo, null, handlePointer);
 		if (err != VK_SUCCESS) {
 			throw new AssertionError("Failed to create semaphore: " + VkUtil.translateVulkanResult(err));
 		}
 		
-		handle = pHandle.get(0);
+		handle = handlePointer.get(0);
 		
 		semaphoreCreateInfo.free();
 	}

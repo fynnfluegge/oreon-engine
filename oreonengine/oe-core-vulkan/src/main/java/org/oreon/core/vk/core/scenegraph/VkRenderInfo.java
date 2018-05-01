@@ -4,7 +4,6 @@ import org.lwjgl.vulkan.VkQueue;
 import org.oreon.core.scenegraph.NodeComponent;
 import org.oreon.core.vk.core.command.CommandBuffer;
 import org.oreon.core.vk.core.command.SubmitInfo;
-import org.oreon.core.vk.core.pipeline.VkPipeline;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,7 +12,6 @@ import lombok.Getter;
 @Getter
 public class VkRenderInfo extends NodeComponent{
 
-	private VkPipeline pipeline;
 	private CommandBuffer commandBuffer;
 	private SubmitInfo submitInfo;
 	private VkQueue queue;
@@ -22,6 +20,12 @@ public class VkRenderInfo extends NodeComponent{
 	public void render(){
 		
 		submitInfo.submit(queue);
+	}
+	
+	@Override
+	public void shutdown(){
+		
+		commandBuffer.destroy();
 	}
 
 }

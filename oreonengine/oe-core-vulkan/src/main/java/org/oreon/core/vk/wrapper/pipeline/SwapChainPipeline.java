@@ -32,7 +32,7 @@ public class SwapChainPipeline extends VkPipeline{
 	    setDepthAndStencilTest();
 	    setDynamicState();
 	    setLayout(layouts);
-	    createPipeline(shaderPipeline, renderPass);
+	    createGraphicsPipeline(shaderPipeline, renderPass);
 	}
 
 }

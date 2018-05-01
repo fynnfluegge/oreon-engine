@@ -11,6 +11,7 @@ import static org.lwjgl.vulkan.EXTDebugReport.VK_EXT_DEBUG_REPORT_EXTENSION_NAME
 import static org.lwjgl.vulkan.EXTDebugReport.VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT;
 import static org.lwjgl.vulkan.EXTDebugReport.vkCreateDebugReportCallbackEXT;
 import static org.lwjgl.vulkan.EXTDebugReport.vkDestroyDebugReportCallbackEXT;
+import static org.lwjgl.vulkan.EXTDescriptorIndexing.VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME;
 import static org.lwjgl.vulkan.VK10.VK_MAKE_VERSION;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_APPLICATION_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
@@ -60,11 +61,13 @@ public class VulkanInstance {
                 .apiVersion(VK_MAKE_VERSION(1, 0, 2));
         
         ByteBuffer VK_EXT_DEBUG_REPORT_EXTENSION = memUTF8(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
+        ByteBuffer VK_EXT_DESCRIPTOR_INDEXING_EXTENSION = memUTF8(VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME);
         
         // +1 due to VK_EXT_DEBUG_REPORT_EXTENSION
         PointerBuffer ppEnabledExtensionNames = memAllocPointer(requiredExtensions.remaining() + 1);
         ppEnabledExtensionNames.put(requiredExtensions);
         ppEnabledExtensionNames.put(VK_EXT_DEBUG_REPORT_EXTENSION);
+//        ppEnabledExtensionNames.put(VK_EXT_DESCRIPTOR_INDEXING_EXTENSION);
         ppEnabledExtensionNames.flip();
         
         DeviceCapabilities.checkInstanceExtensionSupport(ppEnabledExtensionNames);
@@ -87,6 +90,7 @@ public class VulkanInstance {
         pCreateInfo.free();
         memFree(pInstance);
         memFree(VK_EXT_DEBUG_REPORT_EXTENSION);
+        memFree(VK_EXT_DESCRIPTOR_INDEXING_EXTENSION);
         memFree(ppEnabledExtensionNames);
         memFree(appInfo.pApplicationName());
         memFree(appInfo.pEngineName());

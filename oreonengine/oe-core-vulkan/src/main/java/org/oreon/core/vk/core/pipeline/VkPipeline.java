@@ -17,6 +17,7 @@ import static org.lwjgl.vulkan.VK10.VK_POLYGON_MODE_FILL;
 import static org.lwjgl.vulkan.VK10.VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
 import static org.lwjgl.vulkan.VK10.VK_SAMPLE_COUNT_1_BIT;
 import static org.lwjgl.vulkan.VK10.VK_STENCIL_OP_KEEP;
+import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
@@ -28,6 +29,7 @@ import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STA
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
+import static org.lwjgl.vulkan.VK10.vkCreateComputePipelines;
 import static org.lwjgl.vulkan.VK10.vkCreateGraphicsPipelines;
 import static org.lwjgl.vulkan.VK10.vkCreatePipelineLayout;
 import static org.lwjgl.vulkan.VK10.vkDestroyPipeline;
@@ -38,6 +40,7 @@ import java.nio.LongBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.lwjgl.vulkan.VkComputePipelineCreateInfo;
 import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkGraphicsPipelineCreateInfo;
 import org.lwjgl.vulkan.VkPipelineColorBlendAttachmentState;
@@ -50,6 +53,7 @@ import org.lwjgl.vulkan.VkPipelineMultisampleStateCreateInfo;
 import org.lwjgl.vulkan.VkPipelineRasterizationStateCreateInfo;
 import org.lwjgl.vulkan.VkPipelineVertexInputStateCreateInfo;
 import org.lwjgl.vulkan.VkPipelineViewportStateCreateInfo;
+import org.lwjgl.vulkan.VkPushConstantRange;
 import org.lwjgl.vulkan.VkRect2D;
 import org.lwjgl.vulkan.VkViewport;
 import org.oreon.core.vk.core.util.VkUtil;
@@ -66,6 +70,7 @@ public class VkPipeline {
 	private VkDevice device;
 	
 	private VkPipelineVertexInputStateCreateInfo vertexInputState;
+	private VkPushConstantRange.Buffer pushConstantRange;
 	private VkPipelineInputAssemblyStateCreateInfo inputAssembly;
 	private VkPipelineViewportStateCreateInfo viewportAndScissorState;
 	private VkPipelineRasterizationStateCreateInfo rasterizer;
@@ -85,7 +90,7 @@ public class VkPipeline {
 		this.device = device;
 	}
 	
-	public void createPipeline(ShaderPipeline shaderPipeline, long renderPass){
+	public void createGraphicsPipeline(ShaderPipeline shaderPipeline, long renderPass){
 		
 		VkGraphicsPipelineCreateInfo.Buffer pipelineCreateInfo = VkGraphicsPipelineCreateInfo.calloc(1)
 				.sType(VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO)
@@ -129,12 +134,30 @@ public class VkPipeline {
 		}
 	}
 	
+	public void createComputePipeline(ShaderModule shader){
+		
+		VkComputePipelineCreateInfo.Buffer pipelineCreateInfo = VkComputePipelineCreateInfo.calloc(1)
+				.sType(VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO)
+				.stage(shader.getShaderStageInfo())
+				.layout(layoutHandle);
+		
+		LongBuffer pPipelines = memAllocLong(1);
+		VkUtil.vkCheckResult(vkCreateComputePipelines(device,
+				VK_NULL_HANDLE, pipelineCreateInfo, null, pPipelines));
+		
+		handle = pPipelines.get(0);
+		
+		pipelineCreateInfo.free();
+		shader.destroy();
+	}
+	
 	public void setLayout(LongBuffer pLayouts){
 		
 		VkPipelineLayoutCreateInfo pipelineLayout = VkPipelineLayoutCreateInfo.calloc()
 				.sType(VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO)
 				.pNext(0)
-                .pSetLayouts(pLayouts);
+                .pSetLayouts(pLayouts)
+                .pPushConstantRanges(pushConstantRange);
 		
 		LongBuffer pPipelineLayout = memAllocLong(1);
         int err = vkCreatePipelineLayout(device, pipelineLayout, null, pPipelineLayout);
@@ -155,6 +178,14 @@ public class VkPipeline {
 				.pNext(0)
 				.pVertexBindingDescriptions(vertexInput.getBindingDescription())
 				.pVertexAttributeDescriptions(vertexInput.getAttributeDescriptions());
+	}
+	
+	public void setPushConstantsRange(int stageFlags, int size){
+		
+		pushConstantRange = VkPushConstantRange.calloc(1)
+				.stageFlags(stageFlags)
+				.size(size)
+				.offset(0);
 	}
 	
 	public void setInputAssembly(){

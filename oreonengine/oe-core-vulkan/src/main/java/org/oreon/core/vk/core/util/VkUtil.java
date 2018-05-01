@@ -4,6 +4,7 @@
  **************************************************/
 package org.oreon.core.vk.core.util;
 
+import static org.lwjgl.system.MemoryUtil.memAllocLong;
 import static org.lwjgl.system.MemoryUtil.memAllocPointer;
 import static org.lwjgl.vulkan.EXTDebugReport.VK_ERROR_VALIDATION_FAILED_EXT;
 import static org.lwjgl.vulkan.KHRDisplaySwapchain.VK_ERROR_INCOMPATIBLE_DISPLAY_KHR;
@@ -30,9 +31,13 @@ import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import static org.lwjgl.vulkan.VK10.VK_TIMEOUT;
 
 import java.nio.ByteBuffer;
+import java.nio.LongBuffer;
+import java.util.List;
 
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.vulkan.VkClearValue;
+import org.oreon.core.vk.core.descriptor.DescriptorSet;
+import org.oreon.core.vk.core.descriptor.DescriptorSetLayout;
 
 public class VkUtil {
 	
@@ -128,6 +133,39 @@ public class VkUtil {
                 .float32(3, 1.0f);
         
         return clearValues;
+    }
+    
+    public static long[] createLongArray(List<DescriptorSet> descriptorSets){
+    	
+    	long[] descriptorSetHandles = new long[descriptorSets.size()];
+    	
+		for (int i=0; i<descriptorSets.size(); i++){
+			
+			descriptorSetHandles[i] = descriptorSets.get(i).getHandle();
+		}
+		
+		return descriptorSetHandles;
+    }
+    
+    public static long[] createLongArray(DescriptorSet descriptorSet){
+    	
+    	long[] descriptorSetHandles = new long[1];
+    	descriptorSetHandles[0] = descriptorSet.getHandle();
+		
+		return descriptorSetHandles;
+    }
+    
+    public static LongBuffer createLongBuffer(List<DescriptorSetLayout> descriptorSetLayouts){
+    	
+    	LongBuffer descriptorSetLayoutsBuffer = memAllocLong(descriptorSetLayouts.size());
+		
+		for (DescriptorSetLayout layout : descriptorSetLayouts){
+			
+			descriptorSetLayoutsBuffer.put(layout.getHandlePointer());
+		}
+		descriptorSetLayoutsBuffer.flip();
+		
+		return descriptorSetLayoutsBuffer;
     }
 
 }

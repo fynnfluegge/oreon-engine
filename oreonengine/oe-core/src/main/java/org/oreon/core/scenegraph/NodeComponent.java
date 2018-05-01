@@ -12,6 +12,8 @@ public abstract class NodeComponent implements Cloneable{
 	
 	public void render(){};
 	
+	public void shutdown(){};
+	
 	public Renderable getParent() {
 		return parent;
 	}

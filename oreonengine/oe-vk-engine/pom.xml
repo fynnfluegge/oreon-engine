@@ -22,6 +22,11 @@
 			<artifactId>oe-core-vulkan</artifactId>
 			<version>${oreon.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.oreon.vk</groupId>
+			<artifactId>oe-vk-components</artifactId>
+			<version>${oreon.version}</version>
+		</dependency>
 	</dependencies>
   
 </project>

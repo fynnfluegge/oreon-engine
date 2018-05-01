@@ -56,7 +56,7 @@ public class GLTexture extends Image{
 	public void loadFromFile(String file){
 		
 		target = GL_TEXTURE_2D;
-		metaData = ImageLoader.loadImage(file, handle);
+		metaData = GLImageLoader.loadImage(file, handle);
 	}
 	
 	public void bind(){

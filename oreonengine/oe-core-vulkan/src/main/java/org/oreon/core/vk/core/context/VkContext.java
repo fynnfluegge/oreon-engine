@@ -26,9 +26,9 @@ private static ApplicationContext context;
 		return context.getBean(VkWindow.class);
 	}
 	
-	public static VkEnvironment getEnvironment(){
+	public static DescriptorPoolManager getDescriptorPoolManager(){
 		
-		return context.getBean(VkEnvironment.class);
+		return context.getBean(DescriptorPoolManager.class);
 	}
 	
 	public static LogicalDevice getLogicalDevice(){

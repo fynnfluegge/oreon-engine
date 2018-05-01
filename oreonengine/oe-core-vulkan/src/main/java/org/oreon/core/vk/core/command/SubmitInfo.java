@@ -10,14 +10,18 @@ import java.nio.LongBuffer;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.vulkan.VkQueue;
 import org.lwjgl.vulkan.VkSubmitInfo;
+import org.oreon.core.vk.core.synchronization.Fence;
 import org.oreon.core.vk.core.util.VkUtil;
 
 import lombok.Getter;
+import lombok.Setter;
 
 public class SubmitInfo {
 
 	@Getter
 	private VkSubmitInfo handle;
+	@Setter @Getter
+	private Fence fence;
 	
 	public SubmitInfo() {
 	
@@ -56,6 +60,11 @@ public class SubmitInfo {
 	
 	public void submit(VkQueue queue){
 		
-		VkUtil.vkCheckResult(vkQueueSubmit(queue, handle, VK_NULL_HANDLE));
+		if (fence != null){
+			fence.reset();
+		}
+		
+		VkUtil.vkCheckResult(vkQueueSubmit(queue, handle,
+				fence == null ? VK_NULL_HANDLE : fence.getHandle()));
 	}
 }

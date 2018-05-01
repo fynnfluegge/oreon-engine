@@ -7,25 +7,23 @@ import org.lwjgl.vulkan.VkQueue;
 import org.oreon.core.vk.core.command.CommandBuffer;
 import org.oreon.core.vk.core.command.SubmitInfo;
 
-public class ImageLayoutTransitionCmd extends CommandBuffer{
+public class BufferCopyCmdBuffer extends CommandBuffer{
 	
-	public ImageLayoutTransitionCmd(VkDevice device, long commandPool) {
+	public BufferCopyCmdBuffer(VkDevice device, long commandPool) {
 		super(device, commandPool);
 	}
 
-	public void record(long image,
-					   int oldLayout,
-					   int newLayout){
+	public void record(long srcBuffer, long dstBuffer, long srcOffset, long dstOffset, long size){
 		
 		beginRecord(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
-		recordImageLayoutTransitionCmd(image, oldLayout, newLayout);
+		recordCopyBufferCmd(srcBuffer, dstBuffer, srcOffset, dstOffset, size);
 		finishRecord();
 	}
 	
 	public void submit(VkQueue queue){
 		
-		SubmitInfo submitInfo = new SubmitInfo(getPHandle());
+		SubmitInfo submitInfo = new SubmitInfo(getHandlePointer());
 		submitInfo.submit(queue);
 	}
-
+	
 }

@@ -68,7 +68,7 @@ public class ShaderPipeline {
 		stages.free();
 		
 		for (ShaderModule shaderModule : shaderStages){
-			shaderModule.destroy(device);
+			shaderModule.destroy();
 		}
 	}
 	
