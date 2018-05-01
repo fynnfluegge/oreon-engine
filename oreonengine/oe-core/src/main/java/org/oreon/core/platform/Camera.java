@@ -58,7 +58,7 @@ private final Vec3f yAxis = new Vec3f(0,1,0);
 	private Vec3f[] frustumCorners = new Vec3f[8];
 	
 	protected FloatBuffer floatBuffer;
-	protected final int bufferSize = Float.BYTES * (4+16+(6*4));
+	protected final int bufferSize = Float.BYTES * (4+16+16+(6*4));
 	
 	protected Camera()
 	{
@@ -224,6 +224,7 @@ private final Vec3f yAxis = new Vec3f(0,1,0);
 		floatBuffer.put(BufferUtil.createFlippedBuffer(getViewMatrix()));
 		floatBuffer.put(BufferUtil.createFlippedBuffer(getViewProjectionMatrix()));
 		floatBuffer.put(BufferUtil.createFlippedBuffer(getFrustumPlanes()));
+		floatBuffer.flip();
 	}
 	
 	public void move(Vec3f dir, float amount)

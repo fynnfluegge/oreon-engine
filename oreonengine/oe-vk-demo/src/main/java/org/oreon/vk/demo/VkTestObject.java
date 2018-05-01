@@ -105,8 +105,8 @@ public class VkTestObject extends Renderable{
 		descriptorSetLayouts.add(layout);
 		
 		ShaderPipeline shaderPipeline = new ShaderPipeline(device);
-	    shaderPipeline.createVertexShader("shaders/vert.spv");
-	    shaderPipeline.createFragmentShader("shaders/frag.spv");
+	    shaderPipeline.createVertexShader("shaders/triangle.vert.spv");
+	    shaderPipeline.createFragmentShader("shaders/triangle.frag.spv");
 	    shaderPipeline.createShaderPipeline();
 	    
 	    Mesh quad = MeshGenerator.NDCQuad2Drot180();

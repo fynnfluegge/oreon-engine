@@ -54,7 +54,6 @@ import org.oreon.core.vk.core.synchronization.VkSemaphore;
 import org.oreon.core.vk.core.util.VkUtil;
 import org.oreon.core.vk.wrapper.buffer.VkBufferHelper;
 import org.oreon.core.vk.wrapper.command.DrawCmdBuffer;
-import org.oreon.core.vk.wrapper.descriptor.SwapChainDescriptor;
 import org.oreon.core.vk.wrapper.pipeline.SwapChainPipeline;
 import org.oreon.core.vk.wrapper.renderpass.SwapChainRenderPass;
 

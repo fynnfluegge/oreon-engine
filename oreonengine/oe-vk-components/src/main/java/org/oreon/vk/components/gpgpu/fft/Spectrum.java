@@ -18,7 +18,6 @@ import org.oreon.core.math.Vec2f;
 import org.oreon.core.vk.core.command.CommandBuffer;
 import org.oreon.core.vk.core.command.SubmitInfo;
 import org.oreon.core.vk.core.context.VkContext;
-import org.oreon.core.vk.core.descriptor.Descriptor;
 import org.oreon.core.vk.core.descriptor.DescriptorSet;
 import org.oreon.core.vk.core.descriptor.DescriptorSetLayout;
 import org.oreon.core.vk.core.image.VkImage;
@@ -27,6 +26,7 @@ import org.oreon.core.vk.core.pipeline.VkPipeline;
 import org.oreon.core.vk.core.synchronization.Fence;
 import org.oreon.core.vk.core.util.VkUtil;
 import org.oreon.core.vk.wrapper.command.ComputeCmdBuffer;
+import org.oreon.core.vk.wrapper.descriptor.VkDescriptor;
 import org.oreon.core.vk.wrapper.image.Image2DLocal;
 import org.oreon.core.vk.wrapper.image.VkImageHelper;
 import org.oreon.core.vk.wrapper.shader.ComputeShader;
@@ -43,43 +43,43 @@ public class Spectrum {
 	private VkImage h0k_image;
 	private VkImage h0minusk_image;
 	
-	private class SpectrumDescriptor extends Descriptor{
+	private class SpectrumDescriptor extends VkDescriptor{
 		
 		public SpectrumDescriptor(VkDevice device,
 				VkImageView noise0, VkImageView noise1,
 				VkImageView noise2, VkImageView noise3){
 			
-			layout = new DescriptorSetLayout(device, 6);
-		    layout.addLayoutBinding(0, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
+			descriptorSetLayout = new DescriptorSetLayout(device, 6);
+			descriptorSetLayout.addLayoutBinding(0, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
 		    		VK_SHADER_STAGE_COMPUTE_BIT);
-		    layout.addLayoutBinding(1, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
+			descriptorSetLayout.addLayoutBinding(1, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
 		    		VK_SHADER_STAGE_COMPUTE_BIT);
-		    layout.addLayoutBinding(2, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
+			descriptorSetLayout.addLayoutBinding(2, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
 		    		VK_SHADER_STAGE_COMPUTE_BIT);
-		    layout.addLayoutBinding(3, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
+			descriptorSetLayout.addLayoutBinding(3, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
 		    		VK_SHADER_STAGE_COMPUTE_BIT);
-		    layout.addLayoutBinding(4, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
+			descriptorSetLayout.addLayoutBinding(4, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
 		    		VK_SHADER_STAGE_COMPUTE_BIT);
-		    layout.addLayoutBinding(5, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
+			descriptorSetLayout.addLayoutBinding(5, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
 		    		VK_SHADER_STAGE_COMPUTE_BIT);
-		    layout.create();
+			descriptorSetLayout.create();
 		    
-		    set = new DescriptorSet(device,
+		    descriptorSet = new DescriptorSet(device,
 		    		VkContext.getDescriptorPoolManager().getDescriptorPool("POOL_1").getHandle(),
-		    		layout.getHandlePointer());
-		    set.updateDescriptorImageBuffer(h0k_imageView.getHandle(),
+		    		descriptorSetLayout.getHandlePointer());
+		    descriptorSet.updateDescriptorImageBuffer(h0k_imageView.getHandle(),
 		    		VK_IMAGE_LAYOUT_GENERAL, -1,
 		    		0, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
-		    set.updateDescriptorImageBuffer(h0minusk_imageView.getHandle(),
+		    descriptorSet.updateDescriptorImageBuffer(h0minusk_imageView.getHandle(),
 		    		VK_IMAGE_LAYOUT_GENERAL, -1,
 		    		1, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
-		    set.updateDescriptorImageBuffer(noise0.getHandle(), VK_IMAGE_LAYOUT_GENERAL,
+		    descriptorSet.updateDescriptorImageBuffer(noise0.getHandle(), VK_IMAGE_LAYOUT_GENERAL,
 		    		-1, 2, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
-		    set.updateDescriptorImageBuffer(noise1.getHandle(), VK_IMAGE_LAYOUT_GENERAL,
+		    descriptorSet.updateDescriptorImageBuffer(noise1.getHandle(), VK_IMAGE_LAYOUT_GENERAL,
 		    		-1, 3, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
-		    set.updateDescriptorImageBuffer(noise2.getHandle(), VK_IMAGE_LAYOUT_GENERAL,
+		    descriptorSet.updateDescriptorImageBuffer(noise2.getHandle(), VK_IMAGE_LAYOUT_GENERAL,
 		    		-1, 4, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
-		    set.updateDescriptorImageBuffer(noise3.getHandle(), VK_IMAGE_LAYOUT_GENERAL,
+		    descriptorSet.updateDescriptorImageBuffer(noise3.getHandle(), VK_IMAGE_LAYOUT_GENERAL,
 		    		-1, 5, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
 		}
 	}
@@ -154,18 +154,18 @@ public class Spectrum {
 		pushConstants.putFloat(0);
 		pushConstants.flip();
 		
-		Descriptor descriptor = new SpectrumDescriptor(device,
+		VkDescriptor descriptor = new SpectrumDescriptor(device,
 				noise0ImageView, noise1ImageView, noise2ImageView, noise3ImageView);
 		
 		VkPipeline pipeline = new VkPipeline(device);
 		pipeline.setPushConstantsRange(VK_SHADER_STAGE_COMPUTE_BIT, pushConstantRange);
-		pipeline.setLayout(descriptor.getLayout().getHandlePointer());
+		pipeline.setLayout(descriptor.getDescriptorSetLayout().getHandlePointer());
 		pipeline.createComputePipeline(new ComputeShader(device, "fft/~h0.comp.spv"));
 		
 		CommandBuffer commandBuffer = new ComputeCmdBuffer(device,
 				VkContext.getLogicalDevice().getComputeCommandPool().getHandle(),
 				pipeline.getHandle(), pipeline.getLayoutHandle(),
-				VkUtil.createLongArray(descriptor.getSet()), N/16, N/16, 1,
+				VkUtil.createLongArray(descriptor.getDescriptorSet()), N/16, N/16, 1,
 				pushConstants, VK_SHADER_STAGE_COMPUTE_BIT);
 		
 		Fence fence = new Fence(device);

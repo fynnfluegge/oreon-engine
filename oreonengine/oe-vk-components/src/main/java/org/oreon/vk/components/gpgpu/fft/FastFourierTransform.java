@@ -21,7 +21,6 @@ import org.oreon.core.util.BufferUtil;
 import org.oreon.core.vk.core.command.CommandBuffer;
 import org.oreon.core.vk.core.command.SubmitInfo;
 import org.oreon.core.vk.core.context.VkContext;
-import org.oreon.core.vk.core.descriptor.Descriptor;
 import org.oreon.core.vk.core.descriptor.DescriptorSet;
 import org.oreon.core.vk.core.descriptor.DescriptorSetLayout;
 import org.oreon.core.vk.core.image.VkImage;
@@ -63,24 +62,24 @@ public class FastFourierTransform extends Renderable{
 	private ShaderModule inversionShader;
 	
 	// dy fft resources
-	private Descriptor dyButterflyDescriptor;
-	private Descriptor dyInversionDescriptor;
+	private DescriptorSet dyButterflyDescriptorSet;
+	private DescriptorSet dyInversionDescriptorSet;
 	private CommandBuffer dyButterflyCmdBuffer;
 	private CommandBuffer dyInversionCmdBuffer;
 	private VkImage dyPingpongImage;
 	private VkImageView dyPingpongImageView;
 	
 	// dx fft resources
-	private Descriptor dxButterflyDescriptor;
-	private Descriptor dxInversionDescriptor;
+	private DescriptorSet dxButterflyDescriptorSet;
+	private DescriptorSet dxInversionDescriptorSet;
 	private CommandBuffer dxButterflyCmdBuffer;
 	private CommandBuffer dxInversionCmdBuffer;
 	private VkImage dxPingpongImage;
 	private VkImageView dxPingpongImageView;
 	
 	// dz fft resources
-	private Descriptor dzButterflyDescriptor;
-	private Descriptor dzInversionDescriptor;
+	private DescriptorSet dzButterflyDescriptorSet;
+	private DescriptorSet dzInversionDescriptorSet;
 	private CommandBuffer dzButterflyCmdBuffer;
 	private CommandBuffer dzInversionCmdBuffer;
 	private VkImage dzPingpongImage;
@@ -97,48 +96,48 @@ public class FastFourierTransform extends Renderable{
 	private Fence dxFence;
 	private Fence dzFence;
 	
-	private class FastFourierTransformButterflyDescriptor extends Descriptor{
+	private class ButterflyDescriptorSet extends DescriptorSet{
 		
-		public FastFourierTransformButterflyDescriptor(VkDevice device,
+		public ButterflyDescriptorSet(VkDevice device,
 				DescriptorSetLayout layout, VkImageView twiddleFactors,
 				VkImageView coefficients, VkImageView pingpongImage) {
 		    
-		    set = new DescriptorSet(device,
-		    		VkContext.getDescriptorPoolManager().getDescriptorPool("POOL_1").getHandle(),
+		    super(device, VkContext.getDescriptorPoolManager().getDescriptorPool("POOL_1").getHandle(),
 		    		layout.getHandlePointer());
-		    set.updateDescriptorImageBuffer(twiddleFactors.getHandle(),
+		    
+		    updateDescriptorImageBuffer(twiddleFactors.getHandle(),
 		    		VK_IMAGE_LAYOUT_GENERAL, -1,
 		    		0, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
-		    set.updateDescriptorImageBuffer(coefficients.getHandle(),
+		    updateDescriptorImageBuffer(coefficients.getHandle(),
 		    		VK_IMAGE_LAYOUT_GENERAL, -1,
 		    		1, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
-		    set.updateDescriptorImageBuffer(pingpongImage.getHandle(),
+		    updateDescriptorImageBuffer(pingpongImage.getHandle(),
 		    		VK_IMAGE_LAYOUT_GENERAL, -1,
 		    		2, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
-		    set.updateDescriptorBuffer(buffer.getHandle(),
+		    updateDescriptorBuffer(buffer.getHandle(),
 		    		Integer.BYTES * 3, 0, 3, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);
 		}
 	}
 	
-	private class FastFourierTransformInversionDescriptor extends Descriptor{
+	private class InversionDescriptorSet extends DescriptorSet{
 		
-		public FastFourierTransformInversionDescriptor(VkDevice device,
+		public InversionDescriptorSet(VkDevice device,
 				DescriptorSetLayout layout, VkImageView spatialDomain,
 				VkImageView coefficients, VkImageView pingpongImage) {
 		    
-		    set = new DescriptorSet(device,
+		    super(device,
 		    		VkContext.getDescriptorPoolManager().getDescriptorPool("POOL_1").getHandle(),
 		    		layout.getHandlePointer());
-		    set.updateDescriptorImageBuffer(spatialDomain.getHandle(),
+		    updateDescriptorImageBuffer(spatialDomain.getHandle(),
 		    		VK_IMAGE_LAYOUT_GENERAL, -1,
 		    		0, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
-		    set.updateDescriptorImageBuffer(coefficients.getHandle(),
+		    updateDescriptorImageBuffer(coefficients.getHandle(),
 		    		VK_IMAGE_LAYOUT_GENERAL, -1,
 		    		1, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
-		    set.updateDescriptorImageBuffer(pingpongImage.getHandle(),
+		    updateDescriptorImageBuffer(pingpongImage.getHandle(),
 		    		VK_IMAGE_LAYOUT_GENERAL, -1,
 		    		2, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
-		    set.updateDescriptorBuffer(buffer.getHandle(),
+		    updateDescriptorBuffer(buffer.getHandle(),
 		    		Integer.BYTES * 3, 0, 3, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);
 		}
 	}
@@ -226,27 +225,27 @@ public class FastFourierTransform extends Renderable{
 		    		VK_SHADER_STAGE_COMPUTE_BIT);
 		descriptorLayout.create();
 	
-		dyButterflyDescriptor = new FastFourierTransformButterflyDescriptor(device,
+		dyButterflyDescriptorSet = new ButterflyDescriptorSet(device,
 				descriptorLayout, twiddleFactors.getImageView(),
 				coefficients.getDyCoefficients_imageView(),
 				dyPingpongImageView);
-		dyInversionDescriptor = new FastFourierTransformInversionDescriptor(device,
+		dyInversionDescriptorSet = new InversionDescriptorSet(device,
 				descriptorLayout, dyImageView, coefficients.getDyCoefficients_imageView(),
 				dyPingpongImageView);
 		
-		dxButterflyDescriptor = new FastFourierTransformButterflyDescriptor(device,
+		dxButterflyDescriptorSet = new ButterflyDescriptorSet(device,
 				descriptorLayout, twiddleFactors.getImageView(),
 				coefficients.getDxCoefficients_imageView(),
 				dxPingpongImageView);
-		dxInversionDescriptor = new FastFourierTransformInversionDescriptor(device,
+		dxInversionDescriptorSet = new InversionDescriptorSet(device,
 				descriptorLayout, dxImageView, coefficients.getDxCoefficients_imageView(),
 				dxPingpongImageView);
 		
-		dzButterflyDescriptor = new FastFourierTransformButterflyDescriptor(device,
+		dzButterflyDescriptorSet = new ButterflyDescriptorSet(device,
 				descriptorLayout, twiddleFactors.getImageView(),
 				coefficients.getDzCoefficients_imageView(),
 				dzPingpongImageView);
-		dzInversionDescriptor = new FastFourierTransformInversionDescriptor(device,
+		dzInversionDescriptorSet = new InversionDescriptorSet(device,
 				descriptorLayout, dzImageView, coefficients.getDzCoefficients_imageView(),
 				dzPingpongImageView);
 		
@@ -265,34 +264,34 @@ public class FastFourierTransform extends Renderable{
 		dyButterflyCmdBuffer = new ComputeCmdBuffer(device,
 				VkContext.getLogicalDevice().getComputeCommandPool().getHandle(),
 				butterflyPipeline.getHandle(), butterflyPipeline.getLayoutHandle(),
-				VkUtil.createLongArray(dyButterflyDescriptor.getSet()), N/16, N/16, 1);
+				VkUtil.createLongArray(dyButterflyDescriptorSet), N/16, N/16, 1);
 		
 		dxButterflyCmdBuffer = new ComputeCmdBuffer(device,
 				VkContext.getLogicalDevice().getComputeCommandPool().getHandle(),
 				butterflyPipeline.getHandle(), butterflyPipeline.getLayoutHandle(),
-				VkUtil.createLongArray(dxButterflyDescriptor.getSet()), N/16, N/16, 1);
+				VkUtil.createLongArray(dxButterflyDescriptorSet), N/16, N/16, 1);
 		
 		dzButterflyCmdBuffer = new ComputeCmdBuffer(device,
 				VkContext.getLogicalDevice().getComputeCommandPool().getHandle(),
 				butterflyPipeline.getHandle(), butterflyPipeline.getLayoutHandle(),
-				VkUtil.createLongArray(dzButterflyDescriptor.getSet()), N/16, N/16, 1);
+				VkUtil.createLongArray(dzButterflyDescriptorSet), N/16, N/16, 1);
 		
 		dyInversionCmdBuffer = new ComputeCmdBuffer(device,
 				VkContext.getLogicalDevice().getComputeCommandPool().getHandle(),
 				inversionPipeline.getHandle(), inversionPipeline.getLayoutHandle(),
-				VkUtil.createLongArray(dyInversionDescriptor.getSet()), N/16, N/16, 1,
+				VkUtil.createLongArray(dyInversionDescriptorSet), N/16, N/16, 1,
 				pushConstants, VK_SHADER_STAGE_COMPUTE_BIT);
 		
 		dxInversionCmdBuffer = new ComputeCmdBuffer(device,
 				VkContext.getLogicalDevice().getComputeCommandPool().getHandle(),
 				inversionPipeline.getHandle(), inversionPipeline.getLayoutHandle(),
-				VkUtil.createLongArray(dxInversionDescriptor.getSet()), N/16, N/16, 1,
+				VkUtil.createLongArray(dxInversionDescriptorSet), N/16, N/16, 1,
 				pushConstants, VK_SHADER_STAGE_COMPUTE_BIT);
 		
 		dzInversionCmdBuffer = new ComputeCmdBuffer(device,
 				VkContext.getLogicalDevice().getComputeCommandPool().getHandle(),
 				inversionPipeline.getHandle(), inversionPipeline.getLayoutHandle(),
-				VkUtil.createLongArray(dzInversionDescriptor.getSet()), N/16, N/16, 1,
+				VkUtil.createLongArray(dzInversionDescriptorSet), N/16, N/16, 1,
 				pushConstants, VK_SHADER_STAGE_COMPUTE_BIT);
 		
 		dyFence = new Fence(device);
@@ -335,16 +334,11 @@ public class FastFourierTransform extends Renderable{
 			dxFence.waitForFence();
 			dzFence.waitForFence();
 			
-//			dxButterflyDescriptor.getSet().updateDescriptorImageBuffer(
-//					twiddleFactors.getImageView().getHandle(),
-//		    		VK_IMAGE_LAYOUT_GENERAL, -1,
-//		    		0, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
-			
 			pingpong++;
 			pingpong %= 2;
 		}
 		
-		 //1D FFT vertical 
+		//1D FFT vertical 
 		for (int j=0; j<stages; j++)
 		{
 			int[] uniforms = {j, pingpong, 1};

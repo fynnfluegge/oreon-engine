@@ -27,10 +27,10 @@ public class VkCamera extends Camera{
 		
 	    uniformBuffer = new VkUniformBuffer(VkContext.getLogicalDevice().getHandle(),
 	    		VkContext.getPhysicalDevice().getMemoryProperties(),
-	    		BufferUtil.createByteBuffer(getViewProjectionMatrix()));
+	    		BufferUtil.createByteBuffer(floatBuffer));
 	    
 	    descriptor = new CameraDescriptor(VkContext.getLogicalDevice().getHandle(),
-	    		uniformBuffer.getHandle());
+	    		uniformBuffer.getHandle(), bufferSize);
 	}
 	
 	@Override
@@ -39,7 +39,7 @@ public class VkCamera extends Camera{
 		super.update();
 		
 		uniformBuffer.updateData(VkContext.getLogicalDevice().getHandle(),
-				BufferUtil.createByteBuffer(getViewProjectionMatrix()));
+				BufferUtil.createByteBuffer(floatBuffer));
 	}
 	
 	public void shutdown(){

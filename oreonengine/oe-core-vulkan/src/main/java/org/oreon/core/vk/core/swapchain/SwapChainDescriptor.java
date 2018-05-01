@@ -1,4 +1,4 @@
-package org.oreon.core.vk.wrapper.descriptor;
+package org.oreon.core.vk.core.swapchain;
 
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 import static org.lwjgl.vulkan.VK10.VK_FILTER_NEAREST;

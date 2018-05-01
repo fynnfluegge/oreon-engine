@@ -292,6 +292,16 @@ public class BufferUtil {
 		return byteBuffer;
 	}
 	
+	public static ByteBuffer createByteBuffer(FloatBuffer floatBuffer){
+		
+		ByteBuffer byteBuffer = memAlloc(Float.BYTES * floatBuffer.limit());
+		FloatBuffer intBuffer = byteBuffer.asFloatBuffer();
+		intBuffer.put(floatBuffer);
+		intBuffer.flip();
+		
+		return byteBuffer;
+	}
+	
 	public static ByteBuffer allocateVertexByteBuffer(VertexLayout layout, int vertexCount){
 		
 		ByteBuffer byteBuffer;

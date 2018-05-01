@@ -12,9 +12,10 @@ import lombok.Getter;
 @Getter
 public class VkMeshData extends NodeComponent{
 
-	private VkBuffer indexBufferObject;
 	private VkBuffer vertexBufferObject;
-	private ByteBuffer indexBuffer;
 	private ByteBuffer vertexBuffer;
+	
+	private VkBuffer indexBufferObject;
+	private ByteBuffer indexBuffer;
 	
 }
