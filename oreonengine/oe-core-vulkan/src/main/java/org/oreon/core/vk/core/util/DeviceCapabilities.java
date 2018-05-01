@@ -53,8 +53,6 @@ public class DeviceCapabilities {
 			}
 		}
 		
-		ppEnabledExtensionNames.flip();
-		
 		memFree(extensionCount);
 		extensions.free();
 	}

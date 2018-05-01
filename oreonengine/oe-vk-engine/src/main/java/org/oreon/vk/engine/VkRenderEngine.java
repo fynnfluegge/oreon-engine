@@ -1,7 +1,6 @@
 package org.oreon.vk.engine;
 
 import static org.lwjgl.glfw.GLFWVulkan.glfwCreateWindowSurface;
-import static org.lwjgl.glfw.GLFWVulkan.glfwGetRequiredInstanceExtensions;
 import static org.lwjgl.glfw.GLFWVulkan.glfwVulkanSupported;
 import static org.lwjgl.system.MemoryUtil.memAllocLong;
 import static org.lwjgl.system.MemoryUtil.memUTF8;
@@ -53,14 +52,9 @@ public class VkRenderEngine extends RenderEngine{
 	            throw new AssertionError("GLFW failed to find the Vulkan loader");
 	        }
         
-		PointerBuffer requiredExtensions = glfwGetRequiredInstanceExtensions();
-        if (requiredExtensions == null) {
-            throw new AssertionError("Failed to find list of required Vulkan extensions");
-        }
-        
         ppEnabledLayerNames = VkUtil.getValidationLayerNames(validationEnabled, layers);
         
-        VulkanInstance vulkanInstance = new VulkanInstance();
+        VulkanInstance vulkanInstance = new VulkanInstance(ppEnabledLayerNames);
         VkContext.registerObject(vulkanInstance);
         
         vkInstance = vulkanInstance.getHandle();
@@ -98,33 +92,6 @@ public class VkRenderEngine extends RenderEngine{
 	    								physicalDevice.getMemoryProperties());
 	    
 	    VkContext.registerObject(offScreenFbo);
-		
-		//-----------------------------------------------------------------------------------
-	    
-		// descriptors
-//	    DescriptorSetLayout descriptorLayout = new DescriptorSetLayout(logicalDevice.getHandle(),1);
-//	    descriptorLayout.addLayoutBinding(0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
-//	    								     VK_SHADER_STAGE_FRAGMENT_BIT);
-//	    descriptorLayout.create();
-//	    
-//	    DescriptorSet descriptorSet = new DescriptorSet(logicalDevice.getHandle(), 
-//	    					VkContext.getEnvironment().getDescriptorPool(DescriptorPoolType.COMBINED_IMAGE_SAMPLER).getHandle(),
-//	    					descriptorLayout.getHandle());
-//	    descriptorSet.updateDescriptorImageBuffer(imageView.getHandle(), sampler.getHandle(), 0);
-//	    
-//	    long[] descriptorSets = new long[2];
-//	    descriptorSets[0] = VkContext.getEnvironment().getDescriptorSet(DescriptorSetKey.CAMERA).getSet().getHandle();
-//	    descriptorSets[1] = descriptorSet.getHandle();
-//	    
-//	    LongBuffer descriptorSetLayouts = memAllocLong(2);
-//	    descriptorSetLayouts.put(VkContext.getEnvironment().getDescriptorSet(DescriptorSetKey.CAMERA).getLayout().getHandle());
-//	    descriptorSetLayouts.put(descriptorLayout.getHandle());
-//	    descriptorSetLayouts.flip();
-//	    
-//	    ShaderPipeline shaderPipeline = new ShaderPipeline(logicalDevice.getHandle());
-//	    shaderPipeline.createVertexShader("shaders/vert.spv");
-//	    shaderPipeline.createFragmentShader("shaders/frag.spv");
-//	    shaderPipeline.createShaderPipeline();
 	    
 	    swapChain = new SwapChain(logicalDevice,
 	    						  physicalDevice,

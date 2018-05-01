@@ -62,7 +62,7 @@ public class VkTestObject extends Renderable{
 		signalSemaphore = new VkSemaphore(VkContext.getLogicalDevice().getHandle());
 		
 		fft = new FastFourierTransform(VkContext.getLogicalDevice().getHandle(),
-				VkContext.getPhysicalDevice().getMemoryProperties(), 256, 1000);
+				VkContext.getPhysicalDevice().getMemoryProperties(), 512, 1000);
 		
 	    Mesh mesh = MeshGenerator.NDCQuad2Drot180();
 	    

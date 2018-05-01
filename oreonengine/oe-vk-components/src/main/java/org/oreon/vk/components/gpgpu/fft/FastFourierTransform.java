@@ -335,10 +335,10 @@ public class FastFourierTransform extends Renderable{
 			dxFence.waitForFence();
 			dzFence.waitForFence();
 			
-			dxButterflyDescriptor.getSet().updateDescriptorImageBuffer(
-					twiddleFactors.getImageView().getHandle(),
-		    		VK_IMAGE_LAYOUT_GENERAL, -1,
-		    		0, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
+//			dxButterflyDescriptor.getSet().updateDescriptorImageBuffer(
+//					twiddleFactors.getImageView().getHandle(),
+//		    		VK_IMAGE_LAYOUT_GENERAL, -1,
+//		    		0, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
 			
 			pingpong++;
 			pingpong %= 2;
