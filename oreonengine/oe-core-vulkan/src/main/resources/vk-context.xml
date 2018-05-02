@@ -6,5 +6,6 @@
    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
    <bean id = "vkDescriptorPoolManager" class = "org.oreon.core.vk.core.context.DescriptorPoolManager"/>
+   <bean id = "vk-render-context" class = "org.oreon.core.vk.core.context.VkRenderContext"/>
 
 </beans>

@@ -21,6 +21,7 @@ public class SimpleVulkanDemo {
 		coreEngine.init(coreSystem);
 		
 		renderEngine.getSceneGraph().addObject(new VkTestObject());
+//		renderEngine.getSceneGraph().addObject(new Skydome());
 		
 		coreEngine.start();
 	}

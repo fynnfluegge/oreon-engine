@@ -3,6 +3,7 @@ package org.oreon.core.platform;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowIcon;
 
 import java.nio.ByteBuffer;
+
 import org.lwjgl.glfw.GLFWImage;
 import org.oreon.core.context.EngineContext;
 import org.oreon.core.util.ResourceLoader;
@@ -26,8 +27,8 @@ public abstract class Window {
 	
 	public Window() {
 		
-		width = EngineContext.getConfig().getDisplayWidth();
-		height = EngineContext.getConfig().getDisplayHeight();
+		width = EngineContext.getConfig().getWindowWidth();
+		height = EngineContext.getConfig().getWindowHeight();
 		title = EngineContext.getConfig().getDisplayTitle();
 	}
 	

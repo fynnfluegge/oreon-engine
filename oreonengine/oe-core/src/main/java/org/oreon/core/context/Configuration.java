@@ -13,7 +13,7 @@ import lombok.Setter;
 @Setter
 public class Configuration {
 	
-	// render configurations
+	// render parameters
 	private boolean wireframe;
 	private boolean underwater;
 	private boolean reflection;
@@ -27,11 +27,15 @@ public class Configuration {
 	private float sightRange;
 	private Quaternion clipplane;
 	
+	// screen settings
 	private int multisamples;
-	
+	private int x_ScreenResolution;
+	private int y_ScreenResolution;
+
+	// window settings
 	private String displayTitle;
-	private int displayWidth;
-	private int displayHeight;
+	private int windowWidth;
+	private int windowHeight;
 	
 	private Configuration(){
 		
@@ -45,8 +49,11 @@ public class Configuration {
 		}
 		
 		multisamples = Integer.valueOf(properties.getProperty("multisamples"));
-		displayWidth = Integer.valueOf(properties.getProperty("display.width"));
-		displayHeight = Integer.valueOf(properties.getProperty("display.height"));
+		windowWidth = Integer.valueOf(properties.getProperty("display.width"));
+		windowHeight = Integer.valueOf(properties.getProperty("display.height"));
 		displayTitle = properties.getProperty("display.title");
+		x_ScreenResolution = Integer.valueOf(properties.getProperty("screen.resolution.x"));
+		y_ScreenResolution = Integer.valueOf(properties.getProperty("screen.resolution.y"));
+		
 	}
 }

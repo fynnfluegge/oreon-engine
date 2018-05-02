@@ -40,7 +40,7 @@ public class VkRenderEngine extends RenderEngine{
 	private ByteBuffer[] layers = {
 	            	memUTF8("VK_LAYER_LUNARG_standard_validation"),
 				};
-	private final boolean validationEnabled = Boolean.parseBoolean(System.getProperty("vulkan.validation", "true"));
+	private final boolean validationEnabled = true;
 	private PointerBuffer ppEnabledLayerNames;
 	
 	@Override
@@ -90,8 +90,10 @@ public class VkRenderEngine extends RenderEngine{
 	    
 	    offScreenFbo = new OffScreenFbo(logicalDevice.getHandle(),
 	    								physicalDevice.getMemoryProperties());
-	    
-	    VkContext.registerObject(offScreenFbo);
+
+	    VkContext.getRenderContext().setOffScreenFrameBuffer(offScreenFbo.getFrameBuffer());
+	    VkContext.getRenderContext().setOffScreenRenderPass(offScreenFbo.getRenderPass());
+	    VkContext.getRenderContext().setOffScreenAttachmentCount(offScreenFbo.getAttachmentCount());
 	    
 	    swapChain = new SwapChain(logicalDevice,
 	    						  physicalDevice,

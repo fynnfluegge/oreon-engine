@@ -56,7 +56,7 @@ public class VulkanInstance {
                 .sType(VK_STRUCTURE_TYPE_APPLICATION_INFO)
                 .pApplicationName(memUTF8("Vulkan Demo"))
                 .pEngineName(memUTF8("OREON ENGINE"))
-                .apiVersion(VK_MAKE_VERSION(1, 1, 70));
+                .apiVersion(VK_MAKE_VERSION(1, 0, 2));
         
         VkInstanceCreateInfo pCreateInfo = VkInstanceCreateInfo.calloc()
                 .sType(VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO)

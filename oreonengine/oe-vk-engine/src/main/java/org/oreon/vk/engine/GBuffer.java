@@ -8,7 +8,6 @@ import java.nio.LongBuffer;
 
 import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
-import org.oreon.core.context.EngineContext;
 import org.oreon.core.vk.core.framebuffer.FrameBufferColorAttachment;
 import org.oreon.core.vk.core.framebuffer.FrameBufferDepthAttachment;
 
@@ -24,10 +23,8 @@ public class GBuffer {
 	private FrameBufferColorAttachment lightScatteringMask;
 	private FrameBufferDepthAttachment depthBuffer;
 	
-	public GBuffer(VkDevice device, VkPhysicalDeviceMemoryProperties memoryProperties) {
-		
-		int width = EngineContext.getConfig().getDisplayWidth();
-		int height = EngineContext.getConfig().getDisplayHeight();
+	public GBuffer(VkDevice device, VkPhysicalDeviceMemoryProperties memoryProperties,
+			int width, int height) {
 		
 		albedoBuffer = new FrameBufferColorAttachment(device, memoryProperties, width, height,
 				VK_FORMAT_R8G8B8A8_UNORM);

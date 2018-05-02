@@ -31,10 +31,10 @@ public class OffScreenFbo extends FrameBufferObject{
 	
 	public OffScreenFbo(VkDevice device, VkPhysicalDeviceMemoryProperties memoryProperties) {
 		
-		gBuffer = new GBuffer(device, memoryProperties);
+		width = EngineContext.getConfig().getX_ScreenResolution();
+		height = EngineContext.getConfig().getY_ScreenResolution();
 		
-		width = EngineContext.getConfig().getDisplayWidth();
-		height = EngineContext.getConfig().getDisplayHeight();
+		gBuffer = new GBuffer(device, memoryProperties, width, height);
 		
 		renderPass = new RenderPass(device);
 		renderPass.setAttachment(VK_FORMAT_R8G8B8A8_UNORM,

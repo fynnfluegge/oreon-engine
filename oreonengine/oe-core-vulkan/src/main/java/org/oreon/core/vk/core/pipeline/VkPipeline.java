@@ -67,7 +67,7 @@ public class VkPipeline {
 	@Getter
 	private long layoutHandle;
 	
-	private VkDevice device;
+	private final VkDevice device;
 	
 	private VkPipelineVertexInputStateCreateInfo vertexInputState;
 	private VkPushConstantRange.Buffer pushConstantRange;

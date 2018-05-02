@@ -62,8 +62,8 @@ public class GLWindow extends Window{
 		glfwSetWindowSize(getId(), width, height);
 		setHeight(height);
 		setWidth(width);
-		EngineContext.getConfig().setDisplayWidth(width);
-		EngineContext.getConfig().setDisplayHeight(height);
+		EngineContext.getConfig().setWindowWidth(width);
+		EngineContext.getConfig().setWindowHeight(height);
 		// TODO set camera projection
 	}
 }

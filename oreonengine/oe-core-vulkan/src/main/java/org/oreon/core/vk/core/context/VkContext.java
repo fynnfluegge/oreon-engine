@@ -12,7 +12,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class VkContext {
 
-private static ApplicationContext context;
+	private static ApplicationContext context;
 	
 	public static void initialize(){
 		
@@ -24,6 +24,11 @@ private static ApplicationContext context;
 	public static VkWindow getWindow(){
 		
 		return context.getBean(VkWindow.class);
+	}
+	
+	public static VkRenderContext getRenderContext(){
+		
+		return context.getBean(VkRenderContext.class);
 	}
 	
 	public static DescriptorPoolManager getDescriptorPoolManager(){
