@@ -36,6 +36,7 @@ import java.util.List;
 
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.vulkan.VkClearValue;
+import org.oreon.core.vk.core.command.CommandBuffer;
 import org.oreon.core.vk.core.descriptor.DescriptorSet;
 import org.oreon.core.vk.core.descriptor.DescriptorSetLayout;
 
@@ -123,7 +124,7 @@ public class VkUtil {
         return ppEnabledLayerNames;
 	}
     
-    public static VkClearValue getBlackClearValues(){
+    public static VkClearValue getClearColorValues(){
     	
     	VkClearValue clearValues = VkClearValue.calloc();
         clearValues.color()
@@ -131,6 +132,15 @@ public class VkUtil {
                 .float32(1, 0.0f)
                 .float32(2, 0.0f)
                 .float32(3, 1.0f);
+        
+        return clearValues;
+    }
+    
+    public static VkClearValue getClearDepthValues(){
+    	
+    	VkClearValue clearValues = VkClearValue.calloc();
+        clearValues.depthStencil()
+        		.depth(1.0f);
         
         return clearValues;
     }
@@ -161,11 +171,24 @@ public class VkUtil {
 		
 		for (DescriptorSetLayout layout : descriptorSetLayouts){
 			
-			descriptorSetLayoutsBuffer.put(layout.getHandlePointer());
+			descriptorSetLayoutsBuffer.put(layout.getHandle());
 		}
 		descriptorSetLayoutsBuffer.flip();
 		
 		return descriptorSetLayoutsBuffer;
+    }
+    
+    public static PointerBuffer createPointerBuffer(List<CommandBuffer> commandBuffers){
+    	
+		PointerBuffer cmdBuffersPointer = memAllocPointer(commandBuffers.size());
+		
+		for (CommandBuffer cmdBuffer : commandBuffers){
+			cmdBuffersPointer.put(cmdBuffer.getHandlePointer());
+		}
+		
+		cmdBuffersPointer.flip();
+		
+		return cmdBuffersPointer;
     }
 
 }

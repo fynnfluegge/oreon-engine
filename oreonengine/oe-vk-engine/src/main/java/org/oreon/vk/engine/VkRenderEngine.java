@@ -19,6 +19,7 @@ import org.lwjgl.PointerBuffer;
 import org.lwjgl.vulkan.VkInstance;
 import org.oreon.core.context.EngineContext;
 import org.oreon.core.system.RenderEngine;
+import org.oreon.core.vk.core.command.SubmitInfo;
 import org.oreon.core.vk.core.context.VkContext;
 import org.oreon.core.vk.core.context.VulkanInstance;
 import org.oreon.core.vk.core.descriptor.DescriptorPool;
@@ -35,7 +36,9 @@ public class VkRenderEngine extends RenderEngine{
 	private SwapChain swapChain;
 	private long surface;
 
+	private OffScreenPrimaryCmdBuffer offScreenPrimaryCmdBuffer;
 	private OffScreenFbo offScreenFbo;
+	private SubmitInfo offScreenSubmitInfo;
 	
 	private ByteBuffer[] layers = {
 	            	memUTF8("VK_LAYER_LUNARG_standard_validation"),
@@ -90,6 +93,11 @@ public class VkRenderEngine extends RenderEngine{
 	    
 	    offScreenFbo = new OffScreenFbo(logicalDevice.getHandle(),
 	    								physicalDevice.getMemoryProperties());
+	    
+	    offScreenPrimaryCmdBuffer =  new OffScreenPrimaryCmdBuffer(logicalDevice.getHandle(),
+	    		logicalDevice.getGraphicsCommandPool().getHandle());
+	    offScreenSubmitInfo = new SubmitInfo();
+	    offScreenSubmitInfo.setCommandBuffers(offScreenPrimaryCmdBuffer.getHandlePointer());
 
 	    VkContext.getRenderContext().setOffScreenFrameBuffer(offScreenFbo.getFrameBuffer());
 	    VkContext.getRenderContext().setOffScreenRenderPass(offScreenFbo.getRenderPass());
@@ -105,10 +113,20 @@ public class VkRenderEngine extends RenderEngine{
 	@Override
 	public void render() {
 		
-		// wait for queues to be finished before start draw command
-		vkQueueWaitIdle(logicalDevice.getGraphicsQueue());
-		
 		sceneGraph.render();
+
+		// record secondary command buffers from scenegraph into
+		// primary render command buffer
+		offScreenPrimaryCmdBuffer.reset();
+		offScreenPrimaryCmdBuffer.record(offScreenFbo.getRenderPass().getHandle(),
+				offScreenFbo.getFrameBuffer().getHandle(),
+				offScreenFbo.getWidth(),
+				offScreenFbo.getHeight(),
+				offScreenFbo.getAttachmentCount(),
+				offScreenFbo.isDepthAttachment(),
+				VkUtil.createPointerBuffer(VkContext.getRenderContext().getOffScreenSecondaryCmdBuffers()));
+		
+		offScreenSubmitInfo.submit(logicalDevice.getGraphicsQueue());
 		
 		vkQueueWaitIdle(logicalDevice.getGraphicsQueue());
 		swapChain.draw(logicalDevice.getGraphicsQueue());

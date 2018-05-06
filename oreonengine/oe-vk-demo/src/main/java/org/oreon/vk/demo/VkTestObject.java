@@ -32,6 +32,7 @@ import org.oreon.core.vk.core.image.VkImageView;
 import org.oreon.core.vk.core.image.VkSampler;
 import org.oreon.core.vk.core.pipeline.RenderPass;
 import org.oreon.core.vk.core.pipeline.ShaderPipeline;
+import org.oreon.core.vk.core.pipeline.VkPipeline;
 import org.oreon.core.vk.core.pipeline.VkVertexInput;
 import org.oreon.core.vk.core.platform.VkCamera;
 import org.oreon.core.vk.core.scenegraph.VkRenderInfo;
@@ -39,10 +40,10 @@ import org.oreon.core.vk.core.synchronization.Fence;
 import org.oreon.core.vk.core.synchronization.VkSemaphore;
 import org.oreon.core.vk.core.util.VkUtil;
 import org.oreon.core.vk.wrapper.buffer.VkBufferHelper;
-import org.oreon.core.vk.wrapper.command.DrawCmdBuffer;
+import org.oreon.core.vk.wrapper.command.SecondaryDrawCmdBuffer;
 import org.oreon.core.vk.wrapper.image.VkImageHelper;
+import org.oreon.core.vk.wrapper.pipeline.GraphicsPipeline;
 import org.oreon.vk.components.gpgpu.fft.FastFourierTransform;
-import org.oreon.vk.engine.OffScreenRenderPipeline;
 
 public class VkTestObject extends Renderable{
 
@@ -51,7 +52,7 @@ public class VkTestObject extends Renderable{
 	
 	private VkBuffer vertexBufferObject;
 	private VkBuffer indexBufferObject;
-	private OffScreenRenderPipeline pipeline;
+	private VkPipeline graphicsPipeline ;
 	private int indices;
 	
 	private VkSemaphore waitSemaphore;
@@ -115,10 +116,11 @@ public class VkTestObject extends Renderable{
 	    Mesh quad = MeshGenerator.NDCQuad2Drot180();
 	    VkVertexInput vertexInput = new VkVertexInput(quad.getVertexLayout());
 	    
-	    pipeline = new OffScreenRenderPipeline(VkContext.getLogicalDevice().getHandle(),
-	    		offScreenRenderPass.getHandle(), EngineContext.getConfig().getX_ScreenResolution(),
-	    		EngineContext.getConfig().getY_ScreenResolution(),
-	    		VkUtil.createLongBuffer(descriptorSetLayouts), shaderPipeline, vertexInput);
+	    graphicsPipeline = new GraphicsPipeline(device,
+				shaderPipeline, vertexInput, VkUtil.createLongBuffer(descriptorSetLayouts),
+				EngineContext.getConfig().getX_ScreenResolution(),
+				EngineContext.getConfig().getY_ScreenResolution(),
+				VkContext.getRenderContext().getOffScreenRenderPass().getHandle());
 	    
 	    ByteBuffer vertexBuffer = BufferUtil.createByteBuffer(mesh.getVertices(), mesh.getVertexLayout());
 		ByteBuffer indexBuffer = BufferUtil.createByteBuffer(mesh.getIndices());
@@ -137,19 +139,17 @@ public class VkTestObject extends Renderable{
         		VkContext.getLogicalDevice().getTransferQueue(),
         		indexBuffer, VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
 	    
-	    CommandBuffer commandBuffer = new DrawCmdBuffer(
+	    CommandBuffer commandBuffer = new SecondaryDrawCmdBuffer(
 	    		VkContext.getLogicalDevice().getHandle(),
 	    		VkContext.getLogicalDevice().getGraphicsCommandPool().getHandle(), 
-	    		pipeline.getHandle(), pipeline.getLayoutHandle(),
-	    		offScreenRenderPass.getHandle(),
-	    		offscreenFrameBuffer.getHandle(),
-	    		EngineContext.getConfig().getWindowWidth(),
-	    		EngineContext.getConfig().getWindowHeight(),
-	    		attachments,
+	    		graphicsPipeline.getHandle(), graphicsPipeline.getLayoutHandle(),
+	    		VkContext.getRenderContext().getOffScreenFrameBuffer().getHandle(),
+	    		VkContext.getRenderContext().getOffScreenRenderPass().getHandle(),
+	    		0,
 	    		VkUtil.createLongArray(descriptorSets),
 	    		vertexBufferObject.getHandle(),
 	    		indexBufferObject.getHandle(),
-	    		mesh.getIndices().length); 
+	    		mesh.getIndices().length);
 	    
 	    fence = new Fence(VkContext.getLogicalDevice().getHandle());
 	    
@@ -159,6 +159,8 @@ public class VkTestObject extends Renderable{
 	    		VkContext.getLogicalDevice().getGraphicsQueue());
 	    
 	    addComponent(NodeComponentKey.MAIN_RENDERINFO, renderInfo);
+	    
+	    VkContext.getRenderContext().getOffScreenSecondaryCmdBuffers().add(commandBuffer);
 	}
 	
 	public void update(){
@@ -167,7 +169,5 @@ public class VkTestObject extends Renderable{
 	public void render(){
 		
 		fft.render();
-
-	    super.render();
 	}
 }

@@ -1,4 +1,4 @@
-package org.oreon.core.vk.wrapper.pipeline;
+package org.oreon.core.vk.core.swapchain;
 
 import java.nio.LongBuffer;
 
@@ -29,7 +29,7 @@ public class SwapChainPipeline extends VkPipeline{
 	    setMultisampling();
 	    addColorBlendAttachment();
 	    setColorBlendState();
-	    setDepthAndStencilTest();
+	    setDepthAndStencilTest(false);
 	    setDynamicState();
 	    setLayout(layouts);
 	    createGraphicsPipeline(shaderPipeline, renderPass);

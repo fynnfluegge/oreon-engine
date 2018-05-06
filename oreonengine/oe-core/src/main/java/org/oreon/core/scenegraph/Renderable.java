@@ -46,10 +46,21 @@ public class Renderable extends Node{
 			}
 		}
 		else{
-			components.get(NodeComponentKey.MAIN_RENDERINFO).render();
+			if (components.containsKey(NodeComponentKey.MAIN_RENDERINFO)){
+				components.get(NodeComponentKey.MAIN_RENDERINFO).render();
+			}
 		}
 		
 		super.render();
+	}
+	
+	public void renderWireframe(){
+		
+		if (components.containsKey(NodeComponentKey.WIREFRAME_RENDERINFO)){
+			components.get(NodeComponentKey.WIREFRAME_RENDERINFO).render();
+		}
+		
+		super.renderWireframe();
 	}
 	
 	public void renderShadows()

@@ -5,7 +5,6 @@ import static org.lwjgl.system.MemoryUtil.memAllocPointer;
 import static org.lwjgl.system.MemoryUtil.memFree;
 import static org.lwjgl.vulkan.VK10.VK_ACCESS_SHADER_READ_BIT;
 import static org.lwjgl.vulkan.VK10.VK_ACCESS_TRANSFER_WRITE_BIT;
-import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_RESET_RELEASE_RESOURCES_BIT;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_ASPECT_COLOR_BIT;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_GENERAL;
@@ -13,15 +12,14 @@ import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_UNDEFINED;
 import static org.lwjgl.vulkan.VK10.VK_INDEX_TYPE_UINT32;
-import static org.lwjgl.vulkan.VK10.VK_PIPELINE_BIND_POINT_GRAPHICS;
 import static org.lwjgl.vulkan.VK10.VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
 import static org.lwjgl.vulkan.VK10.VK_PIPELINE_STAGE_TRANSFER_BIT;
 import static org.lwjgl.vulkan.VK10.VK_QUEUE_FAMILY_IGNORED;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-import static org.lwjgl.vulkan.VK10.VK_SUBPASS_CONTENTS_INLINE;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import static org.lwjgl.vulkan.VK10.vkAllocateCommandBuffers;
 import static org.lwjgl.vulkan.VK10.vkBeginCommandBuffer;
@@ -35,6 +33,7 @@ import static org.lwjgl.vulkan.VK10.vkCmdCopyBufferToImage;
 import static org.lwjgl.vulkan.VK10.vkCmdDispatch;
 import static org.lwjgl.vulkan.VK10.vkCmdDrawIndexed;
 import static org.lwjgl.vulkan.VK10.vkCmdEndRenderPass;
+import static org.lwjgl.vulkan.VK10.vkCmdExecuteCommands;
 import static org.lwjgl.vulkan.VK10.vkCmdPipelineBarrier;
 import static org.lwjgl.vulkan.VK10.vkCmdPushConstants;
 import static org.lwjgl.vulkan.VK10.vkEndCommandBuffer;
@@ -51,6 +50,7 @@ import org.lwjgl.vulkan.VkClearValue;
 import org.lwjgl.vulkan.VkCommandBuffer;
 import org.lwjgl.vulkan.VkCommandBufferAllocateInfo;
 import org.lwjgl.vulkan.VkCommandBufferBeginInfo;
+import org.lwjgl.vulkan.VkCommandBufferInheritanceInfo;
 import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkExtent3D;
 import org.lwjgl.vulkan.VkImageMemoryBarrier;
@@ -59,7 +59,6 @@ import org.lwjgl.vulkan.VkImageSubresourceRange;
 import org.lwjgl.vulkan.VkOffset3D;
 import org.lwjgl.vulkan.VkRect2D;
 import org.lwjgl.vulkan.VkRenderPassBeginInfo;
-import org.oreon.core.vk.core.pipeline.VkPipeline;
 import org.oreon.core.vk.core.util.VkUtil;
 
 import lombok.Getter;
@@ -74,7 +73,7 @@ public class CommandBuffer {
 	private VkDevice device;
 	private long commandPool;
 	
-	public CommandBuffer(VkDevice device, long commandPool) {
+	public CommandBuffer(VkDevice device, long commandPool, int level) {
 		
 		this.device = device;
 		this.commandPool = commandPool;
@@ -82,7 +81,7 @@ public class CommandBuffer {
 		VkCommandBufferAllocateInfo cmdBufAllocateInfo = VkCommandBufferAllocateInfo.calloc()
 	                .sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO)
 	                .commandPool(commandPool)
-	                .level(VK_COMMAND_BUFFER_LEVEL_PRIMARY)
+	                .level(level)
 	                .commandBufferCount(1);
 		 
 		handlePointer = memAllocPointer(1);
@@ -113,6 +112,34 @@ public class CommandBuffer {
         beginInfo.free();
 	}
 	
+	public void beginRecordSecondary(int flags, long framebuffer,
+			long renderPass, int subpass){
+		
+		VkCommandBufferInheritanceInfo inheritanceInfo = VkCommandBufferInheritanceInfo.calloc()
+				.sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO)
+				.pNext(0)
+				.framebuffer(framebuffer)
+				.renderPass(renderPass)
+				.subpass(subpass)
+				.occlusionQueryEnable(false)
+				.queryFlags(0)
+				.pipelineStatistics(0);
+		
+		VkCommandBufferBeginInfo beginInfo = VkCommandBufferBeginInfo.calloc()
+                .sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO)
+                .pNext(0)
+                .flags(flags)
+                .pInheritanceInfo(inheritanceInfo);
+			
+		int err = vkBeginCommandBuffer(handle, beginInfo);
+
+		if (err != VK_SUCCESS) {
+			throw new AssertionError("Failed to begin record command buffer: " + VkUtil.translateVulkanResult(err));
+		}
+        
+        beginInfo.free();
+	}
+	
 	public void finishRecord(){
 			
 		int err = vkEndCommandBuffer(handle);
@@ -123,12 +150,18 @@ public class CommandBuffer {
 	}
 	
 	public void beginRenderPassCmd(long renderPass, long frameBuffer,
-			int width, int height, int attachments){
+			int width, int height, int attachmentCount, boolean hasDepthAttachment,
+			int contentsFlag){
 		
-		VkClearValue.Buffer clearValues = VkClearValue.calloc(attachments);
+		VkClearValue.Buffer clearValues = VkClearValue.calloc(attachmentCount);
 		
-		for (int i=0; i<attachments; i++){
-			clearValues.put(VkUtil.getBlackClearValues());
+		int colorAttachments = hasDepthAttachment ? attachmentCount-1 : attachmentCount;
+		
+		for (int i=0; i<colorAttachments; i++){
+			clearValues.put(VkUtil.getClearColorValues());
+		}
+		if (hasDepthAttachment){
+			clearValues.put(VkUtil.getClearDepthValues());
 		}
 		clearValues.flip();
 		
@@ -144,7 +177,7 @@ public class CommandBuffer {
 		
 		renderPassBeginInfo.framebuffer(frameBuffer);
 		
-		vkCmdBeginRenderPass(handle, renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
+		vkCmdBeginRenderPass(handle, renderPassBeginInfo, contentsFlag);
 		
 		renderPassBeginInfo.free();
 	}
@@ -212,46 +245,6 @@ public class CommandBuffer {
 	public void dispatchCmd(int groupCountX, int groupCountY, int groupCountZ){
 		
 		vkCmdDispatch(handle, groupCountX, groupCountY, groupCountZ);
-	}
-	
-	public void recordIndexedRenderCmd(VkPipeline pipeline, long renderPass, long vertexBuffer,
-			long indexBuffer, int indexCount, long[] descriptorSets, int width, int height,
-			long framebuffer, int attachments){
-
-		VkClearValue.Buffer clearValues = VkClearValue.calloc(attachments);
-		
-		for (int i=0; i<attachments; i++){
-			clearValues.put(VkUtil.getBlackClearValues());
-		}
-		clearValues.flip();
-		
-		VkRenderPassBeginInfo renderPassBeginInfo = VkRenderPassBeginInfo.calloc()
-					.sType(VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO)
-					.pNext(0)
-					.renderPass(renderPass)
-					.pClearValues(clearValues);
-			
-		VkRect2D renderArea = renderPassBeginInfo.renderArea();
-		renderArea.offset().set(0, 0);
-		renderArea.extent().set(width, height);
-		
-		renderPassBeginInfo.framebuffer(framebuffer);
-		
-		vkCmdBeginRenderPass(handle, renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
-		vkCmdBindPipeline(handle, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.getHandle());
-		
-		LongBuffer offsets = memAllocLong(1);
-		offsets.put(0, 0L);
-		LongBuffer pVertexBuffers = memAllocLong(1);
-		pVertexBuffers.put(0, vertexBuffer);
-
-		vkCmdBindVertexBuffers(handle, 0, pVertexBuffers, offsets);
-		vkCmdBindIndexBuffer(handle, indexBuffer, 0, VK_INDEX_TYPE_UINT32);
-		vkCmdBindDescriptorSets(handle, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.getLayoutHandle(),
-								0, descriptorSets, null);
-		
-		vkCmdDrawIndexed(handle, indexCount, 1, 0, 0, 0);
-		vkCmdEndRenderPass(handle);
 	}
 	
 	public void recordCopyBufferCmd(long srcBuffer, long dstBuffer,
@@ -346,6 +339,11 @@ public class CommandBuffer {
 		barrier.subresourceRange(subresourceRange);
 	
 		vkCmdPipelineBarrier(handle,srcStageMask,dstStageMask,0,null,null,barrier);
+	}
+	
+	public void recordSecondaryCmdBuffers(PointerBuffer secondaryCmdBuffers){
+		
+		vkCmdExecuteCommands(handle, secondaryCmdBuffers);
 	}
 	
 	public void reset(){

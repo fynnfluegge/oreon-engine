@@ -47,6 +47,12 @@ public class Node {
 			child.render();
 	}
 	
+	public void renderWireframe()
+	{
+		for(Node child: children)
+			child.render();
+	}
+	
 	public void renderShadows()
 	{
 		for(Node child: children)

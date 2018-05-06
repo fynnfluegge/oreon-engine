@@ -54,8 +54,6 @@ import org.oreon.core.vk.core.synchronization.VkSemaphore;
 import org.oreon.core.vk.core.util.VkUtil;
 import org.oreon.core.vk.wrapper.buffer.VkBufferHelper;
 import org.oreon.core.vk.wrapper.command.DrawCmdBuffer;
-import org.oreon.core.vk.wrapper.pipeline.SwapChainPipeline;
-import org.oreon.core.vk.wrapper.renderpass.SwapChainRenderPass;
 
 import lombok.Getter;
 
@@ -252,7 +250,7 @@ public class SwapChain {
 					device, commandPool.getHandle(), pipeline.getHandle(),
 					pipeline.getLayoutHandle(), renderPass,
 					frameBuffer.getHandle(), extent.width(), extent.height(),
-					1, descriptorSets, vertexBuffer, indexBuffer, indexCount);
+					1, false, descriptorSets, vertexBuffer, indexBuffer, indexCount);
 			
 			renderCommandBuffers.add(commandBuffer);
 		}

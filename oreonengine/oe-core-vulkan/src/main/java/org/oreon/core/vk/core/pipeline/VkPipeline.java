@@ -8,6 +8,7 @@ import static org.lwjgl.vulkan.VK10.VK_COLOR_COMPONENT_B_BIT;
 import static org.lwjgl.vulkan.VK10.VK_COLOR_COMPONENT_G_BIT;
 import static org.lwjgl.vulkan.VK10.VK_COLOR_COMPONENT_R_BIT;
 import static org.lwjgl.vulkan.VK10.VK_COMPARE_OP_ALWAYS;
+import static org.lwjgl.vulkan.VK10.VK_COMPARE_OP_LESS;
 import static org.lwjgl.vulkan.VK10.VK_CULL_MODE_NONE;
 import static org.lwjgl.vulkan.VK10.VK_DYNAMIC_STATE_SCISSOR;
 import static org.lwjgl.vulkan.VK10.VK_DYNAMIC_STATE_VIEWPORT;
@@ -277,13 +278,13 @@ public class VkPipeline {
         
 	}
 	
-	public void setDepthAndStencilTest(){
+	public void setDepthAndStencilTest(boolean depthTestEnable){
 		
 		depthStencil = VkPipelineDepthStencilStateCreateInfo.calloc()
                 .sType(VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO)
-                .depthTestEnable(false)
-                .depthWriteEnable(false)
-                .depthCompareOp(VK_COMPARE_OP_ALWAYS)
+                .depthTestEnable(depthTestEnable)
+                .depthWriteEnable(true)
+                .depthCompareOp(VK_COMPARE_OP_LESS)
                 .depthBoundsTestEnable(false)
                 .stencilTestEnable(false);
 		depthStencil.back()

@@ -2,7 +2,6 @@ package org.oreon.core.vk.core.pipeline;
 
 import static org.lwjgl.system.MemoryUtil.memAllocLong;
 import static org.lwjgl.system.MemoryUtil.memFree;
-import static org.lwjgl.vulkan.VK10.VK_ATTACHMENT_LOAD_OP_CLEAR;
 import static org.lwjgl.vulkan.VK10.VK_ATTACHMENT_LOAD_OP_DONT_CARE;
 import static org.lwjgl.vulkan.VK10.VK_ATTACHMENT_STORE_OP_DONT_CARE;
 import static org.lwjgl.vulkan.VK10.VK_ATTACHMENT_STORE_OP_STORE;
@@ -114,12 +113,13 @@ public class RenderPass {
         }
 	}
 	
-	public void setAttachment(int format, int initialLayout, int finalLayout){
+	public void setAttachment(int format, int initialLayout, int finalLayout,
+			int loadOpFlag){
 		
 		VkAttachmentDescription attachment = VkAttachmentDescription.calloc()
 				.format(format)
 				.samples(VK_SAMPLE_COUNT_1_BIT)
-				.loadOp(VK_ATTACHMENT_LOAD_OP_CLEAR)
+				.loadOp(loadOpFlag)
 				.storeOp(VK_ATTACHMENT_STORE_OP_STORE)
 				.stencilLoadOp(VK_ATTACHMENT_LOAD_OP_DONT_CARE)
 				.stencilStoreOp(VK_ATTACHMENT_STORE_OP_DONT_CARE)

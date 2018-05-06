@@ -17,7 +17,8 @@ public class FractalMap {
 	private float strength;
 	private int random;
 	
-	public FractalMap(int N, float amplitude, float l, int scaling, float strength, int random){
+	public FractalMap(int N, float amplitude, float l, int scaling,
+			float strength, int random){
 		
 		this.scaling = scaling;
 		this.strength = strength;
@@ -28,7 +29,6 @@ public class FractalMap {
 		int L = 1000;
 		int v = 100;
 		this.scaling = scaling;
-		this.strength = strength;
 		Vec2f w = new Vec2f(1,3).normalize();
 		FractalFFT fft = new FractalFFT(N,L,amplitude,v,w,l);
 		fft.setT(random);

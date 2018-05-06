@@ -1,5 +1,6 @@
 package org.oreon.core.vk.wrapper.command;
 
+import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT;
 import static org.lwjgl.vulkan.VK10.VK_PIPELINE_BIND_POINT_COMPUTE;
 
@@ -14,9 +15,9 @@ public class ComputeCmdBuffer extends CommandBuffer{
 			long pipeline, long pipelineLayout, long[] descriptorSets,
 			int groupCountX, int groupCountY, int groupCountZ) {
 		
-		super(device, commandPool);
+		super(device, commandPool, VK_COMMAND_BUFFER_LEVEL_PRIMARY);
 		
-		buildCommandBuffer(pipeline, pipelineLayout, descriptorSets,
+		record(pipeline, pipelineLayout, descriptorSets,
 				groupCountX, groupCountY, groupCountZ, null, 0);
 	}
 	
@@ -25,14 +26,14 @@ public class ComputeCmdBuffer extends CommandBuffer{
 			int groupCountX, int groupCountY, int groupCountZ,
 			ByteBuffer pushConstantsData, int pushConstantsStageFlags) {
 		
-		super(device, commandPool);
+		super(device, commandPool, VK_COMMAND_BUFFER_LEVEL_PRIMARY);
 		
-		buildCommandBuffer(pipeline, pipelineLayout, descriptorSets,
+		record(pipeline, pipelineLayout, descriptorSets,
 				groupCountX, groupCountY, groupCountZ,
 				pushConstantsData, pushConstantsStageFlags);
 	}
 
-	public void buildCommandBuffer(long pipeline, long pipelineLayout,
+	public void record(long pipeline, long pipelineLayout,
 			long[] descriptorSets, int groupCountX, int groupCountY, int groupCountZ, 
 			ByteBuffer pushConstantsData, int pushConstantsStageFlags){
 		

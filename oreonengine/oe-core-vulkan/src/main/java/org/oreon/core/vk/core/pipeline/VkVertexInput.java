@@ -23,7 +23,7 @@ public class VkVertexInput {
 		
 		switch(layout){
 			case POS:
-				createBindingDescription(0, 2, Float.BYTES * 3);
+				createBindingDescription(0, 1, Float.BYTES * 3);
 				addVertexAttributeDescription(0, VK_FORMAT_R32G32B32_SFLOAT, 0);
 				break;
 			case POS_UV:

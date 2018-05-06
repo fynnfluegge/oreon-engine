@@ -10,5 +10,5 @@ public enum NodeComponentKey {
 	LIGHT,
 	UNIFORMBUFFER,
 	MESH_DATA,
-	SHADER_RESOURCE,
+	SHADER_RESOURCE;
 }
