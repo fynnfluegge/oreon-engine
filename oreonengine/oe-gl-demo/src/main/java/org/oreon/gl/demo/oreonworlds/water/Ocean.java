@@ -9,7 +9,7 @@ import org.oreon.gl.demo.oreonworlds.shaders.OceanWireframeShader;
 public class Ocean extends Water{
 
 	public Ocean() {
-		super(128, 256, OceanBRDFShader.getInstance(), OceanWireframeShader.getInstance());
+		super(128, OceanBRDFShader.getInstance(), OceanWireframeShader.getInstance());
 		
 		getWorldTransform().setScaling(Constants.ZFAR,1,Constants.ZFAR);
 		getWorldTransform().setTranslation(-Constants.ZFAR/2,-40,-Constants.ZFAR/2);

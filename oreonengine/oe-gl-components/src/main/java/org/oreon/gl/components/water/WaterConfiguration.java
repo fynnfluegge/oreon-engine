@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+import org.oreon.core.math.Vec2f;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,6 +13,12 @@ import lombok.Setter;
 @Setter
 public class WaterConfiguration {
 
+	private int N;
+	private int L;
+	private float amplitude;
+	private Vec2f windDirection;
+	private float windSpeed;
+	private float capillarWavesSupression;
 	private float motion;
 	private float displacementScale;
 	private float choppiness;
@@ -40,6 +48,13 @@ public class WaterConfiguration {
 			e.printStackTrace();
 		}
 		
+		N = Integer.valueOf(properties.getProperty("fft.resolution"));
+		L = Integer.valueOf(properties.getProperty("fft.L"));
+		amplitude = Integer.valueOf(properties.getProperty("fft.amplitude"));
+		windDirection = new Vec2f(Float.valueOf(properties.getProperty("wind.x")),
+				Float.valueOf(properties.getProperty("wind.y"))).normalize();
+		windSpeed = Float.valueOf(properties.getProperty("wind.speed"));
+		capillarWavesSupression = Float.valueOf(properties.getProperty("fft.capillarwavesSuppression"));
 		displacementScale = Float.valueOf(properties.getProperty("displacementScale"));
 		choppiness = Float.valueOf(properties.getProperty("choppiness"));
 		distortion = Float.valueOf(properties.getProperty("distortion"));

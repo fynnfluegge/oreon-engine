@@ -23,10 +23,10 @@ import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.scenegraph.Scenegraph;
 import org.oreon.core.util.Constants;
 import org.oreon.core.util.MeshGenerator;
+import org.oreon.gl.components.fft.FFT;
 import org.oreon.gl.components.gpgpu.NormalMapRenderer;
 import org.oreon.gl.components.terrain.GLTerrain;
 import org.oreon.gl.components.terrain.GLTerrainContext;
-import org.oreon.gl.components.water.fft.OceanFFT;
 
 import lombok.Getter;
 
@@ -42,7 +42,8 @@ public class Water extends Renderable{
 	private RefracReflecRenderer refractionRenderer;
 	private RefracReflecRenderer reflectionRenderer;
 	
-	private OceanFFT fft;
+	@Getter
+	private FFT fft;
 	private NormalMapRenderer normalmapRenderer;
 	private boolean cameraUnderwater;
 	
@@ -51,7 +52,7 @@ public class Water extends Renderable{
 	@Getter
 	private WaterConfiguration waterConfiguration;
 
-	public Water(int patches, int fftResolution, GLShaderProgram shader, GLShaderProgram wireframeShader)
+	public Water(int patches, GLShaderProgram shader, GLShaderProgram wireframeShader)
 	{		
 		waterConfiguration = new WaterConfiguration();
 		waterConfiguration.loadFile("water-config.properties");
@@ -70,12 +71,14 @@ public class Water extends Renderable{
 		addComponent(NodeComponentKey.MAIN_RENDERINFO, renderInfo);
 		addComponent(NodeComponentKey.WIREFRAME_RENDERINFO, wireframeRenderInfo);
 
-		fft = new OceanFFT(fftResolution); 
+		fft = new FFT(waterConfiguration.getN(), waterConfiguration.getL(),
+				waterConfiguration.getAmplitude(), waterConfiguration.getWindDirection(),
+				waterConfiguration.getWindSpeed(), waterConfiguration.getCapillarWavesSupression()); 
 		fft.init();
-		getFft().setT_delta(waterConfiguration.getDelta_T());
-		getFft().setChoppy(waterConfiguration.isChoppy());
+		fft.setT_delta(waterConfiguration.getDelta_T());
+		fft.setChoppy(waterConfiguration.isChoppy());
 		
-		normalmapRenderer = new NormalMapRenderer(fftResolution);
+		normalmapRenderer = new NormalMapRenderer(waterConfiguration.getN());
 		getNormalmapRenderer().setStrength(waterConfiguration.getNormalStrength());
 		
 		refractionRenderer = new RefracReflecRenderer(EngineContext.getWindow().getWidth()/2,
@@ -230,14 +233,6 @@ public class Water extends Renderable{
 
 	public void setClip_offset(float clip_offset) {
 		this.clip_offset = clip_offset;
-	}
-
-	public OceanFFT getFft() {
-		return fft;
-	}
-
-	public void setFft(OceanFFT fft) {
-		this.fft = fft;
 	}
 
 	public NormalMapRenderer getNormalmapRenderer() {
