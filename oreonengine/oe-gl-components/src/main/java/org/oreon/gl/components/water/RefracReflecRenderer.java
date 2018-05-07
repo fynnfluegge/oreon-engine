@@ -16,7 +16,6 @@ import org.oreon.core.gl.buffer.GLFramebuffer;
 import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.gl.wrapper.texture.Texture2DBilinearFilterRGBA16F;
 import org.oreon.core.util.BufferUtil;
-import org.oreon.gl.components.water.shader.RefracReflecDeferredLightingShader;
 
 import lombok.Getter;
 

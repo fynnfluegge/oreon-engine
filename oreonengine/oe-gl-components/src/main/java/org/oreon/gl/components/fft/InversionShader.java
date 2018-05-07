@@ -20,7 +20,7 @@ public class InversionShader extends GLShaderProgram{
 	{
 		super();
 			
-		addComputeShader(ResourceLoader.loadShader("shaders/ffz/inversion.comp"));
+		addComputeShader(ResourceLoader.loadShader("shaders/fft/inversion.comp"));
 		compileShader();
 			
 		addUniform("pingpong");

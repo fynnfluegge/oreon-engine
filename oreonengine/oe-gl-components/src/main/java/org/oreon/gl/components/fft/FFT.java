@@ -7,6 +7,7 @@ import static org.lwjgl.opengl.GL42.glBindImageTexture;
 import static org.lwjgl.opengl.GL43.glDispatchCompute;
 
 import org.oreon.core.gl.texture.GLTexture;
+import org.oreon.core.gl.wrapper.texture.Texture2DStorageRGBA32F;
 import org.oreon.core.math.Vec2f;
 
 import lombok.Getter;
@@ -14,6 +15,8 @@ import lombok.Setter;
 
 public class FFT {
 
+	private GLTexture spatialTexture;
+	
 	@Getter
 	private GLTexture Dy;
 	@Getter
@@ -46,12 +49,22 @@ public class FFT {
 		twiddleFactors = new TwiddleFactors(N);
 		h0k = new H0k(N, L, amplitude, direction, intensity, capillarSupressFactor);
 		hkt = new Hkt(N, L);
+		
+		butterflyShader = ButterflyShader.getInstance();
+		inversionShader = InversionShader.getInstance();
+		
+		pingpongTexture = new Texture2DStorageRGBA32F(N,N,1);
+		Dy = new Texture2DStorageRGBA32F(N,N,1);
+		Dx = new Texture2DStorageRGBA32F(N,N,1);;
+		Dz = new Texture2DStorageRGBA32F(N,N,1);
 	}
 	
 	public void init()
 	{
 		h0k.render();
 		twiddleFactors.render();
+		hkt.setImageH0k(h0k.getImageH0k());
+		hkt.setImageH0minusK(h0k.getImageH0minusK());
 	}
 	
 	public void render()

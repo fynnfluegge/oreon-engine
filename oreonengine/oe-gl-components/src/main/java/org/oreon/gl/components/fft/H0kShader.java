@@ -28,7 +28,7 @@ private static H0kShader instance = null;
 		addUniform("L");
 		addUniform("amplitude");
 		addUniform("direction");
-		addUniform("inensity");
+		addUniform("intensity");
 		addUniform("capillarSupressFactor");
 		addUniform("noise_r0");
 		addUniform("noise_i0");

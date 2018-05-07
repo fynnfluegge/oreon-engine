@@ -11,6 +11,7 @@ import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.gl.wrapper.texture.Texture2DStorageRGBA32F;
 
 import lombok.Getter;
+import lombok.Setter;
 
 public class Hkt {
 
@@ -21,7 +22,9 @@ public class Hkt {
 	@Getter
 	private GLTexture imageDzCoefficients;
 	
+	@Setter
 	private GLTexture imageH0k;
+	@Setter
 	private GLTexture imageH0minusK;
 	
 	private int N;

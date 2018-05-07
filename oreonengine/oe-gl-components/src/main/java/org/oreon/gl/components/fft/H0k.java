@@ -48,6 +48,8 @@ public class H0k {
 		this.intensity = intensity;
 		this.capillarSupressFactor = capillarSupressFactor;
 		
+		shader = H0kShader.getInstance();
+		
 		imageH0k = new Texture2DStorageRGBA32F(N,N,1);
 		imageH0minusK = new Texture2DStorageRGBA32F(N,N,1);
 		noise0 = new Texture2DNoFilter("textures/noise/Noise256_0.jpg");

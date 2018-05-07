@@ -1,4 +1,4 @@
-package org.oreon.gl.components.water.shader;
+package org.oreon.gl.components.water;
 
 import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.util.Constants;

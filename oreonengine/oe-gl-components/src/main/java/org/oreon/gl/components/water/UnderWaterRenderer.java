@@ -12,7 +12,6 @@ import org.oreon.core.gl.context.GLContext;
 import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.gl.wrapper.texture.Texture2DBilinearFilterRGBA16F;
 import org.oreon.core.gl.wrapper.texture.Texture2DTrilinearFilter;
-import org.oreon.gl.components.water.shader.UnderWaterShader;
 
 import lombok.Getter;
 
