@@ -74,9 +74,9 @@ public class Water extends Renderable{
 		fft = new FFT(waterConfiguration.getN(), waterConfiguration.getL(),
 				waterConfiguration.getAmplitude(), waterConfiguration.getWindDirection(),
 				waterConfiguration.getWindSpeed(), waterConfiguration.getCapillarWavesSupression()); 
-		fft.init();
 		fft.setT_delta(waterConfiguration.getDelta_T());
 		fft.setChoppy(waterConfiguration.isChoppy());
+		fft.init();
 		
 		normalmapRenderer = new NormalMapRenderer(waterConfiguration.getN());
 		getNormalmapRenderer().setStrength(waterConfiguration.getNormalStrength());
@@ -191,7 +191,7 @@ public class Water extends Renderable{
 		fft.render();
 		normalmapRenderer.render(fft.getDy());
 		
-		GLContext.getRenderContext().getDeferredFbo().bind();
+		GLContext.getRenderState().getDeferredFbo().bind();
 		
 		if (EngineContext.getConfig().isWireframe())
 		{
@@ -204,7 +204,7 @@ public class Water extends Renderable{
 		
 		// glFinish() important, to prevent conflicts with following compute shaders
 		glFinish();
-		GLContext.getRenderContext().getDeferredFbo().unbind();
+		GLContext.getRenderState().getDeferredFbo().unbind();
 	}
 		
 	public Quaternion getClipplane() {

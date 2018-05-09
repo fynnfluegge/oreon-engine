@@ -7,7 +7,6 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.util.ResourceLoader;
-import org.oreon.gl.components.terrain.fractals.FractalMap;
 
 public class FractalMapShader extends GLShaderProgram{
 	

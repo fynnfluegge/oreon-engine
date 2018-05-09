@@ -164,7 +164,7 @@ public class GLRenderEngine extends RenderEngine{
 		GLDirectionalLight.getInstance().update();
 
 		EngineContext.getConfig().setClipplane(Constants.PLANE0);
-		GLContext.getRenderContext().setSceneDepthMap(sceneDepthmap);
+		GLContext.getRenderState().setSceneDepthMap(sceneDepthmap);
 		Default.clearScreen();
 		
 		// render shadow maps into pssm framebuffer

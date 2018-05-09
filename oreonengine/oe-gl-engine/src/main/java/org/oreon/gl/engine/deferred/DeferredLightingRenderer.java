@@ -59,7 +59,7 @@ public class DeferredLightingRenderer {
 		fbo.checkStatus();
 		fbo.unbind();
 		
-		GLContext.getRenderContext().setDeferredFbo(fbo);
+		GLContext.getRenderState().setDeferredFbo(fbo);
 	}
 	
 	public void render(GLTexture sampleCoverageMask, GLTexture ssaoBlurTexture, GLTexture pssm, boolean flag){

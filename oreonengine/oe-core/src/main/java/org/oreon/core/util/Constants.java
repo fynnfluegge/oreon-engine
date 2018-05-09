@@ -17,7 +17,6 @@ public class Constants {
 													0.02f,0.06f,
 													0.05f,0.16f };
 	
-	public static final int TERRAIN_FRACTALS_RESOLUTION = 512;
 	public static final int PSSM_SHADOWMAP_RESOLUTION = 4096;
 	
 	// Global Uniform Block Bindings

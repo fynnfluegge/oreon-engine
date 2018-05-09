@@ -99,9 +99,9 @@ public class VkRenderEngine extends RenderEngine{
 	    offScreenSubmitInfo = new SubmitInfo();
 	    offScreenSubmitInfo.setCommandBuffers(offScreenPrimaryCmdBuffer.getHandlePointer());
 
-	    VkContext.getRenderContext().setOffScreenFrameBuffer(offScreenFbo.getFrameBuffer());
-	    VkContext.getRenderContext().setOffScreenRenderPass(offScreenFbo.getRenderPass());
-	    VkContext.getRenderContext().setOffScreenAttachmentCount(offScreenFbo.getAttachmentCount());
+	    VkContext.getRenderState().setOffScreenFrameBuffer(offScreenFbo.getFrameBuffer());
+	    VkContext.getRenderState().setOffScreenRenderPass(offScreenFbo.getRenderPass());
+	    VkContext.getRenderState().setOffScreenAttachmentCount(offScreenFbo.getAttachmentCount());
 	    
 	    swapChain = new SwapChain(logicalDevice,
 	    						  physicalDevice,
@@ -124,7 +124,7 @@ public class VkRenderEngine extends RenderEngine{
 				offScreenFbo.getHeight(),
 				offScreenFbo.getAttachmentCount(),
 				offScreenFbo.isDepthAttachment(),
-				VkUtil.createPointerBuffer(VkContext.getRenderContext().getOffScreenSecondaryCmdBuffers()));
+				VkUtil.createPointerBuffer(VkContext.getRenderState().getOffScreenSecondaryCmdBuffers()));
 		
 		offScreenSubmitInfo.submit(logicalDevice.getGraphicsQueue());
 		

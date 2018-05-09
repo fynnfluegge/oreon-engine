@@ -12,8 +12,16 @@ import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
 import static org.lwjgl.opengl.GL11.GL_TRUE;
 
 import org.oreon.core.platform.Window;
+import org.oreon.core.vk.core.context.VkContext;
 
 public class VkWindow extends Window{
+	
+	public VkWindow() {
+	
+		super(VkContext.getConfig().getDisplayTitle(),
+				VkContext.getConfig().getWindowWidth(),
+				VkContext.getConfig().getWindowHeight());
+	}
 	
 	@Override
 	public void create() {

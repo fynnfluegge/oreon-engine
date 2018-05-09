@@ -98,12 +98,12 @@ public class RockHighPolyShader extends GLShaderProgram{
 		setUniformf("material.emission", material.getEmission());
 		
 		glActiveTexture(GL_TEXTURE2);
-		GLContext.getRenderContext().getUnderwaterCausticsMap().bind();
+		GLContext.getRenderState().getUnderwaterCausticsMap().bind();
 		setUniformi("caustics", 2);
 		glActiveTexture(GL_TEXTURE3);
-		GLContext.getRenderContext().getUnderwaterDudvMap().bind();
+		GLContext.getRenderState().getUnderwaterDudvMap().bind();
 		setUniformi("dudvCaustics", 3);
-		setUniformf("distortionCaustics", GLContext.getRenderContext().getUnderwaterDistortion());
+		setUniformf("distortionCaustics", GLContext.getRenderState().getUnderwaterDistortion());
 		
 		List<Integer> indices = ((InstancedCluster) object.getParent()).getHighPolyIndices();
 		

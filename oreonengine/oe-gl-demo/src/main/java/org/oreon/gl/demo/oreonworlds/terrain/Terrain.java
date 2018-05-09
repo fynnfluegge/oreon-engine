@@ -7,10 +7,9 @@ import java.util.Random;
 import org.lwjgl.glfw.GLFW;
 import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.pipeline.GLShaderProgram;
-import org.oreon.core.util.Constants;
+import org.oreon.gl.components.terrain.FractalMap;
 import org.oreon.gl.components.terrain.GLTerrain;
 import org.oreon.gl.components.terrain.GLTerrainContext;
-import org.oreon.gl.components.terrain.fractals.FractalMap;
 
 public class Terrain extends GLTerrain{
 
@@ -31,12 +30,10 @@ public class Terrain extends GLTerrain{
 			for (FractalMap fractal : GLTerrainContext.getConfiguration().getFractals()){
 				fractal.getHeightmap().delete();
 				
-				FractalMap newfractal = new FractalMap(Constants.TERRAIN_FRACTALS_RESOLUTION,
-													   fractal.getAmplitude(),
-													   fractal.getL(),
-													   fractal.getScaling(),
-													   fractal.getStrength(),
-													   new Random().nextInt(1000));
+				FractalMap newfractal = new FractalMap(fractal.getN(), fractal.getL(),
+						fractal.getAmplitude(), fractal.getDirection(), fractal.getIntensity(),
+						fractal.getCapillarSuppression(), fractal.getScaling(), fractal.getStrength(),
+						new Random().nextInt(1000));
 				newFractals.add(newfractal);
 			}
 			

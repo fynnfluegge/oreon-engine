@@ -10,7 +10,6 @@ import java.util.List;
 
 import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.gl.wrapper.texture.Texture2DStorageRGBA32F;
-import org.oreon.gl.components.terrain.fractals.FractalMap;
 
 import lombok.Getter;
 

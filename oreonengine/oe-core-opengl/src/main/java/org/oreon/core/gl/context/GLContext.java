@@ -3,19 +3,15 @@ package org.oreon.core.gl.context;
 import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.platform.GLCamera;
 import org.oreon.core.gl.platform.GLWindow;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-public class GLContext {
-
-	private static ApplicationContext context;
+public class GLContext extends EngineContext{
 	
 	public static void initialize(){
+		
 		context = new ClassPathXmlApplicationContext("gl-context.xml");
-		EngineContext.registerWindow(new GLWindow());
-		EngineContext.registerCamera(new GLCamera());
+		registerObject(new GLWindow());
+		registerObject(new GLCamera());
 	}
 	
 	public static GLWindow getWindow(){
@@ -23,20 +19,14 @@ public class GLContext {
 		return context.getBean(GLWindow.class);
 	}
 	
-	public static GLRenderContext getRenderContext(){
+	public static GLCamera getCamera(){
 		
-		return context.getBean(GLRenderContext.class);
+		return context.getBean(GLCamera.class);
 	}
 	
-	public static <T> T getObject(Class<T> clazz){
+	public static GLRenderState getRenderState(){
 		
-		return context.getBean(clazz);
-	}
-	
-	public static void registerObject(Object instance){
-
-		ConfigurableListableBeanFactory beanFactory = ((ConfigurableApplicationContext) context).getBeanFactory();
-		beanFactory.registerSingleton(instance.getClass().getCanonicalName(), instance);
+		return context.getBean(GLRenderState.class);
 	}
 
 }

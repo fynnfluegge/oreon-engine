@@ -5,20 +5,15 @@ import org.oreon.core.vk.core.device.LogicalDevice;
 import org.oreon.core.vk.core.device.PhysicalDevice;
 import org.oreon.core.vk.core.platform.VkCamera;
 import org.oreon.core.vk.core.platform.VkWindow;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-public class VkContext {
-
-	private static ApplicationContext context;
+public class VkContext extends EngineContext{
 	
 	public static void initialize(){
 		
 		context = new ClassPathXmlApplicationContext("vk-context.xml");
-		EngineContext.registerWindow(new VkWindow());
-		EngineContext.registerCamera(new VkCamera());
+		registerObject(new VkWindow());
+		registerObject(new VkCamera());
 	}
 	
 	public static VkWindow getWindow(){
@@ -26,9 +21,14 @@ public class VkContext {
 		return context.getBean(VkWindow.class);
 	}
 	
-	public static VkRenderContext getRenderContext(){
+	public static VkCamera getCamera(){
 		
-		return context.getBean(VkRenderContext.class);
+		return context.getBean(VkCamera.class);
+	}
+	
+	public static VkRenderState getRenderState(){
+		
+		return context.getBean(VkRenderState.class);
 	}
 	
 	public static DescriptorPoolManager getDescriptorPoolManager(){
@@ -49,17 +49,6 @@ public class VkContext {
 	public static VulkanInstance getVulkanInstance(){
 		
 		return context.getBean(VulkanInstance.class);
-	}
-	
-	public static <T> T getObject(Class<T> clazz){
-		
-		return context.getBean(clazz);
-	}
-	
-	public static void registerObject(Object instance){
-
-		ConfigurableListableBeanFactory beanFactory = ((ConfigurableApplicationContext) context).getBeanFactory();
-		beanFactory.registerSingleton(instance.getClass().getCanonicalName(), instance);
 	}
 	
 }

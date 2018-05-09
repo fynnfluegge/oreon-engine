@@ -14,11 +14,10 @@ import java.util.Properties;
 
 import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.gl.wrapper.texture.Texture2DTrilinearFilter;
+import org.oreon.core.math.Vec2f;
 import org.oreon.core.model.Material;
 import org.oreon.core.util.BufferUtil;
-import org.oreon.core.util.Constants;
 import org.oreon.gl.components.gpgpu.NormalMapRenderer;
-import org.oreon.gl.components.terrain.fractals.FractalMap;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -42,6 +41,7 @@ public class TerrainConfiguration {
 	private GLTexture splatmap;
 	private FloatBuffer heightmapDataBuffer;
 	private List<Material<GLTexture>> materials = new ArrayList<>();
+	private int fractalMapResolution;
 	private List<FractalMap> fractals = new ArrayList<>();
 	
 	private int[] lod_range = new int[8];
@@ -109,15 +109,22 @@ public class TerrainConfiguration {
 			}
 		}
 		
-		for (int i=0; i<Integer.valueOf(properties.getProperty("fractals.count")); i++){
+		int fractalCount = Integer.valueOf(properties.getProperty("fractals.count"));
+		fractalMapResolution = Integer.valueOf(properties.getProperty("fractals.resolution"));
+		
+		for (int i=0; i<fractalCount; i++){
 			
-			float amp = Float.valueOf(properties.getProperty("fractal" + i + ".amp"));
-			float l = Float.valueOf(properties.getProperty("fractal" + i + ".l"));;
-			int scaling = Integer.valueOf(properties.getProperty("fractal" + i + ".scaling"));;
+			int L = Integer.valueOf(properties.getProperty("fractal" + i + ".L"));
+			float amplitude = Float.valueOf(properties.getProperty("fractal" + i + ".amplitude"));
+			float capillarSuppression = Float.valueOf(properties.getProperty("fractal" + i + ".capillarSuppression"));;
+			int scaling = Integer.valueOf(properties.getProperty("fractal" + i + ".scaling"));
 			float strength = Float.valueOf(properties.getProperty("fractal" + i + ".strength"));
 			int random = Integer.valueOf(properties.getProperty("fractal" + i + ".random"));
-			
-			FractalMap fractal = new FractalMap(Constants.TERRAIN_FRACTALS_RESOLUTION,amp,l,scaling,strength,random);
+			Vec2f direction = new Vec2f(Float.valueOf(properties.getProperty("fractal" + i + ".direction.x")),
+					Float.valueOf(properties.getProperty("fractal" + i + ".direction.y")));
+			float intensity = Float.valueOf(properties.getProperty("fractal" + i + ".intensity"));
+			FractalMap fractal = new FractalMap(fractalMapResolution, L, amplitude,
+					direction, intensity, capillarSuppression, scaling, strength, random);
 			getFractals().add(fractal);
 		}
 		
@@ -134,11 +141,11 @@ public class TerrainConfiguration {
 	
 	public void renderFractalMap(){
 		
-		FractalMapGenerator fractalMapGenerator = new FractalMapGenerator(Constants.TERRAIN_FRACTALS_RESOLUTION);
+		FractalMapGenerator fractalMapGenerator = new FractalMapGenerator(fractalMapResolution);
 		fractalMapGenerator.render(fractals);
 		heightmap = fractalMapGenerator.getFractalmap();
 		
-		NormalMapRenderer normalRenderer = new NormalMapRenderer(Constants.TERRAIN_FRACTALS_RESOLUTION);
+		NormalMapRenderer normalRenderer = new NormalMapRenderer(fractalMapResolution);
 		normalRenderer.setStrength(8);
 		normalRenderer.render(getHeightmap());
 		normalmap = normalRenderer.getNormalmap();

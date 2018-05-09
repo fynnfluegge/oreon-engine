@@ -27,7 +27,6 @@ import org.oreon.core.vk.core.descriptor.DescriptorSetLayout;
 import org.oreon.core.vk.core.pipeline.ShaderPipeline;
 import org.oreon.core.vk.core.pipeline.VkPipeline;
 import org.oreon.core.vk.core.pipeline.VkVertexInput;
-import org.oreon.core.vk.core.platform.VkCamera;
 import org.oreon.core.vk.core.scenegraph.VkMeshData;
 import org.oreon.core.vk.core.util.VkAssimpModelLoader;
 import org.oreon.core.vk.core.util.VkUtil;
@@ -56,8 +55,8 @@ public class Skydome extends Renderable{
 	    List<DescriptorSet> descriptorSets = new ArrayList<DescriptorSet>();
 		List<DescriptorSetLayout> descriptorSetLayouts = new ArrayList<DescriptorSetLayout>();
 		
-		descriptorSets.add(VkCamera.getDescriptor().getSet());
-		descriptorSetLayouts.add(VkCamera.getDescriptor().getLayout());
+		descriptorSets.add(VkContext.getCamera().getDescriptor().getSet());
+		descriptorSetLayouts.add(VkContext.getCamera().getDescriptor().getLayout());
 		
 		VkVertexInput vertexInput = new VkVertexInput(VertexLayout.POS);
 		
@@ -74,7 +73,7 @@ public class Skydome extends Renderable{
 				shaderPipeline, vertexInput, VkUtil.createLongBuffer(descriptorSetLayouts),
 				EngineContext.getConfig().getX_ScreenResolution(),
 				EngineContext.getConfig().getY_ScreenResolution(),
-				VkContext.getRenderContext().getOffScreenRenderPass().getHandle(),
+				VkContext.getRenderState().getOffScreenRenderPass().getHandle(),
 				pushConstantRange, VK_SHADER_STAGE_VERTEX_BIT);
 		
 		VkBuffer vertexBufferObject = VkBufferHelper.createDeviceLocalBuffer(
@@ -95,8 +94,8 @@ public class Skydome extends Renderable{
 	    		VkContext.getLogicalDevice().getHandle(),
 	    		VkContext.getLogicalDevice().getGraphicsCommandPool().getHandle(), 
 	    		graphicsPipeline.getHandle(), graphicsPipeline.getLayoutHandle(),
-	    		VkContext.getRenderContext().getOffScreenFrameBuffer().getHandle(),
-	    		VkContext.getRenderContext().getOffScreenRenderPass().getHandle(),
+	    		VkContext.getRenderState().getOffScreenFrameBuffer().getHandle(),
+	    		VkContext.getRenderState().getOffScreenRenderPass().getHandle(),
 	    		0,
 	    		VkUtil.createLongArray(descriptorSets),
 	    		vertexBufferObject.getHandle(),
@@ -104,7 +103,7 @@ public class Skydome extends Renderable{
 	    		mesh.getIndices().length,
 	    		pushConstants, VK_SHADER_STAGE_VERTEX_BIT);
 	    
-	    VkContext.getRenderContext().getOffScreenSecondaryCmdBuffers().add(commandBuffer);
+	    VkContext.getRenderState().getOffScreenSecondaryCmdBuffers().add(commandBuffer);
 	    
 	    VkMeshData meshData = new VkMeshData(vertexBufferObject, vertexBuffer,
 	    		indexBufferObject, indexBuffer);

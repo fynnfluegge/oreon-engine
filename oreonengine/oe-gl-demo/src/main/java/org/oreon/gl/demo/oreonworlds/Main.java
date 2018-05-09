@@ -1,6 +1,5 @@
 package org.oreon.gl.demo.oreonworlds;
 
-import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.context.GLContext;
 import org.oreon.core.system.CoreEngine;
 import org.oreon.core.system.CoreSystem;
@@ -18,7 +17,6 @@ public class Main {
 
 	public static void main(String[] args) {
 
-		EngineContext.initialize();
 		GLContext.initialize();
 		
 		CoreEngine coreEngine = new CoreEngine();

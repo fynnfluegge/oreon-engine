@@ -12,7 +12,7 @@ public class VkCamera extends Camera{
 	
 	private VkUniformBuffer uniformBuffer;
 	@Getter
-	private static CameraDescriptor descriptor;
+	private CameraDescriptor descriptor;
 
 	public VkCamera() {
 		  

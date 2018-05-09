@@ -5,15 +5,10 @@ import org.oreon.core.platform.GLFWInput;
 import org.oreon.core.platform.Window;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-public class EngineContext {
+public abstract class EngineContext {
 	
-	private static ConfigurableApplicationContext context;
-	
-	public static void initialize(){
-		context = new ClassPathXmlApplicationContext("application-context.xml");
-	}
+	protected static ConfigurableApplicationContext context;
 	
 	public static Configuration getConfig(){
 		
@@ -35,16 +30,15 @@ public class EngineContext {
 		return context.getBean(Window.class);
 	}
 	
-	public static void registerCamera(Camera camera){
-
-		ConfigurableListableBeanFactory beanFactory = ((ConfigurableApplicationContext) context).getBeanFactory();
-		beanFactory.registerSingleton(camera.getClass().getCanonicalName(), camera);
+	public static <T> T getObject(Class<T> clazz){
+		
+		return context.getBean(clazz);
 	}
 	
-	public static void registerWindow(Window window){
+	public static void registerObject(Object instance){
 
 		ConfigurableListableBeanFactory beanFactory = ((ConfigurableApplicationContext) context).getBeanFactory();
-		beanFactory.registerSingleton(window.getClass().getCanonicalName(), window);
+		beanFactory.registerSingleton(instance.getClass().getCanonicalName(), instance);
 	}
 
 }

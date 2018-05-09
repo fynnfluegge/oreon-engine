@@ -1,6 +1,5 @@
 package org.oreon.vk.demo;
 
-import org.oreon.core.context.EngineContext;
 import org.oreon.core.system.CoreEngine;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.vk.core.context.VkContext;
@@ -11,7 +10,6 @@ public class SimpleVulkanDemo {
 	
 	public static void main(String[] args) {
 		
-		EngineContext.initialize();
 		VkContext.initialize();
 		
 		CoreEngine coreEngine = new CoreEngine();

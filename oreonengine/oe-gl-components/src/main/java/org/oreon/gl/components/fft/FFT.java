@@ -14,8 +14,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 public class FFT {
-
-	private GLTexture spatialTexture;
 	
 	@Getter
 	private GLTexture Dy;
@@ -32,6 +30,7 @@ public class FFT {
 	private int log_2_N;
 	private int pingpong;
 	private int N;
+	@Setter
 	private float t;
 	@Setter
 	private float t_delta;

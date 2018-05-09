@@ -18,10 +18,18 @@ import static org.lwjgl.opengl.GL11.GL_TRUE;
 
 import org.lwjgl.opengl.GL;
 import org.oreon.core.context.EngineContext;
+import org.oreon.core.gl.context.GLContext;
 import org.oreon.core.platform.Window;
 
 public class GLWindow extends Window{
 	
+	public GLWindow() {
+		
+		super(GLContext.getConfig().getDisplayTitle(),
+				GLContext.getConfig().getWindowWidth(),
+				GLContext.getConfig().getWindowHeight());
+	}
+
 	public void create()
 	{
 		glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);	

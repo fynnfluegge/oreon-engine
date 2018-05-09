@@ -67,7 +67,6 @@ private final Vec3f yAxis = new Vec3f(0,1,0);
 				EngineContext.getConfig().getY_ScreenResolution());
 		setViewMatrix(new Matrix4f().View(this.getForward(), this.getUp()).mul(
 				new Matrix4f().Translation(this.getPosition().mul(-1))));
-		
 		initfrustumPlanes();
 		previousViewMatrix = new Matrix4f().Zero();
 		viewProjectionMatrix = new Matrix4f().Zero();
