@@ -22,5 +22,4 @@ public abstract class RenderState {
 	// render settings
 	private float sightRange;
 	private Quaternion clipplane;
-
 }

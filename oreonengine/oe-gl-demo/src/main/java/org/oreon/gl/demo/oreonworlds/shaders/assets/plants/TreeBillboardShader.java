@@ -57,10 +57,10 @@ private static TreeBillboardShader instance = null;
 	
 	public void updateUniforms(Renderable object){
 				
-		setUniform("clipplane", EngineContext.getConfig().getClipplane());
+		setUniform("clipplane", EngineContext.getRenderState().getClipplane());
 		bindUniformBlock("Camera", Constants.CameraUniformBlockBinding);
-		setUniformi("isReflection", EngineContext.getConfig().isReflection() ? 1 : 0);
-		setUniformi("isRefraction", EngineContext.getConfig().isRefraction() ? 1 : 0);
+		setUniformi("isReflection", EngineContext.getRenderState().isReflection() ? 1 : 0);
+		setUniformi("isRefraction", EngineContext.getRenderState().isRefraction() ? 1 : 0);
 		setUniform("scalingMatrix", new Matrix4f().Scaling(object.getWorldTransform().getScaling()));
 		
 		((GLInstancedCluster) object.getParent()).getWorldMatricesBuffer().bindBufferBase(0);

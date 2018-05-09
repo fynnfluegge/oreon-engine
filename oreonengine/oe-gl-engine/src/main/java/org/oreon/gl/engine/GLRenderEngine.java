@@ -104,12 +104,12 @@ public class GLRenderEngine extends RenderEngine{
 		
 		getDeviceProperties();
 		
-		EngineContext.getConfig().setWireframe(false);
-		EngineContext.getConfig().setClipplane(Constants.PLANE0);
-		EngineContext.getConfig().setSightRange(1f);
-		EngineContext.getConfig().setReflection(false);
-		EngineContext.getConfig().setRefraction(false);
-		EngineContext.getConfig().setUnderwater(false);
+		EngineContext.getRenderState().setWireframe(false);
+		EngineContext.getRenderState().setClipplane(Constants.PLANE0);
+		EngineContext.getRenderState().setSightRange(1f);
+		EngineContext.getRenderState().setReflection(false);
+		EngineContext.getRenderState().setRefraction(false);
+		EngineContext.getRenderState().setUnderwater(false);
 		
 		Default.init();
 		window = EngineContext.getWindow();
@@ -163,7 +163,7 @@ public class GLRenderEngine extends RenderEngine{
 
 		GLDirectionalLight.getInstance().update();
 
-		EngineContext.getConfig().setClipplane(Constants.PLANE0);
+		EngineContext.getRenderState().setClipplane(Constants.PLANE0);
 		GLContext.getRenderState().setSceneDepthMap(sceneDepthmap);
 		Default.clearScreen();
 		
@@ -249,7 +249,7 @@ public class GLRenderEngine extends RenderEngine{
 			postProcessingTexture = dofBlur.getVerticalBlurSceneTexture();
 			
 			// post processing effects
-			if (EngineContext.getConfig().isUnderwater()){
+			if (EngineContext.getRenderState().isUnderwater()){
 				underWaterRenderer.render(postProcessingTexture, deferredLightingRenderer.getGbuffer().getDepthTexture());
 				postProcessingTexture = underWaterRenderer.getUnderwaterSceneTexture();
 			}
@@ -268,7 +268,7 @@ public class GLRenderEngine extends RenderEngine{
 			postProcessingTexture = sunlightScattering.getSunLightScatteringSceneTexture();
 		}
 		
-		if (EngineContext.getConfig().isWireframe()){
+		if (EngineContext.getRenderState().isWireframe()){
 			fullScreenQuadMultisample.setTexture(deferredLightingRenderer.getGbuffer().getAlbedoTexture());
 			fullScreenQuadMultisample.render();
 		}
@@ -323,10 +323,10 @@ public class GLRenderEngine extends RenderEngine{
 		super.update();
 		
 		if (EngineContext.getInput().isKeyPushed(GLFW.GLFW_KEY_G)){
-			if (EngineContext.getConfig().isWireframe())
-				EngineContext.getConfig().setWireframe(false);
+			if (EngineContext.getRenderState().isWireframe())
+				EngineContext.getRenderState().setWireframe(false);
 			else
-				EngineContext.getConfig().setWireframe(true);
+				EngineContext.getRenderState().setWireframe(true);
 		}
 		
 		if (EngineContext.getInput().isKeyPushed(GLFW.GLFW_KEY_KP_1)){

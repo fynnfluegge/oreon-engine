@@ -90,9 +90,9 @@ public class TerrainShader extends GLShaderProgram{
 	{	
 		bindUniformBlock("Camera", Constants.CameraUniformBlockBinding);
 		
-		setUniform("clipplane", EngineContext.getConfig().getClipplane());
-		setUniformi("isRefraction", EngineContext.getConfig().isRefraction() ? 1 : 0);
-		setUniformi("isCameraUnderWater", EngineContext.getConfig().isUnderwater() ? 1 : 0);		
+		setUniform("clipplane", EngineContext.getRenderState().getClipplane());
+		setUniformi("isRefraction", EngineContext.getRenderState().isRefraction() ? 1 : 0);
+		setUniformi("isCameraUnderWater", EngineContext.getRenderState().isUnderwater() ? 1 : 0);		
 		
 		TerrainConfiguration terrConfig = ((TerrainNode) object).getTerrConfig();
 		

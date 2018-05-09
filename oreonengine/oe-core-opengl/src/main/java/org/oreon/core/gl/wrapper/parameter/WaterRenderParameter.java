@@ -11,7 +11,7 @@ import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_CULL_FACE;
 import static org.lwjgl.opengl.GL11.glClear;
 
-public class WaterRenderConfig implements RenderParameter{
+public class WaterRenderParameter implements RenderParameter{
 
 	public void enable() {
 		glDisable(GL_CULL_FACE);

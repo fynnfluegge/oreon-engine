@@ -4,28 +4,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-import org.oreon.core.math.Quaternion;
-
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 public class Configuration {
-	
-	// render parameters
-	private boolean wireframe;
-	private boolean underwater;
-	private boolean reflection;
-	private boolean refraction;
-	
-	// post processing filter
-	private boolean bloomEnabled;
-	private boolean dephtOfFieldEnabled;
-	
-	// render settings
-	private float sightRange;
-	private Quaternion clipplane;
 	
 	// screen settings
 	private int multisamples;

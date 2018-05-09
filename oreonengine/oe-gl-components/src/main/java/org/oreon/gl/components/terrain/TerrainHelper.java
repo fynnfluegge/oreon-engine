@@ -1,12 +1,13 @@
 package org.oreon.gl.components.terrain;
 
+import org.oreon.core.gl.context.GLContext;
 import org.oreon.core.math.Vec2f;
 
 public class TerrainHelper {
 
 	public static float getTerrainHeight(float x, float z){
 		
-		TerrainConfiguration config = GLTerrainContext.getConfiguration();
+		TerrainConfiguration config = GLContext.getObject(TerrainConfiguration.class);
 		
 		float h = 0;
 		

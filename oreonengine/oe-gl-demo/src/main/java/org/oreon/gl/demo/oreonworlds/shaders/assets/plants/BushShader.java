@@ -64,16 +64,16 @@ private static BushShader instance = null;
 		bindUniformBlock("Camera", Constants.CameraUniformBlockBinding);
 		bindUniformBlock("DirectionalLight", Constants.DirectionalLightUniformBlockBinding);
 		bindUniformBlock("LightViewProjections",Constants.LightMatricesUniformBlockBinding);
-		setUniformi("isReflection", EngineContext.getConfig().isReflection() ? 1 : 0);
-		setUniformi("isRefraction", EngineContext.getConfig().isRefraction() ? 1 : 0);
-		setUniformi("isCameraUnderWater", EngineContext.getConfig().isUnderwater() ? 1 : 0);	
+		setUniformi("isReflection", EngineContext.getRenderState().isReflection() ? 1 : 0);
+		setUniformi("isRefraction", EngineContext.getRenderState().isRefraction() ? 1 : 0);
+		setUniformi("isCameraUnderWater", EngineContext.getRenderState().isUnderwater() ? 1 : 0);	
 		
 		((GLInstancedCluster) object.getParent()).getWorldMatricesBuffer().bindBufferBase(0);
 		bindUniformBlock("worldMatrices", 0);
 		((GLInstancedCluster) object.getParent()).getModelMatricesBuffer().bindBufferBase(1);
 		bindUniformBlock("modelMatrices", 1);
 		
-		setUniform("clipplane", EngineContext.getConfig().getClipplane());
+		setUniform("clipplane", EngineContext.getRenderState().getClipplane());
 		setUniform("scalingMatrix", new Matrix4f().Scaling(object.getWorldTransform().getScaling()));
 		
 		@SuppressWarnings("unchecked")

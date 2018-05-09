@@ -3,6 +3,7 @@ package org.oreon.gl.components.terrain;
 import java.util.HashMap;
 
 import org.oreon.core.gl.buffer.GLPatchVBO;
+import org.oreon.core.gl.context.GLContext;
 import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.gl.scenegraph.GLRenderInfo;
 import org.oreon.core.gl.wrapper.parameter.Default;
@@ -20,7 +21,7 @@ public class GLTerrain extends Node{
 		
 	public GLTerrain(GLShaderProgram shader, GLShaderProgram wireframe, GLShaderProgram shadow)
 	{
-		GLTerrainContext.initialize();
+		GLContext.registerObject(new TerrainConfiguration());
 		
 		GLPatchVBO buffer  = new GLPatchVBO();
 		buffer.addData(MeshGenerator.TerrainChunkMesh(),16);
@@ -34,8 +35,11 @@ public class GLTerrain extends Node{
 						    buffer);
 		HashMap<NodeComponentKey, NodeComponent> components = new HashMap<NodeComponentKey, NodeComponent>();
 		
+		TerrainConfiguration config = new TerrainConfiguration();
+		
 		components.put(NodeComponentKey.MAIN_RENDERINFO, renderInfo);
 		components.put(NodeComponentKey.WIREFRAME_RENDERINFO, wireframeRenderInfo);
+		components.put(NodeComponentKey.CONFIGURATION, config);
 		
 		quadtree = new TerrainQuadtree(components);
 		

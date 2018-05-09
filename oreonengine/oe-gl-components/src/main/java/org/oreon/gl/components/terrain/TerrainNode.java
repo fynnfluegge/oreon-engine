@@ -27,15 +27,17 @@ public class TerrainNode extends Renderable{
 		this.index = index;
 		this.lod = lod;
 		this.location = location;
-		this.config = GLTerrainContext.getConfiguration();
 		this.gap = 1f/(TerrainQuadtree.getRootPatches() * (float)(Math.pow(2, lod)));
 		
 		try {
 			addComponent(NodeComponentKey.MAIN_RENDERINFO, components.get(NodeComponentKey.MAIN_RENDERINFO).clone());
 			addComponent(NodeComponentKey.WIREFRAME_RENDERINFO, components.get(NodeComponentKey.WIREFRAME_RENDERINFO).clone());
+			addComponent(NodeComponentKey.CONFIGURATION, components.get(NodeComponentKey.CONFIGURATION));
 		} catch (CloneNotSupportedException e) {
 			e.printStackTrace();
 		}
+		
+		config = getComponent(NodeComponentKey.CONFIGURATION);
 		
 		Vec3f localScaling = new Vec3f(gap,0,gap);
 		Vec3f localTranslation = new Vec3f(location.getX(),0,location.getY());
@@ -66,7 +68,7 @@ public class TerrainNode extends Renderable{
 	public void render()
 	{
 		boolean renderChunk = false;
-		if (EngineContext.getConfig().isReflection() || EngineContext.getConfig().isRefraction()){
+		if (EngineContext.getRenderState().isReflection() || EngineContext.getRenderState().isRefraction()){
 			// render only first two lod's for reflection/refraction
 			renderChunk = (isleaf && lod == 0) || (!isleaf && lod == 0);// || (!isleaf && lod == 1);
 		}
@@ -76,7 +78,7 @@ public class TerrainNode extends Renderable{
 		
 		if (renderChunk)
 		{	
-			if (EngineContext.getConfig().isWireframe()){
+			if (EngineContext.getRenderState().isWireframe()){
 				getComponents().get(NodeComponentKey.WIREFRAME_RENDERINFO).render();
 			}
 			else{

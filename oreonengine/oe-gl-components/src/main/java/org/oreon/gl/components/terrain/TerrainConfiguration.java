@@ -16,6 +16,7 @@ import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.gl.wrapper.texture.Texture2DTrilinearFilter;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.model.Material;
+import org.oreon.core.scenegraph.NodeComponent;
 import org.oreon.core.util.BufferUtil;
 import org.oreon.gl.components.gpgpu.NormalMapRenderer;
 
@@ -24,7 +25,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class TerrainConfiguration {
+public class TerrainConfiguration extends NodeComponent{
 
 	private float scaleY;
 	private float scaleXZ;

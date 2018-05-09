@@ -40,7 +40,7 @@ public class Renderable extends Node{
 	
 	public void render()
 	{
-		if (EngineContext.getConfig().isWireframe()){
+		if (EngineContext.getRenderState().isWireframe()){
 			if (components.containsKey(NodeComponentKey.WIREFRAME_RENDERINFO)){
 				components.get(NodeComponentKey.WIREFRAME_RENDERINFO).render();
 			}
@@ -85,7 +85,12 @@ public class Renderable extends Node{
 		return components;
 	}
 	
-	public NodeComponent getComponent(NodeComponentKey type) {
-		return this.components.get(type);
+//	public NodeComponent getComponent(NodeComponentKey type) {
+//		return this.components.get(type);
+//	}
+	
+	@SuppressWarnings("unchecked")
+	public <T> T getComponent(NodeComponentKey type) {
+		return (T) this.components.get(type);
 	}
 }

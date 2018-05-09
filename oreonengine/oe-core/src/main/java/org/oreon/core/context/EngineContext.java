@@ -30,6 +30,11 @@ public abstract class EngineContext {
 		return context.getBean(Window.class);
 	}
 	
+	public static RenderState getRenderState(){
+		
+		return context.getBean(RenderState.class);
+	}
+	
 	public static <T> T getObject(Class<T> clazz){
 		
 		return context.getBean(clazz);

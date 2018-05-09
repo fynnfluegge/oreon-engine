@@ -15,7 +15,7 @@ import org.oreon.core.gl.context.GLContext;
 import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.gl.scenegraph.GLRenderInfo;
 import org.oreon.core.gl.texture.GLTexture;
-import org.oreon.core.gl.wrapper.parameter.WaterRenderConfig;
+import org.oreon.core.gl.wrapper.parameter.WaterRenderParameter;
 import org.oreon.core.gl.wrapper.texture.Texture2DTrilinearFilter;
 import org.oreon.core.math.Quaternion;
 import org.oreon.core.scenegraph.NodeComponentKey;
@@ -26,7 +26,7 @@ import org.oreon.core.util.MeshGenerator;
 import org.oreon.gl.components.fft.FFT;
 import org.oreon.gl.components.gpgpu.NormalMapRenderer;
 import org.oreon.gl.components.terrain.GLTerrain;
-import org.oreon.gl.components.terrain.GLTerrainContext;
+import org.oreon.gl.components.terrain.TerrainConfiguration;
 
 import lombok.Getter;
 
@@ -47,7 +47,7 @@ public class Water extends Renderable{
 	private NormalMapRenderer normalmapRenderer;
 	private boolean cameraUnderwater;
 	
-	private WaterRenderConfig renderConfig;
+	private WaterRenderParameter renderConfig;
 	
 	@Getter
 	private WaterConfiguration waterConfiguration;
@@ -60,7 +60,7 @@ public class Water extends Renderable{
 		GLPatchVBO meshBuffer = new GLPatchVBO();
 		meshBuffer.addData(MeshGenerator.generatePatch2D4x4(patches),16);
 		
-		renderConfig = new WaterRenderConfig();
+		renderConfig = new WaterRenderParameter();
 		
 		GLRenderInfo renderInfo = new GLRenderInfo(shader,renderConfig,meshBuffer);
 		GLRenderInfo wireframeRenderInfo = new GLRenderInfo(wireframeShader,renderConfig,meshBuffer);
@@ -97,10 +97,10 @@ public class Water extends Renderable{
 	{
 		if (!isCameraUnderwater()){
 			glEnable(GL_CLIP_DISTANCE6);
-			EngineContext.getConfig().setUnderwater(false);
+			EngineContext.getRenderState().setUnderwater(false);
 		}
 		else {
-			EngineContext.getConfig().setUnderwater(true);
+			EngineContext.getRenderState().setUnderwater(true);
 		}
 			
 		distortion += waterConfiguration.getDistortion();
@@ -108,7 +108,7 @@ public class Water extends Renderable{
 		
 		Scenegraph scenegraph = ((Scenegraph) getParent());
 		
-		EngineContext.getConfig().setClipplane(getClipplane());
+		EngineContext.getRenderState().setClipplane(getClipplane());
 			
 		//mirror scene to clipplane
 		scenegraph.getWorldTransform().setScaling(1,-1,1);
@@ -119,8 +119,10 @@ public class Water extends Renderable{
 			
 		if (scenegraph.isRenderTerrain()){
 				
-				GLTerrainContext.getConfiguration().setScaleY(GLTerrainContext.getConfiguration().getScaleY() * -1f);
-				GLTerrainContext.getConfiguration().setWaterReflectionShift((int) (getClipplane().getW() * 2f));
+			GLContext.getObject(TerrainConfiguration.class).setScaleY(
+					GLContext.getObject(TerrainConfiguration.class).getScaleY() * -1f);
+			GLContext.getObject(TerrainConfiguration.class).setWaterReflectionShift(
+					(int) (getClipplane().getW() * 2f));
 		}
 		
 		scenegraph.update();
@@ -129,7 +131,7 @@ public class Water extends Renderable{
 
 		glViewport(0,0,EngineContext.getWindow().getWidth()/2, EngineContext.getWindow().getHeight()/2);
 		
-		EngineContext.getConfig().setReflection(true);
+		EngineContext.getRenderState().setReflection(true);
 		
 		reflectionRenderer.getFbo().bind();
 		renderConfig.clearScreenDeepOcean();
@@ -148,7 +150,7 @@ public class Water extends Renderable{
 		reflectionRenderer.getFbo().unbind();
 		reflectionRenderer.render();
 		
-		EngineContext.getConfig().setReflection(false);
+		EngineContext.getRenderState().setReflection(false);
 		
 		// antimirror scene to clipplane
 	
@@ -159,14 +161,15 @@ public class Water extends Renderable{
 //				(scenegraph.getTransform().getTranslation().getY() - RenderingEngine.getClipplane().getW()));
 
 		if (scenegraph.isRenderTerrain()){
-				GLTerrainContext.getConfiguration().setScaleY(GLTerrainContext.getConfiguration().getScaleY() / -1f);
-				GLTerrainContext.getConfiguration().setWaterReflectionShift(0);
+			GLContext.getObject(TerrainConfiguration.class).setScaleY(
+					GLContext.getObject(TerrainConfiguration.class).getScaleY() / -1f);
+			GLContext.getObject(TerrainConfiguration.class).setWaterReflectionShift(0);
 		}
 
 		scenegraph.update();
 		
 		// render to refraction texture
-		EngineContext.getConfig().setRefraction(true);
+		EngineContext.getRenderState().setRefraction(true);
 		
 		refractionRenderer.getFbo().bind();
 		renderConfig.clearScreenDeepOcean();
@@ -181,10 +184,10 @@ public class Water extends Renderable{
 		refractionRenderer.getFbo().unbind();
 		refractionRenderer.render();
 		
-		EngineContext.getConfig().setRefraction(false);
+		EngineContext.getRenderState().setRefraction(false);
 		
 		glDisable(GL_CLIP_DISTANCE6);
-		EngineContext.getConfig().setClipplane(Constants.PLANE0);	
+		EngineContext.getRenderState().setClipplane(Constants.PLANE0);	
 	
 		glViewport(0,0,EngineContext.getWindow().getWidth(), EngineContext.getWindow().getHeight());
 		
@@ -193,7 +196,7 @@ public class Water extends Renderable{
 		
 		GLContext.getRenderState().getDeferredFbo().bind();
 		
-		if (EngineContext.getConfig().isWireframe())
+		if (EngineContext.getRenderState().isWireframe())
 		{
 			getComponents().get(NodeComponentKey.WIREFRAME_RENDERINFO).render();
 		}

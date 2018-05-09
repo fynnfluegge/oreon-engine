@@ -45,7 +45,7 @@ public class BushShadowShader extends GLShaderProgram{
 	
 	public void updateUniforms(Renderable object){
 		
-		setUniform("clipplane", EngineContext.getConfig().getClipplane());
+		setUniform("clipplane", EngineContext.getRenderState().getClipplane());
 		bindUniformBlock("Camera",Constants.CameraUniformBlockBinding);
 		bindUniformBlock("LightViewProjections",Constants.LightMatricesUniformBlockBinding);
 		
