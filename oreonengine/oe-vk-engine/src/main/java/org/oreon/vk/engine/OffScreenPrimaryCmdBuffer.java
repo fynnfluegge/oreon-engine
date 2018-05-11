@@ -6,7 +6,7 @@ import static org.lwjgl.vulkan.VK10.VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFER
 
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.vulkan.VkDevice;
-import org.oreon.core.vk.core.command.CommandBuffer;
+import org.oreon.core.vk.command.CommandBuffer;
 
 public class OffScreenPrimaryCmdBuffer extends CommandBuffer{
 

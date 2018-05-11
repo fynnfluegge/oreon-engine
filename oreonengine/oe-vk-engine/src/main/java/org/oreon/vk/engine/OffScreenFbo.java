@@ -19,9 +19,9 @@ import static org.lwjgl.vulkan.VK10.VK_SUBPASS_EXTERNAL;
 import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
 import org.oreon.core.context.EngineContext;
-import org.oreon.core.vk.core.framebuffer.FrameBufferObject;
-import org.oreon.core.vk.core.framebuffer.VkFrameBuffer;
-import org.oreon.core.vk.core.pipeline.RenderPass;
+import org.oreon.core.vk.framebuffer.FrameBufferObject;
+import org.oreon.core.vk.framebuffer.VkFrameBuffer;
+import org.oreon.core.vk.pipeline.RenderPass;
 
 import lombok.Getter;
 

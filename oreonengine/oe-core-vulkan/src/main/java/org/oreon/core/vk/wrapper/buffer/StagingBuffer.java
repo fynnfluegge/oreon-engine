@@ -8,7 +8,7 @@ import java.nio.ByteBuffer;
 
 import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
-import org.oreon.core.vk.core.buffer.VkBuffer;
+import org.oreon.core.vk.buffer.VkBuffer;
 
 public class StagingBuffer extends VkBuffer{
 	

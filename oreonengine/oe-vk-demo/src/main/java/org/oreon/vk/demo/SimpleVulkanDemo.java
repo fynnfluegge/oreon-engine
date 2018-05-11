@@ -2,7 +2,7 @@ package org.oreon.vk.demo;
 
 import org.oreon.core.system.CoreEngine;
 import org.oreon.core.system.CoreSystem;
-import org.oreon.core.vk.core.context.VkContext;
+import org.oreon.core.vk.context.VkContext;
 import org.oreon.vk.components.atmosphere.Skydome;
 import org.oreon.vk.engine.VkRenderEngine;
 

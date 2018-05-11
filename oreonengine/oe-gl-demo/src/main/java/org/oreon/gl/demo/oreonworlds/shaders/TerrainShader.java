@@ -11,6 +11,7 @@ import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.context.GLContext;
 import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.math.Vec2f;
+import org.oreon.core.scenegraph.NodeComponentKey;
 import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.util.Constants;
 import org.oreon.core.util.ResourceLoader;
@@ -94,7 +95,7 @@ public class TerrainShader extends GLShaderProgram{
 		setUniformi("isRefraction", EngineContext.getRenderState().isRefraction() ? 1 : 0);
 		setUniformi("isCameraUnderWater", EngineContext.getRenderState().isUnderwater() ? 1 : 0);		
 		
-		TerrainConfiguration terrConfig = ((TerrainNode) object).getTerrConfig();
+		TerrainConfiguration terrConfig = object.getComponent(NodeComponentKey.CONFIGURATION);
 		
 		int lod = ((TerrainNode) object).getLod();
 		Vec2f index = ((TerrainNode) object).getIndex();

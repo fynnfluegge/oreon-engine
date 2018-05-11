@@ -7,7 +7,7 @@
 
    	<bean id = "render-config" class = "org.oreon.core.context.Configuration"/>
    	<bean id = "input" class = "org.oreon.core.platform.GLFWInput"/>
-   	<bean id = "vkDescriptorPoolManager" class = "org.oreon.core.vk.core.context.DescriptorPoolManager"/>
-   	<bean id = "vk-render-state" class = "org.oreon.core.vk.core.context.VkRenderState"/>
+   	<bean id = "vkDescriptorPoolManager" class = "org.oreon.core.vk.context.DescriptorPoolManager"/>
+   	<bean id = "vk-render-state" class = "org.oreon.core.vk.context.VkRenderState"/>
 
 </beans>

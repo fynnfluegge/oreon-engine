@@ -1,7 +1,7 @@
 package org.oreon.core.vk.wrapper.descriptor;
 
-import org.oreon.core.vk.core.descriptor.DescriptorSet;
-import org.oreon.core.vk.core.descriptor.DescriptorSetLayout;
+import org.oreon.core.vk.descriptor.DescriptorSet;
+import org.oreon.core.vk.descriptor.DescriptorSetLayout;
 
 import lombok.Getter;
 

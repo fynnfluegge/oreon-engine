@@ -25,7 +25,7 @@ public class Configuration {
 		
 		Properties properties = new Properties();
 		try {
-			InputStream stream = Configuration.class.getClassLoader().getResourceAsStream("render-config.properties");
+			InputStream stream = Configuration.class.getClassLoader().getResourceAsStream("oe-config.properties");
 			properties.load(stream);
 			stream.close();
 		} catch (IOException e) {

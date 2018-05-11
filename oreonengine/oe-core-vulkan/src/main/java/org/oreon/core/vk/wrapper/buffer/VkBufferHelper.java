@@ -7,7 +7,7 @@ import java.nio.ByteBuffer;
 import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
 import org.lwjgl.vulkan.VkQueue;
-import org.oreon.core.vk.core.buffer.VkBuffer;
+import org.oreon.core.vk.buffer.VkBuffer;
 import org.oreon.core.vk.wrapper.command.BufferCopyCmdBuffer;
 
 public class VkBufferHelper {

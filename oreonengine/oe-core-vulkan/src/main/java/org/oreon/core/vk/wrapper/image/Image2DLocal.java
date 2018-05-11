@@ -4,7 +4,7 @@ import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
 
 import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
-import org.oreon.core.vk.core.image.VkImage;
+import org.oreon.core.vk.image.VkImage;
 
 public class Image2DLocal extends VkImage{
 

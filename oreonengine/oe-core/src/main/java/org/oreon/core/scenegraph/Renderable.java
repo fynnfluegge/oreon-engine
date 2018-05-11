@@ -85,10 +85,6 @@ public class Renderable extends Node{
 		return components;
 	}
 	
-//	public NodeComponent getComponent(NodeComponentKey type) {
-//		return this.components.get(type);
-//	}
-	
 	@SuppressWarnings("unchecked")
 	public <T> T getComponent(NodeComponentKey type) {
 		return (T) this.components.get(type);

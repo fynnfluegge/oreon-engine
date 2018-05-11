@@ -3,9 +3,9 @@ package org.oreon.core.vk.wrapper.pipeline;
 import java.nio.LongBuffer;
 
 import org.lwjgl.vulkan.VkDevice;
-import org.oreon.core.vk.core.pipeline.ShaderPipeline;
-import org.oreon.core.vk.core.pipeline.VkPipeline;
-import org.oreon.core.vk.core.pipeline.VkVertexInput;
+import org.oreon.core.vk.pipeline.ShaderPipeline;
+import org.oreon.core.vk.pipeline.VkPipeline;
+import org.oreon.core.vk.pipeline.VkVertexInput;
 
 public class GraphicsPipeline extends VkPipeline{
 

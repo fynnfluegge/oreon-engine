@@ -18,7 +18,7 @@ import org.oreon.core.math.Vec2f;
 import org.oreon.core.model.Material;
 import org.oreon.core.scenegraph.NodeComponent;
 import org.oreon.core.util.BufferUtil;
-import org.oreon.gl.components.gpgpu.NormalMapRenderer;
+import org.oreon.gl.components.util.NormalMapRenderer;
 
 import lombok.Getter;
 import lombok.Setter;

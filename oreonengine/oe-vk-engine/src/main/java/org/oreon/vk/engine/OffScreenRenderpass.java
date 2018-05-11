@@ -1,7 +1,7 @@
 package org.oreon.vk.engine;
 
 import org.lwjgl.vulkan.VkDevice;
-import org.oreon.core.vk.core.pipeline.RenderPass;
+import org.oreon.core.vk.pipeline.RenderPass;
 
 public class OffScreenRenderpass extends RenderPass{
 

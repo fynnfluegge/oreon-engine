@@ -7,7 +7,7 @@ import static org.lwjgl.vulkan.VK10.VK_PIPELINE_BIND_POINT_COMPUTE;
 import java.nio.ByteBuffer;
 
 import org.lwjgl.vulkan.VkDevice;
-import org.oreon.core.vk.core.command.CommandBuffer;
+import org.oreon.core.vk.command.CommandBuffer;
 
 public class ComputeCmdBuffer extends CommandBuffer{
 

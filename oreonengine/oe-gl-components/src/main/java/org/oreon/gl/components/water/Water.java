@@ -24,9 +24,9 @@ import org.oreon.core.scenegraph.Scenegraph;
 import org.oreon.core.util.Constants;
 import org.oreon.core.util.MeshGenerator;
 import org.oreon.gl.components.fft.FFT;
-import org.oreon.gl.components.gpgpu.NormalMapRenderer;
 import org.oreon.gl.components.terrain.GLTerrain;
 import org.oreon.gl.components.terrain.TerrainConfiguration;
+import org.oreon.gl.components.util.NormalMapRenderer;
 
 import lombok.Getter;
 

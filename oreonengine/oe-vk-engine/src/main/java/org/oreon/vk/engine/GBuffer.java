@@ -8,8 +8,8 @@ import java.nio.LongBuffer;
 
 import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
-import org.oreon.core.vk.core.framebuffer.FrameBufferColorAttachment;
-import org.oreon.core.vk.core.framebuffer.FrameBufferDepthAttachment;
+import org.oreon.core.vk.framebuffer.FrameBufferColorAttachment;
+import org.oreon.core.vk.framebuffer.FrameBufferDepthAttachment;
 
 import lombok.Getter;
 

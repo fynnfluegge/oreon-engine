@@ -4,9 +4,9 @@ import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_ALL_GRAPHICS;
 
 import org.lwjgl.vulkan.VkDevice;
-import org.oreon.core.vk.core.context.VkContext;
-import org.oreon.core.vk.core.descriptor.DescriptorSet;
-import org.oreon.core.vk.core.descriptor.DescriptorSetLayout;
+import org.oreon.core.vk.context.VkContext;
+import org.oreon.core.vk.descriptor.DescriptorSet;
+import org.oreon.core.vk.descriptor.DescriptorSetLayout;
 
 import lombok.Getter;
 

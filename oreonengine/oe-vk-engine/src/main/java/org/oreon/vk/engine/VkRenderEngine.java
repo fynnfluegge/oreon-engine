@@ -19,14 +19,14 @@ import org.lwjgl.PointerBuffer;
 import org.lwjgl.vulkan.VkInstance;
 import org.oreon.core.context.EngineContext;
 import org.oreon.core.system.RenderEngine;
-import org.oreon.core.vk.core.command.SubmitInfo;
-import org.oreon.core.vk.core.context.VkContext;
-import org.oreon.core.vk.core.context.VulkanInstance;
-import org.oreon.core.vk.core.descriptor.DescriptorPool;
-import org.oreon.core.vk.core.device.LogicalDevice;
-import org.oreon.core.vk.core.device.PhysicalDevice;
-import org.oreon.core.vk.core.swapchain.SwapChain;
-import org.oreon.core.vk.core.util.VkUtil;
+import org.oreon.core.vk.command.SubmitInfo;
+import org.oreon.core.vk.context.VkContext;
+import org.oreon.core.vk.context.VulkanInstance;
+import org.oreon.core.vk.descriptor.DescriptorPool;
+import org.oreon.core.vk.device.LogicalDevice;
+import org.oreon.core.vk.device.PhysicalDevice;
+import org.oreon.core.vk.swapchain.SwapChain;
+import org.oreon.core.vk.util.VkUtil;
 
 public class VkRenderEngine extends RenderEngine{
 	
