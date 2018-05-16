@@ -22,6 +22,10 @@ public class VkVertexInput {
 	public VkVertexInput(VertexLayout layout) {
 		
 		switch(layout){
+			case POS2D:
+				createBindingDescription(0, 1, Float.BYTES * 2);
+				addVertexAttributeDescription(0, VK_FORMAT_R32G32_SFLOAT, 0);
+				break;
 			case POS:
 				createBindingDescription(0, 1, Float.BYTES * 3);
 				addVertexAttributeDescription(0, VK_FORMAT_R32G32B32_SFLOAT, 0);

@@ -15,7 +15,6 @@ import static org.lwjgl.vulkan.VK10.VK_DYNAMIC_STATE_VIEWPORT;
 import static org.lwjgl.vulkan.VK10.VK_FRONT_FACE_COUNTER_CLOCKWISE;
 import static org.lwjgl.vulkan.VK10.VK_NULL_HANDLE;
 import static org.lwjgl.vulkan.VK10.VK_POLYGON_MODE_FILL;
-import static org.lwjgl.vulkan.VK10.VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
 import static org.lwjgl.vulkan.VK10.VK_SAMPLE_COUNT_1_BIT;
 import static org.lwjgl.vulkan.VK10.VK_STENCIL_OP_KEEP;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;
@@ -27,6 +26,7 @@ import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_ST
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
+import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_TESSELLATION_STATE_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
@@ -52,6 +52,7 @@ import org.lwjgl.vulkan.VkPipelineInputAssemblyStateCreateInfo;
 import org.lwjgl.vulkan.VkPipelineLayoutCreateInfo;
 import org.lwjgl.vulkan.VkPipelineMultisampleStateCreateInfo;
 import org.lwjgl.vulkan.VkPipelineRasterizationStateCreateInfo;
+import org.lwjgl.vulkan.VkPipelineTessellationStateCreateInfo;
 import org.lwjgl.vulkan.VkPipelineVertexInputStateCreateInfo;
 import org.lwjgl.vulkan.VkPipelineViewportStateCreateInfo;
 import org.lwjgl.vulkan.VkPushConstantRange;
@@ -80,6 +81,7 @@ public class VkPipeline {
 	private VkPipelineColorBlendAttachmentState.Buffer colorBlendStates;
 	private VkPipelineDepthStencilStateCreateInfo depthStencil;
 	private VkPipelineDynamicStateCreateInfo dynamicState;
+	private VkPipelineTessellationStateCreateInfo tessellationInfo;
 	private VkViewport.Buffer viewport;
 	private VkRect2D.Buffer scissor;
 	private IntBuffer pDynamicStates;
@@ -104,6 +106,7 @@ public class VkPipeline {
 				.pDepthStencilState(depthStencil)
 				.pColorBlendState(colorBlending)
 				.pDynamicState(null)
+				.pTessellationState(tessellationInfo)
 				.layout(layoutHandle)
 				.renderPass(renderPass)
 				.subpass(0)
@@ -189,11 +192,11 @@ public class VkPipeline {
 				.offset(0);
 	}
 	
-	public void setInputAssembly(){
+	public void setInputAssembly(int topology){
 		
 		inputAssembly = VkPipelineInputAssemblyStateCreateInfo.calloc()
 		        .sType(VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO)
-		        .topology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST)
+		        .topology(topology)
 		        .primitiveRestartEnable(false);
 	}
 	
@@ -275,7 +278,6 @@ public class VkPipeline {
         for (VkPipelineColorBlendAttachmentState colorBlendAttachment : colorBlendAttachments){
 			colorBlendAttachment.free();
 		}
-        
 	}
 	
 	public void setDepthAndStencilTest(boolean depthTestEnable){
@@ -304,6 +306,14 @@ public class VkPipeline {
         dynamicState = VkPipelineDynamicStateCreateInfo.calloc()
                 .sType(VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO)
                 .pDynamicStates(pDynamicStates);
+	}
+	
+	public void setTessellationState(int patchControlPoints){
+		
+		tessellationInfo = VkPipelineTessellationStateCreateInfo.calloc()
+				.sType(VK_STRUCTURE_TYPE_PIPELINE_TESSELLATION_STATE_CREATE_INFO)
+				.flags(0)
+				.patchControlPoints(patchControlPoints);
 	}
 	
 	public void destroy(){

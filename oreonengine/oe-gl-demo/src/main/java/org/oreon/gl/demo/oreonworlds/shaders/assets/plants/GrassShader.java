@@ -12,7 +12,7 @@ import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.instanced.InstancedCluster;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.model.Material;
-import org.oreon.core.scenegraph.NodeComponentKey;
+import org.oreon.core.scenegraph.NodeComponentType;
 import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.util.Constants;
 import org.oreon.core.util.ResourceLoader;
@@ -59,9 +59,9 @@ public class GrassShader extends GLShaderProgram{
 	public void updateUniforms(Renderable object)
 	{
 		bindUniformBlock("Camera", Constants.CameraUniformBlockBinding);
-		((GLInstancedCluster) object.getParent()).getWorldMatricesBuffer().bindBufferBase(0);
+		((GLInstancedCluster) object.getParentNode()).getWorldMatricesBuffer().bindBufferBase(0);
 		bindUniformBlock("worldMatrices", 0);
-		((GLInstancedCluster) object.getParent()).getModelMatricesBuffer().bindBufferBase(1);
+		((GLInstancedCluster) object.getParentNode()).getModelMatricesBuffer().bindBufferBase(1);
 		bindUniformBlock("modelMatrices", 1);
 		setUniformi("isReflection", EngineContext.getRenderState().isReflection() ? 1 : 0);
 		setUniform("scalingMatrix", new Matrix4f().Scaling(object.getWorldTransform().getScaling()));
@@ -69,7 +69,7 @@ public class GrassShader extends GLShaderProgram{
 		setUniform("clipplane", EngineContext.getRenderState().getClipplane());
 		
 		@SuppressWarnings("unchecked")
-		Material<GLTexture> material = (Material<GLTexture>) object.getComponent(NodeComponentKey.MATERIAL0);
+		Material<GLTexture> material = (Material<GLTexture>) object.getComponent(NodeComponentType.MATERIAL0);
 
 		glActiveTexture(GL_TEXTURE0);
 		material.getDiffusemap().bind();
@@ -78,7 +78,7 @@ public class GrassShader extends GLShaderProgram{
 //		setUniformf("material.shininess", material.getShininess());
 //		setUniformf("material.emission", material.getEmission());
 		
-		List<Integer> indices = ((InstancedCluster) object.getParent()).getHighPolyIndices();
+		List<Integer> indices = ((InstancedCluster) object.getParentNode()).getHighPolyIndices();
 		
 		for (int i=0; i<indices.size(); i++)
 		{

@@ -2,11 +2,13 @@ package org.oreon.core.scenegraph;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.oreon.core.math.Transform;
 
 public class Node {
 
+	protected String id;
 	private Node parent;
 	private List<Node> children;
 	private Transform worldTransform;
@@ -14,6 +16,7 @@ public class Node {
 	
 	public Node(){
 		
+		id = UUID.randomUUID().toString();
 		setWorldTransform(new Transform());
 		setLocalTransform(new Transform());
 		setChildren(new ArrayList<Node>());
@@ -27,9 +30,9 @@ public class Node {
 	
 	public void update()
 	{
-		getWorldTransform().setRotation(getWorldTransform().getLocalRotation().add(getParent().getWorldTransform().getRotation()));
-		getWorldTransform().setTranslation(getWorldTransform().getLocalTranslation().add(getParent().getWorldTransform().getTranslation()));
-		getWorldTransform().setScaling(getWorldTransform().getLocalScaling().mul(getParent().getWorldTransform().getScaling()));
+		getWorldTransform().setRotation(getWorldTransform().getLocalRotation().add(getParentNode().getWorldTransform().getRotation()));
+		getWorldTransform().setTranslation(getWorldTransform().getLocalTranslation().add(getParentNode().getWorldTransform().getTranslation()));
+		getWorldTransform().setScaling(getWorldTransform().getLocalScaling().mul(getParentNode().getWorldTransform().getScaling()));
 		
 		for(Node child: children)
 			child.update();
@@ -59,18 +62,24 @@ public class Node {
 			child.renderShadows();
 	}
 	
+	public void record(RenderList renderList){
+
+		for(Node child: children)
+			child.record(renderList);
+	}
+	
 	public void shutdown()
 	{
 		for(Node child: children)
 			child.shutdown();
 	}
 
-	public Node getParent() {
+	public Node getParentNode() {
 		return parent;
 	}
 	
 	@SuppressWarnings("unchecked")
-	public <T> T getParent(Class<T> clazz){
+	public <T> T getParentObject(){
 		
 		return (T) parent;
 	}
@@ -102,4 +111,9 @@ public class Node {
 	public void setLocalTransform(Transform localTransform) {
 		this.localTransform = localTransform;
 	}
+
+	public String getId() {
+		return id;
+	}
+
 }

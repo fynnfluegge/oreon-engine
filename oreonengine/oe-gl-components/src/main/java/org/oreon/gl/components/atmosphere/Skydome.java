@@ -6,7 +6,7 @@ import org.oreon.core.gl.scenegraph.GLRenderInfo;
 import org.oreon.core.gl.util.GLAssimpModelLoader;
 import org.oreon.core.gl.wrapper.parameter.CullFaceDisable;
 import org.oreon.core.model.Mesh;
-import org.oreon.core.scenegraph.NodeComponentKey;
+import org.oreon.core.scenegraph.NodeComponentType;
 import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.util.ProceduralTexturing;
 
@@ -21,15 +21,15 @@ public class Skydome extends Renderable{
 		GLRenderInfo renderInfo = new GLRenderInfo(AtmosphereShader.getInstance(),
 												   new CullFaceDisable(),
 												   meshBuffer);
-		addComponent(NodeComponentKey.MAIN_RENDERINFO, renderInfo);
+		addComponent(NodeComponentType.MAIN_RENDERINFO, renderInfo);
 	}
 	
-	public void update()
-	{	
-		getWorldTransform().setRotation(getWorldTransform().getLocalRotation().add(getParent().getWorldTransform().getRotation()));
-		getWorldTransform().setTranslation(getWorldTransform().getLocalTranslation().add(getParent().getWorldTransform().getTranslation()));
-		getWorldTransform().setScaling(getWorldTransform().getLocalScaling().mul(getParent().getWorldTransform().getScaling()));
-	}
+//	public void update()
+//	{	
+//		getWorldTransform().setRotation(getWorldTransform().getLocalRotation().add(getParent().getWorldTransform().getRotation()));
+//		getWorldTransform().setTranslation(getWorldTransform().getLocalTranslation().add(getParent().getWorldTransform().getTranslation()));
+//		getWorldTransform().setScaling(getWorldTransform().getLocalScaling().mul(getParent().getWorldTransform().getScaling()));
+//	}
 	
 	public void render() {
 		if (EngineContext.getRenderState().isRefraction() && !EngineContext.getRenderState().isUnderwater()){

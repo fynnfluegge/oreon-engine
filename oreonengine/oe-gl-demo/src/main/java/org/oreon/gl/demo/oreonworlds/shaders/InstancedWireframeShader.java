@@ -52,15 +52,15 @@ private static InstancedWireframeShader instance = null;
 		bindUniformBlock("Camera", Constants.CameraUniformBlockBinding);
 		setUniformi("isReflection", EngineContext.getRenderState().isReflection() ? 1 : 0);
 		
-		((GLInstancedCluster) object.getParent()).getWorldMatricesBuffer().bindBufferBase(0);
+		((GLInstancedCluster) object.getParentNode()).getWorldMatricesBuffer().bindBufferBase(0);
 		bindUniformBlock("worldMatrices", 0);
-		((GLInstancedCluster) object.getParent()).getModelMatricesBuffer().bindBufferBase(1);
+		((GLInstancedCluster) object.getParentNode()).getModelMatricesBuffer().bindBufferBase(1);
 		bindUniformBlock("modelMatrices", 1);
 		
 		setUniform("clipplane", EngineContext.getRenderState().getClipplane());
 		setUniform("scalingMatrix", new Matrix4f().Scaling(object.getWorldTransform().getScaling()));
 		
-		List<Integer> indices = ((InstancedCluster) object.getParent()).getHighPolyIndices();
+		List<Integer> indices = ((InstancedCluster) object.getParentNode()).getHighPolyIndices();
 		
 		for (int i=0; i<indices.size(); i++)
 		{

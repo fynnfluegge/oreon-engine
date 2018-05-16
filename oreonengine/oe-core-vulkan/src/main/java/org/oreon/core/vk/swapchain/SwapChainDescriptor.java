@@ -27,7 +27,7 @@ public class SwapChainDescriptor {
 	    						VK_SHADER_STAGE_FRAGMENT_BIT);
 	    layout.create();
 	    
-	    sampler = new VkSampler(device, VK_FILTER_NEAREST);
+	    sampler = new VkSampler(device, VK_FILTER_NEAREST, false);
 	    
 	    set = new DescriptorSet(device,
 	    		 VkContext.getDescriptorPoolManager().getDescriptorPool("POOL_1").getHandle(),

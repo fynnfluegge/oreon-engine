@@ -8,7 +8,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.scenegraph.Node;
 import org.oreon.core.scenegraph.NodeComponent;
-import org.oreon.core.scenegraph.NodeComponentKey;
+import org.oreon.core.scenegraph.NodeComponentType;
 
 public class Quadtree extends Node implements Runnable{
 	
@@ -21,7 +21,7 @@ public class Quadtree extends Node implements Runnable{
 	
 	private static int rootPatches = 8;
 		
-	public Quadtree(HashMap<NodeComponentKey, NodeComponent> components){
+	public Quadtree(HashMap<NodeComponentType, NodeComponent> components){
 		
 		for (int i=0; i<rootPatches; i++){
 			for (int j=0; j<rootPatches; j++){

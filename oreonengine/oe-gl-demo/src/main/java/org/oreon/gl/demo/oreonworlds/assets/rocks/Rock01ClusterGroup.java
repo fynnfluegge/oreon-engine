@@ -11,7 +11,7 @@ import org.oreon.core.gl.wrapper.parameter.Default;
 import org.oreon.core.instanced.InstancedObject;
 import org.oreon.core.math.Vec3f;
 import org.oreon.core.model.Model;
-import org.oreon.core.scenegraph.NodeComponentKey;
+import org.oreon.core.scenegraph.NodeComponentType;
 import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.util.Util;
 import org.oreon.gl.demo.oreonworlds.shaders.assets.rocks.RockHighPolyShader;
@@ -38,9 +38,9 @@ public class Rock01ClusterGroup extends InstancedObject{
 			GLRenderInfo shadowRenderInfo = new GLRenderInfo(RockShadowShader.getInstance(), new Default(), meshBuffer);
 	
 			Renderable object = new Renderable();
-			object.addComponent(NodeComponentKey.MAIN_RENDERINFO, renderInfo);
-			object.addComponent(NodeComponentKey.SHADOW_RENDERINFO, shadowRenderInfo);
-			object.addComponent(NodeComponentKey.MATERIAL0, model.getMaterial());
+			object.addComponent(NodeComponentType.MAIN_RENDERINFO, renderInfo);
+			object.addComponent(NodeComponentType.SHADOW_RENDERINFO, shadowRenderInfo);
+			object.addComponent(NodeComponentType.MATERIAL0, model.getMaterial());
 			objects.add(object);
 		}
 		

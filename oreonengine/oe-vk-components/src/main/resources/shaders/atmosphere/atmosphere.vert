@@ -12,7 +12,7 @@ layout(binding = 0, set = 0, std140, row_major) uniform Camera {
 	vec4 frustumPlanes[6];
 };
 
-layout (push_constant) uniform Constants{
+layout(binding = 0, set = 1, std140, row_major) uniform UBO {
 	mat4 m_World;
 };
 

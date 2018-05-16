@@ -7,7 +7,7 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.model.Material;
-import org.oreon.core.scenegraph.NodeComponentKey;
+import org.oreon.core.scenegraph.NodeComponentType;
 import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.util.ResourceLoader;
 
@@ -43,11 +43,11 @@ private static SunShader instance = null;
 		setUniform("m_MVP", object.getWorldTransform().getModelViewProjectionMatrix());
 		
 		glActiveTexture(GL_TEXTURE0);
-		((Material<GLTexture>) object.getComponents().get(NodeComponentKey.MATERIAL0)).getDiffusemap().bind();
+		((Material<GLTexture>) object.getComponents().get(NodeComponentType.MATERIAL0)).getDiffusemap().bind();
 		setUniformi("sunTexture", 0);
 		
 		glActiveTexture(GL_TEXTURE1);
-		((Material<GLTexture>) object.getComponents().get(NodeComponentKey.MATERIAL1)).getDiffusemap().bind();
+		((Material<GLTexture>) object.getComponents().get(NodeComponentType.MATERIAL1)).getDiffusemap().bind();
 		setUniformi("sunTexture_small", 1);
 	}
 }

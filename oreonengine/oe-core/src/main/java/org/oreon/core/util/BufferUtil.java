@@ -230,6 +230,19 @@ public class BufferUtil {
 		return byteBuffer;
 	}
 	
+	public static ByteBuffer createByteBuffer(Vec2f[] vertices){
+		
+		ByteBuffer byteBuffer = memAlloc(Float.BYTES * 2 * vertices.length);
+		FloatBuffer floatBuffer = byteBuffer.asFloatBuffer();
+		
+		for(int i = 0; i < vertices.length; i++) {
+			floatBuffer.put(vertices[i].getX());
+			floatBuffer.put(vertices[i].getY());
+		}
+
+		return byteBuffer;
+	}
+	
 	public static ByteBuffer createByteBuffer(Vertex[] vertices, VertexLayout layout){
 		
 		ByteBuffer byteBuffer = allocateVertexByteBuffer(layout, vertices.length);

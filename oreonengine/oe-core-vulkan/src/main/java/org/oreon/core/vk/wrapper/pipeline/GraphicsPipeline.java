@@ -1,5 +1,7 @@
 package org.oreon.core.vk.wrapper.pipeline;
 
+import static org.lwjgl.vulkan.VK10.VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+
 import java.nio.LongBuffer;
 
 import org.lwjgl.vulkan.VkDevice;
@@ -17,7 +19,7 @@ public class GraphicsPipeline extends VkPipeline{
 		
 		setVertexInput(vertexInput);
 		setPushConstantsRange(pushConstantStageFlags, pushConstantRange);
-		setInputAssembly();
+		setInputAssembly(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
 		setViewportAndScissor(width, height);
 		setRasterizer();
 		setMultisampling();
@@ -37,7 +39,7 @@ public class GraphicsPipeline extends VkPipeline{
 		super(device);
 		
 		setVertexInput(vertexInput);
-		setInputAssembly();
+		setInputAssembly(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
 		setViewportAndScissor(width, height);
 		setRasterizer();
 		setMultisampling();

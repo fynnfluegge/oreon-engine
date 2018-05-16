@@ -1,5 +1,7 @@
 package org.oreon.core.vk.swapchain;
 
+import static org.lwjgl.vulkan.VK10.VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+
 import java.nio.LongBuffer;
 
 import org.lwjgl.vulkan.VkDevice;
@@ -23,7 +25,7 @@ public class SwapChainPipeline extends VkPipeline{
 	    VkVertexInput vertexInputInfo = new VkVertexInput(VertexLayout.POS_UV);
 	    
 	    setVertexInput(vertexInputInfo);
-	    setInputAssembly();
+	    setInputAssembly(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
 	    setViewportAndScissor(extent.width(), extent.height());
 	    setRasterizer();
 	    setMultisampling();

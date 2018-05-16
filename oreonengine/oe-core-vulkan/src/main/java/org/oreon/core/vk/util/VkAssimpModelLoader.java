@@ -11,7 +11,6 @@ import org.lwjgl.assimp.AIVector3D;
 import org.lwjgl.assimp.Assimp;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.math.Vec3f;
-import org.oreon.core.model.Material;
 import org.oreon.core.model.Mesh;
 import org.oreon.core.model.Model;
 import org.oreon.core.model.Vertex;
@@ -23,7 +22,7 @@ public class VkAssimpModelLoader {
 	public static List<Model<VkImage>> loadModel(String path, String file) {
 		
 		List<Model<VkImage>> models = new ArrayList<>();
-		List<Material<VkImage>> materials = new ArrayList<>();
+//		List<Material<VkImage>> materials = new ArrayList<>();
 		
 		path = VkAssimpModelLoader.class.getClassLoader().getResource(path).getPath().toString();
 

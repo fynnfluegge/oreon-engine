@@ -1,15 +1,16 @@
 package org.oreon.core.scenegraph;
 
-public enum NodeComponentKey {
+public enum NodeComponentType {
 
 	MAIN_RENDERINFO,
 	WIREFRAME_RENDERINFO,
 	SHADOW_RENDERINFO,
+	REFLECTION_RENDERINFO,
 	MATERIAL0,
 	MATERIAL1,
 	LIGHT,
 	UNIFORMBUFFER,
 	MESH_DATA,
 	SHADER_RESOURCE,
-	CONFIGURATION;
+	CONFIGURATION,
 }

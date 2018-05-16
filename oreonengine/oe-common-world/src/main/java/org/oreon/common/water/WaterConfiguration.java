@@ -1,4 +1,4 @@
-package org.oreon.gl.components.water;
+package org.oreon.common.water;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,9 +25,9 @@ public class WaterConfiguration {
 	private int tessellationFactor;
 	private float tessellationShift;
 	private float tessellationSlope;
-	private int largeDetailRange;
-	private int texDetail;
-	private float shininess;
+	private int highDetailRange;
+	private int uvScale;
+	private float specular;
 	private float emission;
 	private float kReflection;
 	private float kRefraction;
@@ -59,16 +59,16 @@ public class WaterConfiguration {
 		choppiness = Float.valueOf(properties.getProperty("choppiness"));
 		distortion = Float.valueOf(properties.getProperty("distortion"));
 		waveMotion = Float.valueOf(properties.getProperty("wavemotion"));
-		texDetail = Integer.valueOf(properties.getProperty("texDetail"));
+		uvScale = Integer.valueOf(properties.getProperty("uvScale"));
 		tessellationFactor = Integer.valueOf(properties.getProperty("tessellationFactor"));
 		tessellationSlope = Float.valueOf(properties.getProperty("tessellationSlope"));
 		tessellationShift = Float.valueOf(properties.getProperty("tessellationShift"));
-		shininess = Float.valueOf(properties.getProperty("shininess"));
+		specular = Float.valueOf(properties.getProperty("specular"));
 		emission = Float.valueOf(properties.getProperty("emission"));
 		kReflection = Float.valueOf(properties.getProperty("kReflection"));
 		kRefraction = Float.valueOf(properties.getProperty("kRefraction"));
 		normalStrength = Float.valueOf(properties.getProperty("normalStrength"));
-		largeDetailRange = Integer.valueOf(properties.getProperty("detailRange"));
+		highDetailRange = Integer.valueOf(properties.getProperty("highDetailRange"));
 		delta_T = Float.valueOf(properties.getProperty("delta_T"));
 		choppy = Boolean.valueOf(properties.getProperty("choppy"));
 	}

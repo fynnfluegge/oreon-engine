@@ -14,7 +14,6 @@ import java.nio.ByteBuffer;
 
 import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
-import org.oreon.core.scenegraph.NodeComponentKey;
 import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.util.BufferUtil;
 import org.oreon.core.vk.command.CommandBuffer;
@@ -26,7 +25,6 @@ import org.oreon.core.vk.image.VkImage;
 import org.oreon.core.vk.image.VkImageView;
 import org.oreon.core.vk.pipeline.ShaderModule;
 import org.oreon.core.vk.pipeline.VkPipeline;
-import org.oreon.core.vk.scenegraph.VkRenderInfo;
 import org.oreon.core.vk.synchronization.Fence;
 import org.oreon.core.vk.util.VkUtil;
 import org.oreon.core.vk.wrapper.buffer.VkUniformBuffer;
@@ -36,7 +34,7 @@ import org.oreon.core.vk.wrapper.image.Image2DLocal;
 
 import lombok.Getter;
 
-public class Coefficients extends Renderable{
+public class Hkt extends Renderable{
 
 	@Getter
 	private VkImageView dxCoefficients_imageView;
@@ -59,6 +57,9 @@ public class Coefficients extends Renderable{
 	private VkPipeline pipeline;
 	private VkDescriptor descriptor;
 	private VkUniformBuffer buffer;
+	
+	private CommandBuffer commandBuffer;
+	private SubmitInfo submitInfo;
 	
 	private class CoefficientsDescriptor extends VkDescriptor{
 		
@@ -103,8 +104,8 @@ public class Coefficients extends Renderable{
 		}
 	}
 	
-	public Coefficients(VkDevice device,
-			VkPhysicalDeviceMemoryProperties memoryProperties,int N, int L,
+	public Hkt(VkDevice device,
+			VkPhysicalDeviceMemoryProperties memoryProperties, int N, int L,
 			VkImageView tilde_h0k, VkImageView tilde_h0minusk) {
 		
 		image_dxCoefficients = new Image2DLocal(device, memoryProperties, N, N,
@@ -145,9 +146,9 @@ public class Coefficients extends Renderable{
 		pipeline = new VkPipeline(device);
 		pipeline.setPushConstantsRange(VK_SHADER_STAGE_COMPUTE_BIT, Integer.BYTES * 2);
 		pipeline.setLayout(descriptor.getDescriptorSetLayout().getHandlePointer());
-		pipeline.createComputePipeline(new ShaderModule(device, "fft/~h(k,t).comp.spv", VK_SHADER_STAGE_COMPUTE_BIT));
+		pipeline.createComputePipeline(new ShaderModule(device, "fft/hkt.comp.spv", VK_SHADER_STAGE_COMPUTE_BIT));
 		
-		CommandBuffer commandBuffer = new ComputeCmdBuffer(device,
+		commandBuffer = new ComputeCmdBuffer(device,
 				VkContext.getLogicalDevice().getComputeCommandPool().getHandle(),
 				pipeline.getHandle(), pipeline.getLayoutHandle(),
 				VkUtil.createLongArray(descriptor.getDescriptorSet()), N/16, N/16, 1,
@@ -155,12 +156,9 @@ public class Coefficients extends Renderable{
 
 		fence = new Fence(device);
 		
-		SubmitInfo submitInfo = new SubmitInfo();
+		submitInfo = new SubmitInfo();
 		submitInfo.setFence(fence);
 		submitInfo.setCommandBuffers(commandBuffer.getHandlePointer());
-		
-		addComponent(NodeComponentKey.MAIN_RENDERINFO, new VkRenderInfo(commandBuffer, submitInfo,
-				VkContext.getLogicalDevice().getComputeQueue()));
 	}
 	
 	public void render(){
@@ -171,7 +169,7 @@ public class Coefficients extends Renderable{
 		
 		buffer.mapMemory(BufferUtil.createByteBuffer(v));
 		
-		super.render(); 
+		submitInfo.submit(VkContext.getLogicalDevice().getComputeQueue());
 		
 		systemTime = System.currentTimeMillis();
 	}

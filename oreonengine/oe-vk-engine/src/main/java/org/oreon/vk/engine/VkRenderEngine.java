@@ -14,19 +14,27 @@ import static org.lwjgl.vulkan.VK10.vkQueueWaitIdle;
 
 import java.nio.ByteBuffer;
 import java.nio.LongBuffer;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.vulkan.VkInstance;
 import org.oreon.core.context.EngineContext;
+import org.oreon.core.scenegraph.NodeComponentType;
+import org.oreon.core.scenegraph.RenderList;
+import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.system.RenderEngine;
+import org.oreon.core.vk.command.CommandBuffer;
 import org.oreon.core.vk.command.SubmitInfo;
 import org.oreon.core.vk.context.VkContext;
 import org.oreon.core.vk.context.VulkanInstance;
 import org.oreon.core.vk.descriptor.DescriptorPool;
 import org.oreon.core.vk.device.LogicalDevice;
 import org.oreon.core.vk.device.PhysicalDevice;
+import org.oreon.core.vk.scenegraph.VkRenderInfo;
 import org.oreon.core.vk.swapchain.SwapChain;
 import org.oreon.core.vk.util.VkUtil;
+import org.oreon.core.vk.wrapper.command.PrimaryCmdBuffer;
 
 public class VkRenderEngine extends RenderEngine{
 	
@@ -36,8 +44,12 @@ public class VkRenderEngine extends RenderEngine{
 	private SwapChain swapChain;
 	private long surface;
 
-	private OffScreenPrimaryCmdBuffer offScreenPrimaryCmdBuffer;
 	private OffScreenFbo offScreenFbo;
+	private ReflectionFbo reflectionFbo;
+	private PrimaryCmdBuffer offScreenPrimaryCmdBuffer;
+	private LinkedHashMap<String, CommandBuffer> activeOffScreenSecondaryCmdBuffers;
+	private LinkedHashMap<String, CommandBuffer> suspendedOffScreenSecondaryCmdBuffers;
+	private RenderList offScreenRenderList;
 	private SubmitInfo offScreenSubmitInfo;
 	
 	private ByteBuffer[] layers = {
@@ -50,6 +62,10 @@ public class VkRenderEngine extends RenderEngine{
 	public void init() {
 		
 		super.init();
+		
+		offScreenRenderList = new RenderList();
+		activeOffScreenSecondaryCmdBuffers = new LinkedHashMap<String, CommandBuffer>();
+		suspendedOffScreenSecondaryCmdBuffers = new LinkedHashMap<String, CommandBuffer>();
 		
 		if (!glfwVulkanSupported()) {
 	            throw new AssertionError("GLFW failed to find the Vulkan loader");
@@ -79,11 +95,11 @@ public class VkRenderEngine extends RenderEngine{
 	    VkContext.registerObject(logicalDevice);
 
 	    DescriptorPool imageSamplerDescriptorPool = new DescriptorPool(4);
-	    imageSamplerDescriptorPool.addPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 6);
+	    imageSamplerDescriptorPool.addPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 10);
 	    imageSamplerDescriptorPool.addPoolSize(VK_DESCRIPTOR_TYPE_STORAGE_IMAGE, 30);
 	    imageSamplerDescriptorPool.addPoolSize(VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 1);
-	    imageSamplerDescriptorPool.addPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 8);
-	    imageSamplerDescriptorPool.create(logicalDevice.getHandle(), 45);
+	    imageSamplerDescriptorPool.addPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 10);
+	    imageSamplerDescriptorPool.create(logicalDevice.getHandle(), 51);
 	    
 	    VkContext.getDescriptorPoolManager().addDescriptorPool("POOL_1",
 	    											 imageSamplerDescriptorPool);
@@ -94,14 +110,13 @@ public class VkRenderEngine extends RenderEngine{
 	    offScreenFbo = new OffScreenFbo(logicalDevice.getHandle(),
 	    								physicalDevice.getMemoryProperties());
 	    
-	    offScreenPrimaryCmdBuffer =  new OffScreenPrimaryCmdBuffer(logicalDevice.getHandle(),
+	    offScreenPrimaryCmdBuffer =  new PrimaryCmdBuffer(logicalDevice.getHandle(),
 	    		logicalDevice.getGraphicsCommandPool().getHandle());
 	    offScreenSubmitInfo = new SubmitInfo();
 	    offScreenSubmitInfo.setCommandBuffers(offScreenPrimaryCmdBuffer.getHandlePointer());
 
-	    VkContext.getRenderState().setOffScreenFrameBuffer(offScreenFbo.getFrameBuffer());
-	    VkContext.getRenderState().setOffScreenRenderPass(offScreenFbo.getRenderPass());
-	    VkContext.getRenderState().setOffScreenAttachmentCount(offScreenFbo.getAttachmentCount());
+	    VkContext.getRenderState().setOffScreenFbo(offScreenFbo);
+	    VkContext.getRenderState().setOffScreenReflectionFbo(reflectionFbo);
 	    
 	    swapChain = new SwapChain(logicalDevice,
 	    						  physicalDevice,
@@ -114,19 +129,35 @@ public class VkRenderEngine extends RenderEngine{
 	public void render() {
 		
 		sceneGraph.render();
-
-		// record secondary command buffers from scenegraph into
-		// primary render command buffer
-		offScreenPrimaryCmdBuffer.reset();
-		offScreenPrimaryCmdBuffer.record(offScreenFbo.getRenderPass().getHandle(),
-				offScreenFbo.getFrameBuffer().getHandle(),
-				offScreenFbo.getWidth(),
-				offScreenFbo.getHeight(),
-				offScreenFbo.getAttachmentCount(),
-				offScreenFbo.isDepthAttachment(),
-				VkUtil.createPointerBuffer(VkContext.getRenderState().getOffScreenSecondaryCmdBuffers()));
+		sceneGraph.record(offScreenRenderList);
 		
-		offScreenSubmitInfo.submit(logicalDevice.getGraphicsQueue());
+		// TODO check if offScreenRenderList changed, 
+		// if and only if changed rearrange commandBuffers 
+		for (Map.Entry<String,Renderable> entry : offScreenRenderList.getEntrySet()) {
+			
+			if(!activeOffScreenSecondaryCmdBuffers.containsKey(entry.getKey())){
+				VkRenderInfo mainRenderInfo = entry.getValue().getComponent(NodeComponentType.MAIN_RENDERINFO);
+				activeOffScreenSecondaryCmdBuffers.put(entry.getKey(),mainRenderInfo.getCommandBuffer());
+			}
+			
+			// TODO check if activeOffScreenCmdBuffers not contained in affScreenRenderList
+			// if yes -> put into suspendedOffScreenCmdBuffers
+		}
+		
+		// primary render command buffer
+		if (!offScreenRenderList.getEntrySet().isEmpty()){
+			
+			offScreenPrimaryCmdBuffer.reset();
+			offScreenPrimaryCmdBuffer.record(offScreenFbo.getRenderPass().getHandle(),
+					offScreenFbo.getFrameBuffer().getHandle(),
+					offScreenFbo.getWidth(),
+					offScreenFbo.getHeight(),
+					offScreenFbo.getAttachmentCount(),
+					offScreenFbo.isDepthAttachment(),
+					VkUtil.createPointerBuffer(activeOffScreenSecondaryCmdBuffers.values()));
+			
+			offScreenSubmitInfo.submit(logicalDevice.getGraphicsQueue());
+		}
 		
 		vkQueueWaitIdle(logicalDevice.getGraphicsQueue());
 		swapChain.draw(logicalDevice.getGraphicsQueue());

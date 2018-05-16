@@ -22,7 +22,7 @@ public class VkUniformBuffer extends VkBuffer{
 		mapMemory(data);
 	}
 	
-	public void updateData(VkDevice device, ByteBuffer data){
+	public void updateData(ByteBuffer data){
 		
 		mapMemory(data);
 	}

@@ -32,6 +32,7 @@ import static org.lwjgl.vulkan.VK10.VK_TIMEOUT;
 
 import java.nio.ByteBuffer;
 import java.nio.LongBuffer;
+import java.util.Collection;
 import java.util.List;
 
 import org.lwjgl.PointerBuffer;
@@ -40,6 +41,9 @@ import org.oreon.core.vk.command.CommandBuffer;
 import org.oreon.core.vk.descriptor.DescriptorSet;
 import org.oreon.core.vk.descriptor.DescriptorSetLayout;
 
+import lombok.extern.log4j.Log4j;
+
+@Log4j
 public class VkUtil {
 	
 	public static void vkCheckResult(int err){
@@ -167,6 +171,10 @@ public class VkUtil {
     
     public static LongBuffer createLongBuffer(List<DescriptorSetLayout> descriptorSetLayouts){
     	
+    	if (descriptorSetLayouts.size() == 0){
+    		log.error("createLongBuffer: descriptorSetLayouts empty");
+    	}
+    	
     	LongBuffer descriptorSetLayoutsBuffer = memAllocLong(descriptorSetLayouts.size());
 		
 		for (DescriptorSetLayout layout : descriptorSetLayouts){
@@ -180,7 +188,28 @@ public class VkUtil {
     
     public static PointerBuffer createPointerBuffer(List<CommandBuffer> commandBuffers){
     	
-		PointerBuffer cmdBuffersPointer = memAllocPointer(commandBuffers.size());
+    	if (commandBuffers.size() == 0){
+    		log.error("createPointerBuffer: commandBuffers empty");
+    	}
+    	
+    	PointerBuffer cmdBuffersPointer = memAllocPointer(commandBuffers.size());
+		
+		for (CommandBuffer cmdBuffer : commandBuffers){
+			cmdBuffersPointer.put(cmdBuffer.getHandlePointer());
+		}
+		
+		cmdBuffersPointer.flip();
+		
+		return cmdBuffersPointer;
+    }
+    
+    public static PointerBuffer createPointerBuffer(Collection<CommandBuffer> commandBuffers){
+    	
+    	if (commandBuffers.size() == 0){
+    		log.error("createPointerBuffer: commandBuffers empty");
+    	}
+		
+    	PointerBuffer cmdBuffersPointer = memAllocPointer(commandBuffers.size());
 		
 		for (CommandBuffer cmdBuffer : commandBuffers){
 			cmdBuffersPointer.put(cmdBuffer.getHandlePointer());

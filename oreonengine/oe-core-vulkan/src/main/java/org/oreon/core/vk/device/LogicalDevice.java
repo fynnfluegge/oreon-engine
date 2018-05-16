@@ -20,6 +20,7 @@ import org.lwjgl.PointerBuffer;
 import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkDeviceCreateInfo;
 import org.lwjgl.vulkan.VkDeviceQueueCreateInfo;
+import org.lwjgl.vulkan.VkPhysicalDeviceFeatures;
 import org.lwjgl.vulkan.VkQueue;
 import org.oreon.core.vk.command.CommandPool;
 import org.oreon.core.vk.util.VkUtil;
@@ -121,12 +122,19 @@ public class LogicalDevice {
         
         physicalDevice.checkDeviceExtensionsSupport(extensions);
         
+        VkPhysicalDeviceFeatures physicalDeviceFeatures = VkPhysicalDeviceFeatures.calloc()
+        		.tessellationShader(true)
+        		.geometryShader(true)
+        		.shaderClipDistance(true)
+        		.samplerAnisotropy(true);
+        
         VkDeviceCreateInfo deviceCreateInfo = VkDeviceCreateInfo.calloc()
                 .sType(VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO)
                 .pNext(VK_NULL_HANDLE)
                 .pQueueCreateInfos(queueCreateInfos)
                 .ppEnabledExtensionNames(extensions)
-                .ppEnabledLayerNames(ppEnabledLayerNames);
+                .ppEnabledLayerNames(ppEnabledLayerNames)
+                .pEnabledFeatures(physicalDeviceFeatures);
 
         PointerBuffer pDevice = memAllocPointer(1);
         int err = vkCreateDevice(physicalDevice.getHandle(), deviceCreateInfo, null, pDevice);

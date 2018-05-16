@@ -14,44 +14,44 @@ public class SecondaryDrawCmdBuffer extends CommandBuffer{
 	public SecondaryDrawCmdBuffer(VkDevice device, long commandPool,
 			long pipeline, long pipelineLayout, long framebuffer,
 			long renderpass, int subpass, long[] descriptorSets,
-			long vertexBuffer, long indexBuffer, int indexCount) {
+			long vertexBuffer, int vertexCount) {
 	
 		super(device, commandPool, VK_COMMAND_BUFFER_LEVEL_SECONDARY);
 		
 		record(pipeline, pipelineLayout, framebuffer,
 				renderpass, subpass, descriptorSets,
-				vertexBuffer, indexBuffer, indexCount,
-				null, 0);
+				vertexBuffer, vertexCount,
+				null, -1);
 	}
 	
 	public SecondaryDrawCmdBuffer(VkDevice device, long commandPool,
 			long pipeline, long pipelineLayout, long framebuffer,
 			long renderpass, int subpass, long[] descriptorSets,
-			long vertexBuffer, long indexBuffer, int indexCount,
+			long vertexBuffer, int vertexCount,
 			ByteBuffer pushConstantsData, int pushConstantsStageFlags) {
 	
 		super(device, commandPool, VK_COMMAND_BUFFER_LEVEL_SECONDARY);
 		
 		record(pipeline, pipelineLayout, framebuffer,
 				renderpass, subpass, descriptorSets,
-				vertexBuffer, indexBuffer, indexCount,
+				vertexBuffer, vertexCount,
 				pushConstantsData, pushConstantsStageFlags);
 	}
 	
 	private void record(long pipeline, long pipelineLayout, long framebuffer,
-			long renderpass, int subpass, long[] descriptorSets, long vertexBuffer, long indexBuffer, int indexCount,
+			long renderpass, int subpass, long[] descriptorSets, long vertexBuffer, int vertexCount,
 			ByteBuffer pushConstantsData, int pushConstantsStageFlags){
 		
 		beginRecordSecondary(VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT,
 				framebuffer, renderpass, subpass);
 		
-		if (pushConstantsData != null){
+		if (pushConstantsStageFlags != -1){
 			pushConstantsCmd(pipelineLayout, pushConstantsStageFlags, pushConstantsData);
 		}
 		bindPipelineCmd(pipeline, VK_PIPELINE_BIND_POINT_GRAPHICS);
-		bindVertexInputCmd(vertexBuffer, indexBuffer);
+		bindVertexInputCmd(vertexBuffer);
 		bindDescriptorSetsCmd(pipelineLayout, descriptorSets, VK_PIPELINE_BIND_POINT_GRAPHICS);
-		drawIndexedCmd(indexCount);
+		drawCmd(vertexCount);
 	    finishRecord();
 	}
 

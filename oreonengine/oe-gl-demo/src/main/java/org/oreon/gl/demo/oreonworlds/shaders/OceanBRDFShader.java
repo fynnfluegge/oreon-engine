@@ -11,13 +11,13 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE7;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE8;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
+import org.oreon.common.water.WaterConfiguration;
 import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.util.Constants;
 import org.oreon.core.util.ResourceLoader;
 import org.oreon.gl.components.water.Water;
-import org.oreon.gl.components.water.WaterConfiguration;
 
 public class OceanBRDFShader extends GLShaderProgram{
 
@@ -107,17 +107,17 @@ public class OceanBRDFShader extends GLShaderProgram{
 		
 		setUniformf("displacementScale", configuration.getDisplacementScale());
 		setUniformf("choppiness", configuration.getChoppiness());
-		setUniformi("texDetail", configuration.getTexDetail());
+		setUniformi("texDetail", configuration.getUvScale());
 		setUniformi("tessFactor", configuration.getTessellationFactor());
 		setUniformf("tessSlope", configuration.getTessellationSlope());
 		setUniformf("tessShift", configuration.getTessellationShift());
-		setUniformi("largeDetailRange", configuration.getLargeDetailRange());
+		setUniformi("largeDetailRange", configuration.getHighDetailRange());
 		setUniformf("distortionRefracReflec", ocean.getDistortion());
 		setUniformf("distortionCaustics", 0);
 		setUniformf("kReflection", configuration.getKReflection());
 		setUniformf("kRefraction", configuration.getKRefraction());
 		setUniformf("emission", configuration.getEmission());
-		setUniformf("specular", configuration.getShininess());
+		setUniformf("specular", configuration.getSpecular());
 		setUniformf("motion", ocean.getMotion());
 		setUniformi("isCameraUnderWater", EngineContext.getRenderState().isUnderwater() ? 1 : 0);
 				

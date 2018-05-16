@@ -15,7 +15,7 @@ import org.oreon.core.instanced.InstancedObject;
 import org.oreon.core.math.Vec3f;
 import org.oreon.core.model.Model;
 import org.oreon.core.model.Vertex;
-import org.oreon.core.scenegraph.NodeComponentKey;
+import org.oreon.core.scenegraph.NodeComponentType;
 import org.oreon.core.scenegraph.Renderable;
 import org.oreon.gl.demo.oreonworlds.shaders.assets.plants.PalmBillboardShader;
 import org.oreon.gl.demo.oreonworlds.shaders.assets.plants.PalmBillboardShadowShader;
@@ -42,9 +42,9 @@ public class Palm01ClusterGroup extends InstancedObject{
 			GLRenderInfo shadowRenderInfo = new GLRenderInfo(PalmShadowShader.getInstance(), new CullFaceDisable(), meshBuffer);
 	
 			Renderable object = new Renderable();
-			object.addComponent(NodeComponentKey.MAIN_RENDERINFO, renderInfo);
-			object.addComponent(NodeComponentKey.SHADOW_RENDERINFO, shadowRenderInfo);
-			object.addComponent(NodeComponentKey.MATERIAL0, model.getMaterial());
+			object.addComponent(NodeComponentType.MAIN_RENDERINFO, renderInfo);
+			object.addComponent(NodeComponentType.SHADOW_RENDERINFO, shadowRenderInfo);
+			object.addComponent(NodeComponentType.MATERIAL0, model.getMaterial());
 			objects.add(object);
 		}
 		
@@ -66,9 +66,9 @@ public class Palm01ClusterGroup extends InstancedObject{
 			GLRenderInfo shadowRenderInfo = new GLRenderInfo(PalmBillboardShadowShader.getInstance(), new CullFaceDisable(), meshBuffer);
 			
 			Renderable object = new Renderable();
-			object.addComponent(NodeComponentKey.MAIN_RENDERINFO, renderInfo);
-			object.addComponent(NodeComponentKey.SHADOW_RENDERINFO, shadowRenderInfo);
-			object.addComponent(NodeComponentKey.MATERIAL0, billboard.getMaterial());
+			object.addComponent(NodeComponentType.MAIN_RENDERINFO, renderInfo);
+			object.addComponent(NodeComponentType.SHADOW_RENDERINFO, shadowRenderInfo);
+			object.addComponent(NodeComponentType.MATERIAL0, billboard.getMaterial());
 			objects.add(object);
 		}
 	

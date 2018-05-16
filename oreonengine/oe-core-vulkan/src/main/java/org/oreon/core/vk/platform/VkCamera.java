@@ -38,8 +38,7 @@ public class VkCamera extends Camera{
 		
 		super.update();
 		
-		uniformBuffer.updateData(VkContext.getLogicalDevice().getHandle(),
-				BufferUtil.createByteBuffer(floatBuffer));
+		uniformBuffer.updateData(BufferUtil.createByteBuffer(floatBuffer));
 	}
 	
 	public void shutdown(){

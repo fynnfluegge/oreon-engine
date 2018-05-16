@@ -23,7 +23,8 @@ public class Vertex {
 		POS_NORMAL,
 		POS_UV,
 		POS,
-		POS_NORMAL_UV;
+		POS_NORMAL_UV,
+		POS2D;
 	}
 	
 	public Vertex(){	

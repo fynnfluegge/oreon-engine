@@ -4,18 +4,23 @@ import java.util.HashMap;
 
 import org.oreon.core.context.EngineContext;
 
+import lombok.Getter;
+
 public class Renderable extends Node{
 
-	private HashMap<NodeComponentKey, NodeComponent> components;
+	private HashMap<NodeComponentType, NodeComponent> components;
+	@Getter
+	private boolean render;
 	
 	public Renderable()
 	{
 		super();
 		
-		components = new HashMap<NodeComponentKey, NodeComponent>();
+		render = true;
+		components = new HashMap<NodeComponentType, NodeComponent>();
 	}
 	
-	public void addComponent(NodeComponentKey type, NodeComponent component)
+	public void addComponent(NodeComponentType type, NodeComponent component)
 	{
 		component.setParent(this);
 		components.put(type, component);
@@ -23,7 +28,7 @@ public class Renderable extends Node{
 	
 	public void update()
 	{	
-		for (NodeComponentKey key : components.keySet()) {
+		for (NodeComponentType key : components.keySet()) {
 			components.get(key).update();
 		}
 		super.update();
@@ -31,7 +36,7 @@ public class Renderable extends Node{
 	
 	public void input()
 	{
-		for (NodeComponentKey key : components.keySet()) {
+		for (NodeComponentType key : components.keySet()) {
 			components.get(key).input();
 		}
 		
@@ -41,13 +46,13 @@ public class Renderable extends Node{
 	public void render()
 	{
 		if (EngineContext.getRenderState().isWireframe()){
-			if (components.containsKey(NodeComponentKey.WIREFRAME_RENDERINFO)){
-				components.get(NodeComponentKey.WIREFRAME_RENDERINFO).render();
+			if (components.containsKey(NodeComponentType.WIREFRAME_RENDERINFO)){
+				components.get(NodeComponentType.WIREFRAME_RENDERINFO).render();
 			}
 		}
 		else{
-			if (components.containsKey(NodeComponentKey.MAIN_RENDERINFO)){
-				components.get(NodeComponentKey.MAIN_RENDERINFO).render();
+			if (components.containsKey(NodeComponentType.MAIN_RENDERINFO)){
+				components.get(NodeComponentType.MAIN_RENDERINFO).render();
 			}
 		}
 		
@@ -56,8 +61,8 @@ public class Renderable extends Node{
 	
 	public void renderWireframe(){
 		
-		if (components.containsKey(NodeComponentKey.WIREFRAME_RENDERINFO)){
-			components.get(NodeComponentKey.WIREFRAME_RENDERINFO).render();
+		if (components.containsKey(NodeComponentType.WIREFRAME_RENDERINFO)){
+			components.get(NodeComponentType.WIREFRAME_RENDERINFO).render();
 		}
 		
 		super.renderWireframe();
@@ -65,28 +70,44 @@ public class Renderable extends Node{
 	
 	public void renderShadows()
 	{
-		if (components.containsKey(NodeComponentKey.SHADOW_RENDERINFO)){
-			components.get(NodeComponentKey.SHADOW_RENDERINFO).render();
+		if (components.containsKey(NodeComponentType.SHADOW_RENDERINFO)){
+			components.get(NodeComponentType.SHADOW_RENDERINFO).render();
 		}
 		
 		super.renderShadows();
 	}
 	
+	public void record(RenderList renderList){
+
+		if (render){
+			if (!renderList.contains(id)){
+				renderList.add(this);
+			}
+		}
+		else {
+			if (renderList.contains(id)){
+				renderList.remove(this);
+			}
+		}
+		
+		super.record(renderList);
+	}
+	
 	public void shutdown(){
 		
-		for (NodeComponentKey key : components.keySet()) {
+		for (NodeComponentType key : components.keySet()) {
 			components.get(key).shutdown();
 		}
 		
 		super.shutdown();
 	}
 
-	public HashMap<NodeComponentKey, NodeComponent> getComponents() {
+	public HashMap<NodeComponentType, NodeComponent> getComponents() {
 		return components;
 	}
 	
 	@SuppressWarnings("unchecked")
-	public <T> T getComponent(NodeComponentKey type) {
+	public <T> T getComponent(NodeComponentType type) {
 		return (T) this.components.get(type);
 	}
 }

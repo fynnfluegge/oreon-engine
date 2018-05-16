@@ -7,7 +7,7 @@ import org.oreon.core.math.Vec2f;
 import org.oreon.core.math.Vec3f;
 import org.oreon.core.scenegraph.Node;
 import org.oreon.core.scenegraph.NodeComponent;
-import org.oreon.core.scenegraph.NodeComponentKey;
+import org.oreon.core.scenegraph.NodeComponentType;
 import org.oreon.core.scenegraph.Renderable;
 
 public class TerrainNode extends Renderable{
@@ -21,7 +21,7 @@ public class TerrainNode extends Renderable{
 	private float gap;
 	
 	
-	public TerrainNode(HashMap<NodeComponentKey, NodeComponent> components, Vec2f location, int lod, Vec2f index){
+	public TerrainNode(HashMap<NodeComponentType, NodeComponent> components, Vec2f location, int lod, Vec2f index){
 		
 		this.isleaf = true;
 		this.index = index;
@@ -30,14 +30,14 @@ public class TerrainNode extends Renderable{
 		this.gap = 1f/(TerrainQuadtree.getRootPatches() * (float)(Math.pow(2, lod)));
 		
 		try {
-			addComponent(NodeComponentKey.MAIN_RENDERINFO, components.get(NodeComponentKey.MAIN_RENDERINFO).clone());
-			addComponent(NodeComponentKey.WIREFRAME_RENDERINFO, components.get(NodeComponentKey.WIREFRAME_RENDERINFO).clone());
-			addComponent(NodeComponentKey.CONFIGURATION, components.get(NodeComponentKey.CONFIGURATION));
+			addComponent(NodeComponentType.MAIN_RENDERINFO, components.get(NodeComponentType.MAIN_RENDERINFO).clone());
+			addComponent(NodeComponentType.WIREFRAME_RENDERINFO, components.get(NodeComponentType.WIREFRAME_RENDERINFO).clone());
+			addComponent(NodeComponentType.CONFIGURATION, components.get(NodeComponentType.CONFIGURATION));
 		} catch (CloneNotSupportedException e) {
 			e.printStackTrace();
 		}
 		
-		config = getComponent(NodeComponentKey.CONFIGURATION);
+		config = getComponent(NodeComponentType.CONFIGURATION);
 		
 		Vec3f localScaling = new Vec3f(gap,0,gap);
 		Vec3f localTranslation = new Vec3f(location.getX(),0,location.getY());
@@ -79,10 +79,10 @@ public class TerrainNode extends Renderable{
 		if (renderChunk)
 		{	
 			if (EngineContext.getRenderState().isWireframe()){
-				getComponents().get(NodeComponentKey.WIREFRAME_RENDERINFO).render();
+				getComponents().get(NodeComponentType.WIREFRAME_RENDERINFO).render();
 			}
 			else{
-				getComponents().get(NodeComponentKey.MAIN_RENDERINFO).render();
+				getComponents().get(NodeComponentType.MAIN_RENDERINFO).render();
 			}
 		}
 		
@@ -93,8 +93,8 @@ public class TerrainNode extends Renderable{
 	public void renderShadows()
 	{
 		if (isleaf){
-			if (getComponents().containsKey(NodeComponentKey.SHADOW_RENDERINFO)){
-				getComponents().get(NodeComponentKey.SHADOW_RENDERINFO).render();
+			if (getComponents().containsKey(NodeComponentType.SHADOW_RENDERINFO)){
+				getComponents().get(NodeComponentType.SHADOW_RENDERINFO).render();
 			}
 
 		}
@@ -242,6 +242,6 @@ public class TerrainNode extends Renderable{
 	}
 	
 	public TerrainNode getQuadtreeParent() {
-		return (TerrainNode) getParent();
+		return (TerrainNode) getParentNode();
 	}
 }

@@ -9,6 +9,7 @@ import static org.lwjgl.opengl.GL11.glFrontFace;
 import static org.lwjgl.opengl.GL11.glViewport;
 import static org.lwjgl.opengl.GL30.GL_CLIP_DISTANCE6;
 
+import org.oreon.common.water.WaterConfiguration;
 import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.buffer.GLPatchVBO;
 import org.oreon.core.gl.context.GLContext;
@@ -18,7 +19,7 @@ import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.gl.wrapper.parameter.WaterRenderParameter;
 import org.oreon.core.gl.wrapper.texture.Texture2DTrilinearFilter;
 import org.oreon.core.math.Quaternion;
-import org.oreon.core.scenegraph.NodeComponentKey;
+import org.oreon.core.scenegraph.NodeComponentType;
 import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.scenegraph.Scenegraph;
 import org.oreon.core.util.Constants;
@@ -68,12 +69,12 @@ public class Water extends Renderable{
 		dudv = new Texture2DTrilinearFilter("textures/water/dudv/dudv1.jpg");
 		caustics = new Texture2DTrilinearFilter("textures/water/caustics/caustics.jpg");
 		
-		addComponent(NodeComponentKey.MAIN_RENDERINFO, renderInfo);
-		addComponent(NodeComponentKey.WIREFRAME_RENDERINFO, wireframeRenderInfo);
+		addComponent(NodeComponentType.MAIN_RENDERINFO, renderInfo);
+		addComponent(NodeComponentType.WIREFRAME_RENDERINFO, wireframeRenderInfo);
 
 		fft = new FFT(waterConfiguration.getN(), waterConfiguration.getL(),
 				waterConfiguration.getAmplitude(), waterConfiguration.getWindDirection(),
-				waterConfiguration.getWindSpeed(), waterConfiguration.getCapillarWavesSupression()); 
+				waterConfiguration.getWindSpeed(), waterConfiguration.getCapillarWavesSupression());
 		fft.setT_delta(waterConfiguration.getDelta_T());
 		fft.setChoppy(waterConfiguration.isChoppy());
 		fft.init();
@@ -106,16 +107,12 @@ public class Water extends Renderable{
 		distortion += waterConfiguration.getDistortion();
 		motion += waterConfiguration.getWaveMotion();
 		
-		Scenegraph scenegraph = ((Scenegraph) getParent());
+		Scenegraph scenegraph = ((Scenegraph) getParentNode());
 		
 		EngineContext.getRenderState().setClipplane(getClipplane());
 			
 		//mirror scene to clipplane
 		scenegraph.getWorldTransform().setScaling(1,-1,1);
-		
-		// TODO
-//		scenegraph.getTransform().getTranslation().setY(RenderingEngine.getClipplane().getW() - 
-//				(scenegraph.getTransform().getTranslation().getY() - RenderingEngine.getClipplane().getW()));
 			
 		if (scenegraph.isRenderTerrain()){
 				
@@ -156,10 +153,6 @@ public class Water extends Renderable{
 	
 		scenegraph.getWorldTransform().setScaling(1,1,1);
 
-		// TODO
-//		scenegraph.getTransform().getTranslation().setY(RenderingEngine.getClipplane().getW() - 
-//				(scenegraph.getTransform().getTranslation().getY() - RenderingEngine.getClipplane().getW()));
-
 		if (scenegraph.isRenderTerrain()){
 			GLContext.getObject(TerrainConfiguration.class).setScaleY(
 					GLContext.getObject(TerrainConfiguration.class).getScaleY() / -1f);
@@ -198,11 +191,11 @@ public class Water extends Renderable{
 		
 		if (EngineContext.getRenderState().isWireframe())
 		{
-			getComponents().get(NodeComponentKey.WIREFRAME_RENDERINFO).render();
+			getComponents().get(NodeComponentType.WIREFRAME_RENDERINFO).render();
 		}
 		else
 		{
-			getComponents().get(NodeComponentKey.MAIN_RENDERINFO).render();
+			getComponents().get(NodeComponentType.MAIN_RENDERINFO).render();
 		}
 		
 		// glFinish() important, to prevent conflicts with following compute shaders

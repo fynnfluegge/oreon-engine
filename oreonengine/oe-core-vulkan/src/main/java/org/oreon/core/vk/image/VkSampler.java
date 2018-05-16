@@ -26,7 +26,8 @@ public class VkSampler {
 	
 	private VkDevice device;
 	
-	public VkSampler(VkDevice device, int filterMode){
+	public VkSampler(VkDevice device, int filterMode,
+			boolean anistropic){
 		
 		this.device = device;
 		
@@ -37,7 +38,7 @@ public class VkSampler {
 						.addressModeU(VK_SAMPLER_ADDRESS_MODE_REPEAT)
 						.addressModeV(VK_SAMPLER_ADDRESS_MODE_REPEAT)
 						.addressModeW(VK_SAMPLER_ADDRESS_MODE_REPEAT)
-						.anisotropyEnable(false)
+						.anisotropyEnable(anistropic)
 						.maxAnisotropy(1)
 						.borderColor(VK_BORDER_COLOR_INT_OPAQUE_BLACK)
 						.unnormalizedCoordinates(false)

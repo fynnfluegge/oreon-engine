@@ -8,7 +8,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.scenegraph.Node;
 import org.oreon.core.scenegraph.NodeComponent;
-import org.oreon.core.scenegraph.NodeComponentKey;
+import org.oreon.core.scenegraph.NodeComponentType;
 
 public class TerrainQuadtree extends Node implements Runnable{
 	
@@ -21,7 +21,7 @@ public class TerrainQuadtree extends Node implements Runnable{
 	
 	private static int rootPatches = 8;
 		
-	public TerrainQuadtree(HashMap<NodeComponentKey, NodeComponent> components){
+	public TerrainQuadtree(HashMap<NodeComponentType, NodeComponent> components){
 		
 		for (int i=0; i<rootPatches; i++){
 			for (int j=0; j<rootPatches; j++){

@@ -35,7 +35,7 @@ import org.oreon.core.vk.wrapper.image.Image2DLocal;
 
 import lombok.Getter;
 
-public class FastFourierTransform extends Renderable{
+public class FFT extends Renderable{
 
 	@Getter
 	private VkImageView dxImageView;
@@ -52,8 +52,8 @@ public class FastFourierTransform extends Renderable{
 	private VkImage dzImage;
 	
 	private TwiddleFactors twiddleFactors;
-	private Spectrum spectrum;
-	private Coefficients coefficients;
+	private H0k h0k;
+	private Hkt hkt;
 	
 	private DescriptorSetLayout descriptorLayout;
 	private VkPipeline butterflyPipeline;
@@ -142,8 +142,9 @@ public class FastFourierTransform extends Renderable{
 		}
 	}
 
-	public FastFourierTransform(VkDevice device,
-			VkPhysicalDeviceMemoryProperties memoryProperties,int N, int L) {
+	public FFT(VkDevice device,
+			VkPhysicalDeviceMemoryProperties memoryProperties,int N, int L,
+			float amplitude, Vec2f direction, float intensity, float capillarSupressFactor) {
 		
 		stages =  (int) (Math.log(N)/Math.log(2));
 		
@@ -193,13 +194,13 @@ public class FastFourierTransform extends Renderable{
 				VkContext.getLogicalDevice().getHandle(),
 				VkContext.getPhysicalDevice().getMemoryProperties(), N);
 		
-		spectrum = new Spectrum(VkContext.getLogicalDevice().getHandle(),
+		h0k = new H0k(VkContext.getLogicalDevice().getHandle(),
 				VkContext.getPhysicalDevice().getMemoryProperties(), N, L,
-				20, new Vec2f(1,1), 25, 1);
+				amplitude, direction, intensity, capillarSupressFactor);
 		
-		coefficients = new Coefficients(VkContext.getLogicalDevice().getHandle(),
+		hkt = new Hkt(VkContext.getLogicalDevice().getHandle(),
 				VkContext.getPhysicalDevice().getMemoryProperties(),
-				N, L, spectrum.getH0k_imageView(), spectrum.getH0minusk_imageView());
+				N, L, h0k.getH0k_imageView(), h0k.getH0minusk_imageView());
 		
 		ByteBuffer ubo = memAlloc(Integer.BYTES * 3);
 		ubo.putInt(0);
@@ -227,26 +228,26 @@ public class FastFourierTransform extends Renderable{
 	
 		dyButterflyDescriptorSet = new ButterflyDescriptorSet(device,
 				descriptorLayout, twiddleFactors.getImageView(),
-				coefficients.getDyCoefficients_imageView(),
+				hkt.getDyCoefficients_imageView(),
 				dyPingpongImageView);
 		dyInversionDescriptorSet = new InversionDescriptorSet(device,
-				descriptorLayout, dyImageView, coefficients.getDyCoefficients_imageView(),
+				descriptorLayout, dyImageView, hkt.getDyCoefficients_imageView(),
 				dyPingpongImageView);
 		
 		dxButterflyDescriptorSet = new ButterflyDescriptorSet(device,
 				descriptorLayout, twiddleFactors.getImageView(),
-				coefficients.getDxCoefficients_imageView(),
+				hkt.getDxCoefficients_imageView(),
 				dxPingpongImageView);
 		dxInversionDescriptorSet = new InversionDescriptorSet(device,
-				descriptorLayout, dxImageView, coefficients.getDxCoefficients_imageView(),
+				descriptorLayout, dxImageView, hkt.getDxCoefficients_imageView(),
 				dxPingpongImageView);
 		
 		dzButterflyDescriptorSet = new ButterflyDescriptorSet(device,
 				descriptorLayout, twiddleFactors.getImageView(),
-				coefficients.getDzCoefficients_imageView(),
+				hkt.getDzCoefficients_imageView(),
 				dzPingpongImageView);
 		dzInversionDescriptorSet = new InversionDescriptorSet(device,
-				descriptorLayout, dzImageView, coefficients.getDzCoefficients_imageView(),
+				descriptorLayout, dzImageView, hkt.getDzCoefficients_imageView(),
 				dzPingpongImageView);
 		
 		butterflyShader = new ShaderModule(device, "fft/Butterfly.comp.spv", VK_SHADER_STAGE_COMPUTE_BIT);
@@ -315,8 +316,8 @@ public class FastFourierTransform extends Renderable{
 	
 	public void render(){
 		
-		coefficients.render();
-		coefficients.getFence().waitForFence();
+		hkt.render();
+		hkt.getFence().waitForFence();
 		
 		pingpong = 0;
 
@@ -371,8 +372,8 @@ public class FastFourierTransform extends Renderable{
 	public void destroy(){
 		
 		twiddleFactors.destroy();
-		spectrum.destroy();
-		coefficients.shutdown();
+		h0k.destroy();
+		hkt.shutdown();
 		buffer.destroy();
 	}
 }

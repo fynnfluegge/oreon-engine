@@ -33,7 +33,7 @@ import org.oreon.core.vk.wrapper.shader.ComputeShader;
 
 import lombok.Getter;
 
-public class Spectrum {
+public class H0k {
 
 	@Getter
 	private VkImageView h0k_imageView;
@@ -84,7 +84,7 @@ public class Spectrum {
 		}
 	}
 	
-	public Spectrum(VkDevice device,
+	public H0k(VkDevice device,
 			VkPhysicalDeviceMemoryProperties memoryProperties,
 			int N, int L, float amplitude, Vec2f windDirection, float windSpeed,
 			float capillarSuppressFactor) {
@@ -160,7 +160,7 @@ public class Spectrum {
 		VkPipeline pipeline = new VkPipeline(device);
 		pipeline.setPushConstantsRange(VK_SHADER_STAGE_COMPUTE_BIT, pushConstantRange);
 		pipeline.setLayout(descriptor.getDescriptorSetLayout().getHandlePointer());
-		pipeline.createComputePipeline(new ComputeShader(device, "fft/~h0.comp.spv"));
+		pipeline.createComputePipeline(new ComputeShader(device, "fft/h0k.comp.spv"));
 		
 		CommandBuffer commandBuffer = new ComputeCmdBuffer(device,
 				VkContext.getLogicalDevice().getComputeCommandPool().getHandle(),

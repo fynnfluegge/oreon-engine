@@ -49,10 +49,10 @@ public class PalmShadowShader extends GLShaderProgram{
 		bindUniformBlock("Camera", Constants.CameraUniformBlockBinding);
 		bindUniformBlock("LightViewProjections", Constants.LightMatricesUniformBlockBinding);
 		
-		((GLInstancedCluster) object.getParent()).getWorldMatricesBuffer().bindBufferBase(0);
+		((GLInstancedCluster) object.getParentNode()).getWorldMatricesBuffer().bindBufferBase(0);
 		bindUniformBlock("worldMatrices", 0);
 		
-		List<Integer> indices = ((InstancedCluster) object.getParent()).getHighPolyIndices();
+		List<Integer> indices = ((InstancedCluster) object.getParentNode()).getHighPolyIndices();
 		
 		for (int i=0; i<indices.size(); i++)
 		{

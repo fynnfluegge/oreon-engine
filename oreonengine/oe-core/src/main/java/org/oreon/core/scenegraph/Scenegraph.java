@@ -31,6 +31,11 @@ public class Scenegraph extends Node{
 		water.render();
 	}
 	
+	public void renderWireframe(){
+		
+		// TODO
+	}
+	
 	public void renderTransparentObejcts(){
 		
 		transparentObjects.render();
@@ -41,6 +46,13 @@ public class Scenegraph extends Node{
 		rootObject.renderShadows();
 		terrain.renderShadows();
 		water.renderShadows();
+	}
+	
+	public void record(RenderList renderList){
+
+		rootObject.record(renderList);
+		terrain.record(renderList);
+		water.record(renderList);
 	}
 	
 	public void update(){
@@ -85,7 +97,6 @@ public class Scenegraph extends Node{
 	public Node getTerrain() {
 		return terrain;
 	}
-
 
 	public Node getWater() {
 		return water;

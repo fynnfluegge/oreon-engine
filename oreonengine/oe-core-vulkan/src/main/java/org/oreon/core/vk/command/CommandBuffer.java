@@ -31,6 +31,7 @@ import static org.lwjgl.vulkan.VK10.vkCmdBindVertexBuffers;
 import static org.lwjgl.vulkan.VK10.vkCmdCopyBuffer;
 import static org.lwjgl.vulkan.VK10.vkCmdCopyBufferToImage;
 import static org.lwjgl.vulkan.VK10.vkCmdDispatch;
+import static org.lwjgl.vulkan.VK10.vkCmdDraw;
 import static org.lwjgl.vulkan.VK10.vkCmdDrawIndexed;
 import static org.lwjgl.vulkan.VK10.vkCmdEndRenderPass;
 import static org.lwjgl.vulkan.VK10.vkCmdExecuteCommands;
@@ -230,6 +231,19 @@ public class CommandBuffer {
 		memFree(offsets);
 	}
 	
+	public void bindVertexInputCmd(long vertexBuffer){
+		
+		LongBuffer offsets = memAllocLong(1);
+		offsets.put(0, 0L);
+		LongBuffer pVertexBuffers = memAllocLong(1);
+		pVertexBuffers.put(0, vertexBuffer);
+		
+		vkCmdBindVertexBuffers(handle, 0, pVertexBuffers, offsets);
+		
+		memFree(pVertexBuffers);
+		memFree(offsets);
+	}
+	
 	public void bindDescriptorSetsCmd(long pipelinyLayout, long[] descriptorSets,
 			int pipelineBindPoint){
 		
@@ -240,6 +254,11 @@ public class CommandBuffer {
 	public void drawIndexedCmd(int indexCount){
 		
 		vkCmdDrawIndexed(handle, indexCount, 1, 0, 0, 0);
+	}
+	
+	public void drawCmd(int vertexCount){
+		
+		vkCmdDraw(handle, vertexCount, 1, 0, 0);
 	}
 	
 	public void dispatchCmd(int groupCountX, int groupCountY, int groupCountZ){

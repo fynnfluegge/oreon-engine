@@ -9,7 +9,7 @@ import org.oreon.core.gl.scenegraph.GLRenderInfo;
 import org.oreon.core.gl.wrapper.parameter.Default;
 import org.oreon.core.scenegraph.Node;
 import org.oreon.core.scenegraph.NodeComponent;
-import org.oreon.core.scenegraph.NodeComponentKey;
+import org.oreon.core.scenegraph.NodeComponentType;
 import org.oreon.core.util.MeshGenerator;
 
 import lombok.Getter;
@@ -33,13 +33,13 @@ public class GLTerrain extends Node{
 		GLRenderInfo wireframeRenderInfo = new GLRenderInfo(wireframe,
 						    new Default(),
 						    buffer);
-		HashMap<NodeComponentKey, NodeComponent> components = new HashMap<NodeComponentKey, NodeComponent>();
+		HashMap<NodeComponentType, NodeComponent> components = new HashMap<NodeComponentType, NodeComponent>();
 		
 		TerrainConfiguration config = new TerrainConfiguration();
 		
-		components.put(NodeComponentKey.MAIN_RENDERINFO, renderInfo);
-		components.put(NodeComponentKey.WIREFRAME_RENDERINFO, wireframeRenderInfo);
-		components.put(NodeComponentKey.CONFIGURATION, config);
+		components.put(NodeComponentType.MAIN_RENDERINFO, renderInfo);
+		components.put(NodeComponentType.WIREFRAME_RENDERINFO, wireframeRenderInfo);
+		components.put(NodeComponentType.CONFIGURATION, config);
 		
 		quadtree = new TerrainQuadtree(components);
 		

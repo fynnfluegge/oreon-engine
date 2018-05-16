@@ -7,7 +7,7 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.math.Vec2f;
-import org.oreon.core.scenegraph.NodeComponentKey;
+import org.oreon.core.scenegraph.NodeComponentType;
 import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.util.Constants;
 import org.oreon.core.util.ResourceLoader;
@@ -79,7 +79,7 @@ private static TerrainWireframeShader instance = null;
 		
 		setUniform("clipplane", EngineContext.getRenderState().getClipplane());
 		
-		TerrainConfiguration terrConfig = object.getComponent(NodeComponentKey.CONFIGURATION);
+		TerrainConfiguration terrConfig = object.getComponent(NodeComponentType.CONFIGURATION);
 		int lod = ((TerrainNode) object).getLod();
 		Vec2f index = ((TerrainNode) object).getIndex();
 		float gap = ((TerrainNode) object).getGap();
