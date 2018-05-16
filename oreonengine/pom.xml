@@ -168,7 +168,7 @@
   		<module>oe-vk-demo</module>
   		<module>oe-vk-components</module>
   		<module>oe-vk-engine</module>
-  		<module>oe-commmon-world</module>
+<!--   		<module>oe-commmon-world</module> -->
   </modules>
 
 </project>

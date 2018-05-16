@@ -43,11 +43,11 @@ private static SunShader instance = null;
 		setUniform("m_MVP", object.getWorldTransform().getModelViewProjectionMatrix());
 		
 		glActiveTexture(GL_TEXTURE0);
-		((Material<GLTexture>) object.getComponents().get(NodeComponentType.MATERIAL0)).getDiffusemap().bind();
+		((Material<GLTexture>) object.getComponent(NodeComponentType.MATERIAL0)).getDiffusemap().bind();
 		setUniformi("sunTexture", 0);
 		
 		glActiveTexture(GL_TEXTURE1);
-		((Material<GLTexture>) object.getComponents().get(NodeComponentType.MATERIAL1)).getDiffusemap().bind();
+		((Material<GLTexture>) object.getComponent(NodeComponentType.MATERIAL1)).getDiffusemap().bind();
 		setUniformi("sunTexture_small", 1);
 	}
 }

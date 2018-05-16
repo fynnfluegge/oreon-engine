@@ -11,13 +11,13 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE7;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE8;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
-import org.oreon.common.water.WaterConfiguration;
 import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.util.Constants;
 import org.oreon.core.util.ResourceLoader;
 import org.oreon.gl.components.water.Water;
+import org.oreon.gl.components.water.WaterConfiguration;
 
 public class OceanBRDFShader extends GLShaderProgram{
 
