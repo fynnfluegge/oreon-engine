@@ -39,7 +39,7 @@ layout(set = 1, binding = 0) uniform sampler2D Dy;
 layout(set = 1, binding = 1) uniform sampler2D Dx;
 layout(set = 1, binding = 2) uniform sampler2D Dz;
 
-layout(set = 1, binding = 5) uniform UBO {
+layout(set = 1, binding = 7) uniform UBO {
 	float motion;
 	float distortion;
 } ubo;

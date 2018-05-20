@@ -79,7 +79,7 @@ public class NormalRenderer {
 		pipeline = new VkPipeline(device);
 		pipeline.setPushConstantsRange(VK_SHADER_STAGE_COMPUTE_BIT, Integer.BYTES + Float.BYTES);
 		pipeline.setLayout(descriptorSetLayout.getHandlePointer());
-		pipeline.createComputePipeline(new ShaderModule(device, "util/normals.comp.spv", VK_SHADER_STAGE_COMPUTE_BIT));
+		pipeline.createComputePipeline(new ShaderModule(device, "shaders/util/normals.comp.spv", VK_SHADER_STAGE_COMPUTE_BIT));
 		
 		commandBuffer = new ComputeCmdBuffer(device,
 				VkContext.getLogicalDevice().getComputeCommandPool().getHandle(),

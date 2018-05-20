@@ -12,7 +12,7 @@ import org.oreon.core.gl.wrapper.texture.Texture2DStorageRGBA32F;
 
 import lombok.Getter;
 
-public class NormalMapRenderer {
+public class NormalRenderer {
 
 	@Getter
 	private GLTexture normalmap;
@@ -21,7 +21,7 @@ public class NormalMapRenderer {
 	private GLShaderProgram computeShader;
 	private int N;
 	
-	public NormalMapRenderer(int N){
+	public NormalRenderer(int N){
 		this.N = N;
 		computeShader = NormalMapShader.getInstance();
 		normalmap = new Texture2DStorageRGBA32F(N, N, (int) (Math.log(N)/Math.log(2)));

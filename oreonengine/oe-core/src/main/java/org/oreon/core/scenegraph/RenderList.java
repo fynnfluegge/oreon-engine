@@ -1,6 +1,7 @@
 package org.oreon.core.scenegraph;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -24,11 +25,18 @@ public class RenderList {
 		return objectList.containsKey(id);
 	}
 	
+	public Renderable get(String key){
+		
+		return objectList.get(key);
+	}
+	
 	public void add(Renderable object){
+		
 		objectList.put(object.getId(), object);
 	}
 	
 	public void remove(Renderable object){
+		
 		objectList.remove(object.getId());
 	}
 	
@@ -42,13 +50,15 @@ public class RenderList {
 		return objectList.entrySet();
 	}
 	
-	public void sortFrontToBack(){
+	public List<Renderable> sortFrontToBack(){
 		
 		// TODO
+		return null;
 	}
 	
-	public void sortBackToFront(){
+	public List<Renderable> sortBackToFront(){
 		
 		// TODO
+		return null;
 	}
 }

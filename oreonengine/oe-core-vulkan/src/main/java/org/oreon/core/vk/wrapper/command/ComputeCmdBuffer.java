@@ -32,6 +32,18 @@ public class ComputeCmdBuffer extends CommandBuffer{
 				groupCountX, groupCountY, groupCountZ,
 				pushConstantsData, pushConstantsStageFlags);
 	}
+	
+	public ComputeCmdBuffer(VkDevice device, long commandPool,
+			long pipeline, long pipelineLayout, long[] descriptorSets,
+			int groupCountX, int groupCountY, int groupCountZ,
+			long image, int imageLayout) {
+
+		super(device, commandPool, VK_COMMAND_BUFFER_LEVEL_PRIMARY);
+
+		record(pipeline, pipelineLayout, descriptorSets,
+				groupCountX, groupCountY, groupCountZ,
+				image, imageLayout);
+	}
 
 	public void record(long pipeline, long pipelineLayout,
 			long[] descriptorSets, int groupCountX, int groupCountY, int groupCountZ, 
@@ -41,6 +53,18 @@ public class ComputeCmdBuffer extends CommandBuffer{
 		if (pushConstantsData != null){
 			pushConstantsCmd(pipelineLayout, pushConstantsStageFlags, pushConstantsData);
 		}
+		bindPipelineCmd(pipeline, VK_PIPELINE_BIND_POINT_COMPUTE);
+		bindDescriptorSetsCmd(pipelineLayout, descriptorSets, VK_PIPELINE_BIND_POINT_COMPUTE);
+		dispatchCmd(groupCountX, groupCountY, groupCountZ);
+	    finishRecord();
+	}
+	
+	public void record(long pipeline, long pipelineLayout,
+			long[] descriptorSets, int groupCountX, int groupCountY, int groupCountZ,
+			long image, int imageLayout){
+		
+		beginRecord(VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT);
+		clearColorImageCmd(image, imageLayout);
 		bindPipelineCmd(pipeline, VK_PIPELINE_BIND_POINT_COMPUTE);
 		bindDescriptorSetsCmd(pipelineLayout, descriptorSets, VK_PIPELINE_BIND_POINT_COMPUTE);
 		dispatchCmd(groupCountX, groupCountY, groupCountZ);

@@ -39,6 +39,7 @@ import org.oreon.core.vk.wrapper.pipeline.GraphicsPipeline;
 public class Skydome extends Renderable{
 	
 	private VkPipeline graphicsPipeline;
+	private VkPipeline reflectionPipeline;
 	private VkUniformBuffer uniformBuffer;
 	
 	public Skydome() {
@@ -91,6 +92,12 @@ public class Skydome extends Renderable{
 				EngineContext.getConfig().getY_ScreenResolution(),
 				VkContext.getRenderState().getOffScreenFbo().getRenderPass().getHandle());
 		
+		reflectionPipeline = new GraphicsPipeline(device,
+				shaderPipeline, vertexInput, VkUtil.createLongBuffer(descriptorSetLayouts),
+				EngineContext.getConfig().getX_ScreenResolution(),
+				EngineContext.getConfig().getY_ScreenResolution(),
+				VkContext.getRenderState().getOffScreenReflectionFbo().getRenderPass().getHandle());
+		
 		VkBuffer vertexBufferObject = VkBufferHelper.createDeviceLocalBuffer(
 				VkContext.getLogicalDevice().getHandle(),
 				VkContext.getPhysicalDevice().getMemoryProperties(),
@@ -105,7 +112,7 @@ public class Skydome extends Renderable{
         		VkContext.getLogicalDevice().getTransferQueue(),
         		indexBuffer, VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
         
-        CommandBuffer commandBuffer = new SecondaryDrawIndexedCmdBuffer(
+        CommandBuffer mainCommandBuffer = new SecondaryDrawIndexedCmdBuffer(
 	    		VkContext.getLogicalDevice().getHandle(),
 	    		VkContext.getLogicalDevice().getGraphicsCommandPool().getHandle(), 
 	    		graphicsPipeline.getHandle(), graphicsPipeline.getLayoutHandle(),
@@ -116,20 +123,34 @@ public class Skydome extends Renderable{
 	    		vertexBufferObject.getHandle(),
 	    		indexBufferObject.getHandle(),
 	    		mesh.getIndices().length);
+        
+        CommandBuffer reflectionCommandBuffer = new SecondaryDrawIndexedCmdBuffer(
+	    		VkContext.getLogicalDevice().getHandle(),
+	    		VkContext.getLogicalDevice().getGraphicsCommandPool().getHandle(), 
+	    		reflectionPipeline.getHandle(), reflectionPipeline.getLayoutHandle(),
+	    		VkContext.getRenderState().getOffScreenReflectionFbo().getFrameBuffer().getHandle(),
+	    		VkContext.getRenderState().getOffScreenReflectionFbo().getRenderPass().getHandle(),
+	    		0,
+	    		VkUtil.createLongArray(descriptorSets),
+	    		vertexBufferObject.getHandle(),
+	    		indexBufferObject.getHandle(),
+	    		mesh.getIndices().length);
 	    
 	    VkMeshData meshData = new VkMeshData(vertexBufferObject, vertexBuffer,
 	    		indexBufferObject, indexBuffer);
-	    VkRenderInfo mainRenderInfo = new VkRenderInfo(commandBuffer);
+	    VkRenderInfo mainRenderInfo = new VkRenderInfo(mainCommandBuffer);
+	    VkRenderInfo reflectionRenderInfo = new VkRenderInfo(reflectionCommandBuffer);
 	    
 	    addComponent(NodeComponentType.MESH_DATA, meshData);
 	    addComponent(NodeComponentType.MAIN_RENDERINFO, mainRenderInfo);
+	    addComponent(NodeComponentType.REFLECTION_RENDERINFO, reflectionRenderInfo);
 	}
 	
 	public void update()
 	{	
 		super.update();
 		
-		uniformBuffer.updateData(BufferUtil.createByteBuffer(getWorldTransform().getWorldMatrix()));
+		uniformBuffer.mapMemory(BufferUtil.createByteBuffer(getWorldTransform().getWorldMatrix()));
 	}
 
 }

@@ -146,7 +146,7 @@ public class Hkt extends Renderable{
 		pipeline = new VkPipeline(device);
 		pipeline.setPushConstantsRange(VK_SHADER_STAGE_COMPUTE_BIT, Integer.BYTES * 2);
 		pipeline.setLayout(descriptor.getDescriptorSetLayout().getHandlePointer());
-		pipeline.createComputePipeline(new ShaderModule(device, "fft/hkt.comp.spv", VK_SHADER_STAGE_COMPUTE_BIT));
+		pipeline.createComputePipeline(new ShaderModule(device, "shaders/fft/hkt.comp.spv", VK_SHADER_STAGE_COMPUTE_BIT));
 		
 		commandBuffer = new ComputeCmdBuffer(device,
 				VkContext.getLogicalDevice().getComputeCommandPool().getHandle(),

@@ -28,6 +28,7 @@ import static org.lwjgl.vulkan.VK10.vkCmdBindDescriptorSets;
 import static org.lwjgl.vulkan.VK10.vkCmdBindIndexBuffer;
 import static org.lwjgl.vulkan.VK10.vkCmdBindPipeline;
 import static org.lwjgl.vulkan.VK10.vkCmdBindVertexBuffers;
+import static org.lwjgl.vulkan.VK10.vkCmdClearColorImage;
 import static org.lwjgl.vulkan.VK10.vkCmdCopyBuffer;
 import static org.lwjgl.vulkan.VK10.vkCmdCopyBufferToImage;
 import static org.lwjgl.vulkan.VK10.vkCmdDispatch;
@@ -60,6 +61,7 @@ import org.lwjgl.vulkan.VkImageSubresourceRange;
 import org.lwjgl.vulkan.VkOffset3D;
 import org.lwjgl.vulkan.VkRect2D;
 import org.lwjgl.vulkan.VkRenderPassBeginInfo;
+import org.oreon.core.math.Vec3f;
 import org.oreon.core.vk.util.VkUtil;
 
 import lombok.Getter;
@@ -159,12 +161,43 @@ public class CommandBuffer {
 		int colorAttachments = hasDepthAttachment ? attachmentCount-1 : attachmentCount;
 		
 		for (int i=0; i<colorAttachments; i++){
-			clearValues.put(VkUtil.getClearColorValues());
+			clearValues.put(VkUtil.getClearValueColor(new Vec3f(0,0,0)));
 		}
 		if (hasDepthAttachment){
-			clearValues.put(VkUtil.getClearDepthValues());
+			clearValues.put(VkUtil.getClearValueDepth());
 		}
 		clearValues.flip();
+		
+		beginRenderPassCmd(renderPass, frameBuffer, width, height,
+				contentsFlag, clearValues);
+		
+		clearValues.free();
+	}
+	
+	public void beginRenderPassCmd(long renderPass, long frameBuffer,
+			int width, int height, int attachmentCount, boolean hasDepthAttachment,
+			int contentsFlag, Vec3f clearColor){
+		
+		VkClearValue.Buffer clearValues = VkClearValue.calloc(attachmentCount);
+		
+		int colorAttachments = hasDepthAttachment ? attachmentCount-1 : attachmentCount;
+		
+		for (int i=0; i<colorAttachments; i++){
+			clearValues.put(VkUtil.getClearValueColor(clearColor));
+		}
+		if (hasDepthAttachment){
+			clearValues.put(VkUtil.getClearValueDepth());
+		}
+		clearValues.flip();
+		
+		beginRenderPassCmd(renderPass, frameBuffer, width, height,
+				contentsFlag, clearValues);
+		
+		clearValues.free();
+	}
+	
+	private void beginRenderPassCmd(long renderPass, long frameBuffer,
+			int width, int height, int flags, VkClearValue.Buffer clearValues){
 		
 		VkRenderPassBeginInfo renderPassBeginInfo = VkRenderPassBeginInfo.calloc()
 				.sType(VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO)
@@ -178,7 +211,7 @@ public class CommandBuffer {
 		
 		renderPassBeginInfo.framebuffer(frameBuffer);
 		
-		vkCmdBeginRenderPass(handle, renderPassBeginInfo, contentsFlag);
+		vkCmdBeginRenderPass(handle, renderPassBeginInfo, flags);
 		
 		renderPassBeginInfo.free();
 	}
@@ -249,6 +282,19 @@ public class CommandBuffer {
 		
 		vkCmdBindDescriptorSets(handle, pipelineBindPoint,
 				pipelinyLayout, 0, descriptorSets, null);
+	}
+	
+	public void clearColorImageCmd(long image, int imageLayout){
+		
+		VkImageSubresourceRange subresourceRange = VkImageSubresourceRange.calloc()
+				.aspectMask(VK_IMAGE_ASPECT_COLOR_BIT)
+				.baseMipLevel(0)
+				.levelCount(1)
+				.baseArrayLayer(0)
+				.layerCount(1);
+		
+		vkCmdClearColorImage(handle, image, imageLayout,
+				VkUtil.getClearColorValue(), subresourceRange);
 	}
 	
 	public void drawIndexedCmd(int indexCount){

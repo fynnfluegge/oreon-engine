@@ -1,6 +1,7 @@
  package org.oreon.core.scenegraph;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import org.oreon.core.context.EngineContext;
 
@@ -102,7 +103,7 @@ public class Renderable extends Node{
 		super.shutdown();
 	}
 
-	public HashMap<NodeComponentType, NodeComponent> getComponents() {
+	public Map<NodeComponentType, NodeComponent> getComponents() {
 		return components;
 	}
 	

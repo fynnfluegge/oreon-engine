@@ -6,6 +6,7 @@ import static org.lwjgl.vulkan.VK10.VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFER
 
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.vulkan.VkDevice;
+import org.oreon.core.math.Vec3f;
 import org.oreon.core.vk.command.CommandBuffer;
 
 public class PrimaryCmdBuffer extends CommandBuffer{
@@ -22,6 +23,22 @@ public class PrimaryCmdBuffer extends CommandBuffer{
 		beginRenderPassCmd(renderPass, frameBuffer, width, height,
 				attachmentCount, hasDepthAttachment,
 				VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS);
+		
+		recordSecondaryCmdBuffers(secondaryCmdBuffers);
+		
+		endRenderPassCmd();
+	    finishRecord();
+	}
+	
+	public void record(long renderPass, long frameBuffer,
+			int width, int height, int attachmentCount, boolean hasDepthAttachment,
+			Vec3f clearColor, PointerBuffer secondaryCmdBuffers){
+		
+		beginRecord(VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT);
+		beginRenderPassCmd(renderPass, frameBuffer, width, height,
+				attachmentCount, hasDepthAttachment,
+				VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS,
+				clearColor);
 		
 		recordSecondaryCmdBuffers(secondaryCmdBuffers);
 		

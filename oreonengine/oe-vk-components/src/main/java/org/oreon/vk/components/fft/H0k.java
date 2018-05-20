@@ -160,7 +160,7 @@ public class H0k {
 		VkPipeline pipeline = new VkPipeline(device);
 		pipeline.setPushConstantsRange(VK_SHADER_STAGE_COMPUTE_BIT, pushConstantRange);
 		pipeline.setLayout(descriptor.getDescriptorSetLayout().getHandlePointer());
-		pipeline.createComputePipeline(new ComputeShader(device, "fft/h0k.comp.spv"));
+		pipeline.createComputePipeline(new ComputeShader(device, "shaders/fft/h0k.comp.spv"));
 		
 		CommandBuffer commandBuffer = new ComputeCmdBuffer(device,
 				VkContext.getLogicalDevice().getComputeCommandPool().getHandle(),

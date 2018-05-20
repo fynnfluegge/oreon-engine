@@ -1,6 +1,6 @@
 package org.oreon.common.quadtree;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import org.oreon.common.terrain.TerrainConfiguration;
 import org.oreon.core.context.EngineContext;
@@ -22,7 +22,7 @@ public class QuadtreeChunk extends Renderable{
 	private float gap;
 	
 	
-	public QuadtreeChunk(HashMap<NodeComponentType, NodeComponent> components, Vec2f location, int lod, Vec2f index){
+	public QuadtreeChunk(Map<NodeComponentType, NodeComponent> components, Vec2f location, int lod, Vec2f index){
 		
 		this.isleaf = true;
 		this.index = index;

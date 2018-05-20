@@ -1,6 +1,6 @@
 package org.oreon.gl.components.terrain;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import org.oreon.core.context.EngineContext;
 import org.oreon.core.math.Vec2f;
@@ -21,7 +21,7 @@ public class TerrainNode extends Renderable{
 	private float gap;
 	
 	
-	public TerrainNode(HashMap<NodeComponentType, NodeComponent> components, Vec2f location, int lod, Vec2f index){
+	public TerrainNode(Map<NodeComponentType, NodeComponent> components, Vec2f location, int lod, Vec2f index){
 		
 		this.isleaf = true;
 		this.index = index;

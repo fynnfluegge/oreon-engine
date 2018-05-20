@@ -1,7 +1,7 @@
 package org.oreon.core.vk.context;
 
 import org.oreon.core.context.RenderState;
-import org.oreon.core.vk.framebuffer.FrameBufferObject;
+import org.oreon.core.vk.framebuffer.VkFrameBufferObject;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 public class VkRenderState extends RenderState{
 
-	private FrameBufferObject offScreenFbo;
-	private FrameBufferObject offScreenReflectionFbo;
+	private VkFrameBufferObject offScreenFbo;
+	private VkFrameBufferObject offScreenReflectionFbo;
 
 }

@@ -7,17 +7,11 @@ import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_STORAGE_BIT;
 
 import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
-import org.oreon.core.vk.image.VkImage;
 import org.oreon.core.vk.image.VkImageView;
 import org.oreon.core.vk.wrapper.image.Image2DLocal;
+import org.oreon.core.vk.wrapper.image.VkImageBundle;
 
-import lombok.Getter;
-
-@Getter
-public class FrameBufferColorAttachment {
-
-	private VkImage image;
-	private VkImageView imageView;
+public class FrameBufferColorAttachment extends VkImageBundle{
 	
 	public FrameBufferColorAttachment(VkDevice device, VkPhysicalDeviceMemoryProperties memoryProperties,
 			int width, int height, int format){

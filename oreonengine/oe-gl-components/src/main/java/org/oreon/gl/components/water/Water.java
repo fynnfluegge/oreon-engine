@@ -26,7 +26,7 @@ import org.oreon.core.util.MeshGenerator;
 import org.oreon.gl.components.fft.FFT;
 import org.oreon.gl.components.terrain.GLTerrain;
 import org.oreon.gl.components.terrain.TerrainConfiguration;
-import org.oreon.gl.components.util.NormalMapRenderer;
+import org.oreon.gl.components.util.NormalRenderer;
 
 import lombok.Getter;
 
@@ -44,7 +44,7 @@ public class Water extends Renderable{
 	
 	@Getter
 	private FFT fft;
-	private NormalMapRenderer normalmapRenderer;
+	private NormalRenderer normalmapRenderer;
 	private boolean cameraUnderwater;
 	
 	private WaterRenderParameter renderConfig;
@@ -78,7 +78,7 @@ public class Water extends Renderable{
 		fft.setChoppy(waterConfiguration.isChoppy());
 		fft.init();
 		
-		normalmapRenderer = new NormalMapRenderer(waterConfiguration.getN());
+		normalmapRenderer = new NormalRenderer(waterConfiguration.getN());
 		getNormalmapRenderer().setStrength(waterConfiguration.getNormalStrength());
 		
 		refractionRenderer = new RefracReflecRenderer(EngineContext.getWindow().getWidth()/2,
@@ -230,11 +230,11 @@ public class Water extends Renderable{
 		this.clip_offset = clip_offset;
 	}
 
-	public NormalMapRenderer getNormalmapRenderer() {
+	public NormalRenderer getNormalmapRenderer() {
 		return normalmapRenderer;
 	}
 
-	public void setNormalmapRenderer(NormalMapRenderer normalmapRenderer) {
+	public void setNormalmapRenderer(NormalRenderer normalmapRenderer) {
 		this.normalmapRenderer = normalmapRenderer;
 	}
 	

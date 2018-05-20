@@ -126,7 +126,8 @@ public class LogicalDevice {
         		.tessellationShader(true)
         		.geometryShader(true)
         		.shaderClipDistance(true)
-        		.samplerAnisotropy(true);
+        		.samplerAnisotropy(true)
+        		.shaderStorageImageExtendedFormats(true);
         
         VkDeviceCreateInfo deviceCreateInfo = VkDeviceCreateInfo.calloc()
                 .sType(VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO)

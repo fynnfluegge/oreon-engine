@@ -131,8 +131,6 @@ public class VkPipeline {
 		scissor.free();
 		memFree(pDynamicStates);
 		
-		shaderPipeline.destroy();
-		
 		if (err != VK_SUCCESS) {
 			throw new AssertionError("Failed to create pipeline: " + VkUtil.translateVulkanResult(err));
 		}

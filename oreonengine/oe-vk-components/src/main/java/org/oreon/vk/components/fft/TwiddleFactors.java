@@ -93,7 +93,7 @@ public class TwiddleFactors {
 		VkDescriptor descriptor = new TwiddleDescriptor(device, imageView, bitReversedIndicesBuffer, n);
 		
 		ShaderModule computeShader = new ShaderModule(device,
-				"fft/TwiddleFactors.comp.spv", VK_SHADER_STAGE_COMPUTE_BIT);
+				"shaders/fft/TwiddleFactors.comp.spv", VK_SHADER_STAGE_COMPUTE_BIT);
 		
 		VkPipeline pipeline = new VkPipeline(device);
 		pipeline.setPushConstantsRange(VK_SHADER_STAGE_COMPUTE_BIT, Integer.BYTES * 1);

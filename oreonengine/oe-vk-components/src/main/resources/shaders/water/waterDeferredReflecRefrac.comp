@@ -1,13 +1,13 @@
 #version 450
 #extension GL_ARB_separate_shader_objects : enable
 
-layout (local_size_x = 8, local_size_y = 8) in;
+layout (local_size_x = 16, local_size_y = 16) in;
 
-layout (set = 1, binding = 0, rgba16f) uniform writeonly image2D defferedSceneImage;
+layout (set = 1, binding = 0, rgba16) uniform writeonly image2D defferedSceneImage;
 
-layout (set = 1, binding = 1, rgba16f) uniform readonly image2D albedoSceneImage;
+layout (set = 1, binding = 1, rgba8) uniform readonly image2D albedoSceneImage;
 
-layout (set = 1, binding = 2, rgba32f) uniform readonly image2D normalImage;
+layout (set = 1, binding = 2, rgba16) uniform readonly image2D normalImage;
 
 layout (set = 0, binding = 0, std140, row_major) uniform Camera{
 	vec3 eyePosition;
@@ -48,5 +48,5 @@ void main(void){
 		finalColor = albedo * diffuseLight;
 	}
 	
-	imageStore(defferedSceneImage, computeCoord, vec4(finalColor,1.0));
+	imageStore(defferedSceneImage, computeCoord, vec4(albedo,1.0));
 }

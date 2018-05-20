@@ -1,5 +1,6 @@
 package org.oreon.vk.engine;
 
+import static org.lwjgl.system.MemoryUtil.memAllocLong;
 import static org.lwjgl.vulkan.VK10.VK_ACCESS_COLOR_ATTACHMENT_READ_BIT;
 import static org.lwjgl.vulkan.VK10.VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
 import static org.lwjgl.vulkan.VK10.VK_ACCESS_MEMORY_READ_BIT;
@@ -16,26 +17,41 @@ import static org.lwjgl.vulkan.VK10.VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT;
 import static org.lwjgl.vulkan.VK10.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
 import static org.lwjgl.vulkan.VK10.VK_SUBPASS_EXTERNAL;
 
+import java.nio.LongBuffer;
+
 import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
 import org.oreon.core.context.EngineContext;
-import org.oreon.core.vk.framebuffer.FrameBufferObject;
+import org.oreon.core.target.Attachment;
+import org.oreon.core.vk.framebuffer.FrameBufferColorAttachment;
+import org.oreon.core.vk.framebuffer.FrameBufferDepthAttachment;
 import org.oreon.core.vk.framebuffer.VkFrameBuffer;
+import org.oreon.core.vk.framebuffer.VkFrameBufferObject;
 import org.oreon.core.vk.pipeline.RenderPass;
+import org.oreon.core.vk.wrapper.image.VkImageBundle;
 
 import lombok.Getter;
 
 @Getter
-public class OffScreenFbo extends FrameBufferObject{
-
-	private GBuffer gBuffer;
+public class OffScreenFbo extends VkFrameBufferObject{
 	
 	public OffScreenFbo(VkDevice device, VkPhysicalDeviceMemoryProperties memoryProperties) {
 		
 		width = EngineContext.getConfig().getX_ScreenResolution();
 		height = EngineContext.getConfig().getY_ScreenResolution();
 		
-		gBuffer = new GBuffer(device, memoryProperties, width, height);
+		VkImageBundle albedoBuffer = new FrameBufferColorAttachment(device, memoryProperties, width, height,
+				VK_FORMAT_R8G8B8A8_UNORM);
+		
+		VkImageBundle normalBuffer = new FrameBufferColorAttachment(device, memoryProperties, width, height, 
+				VK_FORMAT_R16G16B16A16_SFLOAT);
+		
+		VkImageBundle depthBuffer = new FrameBufferDepthAttachment(device,memoryProperties, width, height,
+				VK_FORMAT_D32_SFLOAT);
+		
+		attachments.put(Attachment.ALBEDO, albedoBuffer);
+		attachments.put(Attachment.NORMAL, normalBuffer);
+		attachments.put(Attachment.DEPTH, depthBuffer);
 		
 		renderPass = new RenderPass(device);
 		renderPass.setAttachment(VK_FORMAT_R8G8B8A8_UNORM,
@@ -69,7 +85,17 @@ public class OffScreenFbo extends FrameBufferObject{
 		depthAttachment = true;
 		
 		frameBuffer = new VkFrameBuffer(device, width, height, 1,
-				gBuffer.getpImageViews(), renderPass.getHandle());
+				getpImageViews(), renderPass.getHandle());
+	}
+	
+	public LongBuffer getpImageViews(){
+		
+		LongBuffer pImageViews = memAllocLong(3);
+		pImageViews.put(0, attachments.get(Attachment.ALBEDO).getImageView().getHandle());
+		pImageViews.put(1, attachments.get(Attachment.NORMAL).getImageView().getHandle());
+		pImageViews.put(2, attachments.get(Attachment.DEPTH).getImageView().getHandle());
+		
+		return pImageViews;
 	}
 	
 }

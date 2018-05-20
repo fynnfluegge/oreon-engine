@@ -15,15 +15,14 @@ import static org.lwjgl.vulkan.VK10.vkQueueWaitIdle;
 import java.nio.ByteBuffer;
 import java.nio.LongBuffer;
 import java.util.LinkedHashMap;
-import java.util.Map;
 
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.vulkan.VkInstance;
 import org.oreon.core.context.EngineContext;
 import org.oreon.core.scenegraph.NodeComponentType;
 import org.oreon.core.scenegraph.RenderList;
-import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.system.RenderEngine;
+import org.oreon.core.target.Attachment;
 import org.oreon.core.vk.command.CommandBuffer;
 import org.oreon.core.vk.command.SubmitInfo;
 import org.oreon.core.vk.context.VkContext;
@@ -39,16 +38,15 @@ import org.oreon.core.vk.wrapper.command.PrimaryCmdBuffer;
 public class VkRenderEngine extends RenderEngine{
 	
 	private VkInstance vkInstance;
-	private PhysicalDevice physicalDevice;
-	private LogicalDevice logicalDevice;
-	private SwapChain swapChain;
-	private long surface;
+	private static PhysicalDevice physicalDevice;
+	private static LogicalDevice logicalDevice;
+	private static SwapChain swapChain;
+	private static long surface;
 
 	private OffScreenFbo offScreenFbo;
 	private ReflectionFbo reflectionFbo;
 	private PrimaryCmdBuffer offScreenPrimaryCmdBuffer;
-	private LinkedHashMap<String, CommandBuffer> activeOffScreenSecondaryCmdBuffers;
-	private LinkedHashMap<String, CommandBuffer> suspendedOffScreenSecondaryCmdBuffers;
+	private LinkedHashMap<String, CommandBuffer> offScreenSecondaryCmdBuffers;
 	private RenderList offScreenRenderList;
 	private SubmitInfo offScreenSubmitInfo;
 	
@@ -64,8 +62,7 @@ public class VkRenderEngine extends RenderEngine{
 		super.init();
 		
 		offScreenRenderList = new RenderList();
-		activeOffScreenSecondaryCmdBuffers = new LinkedHashMap<String, CommandBuffer>();
-		suspendedOffScreenSecondaryCmdBuffers = new LinkedHashMap<String, CommandBuffer>();
+		offScreenSecondaryCmdBuffers = new LinkedHashMap<String, CommandBuffer>();
 		
 		if (!glfwVulkanSupported()) {
 	            throw new AssertionError("GLFW failed to find the Vulkan loader");
@@ -109,6 +106,8 @@ public class VkRenderEngine extends RenderEngine{
 	    
 	    offScreenFbo = new OffScreenFbo(logicalDevice.getHandle(),
 	    								physicalDevice.getMemoryProperties());
+	    reflectionFbo = new ReflectionFbo(logicalDevice.getHandle(),
+				physicalDevice.getMemoryProperties());
 	    
 	    offScreenPrimaryCmdBuffer =  new PrimaryCmdBuffer(logicalDevice.getHandle(),
 	    		logicalDevice.getGraphicsCommandPool().getHandle());
@@ -118,12 +117,17 @@ public class VkRenderEngine extends RenderEngine{
 	    VkContext.getRenderState().setOffScreenFbo(offScreenFbo);
 	    VkContext.getRenderState().setOffScreenReflectionFbo(reflectionFbo);
 	    
-	    swapChain = new SwapChain(logicalDevice,
-	    						  physicalDevice,
-	    						  surface,
-	    						  offScreenFbo.getGBuffer().getAlbedoBuffer().getImageView().getHandle());
+	    swapChain = new SwapChain(logicalDevice, physicalDevice, surface,
+	    		offScreenFbo.getAttachments().get(Attachment.ALBEDO).getImageView().getHandle());
 	}
     
+	// FOR TESTING
+	// pass static reference to swapchain for display desired imageView
+	public static void createSwapChain(){
+		
+//		swapChain = new SwapChain(logicalDevice, physicalDevice, surface,
+//	    		Water.deferredReflectionImageView.getHandle());
+	}
 
 	@Override
 	public void render() {
@@ -133,20 +137,17 @@ public class VkRenderEngine extends RenderEngine{
 		
 		// TODO check if offScreenRenderList changed, 
 		// if and only if changed rearrange commandBuffers 
-		for (Map.Entry<String,Renderable> entry : offScreenRenderList.getEntrySet()) {
+		for (String key : offScreenRenderList.getKeySet()) {
 			
-			if(!activeOffScreenSecondaryCmdBuffers.containsKey(entry.getKey())){
-				VkRenderInfo mainRenderInfo = entry.getValue().getComponent(NodeComponentType.MAIN_RENDERINFO);
-				activeOffScreenSecondaryCmdBuffers.put(entry.getKey(),mainRenderInfo.getCommandBuffer());
+			if(!offScreenSecondaryCmdBuffers.containsKey(key)){
+				VkRenderInfo mainRenderInfo = offScreenRenderList.get(key)
+						.getComponent(NodeComponentType.MAIN_RENDERINFO);
+				offScreenSecondaryCmdBuffers.put(key,mainRenderInfo.getCommandBuffer());
 			}
-			
-			// TODO check if activeOffScreenCmdBuffers not contained in affScreenRenderList
-			// if yes -> put into suspendedOffScreenCmdBuffers
 		}
 		
 		// primary render command buffer
-		if (!offScreenRenderList.getEntrySet().isEmpty()){
-			
+		if (!offScreenRenderList.getObjectList().isEmpty()){
 			offScreenPrimaryCmdBuffer.reset();
 			offScreenPrimaryCmdBuffer.record(offScreenFbo.getRenderPass().getHandle(),
 					offScreenFbo.getFrameBuffer().getHandle(),
@@ -154,7 +155,7 @@ public class VkRenderEngine extends RenderEngine{
 					offScreenFbo.getHeight(),
 					offScreenFbo.getAttachmentCount(),
 					offScreenFbo.isDepthAttachment(),
-					VkUtil.createPointerBuffer(activeOffScreenSecondaryCmdBuffers.values()));
+					VkUtil.createPointerBuffer(offScreenSecondaryCmdBuffers.values()));
 			
 			offScreenSubmitInfo.submit(logicalDevice.getGraphicsQueue());
 		}
@@ -182,7 +183,6 @@ public class VkRenderEngine extends RenderEngine{
 		EngineContext.getCamera().shutdown();
 		VkContext.getDescriptorPoolManager().shutdown();
 		logicalDevice.destroy();
-
 		VkContext.getVulkanInstance().destroy();		
 	}
 	

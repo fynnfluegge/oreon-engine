@@ -27,10 +27,10 @@ layout(set = 0, binding = 0, std140, row_major) uniform Camera {
 
 layout(set = 1, binding = 3) uniform sampler2D dudvRefracReflec;
 layout(set = 1, binding = 4) uniform sampler2D normalmap;
-// layout(set = 1, binding = 5) uniform sampler2D waterReflection;
-// layout(set = 1, binding = 6) uniform sampler2D waterRefraction;
+layout(set = 1, binding = 5) uniform sampler2D waterReflection;
+layout(set = 1, binding = 6) uniform sampler2D waterRefraction;
 
-layout(set = 1, binding = 5) uniform UBO {
+layout(set = 1, binding = 7) uniform UBO {
 	float motion;
 	float distortion;
 } ubo;
@@ -115,13 +115,13 @@ void main(void)
     // Reflection //
 	vec2 reflecCoords = projCoord.xy + dudvCoord.rb * constants.kReflection;
 	reflecCoords = clamp(reflecCoords, constants.kReflection, 1-constants.kReflection);
-    vec3 reflection = vec3(0.4,0,0.4);//mix(texture(waterReflection, reflecCoords).rgb, deepOceanColor,  0.5);
+    vec3 reflection = mix(texture(waterReflection, reflecCoords).rgb, deepOceanColor,  0.5);
     reflection *= fresnel;
  
     // Refraction //
 	vec2 refracCoords = projCoord.xy + dudvCoord.rb * constants.kRefraction;
 	refracCoords = clamp(refracCoords, constants.kRefraction, 1-constants.kRefraction);
-	vec3 refraction = vec3(0,0.4,0.4);//texture(waterRefraction, refracCoords).rgb;
+	vec3 refraction = texture(waterRefraction, refracCoords).rgb;
 	refraction *= 1-fresnel;
 	
 	vec3 fragColor = (reflection + refraction);

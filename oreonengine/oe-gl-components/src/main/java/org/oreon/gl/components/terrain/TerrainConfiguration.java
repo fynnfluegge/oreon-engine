@@ -18,7 +18,7 @@ import org.oreon.core.math.Vec2f;
 import org.oreon.core.model.Material;
 import org.oreon.core.scenegraph.NodeComponent;
 import org.oreon.core.util.BufferUtil;
-import org.oreon.gl.components.util.NormalMapRenderer;
+import org.oreon.gl.components.util.NormalRenderer;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -67,7 +67,7 @@ public class TerrainConfiguration extends NodeComponent{
 			getHeightmap().bind();
 			getHeightmap().bilinearFilter();
 			
-			NormalMapRenderer normalRenderer = new NormalMapRenderer(getHeightmap().getMetaData().getWidth());
+			NormalRenderer normalRenderer = new NormalRenderer(getHeightmap().getMetaData().getWidth());
 			normalRenderer.setStrength(Integer.valueOf(properties.getProperty("normalmap.strength")));
 			normalRenderer.render(getHeightmap());
 			normalmap = normalRenderer.getNormalmap();	
@@ -146,7 +146,7 @@ public class TerrainConfiguration extends NodeComponent{
 		fractalMapGenerator.render(fractals);
 		heightmap = fractalMapGenerator.getFractalmap();
 		
-		NormalMapRenderer normalRenderer = new NormalMapRenderer(fractalMapResolution);
+		NormalRenderer normalRenderer = new NormalRenderer(fractalMapResolution);
 		normalRenderer.setStrength(8);
 		normalRenderer.render(getHeightmap());
 		normalmap = normalRenderer.getNormalmap();

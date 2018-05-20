@@ -6,12 +6,12 @@ import static org.lwjgl.vulkan.VK10.VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
 import static org.lwjgl.vulkan.VK10.VK_ACCESS_MEMORY_READ_BIT;
 import static org.lwjgl.vulkan.VK10.VK_ATTACHMENT_LOAD_OP_CLEAR;
 import static org.lwjgl.vulkan.VK10.VK_DEPENDENCY_BY_REGION_BIT;
-import static org.lwjgl.vulkan.VK10.VK_FORMAT_D32_SFLOAT;
-import static org.lwjgl.vulkan.VK10.VK_FORMAT_R16G16B16A16_SFLOAT;
+import static org.lwjgl.vulkan.VK10.VK_FORMAT_D16_UNORM;
+import static org.lwjgl.vulkan.VK10.VK_FORMAT_R16G16B16A16_UNORM;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_R8G8B8A8_UNORM;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
-import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_GENERAL;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_UNDEFINED;
 import static org.lwjgl.vulkan.VK10.VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT;
 import static org.lwjgl.vulkan.VK10.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
@@ -22,38 +22,44 @@ import java.nio.LongBuffer;
 import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
 import org.oreon.core.context.EngineContext;
+import org.oreon.core.target.Attachment;
 import org.oreon.core.vk.framebuffer.FrameBufferColorAttachment;
 import org.oreon.core.vk.framebuffer.FrameBufferDepthAttachment;
-import org.oreon.core.vk.framebuffer.FrameBufferObject;
 import org.oreon.core.vk.framebuffer.VkFrameBuffer;
+import org.oreon.core.vk.framebuffer.VkFrameBufferObject;
 import org.oreon.core.vk.pipeline.RenderPass;
+import org.oreon.core.vk.wrapper.image.VkImageBundle;
 
-public class ReflectionFbo extends FrameBufferObject{
-	
-	private FrameBufferColorAttachment albedoBuffer;
-	private FrameBufferColorAttachment normalBuffer;
-	private FrameBufferDepthAttachment depthBuffer;
+import lombok.Getter;
+
+@Getter
+public class ReflectionFbo extends VkFrameBufferObject{
 
 	public ReflectionFbo(VkDevice device,
 			VkPhysicalDeviceMemoryProperties memoryProperties) {
 		
-		width = EngineContext.getConfig().getX_ScreenResolution()/2;
-		height = EngineContext.getConfig().getY_ScreenResolution()/2;
+		width = EngineContext.getConfig().getX_ScreenResolution();
+		height = EngineContext.getConfig().getY_ScreenResolution();
 		
-		albedoBuffer = new FrameBufferColorAttachment(device, memoryProperties, width, height,
+		VkImageBundle albedoBuffer = new FrameBufferColorAttachment(device, memoryProperties, width, height,
 				VK_FORMAT_R8G8B8A8_UNORM);
-		normalBuffer = new FrameBufferColorAttachment(device, memoryProperties, width, height, 
-				VK_FORMAT_R16G16B16A16_SFLOAT);
-		depthBuffer = new FrameBufferDepthAttachment(device, memoryProperties, width, height);
+		VkImageBundle normalBuffer = new FrameBufferColorAttachment(device, memoryProperties, width, height, 
+				VK_FORMAT_R16G16B16A16_UNORM);
+		VkImageBundle depthBuffer = new FrameBufferDepthAttachment(device, memoryProperties, width, height,
+				VK_FORMAT_D16_UNORM);
+		
+		attachments.put(Attachment.ALBEDO, albedoBuffer);
+		attachments.put(Attachment.NORMAL, normalBuffer);
+		attachments.put(Attachment.DEPTH, depthBuffer);
 		
 		renderPass = new RenderPass(device);
 		renderPass.setAttachment(VK_FORMAT_R8G8B8A8_UNORM,
-				VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+				VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_GENERAL,
 				VK_ATTACHMENT_LOAD_OP_CLEAR);
-		renderPass.setAttachment(VK_FORMAT_R16G16B16A16_SFLOAT,
-				VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+		renderPass.setAttachment(VK_FORMAT_R16G16B16A16_UNORM,
+				VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_GENERAL,
 				VK_ATTACHMENT_LOAD_OP_CLEAR);
-		renderPass.setAttachment(VK_FORMAT_D32_SFLOAT,
+		renderPass.setAttachment(VK_FORMAT_D16_UNORM,
 				VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL,
 				VK_ATTACHMENT_LOAD_OP_CLEAR);
 		renderPass.addColorAttachmentReference(0, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
@@ -84,9 +90,9 @@ public class ReflectionFbo extends FrameBufferObject{
 	public LongBuffer getpImageViews(){
 		
 		LongBuffer pImageViews = memAllocLong(3);
-		pImageViews.put(0, albedoBuffer.getImageView().getHandle());
-		pImageViews.put(1, normalBuffer.getImageView().getHandle());
-		pImageViews.put(2, depthBuffer.getImageView().getHandle());
+		pImageViews.put(0, attachments.get(Attachment.ALBEDO).getImageView().getHandle());
+		pImageViews.put(1, attachments.get(Attachment.NORMAL).getImageView().getHandle());
+		pImageViews.put(2, attachments.get(Attachment.DEPTH).getImageView().getHandle());
 		
 		return pImageViews;
 	}

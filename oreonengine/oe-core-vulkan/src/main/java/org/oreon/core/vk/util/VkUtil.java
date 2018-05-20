@@ -36,7 +36,9 @@ import java.util.Collection;
 import java.util.List;
 
 import org.lwjgl.PointerBuffer;
+import org.lwjgl.vulkan.VkClearColorValue;
 import org.lwjgl.vulkan.VkClearValue;
+import org.oreon.core.math.Vec3f;
 import org.oreon.core.vk.command.CommandBuffer;
 import org.oreon.core.vk.descriptor.DescriptorSet;
 import org.oreon.core.vk.descriptor.DescriptorSetLayout;
@@ -128,10 +130,22 @@ public class VkUtil {
         return ppEnabledLayerNames;
 	}
     
-    public static VkClearValue getClearColorValues(){
+    public static VkClearValue getClearValueColor(Vec3f clearColor){
     	
     	VkClearValue clearValues = VkClearValue.calloc();
         clearValues.color()
+                .float32(0, clearColor.getX())
+                .float32(1, clearColor.getY())
+                .float32(2, clearColor.getZ())
+                .float32(3, 1.0f);
+        
+        return clearValues;
+    }
+    
+    public static VkClearColorValue getClearColorValue(){
+    	
+    	VkClearColorValue clearValues = VkClearColorValue.calloc();
+        clearValues
                 .float32(0, 0.0f)
                 .float32(1, 0.0f)
                 .float32(2, 0.0f)
@@ -140,7 +154,7 @@ public class VkUtil {
         return clearValues;
     }
     
-    public static VkClearValue getClearDepthValues(){
+    public static VkClearValue getClearValueDepth(){
     	
     	VkClearValue clearValues = VkClearValue.calloc();
         clearValues.depthStencil()

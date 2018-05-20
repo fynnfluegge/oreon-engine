@@ -250,8 +250,8 @@ public class FFT extends Renderable{
 				descriptorLayout, dzImageView, hkt.getDzCoefficients_imageView(),
 				dzPingpongImageView);
 		
-		butterflyShader = new ShaderModule(device, "fft/Butterfly.comp.spv", VK_SHADER_STAGE_COMPUTE_BIT);
-		inversionShader = new ShaderModule(device, "fft/Inversion.comp.spv", VK_SHADER_STAGE_COMPUTE_BIT);
+		butterflyShader = new ShaderModule(device, "shaders/fft/Butterfly.comp.spv", VK_SHADER_STAGE_COMPUTE_BIT);
+		inversionShader = new ShaderModule(device, "shaders/fft/Inversion.comp.spv", VK_SHADER_STAGE_COMPUTE_BIT);
 		
 		butterflyPipeline = new VkPipeline(device);
 		butterflyPipeline.setLayout(descriptorLayout.getHandlePointer());
