@@ -25,8 +25,8 @@ public class LensFlareShader extends GLShaderProgram{
 	{
 		super();
 
-		addVertexShader(ResourceLoader.loadShader("shaders/post_processing/lens_flare/LensFlare_VS.glsl"));
-		addFragmentShader(ResourceLoader.loadShader("shaders/post_processing/lens_flare/LensFlare_FS.glsl"));
+		addVertexShader(ResourceLoader.loadShader("shaders/filter/lens_flare/LensFlare_VS.glsl"));
+		addFragmentShader(ResourceLoader.loadShader("shaders/filter/lens_flare/LensFlare_FS.glsl"));
 		compileShader();
 		
 		addUniform("orthographicMatrix");

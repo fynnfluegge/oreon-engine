@@ -28,8 +28,8 @@ private static SunShader instance = null;
 	{
 		super();
 
-		addVertexShader(ResourceLoader.loadShader("shaders/atmosphere/sun_VS.glsl"));
-		addFragmentShader(ResourceLoader.loadShader("shaders/atmosphere/sun_FS.glsl"));
+		addVertexShader(ResourceLoader.loadShader("shaders/sun/sun_VS.glsl"));
+		addFragmentShader(ResourceLoader.loadShader("shaders/sun/sun_FS.glsl"));
 		compileShader();
 			
 		addUniform("m_MVP");

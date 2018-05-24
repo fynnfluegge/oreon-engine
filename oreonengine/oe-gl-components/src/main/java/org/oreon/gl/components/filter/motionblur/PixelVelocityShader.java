@@ -26,7 +26,7 @@ public class PixelVelocityShader extends GLShaderProgram{
 	{
 		super();
 		
-		addComputeShader(ResourceLoader.loadShader("shaders/computing/MotionBlur/PixelVelocity.glsl"));
+		addComputeShader(ResourceLoader.loadShader("shaders/filter/motionBlur/PixelVelocity.comp"));
 		
 		compileShader();
 		

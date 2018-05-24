@@ -20,7 +20,7 @@ public class NoiseTextureShader extends GLShaderProgram{
 		
 		super();
 		
-		addComputeShader(ResourceLoader.loadShader("shaders/post_processing/ssao/NoiseTexture_CS.glsl"));
+		addComputeShader(ResourceLoader.loadShader("shaders/filter/ssao/NoiseTexture_CS.glsl"));
 		compileShader();
 		
 		for (int i=0; i<16; i++){

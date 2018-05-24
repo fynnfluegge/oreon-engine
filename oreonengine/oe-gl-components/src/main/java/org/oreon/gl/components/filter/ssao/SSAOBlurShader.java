@@ -20,7 +20,7 @@ public class SSAOBlurShader extends GLShaderProgram{
 		
 		super();
 		
-		addComputeShader(ResourceLoader.loadShader("shaders/post_processing/ssao/SSAOBlur_CS.glsl"));
+		addComputeShader(ResourceLoader.loadShader("shaders/filter/ssao/SSAOBlur_CS.glsl"));
 		compileShader();
 		
 		addUniform("width");

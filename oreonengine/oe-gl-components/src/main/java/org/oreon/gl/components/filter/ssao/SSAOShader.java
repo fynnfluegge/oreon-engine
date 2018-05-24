@@ -22,7 +22,7 @@ public class SSAOShader extends GLShaderProgram{
 		
 		super();
 		
-		addComputeShader(ResourceLoader.loadShader("shaders/post_processing/ssao/SSAO_CS.glsl"));
+		addComputeShader(ResourceLoader.loadShader("shaders/filter/ssao/SSAO_CS.glsl"));
 		compileShader();
 		
 		addUniform("m_View");

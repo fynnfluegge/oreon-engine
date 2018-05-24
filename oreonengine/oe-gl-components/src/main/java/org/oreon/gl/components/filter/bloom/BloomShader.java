@@ -20,7 +20,7 @@ public class BloomShader extends GLShaderProgram{
 	{
 		super();
 		
-		addComputeShader(ResourceLoader.loadShader("shaders/computing/Bloom/Bloom_CS.glsl"));
+		addComputeShader(ResourceLoader.loadShader("shaders/filter/bloom/Bloom_CS.glsl"));
 		
 		compileShader();
 	}
