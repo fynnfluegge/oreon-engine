@@ -33,12 +33,13 @@ import org.lwjgl.vulkan.VkImageCreateInfo;
 import org.lwjgl.vulkan.VkMemoryAllocateInfo;
 import org.lwjgl.vulkan.VkMemoryRequirements;
 import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
+import org.oreon.core.image.Image;
 import org.oreon.core.vk.util.DeviceCapabilities;
 import org.oreon.core.vk.util.VkUtil;
 
 import lombok.Getter;
 
-public class VkImage {
+public class VkImage extends Image{
 	
 	@Getter
 	private long handle;
@@ -50,7 +51,7 @@ public class VkImage {
 	private VkDevice device;
 
 	public VkImage(VkDevice device, int width, int height, int depth,
-			int format, int usage, int samples){
+			int format, int usage, int samples, int mipLevels){
 		
 		this.device = device;
 		this.format = format;
@@ -64,14 +65,14 @@ public class VkImage {
 				.sType(VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO)
 				.imageType(VK_IMAGE_TYPE_2D)
 				.extent(extent)
-				.mipLevels(1)
+				.mipLevels(mipLevels)
 				.arrayLayers(1)
 				.format(format)
 				.tiling(VK_IMAGE_TILING_OPTIMAL)
 				.initialLayout(VK_IMAGE_LAYOUT_UNDEFINED)
 				.usage(usage)
 				.sharingMode(VK_SHARING_MODE_EXCLUSIVE)
-				.samples(1)
+				.samples(samples)
 				.flags(0);
 		
 		LongBuffer pBuffer = memAllocLong(1);

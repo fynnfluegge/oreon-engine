@@ -7,6 +7,9 @@ import static org.lwjgl.vulkan.VK10.VK_FILTER_LINEAR;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_R8G8B8A8_UNORM;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_ASPECT_COLOR_BIT;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_SAMPLED_BIT;
+import static org.lwjgl.vulkan.VK10.VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
+import static org.lwjgl.vulkan.VK10.VK_SAMPLER_MIPMAP_MODE_LINEAR;
 import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_FRAGMENT_BIT;
 
 import java.nio.ByteBuffer;
@@ -21,6 +24,7 @@ import org.oreon.core.scenegraph.NodeComponentType;
 import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.util.BufferUtil;
 import org.oreon.core.util.MeshGenerator;
+import org.oreon.core.util.Util;
 import org.oreon.core.vk.buffer.VkBuffer;
 import org.oreon.core.vk.command.CommandBuffer;
 import org.oreon.core.vk.command.SubmitInfo;
@@ -77,27 +81,32 @@ public class VkTestObject extends Renderable{
 	    
 	    VkDevice device = VkContext.getLogicalDevice().getHandle();
 		
-		VkImage image = VkImageHelper.createSampledImageFromFile(
+		VkImage image = VkImageHelper.loadImageFromFileMipmap(
 				device,
 				VkContext.getPhysicalDevice().getMemoryProperties(),
 				VkContext.getLogicalDevice().getTransferCommandPool().getHandle(),
 				VkContext.getLogicalDevice().getTransferQueue(),
-				"images/vulkan-logo.jpg");
+				"images/vulkan-logo.jpg",
+				VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+				VK_IMAGE_USAGE_SAMPLED_BIT,
+				VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT);
 		
 		VkImageView imageView = new VkImageView(device,
-				VK_FORMAT_R8G8B8A8_UNORM, image.getHandle(), VK_IMAGE_ASPECT_COLOR_BIT);
+				VK_FORMAT_R8G8B8A8_UNORM, image.getHandle(), VK_IMAGE_ASPECT_COLOR_BIT,
+				(int) (Math.log(image.getMetaData().getWidth())/Math.log(2)));
 		
 		DescriptorSetLayout layout = new DescriptorSetLayout(device,1);
 	    layout.addLayoutBinding(0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
 	    						VK_SHADER_STAGE_FRAGMENT_BIT);
 	    layout.create();
 	    
-	    VkSampler sampler = new VkSampler(device, VK_FILTER_LINEAR, false);
+	    VkSampler sampler = new VkSampler(device, VK_FILTER_LINEAR, false, 0,
+	    		VK_SAMPLER_MIPMAP_MODE_LINEAR, Util.getLog2N(image.getMetaData().getWidth()));
 	    
 	    DescriptorSet set = new DescriptorSet(device,
 	    		VkContext.getDescriptorPoolManager().getDescriptorPool("POOL_1").getHandle(),
 	    		layout.getHandlePointer());
-	    set.updateDescriptorImageBuffer(fft.getDyImageView().getHandle(),
+	    set.updateDescriptorImageBuffer(imageView.getHandle(),
 	    		VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
 	    		sampler.getHandle(), 0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
 		

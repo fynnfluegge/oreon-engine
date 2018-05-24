@@ -30,7 +30,7 @@ import org.oreon.core.vk.util.VkUtil;
 import org.oreon.core.vk.wrapper.buffer.VkUniformBuffer;
 import org.oreon.core.vk.wrapper.command.ComputeCmdBuffer;
 import org.oreon.core.vk.wrapper.descriptor.VkDescriptor;
-import org.oreon.core.vk.wrapper.image.Image2DLocal;
+import org.oreon.core.vk.wrapper.image.Image2DDeviceLocal;
 
 import lombok.Getter;
 
@@ -108,21 +108,21 @@ public class Hkt extends Renderable{
 			VkPhysicalDeviceMemoryProperties memoryProperties, int N, int L,
 			VkImageView tilde_h0k, VkImageView tilde_h0minusk) {
 		
-		image_dxCoefficients = new Image2DLocal(device, memoryProperties, N, N,
+		image_dxCoefficients = new Image2DDeviceLocal(device, memoryProperties, N, N,
 				VK_FORMAT_R32G32B32A32_SFLOAT,
 				VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_STORAGE_BIT);
 		
 		dxCoefficients_imageView = new VkImageView(device,
 				VK_FORMAT_R32G32B32A32_SFLOAT, image_dxCoefficients.getHandle(), VK_IMAGE_ASPECT_COLOR_BIT);
 		
-		image_dyCoefficients = new Image2DLocal(device, memoryProperties, N, N,
+		image_dyCoefficients = new Image2DDeviceLocal(device, memoryProperties, N, N,
 				VK_FORMAT_R32G32B32A32_SFLOAT,
 				VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_STORAGE_BIT);
 		
 		dyCoefficients_imageView = new VkImageView(device,
 				VK_FORMAT_R32G32B32A32_SFLOAT, image_dyCoefficients.getHandle(), VK_IMAGE_ASPECT_COLOR_BIT);
 		
-		image_dzCoefficients = new Image2DLocal(device, memoryProperties, N, N,
+		image_dzCoefficients = new Image2DDeviceLocal(device, memoryProperties, N, N,
 				VK_FORMAT_R32G32B32A32_SFLOAT,
 				VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_STORAGE_BIT);
 		

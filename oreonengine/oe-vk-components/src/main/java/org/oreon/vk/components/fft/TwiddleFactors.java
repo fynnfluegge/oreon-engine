@@ -34,7 +34,7 @@ import org.oreon.core.vk.util.VkUtil;
 import org.oreon.core.vk.wrapper.buffer.VkBufferHelper;
 import org.oreon.core.vk.wrapper.command.ComputeCmdBuffer;
 import org.oreon.core.vk.wrapper.descriptor.VkDescriptor;
-import org.oreon.core.vk.wrapper.image.Image2DLocal;
+import org.oreon.core.vk.wrapper.image.Image2DDeviceLocal;
 
 import lombok.Getter;
 
@@ -72,7 +72,7 @@ public class TwiddleFactors {
 		
 		int log_2_n = (int) (Math.log(n)/Math.log(2));
 		
-		image = new Image2DLocal(device, memoryProperties, log_2_n, n,
+		image = new Image2DDeviceLocal(device, memoryProperties, log_2_n, n,
 				VK_FORMAT_R32G32B32A32_SFLOAT,
 				VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_STORAGE_BIT);
 		

@@ -14,10 +14,13 @@ public class ImageMemoryBarrierCmdBuffer extends CommandBuffer{
 		super(device, commandPool, VK_COMMAND_BUFFER_LEVEL_PRIMARY);
 	}
 
-	public void record(long image, int oldLayout, int newLayout, int dstStageMask){
+	public void record(long image, int oldLayout, int newLayout, 
+			int srcAccessMask, int dstAccessMask, int srcStageMask, int dstStageMask, 
+			int mipLevels){
 		
 		beginRecord(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
-		recordImageMemoryBarrierCmd(image, oldLayout, newLayout, dstStageMask);
+		imageLayoutTransition(image, oldLayout, newLayout, srcAccessMask, dstAccessMask, 
+				srcStageMask, dstStageMask, 0, mipLevels);
 		finishRecord();
 	}
 	

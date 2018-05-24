@@ -31,9 +31,9 @@ public class PhysicalDevice {
 	private VkPhysicalDevice handle;
 	private VkPhysicalDeviceProperties properties;
 	private VkPhysicalDeviceFeatures features;
+	private VkPhysicalDeviceMemoryProperties memoryProperties;
 	private QueueFamilies queueFamilies;
 	private SwapChainCapabilities swapChainCapabilities;
-	private VkPhysicalDeviceMemoryProperties memoryProperties;
 	private List<String> supportedExtensionNames;
 	
 	public PhysicalDevice(VkInstance vkInstance, long surface) {

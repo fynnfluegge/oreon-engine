@@ -7,6 +7,7 @@ import static org.lwjgl.vulkan.VK10.vkEnumerateDeviceExtensionProperties;
 import static org.lwjgl.vulkan.VK10.vkEnumerateInstanceExtensionProperties;
 import static org.lwjgl.vulkan.VK10.vkEnumerateInstanceLayerProperties;
 import static org.lwjgl.vulkan.VK10.vkGetPhysicalDeviceFeatures;
+import static org.lwjgl.vulkan.VK10.vkGetPhysicalDeviceFormatProperties;
 import static org.lwjgl.vulkan.VK10.vkGetPhysicalDeviceProperties;
 
 import java.nio.IntBuffer;
@@ -15,6 +16,7 @@ import java.util.List;
 
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.vulkan.VkExtensionProperties;
+import org.lwjgl.vulkan.VkFormatProperties;
 import org.lwjgl.vulkan.VkLayerProperties;
 import org.lwjgl.vulkan.VkPhysicalDevice;
 import org.lwjgl.vulkan.VkPhysicalDeviceFeatures;
@@ -130,6 +132,15 @@ public class DeviceCapabilities {
 		vkGetPhysicalDeviceFeatures(physicalDevice, features);
 		
 		return features;
+	}
+	
+	public static VkFormatProperties getVkPhysicalDeviceFormatProperties(VkPhysicalDevice physicalDevice,
+			int format){
+		
+		VkFormatProperties formatProperties = VkFormatProperties.create();
+		vkGetPhysicalDeviceFormatProperties(physicalDevice, format, formatProperties);
+		
+		return formatProperties;
 	}
 	
 	public static boolean getMemoryTypeIndex(VkPhysicalDeviceMemoryProperties memoryProperties,

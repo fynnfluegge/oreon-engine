@@ -8,6 +8,7 @@ import static org.lwjgl.vulkan.VK10.VK_FORMAT_R8G8B8A8_UNORM;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_ASPECT_COLOR_BIT;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_GENERAL;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_STORAGE_BIT;
+import static org.lwjgl.vulkan.VK10.VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT;
 import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_COMPUTE_BIT;
 
 import java.nio.ByteBuffer;
@@ -27,7 +28,7 @@ import org.oreon.core.vk.synchronization.Fence;
 import org.oreon.core.vk.util.VkUtil;
 import org.oreon.core.vk.wrapper.command.ComputeCmdBuffer;
 import org.oreon.core.vk.wrapper.descriptor.VkDescriptor;
-import org.oreon.core.vk.wrapper.image.Image2DLocal;
+import org.oreon.core.vk.wrapper.image.Image2DDeviceLocal;
 import org.oreon.core.vk.wrapper.image.VkImageHelper;
 import org.oreon.core.vk.wrapper.shader.ComputeShader;
 
@@ -89,54 +90,66 @@ public class H0k {
 			int N, int L, float amplitude, Vec2f windDirection, float windSpeed,
 			float capillarSuppressFactor) {
 		
-		h0k_image = new Image2DLocal(device, memoryProperties, N, N,
+		h0k_image = new Image2DDeviceLocal(device, memoryProperties, N, N,
 				VK_FORMAT_R32G32B32A32_SFLOAT, VK_IMAGE_USAGE_STORAGE_BIT);
 		
 		h0k_imageView = new VkImageView(device,
 				VK_FORMAT_R32G32B32A32_SFLOAT, h0k_image.getHandle(), VK_IMAGE_ASPECT_COLOR_BIT);
 		
-		h0minusk_image = new Image2DLocal(device, memoryProperties, N, N,
+		h0minusk_image = new Image2DDeviceLocal(device, memoryProperties, N, N,
 				VK_FORMAT_R32G32B32A32_SFLOAT, VK_IMAGE_USAGE_STORAGE_BIT);
 		
 		h0minusk_imageView = new VkImageView(device,
 				VK_FORMAT_R32G32B32A32_SFLOAT, h0minusk_image.getHandle(), VK_IMAGE_ASPECT_COLOR_BIT);
 		
-		VkImage noise0Image = VkImageHelper.createStorageImageFromFile(
+		VkImage noise0Image = VkImageHelper.loadImageFromFile(
 				device,
 				VkContext.getPhysicalDevice().getMemoryProperties(),
 				VkContext.getLogicalDevice().getTransferCommandPool().getHandle(),
 				VkContext.getLogicalDevice().getTransferQueue(),
-				"textures/noise/Noise" + N + "_0.jpg");
+				"textures/noise/Noise" + N + "_0.jpg",
+				VK_IMAGE_LAYOUT_GENERAL,
+				VK_IMAGE_USAGE_STORAGE_BIT,
+				VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT);
 		
 		VkImageView noise0ImageView = new VkImageView(device,
 				VK_FORMAT_R8G8B8A8_UNORM, noise0Image.getHandle(), VK_IMAGE_ASPECT_COLOR_BIT);
 		
-		VkImage noise1Image = VkImageHelper.createStorageImageFromFile(
+		VkImage noise1Image = VkImageHelper.loadImageFromFile(
 				device,
 				VkContext.getPhysicalDevice().getMemoryProperties(),
 				VkContext.getLogicalDevice().getTransferCommandPool().getHandle(),
 				VkContext.getLogicalDevice().getTransferQueue(),
-				"textures/noise/Noise" + N + "_1.jpg");
+				"textures/noise/Noise" + N + "_1.jpg",
+				VK_IMAGE_LAYOUT_GENERAL,
+				VK_IMAGE_USAGE_STORAGE_BIT,
+				VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT);
 		
 		VkImageView noise1ImageView = new VkImageView(device,
 				VK_FORMAT_R8G8B8A8_UNORM, noise1Image.getHandle(), VK_IMAGE_ASPECT_COLOR_BIT);
 		
-		VkImage noise2Image = VkImageHelper.createStorageImageFromFile(
+		VkImage noise2Image = VkImageHelper.loadImageFromFile(
 				device,
 				VkContext.getPhysicalDevice().getMemoryProperties(),
 				VkContext.getLogicalDevice().getTransferCommandPool().getHandle(),
 				VkContext.getLogicalDevice().getTransferQueue(),
-				"textures/noise/Noise" + N + "_2.jpg");
+				"textures/noise/Noise" + N + "_2.jpg",
+				VK_IMAGE_LAYOUT_GENERAL,
+				VK_IMAGE_USAGE_STORAGE_BIT,
+				VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT);
 		
 		VkImageView noise2ImageView = new VkImageView(device,
 				VK_FORMAT_R8G8B8A8_UNORM, noise2Image.getHandle(), VK_IMAGE_ASPECT_COLOR_BIT);
 		
-		VkImage noise3Image = VkImageHelper.createStorageImageFromFile(
+		VkImage noise3Image = VkImageHelper.loadImageFromFile(
 				device,
 				VkContext.getPhysicalDevice().getMemoryProperties(),
 				VkContext.getLogicalDevice().getTransferCommandPool().getHandle(),
 				VkContext.getLogicalDevice().getTransferQueue(),
-				"textures/noise/Noise" + N + "_3.jpg");
+				"textures/noise/Noise" + N + "_3.jpg",
+				VK_IMAGE_LAYOUT_GENERAL,
+				VK_IMAGE_USAGE_STORAGE_BIT,
+				VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT);
 		
 		VkImageView noise3ImageView = new VkImageView(device,
 				VK_FORMAT_R8G8B8A8_UNORM, noise3Image.getHandle(), VK_IMAGE_ASPECT_COLOR_BIT);

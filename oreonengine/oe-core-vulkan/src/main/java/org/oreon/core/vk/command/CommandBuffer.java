@@ -3,17 +3,10 @@ package org.oreon.core.vk.command;
 import static org.lwjgl.system.MemoryUtil.memAllocLong;
 import static org.lwjgl.system.MemoryUtil.memAllocPointer;
 import static org.lwjgl.system.MemoryUtil.memFree;
-import static org.lwjgl.vulkan.VK10.VK_ACCESS_SHADER_READ_BIT;
-import static org.lwjgl.vulkan.VK10.VK_ACCESS_TRANSFER_WRITE_BIT;
 import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_RESET_RELEASE_RESOURCES_BIT;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_ASPECT_COLOR_BIT;
-import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_GENERAL;
-import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
-import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_UNDEFINED;
 import static org.lwjgl.vulkan.VK10.VK_INDEX_TYPE_UINT32;
-import static org.lwjgl.vulkan.VK10.VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
-import static org.lwjgl.vulkan.VK10.VK_PIPELINE_STAGE_TRANSFER_BIT;
 import static org.lwjgl.vulkan.VK10.VK_QUEUE_FAMILY_IGNORED;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -91,7 +84,8 @@ public class CommandBuffer {
 		int err = vkAllocateCommandBuffers(device, cmdBufAllocateInfo, handlePointer);
 		
 		if (err != VK_SUCCESS) {
-		    throw new AssertionError("Failed to allocate command buffer: " + VkUtil.translateVulkanResult(err));
+		    throw new AssertionError("Failed to allocate command buffer: "
+		    		+ VkUtil.translateVulkanResult(err));
 		}
 		
 		handle = new VkCommandBuffer(handlePointer.get(0), device);
@@ -109,7 +103,8 @@ public class CommandBuffer {
 		int err = vkBeginCommandBuffer(handle, beginInfo);
 
 		if (err != VK_SUCCESS) {
-			throw new AssertionError("Failed to begin record command buffer: " + VkUtil.translateVulkanResult(err));
+			throw new AssertionError("Failed to begin record command buffer: "
+					+ VkUtil.translateVulkanResult(err));
 		}
         
         beginInfo.free();
@@ -137,7 +132,8 @@ public class CommandBuffer {
 		int err = vkBeginCommandBuffer(handle, beginInfo);
 
 		if (err != VK_SUCCESS) {
-			throw new AssertionError("Failed to begin record command buffer: " + VkUtil.translateVulkanResult(err));
+			throw new AssertionError("Failed to begin record command buffer: "
+					+ VkUtil.translateVulkanResult(err));
 		}
         
         beginInfo.free();
@@ -148,7 +144,8 @@ public class CommandBuffer {
 		int err = vkEndCommandBuffer(handle);
 		
         if (err != VK_SUCCESS) {
-            throw new AssertionError("Failed to finish record command buffer: " + VkUtil.translateVulkanResult(err));
+            throw new AssertionError("Failed to finish record command buffer: "
+            		+ VkUtil.translateVulkanResult(err));
         }
 	}
 	
@@ -352,37 +349,12 @@ public class CommandBuffer {
 		copyRegion.imageOffset(offset);
 	
 		vkCmdCopyBufferToImage(handle, srcBuffer, dstImage,
-							   VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, copyRegion);
+				VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, copyRegion);
 	}
 	
-	public void recordImageMemoryBarrierCmd(long image, int oldLayout, int newLayout,
-			int dstStageMask){
-
-		int srcStageMask = 0;
-		int srcAccessMask = 0; 
-		int dstAccessMask = 0;
-
-		if (oldLayout == VK_IMAGE_LAYOUT_UNDEFINED && newLayout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL) {
-			
-		    srcAccessMask = 0;
-		    dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
-
-		    srcStageMask = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
-		    
-		} else if (oldLayout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL && newLayout == VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL) {
-			
-		    srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
-		    dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
-
-		    srcStageMask = VK_PIPELINE_STAGE_TRANSFER_BIT;
-		    
-		} else if (oldLayout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL && newLayout == VK_IMAGE_LAYOUT_GENERAL) {
-			
-		    srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
-		    dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
-	
-		    srcStageMask = VK_PIPELINE_STAGE_TRANSFER_BIT;
-		}
+	public void imageLayoutTransition(long image, int oldLayout, int newLayout,
+			int srcAccessMask, int dstAccessMask, int srcStageMask, int dstStageMask,
+			int baseMipLevel, int mipLevelCount){
 		
 		VkImageMemoryBarrier.Buffer barrier = VkImageMemoryBarrier.calloc(1)
 				.sType(VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER)
@@ -394,16 +366,24 @@ public class CommandBuffer {
 				.srcAccessMask(srcAccessMask)
 				.dstAccessMask(dstAccessMask);
 		
-		VkImageSubresourceRange subresourceRange = VkImageSubresourceRange.calloc()
+		barrier.subresourceRange()
 				.aspectMask(VK_IMAGE_ASPECT_COLOR_BIT)
-				.baseMipLevel(0)
-				.levelCount(1)
+				.baseMipLevel(baseMipLevel)
+				.levelCount(mipLevelCount)
 				.baseArrayLayer(0)
 				.layerCount(1);
-		
-		barrier.subresourceRange(subresourceRange);
 	
-		vkCmdPipelineBarrier(handle,srcStageMask,dstStageMask,0,null,null,barrier);
+		vkCmdPipelineBarrier(handle, srcStageMask, dstStageMask,
+				0, null, null, barrier);
+		
+		barrier.free();
+	}
+	
+	public void imageLayoutTransition(long image, int srcStageMask, int dstStageMask,
+			VkImageMemoryBarrier.Buffer barrier){
+	
+		vkCmdPipelineBarrier(handle, srcStageMask, dstStageMask,
+				0, null, null, barrier);
 	}
 	
 	public void recordSecondaryCmdBuffers(PointerBuffer secondaryCmdBuffers){

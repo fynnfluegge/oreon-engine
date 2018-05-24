@@ -38,8 +38,8 @@ public class ReflectionFbo extends VkFrameBufferObject{
 	public ReflectionFbo(VkDevice device,
 			VkPhysicalDeviceMemoryProperties memoryProperties) {
 		
-		width = EngineContext.getConfig().getX_ScreenResolution();
-		height = EngineContext.getConfig().getY_ScreenResolution();
+		width = EngineContext.getConfig().getX_ScreenResolution()/1;
+		height = EngineContext.getConfig().getY_ScreenResolution()/1;
 		
 		VkImageBundle albedoBuffer = new FrameBufferColorAttachment(device, memoryProperties, width, height,
 				VK_FORMAT_R8G8B8A8_UNORM);

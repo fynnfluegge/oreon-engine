@@ -5,7 +5,6 @@ import static org.lwjgl.system.MemoryUtil.memFree;
 import static org.lwjgl.vulkan.VK10.VK_BORDER_COLOR_INT_OPAQUE_BLACK;
 import static org.lwjgl.vulkan.VK10.VK_COMPARE_OP_ALWAYS;
 import static org.lwjgl.vulkan.VK10.VK_SAMPLER_ADDRESS_MODE_REPEAT;
-import static org.lwjgl.vulkan.VK10.VK_SAMPLER_MIPMAP_MODE_NEAREST;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import static org.lwjgl.vulkan.VK10.vkCreateSampler;
@@ -27,7 +26,7 @@ public class VkSampler {
 	private VkDevice device;
 	
 	public VkSampler(VkDevice device, int filterMode,
-			boolean anistropic){
+			boolean anistropic, int maxAnistropy, int mipmapMode, int maxLod){
 		
 		this.device = device;
 		
@@ -39,15 +38,15 @@ public class VkSampler {
 						.addressModeV(VK_SAMPLER_ADDRESS_MODE_REPEAT)
 						.addressModeW(VK_SAMPLER_ADDRESS_MODE_REPEAT)
 						.anisotropyEnable(anistropic)
-						.maxAnisotropy(1)
+						.maxAnisotropy(maxAnistropy)
 						.borderColor(VK_BORDER_COLOR_INT_OPAQUE_BLACK)
 						.unnormalizedCoordinates(false)
 						.compareEnable(false)
 						.compareOp(VK_COMPARE_OP_ALWAYS)
-						.mipmapMode(VK_SAMPLER_MIPMAP_MODE_NEAREST)
+						.mipmapMode(mipmapMode)
 						.mipLodBias(0)
 						.minLod(0)
-						.maxLod(0);
+						.maxLod(maxLod);
 		
 		LongBuffer pBuffer = memAllocLong(1);
 		int err = vkCreateSampler(device, createInfo,  null, pBuffer);

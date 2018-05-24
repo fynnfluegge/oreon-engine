@@ -30,6 +30,12 @@ public class VkImageView {
 	public VkImageView(VkDevice device, int imageFormat, long image,
 			int aspectMask){
 		
+		this(device, imageFormat, image, aspectMask, 1);
+	}
+	
+	public VkImageView(VkDevice device, int imageFormat, long image,
+			int aspectMask, int mipLevels){
+		
 		this.device = device;
 		
 		VkImageViewCreateInfo imageViewCreateInfo = VkImageViewCreateInfo.calloc()
@@ -48,7 +54,7 @@ public class VkImageView {
              	.subresourceRange()
              		.aspectMask(aspectMask)
 	                .baseMipLevel(0)
-	                .levelCount(1)
+	                .levelCount(mipLevels)
 	                .baseArrayLayer(0)
 	                .layerCount(1);
         	

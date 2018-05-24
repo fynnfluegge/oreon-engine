@@ -31,7 +31,7 @@ import org.oreon.core.vk.synchronization.Fence;
 import org.oreon.core.vk.util.VkUtil;
 import org.oreon.core.vk.wrapper.buffer.VkUniformBuffer;
 import org.oreon.core.vk.wrapper.command.ComputeCmdBuffer;
-import org.oreon.core.vk.wrapper.image.Image2DLocal;
+import org.oreon.core.vk.wrapper.image.Image2DDeviceLocal;
 
 import lombok.Getter;
 
@@ -148,42 +148,42 @@ public class FFT extends Renderable{
 		
 		stages =  (int) (Math.log(N)/Math.log(2));
 		
-		dyPingpongImage = new Image2DLocal(device, memoryProperties, N, N,
+		dyPingpongImage = new Image2DDeviceLocal(device, memoryProperties, N, N,
 				VK_FORMAT_R32G32B32A32_SFLOAT,
 				VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_STORAGE_BIT);
 		
 		dyPingpongImageView = new VkImageView(device,
 				VK_FORMAT_R32G32B32A32_SFLOAT, dyPingpongImage.getHandle(), VK_IMAGE_ASPECT_COLOR_BIT);
 		
-		dxPingpongImage = new Image2DLocal(device, memoryProperties, N, N,
+		dxPingpongImage = new Image2DDeviceLocal(device, memoryProperties, N, N,
 				VK_FORMAT_R32G32B32A32_SFLOAT,
 				VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_STORAGE_BIT);
 		
 		dxPingpongImageView = new VkImageView(device,
 				VK_FORMAT_R32G32B32A32_SFLOAT, dxPingpongImage.getHandle(), VK_IMAGE_ASPECT_COLOR_BIT);
 		
-		dzPingpongImage = new Image2DLocal(device, memoryProperties, N, N,
+		dzPingpongImage = new Image2DDeviceLocal(device, memoryProperties, N, N,
 				VK_FORMAT_R32G32B32A32_SFLOAT,
 				VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_STORAGE_BIT);
 		
 		dzPingpongImageView = new VkImageView(device,
 				VK_FORMAT_R32G32B32A32_SFLOAT, dzPingpongImage.getHandle(), VK_IMAGE_ASPECT_COLOR_BIT);
 		
-		dyImage = new Image2DLocal(device, memoryProperties, N, N,
+		dyImage = new Image2DDeviceLocal(device, memoryProperties, N, N,
 				VK_FORMAT_R32G32B32A32_SFLOAT,
 				VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_STORAGE_BIT);
 		
 		dyImageView = new VkImageView(device,
 				VK_FORMAT_R32G32B32A32_SFLOAT, dyImage.getHandle(), VK_IMAGE_ASPECT_COLOR_BIT);
 		
-		dxImage = new Image2DLocal(device, memoryProperties, N, N,
+		dxImage = new Image2DDeviceLocal(device, memoryProperties, N, N,
 				VK_FORMAT_R32G32B32A32_SFLOAT,
 				VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_STORAGE_BIT);
 		
 		dxImageView = new VkImageView(device,
 				VK_FORMAT_R32G32B32A32_SFLOAT, dxImage.getHandle(), VK_IMAGE_ASPECT_COLOR_BIT);
 		
-		dzImage = new Image2DLocal(device, memoryProperties, N, N,
+		dzImage = new Image2DDeviceLocal(device, memoryProperties, N, N,
 				VK_FORMAT_R32G32B32A32_SFLOAT,
 				VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_STORAGE_BIT);
 		

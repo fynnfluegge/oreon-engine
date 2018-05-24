@@ -3,6 +3,7 @@ package org.oreon.core.vk.swapchain;
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 import static org.lwjgl.vulkan.VK10.VK_FILTER_NEAREST;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+import static org.lwjgl.vulkan.VK10.VK_SAMPLER_MIPMAP_MODE_NEAREST;
 import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_FRAGMENT_BIT;
 
 import org.lwjgl.vulkan.VkDevice;
@@ -27,7 +28,8 @@ public class SwapChainDescriptor {
 	    						VK_SHADER_STAGE_FRAGMENT_BIT);
 	    layout.create();
 	    
-	    sampler = new VkSampler(device, VK_FILTER_NEAREST, false);
+	    sampler = new VkSampler(device, VK_FILTER_NEAREST, false, 0, 
+	    		VK_SAMPLER_MIPMAP_MODE_NEAREST, 0);
 	    
 	    set = new DescriptorSet(device,
 	    		 VkContext.getDescriptorPoolManager().getDescriptorPool("POOL_1").getHandle(),

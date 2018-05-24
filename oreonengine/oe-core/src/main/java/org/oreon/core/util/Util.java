@@ -4,6 +4,7 @@ import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.oreon.core.image.ImageMetaData;
 import org.oreon.core.math.Quaternion;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.math.Vec3f;
@@ -263,6 +264,17 @@ public class Util {
 		}
 		
 		return bitReversedIndices;
+	}
+	
+	public static int getLog2N(int n){
+		
+		return (int) (Math.log(n)/Math.log(2));
+	}
+	
+	public static int getMipLevelCount(ImageMetaData metaData){
+		
+		return getLog2N(metaData.getHeight() < metaData.getWidth() ?
+				metaData.getWidth() : metaData.getHeight());
 	}
 
 }
