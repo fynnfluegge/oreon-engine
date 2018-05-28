@@ -34,13 +34,12 @@ public class RenderPass {
 	private List<VkSubpassDependency> subpassDependendies = new ArrayList<>();
 	private List<VkSubpassDescription> subpassDescriptions = new ArrayList<>();
 	
-	// Buffer storage to free after vkCreateRenderPass
-	private List<VkAttachmentReference.Buffer> attachmentReferenceBuffers = new ArrayList<>();
-	
 	@Getter
 	private long handle;
+	@Getter
+	private int attachmentCount;
 	
-	private VkDevice device;
+	private final VkDevice device;
 	
 	public RenderPass(VkDevice device) {
 
@@ -94,9 +93,7 @@ public class RenderPass {
 			dependency.free();
 		}
         
-        for (VkAttachmentReference.Buffer attachmentReferencesBuffer : attachmentReferenceBuffers){
-			attachmentReferencesBuffer.free();
-		}
+        attachmentCount = attachments.limit();
         
         memFree(pRenderPass);
         renderPassInfo.free();
@@ -187,7 +184,6 @@ public class RenderPass {
 		}
 		
 		colorReferences.clear();
-		attachmentReferenceBuffers.add(attachmentReferenceBuffer);
 		subpassDescriptions.add(subpass);
 	}
 	

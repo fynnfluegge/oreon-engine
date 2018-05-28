@@ -10,6 +10,7 @@ import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.gl.wrapper.texture.Texture2DNoFilterRGBA32F;
 import org.oreon.core.math.Vec3f;
+import org.oreon.core.util.Util;
 
 import lombok.Getter;
 
@@ -39,10 +40,6 @@ public class SSAO {
 		
 		kernelSize = 64;
 		
-		noiseTextureShader = NoiseTextureShader.getInstance();
-		ssaoShader = SSAOShader.getInstance();
-		blurShader = SSAOBlurShader.getInstance();
-		
 		randomx = new float[16];
 		randomy = new float[16];
 		
@@ -51,7 +48,11 @@ public class SSAO {
 			randomy[i] = (float) Math.random() * 2 - 1;
 		}
 	
-		generateKernel(kernelSize);
+		kernel = Util.generateRandomKernel3D(kernelSize);
+		
+		noiseTextureShader = NoiseTextureShader.getInstance();
+		ssaoShader = SSAOShader.getInstance();
+		blurShader = SSAOBlurShader.getInstance();
 		
 		noiseTexture = new Texture2DNoFilterRGBA32F(4,4);
 		ssaoSceneTexture = new Texture2DNoFilterRGBA32F(width, height);
@@ -81,24 +82,6 @@ public class SSAO {
 		glBindImageTexture(1, ssaoSceneTexture.getHandle(), 0, false, 0, GL_READ_ONLY, GL_RGBA32F);
 		blurShader.updateUniforms(width, height);
 		glDispatchCompute(width/16,height/16,1);
-	}
-	
-	public void generateKernel(int kernelSize){
-		
-		kernel = new Vec3f[kernelSize];
-		
-		for (int i=0; i<kernelSize; i++){
-			kernel[i] = new Vec3f((float) Math.random()*2-1,
-								  (float) Math.random()*2-1,
-								  (float) Math.random());
-			kernel[i].normalize();
-			
-			float scale = (float) i / (float) kernelSize;
-			
-			scale = (float) Math.min(Math.max(0.01, scale*scale), 1.0);
-			
-			kernel[i] = kernel[i].mul(scale).mul(-1);
-		}
 	}
 
 }

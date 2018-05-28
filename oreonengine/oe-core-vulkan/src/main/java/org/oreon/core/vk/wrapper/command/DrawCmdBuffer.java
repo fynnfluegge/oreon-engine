@@ -15,13 +15,13 @@ public class DrawCmdBuffer extends CommandBuffer{
 	public DrawCmdBuffer(VkDevice device, long commandPool,
 			long pipeline, long pipelineLayout, long renderPass,
 			long frameBuffer, int width, int height,
-			int colorAttachmentCount, boolean hasDepthAttachment,
+			int colorAttachmentCount, int depthAttachment,
 			long[] descriptorSets, long vertexBuffer, long indexBuffer, int indexCount) {
 	
 		super(device, commandPool, VK_COMMAND_BUFFER_LEVEL_PRIMARY);
 		
 		record(pipeline, pipelineLayout, renderPass, frameBuffer,
-				width, height, colorAttachmentCount, hasDepthAttachment,
+				width, height, colorAttachmentCount, depthAttachment,
 				descriptorSets, vertexBuffer, indexBuffer, indexCount,
 				null, -1);
 	}
@@ -29,27 +29,27 @@ public class DrawCmdBuffer extends CommandBuffer{
 	public DrawCmdBuffer(VkDevice device, long commandPool,
 			long pipeline, long pipelineLayout, long renderPass,
 			long frameBuffer, int width, int height,
-			int attachmentCount, boolean hasDepthAttachment,
+			int colorAttachmentCount, int depthAttachment,
 			long[] descriptorSets, long vertexBuffer, long indexBuffer, int indexCount,
 			ByteBuffer pushConstantsData, int pushConstantsStageFlags) {
 	
 		super(device, commandPool, VK_COMMAND_BUFFER_LEVEL_PRIMARY);
 		
 		record(pipeline, pipelineLayout, renderPass, frameBuffer,
-				width, height, attachmentCount, hasDepthAttachment,
+				width, height, colorAttachmentCount, depthAttachment,
 				descriptorSets, vertexBuffer, indexBuffer, indexCount,
 				pushConstantsData, pushConstantsStageFlags);
 	}
 	
 	private void record(long pipeline, long pipelineLayout, long renderPass,
 			long frameBuffer, int width, int height,
-			int attachmentCount, boolean hasDepthAttachment,
+			int colorAttachmentCount, int depthAttachment,
 			long[] descriptorSets, long vertexBuffer, long indexBuffer, int indexCount,
 			ByteBuffer pushConstantsData, int pushConstantsStageFlags){
 		
 		beginRecord(VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT);
 		beginRenderPassCmd(renderPass, frameBuffer, width, height,
-				attachmentCount, hasDepthAttachment, VK_SUBPASS_CONTENTS_INLINE);
+				colorAttachmentCount, depthAttachment, VK_SUBPASS_CONTENTS_INLINE);
 		if (pushConstantsData != null){
 			pushConstantsCmd(pipelineLayout, pushConstantsStageFlags, pushConstantsData);
 		}

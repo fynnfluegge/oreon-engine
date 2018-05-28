@@ -16,12 +16,12 @@ public class PrimaryCmdBuffer extends CommandBuffer{
 	}
 	
 	public void record(long renderPass, long frameBuffer,
-			int width, int height, int attachmentCount, boolean hasDepthAttachment,
+			int width, int height, int colorAttachmentCount, int depthAttachment,
 			PointerBuffer secondaryCmdBuffers){
 		
 		beginRecord(VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT);
 		beginRenderPassCmd(renderPass, frameBuffer, width, height,
-				attachmentCount, hasDepthAttachment,
+				colorAttachmentCount, depthAttachment,
 				VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS);
 		
 		recordSecondaryCmdBuffers(secondaryCmdBuffers);
@@ -31,12 +31,12 @@ public class PrimaryCmdBuffer extends CommandBuffer{
 	}
 	
 	public void record(long renderPass, long frameBuffer,
-			int width, int height, int attachmentCount, boolean hasDepthAttachment,
+			int width, int height, int colorAttachmentCount, int depthAttachment,
 			Vec3f clearColor, PointerBuffer secondaryCmdBuffers){
 		
 		beginRecord(VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT);
 		beginRenderPassCmd(renderPass, frameBuffer, width, height,
-				attachmentCount, hasDepthAttachment,
+				colorAttachmentCount, depthAttachment,
 				VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS,
 				clearColor);
 		

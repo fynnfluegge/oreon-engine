@@ -33,7 +33,9 @@ import org.oreon.core.vk.device.PhysicalDevice;
 import org.oreon.core.vk.scenegraph.VkRenderInfo;
 import org.oreon.core.vk.swapchain.SwapChain;
 import org.oreon.core.vk.util.VkUtil;
+import org.oreon.core.vk.wrapper.buffer.VkUniformBuffer;
 import org.oreon.core.vk.wrapper.command.PrimaryCmdBuffer;
+import org.oreon.vk.components.filter.SSAO;
 
 public class VkRenderEngine extends RenderEngine{
 	
@@ -49,6 +51,12 @@ public class VkRenderEngine extends RenderEngine{
 	private LinkedHashMap<String, CommandBuffer> offScreenSecondaryCmdBuffers;
 	private RenderList offScreenRenderList;
 	private SubmitInfo offScreenSubmitInfo;
+	
+	// uniform buffers
+	private VkUniformBuffer renderStateUbo;
+	
+	// post processing filter
+	private SSAO ssao;
 	
 	private ByteBuffer[] layers = {
 	            	memUTF8("VK_LAYER_LUNARG_standard_validation"),
@@ -93,10 +101,10 @@ public class VkRenderEngine extends RenderEngine{
 
 	    DescriptorPool imageSamplerDescriptorPool = new DescriptorPool(4);
 	    imageSamplerDescriptorPool.addPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 10);
-	    imageSamplerDescriptorPool.addPoolSize(VK_DESCRIPTOR_TYPE_STORAGE_IMAGE, 30);
-	    imageSamplerDescriptorPool.addPoolSize(VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 1);
+	    imageSamplerDescriptorPool.addPoolSize(VK_DESCRIPTOR_TYPE_STORAGE_IMAGE, 37);
+	    imageSamplerDescriptorPool.addPoolSize(VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 2);
 	    imageSamplerDescriptorPool.addPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 10);
-	    imageSamplerDescriptorPool.create(logicalDevice.getHandle(), 51);
+	    imageSamplerDescriptorPool.create(logicalDevice.getHandle(), 59);
 	    
 	    VkContext.getDescriptorPoolManager().addDescriptorPool("POOL_1",
 	    											 imageSamplerDescriptorPool);
@@ -117,16 +125,24 @@ public class VkRenderEngine extends RenderEngine{
 	    VkContext.getRenderState().setOffScreenFbo(offScreenFbo);
 	    VkContext.getRenderState().setOffScreenReflectionFbo(reflectionFbo);
 	    
-	    swapChain = new SwapChain(logicalDevice, physicalDevice, surface,
-	    		offScreenFbo.getAttachments().get(Attachment.ALBEDO).getImageView().getHandle());
+//	    swapChain = new SwapChain(logicalDevice, physicalDevice, surface,
+//	    		offScreenFbo.getAttachmentImageView(Attachment.POSITION).getHandle());
+	    
+	    ssao = new SSAO(logicalDevice.getHandle(),
+	    		physicalDevice.getMemoryProperties(),
+	    		EngineContext.getConfig().getX_ScreenResolution(),
+	    		EngineContext.getConfig().getY_ScreenResolution(),
+	    		offScreenFbo.getAttachments().get(Attachment.POSITION).getImage(),
+	    		offScreenFbo.getAttachmentImageView(Attachment.POSITION),
+	    		offScreenFbo.getAttachmentImageView(Attachment.NORMAL));
 	}
     
 	// FOR TESTING
 	// pass static reference to swapchain for display desired imageView
 	public static void createSwapChain(){
 		
-//		swapChain = new SwapChain(logicalDevice, physicalDevice, surface,
-//	    		Water.deferredReflectionImageView.getHandle());
+		swapChain = new SwapChain(logicalDevice, physicalDevice, surface,
+	    		SSAO.ssaoImageView.getHandle());
 	}
 
 	@Override
@@ -142,7 +158,7 @@ public class VkRenderEngine extends RenderEngine{
 			if(!offScreenSecondaryCmdBuffers.containsKey(key)){
 				VkRenderInfo mainRenderInfo = offScreenRenderList.get(key)
 						.getComponent(NodeComponentType.MAIN_RENDERINFO);
-				offScreenSecondaryCmdBuffers.put(key,mainRenderInfo.getCommandBuffer());
+				offScreenSecondaryCmdBuffers.put(key, mainRenderInfo.getCommandBuffer());
 			}
 		}
 		
@@ -153,14 +169,15 @@ public class VkRenderEngine extends RenderEngine{
 					offScreenFbo.getFrameBuffer().getHandle(),
 					offScreenFbo.getWidth(),
 					offScreenFbo.getHeight(),
-					offScreenFbo.getAttachmentCount(),
-					offScreenFbo.isDepthAttachment(),
+					offScreenFbo.getColorAttachmentCount(),
+					offScreenFbo.getDepthAttachment(),
 					VkUtil.createPointerBuffer(offScreenSecondaryCmdBuffers.values()));
 			
 			offScreenSubmitInfo.submit(logicalDevice.getGraphicsQueue());
 		}
 		
 		vkQueueWaitIdle(logicalDevice.getGraphicsQueue());
+		ssao.render();
 		swapChain.draw(logicalDevice.getGraphicsQueue());
 	}
 

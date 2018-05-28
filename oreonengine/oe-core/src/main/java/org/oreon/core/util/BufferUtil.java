@@ -243,6 +243,35 @@ public class BufferUtil {
 		return byteBuffer;
 	}
 	
+	public static ByteBuffer createByteBuffer(Vec3f[] vertices){
+		
+		ByteBuffer byteBuffer = memAlloc(Float.BYTES * 3 * vertices.length);
+		FloatBuffer floatBuffer = byteBuffer.asFloatBuffer();
+		
+		for(int i = 0; i < vertices.length; i++) {
+			floatBuffer.put(vertices[i].getX());
+			floatBuffer.put(vertices[i].getY());
+			floatBuffer.put(vertices[i].getZ());
+		}
+
+		return byteBuffer;
+	}
+	
+	public static ByteBuffer createByteBuffer(Quaternion[] vertices){
+		
+		ByteBuffer byteBuffer = memAlloc(Float.BYTES * 4 * vertices.length);
+		FloatBuffer floatBuffer = byteBuffer.asFloatBuffer();
+		
+		for(int i = 0; i < vertices.length; i++) {
+			floatBuffer.put(vertices[i].getX());
+			floatBuffer.put(vertices[i].getY());
+			floatBuffer.put(vertices[i].getZ());
+			floatBuffer.put(vertices[i].getW());
+		}
+
+		return byteBuffer;
+	}
+	
 	public static ByteBuffer createByteBuffer(Vertex[] vertices, VertexLayout layout){
 		
 		ByteBuffer byteBuffer = allocateVertexByteBuffer(layout, vertices.length);

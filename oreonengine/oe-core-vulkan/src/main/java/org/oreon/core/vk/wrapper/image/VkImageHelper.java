@@ -8,13 +8,11 @@ import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
 import static org.lwjgl.vulkan.VK10.VK_FILTER_LINEAR;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_R8G8B8A8_UNORM;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_ASPECT_COLOR_BIT;
-import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_UNDEFINED;
-import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_SAMPLED_BIT;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_TRANSFER_DST_BIT;
-import static org.lwjgl.vulkan.VK10.VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
+import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
 import static org.lwjgl.vulkan.VK10.VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
 import static org.lwjgl.vulkan.VK10.VK_PIPELINE_STAGE_TRANSFER_BIT;
 import static org.lwjgl.vulkan.VK10.VK_QUEUE_FAMILY_IGNORED;
@@ -32,48 +30,39 @@ import org.lwjgl.vulkan.VkOffset3D;
 import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
 import org.lwjgl.vulkan.VkQueue;
 import org.oreon.core.image.ImageMetaData;
+import org.oreon.core.util.Util;
 import org.oreon.core.vk.command.CommandBuffer;
 import org.oreon.core.vk.command.SubmitInfo;
 import org.oreon.core.vk.image.VkImage;
 import org.oreon.core.vk.image.VkImageLoader;
 import org.oreon.core.vk.wrapper.buffer.StagingBuffer;
 import org.oreon.core.vk.wrapper.command.ImageCopyCmdBuffer;
-import org.oreon.core.vk.wrapper.command.ImageMemoryBarrierCmdBuffer;
+import org.oreon.core.vk.wrapper.command.ImageLayoutTransitionCmdBuffer;
 
 public class VkImageHelper {
 	
 	public static VkImage loadImageFromFile(VkDevice device,
 			VkPhysicalDeviceMemoryProperties memoryProperties,
 			long commandPool, VkQueue queue, String file,
-			int layout, int usage, int dstStageMask){
+			int usage, int layout, int dstAccesMask, int dstStageMask){
 		
-		return loadImage(device, memoryProperties, commandPool,
-				queue, file, usage, layout, dstStageMask, false);
-	}
-	
-	public static VkImage loadImageFromFile(VkDevice device,
-			VkPhysicalDeviceMemoryProperties memoryProperties,
-			long commandPool, VkQueue queue, String file){
-		
-		return loadImage(device, memoryProperties, commandPool,
-				queue, file, VK_IMAGE_USAGE_SAMPLED_BIT,
-				VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
-				VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
-				false);
+		return loadImage(device, memoryProperties, commandPool, queue,
+				file, usage, layout, dstAccesMask, dstStageMask, false);
 	}
 	
 	public static VkImage loadImageFromFileMipmap(VkDevice device,
 			VkPhysicalDeviceMemoryProperties memoryProperties,
 			long commandPool, VkQueue queue, String file,
-			int layout, int usage, int dstStageMask){
+			int usage, int layout, int dstAccessMask, int dstStageMask){
 		
-		return loadImage(device, memoryProperties, commandPool,
-				queue, file, usage, layout, dstStageMask, true);
+		
+		return loadImage(device, memoryProperties, commandPool, queue,
+				file, usage, layout, dstAccessMask, dstStageMask, true);
 	}
 	
 	private static VkImage loadImage(VkDevice device,
-			VkPhysicalDeviceMemoryProperties memoryProperties, long commandPool, 
-			VkQueue queue, String file, int usage, int layout, int dstStageMask,
+			VkPhysicalDeviceMemoryProperties memoryProperties, long commandPool, VkQueue queue,
+			String file, int usage, int finalLayout, int dstAccessMask, int dstStageMask,
 			boolean mipmap){
 		
 		ImageMetaData metaData = VkImageLoader.getImageMetaData(file);
@@ -81,17 +70,19 @@ public class VkImageHelper {
 		
 		StagingBuffer stagingBuffer = new StagingBuffer(device, memoryProperties, imageBuffer);
 		
-		int mipLevels = mipmap ? (int) (Math.log(metaData.getHeight() > metaData.getWidth() ? 
-				metaData.getHeight() : metaData.getWidth())/Math.log(2)) : 1;
+		int mipLevels = mipmap ? Util.getMipLevelCount(metaData) : 1;
 		
 		VkImage image = new Image2DDeviceLocal(device,
 				memoryProperties, metaData.getWidth(), metaData.getHeight(),
-				VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_USAGE_TRANSFER_DST_BIT | usage,
+				VK_FORMAT_R8G8B8A8_UNORM, usage | VK_IMAGE_USAGE_TRANSFER_DST_BIT |
+				// if mipmap == true, usage flag TRANSFER_SRC_BIT is necessarry for mipmap generation
+				(mipmap ? VK_IMAGE_USAGE_TRANSFER_SRC_BIT : 0),
 				1, mipLevels, metaData);
 	    
 	    // transition layout barrier
-	    ImageMemoryBarrierCmdBuffer imageMemoryBarrierLayout0 = new ImageMemoryBarrierCmdBuffer(device, commandPool);
+	    ImageLayoutTransitionCmdBuffer imageMemoryBarrierLayout0 = new ImageLayoutTransitionCmdBuffer(device, commandPool);
 	    imageMemoryBarrierLayout0.record(image.getHandle(),
+	    		VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT,
 	    		VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
 	    		0, VK_ACCESS_TRANSFER_WRITE_BIT, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
 	    		VK_PIPELINE_STAGE_TRANSFER_BIT, mipLevels);
@@ -103,10 +94,11 @@ public class VkImageHelper {
 	    imageCopyCmd.submit(queue);
 	    
 	    // transition layout barrier
-	    ImageMemoryBarrierCmdBuffer imageMemoryBarrierLayout1 = new ImageMemoryBarrierCmdBuffer(device, commandPool);
+	    ImageLayoutTransitionCmdBuffer imageMemoryBarrierLayout1 = new ImageLayoutTransitionCmdBuffer(device, commandPool);
 		imageMemoryBarrierLayout1.record(image.getHandle(),
-				VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, layout,
-				VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT,
+				VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT,
+				VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, finalLayout,
+				VK_ACCESS_TRANSFER_WRITE_BIT, dstAccessMask,
 				VK_PIPELINE_STAGE_TRANSFER_BIT, dstStageMask, mipLevels);
 		imageMemoryBarrierLayout1.submit(queue);
 		
@@ -118,19 +110,21 @@ public class VkImageHelper {
 		stagingBuffer.destroy();
 		
 		if (mipmap){
-			generateMipmap(device, commandPool, image.getHandle(), metaData.getWidth(), metaData.getHeight(),
-					mipLevels, layout, VK_ACCESS_SHADER_READ_BIT, dstStageMask,
-					layout, VK_IMAGE_USAGE_SAMPLED_BIT, dstStageMask, queue);
+			generateMipmap(device, commandPool, queue,
+					image.getHandle(), metaData.getWidth(), metaData.getHeight(), mipLevels,
+					finalLayout, finalLayout,
+					VK_ACCESS_SHADER_READ_BIT, VK_ACCESS_SHADER_READ_BIT,
+					dstStageMask, dstStageMask);
 		}
 		
 		return image;
 	}
 	
-	public static void generateMipmap(VkDevice device, long commandPool, long image,
-			int width, int height, int mipLevels,
-			int initialLayout, int initialSrcAccesMask, int initialSrcStageMask,
-			int finalLayout, int finalDstAccesMask, int finalDstStageMask,
-			VkQueue queue){
+	public static void generateMipmap(VkDevice device, long commandPool, VkQueue queue,
+			long image, int width, int height, int mipLevels,
+			int initialLayout, int finalLayout,
+			int initialSrcAccesMask, int finalDstAccesMask, 
+			int initialSrcStageMask, int finalDstStageMask){
 		
 		CommandBuffer commandBuffer = new CommandBuffer(device,
 				commandPool, VK_COMMAND_BUFFER_LEVEL_PRIMARY);

@@ -13,7 +13,8 @@ public class GraphicsTessellationPipeline extends VkPipeline{
 
 	public GraphicsTessellationPipeline(VkDevice device, ShaderPipeline shaderPipeline,
 			VkVertexInput vertexInput, LongBuffer layout, int width, int height,
-			long renderPass, int pushConstantRange, int pushConstantStageFlags,
+			long renderPass, int colorAttachmentCount,
+			int pushConstantRange, int pushConstantStageFlags,
 			int patchControlPoints) {
 		
 		super(device);
@@ -24,8 +25,9 @@ public class GraphicsTessellationPipeline extends VkPipeline{
 		setViewportAndScissor(width, height);
 		setRasterizer();
 		setMultisampling();
-		addColorBlendAttachment();
-		addColorBlendAttachment();
+		for (int i=0; i<colorAttachmentCount; i++){
+			addColorBlendAttachment();
+		}
 		setColorBlendState();
 		setDepthAndStencilTest(true);
 		setDynamicState();
@@ -36,7 +38,7 @@ public class GraphicsTessellationPipeline extends VkPipeline{
 	
 	public GraphicsTessellationPipeline(VkDevice device, ShaderPipeline shaderPipeline,
 			VkVertexInput vertexInput, LongBuffer layout, int width, int height,
-			long renderPass, int patchControlPoints) {
+			long renderPass, int colorAttachmentCount, int patchControlPoints) {
 		
 		super(device);
 		
@@ -45,8 +47,9 @@ public class GraphicsTessellationPipeline extends VkPipeline{
 		setViewportAndScissor(width, height);
 		setRasterizer();
 		setMultisampling();
-		addColorBlendAttachment();
-		addColorBlendAttachment();
+		for (int i=0; i<colorAttachmentCount; i++){
+			addColorBlendAttachment();
+		}
 		setColorBlendState();
 		setDepthAndStencilTest(true);
 		setDynamicState();

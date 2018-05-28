@@ -250,7 +250,7 @@ public class SwapChain {
 					device, commandPool.getHandle(), pipeline.getHandle(),
 					pipeline.getLayoutHandle(), renderPass,
 					frameBuffer.getHandle(), extent.width(), extent.height(),
-					1, false, descriptorSets, vertexBuffer, indexBuffer, indexCount);
+					1, 0, descriptorSets, vertexBuffer, indexBuffer, indexCount);
 			
 			renderCommandBuffers.add(commandBuffer);
 		}

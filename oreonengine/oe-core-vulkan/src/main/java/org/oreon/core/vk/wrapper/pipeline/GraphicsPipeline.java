@@ -13,7 +13,8 @@ public class GraphicsPipeline extends VkPipeline{
 
 	public GraphicsPipeline(VkDevice device, ShaderPipeline shaderPipeline,
 			VkVertexInput vertexInput, LongBuffer layout, int width, int height,
-			long renderPass, int pushConstantRange, int pushConstantStageFlags) {
+			long renderPass, int colorAttachmentCount,
+			int pushConstantRange, int pushConstantStageFlags) {
 		
 		super(device);
 		
@@ -23,8 +24,9 @@ public class GraphicsPipeline extends VkPipeline{
 		setViewportAndScissor(width, height);
 		setRasterizer();
 		setMultisampling();
-		addColorBlendAttachment();
-		addColorBlendAttachment();
+		for (int i=0; i<colorAttachmentCount; i++){
+			addColorBlendAttachment();
+		}
 		setColorBlendState();
 		setDepthAndStencilTest(true);
 		setDynamicState();
@@ -34,17 +36,17 @@ public class GraphicsPipeline extends VkPipeline{
 	
 	public GraphicsPipeline(VkDevice device, ShaderPipeline shaderPipeline,
 			VkVertexInput vertexInput, LongBuffer layout, int width, int height,
-			long renderPass) {
+			long renderPass, int colorAttachmentCount) {
 		
 		super(device);
-		
 		setVertexInput(vertexInput);
 		setInputAssembly(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
 		setViewportAndScissor(width, height);
 		setRasterizer();
 		setMultisampling();
-		addColorBlendAttachment();
-		addColorBlendAttachment();
+		for (int i=0; i<colorAttachmentCount; i++){
+			addColorBlendAttachment();
+		}
 		setColorBlendState();
 		setDepthAndStencilTest(true);
 		setDynamicState();

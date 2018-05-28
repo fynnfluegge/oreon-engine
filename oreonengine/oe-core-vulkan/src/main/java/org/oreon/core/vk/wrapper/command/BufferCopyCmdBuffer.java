@@ -17,7 +17,7 @@ public class BufferCopyCmdBuffer extends CommandBuffer{
 	public void record(long srcBuffer, long dstBuffer, long srcOffset, long dstOffset, long size){
 		
 		beginRecord(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
-		recordCopyBufferCmd(srcBuffer, dstBuffer, srcOffset, dstOffset, size);
+		copyBufferCmd(srcBuffer, dstBuffer, srcOffset, dstOffset, size);
 		finishRecord();
 	}
 	

@@ -24,7 +24,7 @@ public class SimpleVulkanDemo {
 		renderEngine.getSceneGraph().addObject(new Skydome());
 		renderEngine.getSceneGraph().setWater(new Water());
 		
-//		VkRenderEngine.createSwapChain();
+		VkRenderEngine.createSwapChain();
 		
 		coreEngine.start();
 	}

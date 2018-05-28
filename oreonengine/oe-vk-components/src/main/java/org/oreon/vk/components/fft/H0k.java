@@ -2,6 +2,7 @@ package org.oreon.vk.components.fft;
 
 import static org.lwjgl.system.MemoryUtil.memAlloc;
 import static org.lwjgl.system.MemoryUtil.memFree;
+import static org.lwjgl.vulkan.VK10.VK_ACCESS_SHADER_READ_BIT;
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_STORAGE_IMAGE;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_R32G32B32A32_SFLOAT;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_R8G8B8A8_UNORM;
@@ -108,8 +109,9 @@ public class H0k {
 				VkContext.getLogicalDevice().getTransferCommandPool().getHandle(),
 				VkContext.getLogicalDevice().getTransferQueue(),
 				"textures/noise/Noise" + N + "_0.jpg",
-				VK_IMAGE_LAYOUT_GENERAL,
 				VK_IMAGE_USAGE_STORAGE_BIT,
+				VK_IMAGE_LAYOUT_GENERAL,
+				VK_ACCESS_SHADER_READ_BIT,
 				VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT);
 		
 		VkImageView noise0ImageView = new VkImageView(device,
@@ -121,8 +123,9 @@ public class H0k {
 				VkContext.getLogicalDevice().getTransferCommandPool().getHandle(),
 				VkContext.getLogicalDevice().getTransferQueue(),
 				"textures/noise/Noise" + N + "_1.jpg",
-				VK_IMAGE_LAYOUT_GENERAL,
 				VK_IMAGE_USAGE_STORAGE_BIT,
+				VK_IMAGE_LAYOUT_GENERAL,
+				VK_ACCESS_SHADER_READ_BIT,
 				VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT);
 		
 		VkImageView noise1ImageView = new VkImageView(device,
@@ -134,8 +137,9 @@ public class H0k {
 				VkContext.getLogicalDevice().getTransferCommandPool().getHandle(),
 				VkContext.getLogicalDevice().getTransferQueue(),
 				"textures/noise/Noise" + N + "_2.jpg",
-				VK_IMAGE_LAYOUT_GENERAL,
 				VK_IMAGE_USAGE_STORAGE_BIT,
+				VK_IMAGE_LAYOUT_GENERAL,
+				VK_ACCESS_SHADER_READ_BIT,
 				VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT);
 		
 		VkImageView noise2ImageView = new VkImageView(device,
@@ -147,8 +151,9 @@ public class H0k {
 				VkContext.getLogicalDevice().getTransferCommandPool().getHandle(),
 				VkContext.getLogicalDevice().getTransferQueue(),
 				"textures/noise/Noise" + N + "_3.jpg",
-				VK_IMAGE_LAYOUT_GENERAL,
 				VK_IMAGE_USAGE_STORAGE_BIT,
+				VK_IMAGE_LAYOUT_GENERAL,
+				VK_ACCESS_SHADER_READ_BIT,
 				VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT);
 		
 		VkImageView noise3ImageView = new VkImageView(device,

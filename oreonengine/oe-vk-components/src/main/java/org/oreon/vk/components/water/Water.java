@@ -1,6 +1,7 @@
 package org.oreon.vk.components.water;
 
 import static org.lwjgl.system.MemoryUtil.memAlloc;
+import static org.lwjgl.vulkan.VK10.VK_ACCESS_SHADER_READ_BIT;
 import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_STORAGE_IMAGE;
@@ -144,19 +145,20 @@ public class Water extends Renderable{
 		waterConfiguration = new WaterConfiguration();
 		waterConfiguration.loadFile("water-config.properties");
 		
-		image_dudv = VkImageHelper.loadImageFromFile(
+		image_dudv = VkImageHelper.loadImageFromFileMipmap(
 				device,
 				memoryProperties,
 				VkContext.getLogicalDevice().getTransferCommandPool().getHandle(),
 				VkContext.getLogicalDevice().getTransferQueue(),
 				"textures/water/dudv/dudv1.jpg",
-				VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
 				VK_IMAGE_USAGE_SAMPLED_BIT,
+				VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+				VK_ACCESS_SHADER_READ_BIT,
 				VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT);
 		
 		imageView_dudv = new VkImageView(device,
 				VK_FORMAT_R8G8B8A8_UNORM, image_dudv.getHandle(), 
-				VK_IMAGE_ASPECT_COLOR_BIT);// Util.getMipLevelCount(image_dudv.getMetaData()));
+				VK_IMAGE_ASPECT_COLOR_BIT, Util.getMipLevelCount(image_dudv.getMetaData()));
 		
 		deferredReflectionImage = new Image2DDeviceLocal(device, memoryProperties,
 				offScreenReflecRefracFbo.getWidth(), offScreenReflecRefracFbo.getHeight(),
@@ -183,7 +185,7 @@ public class Water extends Renderable{
 	    dzSampler = new VkSampler(device, VK_FILTER_LINEAR, true, 1,
 	    		VK_SAMPLER_MIPMAP_MODE_NEAREST, 0);
 	    dudvSampler = new VkSampler(device, VK_FILTER_LINEAR, true, 16,
-	    		VK_SAMPLER_MIPMAP_MODE_NEAREST, 0);
+	    		VK_SAMPLER_MIPMAP_MODE_LINEAR, Util.getMipLevelCount(image_dudv.getMetaData()));
 	    normalSampler = new VkSampler(device, VK_FILTER_LINEAR, true, 16,
 	    		VK_SAMPLER_MIPMAP_MODE_LINEAR, Util.getLog2N(waterConfiguration.getN()));
 	    reflectionSampler = new VkSampler(device, VK_FILTER_LINEAR, true, 1,
@@ -316,6 +318,7 @@ public class Water extends Renderable{
 				EngineContext.getConfig().getX_ScreenResolution(),
 				EngineContext.getConfig().getY_ScreenResolution(),
 				VkContext.getRenderState().getOffScreenFbo().getRenderPass().getHandle(),
+				VkContext.getRenderState().getOffScreenFbo().getColorAttachmentCount(),
 				pushConstantsRange, VK_SHADER_STAGE_ALL_GRAPHICS,
 				16);
 		
@@ -483,8 +486,8 @@ public class Water extends Renderable{
 					offScreenReflecRefracFbo.getFrameBuffer().getHandle(),
 					offScreenReflecRefracFbo.getWidth(),
 					offScreenReflecRefracFbo.getHeight(),
-					offScreenReflecRefracFbo.getAttachmentCount(),
-					offScreenReflecRefracFbo.isDepthAttachment(),
+					offScreenReflecRefracFbo.getColorAttachmentCount(),
+					offScreenReflecRefracFbo.getDepthAttachment(),
 					VkUtil.createPointerBuffer(reflectionSecondaryCmdBuffers.values()));
 			offScreenReflectionSubmitInfo.submit(
 					VkContext.getLogicalDevice().getGraphicsQueue());
@@ -519,8 +522,8 @@ public class Water extends Renderable{
 					offScreenReflecRefracFbo.getFrameBuffer().getHandle(),
 					offScreenReflecRefracFbo.getWidth(),
 					offScreenReflecRefracFbo.getHeight(),
-					offScreenReflecRefracFbo.getAttachmentCount(),
-					offScreenReflecRefracFbo.isDepthAttachment(),
+					offScreenReflecRefracFbo.getColorAttachmentCount(),
+					offScreenReflecRefracFbo.getDepthAttachment(),
 					Constants.DEEPOCEAN_COLOR2,
 					VkUtil.createPointerBuffer(refractionSecondaryCmdBuffers.values()));
 			offScreenRefractionSubmitInfo.submit(

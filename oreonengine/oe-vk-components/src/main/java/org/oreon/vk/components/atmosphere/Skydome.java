@@ -24,6 +24,7 @@ import org.oreon.core.vk.command.CommandBuffer;
 import org.oreon.core.vk.context.VkContext;
 import org.oreon.core.vk.descriptor.DescriptorSet;
 import org.oreon.core.vk.descriptor.DescriptorSetLayout;
+import org.oreon.core.vk.pipeline.ShaderModule;
 import org.oreon.core.vk.pipeline.ShaderPipeline;
 import org.oreon.core.vk.pipeline.VkPipeline;
 import org.oreon.core.vk.pipeline.VkVertexInput;
@@ -58,10 +59,18 @@ public class Skydome extends Renderable{
 		uniformBuffer = new VkUniformBuffer(VkContext.getLogicalDevice().getHandle(),
 				VkContext.getPhysicalDevice().getMemoryProperties(),ubo);
 		
-		ShaderPipeline shaderPipeline = new ShaderPipeline(device);
-	    shaderPipeline.createVertexShader("shaders/atmosphere/atmosphere.vert.spv");
-	    shaderPipeline.createFragmentShader("shaders/atmosphere/atmosphere.frag.spv");
-	    shaderPipeline.createShaderPipeline();
+		ShaderModule vertexShader = new ShaderModule(device,
+				"shaders/atmosphere/atmosphere.vert.spv", VK_SHADER_STAGE_VERTEX_BIT);
+		
+		ShaderPipeline graphicsShaderPipeline = new ShaderPipeline(device);
+	    graphicsShaderPipeline.addShaderModule(vertexShader);
+	    graphicsShaderPipeline.createFragmentShader("shaders/atmosphere/atmosphere.frag.spv");
+	    graphicsShaderPipeline.createShaderPipeline();
+	    
+	    ShaderPipeline reflectionShaderPipeline = new ShaderPipeline(device);
+	    reflectionShaderPipeline.addShaderModule(vertexShader);
+	    reflectionShaderPipeline.createFragmentShader("shaders/atmosphere/atmosphere_reflection.frag.spv");
+	    reflectionShaderPipeline.createShaderPipeline();
 	    
 	    List<DescriptorSet> descriptorSets = new ArrayList<DescriptorSet>();
 		List<DescriptorSetLayout> descriptorSetLayouts = new ArrayList<DescriptorSetLayout>();
@@ -87,16 +96,18 @@ public class Skydome extends Renderable{
 		ByteBuffer indexBuffer = BufferUtil.createByteBuffer(mesh.getIndices());
 		
 		graphicsPipeline = new GraphicsPipeline(device,
-				shaderPipeline, vertexInput, VkUtil.createLongBuffer(descriptorSetLayouts),
+				graphicsShaderPipeline, vertexInput, VkUtil.createLongBuffer(descriptorSetLayouts),
 				EngineContext.getConfig().getX_ScreenResolution(),
 				EngineContext.getConfig().getY_ScreenResolution(),
-				VkContext.getRenderState().getOffScreenFbo().getRenderPass().getHandle());
+				VkContext.getRenderState().getOffScreenFbo().getRenderPass().getHandle(),
+				VkContext.getRenderState().getOffScreenFbo().getColorAttachmentCount());
 		
 		reflectionPipeline = new GraphicsPipeline(device,
-				shaderPipeline, vertexInput, VkUtil.createLongBuffer(descriptorSetLayouts),
+				reflectionShaderPipeline, vertexInput, VkUtil.createLongBuffer(descriptorSetLayouts),
 				EngineContext.getConfig().getX_ScreenResolution(),
 				EngineContext.getConfig().getY_ScreenResolution(),
-				VkContext.getRenderState().getOffScreenReflectionFbo().getRenderPass().getHandle());
+				VkContext.getRenderState().getOffScreenReflectionFbo().getRenderPass().getHandle(),
+				VkContext.getRenderState().getOffScreenReflectionFbo().getColorAttachmentCount());
 		
 		VkBuffer vertexBufferObject = VkBufferHelper.createDeviceLocalBuffer(
 				VkContext.getLogicalDevice().getHandle(),

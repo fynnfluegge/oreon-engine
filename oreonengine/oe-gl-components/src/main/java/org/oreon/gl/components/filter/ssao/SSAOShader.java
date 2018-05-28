@@ -38,7 +38,8 @@ public class SSAOShader extends GLShaderProgram{
 		}
 	}
 
-	public void updateUniforms(Matrix4f viewMatrix, Matrix4f projectionMatrix, int width, int height, Vec3f[] kernel){
+	public void updateUniforms(Matrix4f viewMatrix, Matrix4f projectionMatrix,
+			int width, int height, Vec3f[] kernel){
 		
 		setUniform("m_View", viewMatrix);
 		setUniform("m_Proj", projectionMatrix);

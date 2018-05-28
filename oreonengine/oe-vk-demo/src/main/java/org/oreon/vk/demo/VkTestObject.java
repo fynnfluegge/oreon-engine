@@ -1,5 +1,6 @@
 package org.oreon.vk.demo;
 
+import static org.lwjgl.vulkan.VK10.VK_ACCESS_SHADER_READ_BIT;
 import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
 import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
@@ -77,7 +78,7 @@ public class VkTestObject extends Renderable{
 		
 	    VkFrameBuffer offscreenFrameBuffer = VkContext.getRenderState().getOffScreenFbo().getFrameBuffer();
 	    RenderPass offScreenRenderPass = VkContext.getRenderState().getOffScreenFbo().getRenderPass();
-	    int attachments = VkContext.getRenderState().getOffScreenFbo().getAttachmentCount();
+	    int attachments = VkContext.getRenderState().getOffScreenFbo().getColorAttachmentCount();
 	    
 	    VkDevice device = VkContext.getLogicalDevice().getHandle();
 		
@@ -89,6 +90,7 @@ public class VkTestObject extends Renderable{
 				"images/vulkan-logo.jpg",
 				VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
 				VK_IMAGE_USAGE_SAMPLED_BIT,
+				VK_ACCESS_SHADER_READ_BIT,
 				VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT);
 		
 		VkImageView imageView = new VkImageView(device,
@@ -130,7 +132,8 @@ public class VkTestObject extends Renderable{
 				shaderPipeline, vertexInput, VkUtil.createLongBuffer(descriptorSetLayouts),
 				EngineContext.getConfig().getX_ScreenResolution(),
 				EngineContext.getConfig().getY_ScreenResolution(),
-				VkContext.getRenderState().getOffScreenFbo().getRenderPass().getHandle());
+				VkContext.getRenderState().getOffScreenFbo().getRenderPass().getHandle(),
+	    		VkContext.getRenderState().getOffScreenFbo().getColorAttachmentCount());
 	    
 	    ByteBuffer vertexBuffer = BufferUtil.createByteBuffer(mesh.getVertices(), mesh.getVertexLayout());
 		ByteBuffer indexBuffer = BufferUtil.createByteBuffer(mesh.getIndices());

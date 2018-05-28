@@ -150,17 +150,16 @@ public class CommandBuffer {
 	}
 	
 	public void beginRenderPassCmd(long renderPass, long frameBuffer,
-			int width, int height, int attachmentCount, boolean hasDepthAttachment,
+			int width, int height, int colorAattachmentCount, int depthAttachment,
 			int contentsFlag){
 		
-		VkClearValue.Buffer clearValues = VkClearValue.calloc(attachmentCount);
+		VkClearValue.Buffer clearValues = VkClearValue.calloc(
+				colorAattachmentCount + depthAttachment);
 		
-		int colorAttachments = hasDepthAttachment ? attachmentCount-1 : attachmentCount;
-		
-		for (int i=0; i<colorAttachments; i++){
+		for (int i=0; i<colorAattachmentCount; i++){
 			clearValues.put(VkUtil.getClearValueColor(new Vec3f(0,0,0)));
 		}
-		if (hasDepthAttachment){
+		if (depthAttachment == 1){
 			clearValues.put(VkUtil.getClearValueDepth());
 		}
 		clearValues.flip();
@@ -172,17 +171,16 @@ public class CommandBuffer {
 	}
 	
 	public void beginRenderPassCmd(long renderPass, long frameBuffer,
-			int width, int height, int attachmentCount, boolean hasDepthAttachment,
+			int width, int height, int colorAattachmentCount, int depthAttachment,
 			int contentsFlag, Vec3f clearColor){
 		
-		VkClearValue.Buffer clearValues = VkClearValue.calloc(attachmentCount);
+		VkClearValue.Buffer clearValues = VkClearValue.calloc(
+				colorAattachmentCount + depthAttachment);
 		
-		int colorAttachments = hasDepthAttachment ? attachmentCount-1 : attachmentCount;
-		
-		for (int i=0; i<colorAttachments; i++){
+		for (int i=0; i<colorAattachmentCount; i++){
 			clearValues.put(VkUtil.getClearValueColor(clearColor));
 		}
-		if (hasDepthAttachment){
+		if (depthAttachment == 1){
 			clearValues.put(VkUtil.getClearValueDepth());
 		}
 		clearValues.flip();
@@ -229,11 +227,6 @@ public class CommandBuffer {
 	}
 	
 	public void scissorCmd(){
-		
-		// TODO
-	}
-	
-	public void pipelineBarrierCmd(){
 		
 		// TODO
 	}
@@ -309,7 +302,7 @@ public class CommandBuffer {
 		vkCmdDispatch(handle, groupCountX, groupCountY, groupCountZ);
 	}
 	
-	public void recordCopyBufferCmd(long srcBuffer, long dstBuffer,
+	public void copyBufferCmd(long srcBuffer, long dstBuffer,
 								    long srcOffset, long dstOffset,
 								    long size){
 		
@@ -321,7 +314,7 @@ public class CommandBuffer {
 		vkCmdCopyBuffer(handle, srcBuffer, dstBuffer, copyRegion);
 	}
 	
-	public void recordCopyBufferToImageCmd(long srcBuffer, long dstImage, int width, int height, int depth){
+	public void copyBufferToImageCmd(long srcBuffer, long dstImage, int width, int height, int depth){
 		
 		VkBufferImageCopy.Buffer copyRegion = VkBufferImageCopy.calloc(1)
 					.bufferOffset(0)

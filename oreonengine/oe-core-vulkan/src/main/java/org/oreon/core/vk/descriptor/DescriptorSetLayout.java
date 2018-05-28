@@ -45,6 +45,7 @@ public class DescriptorSetLayout {
 		
 		handle = handlePointer.get(0);
 		
+		layoutBindings.clear();
 		layoutBindings.free();
 		layoutInfo.free();
 		

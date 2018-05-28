@@ -127,7 +127,8 @@ public class LogicalDevice {
         		.geometryShader(true)
         		.shaderClipDistance(true)
         		.samplerAnisotropy(true)
-        		.shaderStorageImageExtendedFormats(true);
+        		.shaderStorageImageExtendedFormats(true)
+        		.fillModeNonSolid(true);
         
         VkDeviceCreateInfo deviceCreateInfo = VkDeviceCreateInfo.calloc()
                 .sType(VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO)

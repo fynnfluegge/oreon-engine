@@ -119,10 +119,11 @@ public class NormalRenderer {
 		fence.waitForFence();
 		VkImageHelper.generateMipmap(device,
 				VkContext.getLogicalDevice().getTransferCommandPool().getHandle(),
+				VkContext.getLogicalDevice().getTransferQueue(),
 				normalImage.getHandle(), N, N, Util.getLog2N(N),
-				VK_IMAGE_LAYOUT_UNDEFINED, 0, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
-				VK_IMAGE_LAYOUT_GENERAL, VK_ACCESS_SHADER_READ_BIT,
-				VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
-				VkContext.getLogicalDevice().getTransferQueue());
+				VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_GENERAL,
+				0, VK_ACCESS_SHADER_READ_BIT,
+				VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+				VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT);
 	}
 }

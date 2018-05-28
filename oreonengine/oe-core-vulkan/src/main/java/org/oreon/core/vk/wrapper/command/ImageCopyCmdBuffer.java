@@ -18,7 +18,7 @@ public class ImageCopyCmdBuffer extends CommandBuffer{
 	public void record(long stagingBuffer, long image, ImageMetaData metaData){
 		
 		beginRecord(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
-	    recordCopyBufferToImageCmd(stagingBuffer, image,
+	    copyBufferToImageCmd(stagingBuffer, image,
 	    		metaData.getWidth(), metaData.getHeight(), 1);
 	    finishRecord();
 	}

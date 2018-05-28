@@ -80,8 +80,8 @@ public class ReflectionFbo extends VkFrameBufferObject{
 		renderPass.createSubpass();
 		renderPass.createRenderPass();
 		
-		attachmentCount = 3;
-		depthAttachment = true;
+		depthAttachment = 1;
+		colorAttachmentCount = renderPass.getAttachmentCount()-depthAttachment;
 		
 		frameBuffer = new VkFrameBuffer(device, width, height, 1,
 				getpImageViews(), renderPass.getHandle());
@@ -89,7 +89,7 @@ public class ReflectionFbo extends VkFrameBufferObject{
 	
 	public LongBuffer getpImageViews(){
 		
-		LongBuffer pImageViews = memAllocLong(3);
+		LongBuffer pImageViews = memAllocLong(renderPass.getAttachmentCount());
 		pImageViews.put(0, attachments.get(Attachment.ALBEDO).getImageView().getHandle());
 		pImageViews.put(1, attachments.get(Attachment.NORMAL).getImageView().getHandle());
 		pImageViews.put(2, attachments.get(Attachment.DEPTH).getImageView().getHandle());

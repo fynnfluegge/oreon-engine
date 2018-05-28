@@ -276,5 +276,45 @@ public class Util {
 		return getLog2N(metaData.getHeight() < metaData.getWidth() ?
 				metaData.getWidth() : metaData.getHeight());
 	}
+	
+	public static Vec3f[] generateRandomKernel3D(int kernelSize){
+		
+		Vec3f[] kernel = new Vec3f[kernelSize];
+		
+		for (int i=0; i<kernelSize; i++){
+			kernel[i] = new Vec3f((float) Math.random()*2-1,
+								  (float) Math.random()*2-1,
+								  (float) Math.random());
+			kernel[i].normalize();
+			
+			float scale = (float) i / (float) kernelSize;
+			
+			scale = (float) Math.min(Math.max(0.01, scale*scale), 1.0);
+			
+			kernel[i] = kernel[i].mul(scale).mul(-1);
+		}
+		
+		return kernel;
+	}
 
+	public static Quaternion[] generateRandomKernel4D(int kernelSize){
+		
+		Quaternion[] kernel = new Quaternion[kernelSize];
+		
+		for (int i=0; i<kernelSize; i++){
+			kernel[i] = new Quaternion((float) Math.random()*2-1,
+								  (float) Math.random()*2-1,
+								  (float) Math.random(),
+								  0);
+			kernel[i].normalize();
+			
+			float scale = (float) i / (float) kernelSize;
+			
+			scale = (float) Math.min(Math.max(0.01, scale*scale), 1.0);
+			
+			kernel[i] = kernel[i].mul(scale).mul(-1);
+		}
+		
+		return kernel;
+	}
 }

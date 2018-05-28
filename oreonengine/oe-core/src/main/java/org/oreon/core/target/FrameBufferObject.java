@@ -7,6 +7,6 @@ public abstract class FrameBufferObject {
 
 	protected int height; 
 	protected int width;
-	protected boolean depthAttachment;
-	protected int attachmentCount;
+	protected int colorAttachmentCount;
+	protected int depthAttachment;
 }

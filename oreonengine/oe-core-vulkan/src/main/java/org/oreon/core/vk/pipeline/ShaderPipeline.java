@@ -63,6 +63,11 @@ public class ShaderPipeline {
 		shaderStages.add(new ShaderModule(device, filePath, VK_SHADER_STAGE_FRAGMENT_BIT));
 	}
 	
+	public void addShaderModule(ShaderModule shaderModule){
+		
+		shaderStages.add(shaderModule);
+	}
+	
 	public void destroy(){
 		
 		stages.free();
