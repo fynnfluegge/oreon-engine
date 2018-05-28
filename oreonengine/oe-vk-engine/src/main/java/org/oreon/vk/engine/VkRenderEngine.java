@@ -125,24 +125,24 @@ public class VkRenderEngine extends RenderEngine{
 	    VkContext.getRenderState().setOffScreenFbo(offScreenFbo);
 	    VkContext.getRenderState().setOffScreenReflectionFbo(reflectionFbo);
 	    
-//	    swapChain = new SwapChain(logicalDevice, physicalDevice, surface,
-//	    		offScreenFbo.getAttachmentImageView(Attachment.POSITION).getHandle());
+	    swapChain = new SwapChain(logicalDevice, physicalDevice, surface,
+	    		offScreenFbo.getAttachmentImageView(Attachment.ALBEDO).getHandle());
 	    
-	    ssao = new SSAO(logicalDevice.getHandle(),
-	    		physicalDevice.getMemoryProperties(),
-	    		EngineContext.getConfig().getX_ScreenResolution(),
-	    		EngineContext.getConfig().getY_ScreenResolution(),
-	    		offScreenFbo.getAttachments().get(Attachment.POSITION).getImage(),
-	    		offScreenFbo.getAttachmentImageView(Attachment.POSITION),
-	    		offScreenFbo.getAttachmentImageView(Attachment.NORMAL));
+//	    ssao = new SSAO(logicalDevice.getHandle(),
+//	    		physicalDevice.getMemoryProperties(),
+//	    		EngineContext.getConfig().getX_ScreenResolution(),
+//	    		EngineContext.getConfig().getY_ScreenResolution(),
+//	    		offScreenFbo.getAttachments().get(Attachment.POSITION).getImage(),
+//	    		offScreenFbo.getAttachmentImageView(Attachment.POSITION),
+//	    		offScreenFbo.getAttachmentImageView(Attachment.NORMAL));
 	}
     
 	// FOR TESTING
 	// pass static reference to swapchain for display desired imageView
 	public static void createSwapChain(){
 		
-		swapChain = new SwapChain(logicalDevice, physicalDevice, surface,
-	    		SSAO.ssaoImageView.getHandle());
+//		swapChain = new SwapChain(logicalDevice, physicalDevice, surface,
+//	    		SSAO.ssaoImageView.getHandle());
 	}
 
 	@Override
@@ -177,7 +177,7 @@ public class VkRenderEngine extends RenderEngine{
 		}
 		
 		vkQueueWaitIdle(logicalDevice.getGraphicsQueue());
-		ssao.render();
+//		ssao.render();
 		swapChain.draw(logicalDevice.getGraphicsQueue());
 	}
 

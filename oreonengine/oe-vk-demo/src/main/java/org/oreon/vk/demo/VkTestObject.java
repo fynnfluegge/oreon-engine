@@ -175,6 +175,6 @@ public class VkTestObject extends Renderable{
 
 	public void render(){
 		
-		fft.render();
+//		fft.render();
 	}
 }

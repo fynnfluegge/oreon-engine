@@ -1,6 +1,5 @@
 package org.oreon.core.vk.wrapper.image;
 
-import static org.lwjgl.vulkan.VK10.VK_ACCESS_SHADER_READ_BIT;
 import static org.lwjgl.vulkan.VK10.VK_ACCESS_TRANSFER_READ_BIT;
 import static org.lwjgl.vulkan.VK10.VK_ACCESS_TRANSFER_WRITE_BIT;
 import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_LEVEL_PRIMARY;
@@ -19,7 +18,6 @@ import static org.lwjgl.vulkan.VK10.VK_QUEUE_FAMILY_IGNORED;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
 import static org.lwjgl.vulkan.VK10.vkCmdBlitImage;
 import static org.lwjgl.vulkan.VK10.vkCmdPipelineBarrier;
-import static org.lwjgl.vulkan.VK10.vkQueueWaitIdle;
 
 import java.nio.ByteBuffer;
 
@@ -102,8 +100,6 @@ public class VkImageHelper {
 				VK_PIPELINE_STAGE_TRANSFER_BIT, dstStageMask, mipLevels);
 		imageMemoryBarrierLayout1.submit(queue);
 		
-		vkQueueWaitIdle(queue);
-		
 		imageMemoryBarrierLayout0.destroy();
 		imageMemoryBarrierLayout1.destroy();
 		imageCopyCmd.destroy();
@@ -113,7 +109,7 @@ public class VkImageHelper {
 			generateMipmap(device, commandPool, queue,
 					image.getHandle(), metaData.getWidth(), metaData.getHeight(), mipLevels,
 					finalLayout, finalLayout,
-					VK_ACCESS_SHADER_READ_BIT, VK_ACCESS_SHADER_READ_BIT,
+					dstAccessMask, dstAccessMask,
 					dstStageMask, dstStageMask);
 		}
 		
@@ -171,24 +167,16 @@ public class VkImageHelper {
 					0, null, null, barrier);
 			
 			VkOffset3D src0_offset3D = VkOffset3D.calloc()
-					.x(0)
-					.y(0)
-					.z(0);
+					.x(0).y(0).z(0);
 			
 			VkOffset3D src1_offset3D = VkOffset3D.calloc()
-					.x(mipWidth)
-					.y(mipHeight)
-					.z(1);
+					.x(mipWidth).y(mipHeight).z(1);
 			
 			VkOffset3D dst0_offset3D = VkOffset3D.calloc()
-					.x(0)
-					.y(0)
-					.z(0);
+					.x(0).y(0).z(0);
 			
 			VkOffset3D dst1_offset3D = VkOffset3D.calloc()
-					.x(mipWidth/2)
-					.y(mipHeight/2)
-					.z(1);
+					.x(mipWidth/2).y(mipHeight/2).z(1);
 			
 			VkImageBlit.Buffer blit = VkImageBlit.calloc(1)
 					.srcOffsets(0, src0_offset3D)
