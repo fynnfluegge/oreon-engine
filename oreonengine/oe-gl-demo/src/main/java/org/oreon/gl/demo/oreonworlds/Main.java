@@ -5,7 +5,6 @@ import org.oreon.core.system.CoreEngine;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.gl.components.atmosphere.SkySphere;
 import org.oreon.gl.components.atmosphere.Sun;
-import org.oreon.gl.demo.oreonworlds.assets.plants.Palm01ClusterGroup;
 import org.oreon.gl.demo.oreonworlds.gui.GUI;
 import org.oreon.gl.demo.oreonworlds.shaders.TerrainShader;
 import org.oreon.gl.demo.oreonworlds.shaders.TerrainWireframeShader;
@@ -36,7 +35,7 @@ public class Main {
 													        null));
 		
 //		coreSystem.getScenegraph().getRoot().addChild(new Bush01ClusterGroup());
-		renderEngine.getScenegraph().getRoot().addChild(new Palm01ClusterGroup());
+//		renderEngine.getScenegraph().getRoot().addChild(new Palm01ClusterGroup());
 //		coreSystem.getScenegraph().getRoot().addChild(new Plant01ClusterGroup());
 //		coreSystem.getScenegraph().getRoot().addChild(new Grass01ClusterGroup());
 //		renderEngine.getScenegraph().getRoot().addChild(new Tree02ClusterGroup());

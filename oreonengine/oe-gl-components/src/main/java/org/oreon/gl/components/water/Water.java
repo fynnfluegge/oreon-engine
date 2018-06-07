@@ -9,6 +9,7 @@ import static org.lwjgl.opengl.GL11.glFrontFace;
 import static org.lwjgl.opengl.GL11.glViewport;
 import static org.lwjgl.opengl.GL30.GL_CLIP_DISTANCE6;
 
+import org.oreon.common.water.WaterConfiguration;
 import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.context.GLContext;
 import org.oreon.core.gl.memory.GLPatchVBO;
