@@ -5,7 +5,7 @@ import static org.lwjgl.opengl.GL30.GL_RGBA32F;
 import static org.lwjgl.opengl.GL42.glBindImageTexture;
 import static org.lwjgl.opengl.GL43.glDispatchCompute;
 
-import org.oreon.core.gl.buffer.GLShaderStorageBuffer;
+import org.oreon.core.gl.memory.GLShaderStorageBuffer;
 import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.gl.wrapper.texture.Texture2DStorageRGBA32F;
 

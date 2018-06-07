@@ -55,12 +55,12 @@ void main(void){
 		  
 		if (offset.x < 1.0 && offset.y < 1.0 && offset.x >= 0.0 && offset.y >= 0.0){
 			// get sample depth:
-			float sampleDepth = (m_View * vec4(imageLoad(worldPositionImage, ivec2(offset.x * width, offset.y * height), 0).rgb,1.0)).z/zfar;
+			float sampleDepth = (m_View * vec4(imageLoad(worldPositionImage, ivec2(offset.x * width, offset.y * height), 0).rgb,1.0)).z;
 		  
 			// range check & accumulate:
 			float rangeCheck= abs(actualDepth - sampleDepth) < threshold ? 1.0 : 0.0;
 			
-			occlusionOffset = (sampleDepth <= smple.z/zfar ? 1.0 : 0.0) * rangeCheck;
+			occlusionOffset = (sampleDepth/zfar <= smple.z/zfar ? 1.0 : 0.0) * rangeCheck;
 			occlusion += occlusionOffset;
 		}
 		else{

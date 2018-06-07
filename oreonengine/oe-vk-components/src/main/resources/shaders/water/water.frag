@@ -4,6 +4,7 @@
 layout (location = 0) in vec3 inPosition;
 layout (location = 1) in vec2 inUV;
 layout (location = 2) in vec3 inTangent;
+layout (location = 3) in vec3 inPositionPreTransform;
 
 layout(location = 0) out vec4 albedo_out;
 layout(location = 1) out vec4 worldPosition_out;
@@ -25,6 +26,9 @@ layout(set = 0, binding = 0, std140, row_major) uniform Camera {
 	// vec3 color;
 // } directional_light;
 
+layout(set = 1, binding = 0) uniform sampler2D Dy;
+layout(set = 1, binding = 1) uniform sampler2D Dx;
+layout(set = 1, binding = 2) uniform sampler2D Dz;
 layout(set = 1, binding = 3) uniform sampler2D dudvRefracReflec;
 layout(set = 1, binding = 4) uniform sampler2D normalmap;
 layout(set = 1, binding = 5) uniform sampler2D waterReflection;
@@ -133,8 +137,17 @@ void main(void)
 	
 	fragColor += specularLight;
 	
+	float dy = texture(Dy, inUV +(constants.windDirection*ubo.motion)).r;
+	float dx = texture(Dx, inUV +(constants.windDirection*ubo.motion)).r;
+	float dz = texture(Dz, inUV +(constants.windDirection*ubo.motion)).r;
+	
+	vec3 worldPosition = inPositionPreTransform;
+	worldPosition.y += dy;
+	worldPosition.x -= dx;
+	worldPosition.z -= dz;
+	
 	albedo_out = vec4(fragColor,1);
-	worldPosition_out = vec4(inPosition,1);
+	worldPosition_out = vec4(worldPosition,1);
 	normal_out = vec4(normal,1);
 	specularEmission_out = vec4(1,0,0,1);
 	lightScattering_out = vec4(0,0,0,1);

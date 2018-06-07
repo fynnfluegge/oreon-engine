@@ -15,6 +15,7 @@ import static org.lwjgl.vulkan.VK10.vkGetDeviceQueue;
 
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
+import java.util.HashMap;
 
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.vulkan.VkDevice;
@@ -23,6 +24,7 @@ import org.lwjgl.vulkan.VkDeviceQueueCreateInfo;
 import org.lwjgl.vulkan.VkPhysicalDeviceFeatures;
 import org.lwjgl.vulkan.VkQueue;
 import org.oreon.core.vk.command.CommandPool;
+import org.oreon.core.vk.descriptor.DescriptorPool;
 import org.oreon.core.vk.util.VkUtil;
 
 import lombok.Getter;
@@ -45,9 +47,15 @@ public class LogicalDevice {
 	private int computeQueueFamilyIndex;
 	private int transferQueueFamilyIndex;
 	
-	public void createDevice(PhysicalDevice physicalDevice,
+	private HashMap<Long, DescriptorPool> descriptorPools;
+	private HashMap<Long, CommandPool> commandPools;
+	
+	public LogicalDevice(PhysicalDevice physicalDevice,
 							 float priority,
 							 PointerBuffer ppEnabledLayerNames){
+		
+		descriptorPools = new HashMap<Long, DescriptorPool>();
+		commandPools = new HashMap<Long, CommandPool>();
 		
 		FloatBuffer pQueuePriorities = memAllocFloat(1).put(priority);
         pQueuePriorities.flip();
@@ -128,7 +136,8 @@ public class LogicalDevice {
         		.shaderClipDistance(true)
         		.samplerAnisotropy(true)
         		.shaderStorageImageExtendedFormats(true)
-        		.fillModeNonSolid(true);
+        		.fillModeNonSolid(true)
+        		.shaderStorageImageMultisample(true);
         
         VkDeviceCreateInfo deviceCreateInfo = VkDeviceCreateInfo.calloc()
                 .sType(VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO)
@@ -190,6 +199,10 @@ public class LogicalDevice {
 	
 	public void destroy(){
 
+		for (long key : descriptorPools.keySet()) {
+			descriptorPools.get(key).destroy();
+		}
+		
 		graphicsCommandPool.destroy();
 		if (graphicsQueueFamilyIndex != computeQueueFamilyIndex){
 			computeCommandPool.destroy();
@@ -198,6 +211,16 @@ public class LogicalDevice {
 			transferCommandPool.destroy();
 		}
 		vkDestroyDevice(handle, null);
+	}
+	
+	public void addDescriptorPool(long id, DescriptorPool descriptorPool){
+		
+		descriptorPools.put(id, descriptorPool);
+	}
+	
+	public DescriptorPool getDescriptorPool(long id){
+		
+		return descriptorPools.get(id);
 	}
 	
 }

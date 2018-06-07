@@ -1,6 +1,6 @@
 package org.oreon.core.context;
 
-import org.oreon.core.math.Quaternion;
+import org.oreon.core.math.Vec4f;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -20,6 +20,5 @@ public abstract class RenderState {
 	private boolean dephtOfFieldEnabled;
 	
 	// render settings
-	private float sightRange;
-	private Quaternion clipplane;
+	private Vec4f clipplane;
 }

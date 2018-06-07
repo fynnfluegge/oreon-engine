@@ -1,6 +1,6 @@
 package org.oreon.core.gl.instanced;
 
-import org.oreon.core.gl.buffer.GLUniformBuffer;
+import org.oreon.core.gl.memory.GLUniformBuffer;
 import org.oreon.core.instanced.InstancedCluster;
 
 import lombok.Getter;

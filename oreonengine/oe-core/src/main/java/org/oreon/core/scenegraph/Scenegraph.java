@@ -55,6 +55,11 @@ public class Scenegraph extends Node{
 		water.record(renderList);
 	}
 	
+	public void recordTransparentObjects(RenderList renderList){
+
+		transparentObjects.record(renderList);
+	}
+	
 	public void update(){
 
 		rootObject.update();

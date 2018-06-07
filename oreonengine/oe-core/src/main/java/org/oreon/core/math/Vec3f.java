@@ -68,10 +68,10 @@ public class Vec3f {
 		float rZ = axis.getZ() * sinHalfAngle;
 		float rW = cosHalfAngle;
 		
-		Quaternion rotation = new Quaternion(rX, rY, rZ, rW);
-		Quaternion conjugate = rotation.conjugate();
+		Vec4f rotation = new Vec4f(rX, rY, rZ, rW);
+		Vec4f conjugate = rotation.conjugate();
 		
-		Quaternion w = rotation.mul(this).mul(conjugate);
+		Vec4f w = rotation.mul(this).mul(conjugate);
 		
 		X = w.getX();
 		Y = w.getY();

@@ -6,7 +6,6 @@ import static org.lwjgl.vulkan.VK10.VK_ATTACHMENT_LOAD_OP_DONT_CARE;
 import static org.lwjgl.vulkan.VK10.VK_ATTACHMENT_STORE_OP_DONT_CARE;
 import static org.lwjgl.vulkan.VK10.VK_ATTACHMENT_STORE_OP_STORE;
 import static org.lwjgl.vulkan.VK10.VK_PIPELINE_BIND_POINT_GRAPHICS;
-import static org.lwjgl.vulkan.VK10.VK_SAMPLE_COUNT_1_BIT;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import static org.lwjgl.vulkan.VK10.vkCreateRenderPass;
@@ -110,12 +109,12 @@ public class RenderPass {
         }
 	}
 	
-	public void setAttachment(int format, int initialLayout, int finalLayout,
-			int loadOpFlag){
+	public void setAttachment(int format, int samples, 
+			int initialLayout, int finalLayout, int loadOpFlag){
 		
 		VkAttachmentDescription attachment = VkAttachmentDescription.calloc()
 				.format(format)
-				.samples(VK_SAMPLE_COUNT_1_BIT)
+				.samples(VkUtil.getSampleCountBit(samples))
 				.loadOp(loadOpFlag)
 				.storeOp(VK_ATTACHMENT_STORE_OP_STORE)
 				.stencilLoadOp(VK_ATTACHMENT_LOAD_OP_DONT_CARE)

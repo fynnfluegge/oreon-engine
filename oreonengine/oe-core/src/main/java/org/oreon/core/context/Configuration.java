@@ -21,6 +21,9 @@ public class Configuration {
 	private int windowWidth;
 	private int windowHeight;
 	
+	// render settings
+	private float sightRange;
+	
 	private Configuration(){
 		
 		Properties properties = new Properties();
@@ -38,6 +41,6 @@ public class Configuration {
 		displayTitle = properties.getProperty("display.title");
 		x_ScreenResolution = Integer.valueOf(properties.getProperty("screen.resolution.x"));
 		y_ScreenResolution = Integer.valueOf(properties.getProperty("screen.resolution.y"));
-		
+		sightRange = Float.valueOf(properties.getProperty("sightRange"));
 	}
 }

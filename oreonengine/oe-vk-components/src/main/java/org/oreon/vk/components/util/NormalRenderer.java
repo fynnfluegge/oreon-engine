@@ -19,13 +19,14 @@ import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_COMPUTE_BIT;
 import java.nio.ByteBuffer;
 
 import org.lwjgl.vulkan.VkDevice;
-import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
+import org.lwjgl.vulkan.VkQueue;
 import org.oreon.core.util.Util;
 import org.oreon.core.vk.command.CommandBuffer;
+import org.oreon.core.vk.command.CommandPool;
 import org.oreon.core.vk.command.SubmitInfo;
-import org.oreon.core.vk.context.VkContext;
 import org.oreon.core.vk.descriptor.DescriptorSet;
 import org.oreon.core.vk.descriptor.DescriptorSetLayout;
+import org.oreon.core.vk.device.VkDeviceBundle;
 import org.oreon.core.vk.image.VkImage;
 import org.oreon.core.vk.image.VkImageView;
 import org.oreon.core.vk.image.VkSampler;
@@ -47,40 +48,47 @@ public class NormalRenderer {
 	private DescriptorSetLayout descriptorSetLayout;
 	private SubmitInfo submitInfo;
 	private VkImage normalImage;
-	private final VkDevice device;
 	private int N;
 	private Fence fence;
+	
+	private VkDevice device;
+	private VkQueue computeQueue;
+	private VkQueue transferQueue;
+	private CommandPool transferCommandPool;
 	
 	@Getter
 	private VkImageView normalImageView;
 	
-	public NormalRenderer(VkDevice device,
-			VkPhysicalDeviceMemoryProperties memoryProperties,
-			int N, float strength,
+	public NormalRenderer(VkDeviceBundle deviceBundle, int N, float strength,
 			VkImageView heightImageView, VkSampler heightSampler) {
 
-		this.device = device;
 		this.N = N;
 		
-		normalImage = new Image2DDeviceLocal(device, memoryProperties, N, N,
+		device = deviceBundle.getLogicalDevice().getHandle();
+		computeQueue = deviceBundle.getLogicalDevice().getComputeQueue();
+		transferQueue = deviceBundle.getLogicalDevice().getTransferQueue();
+		transferCommandPool= deviceBundle.getLogicalDevice().getTransferCommandPool();
+		
+		normalImage = new Image2DDeviceLocal(deviceBundle.getLogicalDevice().getHandle(),
+				deviceBundle.getPhysicalDevice().getMemoryProperties(), N, N,
 				VK_FORMAT_R32G32B32A32_SFLOAT,
 				VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_STORAGE_BIT |
 				VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT,
 				1, Util.getLog2N(N));
 		
-		normalImageView = new VkImageView(device,
+		normalImageView = new VkImageView(deviceBundle.getLogicalDevice().getHandle(),
 				VK_FORMAT_R32G32B32A32_SFLOAT, normalImage.getHandle(), VK_IMAGE_ASPECT_COLOR_BIT,
 				Util.getLog2N(N));
 		
-		descriptorSetLayout = new DescriptorSetLayout(device, 2);
+		descriptorSetLayout = new DescriptorSetLayout(deviceBundle.getLogicalDevice().getHandle(), 2);
 		descriptorSetLayout.addLayoutBinding(0, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
 	    		VK_SHADER_STAGE_COMPUTE_BIT);
 		descriptorSetLayout.addLayoutBinding(1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
 	    		VK_SHADER_STAGE_COMPUTE_BIT);
 		descriptorSetLayout.create();
 		
-		descriptorSet = new DescriptorSet(device,
-	    		VkContext.getDescriptorPoolManager().getDescriptorPool("POOL_1").getHandle(),
+		descriptorSet = new DescriptorSet(deviceBundle.getLogicalDevice().getHandle(),
+				deviceBundle.getLogicalDevice().getDescriptorPool(Thread.currentThread().getId()).getHandle(),
 	    		descriptorSetLayout.getHandlePointer());
 	    descriptorSet.updateDescriptorImageBuffer(normalImageView.getHandle(),
 	    		VK_IMAGE_LAYOUT_GENERAL, -1,
@@ -94,19 +102,19 @@ public class NormalRenderer {
 		pushConstants.putFloat(strength);
 		pushConstants.flip();
 		
-		pipeline = new VkPipeline(device);
+		pipeline = new VkPipeline(deviceBundle.getLogicalDevice().getHandle());
 		pipeline.setPushConstantsRange(VK_SHADER_STAGE_COMPUTE_BIT, Integer.BYTES + Float.BYTES);
 		pipeline.setLayout(descriptorSetLayout.getHandlePointer());
-		pipeline.createComputePipeline(new ShaderModule(device,
+		pipeline.createComputePipeline(new ShaderModule(deviceBundle.getLogicalDevice().getHandle(),
 				"shaders/util/normals.comp.spv", VK_SHADER_STAGE_COMPUTE_BIT));
 		
-		commandBuffer = new ComputeCmdBuffer(device,
-				VkContext.getLogicalDevice().getComputeCommandPool().getHandle(),
+		commandBuffer = new ComputeCmdBuffer(deviceBundle.getLogicalDevice().getHandle(),
+				deviceBundle.getLogicalDevice().getComputeCommandPool().getHandle(),
 				pipeline.getHandle(), pipeline.getLayoutHandle(),
 				VkUtil.createLongArray(descriptorSet), N/16, N/16, 1,
 				pushConstants, VK_SHADER_STAGE_COMPUTE_BIT);
 		
-		fence = new Fence(device);
+		fence = new Fence(deviceBundle.getLogicalDevice().getHandle());
 		
 		submitInfo = new SubmitInfo();
 		submitInfo.setFence(fence);
@@ -115,11 +123,10 @@ public class NormalRenderer {
 	
 	public void render(){
 		
-		submitInfo.submit(VkContext.getLogicalDevice().getComputeQueue());
+		submitInfo.submit(computeQueue);
 		fence.waitForFence();
 		VkImageHelper.generateMipmap(device,
-				VkContext.getLogicalDevice().getTransferCommandPool().getHandle(),
-				VkContext.getLogicalDevice().getTransferQueue(),
+				transferCommandPool.getHandle(), transferQueue,
 				normalImage.getHandle(), N, N, Util.getLog2N(N),
 				VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_GENERAL,
 				0, VK_ACCESS_SHADER_READ_BIT,

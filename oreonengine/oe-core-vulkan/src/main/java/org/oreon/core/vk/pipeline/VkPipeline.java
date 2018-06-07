@@ -15,7 +15,6 @@ import static org.lwjgl.vulkan.VK10.VK_DYNAMIC_STATE_VIEWPORT;
 import static org.lwjgl.vulkan.VK10.VK_FRONT_FACE_COUNTER_CLOCKWISE;
 import static org.lwjgl.vulkan.VK10.VK_NULL_HANDLE;
 import static org.lwjgl.vulkan.VK10.VK_POLYGON_MODE_FILL;
-import static org.lwjgl.vulkan.VK10.VK_SAMPLE_COUNT_1_BIT;
 import static org.lwjgl.vulkan.VK10.VK_STENCIL_OP_KEEP;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
@@ -236,13 +235,13 @@ public class VkPipeline {
 				.depthBiasClamp(0);
 	}
 	
-	public void setMultisampling(){
+	public void setMultisampling(int samples){
 		
 		multisampling = VkPipelineMultisampleStateCreateInfo.calloc()
                 .sType(VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO)
                 .sampleShadingEnable(false)
+                .rasterizationSamples(VkUtil.getSampleCountBit(samples))
                 .pSampleMask(null)
-                .rasterizationSamples(VK_SAMPLE_COUNT_1_BIT)
                 .minSampleShading(1)
                 .alphaToCoverageEnable(false)
                 .alphaToOneEnable(false);

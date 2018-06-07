@@ -14,7 +14,7 @@ import java.nio.FloatBuffer;
 import org.lwjgl.BufferUtils;
 import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.context.GLContext;
-import org.oreon.core.math.Quaternion;
+import org.oreon.core.math.Vec4f;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.math.Vec3f;
 import org.oreon.core.util.BufferUtil;
@@ -59,8 +59,8 @@ public class TerrainPicking {
 			Vec3f ndc = new Vec3f(w.getX() * 2 - 1, w.getY() * 2 - 1, depth);
 			float cw = EngineContext.getCamera().getProjectionMatrix().get(3,2) / (ndc.getZ() - EngineContext.getCamera().getProjectionMatrix().get(2,2)); 
 			Vec3f clip = ndc.mul(cw);
-			Quaternion clipPos = new Quaternion(clip.getX(),clip.getY(),clip.getZ(),cw);
-			Quaternion worldPos =  EngineContext.getCamera().getViewProjectionMatrix().invert().mul(clipPos);
+			Vec4f clipPos = new Vec4f(clip.getX(),clip.getY(),clip.getZ(),cw);
+			Vec4f worldPos =  EngineContext.getCamera().getViewProjectionMatrix().invert().mul(clipPos);
 			worldPos = worldPos.div(worldPos.getW());
 		
 			pos.setX(worldPos.getX());

@@ -23,16 +23,17 @@ public class DescriptorPool {
 	private long handle;
 	
 	private VkDescriptorPoolSize.Buffer poolSizes;
-	private VkDevice device;
+	private final VkDevice device;
+	private int maxSets;
 
-	public DescriptorPool(int poolSizeCount) {
-		
-		poolSizes = VkDescriptorPoolSize.calloc(poolSizeCount);
-	}
-	
-	public void create(VkDevice device, int maxSets) {
+	public DescriptorPool(VkDevice device, int poolSizeCount) {
 		
 		this.device = device;
+		poolSizes = VkDescriptorPoolSize.calloc(poolSizeCount);
+		maxSets = 0;
+	}
+	
+	public void create() {
 		
 		poolSizes.flip();
 		
@@ -62,6 +63,7 @@ public class DescriptorPool {
 					.descriptorCount(descriptorCount);
 		
 		poolSizes.put(poolSize);
+		maxSets += descriptorCount;
 	}
 	
 	public void destroy(){

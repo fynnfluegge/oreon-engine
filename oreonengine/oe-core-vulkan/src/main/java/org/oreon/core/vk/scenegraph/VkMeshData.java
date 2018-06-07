@@ -3,7 +3,7 @@ package org.oreon.core.vk.scenegraph;
 import java.nio.ByteBuffer;
 
 import org.oreon.core.scenegraph.NodeComponent;
-import org.oreon.core.vk.buffer.VkBuffer;
+import org.oreon.core.vk.memory.VkBuffer;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,5 +17,11 @@ public class VkMeshData extends NodeComponent{
 	
 	private VkBuffer indexBufferObject;
 	private ByteBuffer indexBuffer;
+	
+	public VkMeshData(VkBuffer vertexBufferObject, ByteBuffer vertexBuffer){
+		
+		this.vertexBufferObject = vertexBufferObject;
+		this.vertexBuffer = vertexBuffer;
+	}
 	
 }

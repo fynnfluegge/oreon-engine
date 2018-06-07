@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.oreon.core.image.ImageMetaData;
-import org.oreon.core.math.Quaternion;
+import org.oreon.core.math.Vec4f;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.math.Vec3f;
 import org.oreon.core.model.Mesh;
@@ -226,7 +226,7 @@ public class Util {
 		    }
 	}
 	
-	public static Quaternion normalizePlane(Quaternion plane)
+	public static Vec4f normalizePlane(Vec4f plane)
 	{
 		float mag;
 		mag = (float) Math.sqrt(plane.getX() * plane.getX() + plane.getY() * plane.getY() + plane.getZ() * plane.getZ());
@@ -297,12 +297,12 @@ public class Util {
 		return kernel;
 	}
 
-	public static Quaternion[] generateRandomKernel4D(int kernelSize){
+	public static Vec4f[] generateRandomKernel4D(int kernelSize){
 		
-		Quaternion[] kernel = new Quaternion[kernelSize];
+		Vec4f[] kernel = new Vec4f[kernelSize];
 		
 		for (int i=0; i<kernelSize; i++){
-			kernel[i] = new Quaternion((float) Math.random()*2-1,
+			kernel[i] = new Vec4f((float) Math.random()*2-1,
 								  (float) Math.random()*2-1,
 								  (float) Math.random(),
 								  0);

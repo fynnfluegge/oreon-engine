@@ -1,7 +1,7 @@
 package org.oreon.core.gl.context;
 
 import org.oreon.core.context.RenderState;
-import org.oreon.core.gl.buffer.GLFramebuffer;
+import org.oreon.core.gl.framebuffer.GLFramebuffer;
 import org.oreon.core.gl.texture.GLTexture;
 
 import lombok.Getter;

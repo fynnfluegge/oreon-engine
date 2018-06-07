@@ -8,7 +8,7 @@ import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT4;
 
 import java.nio.IntBuffer;
 
-import org.oreon.core.gl.buffer.GLFramebuffer;
+import org.oreon.core.gl.framebuffer.GLFramebuffer;
 import org.oreon.core.util.BufferUtil;
 
 public class TransparencyLayer {

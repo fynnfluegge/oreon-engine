@@ -36,7 +36,7 @@ import java.util.HashMap;
 
 import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.math.Matrix4f;
-import org.oreon.core.math.Quaternion;
+import org.oreon.core.math.Vec4f;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.math.Vec3f;
 import org.oreon.core.scenegraph.Renderable;
@@ -215,7 +215,7 @@ public abstract class GLShaderProgram{
 	{
 		glUniform3f(uniforms.get(uniformName), value.getX(), value.getY(), value.getZ());
 	}
-	public void setUniform(String uniformName, Quaternion value)
+	public void setUniform(String uniformName, Vec4f value)
 	{
 		glUniform4f(uniforms.get(uniformName), value.getX(), value.getY(), value.getZ(), value.getW());
 	}

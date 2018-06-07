@@ -18,7 +18,7 @@ public class SwapChainRenderPass extends RenderPass{
 		
 		super(device);
 		
-		setAttachment(imageFormat,
+		setAttachment(imageFormat, 1,
 				VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,
 				VK_ATTACHMENT_LOAD_OP_CLEAR);
 		addColorAttachmentReference(0, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);

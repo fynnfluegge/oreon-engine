@@ -6,7 +6,7 @@ import static org.lwjgl.opengl.GL30.GL_DEPTH_ATTACHMENT;
 import static org.lwjgl.opengl.GL30.GL_FRAMEBUFFER;
 import static org.lwjgl.opengl.GL32.glFramebufferTexture;
 
-import org.oreon.core.gl.buffer.GLFramebuffer;
+import org.oreon.core.gl.framebuffer.GLFramebuffer;
 import org.oreon.core.gl.pipeline.RenderParameter;
 import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.gl.wrapper.parameter.ShadowConfig;

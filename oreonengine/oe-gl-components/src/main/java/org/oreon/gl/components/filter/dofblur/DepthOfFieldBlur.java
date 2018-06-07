@@ -9,7 +9,7 @@ import static org.lwjgl.opengl.GL42.glBindImageTexture;
 import static org.lwjgl.opengl.GL43.glDispatchCompute;
 
 import org.oreon.core.context.EngineContext;
-import org.oreon.core.gl.buffer.GLFramebuffer;
+import org.oreon.core.gl.framebuffer.GLFramebuffer;
 import org.oreon.core.gl.surface.FullScreenQuad;
 import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.gl.wrapper.texture.Texture2DBilinearFilterRGBA16F;

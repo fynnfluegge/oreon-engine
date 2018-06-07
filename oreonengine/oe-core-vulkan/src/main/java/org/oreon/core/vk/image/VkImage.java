@@ -72,7 +72,7 @@ public class VkImage extends Image{
 				.initialLayout(VK_IMAGE_LAYOUT_UNDEFINED)
 				.usage(usage)
 				.sharingMode(VK_SHARING_MODE_EXCLUSIVE)
-				.samples(samples)
+				.samples(VkUtil.getSampleCountBit(samples))
 				.flags(0);
 		
 		LongBuffer pBuffer = memAllocLong(1);

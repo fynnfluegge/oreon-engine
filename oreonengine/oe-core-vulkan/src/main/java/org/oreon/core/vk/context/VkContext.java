@@ -1,8 +1,6 @@
 package org.oreon.core.vk.context;
 
 import org.oreon.core.context.EngineContext;
-import org.oreon.core.vk.device.LogicalDevice;
-import org.oreon.core.vk.device.PhysicalDevice;
 import org.oreon.core.vk.platform.VkCamera;
 import org.oreon.core.vk.platform.VkWindow;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -31,19 +29,9 @@ public class VkContext extends EngineContext{
 		return context.getBean(VkRenderState.class);
 	}
 	
-	public static DescriptorPoolManager getDescriptorPoolManager(){
+	public static DeviceManager getDeviceManager(){
 		
-		return context.getBean(DescriptorPoolManager.class);
-	}
-	
-	public static LogicalDevice getLogicalDevice(){
-		
-		return context.getBean(LogicalDevice.class);
-	}
-	
-	public static PhysicalDevice getPhysicalDevice(){
-		
-		return context.getBean(PhysicalDevice.class);
+		return (DeviceManager) context.getBean("DeviceManager");
 	}
 	
 	public static VulkanInstance getVulkanInstance(){

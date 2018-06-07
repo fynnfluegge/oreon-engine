@@ -5,13 +5,15 @@ layout (local_size_x = 16, local_size_y = 16) in;
 
 layout (set = 1, binding = 0, rgba16f) uniform writeonly image2D ssao_out;
 
-layout (set = 1, binding = 1, rgba16f) uniform readonly image2D worldPositionImage;
+layout (set = 1, binding = 1, rgba32f) uniform readonly image2DMS worldPositionImage;
 
-layout (set = 1, binding = 2, rgba16f) uniform readonly image2D normalImage;
+layout (set = 1, binding = 2, rgba16f) uniform readonly image2DMS normalImage;
 
-layout (set = 1, binding = 3, rgba32f) uniform readonly image2D noiseImage;
+layout (set = 1, binding = 3, rgba16f) uniform readonly image2D noiseImage;
 
-layout (set = 1, binding = 4, std140) buffer Buffer {
+layout (set = 1, binding = 4) uniform sampler2DMS depthImage;
+
+layout (set = 1, binding = 5, std430) buffer Buffer {
 	vec4 kernel[64];
 };
 
@@ -37,13 +39,13 @@ void main(void){
 
 	ivec2 computeCoord = ivec2(gl_GlobalInvocationID.xy);
 	
-	vec3 worldPosition = imageLoad(worldPositionImage, computeCoord).rgb;
+	vec3 worldPosition = imageLoad(worldPositionImage, computeCoord, 0).rgb;
 	
 	vec3 viewPosition = (m_View * vec4(worldPosition,1.0)).xyz;
 	
 	float actualDepth = viewPosition.z/zfar;
 	
-	vec3 normal = imageLoad(normalImage, computeCoord).rgb;
+	vec3 normal = imageLoad(normalImage, computeCoord, 0).rgb;
 	
 	ivec2 noiseCoord = computeCoord - ivec2(floor(gl_GlobalInvocationID.x/4), floor(gl_GlobalInvocationID.y/4)) * 4; 
 	
@@ -68,7 +70,7 @@ void main(void){
 		if (offset.x < 1.0 && offset.y < 1.0 && offset.x >= 0.0 && offset.y >= 0.0){
 			// get sample depth:
 			float sampleDepth = (m_View * vec4(imageLoad(worldPositionImage,
-				ivec2(offset.x * constants.width, offset.y * constants.height)).rgb,1.0)).z/zfar;
+				ivec2(offset.x * constants.width, offset.y * constants.height), 0).rgb,1.0)).z/zfar;
 		  
 			// range check & accumulate:
 			float rangeCheck = abs(actualDepth - sampleDepth) < constants.threshold ? 1.0 : 0.0;
@@ -80,6 +82,8 @@ void main(void){
 			occlusion += 0.4f;
 		}
 	}
+
+	float depth = texelFetch(depthImage, computeCoord).r;
 	
 	occlusion = (1.0 - (occlusion / constants.kernelSize));
 	

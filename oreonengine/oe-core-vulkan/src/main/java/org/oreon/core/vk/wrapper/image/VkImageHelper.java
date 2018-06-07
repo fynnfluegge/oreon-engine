@@ -18,6 +18,7 @@ import static org.lwjgl.vulkan.VK10.VK_QUEUE_FAMILY_IGNORED;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
 import static org.lwjgl.vulkan.VK10.vkCmdBlitImage;
 import static org.lwjgl.vulkan.VK10.vkCmdPipelineBarrier;
+import static org.lwjgl.vulkan.VK10.vkQueueWaitIdle;
 
 import java.nio.ByteBuffer;
 
@@ -100,10 +101,7 @@ public class VkImageHelper {
 				VK_PIPELINE_STAGE_TRANSFER_BIT, dstStageMask, mipLevels);
 		imageMemoryBarrierLayout1.submit(queue);
 		
-		imageMemoryBarrierLayout0.destroy();
-		imageMemoryBarrierLayout1.destroy();
-		imageCopyCmd.destroy();
-		stagingBuffer.destroy();
+		vkQueueWaitIdle(queue);
 		
 		if (mipmap){
 			generateMipmap(device, commandPool, queue,
@@ -112,6 +110,11 @@ public class VkImageHelper {
 					dstAccessMask, dstAccessMask,
 					dstStageMask, dstStageMask);
 		}
+		
+		imageMemoryBarrierLayout0.destroy();
+		imageMemoryBarrierLayout1.destroy();
+		imageCopyCmd.destroy();
+		stagingBuffer.destroy();
 		
 		return image;
 	}

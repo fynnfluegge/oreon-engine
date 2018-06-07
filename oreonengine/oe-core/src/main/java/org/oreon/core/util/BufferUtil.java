@@ -9,7 +9,7 @@ import java.nio.IntBuffer;
 
 import org.lwjgl.BufferUtils;
 import org.oreon.core.math.Matrix4f;
-import org.oreon.core.math.Quaternion;
+import org.oreon.core.math.Vec4f;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.math.Vec3f;
 import org.oreon.core.model.Vertex;
@@ -134,7 +134,7 @@ public class BufferUtil {
 		return buffer;
 	}
 	
-	public static FloatBuffer createFlippedBuffer(Quaternion[] vector)
+	public static FloatBuffer createFlippedBuffer(Vec4f[] vector)
 	{
 		FloatBuffer buffer = createFloatBuffer(vector.length * Float.BYTES * 4);
 		
@@ -164,7 +164,7 @@ public class BufferUtil {
 		return buffer;
 	}
 	
-	public static FloatBuffer createFlippedBuffer(Quaternion vector)
+	public static FloatBuffer createFlippedBuffer(Vec4f vector)
 	{
 		FloatBuffer buffer = createFloatBuffer(Float.BYTES * 4);
 		
@@ -257,7 +257,7 @@ public class BufferUtil {
 		return byteBuffer;
 	}
 	
-	public static ByteBuffer createByteBuffer(Quaternion[] vertices){
+	public static ByteBuffer createByteBuffer(Vec4f[] vertices){
 		
 		ByteBuffer byteBuffer = memAlloc(Float.BYTES * 4 * vertices.length);
 		FloatBuffer floatBuffer = byteBuffer.asFloatBuffer();

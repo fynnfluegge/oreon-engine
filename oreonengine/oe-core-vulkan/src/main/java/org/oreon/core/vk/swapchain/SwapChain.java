@@ -41,15 +41,16 @@ import org.oreon.core.model.Mesh;
 import org.oreon.core.model.Vertex.VertexLayout;
 import org.oreon.core.util.BufferUtil;
 import org.oreon.core.util.MeshGenerator;
-import org.oreon.core.vk.buffer.VkBuffer;
 import org.oreon.core.vk.command.CommandBuffer;
 import org.oreon.core.vk.command.CommandPool;
 import org.oreon.core.vk.command.SubmitInfo;
+import org.oreon.core.vk.context.DeviceManager.DeviceType;
 import org.oreon.core.vk.context.VkContext;
 import org.oreon.core.vk.device.LogicalDevice;
 import org.oreon.core.vk.device.PhysicalDevice;
 import org.oreon.core.vk.framebuffer.VkFrameBuffer;
 import org.oreon.core.vk.image.VkImageView;
+import org.oreon.core.vk.memory.VkBuffer;
 import org.oreon.core.vk.synchronization.VkSemaphore;
 import org.oreon.core.vk.util.VkUtil;
 import org.oreon.core.vk.wrapper.buffer.VkBufferHelper;
@@ -96,26 +97,31 @@ public class SwapChain {
 		int imageFormat = VK_FORMAT_B8G8R8A8_UNORM;
 	    int colorSpace = VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
 	    
-	    VkContext.getPhysicalDevice().checkDeviceFormatAndColorSpaceSupport(imageFormat, colorSpace);
+	    VkContext.getDeviceManager().getPhysicalDevice(DeviceType.MAJOR_GRAPHICS_DEVICE)
+	    	.checkDeviceFormatAndColorSpaceSupport(imageFormat, colorSpace);
 	    
 		int presentMode = VK_PRESENT_MODE_MAILBOX_KHR;
 		
-	    if (!VkContext.getPhysicalDevice().checkDevicePresentationModeSupport(presentMode)){
+	    if (!VkContext.getDeviceManager().getPhysicalDevice(DeviceType.MAJOR_GRAPHICS_DEVICE)
+	    		.checkDevicePresentationModeSupport(presentMode)){
 	    	
-	    	if (VkContext.getPhysicalDevice().checkDevicePresentationModeSupport(VK_PRESENT_MODE_FIFO_KHR))
+	    	if (VkContext.getDeviceManager().getPhysicalDevice(DeviceType.MAJOR_GRAPHICS_DEVICE)
+	    			.checkDevicePresentationModeSupport(VK_PRESENT_MODE_FIFO_KHR))
 	    		presentMode = VK_PRESENT_MODE_FIFO_KHR;
 	    	else
 	    		presentMode = VK_PRESENT_MODE_IMMEDIATE_KHR;
 	    }
 	    
-	    int minImageCount = VkContext.getPhysicalDevice().getDeviceMinImageCount4TripleBuffering();
+	    int minImageCount = VkContext.getDeviceManager().getPhysicalDevice(DeviceType.MAJOR_GRAPHICS_DEVICE)
+	    		.getDeviceMinImageCount4TripleBuffering();
 	    
-	    descriptor = new SwapChainDescriptor(device, imageView);
+	    descriptor = new SwapChainDescriptor(device,
+	    		logicalDevice.getDescriptorPool(Thread.currentThread().getId()), imageView);
 	    
 	    renderPass = new SwapChainRenderPass(device, imageFormat);
 	    pipeline = new SwapChainPipeline(device, renderPass.getHandle(),
 	    		extent, descriptor.getLayout().getHandlePointer());
-		
+	    
 		VkSwapchainCreateInfoKHR swapchainCreateInfo = VkSwapchainCreateInfoKHR.calloc()
 				.sType(VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR)
 		        .pNext(0)

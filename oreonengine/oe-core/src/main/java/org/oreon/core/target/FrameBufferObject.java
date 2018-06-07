@@ -9,4 +9,16 @@ public abstract class FrameBufferObject {
 	protected int width;
 	protected int colorAttachmentCount;
 	protected int depthAttachment;
+	
+	public enum Attachment {
+		
+		COLOR,
+		ALBEDO,
+		ALPHA,
+		NORMAL,
+		POSITION,
+		SPECULAR_EMISSION,
+		LIGHT_SCATTERING,
+		DEPTH;
+	}
 }

@@ -17,16 +17,18 @@ import java.nio.IntBuffer;
 
 import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
+import org.lwjgl.vulkan.VkQueue;
 import org.oreon.core.util.BufferUtil;
 import org.oreon.core.util.Util;
-import org.oreon.core.vk.buffer.VkBuffer;
 import org.oreon.core.vk.command.CommandBuffer;
 import org.oreon.core.vk.command.SubmitInfo;
-import org.oreon.core.vk.context.VkContext;
+import org.oreon.core.vk.descriptor.DescriptorPool;
 import org.oreon.core.vk.descriptor.DescriptorSet;
 import org.oreon.core.vk.descriptor.DescriptorSetLayout;
+import org.oreon.core.vk.device.VkDeviceBundle;
 import org.oreon.core.vk.image.VkImage;
 import org.oreon.core.vk.image.VkImageView;
+import org.oreon.core.vk.memory.VkBuffer;
 import org.oreon.core.vk.pipeline.ShaderModule;
 import org.oreon.core.vk.pipeline.VkPipeline;
 import org.oreon.core.vk.synchronization.Fence;
@@ -45,31 +47,12 @@ public class TwiddleFactors {
 	
 	private VkImage image;
 	
-	private class TwiddleDescriptor extends VkDescriptor{
+	public TwiddleFactors(VkDeviceBundle deviceBundle, int n) {
 		
-		public TwiddleDescriptor(VkDevice device, VkImageView imageView, VkBuffer buffer, int n) {
-		
-			descriptorSetLayout = new DescriptorSetLayout(device, 2);
-		    descriptorSetLayout.addLayoutBinding(0, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
-		    		VK_SHADER_STAGE_COMPUTE_BIT);
-		    descriptorSetLayout.addLayoutBinding(1, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
-		    		VK_SHADER_STAGE_COMPUTE_BIT);
-		    descriptorSetLayout.create();
-		    
-		    descriptorSet = new DescriptorSet(device,
-		    		VkContext.getDescriptorPoolManager()
-		    			.getDescriptorPool("POOL_1").getHandle(),
-		    		descriptorSetLayout.getHandlePointer());
-		    descriptorSet.updateDescriptorImageBuffer(imageView.getHandle(),
-		    		VK_IMAGE_LAYOUT_GENERAL, -1,
-		    		0, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
-		    descriptorSet.updateDescriptorBuffer(buffer.getHandle(), Integer.BYTES * n, 0, 1,
-		    		VK_DESCRIPTOR_TYPE_STORAGE_BUFFER);
-		}
-	}
-	
-	public TwiddleFactors(VkDevice device,
-			VkPhysicalDeviceMemoryProperties memoryProperties, int n) {
+		VkDevice device = deviceBundle.getLogicalDevice().getHandle();
+		VkPhysicalDeviceMemoryProperties memoryProperties = deviceBundle.getPhysicalDevice().getMemoryProperties();
+		DescriptorPool descriptorPool = deviceBundle.getLogicalDevice().getDescriptorPool(Thread.currentThread().getId());
+		VkQueue queue = deviceBundle.getLogicalDevice().getComputeQueue();
 		
 		int log_2_n = (int) (Math.log(n)/Math.log(2));
 		
@@ -82,8 +65,8 @@ public class TwiddleFactors {
 		
 		VkBuffer bitReversedIndicesBuffer = VkBufferHelper.createDeviceLocalBuffer(device,
 				memoryProperties,
-        		VkContext.getLogicalDevice().getTransferCommandPool().getHandle(),
-        		VkContext.getLogicalDevice().getTransferQueue(),
+        		deviceBundle.getLogicalDevice().getTransferCommandPool().getHandle(),
+        		deviceBundle.getLogicalDevice().getTransferQueue(),
         		BufferUtil.createByteBuffer(Util.initBitReversedIndices(n)),
         		VK_BUFFER_USAGE_STORAGE_BUFFER_BIT);
 		
@@ -91,7 +74,8 @@ public class TwiddleFactors {
 		IntBuffer intBuffer = pushConstants.asIntBuffer();
 		intBuffer.put(n);
 		
-		VkDescriptor descriptor = new TwiddleDescriptor(device, imageView, bitReversedIndicesBuffer, n);
+		VkDescriptor descriptor = new TwiddleDescriptor(device, descriptorPool,
+				imageView, bitReversedIndicesBuffer, n);
 		
 		ShaderModule computeShader = new ShaderModule(device,
 				"shaders/fft/TwiddleFactors.comp.spv", VK_SHADER_STAGE_COMPUTE_BIT);
@@ -102,7 +86,7 @@ public class TwiddleFactors {
 		pipeline.createComputePipeline(computeShader);
 		
 		CommandBuffer commandBuffer = new ComputeCmdBuffer(device,
-				VkContext.getLogicalDevice().getComputeCommandPool().getHandle(),
+				deviceBundle.getLogicalDevice().getComputeCommandPool().getHandle(),
 				pipeline.getHandle(), pipeline.getLayoutHandle(),
 				VkUtil.createLongArray(descriptor.getDescriptorSet()),
 				log_2_n, n/16, 1,
@@ -113,7 +97,7 @@ public class TwiddleFactors {
 		SubmitInfo submitInfo = new SubmitInfo();
 		submitInfo.setCommandBuffers(commandBuffer.getHandlePointer());
 		submitInfo.setFence(fence);
-		submitInfo.submit(VkContext.getLogicalDevice().getComputeQueue());
+		submitInfo.submit(queue);
 		
 		fence.waitForFence();
 		
@@ -123,6 +107,28 @@ public class TwiddleFactors {
 		descriptor.destroy();
 		bitReversedIndicesBuffer.destroy();
 		memFree(pushConstants);
+	}
+	
+private class TwiddleDescriptor extends VkDescriptor{
+		
+		public TwiddleDescriptor(VkDevice device, DescriptorPool descriptorPool,
+				VkImageView imageView, VkBuffer buffer, int n) {
+		
+			descriptorSetLayout = new DescriptorSetLayout(device, 2);
+		    descriptorSetLayout.addLayoutBinding(0, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
+		    		VK_SHADER_STAGE_COMPUTE_BIT);
+		    descriptorSetLayout.addLayoutBinding(1, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
+		    		VK_SHADER_STAGE_COMPUTE_BIT);
+		    descriptorSetLayout.create();
+		    
+		    descriptorSet = new DescriptorSet(device, descriptorPool.getHandle(),
+		    		descriptorSetLayout.getHandlePointer());
+		    descriptorSet.updateDescriptorImageBuffer(imageView.getHandle(),
+		    		VK_IMAGE_LAYOUT_GENERAL, -1,
+		    		0, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
+		    descriptorSet.updateDescriptorBuffer(buffer.getHandle(), Integer.BYTES * n, 0, 1,
+		    		VK_DESCRIPTOR_TYPE_STORAGE_BUFFER);
+		}
 	}
 	
 	public void destroy(){

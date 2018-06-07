@@ -9,6 +9,7 @@ layout (location = 0) in vec2 inUV[];
 layout (location = 0) out vec3 outPosition;
 layout (location = 1) out vec2 outUV;
 layout (location = 2) out vec3 outTangent;
+layout (location = 3) out vec3 outPositionPreTransform;
 
 layout(set = 0, binding = 0, std140, row_major) uniform Camera {
 	vec3 eyePosition;
@@ -130,6 +131,7 @@ void main()
 	gl_ClipDistance[5] = dot(gl_Position ,frustumPlanes[5]);
 	outUV = inUV[0];
 	outPosition = position0.xyz;
+	outPositionPreTransform = gl_in[0].gl_Position.xyz;
 	outTangent = tangent;
     EmitVertex();
 		
@@ -142,6 +144,7 @@ void main()
 	gl_ClipDistance[5] = dot(gl_Position ,frustumPlanes[5]);
 	outUV = inUV[1];
 	outPosition = position1.xyz;
+	outPositionPreTransform = gl_in[1].gl_Position.xyz;
 	outTangent = tangent;
     EmitVertex();
 
@@ -154,6 +157,7 @@ void main()
 	gl_ClipDistance[5] = dot(gl_Position ,frustumPlanes[5]);
 	outUV = inUV[2];
 	outPosition = position2.xyz;
+	outPositionPreTransform = gl_in[2].gl_Position.xyz;
 	outTangent = tangent;
     EmitVertex();
 	

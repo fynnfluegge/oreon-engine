@@ -13,7 +13,7 @@ public class GraphicsTessellationPipeline extends VkPipeline{
 
 	public GraphicsTessellationPipeline(VkDevice device, ShaderPipeline shaderPipeline,
 			VkVertexInput vertexInput, LongBuffer layout, int width, int height,
-			long renderPass, int colorAttachmentCount,
+			long renderPass, int colorAttachmentCount, int samples,
 			int pushConstantRange, int pushConstantStageFlags,
 			int patchControlPoints) {
 		
@@ -24,7 +24,7 @@ public class GraphicsTessellationPipeline extends VkPipeline{
 		setInputAssembly(VK_PRIMITIVE_TOPOLOGY_PATCH_LIST);
 		setViewportAndScissor(width, height);
 		setRasterizer();
-		setMultisampling();
+		setMultisampling(samples);
 		for (int i=0; i<colorAttachmentCount; i++){
 			addColorBlendAttachment();
 		}
@@ -38,7 +38,8 @@ public class GraphicsTessellationPipeline extends VkPipeline{
 	
 	public GraphicsTessellationPipeline(VkDevice device, ShaderPipeline shaderPipeline,
 			VkVertexInput vertexInput, LongBuffer layout, int width, int height,
-			long renderPass, int colorAttachmentCount, int patchControlPoints) {
+			long renderPass, int colorAttachmentCount,
+			int samples, int patchControlPoints) {
 		
 		super(device);
 		
@@ -46,7 +47,7 @@ public class GraphicsTessellationPipeline extends VkPipeline{
 		setInputAssembly(VK_PRIMITIVE_TOPOLOGY_PATCH_LIST);
 		setViewportAndScissor(width, height);
 		setRasterizer();
-		setMultisampling();
+		setMultisampling(samples);
 		for (int i=0; i<colorAttachmentCount; i++){
 			addColorBlendAttachment();
 		}

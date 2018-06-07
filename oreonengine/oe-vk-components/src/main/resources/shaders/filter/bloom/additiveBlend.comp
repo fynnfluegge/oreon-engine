@@ -1,0 +1,33 @@
+#version 450
+#extension GL_ARB_separate_shader_objects : enable
+
+layout (local_size_x = 8, local_size_y = 8) in;
+
+layout (binding = 0, rgba16f) uniform writeonly image2D blendImage;
+
+layout (binding = 1) uniform sampler2D bloomBlurSampler_div2;
+layout (binding = 2) uniform sampler2D bloomBlurSampler_div4;
+layout (binding = 3) uniform sampler2D bloomBlurSampler_div8;
+layout (binding = 4) uniform sampler2D bloomBlurSampler_div16;
+
+layout (push_constant, std430, row_major) uniform pushConstants{
+	float width;
+	float height;
+} constants;
+
+void main(void){
+
+	ivec2 computeCoord = ivec2(gl_GlobalInvocationID.x, gl_GlobalInvocationID.y);
+	vec2 texCoord = vec2(gl_GlobalInvocationID.x/constants.width,gl_GlobalInvocationID.y/constants.height);
+
+	vec3 color = vec3(0,0,0);
+	color += texture(bloomBlurSampler_div2, texCoord).rgb;
+	color += texture(bloomBlurSampler_div4, texCoord).rgb;
+	color += texture(bloomBlurSampler_div8, texCoord).rgb;
+	color += texture(bloomBlurSampler_div16, texCoord).rgb;
+	
+	color /= 4;
+
+	imageStore(blendImage, computeCoord, vec4(color, 1.0));
+
+}

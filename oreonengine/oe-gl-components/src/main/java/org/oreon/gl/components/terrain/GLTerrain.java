@@ -2,8 +2,8 @@ package org.oreon.gl.components.terrain;
 
 import java.util.HashMap;
 
-import org.oreon.core.gl.buffer.GLPatchVBO;
 import org.oreon.core.gl.context.GLContext;
+import org.oreon.core.gl.memory.GLPatchVBO;
 import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.gl.scenegraph.GLRenderInfo;
 import org.oreon.core.gl.wrapper.parameter.Default;

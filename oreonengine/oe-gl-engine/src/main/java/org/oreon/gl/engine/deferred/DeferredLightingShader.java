@@ -43,7 +43,7 @@ public class DeferredLightingShader extends GLShaderProgram{
 		bindUniformBlock("Camera", Constants.CameraUniformBlockBinding);
 		bindUniformBlock("DirectionalLight", Constants.DirectionalLightUniformBlockBinding);	
 		bindUniformBlock("LightViewProjections",Constants.LightMatricesUniformBlockBinding);
-		setUniformf("sightRangeFactor", EngineContext.getRenderState().getSightRange());
+		setUniformf("sightRangeFactor", EngineContext.getConfig().getSightRange());
 		
 		glActiveTexture(GL_TEXTURE1);
 		pssm.bind();

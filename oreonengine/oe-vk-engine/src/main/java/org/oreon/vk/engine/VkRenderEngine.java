@@ -22,41 +22,54 @@ import org.oreon.core.context.EngineContext;
 import org.oreon.core.scenegraph.NodeComponentType;
 import org.oreon.core.scenegraph.RenderList;
 import org.oreon.core.system.RenderEngine;
-import org.oreon.core.target.Attachment;
+import org.oreon.core.target.FrameBufferObject.Attachment;
 import org.oreon.core.vk.command.CommandBuffer;
 import org.oreon.core.vk.command.SubmitInfo;
+import org.oreon.core.vk.context.DeviceManager.DeviceType;
 import org.oreon.core.vk.context.VkContext;
 import org.oreon.core.vk.context.VulkanInstance;
 import org.oreon.core.vk.descriptor.DescriptorPool;
 import org.oreon.core.vk.device.LogicalDevice;
 import org.oreon.core.vk.device.PhysicalDevice;
+import org.oreon.core.vk.device.VkDeviceBundle;
 import org.oreon.core.vk.scenegraph.VkRenderInfo;
 import org.oreon.core.vk.swapchain.SwapChain;
 import org.oreon.core.vk.util.VkUtil;
 import org.oreon.core.vk.wrapper.buffer.VkUniformBuffer;
 import org.oreon.core.vk.wrapper.command.PrimaryCmdBuffer;
-import org.oreon.vk.components.filter.SSAO;
+import org.oreon.vk.components.filter.Bloom;
 
 public class VkRenderEngine extends RenderEngine{
 	
 	private VkInstance vkInstance;
-	private static PhysicalDevice physicalDevice;
-	private static LogicalDevice logicalDevice;
-	private static SwapChain swapChain;
-	private static long surface;
+	private SwapChain swapChain;
+	private long surface;
+	private VkDeviceBundle majorDevice;
 
 	private OffScreenFbo offScreenFbo;
 	private ReflectionFbo reflectionFbo;
+	private TransparencyFbo transparencyFbo;
+	
 	private PrimaryCmdBuffer offScreenPrimaryCmdBuffer;
 	private LinkedHashMap<String, CommandBuffer> offScreenSecondaryCmdBuffers;
 	private RenderList offScreenRenderList;
 	private SubmitInfo offScreenSubmitInfo;
 	
+	private PrimaryCmdBuffer transparencyPrimaryCmdBuffer;
+	private LinkedHashMap<String, CommandBuffer> transparencySecondaryCmdBuffers;
+	private RenderList transparencyRenderList;
+	private SubmitInfo transparencySubmitInfo;
+	
 	// uniform buffers
 	private VkUniformBuffer renderStateUbo;
+
+	private SampleCoverageMask sampleCoverageMask;
+	private DeferredLighting deferredLighting;
+	private FXAA fxaa;
+	private OpaqueTransparencyBlending opaqueTransparencyBlending;
 	
 	// post processing filter
-	private SSAO ssao;
+	private Bloom bloom;
 	
 	private ByteBuffer[] layers = {
 	            	memUTF8("VK_LAYER_LUNARG_standard_validation"),
@@ -70,7 +83,9 @@ public class VkRenderEngine extends RenderEngine{
 		super.init();
 		
 		offScreenRenderList = new RenderList();
+		transparencyRenderList = new RenderList();
 		offScreenSecondaryCmdBuffers = new LinkedHashMap<String, CommandBuffer>();
+		transparencySecondaryCmdBuffers = new LinkedHashMap<String, CommandBuffer>();
 		
 		if (!glfwVulkanSupported()) {
 	            throw new AssertionError("GLFW failed to find the Vulkan loader");
@@ -91,42 +106,42 @@ public class VkRenderEngine extends RenderEngine{
 	        throw new AssertionError("Failed to create surface: " + VkUtil.translateVulkanResult(err));
 	    }
 	    
-        physicalDevice = new PhysicalDevice(vkInstance, surface);
-        
-	    logicalDevice = new LogicalDevice();
-	    logicalDevice.createDevice(physicalDevice, 0, ppEnabledLayerNames);
+        PhysicalDevice physicalDevice = new PhysicalDevice(vkInstance, surface);
+	    LogicalDevice logicalDevice = new LogicalDevice(physicalDevice, 0, ppEnabledLayerNames);
+	    majorDevice = new VkDeviceBundle(physicalDevice, logicalDevice);
+	    VkContext.getDeviceManager().addDevice(DeviceType.MAJOR_GRAPHICS_DEVICE, majorDevice);
 	    
-	    VkContext.registerObject(physicalDevice);
-	    VkContext.registerObject(logicalDevice);
-
-	    DescriptorPool imageSamplerDescriptorPool = new DescriptorPool(4);
-	    imageSamplerDescriptorPool.addPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 10);
-	    imageSamplerDescriptorPool.addPoolSize(VK_DESCRIPTOR_TYPE_STORAGE_IMAGE, 37);
-	    imageSamplerDescriptorPool.addPoolSize(VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 2);
-	    imageSamplerDescriptorPool.addPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 10);
-	    imageSamplerDescriptorPool.create(logicalDevice.getHandle(), 59);
-	    
-	    VkContext.getDescriptorPoolManager().addDescriptorPool("POOL_1",
-	    											 imageSamplerDescriptorPool);
+	    DescriptorPool descriptorPool = new DescriptorPool(logicalDevice.getHandle(), 4);
+	    descriptorPool.addPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 27);
+	    descriptorPool.addPoolSize(VK_DESCRIPTOR_TYPE_STORAGE_IMAGE, 59);
+	    descriptorPool.addPoolSize(VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 2);
+	    descriptorPool.addPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 10);
+	    descriptorPool.create();
+	    logicalDevice.addDescriptorPool(Thread.currentThread().getId(), descriptorPool);
 	    
 	    camera = EngineContext.getCamera();
 	    camera.init();
 	    
 	    offScreenFbo = new OffScreenFbo(logicalDevice.getHandle(),
-	    								physicalDevice.getMemoryProperties());
+	    		physicalDevice.getMemoryProperties());
 	    reflectionFbo = new ReflectionFbo(logicalDevice.getHandle(),
+				physicalDevice.getMemoryProperties());
+	    transparencyFbo = new TransparencyFbo(logicalDevice.getHandle(),
 				physicalDevice.getMemoryProperties());
 	    
 	    offScreenPrimaryCmdBuffer =  new PrimaryCmdBuffer(logicalDevice.getHandle(),
 	    		logicalDevice.getGraphicsCommandPool().getHandle());
 	    offScreenSubmitInfo = new SubmitInfo();
 	    offScreenSubmitInfo.setCommandBuffers(offScreenPrimaryCmdBuffer.getHandlePointer());
+	    
+	    transparencyPrimaryCmdBuffer =  new PrimaryCmdBuffer(logicalDevice.getHandle(),
+	    		logicalDevice.getGraphicsCommandPool().getHandle());
+	    transparencySubmitInfo = new SubmitInfo();
+	    transparencySubmitInfo.setCommandBuffers(transparencyPrimaryCmdBuffer.getHandlePointer());
 
 	    VkContext.getRenderState().setOffScreenFbo(offScreenFbo);
 	    VkContext.getRenderState().setOffScreenReflectionFbo(reflectionFbo);
-	    
-	    swapChain = new SwapChain(logicalDevice, physicalDevice, surface,
-	    		offScreenFbo.getAttachmentImageView(Attachment.ALBEDO).getHandle());
+	    VkContext.getRenderState().setTransparencyFbo(transparencyFbo);
 	    
 //	    ssao = new SSAO(logicalDevice.getHandle(),
 //	    		physicalDevice.getMemoryProperties(),
@@ -134,17 +149,49 @@ public class VkRenderEngine extends RenderEngine{
 //	    		EngineContext.getConfig().getY_ScreenResolution(),
 //	    		offScreenFbo.getAttachments().get(Attachment.POSITION).getImage(),
 //	    		offScreenFbo.getAttachmentImageView(Attachment.POSITION),
-//	    		offScreenFbo.getAttachmentImageView(Attachment.NORMAL));
+//	    		offScreenFbo.getAttachmentImageView(Attachment.NORMAL),
+//	    		offScreenFbo.getAttachmentImageView(Attachment.DEPTH));
+	    
+	    sampleCoverageMask = new SampleCoverageMask(majorDevice,
+	    		EngineContext.getConfig().getX_ScreenResolution(),
+	    		EngineContext.getConfig().getY_ScreenResolution(),
+	    		offScreenFbo.getAttachmentImageView(Attachment.POSITION),
+	    		offScreenFbo.getAttachmentImageView(Attachment.LIGHT_SCATTERING));
+	    
+	    deferredLighting = new DeferredLighting(majorDevice,
+	    		EngineContext.getConfig().getX_ScreenResolution(),
+	    		EngineContext.getConfig().getY_ScreenResolution(),
+	    		offScreenFbo.getAttachmentImageView(Attachment.ALBEDO),
+	    		offScreenFbo.getAttachmentImageView(Attachment.POSITION),
+	    		offScreenFbo.getAttachmentImageView(Attachment.NORMAL),
+	    		offScreenFbo.getAttachmentImageView(Attachment.SPECULAR_EMISSION),
+	    		sampleCoverageMask.getSampleCoverageImageView());
+	    
+	    opaqueTransparencyBlending = new OpaqueTransparencyBlending(majorDevice,
+	    		EngineContext.getConfig().getX_ScreenResolution(),
+	    		EngineContext.getConfig().getY_ScreenResolution(),
+	    		deferredLighting.getDeferredLightingSceneImageView(),
+	    		offScreenFbo.getAttachmentImageView(Attachment.DEPTH),
+	    		sampleCoverageMask.getLightScatteringImageView(),
+	    		transparencyFbo.getAttachmentImageView(Attachment.ALBEDO),
+	    		transparencyFbo.getAttachmentImageView(Attachment.DEPTH),
+	    		transparencyFbo.getAttachmentImageView(Attachment.ALPHA),
+	    		transparencyFbo.getAttachmentImageView(Attachment.LIGHT_SCATTERING));
+
+	    fxaa = new FXAA(majorDevice,
+	    		EngineContext.getConfig().getX_ScreenResolution(),
+	    		EngineContext.getConfig().getY_ScreenResolution(),
+	    		opaqueTransparencyBlending.getColorAttachment());
+	    
+	    bloom = new Bloom(majorDevice,
+	    		EngineContext.getConfig().getX_ScreenResolution(),
+	    		EngineContext.getConfig().getY_ScreenResolution(),
+	    		fxaa.getFxaaImageView());
+	    
+	    swapChain = new SwapChain(logicalDevice, physicalDevice, surface,
+	    		bloom.getBloomSceneImageBundle().getImageView().getHandle());
 	}
     
-	// FOR TESTING
-	// pass static reference to swapchain for display desired imageView
-	public static void createSwapChain(){
-		
-//		swapChain = new SwapChain(logicalDevice, physicalDevice, surface,
-//	    		SSAO.ssaoImageView.getHandle());
-	}
-
 	@Override
 	public void render() {
 		
@@ -173,12 +220,51 @@ public class VkRenderEngine extends RenderEngine{
 					offScreenFbo.getDepthAttachment(),
 					VkUtil.createPointerBuffer(offScreenSecondaryCmdBuffers.values()));
 			
-			offScreenSubmitInfo.submit(logicalDevice.getGraphicsQueue());
+			offScreenSubmitInfo.submit(majorDevice.getLogicalDevice().getGraphicsQueue());
+		}
+		vkQueueWaitIdle(majorDevice.getLogicalDevice().getGraphicsQueue());
+		
+		sampleCoverageMask.render();
+		vkQueueWaitIdle(majorDevice.getLogicalDevice().getGraphicsQueue());
+		deferredLighting.render();
+		vkQueueWaitIdle(majorDevice.getLogicalDevice().getComputeQueue());
+		
+		sceneGraph.recordTransparentObjects(transparencyRenderList);
+		
+		for (String key : transparencyRenderList.getKeySet()) {
+
+			if(!transparencySecondaryCmdBuffers.containsKey(key)){
+				
+				VkRenderInfo mainRenderInfo = transparencyRenderList.get(key)
+						.getComponent(NodeComponentType.MAIN_RENDERINFO);
+				transparencySecondaryCmdBuffers.put(key, mainRenderInfo.getCommandBuffer());
+			}
 		}
 		
-		vkQueueWaitIdle(logicalDevice.getGraphicsQueue());
-//		ssao.render();
-		swapChain.draw(logicalDevice.getGraphicsQueue());
+		// primary render command buffer
+		if (!transparencyRenderList.getObjectList().isEmpty()){
+			transparencyPrimaryCmdBuffer.reset();
+			transparencyPrimaryCmdBuffer.record(transparencyFbo.getRenderPass().getHandle(),
+					transparencyFbo.getFrameBuffer().getHandle(),
+					transparencyFbo.getWidth(),
+					transparencyFbo.getHeight(),
+					transparencyFbo.getColorAttachmentCount(),
+					transparencyFbo.getDepthAttachment(),
+					VkUtil.createPointerBuffer(transparencySecondaryCmdBuffers.values()));
+			
+			transparencySubmitInfo.submit(majorDevice.getLogicalDevice().getGraphicsQueue());
+		}
+		vkQueueWaitIdle(majorDevice.getLogicalDevice().getGraphicsQueue());
+		
+		opaqueTransparencyBlending.render();
+		vkQueueWaitIdle(majorDevice.getLogicalDevice().getGraphicsQueue());
+		
+		fxaa.render();
+		vkQueueWaitIdle(majorDevice.getLogicalDevice().getComputeQueue());
+		
+		bloom.render();
+		vkQueueWaitIdle(majorDevice.getLogicalDevice().getComputeQueue());
+		swapChain.draw(majorDevice.getLogicalDevice().getGraphicsQueue());
 	}
 
 	@Override
@@ -193,13 +279,12 @@ public class VkRenderEngine extends RenderEngine{
 		super.shutdown();
 		
 		// wait for queues to be finished before destroy vulkan objects
-		vkQueueWaitIdle(logicalDevice.getGraphicsQueue());
-		vkQueueWaitIdle(logicalDevice.getTransferQueue());
-		vkDestroySwapchainKHR(logicalDevice.getHandle(), swapChain.getHandle(), null);
+		vkQueueWaitIdle(majorDevice.getLogicalDevice().getGraphicsQueue());
+		vkQueueWaitIdle(majorDevice.getLogicalDevice().getTransferQueue());
+		vkDestroySwapchainKHR(majorDevice.getLogicalDevice().getHandle(), swapChain.getHandle(), null);
 		swapChain.destroy();
 		EngineContext.getCamera().shutdown();
-		VkContext.getDescriptorPoolManager().shutdown();
-		logicalDevice.destroy();
+		majorDevice.getLogicalDevice().destroy();
 		VkContext.getVulkanInstance().destroy();		
 	}
 	

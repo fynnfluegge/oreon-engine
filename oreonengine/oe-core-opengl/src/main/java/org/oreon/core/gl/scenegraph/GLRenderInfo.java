@@ -1,6 +1,6 @@
 package org.oreon.core.gl.scenegraph;
 
-import org.oreon.core.gl.buffer.VBO;
+import org.oreon.core.gl.memory.VBO;
 import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.gl.pipeline.RenderParameter;
 import org.oreon.core.scenegraph.NodeComponent;

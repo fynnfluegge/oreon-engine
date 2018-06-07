@@ -2,13 +2,17 @@ package org.oreon.vk.components.filter;
 
 import static org.lwjgl.system.MemoryUtil.memAlloc;
 import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_STORAGE_BUFFER_BIT;
+import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_STORAGE_IMAGE;
+import static org.lwjgl.vulkan.VK10.VK_FILTER_LINEAR;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_R16G16B16A16_SFLOAT;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_ASPECT_COLOR_BIT;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_GENERAL;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_SAMPLED_BIT;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_STORAGE_BIT;
+import static org.lwjgl.vulkan.VK10.VK_SAMPLER_ADDRESS_MODE_REPEAT;
+import static org.lwjgl.vulkan.VK10.VK_SAMPLER_MIPMAP_MODE_LINEAR;
 import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_COMPUTE_BIT;
 
 import java.nio.ByteBuffer;
@@ -17,18 +21,23 @@ import java.util.List;
 
 import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
+import org.lwjgl.vulkan.VkQueue;
 import org.oreon.core.context.EngineContext;
-import org.oreon.core.math.Quaternion;
+import org.oreon.core.math.Vec4f;
 import org.oreon.core.util.BufferUtil;
 import org.oreon.core.util.Util;
-import org.oreon.core.vk.buffer.VkBuffer;
 import org.oreon.core.vk.command.CommandBuffer;
+import org.oreon.core.vk.command.CommandPool;
 import org.oreon.core.vk.command.SubmitInfo;
 import org.oreon.core.vk.context.VkContext;
+import org.oreon.core.vk.descriptor.DescriptorPool;
 import org.oreon.core.vk.descriptor.DescriptorSet;
 import org.oreon.core.vk.descriptor.DescriptorSetLayout;
+import org.oreon.core.vk.device.VkDeviceBundle;
 import org.oreon.core.vk.image.VkImage;
 import org.oreon.core.vk.image.VkImageView;
+import org.oreon.core.vk.image.VkSampler;
+import org.oreon.core.vk.memory.VkBuffer;
 import org.oreon.core.vk.pipeline.VkPipeline;
 import org.oreon.core.vk.synchronization.Fence;
 import org.oreon.core.vk.util.VkUtil;
@@ -41,8 +50,10 @@ import lombok.Getter;
 
 public class SSAO {
 
+	private VkQueue queue;
+	
 	private int kernelSize;
-	private Quaternion[] kernel;
+	private Vec4f[] kernel;
 	private float[] randomx;
 	private float[] randomy;
 	
@@ -51,9 +62,9 @@ public class SSAO {
 	private Fence fence;
 	
 	// ssao resources
-	private VkPipeline ssaoPipeline;
 	private VkImage ssaoImage;
-	public static VkImageView ssaoImageView;
+	private VkImageView ssaoImageView;
+	private VkPipeline ssaoPipeline;
 	private VkBuffer kernelBuffer;
 	private DescriptorSet ssaoDescriptorSet;
 	private DescriptorSetLayout ssaoDescriptorSetLayout;
@@ -63,23 +74,23 @@ public class SSAO {
 	// ssao blur resources
 	private VkImage ssaoBlurSceneImage;
 	@Getter
-	public static VkImageView ssaoBlurSceneImageView;
+	private VkImageView ssaoBlurSceneImageView;
 	private VkPipeline ssaoBlurPipeline;
 	private DescriptorSet ssaoBlurDescriptorSet;
 	private DescriptorSetLayout ssaoBlurDescriptorSetLayout;
 	private CommandBuffer ssaoBlurCmdBuffer;
 	private SubmitInfo ssaoBlurSubmitInfo;
 	
-	private final VkDevice device;
-	private final VkPhysicalDeviceMemoryProperties memoryProperties;
-	
-	public SSAO(VkDevice device, VkPhysicalDeviceMemoryProperties memoryProperties,
+	public SSAO(VkDeviceBundle deviceBundle,
 			int width ,int height, VkImage worldPositionImage, 
 			VkImageView worldPositionImageView,
-			VkImageView normalImageView) {
+			VkImageView normalImageView,
+			VkImageView depthImageView) {
 		
-		this.device = device;
-		this.memoryProperties = memoryProperties;
+		VkDevice device = deviceBundle.getLogicalDevice().getHandle();
+		VkPhysicalDeviceMemoryProperties memoryProperties = deviceBundle.getPhysicalDevice().getMemoryProperties();
+		DescriptorPool descriptorPool = deviceBundle.getLogicalDevice().getDescriptorPool(Thread.currentThread().getId());
+		queue = deviceBundle.getLogicalDevice().getComputeQueue();
 		
 		kernelSize = 64;
 		
@@ -93,7 +104,8 @@ public class SSAO {
 	
 		kernel = Util.generateRandomKernel4D(kernelSize);
 		
-		generateNoise();
+		generateNoise(device, memoryProperties, descriptorPool,
+				deviceBundle.getLogicalDevice().getComputeCommandPool());
 		
 		ssaoImage = new Image2DDeviceLocal(device, memoryProperties, 
 				width, height, VK_FORMAT_R16G16B16A16_SFLOAT, VK_IMAGE_USAGE_STORAGE_BIT
@@ -101,25 +113,27 @@ public class SSAO {
 		ssaoImageView = new VkImageView(device,
 				VK_FORMAT_R16G16B16A16_SFLOAT, ssaoImage.getHandle(), VK_IMAGE_ASPECT_COLOR_BIT);
 		
+		VkSampler sampler = new VkSampler(device, VK_FILTER_LINEAR, false, 0,
+	    		VK_SAMPLER_MIPMAP_MODE_LINEAR, 0, VK_SAMPLER_ADDRESS_MODE_REPEAT);
+		
 		// ssao resources
 		int pushConstantRange = Float.BYTES * 21;
 		ByteBuffer pushConstants = memAlloc(pushConstantRange);
 		pushConstants.put(BufferUtil.createByteBuffer(EngineContext.getCamera().getProjectionMatrix()));
 		pushConstants.putFloat(1f);
-		pushConstants.putFloat(0.01f);
+		pushConstants.putFloat(0.02f);
 		pushConstants.putFloat(kernelSize);
 		pushConstants.putFloat(width);
 		pushConstants.putFloat(height);
 		pushConstants.flip();
 		
-		kernelBuffer = VkBufferHelper.createDeviceLocalBuffer(device,
-				memoryProperties,
-        		VkContext.getLogicalDevice().getTransferCommandPool().getHandle(),
-        		VkContext.getLogicalDevice().getTransferQueue(),
+		kernelBuffer = VkBufferHelper.createDeviceLocalBuffer(device, memoryProperties,
+        		deviceBundle.getLogicalDevice().getTransferCommandPool().getHandle(),
+        		deviceBundle.getLogicalDevice().getTransferQueue(),
         		BufferUtil.createByteBuffer(kernel),
         		VK_BUFFER_USAGE_STORAGE_BUFFER_BIT);
 		
-		ssaoDescriptorSetLayout = new DescriptorSetLayout(device, 5);
+		ssaoDescriptorSetLayout = new DescriptorSetLayout(device, 6);
 		ssaoDescriptorSetLayout.addLayoutBinding(0, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
 	    		VK_SHADER_STAGE_COMPUTE_BIT);
 		ssaoDescriptorSetLayout.addLayoutBinding(1, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
@@ -128,13 +142,14 @@ public class SSAO {
 	    		VK_SHADER_STAGE_COMPUTE_BIT);
 		ssaoDescriptorSetLayout.addLayoutBinding(3, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
 	    		VK_SHADER_STAGE_COMPUTE_BIT);
-		ssaoDescriptorSetLayout.addLayoutBinding(4, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
+		ssaoDescriptorSetLayout.addLayoutBinding(4, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+	    		VK_SHADER_STAGE_COMPUTE_BIT);
+		ssaoDescriptorSetLayout.addLayoutBinding(5, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
 	    		VK_SHADER_STAGE_COMPUTE_BIT);
 		ssaoDescriptorSetLayout.create();
 
-		ssaoDescriptorSet = new DescriptorSet(device,
-		    		VkContext.getDescriptorPoolManager().getDescriptorPool("POOL_1").getHandle(),
-		    		ssaoDescriptorSetLayout.getHandlePointer());
+		ssaoDescriptorSet = new DescriptorSet(device, descriptorPool.getHandle(),
+		    	ssaoDescriptorSetLayout.getHandlePointer());
 		ssaoDescriptorSet.updateDescriptorImageBuffer(ssaoImageView.getHandle(),
 		    	VK_IMAGE_LAYOUT_GENERAL, -1, 0,
 		    	VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
@@ -147,8 +162,11 @@ public class SSAO {
 		ssaoDescriptorSet.updateDescriptorImageBuffer(noiseImageView.getHandle(),
 	    		VK_IMAGE_LAYOUT_GENERAL, -1, 3,
 	    		VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
+		ssaoDescriptorSet.updateDescriptorImageBuffer(depthImageView.getHandle(),
+				VK_IMAGE_LAYOUT_GENERAL, sampler.getHandle(), 4,
+	    		VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
 		ssaoDescriptorSet.updateDescriptorBuffer(kernelBuffer.getHandle(),
-				Float.BYTES * 3 * kernelSize, 0, 4,
+				Float.BYTES * 3 * kernelSize, 0, 5,
 	    		VK_DESCRIPTOR_TYPE_STORAGE_BUFFER);
 		
 		List<DescriptorSet> descriptorSets = new ArrayList<DescriptorSet>();
@@ -165,7 +183,7 @@ public class SSAO {
 		ssaoPipeline.createComputePipeline(new ComputeShader(device, "shaders/filter/ssao/ssao.comp.spv"));
 		
 		ssaoCmdBuffer = new ComputeCmdBuffer(device,
-				VkContext.getLogicalDevice().getComputeCommandPool().getHandle(),
+				deviceBundle.getLogicalDevice().getComputeCommandPool().getHandle(),
 				ssaoPipeline.getHandle(), ssaoPipeline.getLayoutHandle(),
 				VkUtil.createLongArray(descriptorSets), width/16, height/16, 1,
 				pushConstants, VK_SHADER_STAGE_COMPUTE_BIT);
@@ -190,9 +208,8 @@ public class SSAO {
 	    		VK_SHADER_STAGE_COMPUTE_BIT);
 		ssaoBlurDescriptorSetLayout.create();
 
-		ssaoBlurDescriptorSet = new DescriptorSet(device,
-		    		VkContext.getDescriptorPoolManager().getDescriptorPool("POOL_1").getHandle(),
-		    		ssaoBlurDescriptorSetLayout.getHandlePointer());
+		ssaoBlurDescriptorSet = new DescriptorSet(device, descriptorPool.getHandle(),
+		    	ssaoBlurDescriptorSetLayout.getHandlePointer());
 		ssaoBlurDescriptorSet.updateDescriptorImageBuffer(ssaoBlurSceneImageView.getHandle(),
 		    	VK_IMAGE_LAYOUT_GENERAL, -1, 0,
 		    	VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
@@ -211,7 +228,7 @@ public class SSAO {
 		ssaoBlurPipeline.createComputePipeline(new ComputeShader(device, "shaders/filter/ssao/ssaoBlur.comp.spv"));
 		
 		ssaoBlurCmdBuffer = new ComputeCmdBuffer(device,
-				VkContext.getLogicalDevice().getComputeCommandPool().getHandle(),
+				deviceBundle.getLogicalDevice().getComputeCommandPool().getHandle(),
 				ssaoBlurPipeline.getHandle(), ssaoBlurPipeline.getLayoutHandle(),
 				VkUtil.createLongArray(descriptorSets), width/16, height/16, 1);
 		
@@ -222,13 +239,9 @@ public class SSAO {
 		ssaoBlurSubmitInfo.setFence(fence);
 	}
 	
-	public void render(){
-		
-		ssaoSubmitInfo.submit(VkContext.getLogicalDevice().getComputeQueue());
-//		ssaoBlurSubmitInfo.submit(VkContext.getLogicalDevice().getComputeQueue());
-	}
-	
-	private void generateNoise(){
+	private void generateNoise(VkDevice device,
+			VkPhysicalDeviceMemoryProperties memoryProperties, 
+			DescriptorPool descriptorPool, CommandPool commandPool){
 		
 		noiseImage = new Image2DDeviceLocal(device, memoryProperties, 
 				4, 4, VK_FORMAT_R16G16B16A16_SFLOAT, VK_IMAGE_USAGE_STORAGE_BIT);
@@ -250,12 +263,11 @@ public class SSAO {
 		descriptorSetLayout.addLayoutBinding(0, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
 	    		VK_SHADER_STAGE_COMPUTE_BIT);
 		descriptorSetLayout.create();
-		DescriptorSet descriptorSet = new DescriptorSet(device,
-		    		VkContext.getDescriptorPoolManager().getDescriptorPool("POOL_1").getHandle(),
-		    		descriptorSetLayout.getHandlePointer());
+		DescriptorSet descriptorSet = new DescriptorSet(device, descriptorPool.getHandle(),
+		    	descriptorSetLayout.getHandlePointer());
 		descriptorSet.updateDescriptorImageBuffer(noiseImageView.getHandle(),
-		    		VK_IMAGE_LAYOUT_GENERAL, -1,
-		    		0, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
+				VK_IMAGE_LAYOUT_GENERAL, -1,
+		    	0, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
 		
 		VkPipeline pipeline = new VkPipeline(device);
 		pipeline.setPushConstantsRange(VK_SHADER_STAGE_COMPUTE_BIT, pushConstantRange);
@@ -263,7 +275,7 @@ public class SSAO {
 		pipeline.createComputePipeline(new ComputeShader(device, "shaders/filter/ssao/noise.comp.spv"));
 		
 		CommandBuffer commandBuffer = new ComputeCmdBuffer(device,
-				VkContext.getLogicalDevice().getComputeCommandPool().getHandle(),
+				commandPool.getHandle(),
 				pipeline.getHandle(), pipeline.getLayoutHandle(),
 				VkUtil.createLongArray(descriptorSet), 1, 1, 1,
 				pushConstants, VK_SHADER_STAGE_COMPUTE_BIT);
@@ -273,9 +285,15 @@ public class SSAO {
 		SubmitInfo submitInfo = new SubmitInfo();
 		submitInfo.setCommandBuffers(commandBuffer.getHandlePointer());
 		submitInfo.setFence(fence);
-		submitInfo.submit(VkContext.getLogicalDevice().getComputeQueue());
+		submitInfo.submit(queue);
 		
 		fence.waitForFence();
+	}
+	
+	public void render(){
+		
+		ssaoSubmitInfo.submit(queue);
+		ssaoBlurSubmitInfo.submit(queue);
 	}
 	
 }

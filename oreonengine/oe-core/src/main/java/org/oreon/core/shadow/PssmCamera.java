@@ -2,7 +2,7 @@ package org.oreon.core.shadow;
 
 import org.oreon.core.context.EngineContext;
 import org.oreon.core.math.Matrix4f;
-import org.oreon.core.math.Quaternion;
+import org.oreon.core.math.Vec4f;
 import org.oreon.core.math.Vec3f;
 
 public class PssmCamera {
@@ -26,14 +26,14 @@ public class PssmCamera {
 	
 	private void updateOrthoMatrix(Matrix4f m_View, Vec3f v_Up, Vec3f v_Right){
 		
-		frustumCorners[0] = m_View.mul(new Quaternion(frustumCorners[0],1)).xyz();
-		frustumCorners[1] = m_View.mul(new Quaternion(frustumCorners[1],1)).xyz();
-		frustumCorners[2] = m_View.mul(new Quaternion(frustumCorners[2],1)).xyz();
-		frustumCorners[3] = m_View.mul(new Quaternion(frustumCorners[3],1)).xyz();
-		frustumCorners[4] = m_View.mul(new Quaternion(frustumCorners[4],1)).xyz();
-		frustumCorners[5] = m_View.mul(new Quaternion(frustumCorners[5],1)).xyz();
-		frustumCorners[6] = m_View.mul(new Quaternion(frustumCorners[6],1)).xyz();
-		frustumCorners[7] = m_View.mul(new Quaternion(frustumCorners[7],1)).xyz();
+		frustumCorners[0] = m_View.mul(new Vec4f(frustumCorners[0],1)).xyz();
+		frustumCorners[1] = m_View.mul(new Vec4f(frustumCorners[1],1)).xyz();
+		frustumCorners[2] = m_View.mul(new Vec4f(frustumCorners[2],1)).xyz();
+		frustumCorners[3] = m_View.mul(new Vec4f(frustumCorners[3],1)).xyz();
+		frustumCorners[4] = m_View.mul(new Vec4f(frustumCorners[4],1)).xyz();
+		frustumCorners[5] = m_View.mul(new Vec4f(frustumCorners[5],1)).xyz();
+		frustumCorners[6] = m_View.mul(new Vec4f(frustumCorners[6],1)).xyz();
+		frustumCorners[7] = m_View.mul(new Vec4f(frustumCorners[7],1)).xyz();
 		
 		float [] boundaries = getBoundaries(frustumCorners);
 				

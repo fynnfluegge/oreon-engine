@@ -22,7 +22,6 @@ import java.nio.LongBuffer;
 import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
 import org.oreon.core.context.EngineContext;
-import org.oreon.core.target.Attachment;
 import org.oreon.core.vk.framebuffer.FrameBufferColorAttachment;
 import org.oreon.core.vk.framebuffer.FrameBufferDepthAttachment;
 import org.oreon.core.vk.framebuffer.VkFrameBuffer;
@@ -42,24 +41,24 @@ public class ReflectionFbo extends VkFrameBufferObject{
 		height = EngineContext.getConfig().getY_ScreenResolution()/1;
 		
 		VkImageBundle albedoBuffer = new FrameBufferColorAttachment(device, memoryProperties, width, height,
-				VK_FORMAT_R8G8B8A8_UNORM);
+				VK_FORMAT_R8G8B8A8_UNORM, 1);
 		VkImageBundle normalBuffer = new FrameBufferColorAttachment(device, memoryProperties, width, height, 
-				VK_FORMAT_R16G16B16A16_UNORM);
+				VK_FORMAT_R16G16B16A16_UNORM, 1);
 		VkImageBundle depthBuffer = new FrameBufferDepthAttachment(device, memoryProperties, width, height,
-				VK_FORMAT_D16_UNORM);
+				VK_FORMAT_D16_UNORM, 1);
 		
 		attachments.put(Attachment.ALBEDO, albedoBuffer);
 		attachments.put(Attachment.NORMAL, normalBuffer);
 		attachments.put(Attachment.DEPTH, depthBuffer);
 		
 		renderPass = new RenderPass(device);
-		renderPass.setAttachment(VK_FORMAT_R8G8B8A8_UNORM,
+		renderPass.setAttachment(VK_FORMAT_R8G8B8A8_UNORM, 1,
 				VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_GENERAL,
 				VK_ATTACHMENT_LOAD_OP_CLEAR);
-		renderPass.setAttachment(VK_FORMAT_R16G16B16A16_UNORM,
+		renderPass.setAttachment(VK_FORMAT_R16G16B16A16_UNORM, 1,
 				VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_GENERAL,
 				VK_ATTACHMENT_LOAD_OP_CLEAR);
-		renderPass.setAttachment(VK_FORMAT_D16_UNORM,
+		renderPass.setAttachment(VK_FORMAT_D16_UNORM, 1,
 				VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL,
 				VK_ATTACHMENT_LOAD_OP_CLEAR);
 		renderPass.addColorAttachmentReference(0, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
@@ -83,18 +82,13 @@ public class ReflectionFbo extends VkFrameBufferObject{
 		depthAttachment = 1;
 		colorAttachmentCount = renderPass.getAttachmentCount()-depthAttachment;
 		
-		frameBuffer = new VkFrameBuffer(device, width, height, 1,
-				getpImageViews(), renderPass.getHandle());
-	}
-	
-	public LongBuffer getpImageViews(){
-		
 		LongBuffer pImageViews = memAllocLong(renderPass.getAttachmentCount());
 		pImageViews.put(0, attachments.get(Attachment.ALBEDO).getImageView().getHandle());
 		pImageViews.put(1, attachments.get(Attachment.NORMAL).getImageView().getHandle());
 		pImageViews.put(2, attachments.get(Attachment.DEPTH).getImageView().getHandle());
 		
-		return pImageViews;
+		frameBuffer = new VkFrameBuffer(device, width, height, 1,
+				pImageViews, renderPass.getHandle());
 	}
-
+	
 }

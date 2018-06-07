@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.oreon.core.context.EngineContext;
-import org.oreon.core.gl.buffer.GLMeshVBO;
+import org.oreon.core.gl.memory.GLMeshVBO;
 import org.oreon.core.gl.scenegraph.GLRenderInfo;
 import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.gl.util.GLAssimpModelLoader;

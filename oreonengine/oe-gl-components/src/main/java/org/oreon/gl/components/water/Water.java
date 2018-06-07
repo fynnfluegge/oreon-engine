@@ -10,14 +10,14 @@ import static org.lwjgl.opengl.GL11.glViewport;
 import static org.lwjgl.opengl.GL30.GL_CLIP_DISTANCE6;
 
 import org.oreon.core.context.EngineContext;
-import org.oreon.core.gl.buffer.GLPatchVBO;
 import org.oreon.core.gl.context.GLContext;
+import org.oreon.core.gl.memory.GLPatchVBO;
 import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.gl.scenegraph.GLRenderInfo;
 import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.gl.wrapper.parameter.WaterRenderParameter;
 import org.oreon.core.gl.wrapper.texture.Texture2DTrilinearFilter;
-import org.oreon.core.math.Quaternion;
+import org.oreon.core.math.Vec4f;
 import org.oreon.core.scenegraph.NodeComponentType;
 import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.scenegraph.Scenegraph;
@@ -32,7 +32,7 @@ import lombok.Getter;
 
 public class Water extends Renderable{
 	
-	private Quaternion clipplane;
+	private Vec4f clipplane;
 	private float clip_offset;
 	private float motion;
 	private float distortion;
@@ -202,11 +202,11 @@ public class Water extends Renderable{
 		GLContext.getRenderState().getDeferredFbo().unbind();
 	}
 		
-	public Quaternion getClipplane() {
+	public Vec4f getClipplane() {
 		return clipplane;
 	}
 
-	public void setClipplane(Quaternion clipplane) {
+	public void setClipplane(Vec4f clipplane) {
 		this.clipplane = clipplane;
 	}
 

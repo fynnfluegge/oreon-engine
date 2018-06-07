@@ -27,6 +27,13 @@ import static org.lwjgl.vulkan.VK10.VK_EVENT_RESET;
 import static org.lwjgl.vulkan.VK10.VK_EVENT_SET;
 import static org.lwjgl.vulkan.VK10.VK_INCOMPLETE;
 import static org.lwjgl.vulkan.VK10.VK_NOT_READY;
+import static org.lwjgl.vulkan.VK10.VK_SAMPLE_COUNT_16_BIT;
+import static org.lwjgl.vulkan.VK10.VK_SAMPLE_COUNT_1_BIT;
+import static org.lwjgl.vulkan.VK10.VK_SAMPLE_COUNT_2_BIT;
+import static org.lwjgl.vulkan.VK10.VK_SAMPLE_COUNT_32_BIT;
+import static org.lwjgl.vulkan.VK10.VK_SAMPLE_COUNT_4_BIT;
+import static org.lwjgl.vulkan.VK10.VK_SAMPLE_COUNT_64_BIT;
+import static org.lwjgl.vulkan.VK10.VK_SAMPLE_COUNT_8_BIT;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import static org.lwjgl.vulkan.VK10.VK_TIMEOUT;
 
@@ -161,6 +168,27 @@ public class VkUtil {
         		.depth(1.0f);
         
         return clearValues;
+    }
+    
+    public static int getSampleCountBit(int samples){
+    	
+    	int sampleCountBit = 0;
+    	
+    	switch (samples) {
+			case 1: sampleCountBit = VK_SAMPLE_COUNT_1_BIT; break;
+			case 2: sampleCountBit = VK_SAMPLE_COUNT_2_BIT; break;
+			case 4: sampleCountBit = VK_SAMPLE_COUNT_4_BIT; break;
+			case 8: sampleCountBit = VK_SAMPLE_COUNT_8_BIT; break;
+			case 16: sampleCountBit = VK_SAMPLE_COUNT_16_BIT; break;
+			case 32: sampleCountBit = VK_SAMPLE_COUNT_32_BIT; break;
+			case 64: sampleCountBit = VK_SAMPLE_COUNT_64_BIT; break;
+		}
+    	
+    	if (sampleCountBit == 0){
+    		log.error("Multisamplecount: " + samples + ". Allowed numbers [1,2,4,8,16,32,64]");
+    	}
+    	
+    	return sampleCountBit;
     }
     
     public static long[] createLongArray(List<DescriptorSet> descriptorSets){

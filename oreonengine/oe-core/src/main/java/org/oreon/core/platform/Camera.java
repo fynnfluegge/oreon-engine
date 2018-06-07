@@ -14,8 +14,8 @@ import java.nio.FloatBuffer;
 
 import org.oreon.core.context.EngineContext;
 import org.oreon.core.math.Matrix4f;
-import org.oreon.core.math.Quaternion;
 import org.oreon.core.math.Vec3f;
+import org.oreon.core.math.Vec4f;
 import org.oreon.core.util.BufferUtil;
 import org.oreon.core.util.Constants;
 import org.oreon.core.util.Util;
@@ -54,7 +54,7 @@ private final Vec3f yAxis = new Vec3f(0,1,0);
 	private boolean isLeftRotation;	
 	private boolean isRightRotation;	
 	
-	private Quaternion[] frustumPlanes = new Quaternion[6];
+	private Vec4f[] frustumPlanes = new Vec4f[6];
 	private Vec3f[] frustumCorners = new Vec3f[8];
 	
 	protected FloatBuffer floatBuffer;
@@ -69,9 +69,9 @@ private final Vec3f yAxis = new Vec3f(0,1,0);
 				new Matrix4f().Translation(this.getPosition().mul(-1))));
 		initfrustumPlanes();
 		previousViewMatrix = new Matrix4f().Zero();
-		viewProjectionMatrix = new Matrix4f().Zero();
 		previousViewProjectionMatrix = new Matrix4f().Zero();
 		floatBuffer = BufferUtil.createFloatBuffer(bufferSize);
+		setViewProjectionMatrix(getProjectionMatrix().mul(getViewMatrix()));
 		
 		input = EngineContext.getInput();
 	}
@@ -239,7 +239,7 @@ private final Vec3f yAxis = new Vec3f(0,1,0);
 		// ax * bx * cx +  d = 0; store a,b,c,d
 		
 		//left plane
-		Quaternion leftPlane = new Quaternion(
+		Vec4f leftPlane = new Vec4f(
 				this.projectionMatrix.get(3, 0) + this.projectionMatrix.get(0, 0)
 					* (float) ((Math.tan(Math.toRadians(this.fovY/2))
 					* ((double) EngineContext.getConfig().getX_ScreenResolution()
@@ -251,7 +251,7 @@ private final Vec3f yAxis = new Vec3f(0,1,0);
 				this.frustumPlanes[0] = Util.normalizePlane(leftPlane);
 		
 		//right plane
-		Quaternion rightPlane = new Quaternion(
+		Vec4f rightPlane = new Vec4f(
 				this.projectionMatrix.get(3, 0) - this.projectionMatrix.get(0, 0)
 					* (float) ((Math.tan(Math.toRadians(this.fovY/2))
 					* ((double) EngineContext.getConfig().getX_ScreenResolution()
@@ -263,7 +263,7 @@ private final Vec3f yAxis = new Vec3f(0,1,0);
 				this.frustumPlanes[1] = Util.normalizePlane(rightPlane);
 		
 		//bot plane
-		Quaternion botPlane = new Quaternion(
+		Vec4f botPlane = new Vec4f(
 				this.projectionMatrix.get(3, 0) + this.projectionMatrix.get(1, 0),
 				this.projectionMatrix.get(3, 1) + this.projectionMatrix.get(1, 1)
 					* (float) Math.tan(Math.toRadians(this.fovY/2)),
@@ -273,7 +273,7 @@ private final Vec3f yAxis = new Vec3f(0,1,0);
 				this.frustumPlanes[2] = Util.normalizePlane(botPlane);
 		
 		//top plane
-		Quaternion topPlane = new Quaternion(
+		Vec4f topPlane = new Vec4f(
 				this.projectionMatrix.get(3, 0) - this.projectionMatrix.get(1, 0),
 				this.projectionMatrix.get(3, 1) - this.projectionMatrix.get(1, 1)
 					* (float) Math.tan(Math.toRadians(this.fovY/2)),
@@ -283,7 +283,7 @@ private final Vec3f yAxis = new Vec3f(0,1,0);
 				this.frustumPlanes[3] = Util.normalizePlane(topPlane);
 		
 		//near plane
-		Quaternion nearPlane = new Quaternion(
+		Vec4f nearPlane = new Vec4f(
 				this.projectionMatrix.get(3, 0) + this.projectionMatrix.get(2, 0),
 				this.projectionMatrix.get(3, 1) + this.projectionMatrix.get(2, 1),
 				this.projectionMatrix.get(3, 2) + this.projectionMatrix.get(2, 2),
@@ -292,7 +292,7 @@ private final Vec3f yAxis = new Vec3f(0,1,0);
 				this.frustumPlanes[4] = Util.normalizePlane(nearPlane);
 		
 		//far plane
-				Quaternion farPlane = new Quaternion(
+				Vec4f farPlane = new Vec4f(
 				this.projectionMatrix.get(3, 0) - this.projectionMatrix.get(2, 0),
 				this.projectionMatrix.get(3, 1) - this.projectionMatrix.get(2, 1),
 				this.projectionMatrix.get(3, 2) - this.projectionMatrix.get(2, 2),
@@ -347,7 +347,8 @@ private final Vec3f yAxis = new Vec3f(0,1,0);
 		this.width = width;
 		this.height = height;
 		
-		this.projectionMatrix = new Matrix4f().PerspectiveProjection(fovY, width, height, Constants.ZNEAR, Constants.ZFAR);
+		this.projectionMatrix = new Matrix4f().PerspectiveProjection(
+				fovY, width, height, Constants.ZNEAR, Constants.ZFAR);
 	}
 
 	public Matrix4f getViewMatrix() {
@@ -382,7 +383,7 @@ private final Vec3f yAxis = new Vec3f(0,1,0);
 		this.up = up;
 	}
 
-	public Quaternion[] getFrustumPlanes() {
+	public Vec4f[] getFrustumPlanes() {
 		return frustumPlanes;
 	}
 	

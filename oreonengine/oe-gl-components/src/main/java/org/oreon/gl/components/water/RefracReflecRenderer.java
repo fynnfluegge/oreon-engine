@@ -12,7 +12,7 @@ import static org.lwjgl.opengl.GL43.glDispatchCompute;
 
 import java.nio.IntBuffer;
 
-import org.oreon.core.gl.buffer.GLFramebuffer;
+import org.oreon.core.gl.framebuffer.GLFramebuffer;
 import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.gl.wrapper.texture.Texture2DBilinearFilterRGBA16F;
 import org.oreon.core.util.BufferUtil;

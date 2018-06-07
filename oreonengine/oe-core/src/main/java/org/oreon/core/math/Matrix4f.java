@@ -159,9 +159,9 @@ public class Matrix4f {
 		return res;
 	}
 	
-	public Quaternion mul(Quaternion v)
+	public Vec4f mul(Vec4f v)
 	{
-		Quaternion res = new Quaternion(0,0,0,0);
+		Vec4f res = new Vec4f(0,0,0,0);
 		
 		res.setX(m[0][0] * v.getX() + m[0][1] * v.getY() + m[0][2] * v.getZ() + m[0][3] * v.getW());
 		res.setY(m[1][0] * v.getX() + m[1][1] * v.getY() + m[1][2] * v.getZ() + m[1][3] * v.getW());

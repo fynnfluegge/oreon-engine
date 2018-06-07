@@ -4,8 +4,8 @@ import java.nio.FloatBuffer;
 import java.util.List;
 
 import org.oreon.core.context.EngineContext;
-import org.oreon.core.gl.buffer.GLUniformBuffer;
 import org.oreon.core.gl.instanced.GLInstancedCluster;
+import org.oreon.core.gl.memory.GLUniformBuffer;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.math.Vec3f;
 import org.oreon.core.scenegraph.Renderable;

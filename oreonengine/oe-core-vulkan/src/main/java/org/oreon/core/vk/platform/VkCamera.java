@@ -2,6 +2,7 @@ package org.oreon.core.vk.platform;
 
 import org.oreon.core.platform.Camera;
 import org.oreon.core.util.BufferUtil;
+import org.oreon.core.vk.context.DeviceManager.DeviceType;
 import org.oreon.core.vk.context.VkContext;
 import org.oreon.core.vk.wrapper.buffer.VkUniformBuffer;
 import org.oreon.core.vk.wrapper.descriptor.CameraDescriptor;
@@ -25,11 +26,15 @@ public class VkCamera extends Camera{
 	@Override
 	public void init() {
 		
-	    uniformBuffer = new VkUniformBuffer(VkContext.getLogicalDevice().getHandle(),
-	    		VkContext.getPhysicalDevice().getMemoryProperties(),
+	    uniformBuffer = new VkUniformBuffer(
+	    		VkContext.getDeviceManager().getLogicalDevice(DeviceType.MAJOR_GRAPHICS_DEVICE).getHandle(),
+	    		VkContext.getDeviceManager().getPhysicalDevice(DeviceType.MAJOR_GRAPHICS_DEVICE).getMemoryProperties(),
 	    		BufferUtil.createByteBuffer(floatBuffer));
 	    
-	    descriptor = new CameraDescriptor(VkContext.getLogicalDevice().getHandle(),
+	    descriptor = new CameraDescriptor(
+	    		VkContext.getDeviceManager().getLogicalDevice(DeviceType.MAJOR_GRAPHICS_DEVICE).getHandle(),
+	    		VkContext.getDeviceManager().getLogicalDevice(DeviceType.MAJOR_GRAPHICS_DEVICE)
+	    			.getDescriptorPool(Thread.currentThread().getId()).getHandle(),
 	    		uniformBuffer.getHandle(), bufferSize);
 	}
 	

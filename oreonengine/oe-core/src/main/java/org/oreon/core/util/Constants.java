@@ -1,6 +1,6 @@
 package org.oreon.core.util;
 
-import org.oreon.core.math.Quaternion;
+import org.oreon.core.math.Vec4f;
 import org.oreon.core.math.Vec3f;
 
 public class Constants {
@@ -8,7 +8,7 @@ public class Constants {
 	public static final long NANOSECOND = 1000000000;
 	public static final float ZFAR = 10000.0f;
 	public static final float ZNEAR = 0.1f;
-	public static Quaternion PLANE0 = new Quaternion(0,0,0,0);
+	public static Vec4f PLANE0 = new Vec4f(0,0,0,0);
 	public static Vec3f DEEPOCEAN_COLOR = new Vec3f(0.1f,0.125f,0.24f);
 	public static Vec3f DEEPOCEAN_COLOR2 = new Vec3f(0.1f,0.125f,0.24f);
 	public static int CLIPOFFSET;

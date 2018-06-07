@@ -13,6 +13,9 @@ public class VkRenderState extends RenderState{
 
 	private VkFrameBufferObject offScreenFbo;
 	private VkFrameBufferObject offScreenReflectionFbo;
+	private VkFrameBufferObject transparencyFbo;
+	private VkFrameBufferObject finalSceneFbo;
 
 	private VkUniformBuffer renderStateUbo;
+	
 }

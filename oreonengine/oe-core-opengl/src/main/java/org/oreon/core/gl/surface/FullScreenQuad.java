@@ -1,6 +1,6 @@
 package org.oreon.core.gl.surface;
 
-import org.oreon.core.gl.buffer.GLMeshVBO;
+import org.oreon.core.gl.memory.GLMeshVBO;
 import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.gl.pipeline.RenderParameter;
 import org.oreon.core.gl.texture.GLTexture;

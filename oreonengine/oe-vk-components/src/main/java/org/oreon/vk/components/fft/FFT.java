@@ -15,14 +15,16 @@ import java.nio.IntBuffer;
 
 import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
+import org.lwjgl.vulkan.VkQueue;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.util.BufferUtil;
 import org.oreon.core.vk.command.CommandBuffer;
 import org.oreon.core.vk.command.SubmitInfo;
-import org.oreon.core.vk.context.VkContext;
+import org.oreon.core.vk.descriptor.DescriptorPool;
 import org.oreon.core.vk.descriptor.DescriptorSet;
 import org.oreon.core.vk.descriptor.DescriptorSetLayout;
+import org.oreon.core.vk.device.VkDeviceBundle;
 import org.oreon.core.vk.image.VkImage;
 import org.oreon.core.vk.image.VkImageView;
 import org.oreon.core.vk.pipeline.ShaderModule;
@@ -36,6 +38,8 @@ import org.oreon.core.vk.wrapper.image.Image2DDeviceLocal;
 import lombok.Getter;
 
 public class FFT extends Renderable{
+	
+	private VkQueue queue;
 
 	@Getter
 	private VkImageView dxImageView;
@@ -96,55 +100,13 @@ public class FFT extends Renderable{
 	private Fence dxFence;
 	private Fence dzFence;
 	
-	private class ButterflyDescriptorSet extends DescriptorSet{
-		
-		public ButterflyDescriptorSet(VkDevice device,
-				DescriptorSetLayout layout, VkImageView twiddleFactors,
-				VkImageView coefficients, VkImageView pingpongImage) {
-		    
-		    super(device, VkContext.getDescriptorPoolManager().getDescriptorPool("POOL_1").getHandle(),
-		    		layout.getHandlePointer());
-		    
-		    updateDescriptorImageBuffer(twiddleFactors.getHandle(),
-		    		VK_IMAGE_LAYOUT_GENERAL, -1,
-		    		0, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
-		    updateDescriptorImageBuffer(coefficients.getHandle(),
-		    		VK_IMAGE_LAYOUT_GENERAL, -1,
-		    		1, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
-		    updateDescriptorImageBuffer(pingpongImage.getHandle(),
-		    		VK_IMAGE_LAYOUT_GENERAL, -1,
-		    		2, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
-		    updateDescriptorBuffer(buffer.getHandle(),
-		    		Integer.BYTES * 3, 0, 3, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);
-		}
-	}
-	
-	private class InversionDescriptorSet extends DescriptorSet{
-		
-		public InversionDescriptorSet(VkDevice device,
-				DescriptorSetLayout layout, VkImageView spatialDomain,
-				VkImageView coefficients, VkImageView pingpongImage) {
-		    
-		    super(device,
-		    		VkContext.getDescriptorPoolManager().getDescriptorPool("POOL_1").getHandle(),
-		    		layout.getHandlePointer());
-		    updateDescriptorImageBuffer(spatialDomain.getHandle(),
-		    		VK_IMAGE_LAYOUT_GENERAL, -1,
-		    		0, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
-		    updateDescriptorImageBuffer(coefficients.getHandle(),
-		    		VK_IMAGE_LAYOUT_GENERAL, -1,
-		    		1, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
-		    updateDescriptorImageBuffer(pingpongImage.getHandle(),
-		    		VK_IMAGE_LAYOUT_GENERAL, -1,
-		    		2, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
-		    updateDescriptorBuffer(buffer.getHandle(),
-		    		Integer.BYTES * 3, 0, 3, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);
-		}
-	}
-
-	public FFT(VkDevice device,
-			VkPhysicalDeviceMemoryProperties memoryProperties,int N, int L,
+	public FFT(VkDeviceBundle deviceBundle, int N, int L,
 			float amplitude, Vec2f direction, float intensity, float capillarSupressFactor) {
+		
+		VkDevice device = deviceBundle.getLogicalDevice().getHandle();
+		VkPhysicalDeviceMemoryProperties memoryProperties = deviceBundle.getPhysicalDevice().getMemoryProperties();
+		DescriptorPool descriptorPool = deviceBundle.getLogicalDevice().getDescriptorPool(Thread.currentThread().getId());
+		queue = deviceBundle.getLogicalDevice().getComputeQueue();
 		
 		stages =  (int) (Math.log(N)/Math.log(2));
 		
@@ -190,17 +152,9 @@ public class FFT extends Renderable{
 		dzImageView = new VkImageView(device,
 				VK_FORMAT_R32G32B32A32_SFLOAT, dzImage.getHandle(), VK_IMAGE_ASPECT_COLOR_BIT);
 		
-		twiddleFactors = new TwiddleFactors(
-				VkContext.getLogicalDevice().getHandle(),
-				VkContext.getPhysicalDevice().getMemoryProperties(), N);
-		
-		h0k = new H0k(VkContext.getLogicalDevice().getHandle(),
-				VkContext.getPhysicalDevice().getMemoryProperties(), N, L,
-				amplitude, direction, intensity, capillarSupressFactor);
-		
-		hkt = new Hkt(VkContext.getLogicalDevice().getHandle(),
-				VkContext.getPhysicalDevice().getMemoryProperties(),
-				N, L, h0k.getH0k_imageView(), h0k.getH0minusk_imageView());
+		twiddleFactors = new TwiddleFactors(deviceBundle, N);
+		h0k = new H0k(deviceBundle, N, L, amplitude, direction, intensity, capillarSupressFactor);
+		hkt = new Hkt(deviceBundle, N, L, h0k.getH0k_imageView(), h0k.getH0minusk_imageView());
 		
 		ByteBuffer ubo = memAlloc(Integer.BYTES * 3);
 		ubo.putInt(0);
@@ -212,8 +166,7 @@ public class FFT extends Renderable{
 		IntBuffer intBuffer = pushConstants.asIntBuffer();
 		intBuffer.put(N);
 		
-		buffer = new VkUniformBuffer(VkContext.getLogicalDevice().getHandle(),
-				VkContext.getPhysicalDevice().getMemoryProperties(),ubo);
+		buffer = new VkUniformBuffer(device, memoryProperties, ubo);
 		
 		descriptorLayout = new DescriptorSetLayout(device, 4);
 		descriptorLayout.addLayoutBinding(0, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
@@ -226,27 +179,26 @@ public class FFT extends Renderable{
 		    		VK_SHADER_STAGE_COMPUTE_BIT);
 		descriptorLayout.create();
 	
-		dyButterflyDescriptorSet = new ButterflyDescriptorSet(device,
+		dyButterflyDescriptorSet = new ButterflyDescriptorSet(device, descriptorPool,
 				descriptorLayout, twiddleFactors.getImageView(),
-				hkt.getDyCoefficients_imageView(),
-				dyPingpongImageView);
-		dyInversionDescriptorSet = new InversionDescriptorSet(device,
+				hkt.getDyCoefficients_imageView(), dyPingpongImageView);
+		dyInversionDescriptorSet = new InversionDescriptorSet(device, descriptorPool,
 				descriptorLayout, dyImageView, hkt.getDyCoefficients_imageView(),
 				dyPingpongImageView);
 		
-		dxButterflyDescriptorSet = new ButterflyDescriptorSet(device,
+		dxButterflyDescriptorSet = new ButterflyDescriptorSet(device, descriptorPool,
 				descriptorLayout, twiddleFactors.getImageView(),
 				hkt.getDxCoefficients_imageView(),
 				dxPingpongImageView);
-		dxInversionDescriptorSet = new InversionDescriptorSet(device,
+		dxInversionDescriptorSet = new InversionDescriptorSet(device, descriptorPool,
 				descriptorLayout, dxImageView, hkt.getDxCoefficients_imageView(),
 				dxPingpongImageView);
 		
-		dzButterflyDescriptorSet = new ButterflyDescriptorSet(device,
+		dzButterflyDescriptorSet = new ButterflyDescriptorSet(device, descriptorPool,
 				descriptorLayout, twiddleFactors.getImageView(),
 				hkt.getDzCoefficients_imageView(),
 				dzPingpongImageView);
-		dzInversionDescriptorSet = new InversionDescriptorSet(device,
+		dzInversionDescriptorSet = new InversionDescriptorSet(device, descriptorPool,
 				descriptorLayout, dzImageView, hkt.getDzCoefficients_imageView(),
 				dzPingpongImageView);
 		
@@ -263,34 +215,34 @@ public class FFT extends Renderable{
 		inversionPipeline.createComputePipeline(inversionShader);
 		
 		dyButterflyCmdBuffer = new ComputeCmdBuffer(device,
-				VkContext.getLogicalDevice().getComputeCommandPool().getHandle(),
+				deviceBundle.getLogicalDevice().getComputeCommandPool().getHandle(),
 				butterflyPipeline.getHandle(), butterflyPipeline.getLayoutHandle(),
 				VkUtil.createLongArray(dyButterflyDescriptorSet), N/16, N/16, 1);
 		
 		dxButterflyCmdBuffer = new ComputeCmdBuffer(device,
-				VkContext.getLogicalDevice().getComputeCommandPool().getHandle(),
+				deviceBundle.getLogicalDevice().getComputeCommandPool().getHandle(),
 				butterflyPipeline.getHandle(), butterflyPipeline.getLayoutHandle(),
 				VkUtil.createLongArray(dxButterflyDescriptorSet), N/16, N/16, 1);
 		
 		dzButterflyCmdBuffer = new ComputeCmdBuffer(device,
-				VkContext.getLogicalDevice().getComputeCommandPool().getHandle(),
+				deviceBundle.getLogicalDevice().getComputeCommandPool().getHandle(),
 				butterflyPipeline.getHandle(), butterflyPipeline.getLayoutHandle(),
 				VkUtil.createLongArray(dzButterflyDescriptorSet), N/16, N/16, 1);
 		
 		dyInversionCmdBuffer = new ComputeCmdBuffer(device,
-				VkContext.getLogicalDevice().getComputeCommandPool().getHandle(),
+				deviceBundle.getLogicalDevice().getComputeCommandPool().getHandle(),
 				inversionPipeline.getHandle(), inversionPipeline.getLayoutHandle(),
 				VkUtil.createLongArray(dyInversionDescriptorSet), N/16, N/16, 1,
 				pushConstants, VK_SHADER_STAGE_COMPUTE_BIT);
 		
 		dxInversionCmdBuffer = new ComputeCmdBuffer(device,
-				VkContext.getLogicalDevice().getComputeCommandPool().getHandle(),
+				deviceBundle.getLogicalDevice().getComputeCommandPool().getHandle(),
 				inversionPipeline.getHandle(), inversionPipeline.getLayoutHandle(),
 				VkUtil.createLongArray(dxInversionDescriptorSet), N/16, N/16, 1,
 				pushConstants, VK_SHADER_STAGE_COMPUTE_BIT);
 		
 		dzInversionCmdBuffer = new ComputeCmdBuffer(device,
-				VkContext.getLogicalDevice().getComputeCommandPool().getHandle(),
+				deviceBundle.getLogicalDevice().getComputeCommandPool().getHandle(),
 				inversionPipeline.getHandle(), inversionPipeline.getLayoutHandle(),
 				VkUtil.createLongArray(dzInversionDescriptorSet), N/16, N/16, 1,
 				pushConstants, VK_SHADER_STAGE_COMPUTE_BIT);
@@ -327,9 +279,9 @@ public class FFT extends Renderable{
 		{
 			int[] uniforms = {i, pingpong, 0};
 			buffer.mapMemory(BufferUtil.createByteBuffer(uniforms));
-			dySubmitInfo.submit(VkContext.getLogicalDevice().getComputeQueue());
-			dxSubmitInfo.submit(VkContext.getLogicalDevice().getComputeQueue());
-			dzSubmitInfo.submit(VkContext.getLogicalDevice().getComputeQueue());
+			dySubmitInfo.submit(queue);
+			dxSubmitInfo.submit(queue);
+			dzSubmitInfo.submit(queue);
 			
 			dyFence.waitForFence();
 			dxFence.waitForFence();
@@ -344,9 +296,9 @@ public class FFT extends Renderable{
 		{
 			int[] uniforms = {j, pingpong, 1};
 			buffer.mapMemory(BufferUtil.createByteBuffer(uniforms));
-			dySubmitInfo.submit(VkContext.getLogicalDevice().getComputeQueue());
-			dxSubmitInfo.submit(VkContext.getLogicalDevice().getComputeQueue());
-			dzSubmitInfo.submit(VkContext.getLogicalDevice().getComputeQueue());
+			dySubmitInfo.submit(queue);
+			dxSubmitInfo.submit(queue);
+			dzSubmitInfo.submit(queue);
 			
 			dyFence.waitForFence();
 			dxFence.waitForFence();
@@ -360,13 +312,56 @@ public class FFT extends Renderable{
 		buffer.mapMemory(BufferUtil.createByteBuffer(inversionUniforms));
 		
 		inversionSubmitInfo.setCommandBuffers(dyInversionCmdBuffer.getHandlePointer());
-		inversionSubmitInfo.submit(VkContext.getLogicalDevice().getComputeQueue());
+		inversionSubmitInfo.submit(queue);
 
 		inversionSubmitInfo.setCommandBuffers(dxInversionCmdBuffer.getHandlePointer());
-		inversionSubmitInfo.submit(VkContext.getLogicalDevice().getComputeQueue());
+		inversionSubmitInfo.submit(queue);
 		
 		inversionSubmitInfo.setCommandBuffers(dzInversionCmdBuffer.getHandlePointer());
-		inversionSubmitInfo.submit(VkContext.getLogicalDevice().getComputeQueue());
+		inversionSubmitInfo.submit(queue);
+	}
+	
+	private class ButterflyDescriptorSet extends DescriptorSet{
+		
+		public ButterflyDescriptorSet(VkDevice device, DescriptorPool descriptorPool,
+				DescriptorSetLayout layout, VkImageView twiddleFactors,
+				VkImageView coefficients, VkImageView pingpongImage) {
+		    
+		    super(device, descriptorPool.getHandle(), layout.getHandlePointer());
+		    
+		    updateDescriptorImageBuffer(twiddleFactors.getHandle(),
+		    		VK_IMAGE_LAYOUT_GENERAL, -1,
+		    		0, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
+		    updateDescriptorImageBuffer(coefficients.getHandle(),
+		    		VK_IMAGE_LAYOUT_GENERAL, -1,
+		    		1, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
+		    updateDescriptorImageBuffer(pingpongImage.getHandle(),
+		    		VK_IMAGE_LAYOUT_GENERAL, -1,
+		    		2, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
+		    updateDescriptorBuffer(buffer.getHandle(),
+		    		Integer.BYTES * 3, 0, 3, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);
+		}
+	}
+	
+	private class InversionDescriptorSet extends DescriptorSet{
+		
+		public InversionDescriptorSet(VkDevice device, DescriptorPool descriptorPool,
+				DescriptorSetLayout layout, VkImageView spatialDomain,
+				VkImageView coefficients, VkImageView pingpongImage) {
+		    
+		    super(device, descriptorPool.getHandle(), layout.getHandlePointer());
+		    updateDescriptorImageBuffer(spatialDomain.getHandle(),
+		    		VK_IMAGE_LAYOUT_GENERAL, -1,
+		    		0, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
+		    updateDescriptorImageBuffer(coefficients.getHandle(),
+		    		VK_IMAGE_LAYOUT_GENERAL, -1,
+		    		1, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
+		    updateDescriptorImageBuffer(pingpongImage.getHandle(),
+		    		VK_IMAGE_LAYOUT_GENERAL, -1,
+		    		2, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
+		    updateDescriptorBuffer(buffer.getHandle(),
+		    		Integer.BYTES * 3, 0, 3, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);
+		}
 	}
 	
 	public void destroy(){

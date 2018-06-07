@@ -5,7 +5,7 @@ import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
 
 import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
-import org.oreon.core.vk.buffer.VkBuffer;
+import org.oreon.core.vk.memory.VkBuffer;
 
 public class LocalBuffer extends VkBuffer{
 

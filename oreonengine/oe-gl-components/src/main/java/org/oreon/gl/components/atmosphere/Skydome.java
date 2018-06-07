@@ -1,7 +1,7 @@
 package org.oreon.gl.components.atmosphere;
 
 import org.oreon.core.context.EngineContext;
-import org.oreon.core.gl.buffer.GLMeshVBO;
+import org.oreon.core.gl.memory.GLMeshVBO;
 import org.oreon.core.gl.scenegraph.GLRenderInfo;
 import org.oreon.core.gl.util.GLAssimpModelLoader;
 import org.oreon.core.gl.wrapper.parameter.CullFaceDisable;
