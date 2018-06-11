@@ -28,6 +28,7 @@ public class FPSPanel extends GUIElement{
 	}
 	
 	public FPSPanel(){
+		
 		texture = new Texture2DBilinearFilter("./res/gui/tex/Fonts.png");
 		texCoords = new Vec2f[24];
 		fps = new Vec2f[24];

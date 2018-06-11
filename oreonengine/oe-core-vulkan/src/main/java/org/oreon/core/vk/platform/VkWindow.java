@@ -29,6 +29,7 @@ public class VkWindow extends Window{
 		glfwDefaultWindowHints();
 		glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
         glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+        
         setId(glfwCreateWindow(getWidth(), getHeight(), getTitle(), 0, 0));
         
         if(getId() == 0) {

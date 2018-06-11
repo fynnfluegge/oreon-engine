@@ -14,6 +14,7 @@ import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_SAMPLED_BIT;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_STORAGE_BIT;
 import static org.lwjgl.vulkan.VK10.VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
+import static org.lwjgl.vulkan.VK10.VK_QUEUE_FAMILY_IGNORED;
 import static org.lwjgl.vulkan.VK10.VK_SAMPLER_ADDRESS_MODE_REPEAT;
 import static org.lwjgl.vulkan.VK10.VK_SAMPLER_MIPMAP_MODE_LINEAR;
 import static org.lwjgl.vulkan.VK10.VK_SAMPLER_MIPMAP_MODE_NEAREST;
@@ -167,7 +168,8 @@ public class Water extends Renderable{
 				VK_IMAGE_USAGE_SAMPLED_BIT,
 				VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
 				VK_ACCESS_SHADER_READ_BIT,
-				VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT);
+				VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
+				VK_QUEUE_FAMILY_IGNORED);
 		
 		imageView_dudv = new VkImageView(device.getHandle(),
 				VK_FORMAT_R8G8B8A8_UNORM, image_dudv.getHandle(), 
@@ -471,7 +473,7 @@ public class Water extends Renderable{
 	public void render(){
 		
 		fft.render();
-		normalRenderer.render();
+		normalRenderer.render(VK_QUEUE_FAMILY_IGNORED);
 		
 		// render reflection
 		EngineContext.getRenderState().setClipplane(clipplane);
@@ -540,7 +542,7 @@ public class Water extends Renderable{
 					offScreenReflecRefracFbo.getHeight(),
 					offScreenReflecRefracFbo.getColorAttachmentCount(),
 					offScreenReflecRefracFbo.getDepthAttachment(),
-					Constants.DEEPOCEAN_COLOR2,
+					Constants.DEEPOCEAN_COLOR,
 					VkUtil.createPointerBuffer(refractionSecondaryCmdBuffers.values()));
 			offScreenRefractionSubmitInfo.submit(
 					graphicsQueue);

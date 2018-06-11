@@ -9,9 +9,9 @@ import java.nio.IntBuffer;
 
 import org.lwjgl.BufferUtils;
 import org.oreon.core.math.Matrix4f;
-import org.oreon.core.math.Vec4f;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.math.Vec3f;
+import org.oreon.core.math.Vec4f;
 import org.oreon.core.model.Vertex;
 import org.oreon.core.model.Vertex.VertexLayout;
 
@@ -279,9 +279,15 @@ public class BufferUtil {
 
 		for(int i = 0; i < vertices.length; i++)
 		{
-			floatBuffer.put(vertices[i].getPosition().getX());
-			floatBuffer.put(vertices[i].getPosition().getY());
-			floatBuffer.put(vertices[i].getPosition().getZ());
+			if (layout == VertexLayout.POS2D){
+				floatBuffer.put(vertices[i].getPosition().getX());
+				floatBuffer.put(vertices[i].getPosition().getY());
+			}
+			else {
+				floatBuffer.put(vertices[i].getPosition().getX());
+				floatBuffer.put(vertices[i].getPosition().getY());
+				floatBuffer.put(vertices[i].getPosition().getZ());
+			}
 			
 			if (layout == VertexLayout.POS_NORMAL ||
 				layout == VertexLayout.POS_NORMAL_UV ||

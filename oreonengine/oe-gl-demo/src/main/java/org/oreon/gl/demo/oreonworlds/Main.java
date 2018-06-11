@@ -31,8 +31,7 @@ public class Main {
 		renderEngine.getScenegraph().addTransparentObject(new Sun());
 		renderEngine.getScenegraph().setWater(new Ocean());
 		renderEngine.getScenegraph().setTerrain(new Terrain(TerrainShader.getInstance(),
-													        TerrainWireframeShader.getInstance(), 
-													        null));
+				TerrainWireframeShader.getInstance(), null));
 		
 //		coreSystem.getScenegraph().getRoot().addChild(new Bush01ClusterGroup());
 //		renderEngine.getScenegraph().getRoot().addChild(new Palm01ClusterGroup());

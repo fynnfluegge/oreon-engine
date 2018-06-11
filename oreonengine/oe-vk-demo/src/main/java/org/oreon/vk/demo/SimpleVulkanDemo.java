@@ -16,6 +16,7 @@ public class SimpleVulkanDemo {
 		
 		CoreEngine coreEngine = new CoreEngine();
 		VkRenderEngine renderEngine = new VkRenderEngine();
+//		renderEngine.setGui(new VkSystemMonitor());
 		
 		CoreSystem coreSystem = new CoreSystem();
 		coreSystem.setRenderEngine(renderEngine);

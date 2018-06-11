@@ -121,7 +121,7 @@ public class NormalRenderer {
 		submitInfo.setCommandBuffers(commandBuffer.getHandlePointer());
 	}
 	
-	public void render(){
+	public void render(int dstQueueFamilyIndex){
 		
 		submitInfo.submit(computeQueue);
 		fence.waitForFence();
@@ -131,6 +131,7 @@ public class NormalRenderer {
 				VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_GENERAL,
 				0, VK_ACCESS_SHADER_READ_BIT,
 				VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
-				VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT);
+				VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
+				dstQueueFamilyIndex);
 	}
 }

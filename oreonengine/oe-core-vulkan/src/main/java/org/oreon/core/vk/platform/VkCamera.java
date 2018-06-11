@@ -1,5 +1,6 @@
 package org.oreon.core.vk.platform;
 
+import org.oreon.core.math.Vec3f;
 import org.oreon.core.platform.Camera;
 import org.oreon.core.util.BufferUtil;
 import org.oreon.core.vk.context.DeviceManager.DeviceType;
@@ -18,6 +19,8 @@ public class VkCamera extends Camera{
 	public VkCamera() {
 		  
 		super();
+		
+		setPosition(new Vec3f(0,40,0));
 		
 		// flip y-axxis for vulkan coordinate system
 		getProjectionMatrix().set(1, 1, -getProjectionMatrix().get(1, 1));

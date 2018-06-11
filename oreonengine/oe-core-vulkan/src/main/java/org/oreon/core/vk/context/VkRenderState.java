@@ -2,7 +2,6 @@ package org.oreon.core.vk.context;
 
 import org.oreon.core.context.RenderState;
 import org.oreon.core.vk.framebuffer.VkFrameBufferObject;
-import org.oreon.core.vk.wrapper.buffer.VkUniformBuffer;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -16,6 +15,6 @@ public class VkRenderState extends RenderState{
 	private VkFrameBufferObject transparencyFbo;
 	private VkFrameBufferObject finalSceneFbo;
 
-	private VkUniformBuffer renderStateUbo;
+//	private HashMap<String, Descriptor> globalDescriptors;
 	
 }

@@ -43,26 +43,30 @@ public class VkImageHelper {
 	public static VkImage loadImageFromFile(VkDevice device,
 			VkPhysicalDeviceMemoryProperties memoryProperties,
 			long commandPool, VkQueue queue, String file,
-			int usage, int layout, int dstAccesMask, int dstStageMask){
+			int usage, int layout, int dstAccesMask, int dstStageMask,
+			int dstQueueFamilyIndex){
 		
 		return loadImage(device, memoryProperties, commandPool, queue,
-				file, usage, layout, dstAccesMask, dstStageMask, false);
+				file, usage, layout, dstAccesMask, dstStageMask,
+				dstQueueFamilyIndex, false);
 	}
 	
 	public static VkImage loadImageFromFileMipmap(VkDevice device,
 			VkPhysicalDeviceMemoryProperties memoryProperties,
 			long commandPool, VkQueue queue, String file,
-			int usage, int layout, int dstAccessMask, int dstStageMask){
+			int usage, int layout, int dstAccessMask, int dstStageMask,
+			int dstQueueFamilyIndex){
 		
 		
 		return loadImage(device, memoryProperties, commandPool, queue,
-				file, usage, layout, dstAccessMask, dstStageMask, true);
+				file, usage, layout, dstAccessMask, dstStageMask,
+				dstQueueFamilyIndex, true);
 	}
 	
 	private static VkImage loadImage(VkDevice device,
 			VkPhysicalDeviceMemoryProperties memoryProperties, long commandPool, VkQueue queue,
 			String file, int usage, int finalLayout, int dstAccessMask, int dstStageMask,
-			boolean mipmap){
+			int dstQueueFamilyIndex, boolean mipmap){
 		
 		ImageMetaData metaData = VkImageLoader.getImageMetaData(file);
 		ByteBuffer imageBuffer = VkImageLoader.decodeImage(file);
@@ -108,7 +112,8 @@ public class VkImageHelper {
 					image.getHandle(), metaData.getWidth(), metaData.getHeight(), mipLevels,
 					finalLayout, finalLayout,
 					dstAccessMask, dstAccessMask,
-					dstStageMask, dstStageMask);
+					dstStageMask, dstStageMask,
+					dstQueueFamilyIndex);
 		}
 		
 		imageMemoryBarrierLayout0.destroy();
@@ -123,7 +128,8 @@ public class VkImageHelper {
 			long image, int width, int height, int mipLevels,
 			int initialLayout, int finalLayout,
 			int initialSrcAccesMask, int finalDstAccesMask, 
-			int initialSrcStageMask, int finalDstStageMask){
+			int initialSrcStageMask, int finalDstStageMask,
+			int dstQueueFamilyIndex){
 		
 		CommandBuffer commandBuffer = new CommandBuffer(device,
 				commandPool, VK_COMMAND_BUFFER_LEVEL_PRIMARY);
@@ -217,12 +223,15 @@ public class VkImageHelper {
 			if (mipHeight > 1) mipHeight /= 2;
 		}
 		
-		barrier.subresourceRange().levelCount(mipLevels)
-			.baseMipLevel(0);
+		barrier.subresourceRange()
+			.baseMipLevel(0)
+			.levelCount(mipLevels);
 		barrier.oldLayout(VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL)
 			.newLayout(finalLayout)
 			.srcAccessMask(VK_ACCESS_TRANSFER_WRITE_BIT)
-			.dstAccessMask(finalDstAccesMask);
+			.dstAccessMask(finalDstAccesMask)
+			.srcQueueFamilyIndex(VK_QUEUE_FAMILY_IGNORED)
+			.dstQueueFamilyIndex(VK_QUEUE_FAMILY_IGNORED);
 
 	    vkCmdPipelineBarrier(commandBuffer.getHandle(),
 	        VK_PIPELINE_STAGE_TRANSFER_BIT, finalDstStageMask,

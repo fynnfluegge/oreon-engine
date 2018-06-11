@@ -18,6 +18,7 @@ import java.util.LinkedHashMap;
 
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.vulkan.VkInstance;
+import org.oreon.common.ui.GUI;
 import org.oreon.core.context.EngineContext;
 import org.oreon.core.scenegraph.NodeComponentType;
 import org.oreon.core.scenegraph.RenderList;
@@ -38,6 +39,8 @@ import org.oreon.core.vk.util.VkUtil;
 import org.oreon.core.vk.wrapper.buffer.VkUniformBuffer;
 import org.oreon.core.vk.wrapper.command.PrimaryCmdBuffer;
 import org.oreon.vk.components.filter.Bloom;
+
+import lombok.Setter;
 
 public class VkRenderEngine extends RenderEngine{
 	
@@ -70,6 +73,10 @@ public class VkRenderEngine extends RenderEngine{
 	
 	// post processing filter
 	private Bloom bloom;
+	
+	// gui
+	@Setter
+	private GUI gui;
 	
 	private ByteBuffer[] layers = {
 	            	memUTF8("VK_LAYER_LUNARG_standard_validation"),
@@ -143,15 +150,6 @@ public class VkRenderEngine extends RenderEngine{
 	    VkContext.getRenderState().setOffScreenReflectionFbo(reflectionFbo);
 	    VkContext.getRenderState().setTransparencyFbo(transparencyFbo);
 	    
-//	    ssao = new SSAO(logicalDevice.getHandle(),
-//	    		physicalDevice.getMemoryProperties(),
-//	    		EngineContext.getConfig().getX_ScreenResolution(),
-//	    		EngineContext.getConfig().getY_ScreenResolution(),
-//	    		offScreenFbo.getAttachments().get(Attachment.POSITION).getImage(),
-//	    		offScreenFbo.getAttachmentImageView(Attachment.POSITION),
-//	    		offScreenFbo.getAttachmentImageView(Attachment.NORMAL),
-//	    		offScreenFbo.getAttachmentImageView(Attachment.DEPTH));
-	    
 	    sampleCoverageMask = new SampleCoverageMask(majorDevice,
 	    		EngineContext.getConfig().getX_ScreenResolution(),
 	    		EngineContext.getConfig().getY_ScreenResolution(),
@@ -190,6 +188,10 @@ public class VkRenderEngine extends RenderEngine{
 	    
 	    swapChain = new SwapChain(logicalDevice, physicalDevice, surface,
 	    		bloom.getBloomSceneImageBundle().getImageView().getHandle());
+	    
+	    if (gui != null){
+			gui.init();
+		}
 	}
     
 	@Override
@@ -264,6 +266,10 @@ public class VkRenderEngine extends RenderEngine{
 		
 		bloom.render();
 		vkQueueWaitIdle(majorDevice.getLogicalDevice().getComputeQueue());
+		
+		// TODO render ui
+//		gui.render();
+		
 		swapChain.draw(majorDevice.getLogicalDevice().getGraphicsQueue());
 	}
 

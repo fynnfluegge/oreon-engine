@@ -11,6 +11,7 @@ import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_SAMPLED_BIT;
 import static org.lwjgl.vulkan.VK10.VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
 import static org.lwjgl.vulkan.VK10.VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
+import static org.lwjgl.vulkan.VK10.VK_QUEUE_GRAPHICS_BIT;
 import static org.lwjgl.vulkan.VK10.VK_SAMPLER_ADDRESS_MODE_REPEAT;
 import static org.lwjgl.vulkan.VK10.VK_SAMPLER_MIPMAP_MODE_LINEAR;
 import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_FRAGMENT_BIT;
@@ -74,7 +75,8 @@ public class Sun extends Renderable{
 				VK_IMAGE_USAGE_SAMPLED_BIT,
 				VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
 				VK_ACCESS_SHADER_READ_BIT,
-				VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT);
+				VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
+				VK_QUEUE_GRAPHICS_BIT);
 		
 		VkImageView sunImageView = new VkImageView(device.getHandle(),
 				VK_FORMAT_R8G8B8A8_UNORM, sunImage.getHandle(), VK_IMAGE_ASPECT_COLOR_BIT);
@@ -92,7 +94,8 @@ public class Sun extends Renderable{
 				VK_IMAGE_USAGE_SAMPLED_BIT,
 				VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
 				VK_ACCESS_SHADER_READ_BIT,
-				VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT);
+				VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
+				VK_QUEUE_GRAPHICS_BIT);
 		
 		VkImageView sunImageView_lightScattering = new VkImageView(device.getHandle(),
 				VK_FORMAT_R8G8B8A8_UNORM, sunImage_lightScattering.getHandle(), VK_IMAGE_ASPECT_COLOR_BIT);

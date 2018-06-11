@@ -1,7 +1,7 @@
 package org.oreon.core.util;
 
-import org.oreon.core.math.Vec4f;
 import org.oreon.core.math.Vec3f;
+import org.oreon.core.math.Vec4f;
 
 public class Constants {
 	
@@ -10,7 +10,6 @@ public class Constants {
 	public static final float ZNEAR = 0.1f;
 	public static Vec4f PLANE0 = new Vec4f(0,0,0,0);
 	public static Vec3f DEEPOCEAN_COLOR = new Vec3f(0.1f,0.125f,0.24f);
-	public static Vec3f DEEPOCEAN_COLOR2 = new Vec3f(0.1f,0.125f,0.24f);
 	public static int CLIPOFFSET;
 	public static final int PSSM_SPLITS = 6;
 	public static final float[] PSSM_SPLIT_SHEME= { -0.005f,0.005f,

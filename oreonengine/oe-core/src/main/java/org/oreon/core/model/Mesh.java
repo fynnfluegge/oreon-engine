@@ -2,6 +2,9 @@ package org.oreon.core.model;
 
 import org.oreon.core.model.Vertex.VertexLayout;
 
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
 public class Mesh{
 
 	private Vertex[] vertices;

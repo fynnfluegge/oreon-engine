@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.oreon.core.image.ImageMetaData;
-import org.oreon.core.math.Vec4f;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.math.Vec3f;
+import org.oreon.core.math.Vec4f;
 import org.oreon.core.model.Mesh;
 import org.oreon.core.model.Vertex;
 

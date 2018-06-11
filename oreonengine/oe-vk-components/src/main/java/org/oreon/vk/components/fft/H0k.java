@@ -10,6 +10,7 @@ import static org.lwjgl.vulkan.VK10.VK_IMAGE_ASPECT_COLOR_BIT;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_GENERAL;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_STORAGE_BIT;
 import static org.lwjgl.vulkan.VK10.VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT;
+import static org.lwjgl.vulkan.VK10.VK_QUEUE_FAMILY_IGNORED;
 import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_COMPUTE_BIT;
 
 import java.nio.ByteBuffer;
@@ -75,7 +76,8 @@ public class H0k {
 				VK_IMAGE_USAGE_STORAGE_BIT,
 				VK_IMAGE_LAYOUT_GENERAL,
 				VK_ACCESS_SHADER_READ_BIT,
-				VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT);
+				VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+				VK_QUEUE_FAMILY_IGNORED);
 		
 		VkImageView noise0ImageView = new VkImageView(device,
 				VK_FORMAT_R8G8B8A8_UNORM, noise0Image.getHandle(), VK_IMAGE_ASPECT_COLOR_BIT);
@@ -88,7 +90,8 @@ public class H0k {
 				VK_IMAGE_USAGE_STORAGE_BIT,
 				VK_IMAGE_LAYOUT_GENERAL,
 				VK_ACCESS_SHADER_READ_BIT,
-				VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT);
+				VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+				VK_QUEUE_FAMILY_IGNORED);
 		
 		VkImageView noise1ImageView = new VkImageView(device,
 				VK_FORMAT_R8G8B8A8_UNORM, noise1Image.getHandle(), VK_IMAGE_ASPECT_COLOR_BIT);
@@ -101,7 +104,8 @@ public class H0k {
 				VK_IMAGE_USAGE_STORAGE_BIT,
 				VK_IMAGE_LAYOUT_GENERAL,
 				VK_ACCESS_SHADER_READ_BIT,
-				VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT);
+				VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+				VK_QUEUE_FAMILY_IGNORED);
 		
 		VkImageView noise2ImageView = new VkImageView(device,
 				VK_FORMAT_R8G8B8A8_UNORM, noise2Image.getHandle(), VK_IMAGE_ASPECT_COLOR_BIT);
@@ -114,7 +118,8 @@ public class H0k {
 				VK_IMAGE_USAGE_STORAGE_BIT,
 				VK_IMAGE_LAYOUT_GENERAL,
 				VK_ACCESS_SHADER_READ_BIT,
-				VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT);
+				VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+				VK_QUEUE_FAMILY_IGNORED);
 		
 		VkImageView noise3ImageView = new VkImageView(device,
 				VK_FORMAT_R8G8B8A8_UNORM, noise3Image.getHandle(), VK_IMAGE_ASPECT_COLOR_BIT);
