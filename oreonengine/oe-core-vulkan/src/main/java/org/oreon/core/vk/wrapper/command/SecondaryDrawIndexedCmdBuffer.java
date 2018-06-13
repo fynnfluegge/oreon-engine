@@ -55,7 +55,9 @@ public class SecondaryDrawIndexedCmdBuffer extends CommandBuffer{
 		}
 		bindPipelineCmd(pipeline, VK_PIPELINE_BIND_POINT_GRAPHICS);
 		bindVertexInputCmd(vertexBuffer, indexBuffer);
-		bindDescriptorSetsCmd(pipelineLayout, descriptorSets, VK_PIPELINE_BIND_POINT_GRAPHICS);
+		if (descriptorSets != null){
+			bindDescriptorSetsCmd(pipelineLayout, descriptorSets, VK_PIPELINE_BIND_POINT_GRAPHICS);
+		}
 		drawIndexedCmd(indexCount);
 	    finishRecord();
 	}

@@ -18,7 +18,6 @@ import java.util.LinkedHashMap;
 
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.vulkan.VkInstance;
-import org.oreon.common.ui.GUI;
 import org.oreon.core.context.EngineContext;
 import org.oreon.core.scenegraph.NodeComponentType;
 import org.oreon.core.scenegraph.RenderList;
@@ -39,6 +38,7 @@ import org.oreon.core.vk.util.VkUtil;
 import org.oreon.core.vk.wrapper.buffer.VkUniformBuffer;
 import org.oreon.core.vk.wrapper.command.PrimaryCmdBuffer;
 import org.oreon.vk.components.filter.Bloom;
+import org.oreon.vk.components.ui.VkGUI;
 
 import lombok.Setter;
 
@@ -76,7 +76,7 @@ public class VkRenderEngine extends RenderEngine{
 	
 	// gui
 	@Setter
-	private GUI gui;
+	private VkGUI gui;
 	
 	private ByteBuffer[] layers = {
 	            	memUTF8("VK_LAYER_LUNARG_standard_validation"),
@@ -119,10 +119,10 @@ public class VkRenderEngine extends RenderEngine{
 	    VkContext.getDeviceManager().addDevice(DeviceType.MAJOR_GRAPHICS_DEVICE, majorDevice);
 	    
 	    DescriptorPool descriptorPool = new DescriptorPool(logicalDevice.getHandle(), 4);
-	    descriptorPool.addPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 27);
+	    descriptorPool.addPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 30);
 	    descriptorPool.addPoolSize(VK_DESCRIPTOR_TYPE_STORAGE_IMAGE, 59);
 	    descriptorPool.addPoolSize(VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 2);
-	    descriptorPool.addPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 10);
+	    descriptorPool.addPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 12);
 	    descriptorPool.create();
 	    logicalDevice.addDescriptorPool(Thread.currentThread().getId(), descriptorPool);
 	    
@@ -186,12 +186,12 @@ public class VkRenderEngine extends RenderEngine{
 	    		EngineContext.getConfig().getY_ScreenResolution(),
 	    		fxaa.getFxaaImageView());
 	    
-	    swapChain = new SwapChain(logicalDevice, physicalDevice, surface,
-	    		bloom.getBloomSceneImageBundle().getImageView().getHandle());
-	    
 	    if (gui != null){
-			gui.init();
+			gui.init(bloom.getBloomSceneImageBundle().getImageView());
 		}
+	    
+	    swapChain = new SwapChain(logicalDevice, physicalDevice, surface,
+	    		gui.getGuiOverlayFbo().getAttachmentImageView(Attachment.COLOR).getHandle());
 	}
     
 	@Override
@@ -268,7 +268,7 @@ public class VkRenderEngine extends RenderEngine{
 		vkQueueWaitIdle(majorDevice.getLogicalDevice().getComputeQueue());
 		
 		// TODO render ui
-//		gui.render();
+		gui.render();
 		
 		swapChain.draw(majorDevice.getLogicalDevice().getGraphicsQueue());
 	}
@@ -277,6 +277,8 @@ public class VkRenderEngine extends RenderEngine{
 	public void update() {
 
 		super.update();
+		
+		gui.update();
 	}
 
 	@Override

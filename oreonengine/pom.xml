@@ -126,11 +126,6 @@
 	    <artifactId>spring-context</artifactId>
 	    <version>5.0.4.RELEASE</version>
 	</dependency>
-	<dependency>
-	  	<groupId>com.profesorfalken</groupId>
-	   	<artifactId>jSensors</artifactId>
-	   	<version>2.1</version>
-	</dependency>
   </dependencies>
 
   <profiles>

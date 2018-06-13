@@ -1,8 +1,6 @@
 package org.oreon.common.ui;
 
 import org.oreon.core.math.Matrix4f;
-import org.oreon.core.math.Transform;
-import org.oreon.core.math.Vec2f;
 import org.oreon.core.model.Mesh;
 import org.oreon.core.scenegraph.Renderable;
 
@@ -13,15 +11,19 @@ import lombok.Setter;
 @Setter
 public abstract class UIElement extends Renderable{
 
-	protected Transform orthoTransform;
 	protected Matrix4f orthographicMatrix;
 	protected Mesh panel;
-	protected Vec2f[] uv;
 	
-	public abstract void render();
+	public UIElement(int xPos, int yPos, int xScaling, int yScaling){
+		super();
+		setOrthographicMatrix(new Matrix4f().Orthographic2D());
+		getWorldTransform().setTranslation(xPos, yPos, 0);
+		getWorldTransform().setScaling(xScaling, yScaling, 0);
+		setOrthographicMatrix(getOrthographicMatrix().mul(getWorldTransform().getWorldMatrix()));
+	}
 	
-	public void update(){}
+	@Override
+	public void update(){};
 	
-	public void init(){}
-
+	public void update(String text){};
 }

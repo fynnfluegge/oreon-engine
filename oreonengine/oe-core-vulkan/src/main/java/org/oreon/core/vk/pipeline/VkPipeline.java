@@ -263,6 +263,36 @@ public class VkPipeline {
 				VkPipelineColorBlendAttachmentState.calloc(colorBlendAttachments.size());
 		
 		for (VkPipelineColorBlendAttachmentState colorBlendAttachment : colorBlendAttachments){
+			colorBlendAttachment.blendEnable(false);
+			colorBlendStates.put(colorBlendAttachment);
+		}
+		colorBlendStates.flip();
+	
+        colorBlending = VkPipelineColorBlendStateCreateInfo.calloc()
+                .sType(VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO)
+                .logicOpEnable(false)
+                .pAttachments(colorBlendStates);
+        
+        for (VkPipelineColorBlendAttachmentState colorBlendAttachment : colorBlendAttachments){
+			colorBlendAttachment.free();
+		}
+	}
+	
+	public void setColorBlendState(int srcColorBlendFactor, int dstColorBlendFactor,
+			int colorBlendOp, int srcAlphaBlendFactor, int dstAlphaBlendFactor, int alphaBlendOp){
+		
+		colorBlendStates =
+				VkPipelineColorBlendAttachmentState.calloc(colorBlendAttachments.size());
+		
+		for (VkPipelineColorBlendAttachmentState colorBlendAttachment : colorBlendAttachments){
+			colorBlendAttachment
+				.blendEnable(true)
+				.srcColorBlendFactor(srcColorBlendFactor)
+				.dstColorBlendFactor(dstColorBlendFactor)
+				.colorBlendOp(colorBlendOp)
+				.srcAlphaBlendFactor(srcAlphaBlendFactor)
+				.dstAlphaBlendFactor(dstAlphaBlendFactor)
+				.alphaBlendOp(alphaBlendOp);
 			colorBlendStates.put(colorBlendAttachment);
 		}
 		colorBlendStates.flip();

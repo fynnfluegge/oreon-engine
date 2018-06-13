@@ -96,7 +96,7 @@ void main(void){
 				// vec3 diffuseLight = directional_light.ambient + directional_light.color * diff;
 				// vec3 specularLight = directional_light.color * spec;
 				
-				finalColor += albedo;// * diffuseLight + specularLight;
+				finalColor += albedo * diffuseLight + specularLight;
 			}
 			else{
 				finalColor += albedo;
@@ -126,7 +126,7 @@ void main(void){
 			// vec3 diffuseLight = directional_light.ambient + directional_light.color * diff;;
 			// vec3 specularLight = directional_light.color * spec;
 			
-			finalColor += albedo;// * diffuseLight + specularLight;
+			finalColor += albedo * diffuseLight + specularLight;
 		}
 		else{
 			finalColor = albedo;

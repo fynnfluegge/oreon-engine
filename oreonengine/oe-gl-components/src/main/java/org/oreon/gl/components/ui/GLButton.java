@@ -1,4 +1,4 @@
-package org.oreon.gl.components.ui.elements;
+package org.oreon.gl.components.ui;
 
 import static org.lwjgl.glfw.GLFW.glfwGetCursorPos;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
@@ -7,49 +7,40 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 import java.nio.DoubleBuffer;
 
 import org.lwjgl.BufferUtils;
+import org.oreon.common.ui.UIButton;
 import org.oreon.core.context.EngineContext;
+import org.oreon.core.gl.pipeline.GLShaderProgram;
+import org.oreon.core.gl.pipeline.RenderParameter;
 import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.gl.wrapper.parameter.Default;
-import org.oreon.core.math.Matrix4f;
-import org.oreon.core.math.Vec4f;
-import org.oreon.core.math.Transform;
 import org.oreon.core.math.Vec2f;
-import org.oreon.core.model.Mesh;
-import org.oreon.gl.components.ui.GUIElement;
-import org.oreon.gl.components.ui.GUIObjectLoader;
-import org.oreon.gl.components.ui.GUIVAO;
-import org.oreon.gl.components.ui.GuiShader;
+import org.oreon.core.math.Vec4f;
 
-public abstract class Button extends GUIElement{
+public abstract class GLButton extends UIButton{
 
-	protected GLTexture buttonMap;
-	protected GLTexture buttonClickMap;
+	private GLShaderProgram shader;
+	private RenderParameter config;
+	private GUIVAO vao;
+	protected GLTexture buttonTexture;
+	protected GLTexture buttonClickTexture;
 	private boolean onClick = false;
 	private Vec2f[] pos;
 	
-	public Button(){
+	public GLButton(int xPos, int yPos, int xScaling, int yScaling){
+		super(xPos, yPos, xScaling, yScaling);
 		pos = new Vec2f[4];
-		setOrthoTransform(new Transform());
-	}
-	
-	public void init()
-	{
-		setShader(GuiShader.getInstance());
-		setVao(new GUIVAO());
-		setConfig(new Default());
-		Mesh buttonMesh = GUIObjectLoader.load("gui/button.gui");
-		getVao().addData(buttonMesh);
-		getVao().update(texCoords);
-		setOrthographicMatrix(new Matrix4f().Orthographic2D());
-		setOrthographicMatrix(getOrthographicMatrix().mul(getOrthoTransform().getWorldMatrix()));
+		shader = UIShader.getInstance();
+		vao = new GUIVAO();
+		config = new Default();
+		vao.addData(panel);
 		Vec4f q0 = new Vec4f(0,0,0,0);
 		Vec4f q1 = new Vec4f(0,0,0,0);
 		Vec4f q2 = new Vec4f(0,0,0,0);
 		Vec4f q3 = new Vec4f(0,0,0,0);
-		q0 = getOrthoTransform().getWorldMatrix().mul(new Vec4f(buttonMesh.getVertices()[0].getPosition(),1));
-		q1 = getOrthoTransform().getWorldMatrix().mul(new Vec4f(buttonMesh.getVertices()[1].getPosition(),1));
-		q2 = getOrthoTransform().getWorldMatrix().mul(new Vec4f(buttonMesh.getVertices()[2].getPosition(),1));
-		q3 = getOrthoTransform().getWorldMatrix().mul(new Vec4f(buttonMesh.getVertices()[3].getPosition(),1));
+		q0 = getWorldTransform().getWorldMatrix().mul(new Vec4f(panel.getVertices()[0].getPosition(),1));
+		q1 = getWorldTransform().getWorldMatrix().mul(new Vec4f(panel.getVertices()[1].getPosition(),1));
+		q2 = getWorldTransform().getWorldMatrix().mul(new Vec4f(panel.getVertices()[2].getPosition(),1));
+		q3 = getWorldTransform().getWorldMatrix().mul(new Vec4f(panel.getVertices()[3].getPosition(),1));
 		pos[0] = new Vec2f(q0.getX(),q0.getY()+5);
 		pos[1] = new Vec2f(q1.getX(),q1.getY()+5);
 		pos[2] = new Vec2f(q2.getX()-7,q2.getY()-5);
@@ -58,17 +49,17 @@ public abstract class Button extends GUIElement{
 	
 	public void render()
 	{
-		getConfig().enable();
-		getShader().bind();
-		getShader().updateUniforms(getOrthographicMatrix());
+		config.enable();
+		shader.bind();
+		shader.updateUniforms(getOrthographicMatrix());
 		glActiveTexture(GL_TEXTURE1);
 		if (onClick)
-			buttonClickMap.bind();
+			buttonClickTexture.bind();
 		else
-			buttonMap.bind();
-		getShader().updateUniforms(1);
-		getVao().draw();
-		getConfig().disable();
+			buttonTexture.bind();
+		shader.updateUniforms(1);
+		vao.draw();
+		config.disable();
 	}
 	
 	public void update()

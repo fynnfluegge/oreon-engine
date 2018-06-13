@@ -35,6 +35,11 @@ public class VkVertexInput {
 				addVertexAttributeDescription(0, VK_FORMAT_R32G32B32_SFLOAT, 0);
 				addVertexAttributeDescription(1, VK_FORMAT_R32G32_SFLOAT, Float.BYTES * 3);
 				break;
+			case POS2D_UV:
+				createBindingDescription(0, 2, Float.BYTES * 4);
+				addVertexAttributeDescription(0, VK_FORMAT_R32G32_SFLOAT, 0);
+				addVertexAttributeDescription(1, VK_FORMAT_R32G32_SFLOAT, Float.BYTES * 2);
+				break;
 			case POS_NORMAL:
 				createBindingDescription(0, 2, Float.BYTES * 6);
 				addVertexAttributeDescription(0, VK_FORMAT_R32G32B32_SFLOAT, 0);

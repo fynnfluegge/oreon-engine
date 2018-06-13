@@ -139,10 +139,10 @@ public class GLAssimpModelLoader {
 				vertex.setNormal(new Vec3f(0,0,0));
 			}
 			if (!texCoords.isEmpty()){
-				vertex.setTextureCoord(texCoords.get(i));
+				vertex.setUVCoord(texCoords.get(i));
 			}
 			else{
-				vertex.setTextureCoord(new Vec2f(0,0));
+				vertex.setUVCoord(new Vec2f(0,0));
 			}
 			if (!tangents.isEmpty()){
 				vertex.setTangent(tangents.get(i));

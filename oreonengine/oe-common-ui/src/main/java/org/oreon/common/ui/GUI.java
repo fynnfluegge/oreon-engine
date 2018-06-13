@@ -2,6 +2,8 @@ package org.oreon.common.ui;
 
 import java.util.ArrayList;
 
+import org.oreon.core.scenegraph.RenderList;
+
 import lombok.Getter;
 
 public abstract class GUI {
@@ -13,19 +15,24 @@ public abstract class GUI {
 		screens = new ArrayList<UIScreen>();
 	}
 	
-	public abstract void init();
-	
 	public void update(){
 		for (UIScreen screen: screens ){
 			screen.update();
 		}
-	};
+	}
 	
 	public void render(){
 		
 		for (UIScreen screen: screens ){
 			screen.render();
 		}
-	};
+	}
+	
+	public void record(RenderList renderList){
+
+		for (UIScreen screen: screens ){
+			screen.record(renderList);
+		}
+	}
 	
 }

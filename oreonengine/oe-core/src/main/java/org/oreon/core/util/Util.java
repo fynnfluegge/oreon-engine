@@ -55,7 +55,7 @@ public class Util {
 		{
 			vertices[i] = new Vertex();
 			vertices[i].setPosition(new Vec3f(data.get(),data.get(),data.get()));
-			vertices[i].setTextureCoord(new Vec2f(data.get(),data.get()));
+			vertices[i].setUVCoord(new Vec2f(data.get(),data.get()));
 			vertices[i].setNormal(new Vec3f(data.get(),data.get(),data.get()));
 		}
 		
@@ -70,7 +70,7 @@ public class Util {
 		{
 			vertices[i] = new Vertex();
 			vertices[i].setPosition(data.get(i).getPosition());
-			vertices[i].setTextureCoord(data.get(i).getTextureCoord());
+			vertices[i].setUVCoord(data.get(i).getUVCoord());
 			vertices[i].setNormal(data.get(i).getNormal());
 			vertices[i].setTangent(data.get(i).getTangent());
 			vertices[i].setBitangent(data.get(i).getBitangent());
@@ -171,9 +171,9 @@ public class Util {
 		    	Vec3f v1 = mesh.getVertices()[mesh.getIndices()[i+1]].getPosition();
 		    	Vec3f v2 = mesh.getVertices()[mesh.getIndices()[i+2]].getPosition();
 		        
-		    	Vec2f uv0 = mesh.getVertices()[mesh.getIndices()[i]].getTextureCoord();
-		    	Vec2f uv1 = mesh.getVertices()[mesh.getIndices()[i+1]].getTextureCoord();
-		    	Vec2f uv2 = mesh.getVertices()[mesh.getIndices()[i+2]].getTextureCoord();
+		    	Vec2f uv0 = mesh.getVertices()[mesh.getIndices()[i]].getUVCoord();
+		    	Vec2f uv1 = mesh.getVertices()[mesh.getIndices()[i+1]].getUVCoord();
+		    	Vec2f uv2 = mesh.getVertices()[mesh.getIndices()[i+2]].getUVCoord();
 		    	
 		    	Vec3f e1 = v1.sub(v0);
 		    	Vec3f e2 = v2.sub(v0);

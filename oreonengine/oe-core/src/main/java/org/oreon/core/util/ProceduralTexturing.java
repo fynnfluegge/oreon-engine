@@ -15,9 +15,9 @@ public class ProceduralTexturing{
 		{	
 			for(int i=0; i<mesh.getVertices().length; i++)
 			{
-				if (mesh.getVertices()[i].getTextureCoord().getX() != 0.001f)
-				mesh.getVertices()[i].getTextureCoord().setX((float) (0.5 + (Math.atan2(mesh.getVertices()[i].getPosition().getZ(), mesh.getVertices()[i].getPosition().getX()))/(2*Math.PI)));
-				mesh.getVertices()[i].getTextureCoord().setY((float) (0.5 - (Math.asin(mesh.getVertices()[i].getPosition().getY())/Math.PI)));
+				if (mesh.getVertices()[i].getUVCoord().getX() != 0.001f)
+				mesh.getVertices()[i].getUVCoord().setX((float) (0.5 + (Math.atan2(mesh.getVertices()[i].getPosition().getZ(), mesh.getVertices()[i].getPosition().getX()))/(2*Math.PI)));
+				mesh.getVertices()[i].getUVCoord().setY((float) (0.5 - (Math.asin(mesh.getVertices()[i].getPosition().getY())/Math.PI)));
 			}
 		}
 		
@@ -25,7 +25,7 @@ public class ProceduralTexturing{
 		{
 			for(int i=0; i<mesh.getVertices().length; i++)
 			{
-				mesh.getVertices()[i].setTextureCoord(new Vec2f((mesh.getVertices()[i].getPosition().getX()+1)*0.5f, (mesh.getVertices()[i].getPosition().getZ()+1)*0.5f));
+				mesh.getVertices()[i].setUVCoord(new Vec2f((mesh.getVertices()[i].getPosition().getX()+1)*0.5f, (mesh.getVertices()[i].getPosition().getZ()+1)*0.5f));
 			}
 		}
 		

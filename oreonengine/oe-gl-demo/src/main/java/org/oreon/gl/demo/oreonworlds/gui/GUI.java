@@ -1,39 +1,19 @@
 package org.oreon.gl.demo.oreonworlds.gui;
 
-import org.oreon.gl.components.ui.GUIElement;
-import org.oreon.gl.components.ui.Screen;
+import org.oreon.common.ui.UIElement;
+import org.oreon.common.ui.UIScreen;
+import org.oreon.gl.components.ui.GLGUI;
+import org.oreon.gl.components.ui.GLStaticTextPanel;
 
-public class GUI extends org.oreon.gl.components.ui.GUI{
+public class GUI extends GLGUI{
 
-//	private OpenCloseButton openCloseButton;
-//	private Screen guiButtonsPanel;
-	
 	@Override
 	public void init() {
-		Screen screen0 = new Screen();
-		screen0.setElements(new GUIElement[1]);
-//		openCloseButton =  new OpenCloseButton();
-		screen0.getElements()[0] = new FPSPanel();
-//		screen0.getElements()[1] = openCloseButton;
-		screen0.init();
+		super.init();
+		UIScreen screen0 = new UIScreen();
+		screen0.setElements(new UIElement[1]);
+		screen0.getElements()[0] = new GLStaticTextPanel("abc", 100, 100, 100, 100, fontsTexture);
 		getScreens().add(screen0);
-		
-//		guiButtonsPanel = new Screen();
-//		guiButtonsPanel.setElements(new GUIElement[1]);
-//		guiButtonsPanel.getElements()[0] = new GridButton();
-//		guiButtonsPanel.init();
 	}
 	
-	@Override
-	public void update(){
-		super.update();
-//		if (!openCloseButton.isClosed()){
-//			if (getScreens().size() == 1)
-//				getScreens().add(guiButtonsPanel);
-//		}
-//		else if (openCloseButton.isClosed()){
-//			if (getScreens().size() == 2)
-//				getScreens().remove(1);
-//		}
-	}
 }

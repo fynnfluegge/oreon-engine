@@ -4,20 +4,20 @@ import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.util.ResourceLoader;
 
-public class GuiShader extends GLShaderProgram{
+public class UIShader extends GLShaderProgram{
 
-	private static GuiShader instance = null;
+	private static UIShader instance = null;
 	
-	public static GuiShader getInstance() 
+	public static UIShader getInstance() 
 	{
 	    if(instance == null) 
 	    {
-	    	instance = new GuiShader();
+	    	instance = new UIShader();
 	    }
 	    return instance;
 	}
 	
-	protected GuiShader()
+	protected UIShader()
 	{
 		super();
 

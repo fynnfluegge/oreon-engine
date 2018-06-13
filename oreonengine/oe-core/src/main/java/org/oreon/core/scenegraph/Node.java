@@ -15,7 +15,6 @@ public class Node {
 	private Transform localTransform;
 	
 	public Node(){
-		
 		id = UUID.randomUUID().toString();
 		setWorldTransform(new Transform());
 		setLocalTransform(new Transform());

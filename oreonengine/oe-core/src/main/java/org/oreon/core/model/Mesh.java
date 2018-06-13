@@ -1,5 +1,9 @@
 package org.oreon.core.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.oreon.core.math.Vec2f;
 import org.oreon.core.model.Vertex.VertexLayout;
 
 import lombok.NoArgsConstructor;
@@ -18,6 +22,17 @@ public class Mesh{
 	{
 		this.vertices = vertices;
 		this.indices = indices;
+	}
+	
+	public List<Vec2f> getUvCoords(){
+		
+		ArrayList<Vec2f> uvCoords = new ArrayList<Vec2f>();
+				
+		for (Vertex v : vertices){
+			uvCoords.add(v.getUVCoord());
+		}
+		
+		return uvCoords;
 	}
 
 	public Vertex[] getVertices() {

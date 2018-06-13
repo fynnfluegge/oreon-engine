@@ -40,7 +40,7 @@ import org.oreon.gl.components.filter.lightscattering.SunLightScattering;
 import org.oreon.gl.components.filter.motionblur.MotionBlur;
 import org.oreon.gl.components.filter.ssao.SSAO;
 import org.oreon.gl.components.terrain.GLTerrain;
-import org.oreon.gl.components.ui.GUI;
+import org.oreon.gl.components.ui.GLGUI;
 import org.oreon.gl.components.water.UnderWaterRenderer;
 import org.oreon.gl.engine.antialiasing.FXAA;
 import org.oreon.gl.engine.antialiasing.MSAA;
@@ -73,7 +73,7 @@ public class GLRenderEngine extends RenderEngine{
 	private TransparencyLayer transparencyLayer;
 	
 	@Setter
-	private GUI gui;
+	private GLGUI gui;
 
 	private ParallelSplitShadowMapsFbo pssmFbo;
 	

@@ -1,13 +1,11 @@
 #version 450
 #extension GL_ARB_separate_shader_objects : enable
 
-layout (location = 0) in vec2 inPosition;
-
-layout (location = 0) out int outVertexId;
+layout(location = 0) in vec2 inPosition;
 
 layout (push_constant, std430, row_major) uniform pushConstants{
 	mat4 orthographicMatrix;
-	vec2[128] uv;
+	vec4 rgba;
 } constants;
 
 out gl_PerVertex {
@@ -16,6 +14,5 @@ out gl_PerVertex {
 
 void main()
 {
-	gl_Position = constants.orthographicMatrix * vec4(inPosition, 0, 1);
-	outVertexId = gl_VertexIndex;
+	gl_Position = constants.orthographicMatrix * vec4(inPosition,0.0,1.0);
 }

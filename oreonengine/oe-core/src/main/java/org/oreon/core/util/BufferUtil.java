@@ -6,6 +6,7 @@ import java.nio.ByteBuffer;
 import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.util.List;
 
 import org.lwjgl.BufferUtils;
 import org.oreon.core.math.Matrix4f;
@@ -71,8 +72,8 @@ public class BufferUtil {
 			buffer.put(vertices[i].getNormal().getX());
 			buffer.put(vertices[i].getNormal().getY());
 			buffer.put(vertices[i].getNormal().getZ());
-			buffer.put(vertices[i].getTextureCoord().getX());
-			buffer.put(vertices[i].getTextureCoord().getY());
+			buffer.put(vertices[i].getUVCoord().getX());
+			buffer.put(vertices[i].getUVCoord().getY());
 			
 			if (vertices[i].getTangent() != null && vertices[i].getBitangent() != null){
 				buffer.put(vertices[i].getTangent().getX());
@@ -109,8 +110,8 @@ public class BufferUtil {
 			
 		for(int i = 0; i < vertices.length; i++)
 		{
-			buffer.put(vertices[i].getTextureCoord().getX());
-			buffer.put(vertices[i].getTextureCoord().getY());
+			buffer.put(vertices[i].getUVCoord().getX());
+			buffer.put(vertices[i].getUVCoord().getY());
 		}	
 		
 		buffer.flip();
@@ -186,6 +187,21 @@ public class BufferUtil {
 		{
 			buffer.put(vector[i].getX());
 			buffer.put(vector[i].getY());	
+		}
+		
+		buffer.flip();
+		
+		return buffer;
+	}
+	
+	public static FloatBuffer createFlippedBuffer(List<Vec2f> vector)
+	{
+		FloatBuffer buffer = createFloatBuffer(vector.size() * Float.BYTES * 2);
+		
+		for (Vec2f v : vector)
+		{
+			buffer.put(v.getX());
+			buffer.put(v.getY());	
 		}
 		
 		buffer.flip();
@@ -279,7 +295,8 @@ public class BufferUtil {
 
 		for(int i = 0; i < vertices.length; i++)
 		{
-			if (layout == VertexLayout.POS2D){
+			if (layout == VertexLayout.POS2D || 
+				layout == VertexLayout.POS2D_UV){
 				floatBuffer.put(vertices[i].getPosition().getX());
 				floatBuffer.put(vertices[i].getPosition().getY());
 			}
@@ -300,10 +317,11 @@ public class BufferUtil {
 			
 			if (layout == VertexLayout.POS_NORMAL_UV ||
 				layout == VertexLayout.POS_UV ||
-				layout == VertexLayout.POS_NORMAL_UV_TAN_BITAN){
+				layout == VertexLayout.POS_NORMAL_UV_TAN_BITAN ||
+				layout == VertexLayout.POS2D_UV){
 				
-				floatBuffer.put(vertices[i].getTextureCoord().getX());
-				floatBuffer.put(vertices[i].getTextureCoord().getY());
+				floatBuffer.put(vertices[i].getUVCoord().getX());
+				floatBuffer.put(vertices[i].getUVCoord().getY());
 			}
 			
 			if (layout == VertexLayout.POS_NORMAL_UV_TAN_BITAN){
@@ -355,11 +373,17 @@ public class BufferUtil {
 		ByteBuffer byteBuffer;
 		
 		switch(layout){
+			case POS2D:
+				byteBuffer = memAlloc(Float.BYTES * 2 * vertexCount);
+				break;
 			case POS:
 				byteBuffer = memAlloc(Float.BYTES * 3 * vertexCount);
 				break;
 			case POS_UV:
 				byteBuffer = memAlloc(Float.BYTES * 5 * vertexCount);
+				break;
+			case POS2D_UV:
+				byteBuffer = memAlloc(Float.BYTES * 4 * vertexCount);
 				break;
 			case POS_NORMAL:
 				byteBuffer = memAlloc(Float.BYTES * 6 * vertexCount);

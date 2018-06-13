@@ -3,27 +3,25 @@ package org.oreon.common.ui;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.oreon.core.math.Matrix4f;
-import org.oreon.core.math.Transform;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.model.Mesh;
 import org.oreon.core.model.Vertex;
 import org.oreon.core.util.Util;
 
+import lombok.extern.log4j.Log4j;
+
+@Log4j
 public abstract class UITextPanel extends UIElement{
 	
 	private int numFonts;
+	protected String outputText;
 	
 	public UITextPanel(String text, int xPos, int yPos, int xScaling, int yScaling) {
-		
+		super(xPos, yPos, xScaling, yScaling);
+		this.outputText = text;
 		numFonts = text.length();
 		panel = generatePanelVertices();
-		uv = generateFontMapUvCoords(text);
-		setOrthoTransform(new Transform());
-		setOrthographicMatrix(new Matrix4f().Orthographic2D());
-		getOrthoTransform().setTranslation(xPos, yPos, 0);
-		getOrthoTransform().setScaling(xScaling, yScaling, 0);
-		setOrthographicMatrix(getOrthographicMatrix().mul(getOrthoTransform().getWorldMatrix()));
+		generateFontMapUvCoords(text);
 	}
 
 	public Mesh generatePanelVertices(){
@@ -35,48 +33,69 @@ public abstract class UITextPanel extends UIElement{
 			 
 			Mesh mesh = UIPanelLoader.load("gui/basicPanel.gui");
 			
-			for (int j=0; j<mesh.getVertices().length; j++){
-				vertexList.add(mesh.getVertices()[j]);
+			for (Vertex v : mesh.getVertices()){
+				v.getPosition().setX(v.getPosition().getX() + i*0.65f);
+				vertexList.add(v);
 			}
-			for (int k=0; k<mesh.getIndices().length; k++){
-				indexList.add(mesh.getIndices()[k]);
+			for (int index : mesh.getIndices()){
+				indexList.add(index + 4 * i);
 			}
 		}
 		
-		int offset = 0;
-		// shift vertices x-dimesnion
-		for (int i=0; i<vertexList.size(); i++){
-			
-			if (i > 0 && (i % 2 == 0)){
-				offset++;
-			}
-			vertexList.get(i).getPosition().setX(
-					vertexList.get(i).getPosition().getX()+offset);
-		}
+		Vertex[] vertices = new Vertex[vertexList.size()];
+		vertexList.toArray(vertices);
 		
-		Vertex[] vertices = (Vertex[]) vertexList.toArray();
-		int[] indices = new int[indexList.size()];
+		Integer[] objectArray = new Integer[indexList.size()];
+		indexList.toArray(objectArray);
+		int[] indices = Util.toIntArray(objectArray);
+	
+		Mesh mesh = new Mesh(vertices, indices);
 		
-		for (int j=0; j<indexList.size(); j++){
-			indices[j] = indexList.get(j);
-		}
-		
-		return new Mesh(vertices, indices);
+		return mesh;
 	}
 	
-	public Vec2f[] generateFontMapUvCoords(String text){
+	public void generateFontMapUvCoords(String text){
 		
-		List<Vec2f> uv = new ArrayList<Vec2f>();
+		List<Vec2f> uvList = new ArrayList<Vec2f>();
 		
-		for (int i=0; i<text.length(); i++){
+		for (int i=0; i<numFonts; i++){
 			Vec2f[] fontMapUv = new Vec2f[4];
 			fontMapUv = Util.texCoordsFromFontMap(text.charAt(i));
-			uv.add(fontMapUv[0]);
-			uv.add(fontMapUv[1]);
-			uv.add(fontMapUv[2]);
-			uv.add(fontMapUv[3]);
+			uvList.add(fontMapUv[0]);
+			uvList.add(fontMapUv[1]);
+			uvList.add(fontMapUv[2]);
+			uvList.add(fontMapUv[3]);
 		}
 		
-		return (Vec2f[]) uv.toArray();
+		if (uvList.size() != panel.getVertices().length){
+			log.error("uv count not equal vertex count");
+		}
+		
+		int i = 0;
+		for (Vertex v : panel.getVertices()){
+			v.setUVCoord(uvList.get(i));
+			i++;
+		}
 	}
+	
+	public void update(String newText){
+		
+		outputText = newText;
+		
+		String textToDisplay = new String();
+		
+		if (newText.length() > numFonts){
+			log.error("Text to update too long");
+		}
+		if (newText.length() < numFonts){
+			int offset = numFonts - newText.length();
+			for (int i=0; i<offset; i++){
+				textToDisplay += " ";
+			}
+		}
+		textToDisplay += newText;
+		
+		generateFontMapUvCoords(textToDisplay);
+	}
+	
 }

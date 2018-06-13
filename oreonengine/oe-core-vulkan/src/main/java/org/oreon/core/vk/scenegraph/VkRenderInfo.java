@@ -13,11 +13,6 @@ public class VkRenderInfo extends NodeComponent{
 	private CommandBuffer commandBuffer;
 	
 	@Override
-	public void render(){
-		
-	}
-	
-	@Override
 	public void shutdown(){
 		
 		commandBuffer.destroy();

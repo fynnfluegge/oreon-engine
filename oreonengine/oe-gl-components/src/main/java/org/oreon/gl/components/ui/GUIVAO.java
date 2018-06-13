@@ -5,8 +5,8 @@ import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
 import static org.lwjgl.opengl.GL11.GL_UNSIGNED_INT;
 import static org.lwjgl.opengl.GL11.glDrawElements;
 import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
-import static org.lwjgl.opengl.GL15.GL_ELEMENT_ARRAY_BUFFER;
 import static org.lwjgl.opengl.GL15.GL_DYNAMIC_DRAW;
+import static org.lwjgl.opengl.GL15.GL_ELEMENT_ARRAY_BUFFER;
 import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
 import static org.lwjgl.opengl.GL15.glBindBuffer;
 import static org.lwjgl.opengl.GL15.glBufferData;
@@ -17,6 +17,8 @@ import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import static org.lwjgl.opengl.GL30.glGenVertexArrays;
+
+import java.util.List;
 
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.model.Mesh;
@@ -76,6 +78,14 @@ public class GUIVAO {
 	}
 	
 	public void update(Vec2f[] texCoords)
+	{
+		glBindVertexArray(vaoId);
+		glBindBuffer(GL_ARRAY_BUFFER, vbo);
+		glBufferSubData(GL_ARRAY_BUFFER, vertices * offset, BufferUtil.createFlippedBuffer(texCoords));
+		glBindVertexArray(0);
+	}
+	
+	public void update(List<Vec2f> texCoords)
 	{
 		glBindVertexArray(vaoId);
 		glBindBuffer(GL_ARRAY_BUFFER, vbo);

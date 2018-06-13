@@ -5,13 +5,10 @@ import java.util.Map;
 
 import org.oreon.core.context.EngineContext;
 
-import lombok.Getter;
-
 public class Renderable extends Node{
 
 	private HashMap<NodeComponentType, NodeComponent> components;
-	@Getter
-	private boolean render;
+	protected boolean render;
 	
 	public Renderable()
 	{
