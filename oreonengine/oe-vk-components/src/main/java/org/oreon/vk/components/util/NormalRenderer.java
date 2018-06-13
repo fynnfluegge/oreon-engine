@@ -66,8 +66,8 @@ public class NormalRenderer {
 		
 		device = deviceBundle.getLogicalDevice().getHandle();
 		computeQueue = deviceBundle.getLogicalDevice().getComputeQueue();
-		transferQueue = deviceBundle.getLogicalDevice().getTransferQueue();
-		transferCommandPool= deviceBundle.getLogicalDevice().getTransferCommandPool();
+		transferQueue = deviceBundle.getLogicalDevice().getGraphicsQueue();
+		transferCommandPool= deviceBundle.getLogicalDevice().getGraphicsCommandPool();
 		
 		normalImage = new Image2DDeviceLocal(deviceBundle.getLogicalDevice().getHandle(),
 				deviceBundle.getPhysicalDevice().getMemoryProperties(), N, N,

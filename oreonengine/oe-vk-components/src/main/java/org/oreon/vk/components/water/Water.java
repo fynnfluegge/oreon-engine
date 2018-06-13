@@ -162,8 +162,8 @@ public class Water extends Renderable{
 		
 		image_dudv = VkImageHelper.loadImageFromFileMipmap(
 				device.getHandle(), memoryProperties,
-				device.getTransferCommandPool().getHandle(),
-				device.getTransferQueue(),
+				device.getGraphicsCommandPool().getHandle(),
+				device.getGraphicsQueue(),
 				"textures/water/dudv/dudv1.jpg",
 				VK_IMAGE_USAGE_SAMPLED_BIT,
 				VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,

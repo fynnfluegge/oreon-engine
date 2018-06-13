@@ -13,7 +13,7 @@ public class GLGUI extends GUI{
 	protected GLTexture fontsTexture;
 	
 	public void init() {
-		fontsTexture = new Texture2DBilinearFilter("./res/gui/tex/Fonts.png");
+		fontsTexture = new Texture2DBilinearFilter("gui/tex/Fonts.png");
 	}
 	
 	@Override
