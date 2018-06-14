@@ -94,7 +94,7 @@ public class GLRenderEngine extends RenderEngine{
 	private boolean renderDeferredLightingScene = false;
 	private boolean renderSSAOBuffer = false;
 	private boolean renderFXAA = false;
-	private boolean renderPostProcessingEffects = false;
+	private boolean renderPostProcessingEffects = true;
 	private boolean renderSSAO = false;
 	
 	@Override
