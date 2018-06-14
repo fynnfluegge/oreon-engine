@@ -9,7 +9,7 @@ public class Scenegraph extends Node{
 	private Node water;
 	private Node transparentObjects;
 	
-	private boolean renderTerrain = false;
+	private boolean hasTerrain = false;
 	
 	public Scenegraph(){
 		
@@ -95,7 +95,7 @@ public class Scenegraph extends Node{
 
 	public void setTerrain(Node terrain) {
 		terrain.setParent(this);
-		renderTerrain = true;
+		hasTerrain = true;
 		this.terrain = terrain;
 	}
 	
@@ -112,8 +112,8 @@ public class Scenegraph extends Node{
 		this.water = water;
 	}
 
-	public boolean isRenderTerrain() {
-		return renderTerrain;
+	public boolean hasTerrain() {
+		return hasTerrain;
 	}
 
 	public Node getTransparentObjects() {

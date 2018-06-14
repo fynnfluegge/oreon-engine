@@ -36,9 +36,9 @@ import java.util.HashMap;
 
 import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.math.Matrix4f;
-import org.oreon.core.math.Vec4f;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.math.Vec3f;
+import org.oreon.core.math.Vec4f;
 import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.util.BufferUtil;
 
@@ -79,6 +79,8 @@ public abstract class GLShaderProgram{
 	public void updateUniforms(Matrix4f matrix0, Matrix4f matrix1){};
 	
 	public void updateUniforms(Matrix4f matrix){};
+	
+	public void updateUniforms(Vec4f vec4){};
 	
 	public void updateUniforms(int value){};
 	

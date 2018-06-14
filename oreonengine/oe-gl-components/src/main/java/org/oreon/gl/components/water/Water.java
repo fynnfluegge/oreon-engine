@@ -114,7 +114,7 @@ public class Water extends Renderable{
 		//mirror scene to clipplane
 		scenegraph.getWorldTransform().setScaling(1,-1,1);
 			
-		if (scenegraph.isRenderTerrain()){
+		if (scenegraph.hasTerrain()){
 				
 			GLContext.getObject(TerrainConfiguration.class).setScaleY(
 					GLContext.getObject(TerrainConfiguration.class).getScaleY() * -1f);
@@ -136,7 +136,7 @@ public class Water extends Renderable{
 		
 		if (!isCameraUnderwater()){
 			scenegraph.getRoot().render();
-			if (scenegraph.isRenderTerrain()){
+			if (scenegraph.hasTerrain()){
 				((GLTerrain) scenegraph.getTerrain()).render();
 			}
 		}
@@ -153,7 +153,7 @@ public class Water extends Renderable{
 	
 		scenegraph.getWorldTransform().setScaling(1,1,1);
 
-		if (scenegraph.isRenderTerrain()){
+		if (scenegraph.hasTerrain()){
 			GLContext.getObject(TerrainConfiguration.class).setScaleY(
 					GLContext.getObject(TerrainConfiguration.class).getScaleY() / -1f);
 			GLContext.getObject(TerrainConfiguration.class).setWaterReflectionShift(0);
@@ -168,7 +168,7 @@ public class Water extends Renderable{
 		renderConfig.clearScreenDeepOcean();
 	
 		scenegraph.getRoot().render();
-		if (scenegraph.isRenderTerrain()){
+		if (scenegraph.hasTerrain()){
 			((GLTerrain) scenegraph.getTerrain()).render();
 		}
 		

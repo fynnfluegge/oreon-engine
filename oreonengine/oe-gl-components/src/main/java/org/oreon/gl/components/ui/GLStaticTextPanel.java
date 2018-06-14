@@ -20,7 +20,7 @@ public class GLStaticTextPanel extends UITextPanel{
 			GLTexture fontsTexture) {
 		super(text, xPos, yPos, xScaling, yScaling);
 		texture = fontsTexture;
-		shader = UIShader.getInstance();
+		shader = UITextPanelShader.getInstance();
 		vao = new GUIVAO();
 		config = new Default();
 		vao.addData(panel);

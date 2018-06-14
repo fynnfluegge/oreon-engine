@@ -119,7 +119,7 @@ public class VkRenderEngine extends RenderEngine{
 	    VkContext.getDeviceManager().addDevice(DeviceType.MAJOR_GRAPHICS_DEVICE, majorDevice);
 	    
 	    DescriptorPool descriptorPool = new DescriptorPool(logicalDevice.getHandle(), 4);
-	    descriptorPool.addPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 30);
+	    descriptorPool.addPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 33);
 	    descriptorPool.addPoolSize(VK_DESCRIPTOR_TYPE_STORAGE_IMAGE, 59);
 	    descriptorPool.addPoolSize(VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 2);
 	    descriptorPool.addPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 12);
@@ -267,7 +267,6 @@ public class VkRenderEngine extends RenderEngine{
 		bloom.render();
 		vkQueueWaitIdle(majorDevice.getLogicalDevice().getComputeQueue());
 		
-		// TODO render ui
 		gui.render();
 		
 		swapChain.draw(majorDevice.getLogicalDevice().getGraphicsQueue());

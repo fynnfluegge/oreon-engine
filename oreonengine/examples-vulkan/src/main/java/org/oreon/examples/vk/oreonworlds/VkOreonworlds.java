@@ -8,7 +8,7 @@ import org.oreon.vk.components.atmosphere.Sun;
 import org.oreon.vk.components.water.Water;
 import org.oreon.vk.engine.VkRenderEngine;
 
-public class Oreonworlds {
+public class VkOreonworlds {
 	
 	public static void main(String[] args) {
 		

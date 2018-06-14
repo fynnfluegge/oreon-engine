@@ -41,6 +41,7 @@ import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
 import org.lwjgl.vulkan.VkQueue;
 import org.oreon.common.ui.GUI;
+import org.oreon.common.ui.UIPanelLoader;
 import org.oreon.core.context.EngineContext;
 import org.oreon.core.model.Mesh;
 import org.oreon.core.model.Vertex.VertexLayout;
@@ -69,6 +70,7 @@ import org.oreon.core.vk.pipeline.VkVertexInput;
 import org.oreon.core.vk.scenegraph.VkRenderInfo;
 import org.oreon.core.vk.util.VkUtil;
 import org.oreon.core.vk.wrapper.buffer.VkBufferHelper;
+import org.oreon.core.vk.wrapper.buffer.VkMeshBuffer;
 import org.oreon.core.vk.wrapper.command.PrimaryCmdBuffer;
 import org.oreon.core.vk.wrapper.command.SecondaryDrawIndexedCmdBuffer;
 import org.oreon.core.vk.wrapper.image.VkImageBundle;
@@ -83,6 +85,7 @@ public class VkGUI extends GUI{
 	protected VkFrameBufferObject guiOverlayFbo;
 	
 	protected VkImageBundle fontsImageBundle;
+	protected VkMeshBuffer panelMeshBuffer;
 	
 	private PrimaryCmdBuffer guiPrimaryCmdBuffer;
 	private LinkedHashMap<String, CommandBuffer> guiSecondaryCmdBuffers;
@@ -115,6 +118,7 @@ public class VkGUI extends GUI{
 		guiSubmitInfo = new SubmitInfo();
 		guiSubmitInfo.setCommandBuffers(guiPrimaryCmdBuffer.getHandlePointer());
 		
+		// fonts Image 
 		VkImage fontsImage = VkImageHelper.loadImageFromFile(
 				device.getHandle(), memoryProperties,
 				device.getTransferCommandPool().getHandle(),
@@ -134,6 +138,11 @@ public class VkGUI extends GUI{
 				VK_SAMPLER_MIPMAP_MODE_NEAREST, 0, VK_SAMPLER_ADDRESS_MODE_REPEAT);
 		
 		fontsImageBundle = new VkImageBundle(fontsImage, fontsImageView, sampler);
+		
+		// panel mesh buffer
+		panelMeshBuffer = new VkMeshBuffer(device.getHandle(),
+				memoryProperties, device.getTransferCommandPool(), device.getTransferQueue(),
+				UIPanelLoader.load("gui/basicPanel.gui"), VertexLayout.POS2D);
 		
 		// fullscreen underlay Image resources
 		ShaderPipeline shaderPipeline = new ShaderPipeline(device.getHandle());

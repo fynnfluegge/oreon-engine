@@ -7,12 +7,10 @@ import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
 import org.oreon.core.vk.memory.VkBuffer;
 
-public class LocalBuffer extends VkBuffer{
+public class DeviceLocalBuffer extends VkBuffer{
 
-	public LocalBuffer(VkDevice device,
-			 				 VkPhysicalDeviceMemoryProperties memoryProperties,
-			 				 int size,
-			 				 int usage) {
+	public DeviceLocalBuffer(VkDevice device, VkPhysicalDeviceMemoryProperties memoryProperties,
+			int size, int usage) {
 		
 		create(device, size, VK_BUFFER_USAGE_TRANSFER_DST_BIT | usage);
 		allocateBuffer(memoryProperties, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);

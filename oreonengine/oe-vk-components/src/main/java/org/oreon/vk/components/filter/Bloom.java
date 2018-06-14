@@ -207,7 +207,7 @@ public class Bloom {
 		sceneBrightnessPipeline = new VkPipeline(device);
 		sceneBrightnessPipeline.setLayout(VkUtil.createLongBuffer(descriptorSetLayouts));
 		sceneBrightnessPipeline.createComputePipeline(new ComputeShader(device,
-				"shaders/filter/bloom/brightness.comp.spv"));
+				"shaders/filter/bloom/sceneBrightness.comp.spv"));
 		
 		sceneBrightnessCmdBuffer = new ComputeCmdBuffer(device,
 				deviceBundle.getLogicalDevice().getComputeCommandPool().getHandle(),

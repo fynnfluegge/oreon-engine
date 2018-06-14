@@ -10,24 +10,24 @@ import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.util.ResourceLoader;
 
-public class BloomBlurAdditiveBlendShader extends GLShaderProgram{
+public class BloomAdditiveBlendShader extends GLShaderProgram{
 
-	private static BloomBlurAdditiveBlendShader instance = null;
+	private static BloomAdditiveBlendShader instance = null;
 	
-	public static BloomBlurAdditiveBlendShader getInstance() 
+	public static BloomAdditiveBlendShader getInstance() 
 	{
 	    if(instance == null) 
 	    {
-	    	instance = new BloomBlurAdditiveBlendShader();
+	    	instance = new BloomAdditiveBlendShader();
 	    }
 	      return instance;
 	}
 	
-	protected BloomBlurAdditiveBlendShader()
+	protected BloomAdditiveBlendShader()
 	{
 		super();
 		
-		addComputeShader(ResourceLoader.loadShader("shaders/filter/bloom/BloomBlurAdditiveBlend_CS.glsl"));
+		addComputeShader(ResourceLoader.loadShader("shaders/filter/bloom/additiveBlend.comp"));
 		
 		compileShader();
 		

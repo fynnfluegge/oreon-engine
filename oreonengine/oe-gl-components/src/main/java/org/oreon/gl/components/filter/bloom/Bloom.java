@@ -16,9 +16,9 @@ import lombok.Getter;
 public class Bloom {
 
 	@Getter
-	private GLTexture bloomBlurSceneTexture;
+	private GLTexture bloomSceneTexture;
 	
-	private GLTexture bloomTexture;
+	private GLTexture sceneBrightnessTexture;
 	private GLTexture horizontalBloomBlurTexture_div2;
 	private GLTexture verticalBloomBlurTexture_div2;
 	private GLTexture horizontalBloomBlurTexture_div4;
@@ -29,25 +29,25 @@ public class Bloom {
 	private GLTexture verticalBloomBlurTexture_div16;
 	private GLTexture additiveBlendBloomTexture;
 	
-	private BloomShader bloomShader;
+	private SceneBrightnessShader sceneBrightnessShader;
 	private HorizontalBloomBlurShader horizontalBlurShader;
 	private VerticalBloomBlurShader verticalBlurShader;
-	private BloomBlurSceneShader bloomBlurShader;
-	private BloomBlurAdditiveBlendShader bloomBlurAdditiveBlendShader;
+	private BloomSceneShader bloomSceneShader;
+	private BloomAdditiveBlendShader additiveBlendShader;
 	
 	public Bloom(){
 		
-		bloomShader = BloomShader.getInstance();
-		bloomBlurAdditiveBlendShader = BloomBlurAdditiveBlendShader.getInstance();
+		sceneBrightnessShader = SceneBrightnessShader.getInstance();
+		additiveBlendShader = BloomAdditiveBlendShader.getInstance();
 		horizontalBlurShader = HorizontalBloomBlurShader.getInstance();
 		verticalBlurShader = VerticalBloomBlurShader.getInstance();
-		bloomBlurShader = BloomBlurSceneShader.getInstance();
+		bloomSceneShader = BloomSceneShader.getInstance();
 		
-		bloomTexture = new Texture2DBilinearFilterRGBA16F(EngineContext.getWindow().getWidth(),
+		sceneBrightnessTexture = new Texture2DBilinearFilterRGBA16F(EngineContext.getWindow().getWidth(),
 				EngineContext.getWindow().getHeight());
-		bloomTexture.bind();
-		bloomTexture.clampToEdge();
-		bloomTexture.unbind();
+		sceneBrightnessTexture.bind();
+		sceneBrightnessTexture.clampToEdge();
+		sceneBrightnessTexture.unbind();
 		
 		additiveBlendBloomTexture = new Texture2DBilinearFilterRGBA16F(EngineContext.getWindow().getWidth(),
 				EngineContext.getWindow().getHeight());
@@ -55,11 +55,11 @@ public class Bloom {
 		additiveBlendBloomTexture.clampToEdge();
 		additiveBlendBloomTexture.unbind();
 		
-		bloomBlurSceneTexture = new Texture2DBilinearFilterRGBA16F(EngineContext.getWindow().getWidth(),
+		bloomSceneTexture = new Texture2DBilinearFilterRGBA16F(EngineContext.getWindow().getWidth(),
 						EngineContext.getWindow().getHeight());
-		bloomBlurSceneTexture.bind();
-		bloomBlurSceneTexture.clampToEdge();
-		bloomBlurSceneTexture.unbind();
+		bloomSceneTexture.bind();
+		bloomSceneTexture.clampToEdge();
+		bloomSceneTexture.unbind();
 		
 		horizontalBloomBlurTexture_div2 = new Texture2DBilinearFilterRGBA16F(EngineContext.getWindow().getWidth()/2,
 				EngineContext.getWindow().getHeight()/2);
@@ -112,15 +112,15 @@ public class Bloom {
 	
 	public void render(GLTexture sceneSampler) {
 				
-		bloomShader.bind();
+		sceneBrightnessShader.bind();
 		glBindImageTexture(0, sceneSampler.getHandle(), 0, false, 0, GL_READ_ONLY, GL_RGBA16F);
-		glBindImageTexture(1, bloomTexture.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
+		glBindImageTexture(1, sceneBrightnessTexture.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
 		glDispatchCompute(EngineContext.getWindow().getWidth()/8, EngineContext.getWindow().getHeight()/8, 1);	
 		glFinish();
 		
 		horizontalBlurShader.bind();
 		glBindImageTexture(0, horizontalBloomBlurTexture_div2.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
-		horizontalBlurShader.updateUniforms(bloomTexture, EngineContext.getWindow().getWidth()/2, EngineContext.getWindow().getHeight()/2);
+		horizontalBlurShader.updateUniforms(sceneBrightnessTexture, EngineContext.getWindow().getWidth()/2, EngineContext.getWindow().getHeight()/2);
 		glDispatchCompute(EngineContext.getWindow().getWidth()/16, EngineContext.getWindow().getHeight()/16, 1);	
 		glFinish();
 		
@@ -132,7 +132,7 @@ public class Bloom {
 		
 		horizontalBlurShader.bind();
 		glBindImageTexture(0, horizontalBloomBlurTexture_div4.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
-		horizontalBlurShader.updateUniforms(bloomTexture, EngineContext.getWindow().getWidth()/4, EngineContext.getWindow().getHeight()/4);
+		horizontalBlurShader.updateUniforms(sceneBrightnessTexture, EngineContext.getWindow().getWidth()/4, EngineContext.getWindow().getHeight()/4);
 		glDispatchCompute(EngineContext.getWindow().getWidth()/32, EngineContext.getWindow().getHeight()/32, 1);	
 		glFinish();
 		
@@ -144,7 +144,7 @@ public class Bloom {
 		
 		horizontalBlurShader.bind();
 		glBindImageTexture(0, horizontalBloomBlurTexture_div8.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
-		horizontalBlurShader.updateUniforms(bloomTexture, EngineContext.getWindow().getWidth()/8, EngineContext.getWindow().getHeight()/8);
+		horizontalBlurShader.updateUniforms(sceneBrightnessTexture, EngineContext.getWindow().getWidth()/8, EngineContext.getWindow().getHeight()/8);
 		glDispatchCompute(EngineContext.getWindow().getWidth()/64, EngineContext.getWindow().getHeight()/64, 1);	
 		glFinish();
 		
@@ -156,7 +156,7 @@ public class Bloom {
 		
 		horizontalBlurShader.bind();
 		glBindImageTexture(0, horizontalBloomBlurTexture_div16.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
-		horizontalBlurShader.updateUniforms(bloomTexture, EngineContext.getWindow().getWidth()/16, EngineContext.getWindow().getHeight()/16);
+		horizontalBlurShader.updateUniforms(sceneBrightnessTexture, EngineContext.getWindow().getWidth()/16, EngineContext.getWindow().getHeight()/16);
 		glDispatchCompute(EngineContext.getWindow().getWidth()/128, EngineContext.getWindow().getHeight()/128, 1);	
 		glFinish();
 		
@@ -166,9 +166,9 @@ public class Bloom {
 		glDispatchCompute(EngineContext.getWindow().getWidth()/128, EngineContext.getWindow().getHeight()/128, 1);	
 		glFinish();
 		
-		bloomBlurAdditiveBlendShader.bind();
+		additiveBlendShader.bind();
 		glBindImageTexture(0, additiveBlendBloomTexture.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
-		bloomBlurAdditiveBlendShader.updateUniforms(verticalBloomBlurTexture_div2,
+		additiveBlendShader.updateUniforms(verticalBloomBlurTexture_div2,
 													verticalBloomBlurTexture_div4,
 													verticalBloomBlurTexture_div8,
 													verticalBloomBlurTexture_div16,
@@ -177,10 +177,10 @@ public class Bloom {
 		glDispatchCompute(EngineContext.getWindow().getWidth()/8, EngineContext.getWindow().getHeight()/8, 1);	
 		glFinish();
 		
-		bloomBlurShader.bind();
+		bloomSceneShader.bind();
 		glBindImageTexture(0, sceneSampler.getHandle(), 0, false, 0, GL_READ_ONLY, GL_RGBA16F);
 		glBindImageTexture(1, additiveBlendBloomTexture.getHandle(), 0, false, 0, GL_READ_ONLY, GL_RGBA16F);
-		glBindImageTexture(2, bloomBlurSceneTexture.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
+		glBindImageTexture(2, bloomSceneTexture.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
 		glDispatchCompute(EngineContext.getWindow().getWidth()/8, EngineContext.getWindow().getHeight()/8, 1);	
 		glFinish();
 	}

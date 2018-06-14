@@ -93,9 +93,9 @@ public class GLRenderEngine extends RenderEngine{
 	private boolean renderSampleCoverageMask = false;
 	private boolean renderDeferredLightingScene = false;
 	private boolean renderSSAOBuffer = false;
-	private boolean renderFXAA = true;
-	private boolean renderPostProcessingEffects = true;
-	private boolean renderSSAO = true;
+	private boolean renderFXAA = false;
+	private boolean renderPostProcessingEffects = false;
+	private boolean renderSSAO = false;
 	
 	@Override
 	public void init() {
@@ -185,8 +185,10 @@ public class GLRenderEngine extends RenderEngine{
 		deferredLighting.getFbo().unbind();
 		
 		// render screen space ambient occlusion
-		ssao.render(deferredLighting.getGbuffer().getWorldPositionTexture(),
-					deferredLighting.getGbuffer().getNormalTexture());
+		if (renderSSAO){
+			ssao.render(deferredLighting.getGbuffer().getWorldPositionTexture(),
+						deferredLighting.getGbuffer().getNormalTexture());
+		}
 		
 		// render post processing sample coverage mask
 		msaa.renderSampleCoverageMask(deferredLighting.getGbuffer().getWorldPositionTexture(),
@@ -223,7 +225,7 @@ public class GLRenderEngine extends RenderEngine{
 		
 		// update Terrain Quadtree
 		if (camera.isCameraMoved()){
-			if (sceneGraph.isRenderTerrain()){
+			if (sceneGraph.hasTerrain()){
 				((GLTerrain) sceneGraph.getTerrain()).getQuadtree().signal();
 			}
 		}
@@ -256,7 +258,7 @@ public class GLRenderEngine extends RenderEngine{
 			
 			// Bloom
 			bloom.render(postProcessingTexture);
-			postProcessingTexture = bloom.getBloomBlurSceneTexture();
+			postProcessingTexture = bloom.getBloomSceneTexture();
 			
 			// Motion Blur
 			if (doMotionBlur){
@@ -438,7 +440,7 @@ public class GLRenderEngine extends RenderEngine{
 		
 		contrastController.update();
 		
-		if (sceneGraph.isRenderTerrain()){
+		if (sceneGraph.hasTerrain()){
 			TerrainPicking.getInstance().getTerrainPosition();
 		}
 	}
@@ -448,7 +450,7 @@ public class GLRenderEngine extends RenderEngine{
 		super.shutdown();
 		
 		instancingObjectHandler.signalAll();
-		if (sceneGraph.isRenderTerrain()){
+		if (sceneGraph.hasTerrain()){
 			((GLTerrain) sceneGraph.getTerrain()).getQuadtree().signal();
 		}
 	}

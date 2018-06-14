@@ -1,7 +1,6 @@
 package org.oreon.common.ui;
 
 import org.oreon.core.math.Matrix4f;
-import org.oreon.core.model.Mesh;
 import org.oreon.core.scenegraph.Renderable;
 
 import lombok.Getter;
@@ -12,7 +11,6 @@ import lombok.Setter;
 public abstract class UIElement extends Renderable{
 
 	protected Matrix4f orthographicMatrix;
-	protected Mesh panel;
 	
 	public UIElement(int xPos, int yPos, int xScaling, int yScaling){
 		super();

@@ -17,7 +17,7 @@ public class VkBufferHelper {
 			long commandPool, VkQueue queue, ByteBuffer dataBuffer, int usage){
 
 		StagingBuffer stagingBuffer = new StagingBuffer(device, memoryProperties, dataBuffer);
-		LocalBuffer deviceLocalBuffer = new LocalBuffer(device, memoryProperties,
+		DeviceLocalBuffer deviceLocalBuffer = new DeviceLocalBuffer(device, memoryProperties,
 							dataBuffer.limit(), usage);
 		
 		BufferCopyCmdBuffer bufferCopyCommand = new BufferCopyCmdBuffer(device, commandPool);

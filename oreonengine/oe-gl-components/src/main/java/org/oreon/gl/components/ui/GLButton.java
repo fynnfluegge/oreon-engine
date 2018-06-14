@@ -15,6 +15,7 @@ import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.gl.wrapper.parameter.Default;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.math.Vec4f;
+import org.oreon.core.model.Mesh;
 
 public abstract class GLButton extends UIButton{
 
@@ -26,21 +27,22 @@ public abstract class GLButton extends UIButton{
 	private boolean onClick = false;
 	private Vec2f[] pos;
 	
-	public GLButton(int xPos, int yPos, int xScaling, int yScaling){
+	public GLButton(int xPos, int yPos, int xScaling, int yScaling,
+			Mesh panelMesh){
 		super(xPos, yPos, xScaling, yScaling);
 		pos = new Vec2f[4];
-		shader = UIShader.getInstance();
+		shader = UITextPanelShader.getInstance();
 		vao = new GUIVAO();
 		config = new Default();
-		vao.addData(panel);
+		vao.addData(panelMesh);
 		Vec4f q0 = new Vec4f(0,0,0,0);
 		Vec4f q1 = new Vec4f(0,0,0,0);
 		Vec4f q2 = new Vec4f(0,0,0,0);
 		Vec4f q3 = new Vec4f(0,0,0,0);
-		q0 = getWorldTransform().getWorldMatrix().mul(new Vec4f(panel.getVertices()[0].getPosition(),1));
-		q1 = getWorldTransform().getWorldMatrix().mul(new Vec4f(panel.getVertices()[1].getPosition(),1));
-		q2 = getWorldTransform().getWorldMatrix().mul(new Vec4f(panel.getVertices()[2].getPosition(),1));
-		q3 = getWorldTransform().getWorldMatrix().mul(new Vec4f(panel.getVertices()[3].getPosition(),1));
+		q0 = getWorldTransform().getWorldMatrix().mul(new Vec4f(panelMesh.getVertices()[0].getPosition(),1));
+		q1 = getWorldTransform().getWorldMatrix().mul(new Vec4f(panelMesh.getVertices()[1].getPosition(),1));
+		q2 = getWorldTransform().getWorldMatrix().mul(new Vec4f(panelMesh.getVertices()[2].getPosition(),1));
+		q3 = getWorldTransform().getWorldMatrix().mul(new Vec4f(panelMesh.getVertices()[3].getPosition(),1));
 		pos[0] = new Vec2f(q0.getX(),q0.getY()+5);
 		pos[1] = new Vec2f(q1.getX(),q1.getY()+5);
 		pos[2] = new Vec2f(q2.getX()-7,q2.getY()-5);

@@ -13,8 +13,9 @@ import lombok.extern.log4j.Log4j;
 @Log4j
 public abstract class UITextPanel extends UIElement{
 	
-	private int numFonts;
+	protected Mesh panel;
 	protected String outputText;
+	private int numFonts;
 	
 	public UITextPanel(String text, int xPos, int yPos, int xScaling, int yScaling) {
 		super(xPos, yPos, xScaling, yScaling);

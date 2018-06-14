@@ -61,7 +61,7 @@ public class UIPanelLoader {
 				int[] indexData = Util.toIntArray(objectArray);
 			
 				Mesh mesh = new Mesh(vertexData, indexData);
-				mesh.setVertexLayout(VertexLayout.POS);
+				mesh.setVertexLayout(VertexLayout.POS_UV);
 				
 				return mesh;
 			}

@@ -319,7 +319,6 @@ public class BufferUtil {
 				layout == VertexLayout.POS_UV ||
 				layout == VertexLayout.POS_NORMAL_UV_TAN_BITAN ||
 				layout == VertexLayout.POS2D_UV){
-				
 				floatBuffer.put(vertices[i].getUVCoord().getX());
 				floatBuffer.put(vertices[i].getUVCoord().getY());
 			}
