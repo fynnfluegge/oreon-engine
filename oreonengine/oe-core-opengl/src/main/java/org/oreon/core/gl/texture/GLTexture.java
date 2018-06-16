@@ -1,7 +1,9 @@
 package org.oreon.core.gl.texture;
 
+import static org.lwjgl.opengl.EXTDirectStateAccess.glTextureParameteriEXT;
 import static org.lwjgl.opengl.EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT;
 import static org.lwjgl.opengl.EXTTextureFilterAnisotropic.GL_TEXTURE_MAX_ANISOTROPY_EXT;
+import static org.lwjgl.opengl.EXTTextureMirrorClamp.GL_MIRROR_CLAMP_TO_EDGE_EXT;
 import static org.lwjgl.opengl.GL11.GL_LINEAR;
 import static org.lwjgl.opengl.GL11.GL_LINEAR_MIPMAP_LINEAR;
 import static org.lwjgl.opengl.GL11.GL_NEAREST;
@@ -27,8 +29,8 @@ import static org.lwjgl.opengl.GL42.glTexStorage3D;
 import java.nio.ByteBuffer;
 
 import org.lwjgl.opengl.GL;
-import org.oreon.core.image.ImageMetaData;
 import org.oreon.core.image.Image;
+import org.oreon.core.image.ImageMetaData;
 
 import lombok.Getter;
 
@@ -105,7 +107,7 @@ public class GLTexture extends Image{
 			glTexParameterf(target, GL_TEXTURE_MAX_ANISOTROPY_EXT, maxfilterLevel);
 		}
 		else{
-			System.out.println("anisotropic not supported");
+			System.err.println("anisotropic not supported");
 		}
 	}
 	
@@ -119,6 +121,29 @@ public class GLTexture extends Image{
 		
 		glTexParameteri(target, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTexParameteri(target, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	}
+	
+	public void mirrorRepeat(){
+		
+		if (GL.getCapabilities().GL_EXT_texture_mirror_clamp){
+			glTexParameteri(target, GL_TEXTURE_WRAP_S, GL_MIRROR_CLAMP_TO_EDGE_EXT);
+			glTexParameteri(target, GL_TEXTURE_WRAP_T, GL_MIRROR_CLAMP_TO_EDGE_EXT);
+		}
+		else{
+			System.err.println("texture mirror not supported");
+		}
+	}
+	
+	public void clampToEdgeDirectAccessEXT(){
+		
+		glTextureParameteriEXT(handle, target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTextureParameteriEXT(handle, target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	}
+	
+	public void mirrorRepeatDirectAccessEXT(){
+		
+		glTextureParameteriEXT(handle, target, GL_TEXTURE_WRAP_S, GL_MIRROR_CLAMP_TO_EDGE_EXT);
+		glTextureParameteriEXT(handle, target, GL_TEXTURE_WRAP_T, GL_MIRROR_CLAMP_TO_EDGE_EXT);
 	}
 	
 	public void allocateImage2D(int internalFormat, int format, int type, ByteBuffer data){

@@ -46,67 +46,67 @@ public class Bloom {
 		sceneBrightnessTexture = new Texture2DBilinearFilterRGBA16F(EngineContext.getWindow().getWidth(),
 				EngineContext.getWindow().getHeight());
 		sceneBrightnessTexture.bind();
-		sceneBrightnessTexture.clampToEdge();
+		sceneBrightnessTexture.mirrorRepeat();
 		sceneBrightnessTexture.unbind();
 		
 		additiveBlendBloomTexture = new Texture2DBilinearFilterRGBA16F(EngineContext.getWindow().getWidth(),
 				EngineContext.getWindow().getHeight());
 		additiveBlendBloomTexture.bind();
-		additiveBlendBloomTexture.clampToEdge();
+		additiveBlendBloomTexture.mirrorRepeat();
 		additiveBlendBloomTexture.unbind();
 		
 		bloomSceneTexture = new Texture2DBilinearFilterRGBA16F(EngineContext.getWindow().getWidth(),
 						EngineContext.getWindow().getHeight());
 		bloomSceneTexture.bind();
-		bloomSceneTexture.clampToEdge();
+		bloomSceneTexture.mirrorRepeat();
 		bloomSceneTexture.unbind();
 		
 		horizontalBloomBlurTexture_div2 = new Texture2DBilinearFilterRGBA16F(EngineContext.getWindow().getWidth()/2,
 				EngineContext.getWindow().getHeight()/2);
 		horizontalBloomBlurTexture_div2.bind();
-		horizontalBloomBlurTexture_div2.clampToEdge();
+		horizontalBloomBlurTexture_div2.clampToEdgeDirectAccessEXT();
 		horizontalBloomBlurTexture_div2.unbind();
 		
 		verticalBloomBlurTexture_div2 = new Texture2DBilinearFilterRGBA16F(EngineContext.getWindow().getWidth()/2,
 				EngineContext.getWindow().getHeight()/2);
 		verticalBloomBlurTexture_div2.bind();
-		verticalBloomBlurTexture_div2.clampToEdge();
+		verticalBloomBlurTexture_div2.clampToEdgeDirectAccessEXT();
 		verticalBloomBlurTexture_div2.unbind();
 		
 		horizontalBloomBlurTexture_div4 = new Texture2DBilinearFilterRGBA16F(EngineContext.getWindow().getWidth()/4,
 				EngineContext.getWindow().getHeight()/4);
 		horizontalBloomBlurTexture_div4.bind();
-		horizontalBloomBlurTexture_div4.clampToEdge();
+		horizontalBloomBlurTexture_div4.clampToEdgeDirectAccessEXT();
 		horizontalBloomBlurTexture_div4.unbind();
 		
 		verticalBloomBlurTexture_div4 = new Texture2DBilinearFilterRGBA16F(EngineContext.getWindow().getWidth()/4,
 				EngineContext.getWindow().getHeight()/4);
 		verticalBloomBlurTexture_div4.bind();
-		verticalBloomBlurTexture_div4.clampToEdge();
+		verticalBloomBlurTexture_div4.clampToEdgeDirectAccessEXT();
 		verticalBloomBlurTexture_div4.unbind();
 		
 		horizontalBloomBlurTexture_div8 = new Texture2DBilinearFilterRGBA16F(EngineContext.getWindow().getWidth()/8,
 				EngineContext.getWindow().getHeight()/8);
 		horizontalBloomBlurTexture_div8.bind();
-		horizontalBloomBlurTexture_div8.clampToEdge();
+		horizontalBloomBlurTexture_div8.mirrorRepeatDirectAccessEXT();
 		horizontalBloomBlurTexture_div8.unbind();
 		
 		verticalBloomBlurTexture_div8 = new Texture2DBilinearFilterRGBA16F(EngineContext.getWindow().getWidth()/8,
 				EngineContext.getWindow().getHeight()/8);
 		verticalBloomBlurTexture_div8.bind();
-		verticalBloomBlurTexture_div8.clampToEdge();
+		verticalBloomBlurTexture_div8.mirrorRepeatDirectAccessEXT();
 		verticalBloomBlurTexture_div8.unbind();
 		
 		horizontalBloomBlurTexture_div16 = new Texture2DBilinearFilterRGBA16F(EngineContext.getWindow().getWidth()/16,
 				EngineContext.getWindow().getHeight()/16);
 		horizontalBloomBlurTexture_div16.bind();
-		horizontalBloomBlurTexture_div16.clampToEdge();
+		horizontalBloomBlurTexture_div16.mirrorRepeatDirectAccessEXT();
 		horizontalBloomBlurTexture_div16.unbind();
 		
 		verticalBloomBlurTexture_div16 = new Texture2DBilinearFilterRGBA16F(EngineContext.getWindow().getWidth()/16,
 				EngineContext.getWindow().getHeight()/16);
 		verticalBloomBlurTexture_div16.bind();
-		verticalBloomBlurTexture_div16.clampToEdge();
+		verticalBloomBlurTexture_div16.mirrorRepeatDirectAccessEXT();
 		verticalBloomBlurTexture_div16.unbind();
 	}
 	
