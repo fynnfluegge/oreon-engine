@@ -21,6 +21,7 @@ import static org.lwjgl.opengl.GL11.glTexImage2D;
 import static org.lwjgl.opengl.GL11.glTexParameterf;
 import static org.lwjgl.opengl.GL11.glTexParameteri;
 import static org.lwjgl.opengl.GL12.GL_CLAMP_TO_EDGE;
+import static org.lwjgl.opengl.GL14.GL_MIRRORED_REPEAT;
 import static org.lwjgl.opengl.GL30.glGenerateMipmap;
 import static org.lwjgl.opengl.GL32.glTexImage2DMultisample;
 import static org.lwjgl.opengl.GL42.glTexStorage2D;
@@ -123,7 +124,13 @@ public class GLTexture extends Image{
 		glTexParameteri(target, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	}
 	
-	public void mirrorRepeat(){
+	public void mirroredRepeat(){
+		
+		glTexParameteri(target, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+		glTexParameteri(target, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+	}
+	
+	public void mirrorRepeatEXT(){
 		
 		if (GL.getCapabilities().GL_EXT_texture_mirror_clamp){
 			glTexParameteri(target, GL_TEXTURE_WRAP_S, GL_MIRROR_CLAMP_TO_EDGE_EXT);
