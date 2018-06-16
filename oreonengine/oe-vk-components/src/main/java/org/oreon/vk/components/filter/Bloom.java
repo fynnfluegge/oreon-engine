@@ -37,13 +37,10 @@ import org.oreon.core.vk.wrapper.image.Image2DDeviceLocal;
 import org.oreon.core.vk.wrapper.image.VkImageBundle;
 import org.oreon.core.vk.wrapper.shader.ComputeShader;
 
-import lombok.Getter;
-
 public class Bloom {
 
 	private VkQueue queue;
 	
-	@Getter
 	private VkImageBundle bloomSceneImageBundle;
 	private VkImageBundle additiveBlendImageBundle;
 	private VkImageBundle sceneBrightnessImageBundle;
@@ -805,6 +802,10 @@ public class Bloom {
 		
 		verticalBloomBlurImageBundle_div16 = new VkImageBundle(verticalBloomBlurImage_div16,
 				verticalBloomBlurImageView_div16);
+	}
+	
+	public VkImageView getBloomSceneImageView(){
+		return bloomSceneImageBundle.getImageView();
 	}
 	
 }

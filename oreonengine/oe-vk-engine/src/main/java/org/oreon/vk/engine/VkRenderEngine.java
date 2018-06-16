@@ -1,22 +1,19 @@
 package org.oreon.vk.engine;
 
 import static org.lwjgl.glfw.GLFWVulkan.glfwCreateWindowSurface;
-import static org.lwjgl.glfw.GLFWVulkan.glfwVulkanSupported;
 import static org.lwjgl.system.MemoryUtil.memAllocLong;
-import static org.lwjgl.system.MemoryUtil.memUTF8;
 import static org.lwjgl.vulkan.KHRSwapchain.vkDestroySwapchainKHR;
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_STORAGE_IMAGE;
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
+import static org.lwjgl.vulkan.VK10.vkDeviceWaitIdle;
 import static org.lwjgl.vulkan.VK10.vkQueueWaitIdle;
 
-import java.nio.ByteBuffer;
 import java.nio.LongBuffer;
 import java.util.LinkedHashMap;
 
-import org.lwjgl.PointerBuffer;
 import org.lwjgl.vulkan.VkInstance;
 import org.oreon.core.context.EngineContext;
 import org.oreon.core.scenegraph.NodeComponentType;
@@ -27,11 +24,11 @@ import org.oreon.core.vk.command.CommandBuffer;
 import org.oreon.core.vk.command.SubmitInfo;
 import org.oreon.core.vk.context.DeviceManager.DeviceType;
 import org.oreon.core.vk.context.VkContext;
-import org.oreon.core.vk.context.VulkanInstance;
 import org.oreon.core.vk.descriptor.DescriptorPool;
 import org.oreon.core.vk.device.LogicalDevice;
 import org.oreon.core.vk.device.PhysicalDevice;
 import org.oreon.core.vk.device.VkDeviceBundle;
+import org.oreon.core.vk.image.VkImageView;
 import org.oreon.core.vk.scenegraph.VkRenderInfo;
 import org.oreon.core.vk.swapchain.SwapChain;
 import org.oreon.core.vk.util.VkUtil;
@@ -66,7 +63,7 @@ public class VkRenderEngine extends RenderEngine{
 	// uniform buffers
 	private VkUniformBuffer renderStateUbo;
 
-	private SampleCoverageMask sampleCoverageMask;
+	private SampleCoverage sampleCoverageMask;
 	private DeferredLighting deferredLighting;
 	private FXAA fxaa;
 	private OpaqueTransparencyBlending opaqueTransparencyBlending;
@@ -78,12 +75,6 @@ public class VkRenderEngine extends RenderEngine{
 	@Setter
 	private VkGUI gui;
 	
-	private ByteBuffer[] layers = {
-	            	memUTF8("VK_LAYER_LUNARG_standard_validation"),
-				};
-	private final boolean validationEnabled = true;
-	private PointerBuffer ppEnabledLayerNames;
-	
 	@Override
 	public void init() {
 		
@@ -94,16 +85,7 @@ public class VkRenderEngine extends RenderEngine{
 		offScreenSecondaryCmdBuffers = new LinkedHashMap<String, CommandBuffer>();
 		transparencySecondaryCmdBuffers = new LinkedHashMap<String, CommandBuffer>();
 		
-		if (!glfwVulkanSupported()) {
-	            throw new AssertionError("GLFW failed to find the Vulkan loader");
-	        }
-        
-        ppEnabledLayerNames = VkUtil.getValidationLayerNames(validationEnabled, layers);
-        
-        VulkanInstance vulkanInstance = new VulkanInstance(ppEnabledLayerNames);
-        VkContext.registerObject(vulkanInstance);
-        
-        vkInstance = vulkanInstance.getHandle();
+        vkInstance = VkContext.getVulkanInstance().getHandle();
        
         LongBuffer pSurface = memAllocLong(1);
 	    int err = glfwCreateWindowSurface(vkInstance, EngineContext.getWindow().getId(), null, pSurface);
@@ -114,7 +96,7 @@ public class VkRenderEngine extends RenderEngine{
 	    }
 	    
         PhysicalDevice physicalDevice = new PhysicalDevice(vkInstance, surface);
-	    LogicalDevice logicalDevice = new LogicalDevice(physicalDevice, 0, ppEnabledLayerNames);
+	    LogicalDevice logicalDevice = new LogicalDevice(physicalDevice, 0);
 	    majorDevice = new VkDeviceBundle(physicalDevice, logicalDevice);
 	    VkContext.getDeviceManager().addDevice(DeviceType.MAJOR_GRAPHICS_DEVICE, majorDevice);
 	    
@@ -146,11 +128,11 @@ public class VkRenderEngine extends RenderEngine{
 	    transparencySubmitInfo = new SubmitInfo();
 	    transparencySubmitInfo.setCommandBuffers(transparencyPrimaryCmdBuffer.getHandlePointer());
 
-	    VkContext.getRenderState().setOffScreenFbo(offScreenFbo);
-	    VkContext.getRenderState().setOffScreenReflectionFbo(reflectionFbo);
-	    VkContext.getRenderState().setTransparencyFbo(transparencyFbo);
+	    VkContext.getResources().setOffScreenFbo(offScreenFbo);
+	    VkContext.getResources().setOffScreenReflectionFbo(reflectionFbo);
+	    VkContext.getResources().setTransparencyFbo(transparencyFbo);
 	    
-	    sampleCoverageMask = new SampleCoverageMask(majorDevice,
+	    sampleCoverageMask = new SampleCoverage(majorDevice,
 	    		EngineContext.getConfig().getX_ScreenResolution(),
 	    		EngineContext.getConfig().getY_ScreenResolution(),
 	    		offScreenFbo.getAttachmentImageView(Attachment.POSITION),
@@ -175,44 +157,54 @@ public class VkRenderEngine extends RenderEngine{
 	    		transparencyFbo.getAttachmentImageView(Attachment.DEPTH),
 	    		transparencyFbo.getAttachmentImageView(Attachment.ALPHA),
 	    		transparencyFbo.getAttachmentImageView(Attachment.LIGHT_SCATTERING));
-
-	    fxaa = new FXAA(majorDevice,
-	    		EngineContext.getConfig().getX_ScreenResolution(),
-	    		EngineContext.getConfig().getY_ScreenResolution(),
-	    		opaqueTransparencyBlending.getColorAttachment());
 	    
-	    bloom = new Bloom(majorDevice,
-	    		EngineContext.getConfig().getX_ScreenResolution(),
-	    		EngineContext.getConfig().getY_ScreenResolution(),
-	    		fxaa.getFxaaImageView());
+	    VkImageView displayImageView = opaqueTransparencyBlending.getColorAttachment();
+
+	    if (EngineContext.getConfig().isFxaaEnabled()){
+		    fxaa = new FXAA(majorDevice,
+		    		EngineContext.getConfig().getX_ScreenResolution(),
+		    		EngineContext.getConfig().getY_ScreenResolution(),
+		    		displayImageView);
+		    
+		    displayImageView = fxaa.getFxaaImageView();
+	    }
+	    
+	    if (EngineContext.getConfig().isBloomEnabled()){
+		    bloom = new Bloom(majorDevice,
+		    		EngineContext.getConfig().getX_ScreenResolution(),
+		    		EngineContext.getConfig().getY_ScreenResolution(),
+		    		displayImageView);
+		    
+		    displayImageView = bloom.getBloomSceneImageView();
+	    }
 	    
 	    if (gui != null){
-			gui.init(bloom.getBloomSceneImageBundle().getImageView());
+			gui.init(displayImageView);
+			displayImageView = gui.getImageView();
 		}
 	    
-	    swapChain = new SwapChain(logicalDevice, physicalDevice, surface,
-	    		gui.getGuiOverlayFbo().getAttachmentImageView(Attachment.COLOR).getHandle());
+	    swapChain = new SwapChain(logicalDevice, physicalDevice, surface, displayImageView.getHandle());
 	}
     
 	@Override
 	public void render() {
 		
 		sceneGraph.render();
+		offScreenRenderList.setChanged(false);
 		sceneGraph.record(offScreenRenderList);
-		
-		// TODO check if offScreenRenderList changed, 
-		// if and only if changed rearrange commandBuffers 
-		for (String key : offScreenRenderList.getKeySet()) {
-			
-			if(!offScreenSecondaryCmdBuffers.containsKey(key)){
-				VkRenderInfo mainRenderInfo = offScreenRenderList.get(key)
-						.getComponent(NodeComponentType.MAIN_RENDERINFO);
-				offScreenSecondaryCmdBuffers.put(key, mainRenderInfo.getCommandBuffer());
+
+		// record new primary Command Buffer if renderList has changed
+		if (offScreenRenderList.hasChanged()){		
+			offScreenSecondaryCmdBuffers.clear();
+			for (String key : offScreenRenderList.getKeySet()) {
+				if(!offScreenSecondaryCmdBuffers.containsKey(key)){
+					VkRenderInfo mainRenderInfo = offScreenRenderList.get(key)
+							.getComponent(NodeComponentType.MAIN_RENDERINFO);
+					offScreenSecondaryCmdBuffers.put(key, mainRenderInfo.getCommandBuffer());
+				}
 			}
-		}
 		
-		// primary render command buffer
-		if (!offScreenRenderList.getObjectList().isEmpty()){
+			// primary render command buffer
 			offScreenPrimaryCmdBuffer.reset();
 			offScreenPrimaryCmdBuffer.record(offScreenFbo.getRenderPass().getHandle(),
 					offScreenFbo.getFrameBuffer().getHandle(),
@@ -221,9 +213,9 @@ public class VkRenderEngine extends RenderEngine{
 					offScreenFbo.getColorAttachmentCount(),
 					offScreenFbo.getDepthAttachment(),
 					VkUtil.createPointerBuffer(offScreenSecondaryCmdBuffers.values()));
-			
-			offScreenSubmitInfo.submit(majorDevice.getLogicalDevice().getGraphicsQueue());
 		}
+		
+		offScreenSubmitInfo.submit(majorDevice.getLogicalDevice().getGraphicsQueue());
 		vkQueueWaitIdle(majorDevice.getLogicalDevice().getGraphicsQueue());
 		
 		sampleCoverageMask.render();
@@ -231,20 +223,20 @@ public class VkRenderEngine extends RenderEngine{
 		deferredLighting.render();
 		vkQueueWaitIdle(majorDevice.getLogicalDevice().getComputeQueue());
 		
+		transparencyRenderList.setChanged(false);
 		sceneGraph.recordTransparentObjects(transparencyRenderList);
 		
-		for (String key : transparencyRenderList.getKeySet()) {
-
-			if(!transparencySecondaryCmdBuffers.containsKey(key)){
-				
-				VkRenderInfo mainRenderInfo = transparencyRenderList.get(key)
-						.getComponent(NodeComponentType.MAIN_RENDERINFO);
-				transparencySecondaryCmdBuffers.put(key, mainRenderInfo.getCommandBuffer());
+		if (transparencyRenderList.hasChanged()){
+			transparencySecondaryCmdBuffers.clear();
+			for (String key : transparencyRenderList.getKeySet()) {
+				if(!transparencySecondaryCmdBuffers.containsKey(key)){
+					VkRenderInfo mainRenderInfo = transparencyRenderList.get(key)
+							.getComponent(NodeComponentType.MAIN_RENDERINFO);
+					transparencySecondaryCmdBuffers.put(key, mainRenderInfo.getCommandBuffer());
+				}
 			}
-		}
 		
-		// primary render command buffer
-		if (!transparencyRenderList.getObjectList().isEmpty()){
+			// primary render command buffer
 			transparencyPrimaryCmdBuffer.reset();
 			transparencyPrimaryCmdBuffer.record(transparencyFbo.getRenderPass().getHandle(),
 					transparencyFbo.getFrameBuffer().getHandle(),
@@ -253,22 +245,29 @@ public class VkRenderEngine extends RenderEngine{
 					transparencyFbo.getColorAttachmentCount(),
 					transparencyFbo.getDepthAttachment(),
 					VkUtil.createPointerBuffer(transparencySecondaryCmdBuffers.values()));
-			
-			transparencySubmitInfo.submit(majorDevice.getLogicalDevice().getGraphicsQueue());
 		}
+		
+		transparencySubmitInfo.submit(majorDevice.getLogicalDevice().getGraphicsQueue());
 		vkQueueWaitIdle(majorDevice.getLogicalDevice().getGraphicsQueue());
 		
 		opaqueTransparencyBlending.render();
 		vkQueueWaitIdle(majorDevice.getLogicalDevice().getGraphicsQueue());
 		
-		fxaa.render();
-		vkQueueWaitIdle(majorDevice.getLogicalDevice().getComputeQueue());
+		if (EngineContext.getConfig().isFxaaEnabled()){
+			fxaa.render();
+			vkQueueWaitIdle(majorDevice.getLogicalDevice().getComputeQueue());
+		}
 		
-		bloom.render();
-		vkQueueWaitIdle(majorDevice.getLogicalDevice().getComputeQueue());
+		if (EngineContext.getConfig().isBloomEnabled()){
+			bloom.render();
+			vkQueueWaitIdle(majorDevice.getLogicalDevice().getComputeQueue());
+		}
 		
-		gui.render();
+		if (gui != null){
+			gui.render();
+		}
 		
+		vkQueueWaitIdle(majorDevice.getLogicalDevice().getGraphicsQueue());
 		swapChain.draw(majorDevice.getLogicalDevice().getGraphicsQueue());
 	}
 
@@ -286,8 +285,7 @@ public class VkRenderEngine extends RenderEngine{
 		super.shutdown();
 		
 		// wait for queues to be finished before destroy vulkan objects
-		vkQueueWaitIdle(majorDevice.getLogicalDevice().getGraphicsQueue());
-		vkQueueWaitIdle(majorDevice.getLogicalDevice().getTransferQueue());
+		vkDeviceWaitIdle(majorDevice.getLogicalDevice().getHandle());
 		vkDestroySwapchainKHR(majorDevice.getLogicalDevice().getHandle(), swapChain.getHandle(), null);
 		swapChain.destroy();
 		EngineContext.getCamera().shutdown();

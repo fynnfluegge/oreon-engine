@@ -248,9 +248,10 @@ public class VkUtil {
     public static PointerBuffer createPointerBuffer(Collection<CommandBuffer> commandBuffers){
     	
     	if (commandBuffers.size() == 0){
-    		log.error("createPointerBuffer: commandBuffers empty");
+    		log.info("createPointerBuffer: commandBuffers empty");
+    		return null;
     	}
-		
+    	
     	PointerBuffer cmdBuffersPointer = memAllocPointer(commandBuffers.size());
 		
 		for (CommandBuffer cmdBuffer : commandBuffers){

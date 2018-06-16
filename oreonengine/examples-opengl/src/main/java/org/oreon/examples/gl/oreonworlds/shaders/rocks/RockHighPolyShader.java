@@ -75,13 +75,13 @@ public class RockHighPolyShader extends GLShaderProgram{
 		((GLInstancedCluster) object.getParentNode()).getModelMatricesBuffer().bindBufferBase(1);
 		bindUniformBlock("modelMatrices", 1);
 		
-		setUniformi("isReflection", EngineContext.getRenderState().isReflection() ? 1 : 0);
-		setUniformi("isRefraction", EngineContext.getRenderState().isRefraction() ? 1 : 0);
+		setUniformi("isReflection", EngineContext.getConfig().isRenderReflection() ? 1 : 0);
+		setUniformi("isRefraction", EngineContext.getConfig().isRenderRefraction() ? 1 : 0);
 		setUniform("scalingMatrix", new Matrix4f().Scaling(object.getWorldTransform().getScaling()));
-		setUniform("clipplane", EngineContext.getRenderState().getClipplane());
+		setUniform("clipplane", EngineContext.getConfig().getClipplane());
 		
 		
-		setUniformi("isCameraUnderWater", EngineContext.getRenderState().isUnderwater() ? 1 : 0);
+		setUniformi("isCameraUnderWater", EngineContext.getConfig().isRenderUnderwater() ? 1 : 0);
 		
 		@SuppressWarnings("unchecked")
 		Material<GLTexture> material = (Material<GLTexture>) object.getComponent(NodeComponentType.MATERIAL0);
@@ -98,12 +98,12 @@ public class RockHighPolyShader extends GLShaderProgram{
 		setUniformf("material.emission", material.getEmission());
 		
 		glActiveTexture(GL_TEXTURE2);
-		GLContext.getRenderState().getUnderwaterCausticsMap().bind();
+		GLContext.getResources().getUnderwaterCausticsMap().bind();
 		setUniformi("caustics", 2);
 		glActiveTexture(GL_TEXTURE3);
-		GLContext.getRenderState().getUnderwaterDudvMap().bind();
+		GLContext.getResources().getUnderwaterDudvMap().bind();
 		setUniformi("dudvCaustics", 3);
-		setUniformf("distortionCaustics", GLContext.getRenderState().getUnderwaterDistortion());
+		setUniformf("distortionCaustics", GLContext.getResources().getUnderwaterDistortion());
 		
 		List<Integer> indices = ((InstancedCluster) object.getParentNode()).getHighPolyIndices();
 		

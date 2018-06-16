@@ -4,20 +4,20 @@ import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.util.ResourceLoader;
 
-public class SampleCoverageMaskShader extends GLShaderProgram{
+public class SampleCoverageShader extends GLShaderProgram{
 	
-	private static SampleCoverageMaskShader instance = null;
+	private static SampleCoverageShader instance = null;
 
-	public static SampleCoverageMaskShader getInstance() 
+	public static SampleCoverageShader getInstance() 
 	{
 	    if(instance == null) 
 	    {
-	    	instance = new SampleCoverageMaskShader();
+	    	instance = new SampleCoverageShader();
 	    }
 	      return instance;
 	}
 	
-	protected SampleCoverageMaskShader()
+	protected SampleCoverageShader()
 	{
 		super();
 		

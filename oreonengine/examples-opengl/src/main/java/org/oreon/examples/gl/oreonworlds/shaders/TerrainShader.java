@@ -91,9 +91,9 @@ public class TerrainShader extends GLShaderProgram{
 	{	
 		bindUniformBlock("Camera", Constants.CameraUniformBlockBinding);
 		
-		setUniform("clipplane", EngineContext.getRenderState().getClipplane());
-		setUniformi("isRefraction", EngineContext.getRenderState().isRefraction() ? 1 : 0);
-		setUniformi("isCameraUnderWater", EngineContext.getRenderState().isUnderwater() ? 1 : 0);		
+		setUniform("clipplane", EngineContext.getConfig().getClipplane());
+		setUniformi("isRefraction", EngineContext.getConfig().isRenderRefraction() ? 1 : 0);
+		setUniformi("isCameraUnderWater", EngineContext.getConfig().isRenderUnderwater() ? 1 : 0);		
 		
 		TerrainConfiguration terrConfig = object.getComponent(NodeComponentType.CONFIGURATION);
 		
@@ -132,12 +132,12 @@ public class TerrainShader extends GLShaderProgram{
 		setUniformi("waterReflectionShift", terrConfig.getWaterReflectionShift());
 		
 		glActiveTexture(GL_TEXTURE3);
-		GLContext.getRenderState().getUnderwaterCausticsMap().bind();
+		GLContext.getResources().getUnderwaterCausticsMap().bind();
 		setUniformi("caustics", 3);
 		glActiveTexture(GL_TEXTURE4);
-		GLContext.getRenderState().getUnderwaterDudvMap().bind();
+		GLContext.getResources().getUnderwaterDudvMap().bind();
 		setUniformi("dudvCaustics", 4);
-		setUniformf("distortionCaustics", GLContext.getRenderState().getUnderwaterDistortion());
+		setUniformf("distortionCaustics", GLContext.getResources().getUnderwaterDistortion());
 		
 		for (int i=0; i<8; i++){
 			setUniformi("lod_morph_area[" + i + "]", terrConfig.getLod_morphing_area()[i]);

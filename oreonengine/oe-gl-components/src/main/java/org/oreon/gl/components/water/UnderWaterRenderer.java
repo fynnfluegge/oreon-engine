@@ -37,8 +37,8 @@ public class UnderWaterRenderer {
 		dudvMap = new Texture2DTrilinearFilter("textures/water/dudv/dudv1.jpg");
 		causticsMap = new Texture2DTrilinearFilter("textures/water/caustics/caustics.jpg");
 		
-		GLContext.getRenderState().setUnderwaterCausticsMap(causticsMap);
-		GLContext.getRenderState().setUnderwaterDudvMap(dudvMap);
+		GLContext.getResources().setUnderwaterCausticsMap(causticsMap);
+		GLContext.getResources().setUnderwaterDudvMap(dudvMap);
 	}
 	
 	public void render(GLTexture sceneTexture, GLTexture sceneDepthMap) {
@@ -52,7 +52,7 @@ public class UnderWaterRenderer {
 		
 		distortion += distortion_delta;
 		
-		GLContext.getRenderState().setUnderwaterDistortion(distortion);
+		GLContext.getResources().setUnderwaterDistortion(distortion);
 	}
 
 }

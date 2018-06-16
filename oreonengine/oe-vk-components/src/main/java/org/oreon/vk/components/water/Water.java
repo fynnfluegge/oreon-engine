@@ -11,8 +11,12 @@ import static org.lwjgl.vulkan.VK10.VK_FORMAT_R8G8B8A8_UNORM;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_ASPECT_COLOR_BIT;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_GENERAL;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_UNDEFINED;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_SAMPLED_BIT;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_STORAGE_BIT;
+import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_TRANSFER_DST_BIT;
+import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
+import static org.lwjgl.vulkan.VK10.VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT;
 import static org.lwjgl.vulkan.VK10.VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
 import static org.lwjgl.vulkan.VK10.VK_QUEUE_FAMILY_IGNORED;
 import static org.lwjgl.vulkan.VK10.VK_SAMPLER_ADDRESS_MODE_REPEAT;
@@ -69,6 +73,7 @@ import org.oreon.core.vk.util.VkUtil;
 import org.oreon.core.vk.wrapper.buffer.VkBufferHelper;
 import org.oreon.core.vk.wrapper.buffer.VkUniformBuffer;
 import org.oreon.core.vk.wrapper.command.ComputeCmdBuffer;
+import org.oreon.core.vk.wrapper.command.MipMapGenerationCmdBuffer;
 import org.oreon.core.vk.wrapper.command.PrimaryCmdBuffer;
 import org.oreon.core.vk.wrapper.command.SecondaryDrawCmdBuffer;
 import org.oreon.core.vk.wrapper.image.Image2DDeviceLocal;
@@ -119,6 +124,8 @@ public class Water extends Renderable{
 	private SubmitInfo deferredReflectionSubmitInfo;
 	private VkImage deferredReflectionImage;
 	private VkImageView deferredReflectionImageView;
+	private CommandBuffer reflectionMipmapGenerationCmd;
+	private SubmitInfo reflectionMipmapSubmitInfo;
 	
 	// Refraction Resources
 	private RenderList offScreenRefractionRenderList;
@@ -130,6 +137,9 @@ public class Water extends Renderable{
 	private SubmitInfo deferredRefractionSubmitInfo;
 	private VkImage deferredRefractionImage;
 	private VkImageView deferredRefractionImageView;
+	private CommandBuffer refractionMipmapGenerationCmd;
+	private SubmitInfo refractionMipmapSubmitInfo;
+	
 	
 	// queues for render reflection/refraction
 	private VkQueue graphicsQueue;
@@ -149,7 +159,7 @@ public class Water extends Renderable{
 		offScreenRefractionRenderList = new RenderList();
 		reflectionSecondaryCmdBuffers = new LinkedHashMap<String, CommandBuffer>();
 		refractionSecondaryCmdBuffers = new LinkedHashMap<String, CommandBuffer>();
-		offScreenReflecRefracFbo = VkContext.getRenderState().getOffScreenReflectionFbo();
+		offScreenReflecRefracFbo = VkContext.getResources().getOffScreenReflectionFbo();
 		
 		getWorldTransform().setScaling(Constants.ZFAR,1,Constants.ZFAR);
 		getWorldTransform().setTranslation(-Constants.ZFAR/2,0,-Constants.ZFAR/2);
@@ -178,20 +188,26 @@ public class Water extends Renderable{
 		deferredReflectionImage = new Image2DDeviceLocal(device.getHandle(), memoryProperties,
 				offScreenReflecRefracFbo.getWidth(), offScreenReflecRefracFbo.getHeight(),
 				VK_FORMAT_R8G8B8A8_UNORM,
-				VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_STORAGE_BIT);
+				VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_STORAGE_BIT |
+				VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT,
+				1, Util.getLog2N(offScreenReflecRefracFbo.getWidth()));
 		
 		deferredReflectionImageView = new VkImageView(device.getHandle(),
 				VK_FORMAT_R8G8B8A8_UNORM, deferredReflectionImage.getHandle(),
-				VK_IMAGE_ASPECT_COLOR_BIT);
+				VK_IMAGE_ASPECT_COLOR_BIT,
+				Util.getLog2N(offScreenReflecRefracFbo.getWidth()));
 		
 		deferredRefractionImage = new Image2DDeviceLocal(device.getHandle(), memoryProperties,
 				offScreenReflecRefracFbo.getWidth(), offScreenReflecRefracFbo.getHeight(),
 				VK_FORMAT_R8G8B8A8_UNORM,
-				VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_STORAGE_BIT);
+				VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_STORAGE_BIT |
+				VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT,
+				1, Util.getLog2N(offScreenReflecRefracFbo.getWidth()));
 		
 		deferredRefractionImageView = new VkImageView(device.getHandle(),
 				VK_FORMAT_R8G8B8A8_UNORM, deferredRefractionImage.getHandle(),
-				VK_IMAGE_ASPECT_COLOR_BIT);
+				VK_IMAGE_ASPECT_COLOR_BIT,
+				Util.getLog2N(offScreenReflecRefracFbo.getWidth()));
 		
 		dxSampler = new VkSampler(device.getHandle(), VK_FILTER_LINEAR, false, 1,
 				VK_SAMPLER_MIPMAP_MODE_NEAREST, 0, VK_SAMPLER_ADDRESS_MODE_REPEAT);
@@ -199,16 +215,18 @@ public class Water extends Renderable{
 	    		VK_SAMPLER_MIPMAP_MODE_NEAREST, 0, VK_SAMPLER_ADDRESS_MODE_REPEAT);
 	    dzSampler = new VkSampler(device.getHandle(), VK_FILTER_LINEAR, false, 1,
 	    		VK_SAMPLER_MIPMAP_MODE_NEAREST, 0, VK_SAMPLER_ADDRESS_MODE_REPEAT);
-	    dudvSampler = new VkSampler(device.getHandle(), VK_FILTER_LINEAR, true, 16,
+	    dudvSampler = new VkSampler(device.getHandle(), VK_FILTER_LINEAR, true, 8,
 	    		VK_SAMPLER_MIPMAP_MODE_LINEAR, Util.getMipLevelCount(image_dudv.getMetaData()),
 	    		VK_SAMPLER_ADDRESS_MODE_REPEAT);
-	    normalSampler = new VkSampler(device.getHandle(), VK_FILTER_LINEAR, true, 16,
+	    normalSampler = new VkSampler(device.getHandle(), VK_FILTER_LINEAR, true, 8,
 	    		VK_SAMPLER_MIPMAP_MODE_LINEAR, Util.getLog2N(waterConfiguration.getN()),
 	    		VK_SAMPLER_ADDRESS_MODE_REPEAT);
-	    reflectionSampler = new VkSampler(device.getHandle(), VK_FILTER_LINEAR, true, 1,
-	    		VK_SAMPLER_MIPMAP_MODE_NEAREST, 0, VK_SAMPLER_ADDRESS_MODE_REPEAT);
-	    refractionSampler = new VkSampler(device.getHandle(), VK_FILTER_LINEAR, true, 1,
-	    		VK_SAMPLER_MIPMAP_MODE_NEAREST, 0, VK_SAMPLER_ADDRESS_MODE_REPEAT);
+	    reflectionSampler = new VkSampler(device.getHandle(), VK_FILTER_LINEAR, false, 8,
+	    		VK_SAMPLER_MIPMAP_MODE_LINEAR, Util.getLog2N(offScreenReflecRefracFbo.getWidth()),
+	    		VK_SAMPLER_ADDRESS_MODE_REPEAT);
+	    refractionSampler = new VkSampler(device.getHandle(), VK_FILTER_LINEAR, true, 8,
+	    		VK_SAMPLER_MIPMAP_MODE_LINEAR, Util.getLog2N(offScreenReflecRefracFbo.getWidth()),
+	    		VK_SAMPLER_ADDRESS_MODE_REPEAT);
 		
 		fft = new FFT(deviceBundle,
 				waterConfiguration.getN(), waterConfiguration.getL(),
@@ -333,8 +351,8 @@ public class Water extends Renderable{
 				shaderPipeline, vertexInput, VkUtil.createLongBuffer(descriptorSetLayouts),
 				EngineContext.getConfig().getX_ScreenResolution(),
 				EngineContext.getConfig().getY_ScreenResolution(),
-				VkContext.getRenderState().getOffScreenFbo().getRenderPass().getHandle(),
-				VkContext.getRenderState().getOffScreenFbo().getColorAttachmentCount(),
+				VkContext.getResources().getOffScreenFbo().getRenderPass().getHandle(),
+				VkContext.getResources().getOffScreenFbo().getColorAttachmentCount(),
 				EngineContext.getConfig().getMultisamples(),
 				pushConstantsRange, VK_SHADER_STAGE_ALL_GRAPHICS,
 				16);
@@ -343,8 +361,8 @@ public class Water extends Renderable{
 	    		device.getHandle(),
 	    		device.getGraphicsCommandPool().getHandle(), 
 	    		graphicsPipeline.getHandle(), graphicsPipeline.getLayoutHandle(),
-	    		VkContext.getRenderState().getOffScreenFbo().getFrameBuffer().getHandle(),
-	    		VkContext.getRenderState().getOffScreenFbo().getRenderPass().getHandle(),
+	    		VkContext.getResources().getOffScreenFbo().getFrameBuffer().getHandle(),
+	    		VkContext.getResources().getOffScreenFbo().getRenderPass().getHandle(),
 	    		0,
 	    		VkUtil.createLongArray(descriptorSets),
 	    		vertexBufferObject.getHandle(),
@@ -468,6 +486,26 @@ public class Water extends Renderable{
 		deferredRefractionSubmitInfo = new SubmitInfo();
 		deferredRefractionSubmitInfo.setCommandBuffers(deferredRefractionCmdBuffer.getHandlePointer());
 		deferredRefractionSubmitInfo.setFence(fence);
+		
+		reflectionMipmapGenerationCmd = new MipMapGenerationCmdBuffer(device.getHandle(),
+				device.getGraphicsCommandPool().getHandle(), deferredReflectionImage.getHandle(),
+				offScreenReflecRefracFbo.getWidth(), offScreenReflecRefracFbo.getHeight(),
+				Util.getLog2N(offScreenReflecRefracFbo.getWidth()),
+				VK_IMAGE_LAYOUT_UNDEFINED, 0, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+				VK_IMAGE_LAYOUT_GENERAL, VK_ACCESS_SHADER_READ_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT);
+		
+		reflectionMipmapSubmitInfo = new SubmitInfo();
+		reflectionMipmapSubmitInfo.setCommandBuffers(reflectionMipmapGenerationCmd.getHandlePointer());
+		
+		refractionMipmapGenerationCmd = new MipMapGenerationCmdBuffer(device.getHandle(),
+				device.getGraphicsCommandPool().getHandle(), deferredRefractionImage.getHandle(),
+				offScreenReflecRefracFbo.getWidth(), offScreenReflecRefracFbo.getHeight(),
+				Util.getLog2N(offScreenReflecRefracFbo.getWidth()),
+				VK_IMAGE_LAYOUT_UNDEFINED, 0, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+				VK_IMAGE_LAYOUT_GENERAL, VK_ACCESS_SHADER_READ_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT);
+		
+		refractionMipmapSubmitInfo = new SubmitInfo();
+		refractionMipmapSubmitInfo.setCommandBuffers(refractionMipmapGenerationCmd.getHandlePointer());
 	}
 	
 	public void render(){
@@ -476,7 +514,7 @@ public class Water extends Renderable{
 		normalRenderer.render(VK_QUEUE_FAMILY_IGNORED);
 		
 		// render reflection
-		EngineContext.getRenderState().setClipplane(clipplane);
+		EngineContext.getConfig().setClipplane(clipplane);
 		
 		// mirror scene to clipplane
 		Scenegraph sceneGraph = getParentObject();
@@ -514,6 +552,7 @@ public class Water extends Renderable{
 		fence.waitForFence();
 		deferredReflectionSubmitInfo.submit(computeQueue);
 		fence.waitForFence();
+		reflectionMipmapSubmitInfo.submit(graphicsQueue);
 		
 		// antimirror scene to clipplane
 		sceneGraph.getWorldTransform().setScaling(1,1,1);
@@ -551,6 +590,7 @@ public class Water extends Renderable{
 		fence.waitForFence();
 		deferredRefractionSubmitInfo.submit(computeQueue);
 		fence.waitForFence();
+		refractionMipmapSubmitInfo.submit(graphicsQueue);
 		
 		float[] v = {motion += waterConfiguration.getWaveMotion(),
 				distortion += waterConfiguration.getDistortion()};

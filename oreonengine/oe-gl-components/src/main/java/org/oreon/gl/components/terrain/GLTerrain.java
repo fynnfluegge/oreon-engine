@@ -6,7 +6,7 @@ import org.oreon.core.gl.context.GLContext;
 import org.oreon.core.gl.memory.GLPatchVBO;
 import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.gl.scenegraph.GLRenderInfo;
-import org.oreon.core.gl.wrapper.parameter.Default;
+import org.oreon.core.gl.wrapper.parameter.DefaultRenderParams;
 import org.oreon.core.scenegraph.Node;
 import org.oreon.core.scenegraph.NodeComponent;
 import org.oreon.core.scenegraph.NodeComponentType;
@@ -27,11 +27,11 @@ public class GLTerrain extends Node{
 		buffer.addData(MeshGenerator.TerrainChunkMesh(),16);
 		
 		GLRenderInfo renderInfo = new GLRenderInfo(shader,
-				   new Default(),
+				   new DefaultRenderParams(),
 				   buffer);
 
 		GLRenderInfo wireframeRenderInfo = new GLRenderInfo(wireframe,
-						    new Default(),
+						    new DefaultRenderParams(),
 						    buffer);
 		HashMap<NodeComponentType, NodeComponent> components = new HashMap<NodeComponentType, NodeComponent>();
 		

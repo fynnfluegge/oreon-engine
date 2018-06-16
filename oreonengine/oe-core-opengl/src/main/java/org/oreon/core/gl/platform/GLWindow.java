@@ -26,8 +26,7 @@ public class GLWindow extends Window{
 	public GLWindow() {
 		
 		super(GLContext.getConfig().getDisplayTitle(),
-				GLContext.getConfig().getWindowWidth(),
-				GLContext.getConfig().getWindowHeight());
+			GLContext.getConfig().getWindowWidth(), GLContext.getConfig().getWindowHeight());
 	}
 
 	public void create()
@@ -47,8 +46,11 @@ public class GLWindow extends Window{
 		
 		glfwMakeContextCurrent(getId());
 		glfwSwapInterval(0);
-		glfwShowWindow(getId());
 		GL.createCapabilities();
+	}
+	
+	public void show(){
+		glfwShowWindow(getId());
 	}
 	
 	public void draw()

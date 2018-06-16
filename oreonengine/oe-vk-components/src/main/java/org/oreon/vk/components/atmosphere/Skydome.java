@@ -104,8 +104,8 @@ public class Skydome extends Renderable{
 				VkUtil.createLongBuffer(descriptorSetLayouts),
 				EngineContext.getConfig().getX_ScreenResolution(),
 				EngineContext.getConfig().getY_ScreenResolution(),
-				VkContext.getRenderState().getOffScreenFbo().getRenderPass().getHandle(),
-				VkContext.getRenderState().getOffScreenFbo().getColorAttachmentCount(),
+				VkContext.getResources().getOffScreenFbo().getRenderPass().getHandle(),
+				VkContext.getResources().getOffScreenFbo().getColorAttachmentCount(),
 				EngineContext.getConfig().getMultisamples());
 		
 		reflectionPipeline = new GraphicsPipeline(device.getHandle(),
@@ -113,8 +113,8 @@ public class Skydome extends Renderable{
 				VkUtil.createLongBuffer(descriptorSetLayouts),
 				EngineContext.getConfig().getX_ScreenResolution(),
 				EngineContext.getConfig().getY_ScreenResolution(),
-				VkContext.getRenderState().getOffScreenReflectionFbo().getRenderPass().getHandle(),
-				VkContext.getRenderState().getOffScreenReflectionFbo().getColorAttachmentCount(), 1);
+				VkContext.getResources().getOffScreenReflectionFbo().getRenderPass().getHandle(),
+				VkContext.getResources().getOffScreenReflectionFbo().getColorAttachmentCount(), 1);
 		
 		VkBuffer vertexBufferObject = VkBufferHelper.createDeviceLocalBuffer(
 				device.getHandle(), memoryProperties,
@@ -132,8 +132,8 @@ public class Skydome extends Renderable{
 	    		device.getHandle(),
 	    		device.getGraphicsCommandPool().getHandle(), 
 	    		graphicsPipeline.getHandle(), graphicsPipeline.getLayoutHandle(),
-	    		VkContext.getRenderState().getOffScreenFbo().getFrameBuffer().getHandle(),
-	    		VkContext.getRenderState().getOffScreenFbo().getRenderPass().getHandle(),
+	    		VkContext.getResources().getOffScreenFbo().getFrameBuffer().getHandle(),
+	    		VkContext.getResources().getOffScreenFbo().getRenderPass().getHandle(),
 	    		0,
 	    		VkUtil.createLongArray(descriptorSets),
 	    		vertexBufferObject.getHandle(),
@@ -144,8 +144,8 @@ public class Skydome extends Renderable{
 	    		device.getHandle(),
 	    		device.getGraphicsCommandPool().getHandle(), 
 	    		reflectionPipeline.getHandle(), reflectionPipeline.getLayoutHandle(),
-	    		VkContext.getRenderState().getOffScreenReflectionFbo().getFrameBuffer().getHandle(),
-	    		VkContext.getRenderState().getOffScreenReflectionFbo().getRenderPass().getHandle(),
+	    		VkContext.getResources().getOffScreenReflectionFbo().getFrameBuffer().getHandle(),
+	    		VkContext.getResources().getOffScreenReflectionFbo().getRenderPass().getHandle(),
 	    		0,
 	    		VkUtil.createLongArray(descriptorSets),
 	    		vertexBufferObject.getHandle(),

@@ -8,6 +8,6 @@
    	<bean id = "render-config" class = "org.oreon.core.context.Configuration"/>
    	<bean id = "input" class = "org.oreon.core.platform.GLFWInput"/>
    	<bean id = "DeviceManager" class = "org.oreon.core.vk.context.DeviceManager"/>
-   	<bean id = "vk-render-state" class = "org.oreon.core.vk.context.VkRenderState"/>
+   	<bean id = "vk-render-state" class = "org.oreon.core.vk.context.VkResources"/>
 
 </beans>

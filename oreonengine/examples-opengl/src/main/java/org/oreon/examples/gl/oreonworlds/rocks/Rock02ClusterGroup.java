@@ -7,7 +7,7 @@ import org.oreon.core.gl.memory.GLMeshVBO;
 import org.oreon.core.gl.scenegraph.GLRenderInfo;
 import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.gl.util.GLAssimpModelLoader;
-import org.oreon.core.gl.wrapper.parameter.Default;
+import org.oreon.core.gl.wrapper.parameter.DefaultRenderParams;
 import org.oreon.core.instanced.InstancedObject;
 import org.oreon.core.math.Vec3f;
 import org.oreon.core.model.Model;
@@ -34,8 +34,8 @@ public class Rock02ClusterGroup extends InstancedObject{
 			
 			meshBuffer.addData(model.getMesh());
 
-			GLRenderInfo renderInfo = new GLRenderInfo(RockHighPolyShader.getInstance(), new Default(), meshBuffer);
-			GLRenderInfo shadowRenderInfo = new GLRenderInfo(RockShadowShader.getInstance(), new Default(), meshBuffer);
+			GLRenderInfo renderInfo = new GLRenderInfo(RockHighPolyShader.getInstance(), new DefaultRenderParams(), meshBuffer);
+			GLRenderInfo shadowRenderInfo = new GLRenderInfo(RockShadowShader.getInstance(), new DefaultRenderParams(), meshBuffer);
 	
 			Renderable object = new Renderable();
 			object.addComponent(NodeComponentType.MAIN_RENDERINFO, renderInfo);

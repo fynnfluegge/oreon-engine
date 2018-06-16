@@ -7,7 +7,7 @@ import org.oreon.common.ui.UITextPanel;
 import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.gl.pipeline.RenderParameter;
 import org.oreon.core.gl.texture.GLTexture;
-import org.oreon.core.gl.wrapper.parameter.Default;
+import org.oreon.core.gl.wrapper.parameter.DefaultRenderParams;
 
 public class GLDynamicTextPanel extends UITextPanel{
 	
@@ -22,7 +22,7 @@ public class GLDynamicTextPanel extends UITextPanel{
 		texture = fontsTexture;
 		shader = UITextPanelShader.getInstance();
 		vao = new GUIVAO();
-		config = new Default();
+		config = new DefaultRenderParams();
 		vao.addData(panel);
 	}
 	

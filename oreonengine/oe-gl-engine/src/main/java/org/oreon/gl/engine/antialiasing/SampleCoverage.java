@@ -14,21 +14,21 @@ import org.oreon.core.gl.wrapper.texture.Texture2DNoFilterR16F;
 
 import lombok.Getter;
 
-public class MSAA {
+public class SampleCoverage {
 
 	@Getter
 	private GLTexture sampleCoverageMask;
-	private SampleCoverageMaskShader shader;
+	private SampleCoverageShader shader;
 	
-	public MSAA() {
+	public SampleCoverage() {
 		
-		shader = SampleCoverageMaskShader.getInstance();
+		shader = SampleCoverageShader.getInstance();
 		
 		sampleCoverageMask = new Texture2DNoFilterR16F(EngineContext.getWindow().getWidth(),
 				EngineContext.getWindow().getHeight());
 	}
 	
-	public void renderSampleCoverageMask(GLTexture worldPositionTexture,
+	public void render(GLTexture worldPositionTexture,
 										 GLTexture LightScatteringMaskMS,
 										 GLTexture LightScatteringMask) {
 		

@@ -19,8 +19,7 @@ public class VkWindow extends Window{
 	public VkWindow() {
 	
 		super(VkContext.getConfig().getDisplayTitle(),
-				VkContext.getConfig().getWindowWidth(),
-				VkContext.getConfig().getWindowHeight());
+			VkContext.getConfig().getWindowWidth(), VkContext.getConfig().getWindowHeight());
 	}
 	
 	@Override
@@ -37,14 +36,15 @@ public class VkWindow extends Window{
 		}
         
         setIcon("textures/logo/oreon_lwjgl_icon32.png");
-        
-        glfwShowWindow(getId());
+	}
+	
+	@Override
+	public void show() {
+		glfwShowWindow(getId());
 	}
 
 	@Override
 	public void draw() {
-		// TODO Auto-generated method stub 
-		
 	}
 
 	@Override

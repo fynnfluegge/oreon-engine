@@ -47,6 +47,7 @@ import org.oreon.core.model.Mesh;
 import org.oreon.core.model.Vertex.VertexLayout;
 import org.oreon.core.scenegraph.NodeComponentType;
 import org.oreon.core.scenegraph.RenderList;
+import org.oreon.core.target.FrameBufferObject.Attachment;
 import org.oreon.core.util.BufferUtil;
 import org.oreon.core.util.MeshGenerator;
 import org.oreon.core.vk.command.CommandBuffer;
@@ -77,13 +78,9 @@ import org.oreon.core.vk.wrapper.image.VkImageBundle;
 import org.oreon.core.vk.wrapper.image.VkImageHelper;
 import org.oreon.core.vk.wrapper.pipeline.GraphicsPipeline;
 
-import lombok.Getter;
-
 public class VkGUI extends GUI{
 
-	@Getter
 	protected VkFrameBufferObject guiOverlayFbo;
-	
 	protected VkImageBundle fontsImageBundle;
 	protected VkMeshBuffer panelMeshBuffer;
 	
@@ -93,7 +90,7 @@ public class VkGUI extends GUI{
 	private SubmitInfo guiSubmitInfo;
 	private VkQueue queue;
 	
-	// fullscreen underlay image resources
+	// underlay image resources
 	private CommandBuffer underlayImageCmdBuffer;
 	private VkPipeline underlayImagePipeline;
 	private DescriptorSet underlayImageDescriptorSet;
@@ -280,6 +277,10 @@ public class VkGUI extends GUI{
 
 			frameBuffer = new VkFrameBuffer(device, width, height, 1, pImageViews, renderPass.getHandle());
 		}
+	}
+	
+	public VkImageView getImageView(){
+		return guiOverlayFbo.getAttachmentImageView(Attachment.COLOR);
 	}
 
 }

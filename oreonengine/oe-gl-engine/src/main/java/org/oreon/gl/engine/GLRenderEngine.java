@@ -9,11 +9,6 @@ import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT1;
 import java.nio.IntBuffer;
 
 import org.lwjgl.glfw.GLFW;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL31;
-import org.lwjgl.opengl.GL40;
-import org.lwjgl.opengl.GL42;
-import org.lwjgl.opengl.GL43;
 import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.context.GLContext;
 import org.oreon.core.gl.framebuffer.GLFramebuffer;
@@ -23,7 +18,7 @@ import org.oreon.core.gl.shadow.ParallelSplitShadowMapsFbo;
 import org.oreon.core.gl.surface.FullScreenMultisampleQuad;
 import org.oreon.core.gl.surface.FullScreenQuad;
 import org.oreon.core.gl.texture.GLTexture;
-import org.oreon.core.gl.wrapper.parameter.Default;
+import org.oreon.core.gl.util.GLUtil;
 import org.oreon.core.gl.wrapper.texture.Texture2DBilinearFilterRGBA16F;
 import org.oreon.core.gl.wrapper.texture.Texture2DNoFilterRGBA16F;
 import org.oreon.core.instanced.InstancedHandler;
@@ -43,20 +38,18 @@ import org.oreon.gl.components.terrain.GLTerrain;
 import org.oreon.gl.components.ui.GLGUI;
 import org.oreon.gl.components.water.UnderWaterRenderer;
 import org.oreon.gl.engine.antialiasing.FXAA;
-import org.oreon.gl.engine.antialiasing.MSAA;
+import org.oreon.gl.engine.antialiasing.SampleCoverage;
 import org.oreon.gl.engine.deferred.DeferredLighting;
 import org.oreon.gl.engine.transparency.OpaqueTransparencyBlending;
 import org.oreon.gl.engine.transparency.TransparencyLayer;
 
 import lombok.Setter;
-import lombok.extern.log4j.Log4j;
 
-@Log4j
 public class GLRenderEngine extends RenderEngine{
 	
 	private FullScreenQuad fullScreenQuad;
 	private FullScreenMultisampleQuad fullScreenQuadMultisample;
-	private MSAA msaa;
+	private SampleCoverage sampleCoverage;
 	private FXAA fxaa;
 	
 	private InstancedHandler instancingObjectHandler;
@@ -93,25 +86,13 @@ public class GLRenderEngine extends RenderEngine{
 	private boolean renderSampleCoverageMask = false;
 	private boolean renderDeferredLightingScene = false;
 	private boolean renderSSAOBuffer = false;
-	private boolean renderFXAA = false;
 	private boolean renderPostProcessingEffects = true;
-	private boolean renderSSAO = false;
 	
 	@Override
 	public void init() {
 		
 		super.init();
 		
-		getDeviceProperties();
-		
-		EngineContext.getConfig().setSightRange(1f);
-		EngineContext.getRenderState().setWireframe(false);
-		EngineContext.getRenderState().setClipplane(Constants.PLANE0);
-		EngineContext.getRenderState().setReflection(false);
-		EngineContext.getRenderState().setRefraction(false);
-		EngineContext.getRenderState().setUnderwater(false);
-		
-		Default.init();
 		window = EngineContext.getWindow();
 		camera = EngineContext.getCamera();
 		camera.init();
@@ -124,7 +105,7 @@ public class GLRenderEngine extends RenderEngine{
 		fullScreenQuad = new FullScreenQuad();
 		fullScreenQuadMultisample = new FullScreenMultisampleQuad();
 		pssmFbo = new ParallelSplitShadowMapsFbo();
-		msaa = new MSAA();
+		sampleCoverage = new SampleCoverage();
 		fxaa = new FXAA();
 		
 		deferredLighting = new DeferredLighting(window.getWidth(), window.getHeight());
@@ -163,9 +144,8 @@ public class GLRenderEngine extends RenderEngine{
 
 		GLDirectionalLight.getInstance().update();
 
-		EngineContext.getRenderState().setClipplane(Constants.PLANE0);
-		GLContext.getRenderState().setSceneDepthMap(sceneDepthmap);
-		Default.clearScreen();
+		GLContext.getResources().setSceneDepthMap(sceneDepthmap);
+		GLUtil.clearScreen();
 		
 		// render shadow maps into pssm framebuffer
 		pssmFbo.getFBO().bind();
@@ -180,44 +160,41 @@ public class GLRenderEngine extends RenderEngine{
 		// deferred scene lighting - opaque objects
 		// render into GBuffer of deffered lighting framebuffer
 		deferredLighting.getFbo().bind();
-		Default.clearScreen();
+		GLUtil.clearScreen();
 		sceneGraph.render();
 		deferredLighting.getFbo().unbind();
 		
 		// render screen space ambient occlusion
-		if (renderSSAO){
+		if (EngineContext.getConfig().isSsaoEnabled()){
 			ssao.render(deferredLighting.getGbuffer().getWorldPositionTexture(),
-						deferredLighting.getGbuffer().getNormalTexture());
+					deferredLighting.getGbuffer().getNormalTexture());
 		}
 		
 		// render post processing sample coverage mask
-		msaa.renderSampleCoverageMask(deferredLighting.getGbuffer().getWorldPositionTexture(),
-									  deferredLighting.getGbuffer().getLightScatteringMask(),
-									  deferredLightScatteringMask);
+		sampleCoverage.render(deferredLighting.getGbuffer().getWorldPositionTexture(),
+				deferredLighting.getGbuffer().getLightScatteringMask(), deferredLightScatteringMask);
 		
 		// render deferred lighting scene with multisampling
-		deferredLighting.render(msaa.getSampleCoverageMask(),
-							    ssao.getSsaoBlurSceneTexture(),
-							    pssmFbo.getDepthMaps(),
-							    renderSSAO);
+		deferredLighting.render(sampleCoverage.getSampleCoverageMask(), ssao.getSsaoBlurSceneTexture(),
+				pssmFbo.getDepthMaps(), EngineContext.getConfig().isSsaoEnabled());
 		
 		// forward scene lighting - transparent objects
 		// render transparent objects into GBuffer of transparency framebuffer
 		transparencyLayer.getFbo().bind();
-		Default.clearScreen();
+		GLUtil.clearScreen();
 		sceneGraph.renderTransparentObejcts();
 		transparencyLayer.getFbo().unbind();
 		
 		// blend scene/transparent layers
 		// render opaque + transparent (final scene) objects into main offscreen framebuffer
 		finalSceneFbo.bind();
-		opaqueTransparencyBlending.render(deferredLighting.getDeferredLightingSceneTexture(), 
-										 deferredLighting.getGbuffer().getDepthTexture(),
-										 deferredLightScatteringMask,
-										 transparencyLayer.getGbuffer().getAlbedoTexture(),
-										 transparencyLayer.getGbuffer().getDepthTexture(),
-										 transparencyLayer.getGbuffer().getAlphaTexture(),
-										 transparencyLayer.getGbuffer().getLightScatteringMask());
+		opaqueTransparencyBlending.render(deferredLighting.getDeferredLightingSceneTexture(),
+				deferredLighting.getGbuffer().getDepthTexture(),
+				deferredLightScatteringMask,
+				transparencyLayer.getGbuffer().getAlbedoTexture(),
+				transparencyLayer.getGbuffer().getDepthTexture(),
+				transparencyLayer.getGbuffer().getAlphaTexture(),
+				transparencyLayer.getGbuffer().getLightScatteringMask());
 		finalSceneFbo.unbind();
 		
 		// start Threads to update instancing objects
@@ -235,42 +212,48 @@ public class GLRenderEngine extends RenderEngine{
 		postProcessingTexture = finalSceneTexture;
 		sceneDepthmap = deferredLighting.getGbuffer().getDepthTexture();
 		
-		boolean doMotionBlur = camera.getPreviousPosition().sub(
-							   camera.getPosition()).length() > 0.04f ||
-							   camera.getForward().sub(camera.getPreviousForward()).length() > 0.01f;
+		boolean doMotionBlur = camera.getPreviousPosition().sub(camera.getPosition()).length() > 0.04f
+				|| camera.getForward().sub(camera.getPreviousForward()).length() > 0.01f;
 				
 		// perform FXAA
-		if (!doMotionBlur && renderFXAA){
+		if (!doMotionBlur && EngineContext.getConfig().isFxaaEnabled()){
 			fxaa.render(postProcessingTexture);
 			postProcessingTexture = fxaa.getFxaaSceneTexture();
 		}
 			
 		if (renderPostProcessingEffects){
-			// Depth of Field Blur			
-			dofBlur.render(deferredLighting.getGbuffer().getDepthTexture(), finalLightScatteringMask, postProcessingTexture, window.getWidth(), window.getHeight());
-			postProcessingTexture = dofBlur.getVerticalBlurSceneTexture();
 			
-			// post processing effects
-			if (EngineContext.getRenderState().isUnderwater()){
+			// Depth of Field Blur
+			if (EngineContext.getConfig().isDepthOfFieldBlurEnabled()){
+				dofBlur.render(deferredLighting.getGbuffer().getDepthTexture(), finalLightScatteringMask, postProcessingTexture, window.getWidth(), window.getHeight());
+				postProcessingTexture = dofBlur.getVerticalBlurSceneTexture();
+			}
+			
+			// Bloom
+			if (EngineContext.getConfig().isBloomEnabled()){
+				bloom.render(postProcessingTexture);
+				postProcessingTexture = bloom.getBloomSceneTexture();
+			}
+			
+			// underwater
+			if (EngineContext.getConfig().isRenderUnderwater()){
 				underWaterRenderer.render(postProcessingTexture, deferredLighting.getGbuffer().getDepthTexture());
 				postProcessingTexture = underWaterRenderer.getUnderwaterSceneTexture();
 			}
 			
-			// Bloom
-			bloom.render(postProcessingTexture);
-			postProcessingTexture = bloom.getBloomSceneTexture();
-			
 			// Motion Blur
-			if (doMotionBlur){
+			if (doMotionBlur && EngineContext.getConfig().isMotionBlurEnabled()){
 				motionBlur.render(deferredLighting.getGbuffer().getDepthTexture(), postProcessingTexture);
 				postProcessingTexture = motionBlur.getMotionBlurSceneTexture();
 			}
 			
-			sunlightScattering.render(postProcessingTexture,finalLightScatteringMask);
-			postProcessingTexture = sunlightScattering.getSunLightScatteringSceneTexture();
+			if (EngineContext.getConfig().isLightScatteringEnabled()){
+				sunlightScattering.render(postProcessingTexture,finalLightScatteringMask);
+				postProcessingTexture = sunlightScattering.getSunLightScatteringSceneTexture();
+			}
 		}
 		
-		if (EngineContext.getRenderState().isWireframe()){
+		if (EngineContext.getConfig().isRenderWireframe()){
 			fullScreenQuadMultisample.setTexture(deferredLighting.getGbuffer().getAlbedoTexture());
 			fullScreenQuadMultisample.render();
 		}
@@ -287,7 +270,7 @@ public class GLRenderEngine extends RenderEngine{
 			fullScreenQuadMultisample.render();
 		}
 		if (renderSampleCoverageMask){
-			fullScreenQuad.setTexture(msaa.getSampleCoverageMask());
+			fullScreenQuad.setTexture(sampleCoverage.getSampleCoverageMask());
 			fullScreenQuad.render();
 		}
 		if (renderSSAOBuffer){
@@ -304,13 +287,15 @@ public class GLRenderEngine extends RenderEngine{
 		fullScreenQuad.setTexture(contrastController.getContrastTexture());
 		fullScreenQuad.render();
 		
-		deferredLighting.getFbo().bind();
-		LightHandler.doOcclusionQueries();
-		deferredLighting.getFbo().unbind();
-		
-		if (!renderDeferredLightingScene && !renderSSAOBuffer
+		if (EngineContext.getConfig().isLensFlareEnabled()
+			&& !renderDeferredLightingScene && !renderSSAOBuffer
 			&& !renderSampleCoverageMask && !renderPositionBuffer
 			&& !renderNormalBuffer && !renderAlbedoBuffer){
+			
+			deferredLighting.getFbo().bind();
+			LightHandler.doOcclusionQueries();
+			deferredLighting.getFbo().unbind();
+			
 			lensFlare.render();
 		}
 		
@@ -325,10 +310,10 @@ public class GLRenderEngine extends RenderEngine{
 		super.update();
 		
 		if (EngineContext.getInput().isKeyPushed(GLFW.GLFW_KEY_G)){
-			if (EngineContext.getRenderState().isWireframe())
-				EngineContext.getRenderState().setWireframe(false);
+			if (EngineContext.getConfig().isRenderWireframe())
+				EngineContext.getConfig().setRenderWireframe(false);
 			else
-				EngineContext.getRenderState().setWireframe(true);
+				EngineContext.getConfig().setRenderWireframe(true);
 		}
 		
 		if (EngineContext.getInput().isKeyPushed(GLFW.GLFW_KEY_KP_1)){
@@ -410,19 +395,19 @@ public class GLRenderEngine extends RenderEngine{
 			}
 		}
 		if (EngineContext.getInput().isKeyPushed(GLFW.GLFW_KEY_KP_7)){
-			if (renderFXAA){
-				renderFXAA = false;
+			if (EngineContext.getConfig().isFxaaEnabled()){
+				EngineContext.getConfig().setFxaaEnabled(false);
 			}
 			else{
-				renderFXAA = true;
+				EngineContext.getConfig().setFxaaEnabled(true);
 			}
 		}
 		if (EngineContext.getInput().isKeyPushed(GLFW.GLFW_KEY_KP_8)){
-			if (renderSSAO){
-				renderSSAO = false;
+			if (EngineContext.getConfig().isSsaoEnabled()){
+				EngineContext.getConfig().setSsaoEnabled(false);
 			}
 			else {
-				renderSSAO = true;
+				EngineContext.getConfig().setSsaoEnabled(true);
 			}
 		}
 		if (EngineContext.getInput().isKeyPushed(GLFW.GLFW_KEY_KP_9)){
@@ -453,17 +438,6 @@ public class GLRenderEngine extends RenderEngine{
 		if (sceneGraph.hasTerrain()){
 			((GLTerrain) sceneGraph.getTerrain()).getQuadtree().signal();
 		}
-	}
-	
-	private void getDeviceProperties(){
-		
-		log.info("OpenGL version: " + GL11.glGetString(GL11.GL_VERSION) + " bytes");
-		log.info("Max Geometry Uniform Blocks: " + GL11.glGetInteger(GL31.GL_MAX_GEOMETRY_UNIFORM_BLOCKS));
-		log.info("Max Geometry Shader Invocations: " + GL11.glGetInteger(GL40.GL_MAX_GEOMETRY_SHADER_INVOCATIONS));
-		log.info("Max Uniform Buffer Bindings: " + GL11.glGetInteger(GL31.GL_MAX_UNIFORM_BUFFER_BINDINGS));
-		log.info("Max Uniform Block Size: " + GL11.glGetInteger(GL31.GL_MAX_UNIFORM_BLOCK_SIZE) + " bytes");
-		log.info("Max SSBO Block Size: " + GL11.glGetInteger(GL43.GL_MAX_SHADER_STORAGE_BLOCK_SIZE) + " bytes");	
-		log.info("Max Image Bindings: " + GL11.glGetInteger(GL42.GL_MAX_IMAGE_UNITS));
 	}
 
 	public Scenegraph getScenegraph() {

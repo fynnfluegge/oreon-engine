@@ -4,7 +4,7 @@ import org.oreon.core.gl.memory.GLMeshVBO;
 import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.gl.pipeline.RenderParameter;
 import org.oreon.core.gl.texture.GLTexture;
-import org.oreon.core.gl.wrapper.parameter.Default;
+import org.oreon.core.gl.wrapper.parameter.DefaultRenderParams;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.util.MeshGenerator;
 
@@ -23,7 +23,7 @@ public class FullScreenQuad {
 	public FullScreenQuad(){
 		
 		shader = FullScreenQuadShader.getInstance();
-		config = new Default();
+		config = new DefaultRenderParams();
 		vao = new GLMeshVBO();
 		vao.addData(MeshGenerator.NDCQuad2D());
 	}

@@ -68,7 +68,7 @@ public class TerrainNode extends Renderable{
 	public void render()
 	{
 		boolean renderChunk = false;
-		if (EngineContext.getRenderState().isReflection() || EngineContext.getRenderState().isRefraction()){
+		if (EngineContext.getConfig().isRenderReflection() || EngineContext.getConfig().isRenderRefraction()){
 			// render only first two lod's for reflection/refraction
 			renderChunk = (isleaf && lod == 0) || (!isleaf && lod == 0);// || (!isleaf && lod == 1);
 		}
@@ -78,7 +78,7 @@ public class TerrainNode extends Renderable{
 		
 		if (renderChunk)
 		{	
-			if (EngineContext.getRenderState().isWireframe()){
+			if (EngineContext.getConfig().isRenderWireframe()){
 				getComponents().get(NodeComponentType.WIREFRAME_RENDERINFO).render();
 			}
 			else{

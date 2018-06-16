@@ -12,7 +12,7 @@ import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.gl.pipeline.RenderParameter;
 import org.oreon.core.gl.texture.GLTexture;
-import org.oreon.core.gl.wrapper.parameter.Default;
+import org.oreon.core.gl.wrapper.parameter.DefaultRenderParams;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.math.Vec4f;
 import org.oreon.core.model.Mesh;
@@ -33,7 +33,7 @@ public abstract class GLButton extends UIButton{
 		pos = new Vec2f[4];
 		shader = UITextPanelShader.getInstance();
 		vao = new GUIVAO();
-		config = new Default();
+		config = new DefaultRenderParams();
 		vao.addData(panelMesh);
 		Vec4f q0 = new Vec4f(0,0,0,0);
 		Vec4f q1 = new Vec4f(0,0,0,0);

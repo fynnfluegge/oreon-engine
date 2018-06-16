@@ -12,11 +12,12 @@ public class RenderList {
 
 	@Getter
 	private LinkedHashMap<String, Renderable> objectList;
-	@Getter @Setter
+	@Setter
 	private boolean changed;
 	
 	public RenderList() {
 	
+		changed = false;
 		objectList = new LinkedHashMap<String, Renderable>();
 	}
 	
@@ -60,5 +61,9 @@ public class RenderList {
 		
 		// TODO
 		return null;
+	}
+	
+	public boolean hasChanged(){
+		return changed;
 	}
 }

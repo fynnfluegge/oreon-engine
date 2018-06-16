@@ -159,8 +159,8 @@ public class Sun extends Renderable{
 	    		VkUtil.createLongBuffer(descriptorSetLayouts),
 				EngineContext.getConfig().getX_ScreenResolution(),
 				EngineContext.getConfig().getY_ScreenResolution(),
-				VkContext.getRenderState().getTransparencyFbo().getRenderPass().getHandle(),
-				VkContext.getRenderState().getTransparencyFbo().getColorAttachmentCount(),
+				VkContext.getResources().getTransparencyFbo().getRenderPass().getHandle(),
+				VkContext.getResources().getTransparencyFbo().getColorAttachmentCount(),
 				1,
 				pushConstantRange, VK_SHADER_STAGE_VERTEX_BIT);
 	    
@@ -168,8 +168,8 @@ public class Sun extends Renderable{
 	    		device.getHandle(),
 	    		device.getGraphicsCommandPool().getHandle(), 
 	    		graphicsPipeline.getHandle(), graphicsPipeline.getLayoutHandle(),
-	    		VkContext.getRenderState().getTransparencyFbo().getFrameBuffer().getHandle(),
-	    		VkContext.getRenderState().getTransparencyFbo().getRenderPass().getHandle(),
+	    		VkContext.getResources().getTransparencyFbo().getFrameBuffer().getHandle(),
+	    		VkContext.getResources().getTransparencyFbo().getRenderPass().getHandle(),
 	    		0,
 	    		VkUtil.createLongArray(descriptorSets),
 	    		vertexBufferObject.getHandle(), 1,

@@ -7,6 +7,6 @@
 
 	<bean id = "render-config" class = "org.oreon.core.context.Configuration"/>
    	<bean id = "input" class = "org.oreon.core.platform.GLFWInput"/>
-   	<bean id = "gl-render-state" class = "org.oreon.core.gl.context.GLRenderState"/>
+   	<bean id = "gl-render-state" class = "org.oreon.core.gl.context.GLResources"/>
 
 </beans>

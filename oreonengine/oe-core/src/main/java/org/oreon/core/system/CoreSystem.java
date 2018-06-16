@@ -1,6 +1,5 @@
 package org.oreon.core.system;
 
-import static org.lwjgl.glfw.GLFW.glfwInit;
 import static org.lwjgl.glfw.GLFW.glfwSetErrorCallback;
 import static org.lwjgl.glfw.GLFW.glfwTerminate;
 
@@ -28,10 +27,7 @@ public class CoreSystem {
 		
 		glfwSetErrorCallback(errorCallback = GLFWErrorCallback.createPrint(System.err));
 		
-		if (!glfwInit())
-			throw new IllegalStateException("Unable to initialize GLFW");
-		
-		window.create();
+		window.show();
 		input.create(window.getId());
 		renderEngine.init();
 	}

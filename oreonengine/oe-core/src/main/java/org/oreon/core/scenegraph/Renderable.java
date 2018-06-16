@@ -43,7 +43,7 @@ public class Renderable extends Node{
 	
 	public void render()
 	{
-		if (EngineContext.getRenderState().isWireframe()){
+		if (EngineContext.getConfig().isRenderWireframe()){
 			if (components.containsKey(NodeComponentType.WIREFRAME_RENDERINFO)){
 				components.get(NodeComponentType.WIREFRAME_RENDERINFO).render();
 			}
@@ -80,11 +80,13 @@ public class Renderable extends Node{
 		if (render){
 			if (!renderList.contains(id)){
 				renderList.add(this);
+				renderList.setChanged(true);
 			}
 		}
 		else {
 			if (renderList.contains(id)){
 				renderList.remove(this);
+				renderList.setChanged(true);
 			}
 		}
 		

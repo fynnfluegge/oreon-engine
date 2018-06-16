@@ -16,6 +16,8 @@ public abstract class Window {
 	
 	public abstract void create();
 	
+	public abstract void show();
+	
 	public abstract void draw();
 	
 	public abstract void shutdown();

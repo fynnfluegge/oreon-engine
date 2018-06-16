@@ -50,9 +50,7 @@ public class LogicalDevice {
 	private HashMap<Long, DescriptorPool> descriptorPools;
 	private HashMap<Long, CommandPool> commandPools;
 	
-	public LogicalDevice(PhysicalDevice physicalDevice,
-							 float priority,
-							 PointerBuffer ppEnabledLayerNames){
+	public LogicalDevice(PhysicalDevice physicalDevice, float priority){
 		
 		descriptorPools = new HashMap<Long, DescriptorPool>();
 		commandPools = new HashMap<Long, CommandPool>();
@@ -144,7 +142,6 @@ public class LogicalDevice {
                 .pNext(VK_NULL_HANDLE)
                 .pQueueCreateInfos(queueCreateInfos)
                 .ppEnabledExtensionNames(extensions)
-                .ppEnabledLayerNames(ppEnabledLayerNames)
                 .pEnabledFeatures(physicalDeviceFeatures);
 
         PointerBuffer pDevice = memAllocPointer(1);

@@ -24,7 +24,9 @@ public class PrimaryCmdBuffer extends CommandBuffer{
 				colorAttachmentCount, depthAttachment,
 				VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS);
 		
-		recordSecondaryCmdBuffers(secondaryCmdBuffers);
+		if (secondaryCmdBuffers != null){
+			recordSecondaryCmdBuffers(secondaryCmdBuffers);
+		}
 		
 		endRenderPassCmd();
 	    finishRecord();
@@ -39,8 +41,9 @@ public class PrimaryCmdBuffer extends CommandBuffer{
 				colorAttachmentCount, depthAttachment,
 				VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS,
 				clearColor);
-		
-		recordSecondaryCmdBuffers(secondaryCmdBuffers);
+		if (secondaryCmdBuffers != null){
+			recordSecondaryCmdBuffers(secondaryCmdBuffers);
+		}
 		
 		endRenderPassCmd();
 	    finishRecord();

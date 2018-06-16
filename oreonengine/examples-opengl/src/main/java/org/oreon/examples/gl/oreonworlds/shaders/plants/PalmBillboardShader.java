@@ -55,9 +55,9 @@ public class PalmBillboardShader extends GLShaderProgram{
 	
 	public void updateUniforms(Renderable object){
 		
-		setUniform("clipplane", EngineContext.getRenderState().getClipplane());
+		setUniform("clipplane", EngineContext.getConfig().getClipplane());
 		bindUniformBlock("Camera", Constants.CameraUniformBlockBinding);
-		setUniformi("isReflection", EngineContext.getRenderState().isReflection() ? 1 : 0);
+		setUniformi("isReflection", EngineContext.getConfig().isRenderReflection() ? 1 : 0);
 		setUniform("scalingMatrix", new Matrix4f().Scaling(object.getWorldTransform().getScaling()));
 		
 		((GLInstancedCluster) object.getParentNode()).getWorldMatricesBuffer().bindBufferBase(0);

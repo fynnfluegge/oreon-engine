@@ -102,7 +102,7 @@ public class LensFlare {
 	
 	public void render(){
 		
-		if (EngineContext.getRenderState().isWireframe())
+		if (EngineContext.getConfig().isRenderWireframe())
 			return;
 		
 		for (Light light : LightHandler.getLights()){

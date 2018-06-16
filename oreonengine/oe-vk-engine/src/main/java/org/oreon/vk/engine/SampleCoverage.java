@@ -35,7 +35,7 @@ import org.oreon.core.vk.wrapper.shader.ComputeShader;
 
 import lombok.Getter;
 
-public class SampleCoverageMask {
+public class SampleCoverage {
 	
 	private VkQueue queue;
 	
@@ -54,7 +54,7 @@ public class SampleCoverageMask {
 	
 	private final float discontinuitiestThreshold = 1f;
 
-	public SampleCoverageMask(VkDeviceBundle deviceBundle,
+	public SampleCoverage(VkDeviceBundle deviceBundle,
 			int width, int height, VkImageView worldPositionImageView,
 			VkImageView lightScatteringMask) {
 		

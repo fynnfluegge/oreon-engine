@@ -48,7 +48,7 @@ public class TerrainPicking {
 			glfwGetCursorPos(EngineContext.getWindow().getId(), xPos, yPos);
 			Vec2f screenPos = new Vec2f((float) xPos.get(),(float) yPos.get());
 			
-			GLContext.getRenderState().getSceneDepthMap().bind();
+			GLContext.getResources().getSceneDepthMap().bind();
 			glGetTexImage(GL_TEXTURE_2D,0,GL_DEPTH_COMPONENT,GL_FLOAT,depthmapBuffer);
 			float depth = depthmapBuffer.get((int) (EngineContext.getWindow().getWidth() * screenPos.getY() + screenPos.getX()));
 			

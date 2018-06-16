@@ -98,10 +98,10 @@ public class Water extends Renderable{
 	{
 		if (!isCameraUnderwater()){
 			glEnable(GL_CLIP_DISTANCE6);
-			EngineContext.getRenderState().setUnderwater(false);
+			EngineContext.getConfig().setRenderUnderwater(false);
 		}
 		else {
-			EngineContext.getRenderState().setUnderwater(true);
+			EngineContext.getConfig().setRenderUnderwater(true);
 		}
 			
 		distortion += waterConfiguration.getDistortion();
@@ -109,7 +109,7 @@ public class Water extends Renderable{
 		
 		Scenegraph scenegraph = ((Scenegraph) getParentNode());
 		
-		EngineContext.getRenderState().setClipplane(getClipplane());
+		EngineContext.getConfig().setClipplane(getClipplane());
 			
 		//mirror scene to clipplane
 		scenegraph.getWorldTransform().setScaling(1,-1,1);
@@ -128,7 +128,7 @@ public class Water extends Renderable{
 
 		glViewport(0,0,EngineContext.getWindow().getWidth()/2, EngineContext.getWindow().getHeight()/2);
 		
-		EngineContext.getRenderState().setReflection(true);
+		EngineContext.getConfig().setRenderReflection(true);
 		
 		reflectionRenderer.getFbo().bind();
 		renderConfig.clearScreenDeepOcean();
@@ -147,7 +147,7 @@ public class Water extends Renderable{
 		reflectionRenderer.getFbo().unbind();
 		reflectionRenderer.render();
 		
-		EngineContext.getRenderState().setReflection(false);
+		EngineContext.getConfig().setRenderReflection(false);
 		
 		// antimirror scene to clipplane
 	
@@ -162,7 +162,7 @@ public class Water extends Renderable{
 		scenegraph.update();
 		
 		// render to refraction texture
-		EngineContext.getRenderState().setRefraction(true);
+		EngineContext.getConfig().setRenderRefraction(true);
 		
 		refractionRenderer.getFbo().bind();
 		renderConfig.clearScreenDeepOcean();
@@ -177,19 +177,19 @@ public class Water extends Renderable{
 		refractionRenderer.getFbo().unbind();
 		refractionRenderer.render();
 		
-		EngineContext.getRenderState().setRefraction(false);
+		EngineContext.getConfig().setRenderRefraction(false);
 		
 		glDisable(GL_CLIP_DISTANCE6);
-		EngineContext.getRenderState().setClipplane(Constants.PLANE0);	
+		EngineContext.getConfig().setClipplane(Constants.ZEROPLANE);	
 	
 		glViewport(0,0,EngineContext.getWindow().getWidth(), EngineContext.getWindow().getHeight());
 		
 		fft.render();
 		normalmapRenderer.render(fft.getDy());
 		
-		GLContext.getRenderState().getDeferredFbo().bind();
+		GLContext.getResources().getDeferredFbo().bind();
 		
-		if (EngineContext.getRenderState().isWireframe())
+		if (EngineContext.getConfig().isRenderWireframe())
 		{
 			getComponents().get(NodeComponentType.WIREFRAME_RENDERINFO).render();
 		}
@@ -200,7 +200,7 @@ public class Water extends Renderable{
 		
 		// glFinish() important, to prevent conflicts with following compute shaders
 		glFinish();
-		GLContext.getRenderState().getDeferredFbo().unbind();
+		GLContext.getResources().getDeferredFbo().unbind();
 	}
 		
 	public Vec4f getClipplane() {

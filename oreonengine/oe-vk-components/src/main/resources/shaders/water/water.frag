@@ -1,10 +1,9 @@
-#version 430
-#define M_PI 3.1415926535897932384626433832795
+#version 450
+#extension GL_ARB_separate_shader_objects : enable
 
 layout (location = 0) in vec3 inPosition;
 layout (location = 1) in vec2 inUV;
 layout (location = 2) in vec3 inTangent;
-layout (location = 3) in vec3 inPositionPreTransform;
 
 layout(location = 0) out vec4 albedo_out;
 layout(location = 1) out vec4 worldPosition_out;
@@ -57,6 +56,7 @@ layout (push_constant, std430, row_major) uniform Constants{
 	float specular;
 } constants;
 
+const float displacementRange = 100;
 const float Eta = 0.15; // Water
 const vec3 deepOceanColor = vec3(0.1,0.125,0.20);
 const float zfar = 10000;
@@ -93,7 +93,7 @@ void main(void)
 	float dist = length(eyePosition - inPosition);
 	
 	// normal
-	vec3 normal = normalize(texture(normalmap, inUV + (constants.windDirection*ubo.motion)).rgb);
+	vec3 normal = (texture(normalmap, inUV + (constants.windDirection*ubo.motion)).rgb);
 	
 	if (dist < constants.highDetailRange-50){
 		
@@ -137,17 +137,8 @@ void main(void)
 	
 	fragColor += specularLight;
 	
-	float dy = texture(Dy, inUV +(constants.windDirection*ubo.motion)).r;
-	float dx = texture(Dx, inUV +(constants.windDirection*ubo.motion)).r;
-	float dz = texture(Dz, inUV +(constants.windDirection*ubo.motion)).r;
-	
-	vec3 worldPosition = inPositionPreTransform;
-	worldPosition.y += dy;
-	worldPosition.x -= dx;
-	worldPosition.z -= dz;
-	
 	albedo_out = vec4(fragColor,1);
-	worldPosition_out = vec4(worldPosition,1);
+	worldPosition_out = vec4(inPosition,gl_FragCoord.z);
 	normal_out = vec4(normal,1);
 	specularEmission_out = vec4(1,0,0,1);
 	lightScattering_out = vec4(0,0,0,1);

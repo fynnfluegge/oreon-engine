@@ -35,8 +35,8 @@ import org.oreon.core.vk.pipeline.VkPipeline;
 import org.oreon.core.vk.synchronization.Fence;
 import org.oreon.core.vk.util.VkUtil;
 import org.oreon.core.vk.wrapper.command.ComputeCmdBuffer;
+import org.oreon.core.vk.wrapper.command.MipMapGenerationCmdBuffer;
 import org.oreon.core.vk.wrapper.image.Image2DDeviceLocal;
-import org.oreon.core.vk.wrapper.image.VkImageHelper;
 
 import lombok.Getter;
 
@@ -48,8 +48,10 @@ public class NormalRenderer {
 	private DescriptorSetLayout descriptorSetLayout;
 	private SubmitInfo submitInfo;
 	private VkImage normalImage;
-	private int N;
 	private Fence fence;
+
+	private CommandBuffer mipmapGenerationCmd;
+	private SubmitInfo mipmapSubmitInfo;
 	
 	private VkDevice device;
 	private VkQueue computeQueue;
@@ -58,11 +60,12 @@ public class NormalRenderer {
 	
 	@Getter
 	private VkImageView normalImageView;
+	private int N;
 	
-	public NormalRenderer(VkDeviceBundle deviceBundle, int N, float strength,
+	public NormalRenderer(VkDeviceBundle deviceBundle, int n, float strength,
 			VkImageView heightImageView, VkSampler heightSampler) {
 
-		this.N = N;
+		N = n;
 		
 		device = deviceBundle.getLogicalDevice().getHandle();
 		computeQueue = deviceBundle.getLogicalDevice().getComputeQueue();
@@ -119,19 +122,21 @@ public class NormalRenderer {
 		submitInfo = new SubmitInfo();
 		submitInfo.setFence(fence);
 		submitInfo.setCommandBuffers(commandBuffer.getHandlePointer());
+		
+		mipmapGenerationCmd = new MipMapGenerationCmdBuffer(device,
+				transferCommandPool.getHandle(), normalImage.getHandle(),
+				N, N, Util.getLog2N(N),
+				VK_IMAGE_LAYOUT_UNDEFINED, 0, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+				VK_IMAGE_LAYOUT_GENERAL, VK_ACCESS_SHADER_READ_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT);
+		
+		mipmapSubmitInfo = new SubmitInfo();
+		mipmapSubmitInfo.setCommandBuffers(mipmapGenerationCmd.getHandlePointer());
 	}
 	
 	public void render(int dstQueueFamilyIndex){
 		
 		submitInfo.submit(computeQueue);
 		fence.waitForFence();
-		VkImageHelper.generateMipmap(device,
-				transferCommandPool.getHandle(), transferQueue,
-				normalImage.getHandle(), N, N, Util.getLog2N(N),
-				VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_GENERAL,
-				0, VK_ACCESS_SHADER_READ_BIT,
-				VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
-				VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
-				dstQueueFamilyIndex);
+		mipmapSubmitInfo.submit(transferQueue);
 	}
 }
