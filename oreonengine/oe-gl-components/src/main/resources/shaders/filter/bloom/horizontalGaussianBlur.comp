@@ -4,7 +4,7 @@ layout (local_size_x = 8, local_size_y = 8) in;
 
 layout (binding = 0, rgba16f) uniform writeonly image2D horizontalBloomBlurSampler;
 
-uniform sampler2D bloomSampler;
+uniform sampler2D sceneBrightnessSampler;
 uniform float windowWidth;
 uniform float windowHeight;
 
@@ -16,11 +16,15 @@ const float gaussianKernel9_sigma1[9] = float[9](0.000229,0.005977,0.060598,0.24
 void main(void){
 
 	ivec2 computeCoord = ivec2(gl_GlobalInvocationID.x, gl_GlobalInvocationID.y);
-	vec2 texCoord = vec2(gl_GlobalInvocationID.x/windowWidth,gl_GlobalInvocationID.y/windowHeight);
+	vec2 uv = vec2(gl_GlobalInvocationID.x/windowWidth,gl_GlobalInvocationID.y/windowHeight);
 	
 	vec3 color = vec3(0,0,0);
 	for (int i=0; i<9; i++){
-		color += texture(bloomSampler, texCoord + vec2((i-4)/windowWidth,0)).rgb * gaussianKernel9_sigma1[i];
+		// edge clamp bottom border
+		vec2 currentUV = uv + vec2((i-4)/windowWidth,0);
+		currentUV.y = clamp(currentUV.y,0.0 + (1/windowWidth),1.0);
+		color += texture(sceneBrightnessSampler, currentUV).rgb * gaussianKernel9_sigma1[i];
+		
 	}
 
 	imageStore(horizontalBloomBlurSampler, computeCoord, vec4(color, 1.0));

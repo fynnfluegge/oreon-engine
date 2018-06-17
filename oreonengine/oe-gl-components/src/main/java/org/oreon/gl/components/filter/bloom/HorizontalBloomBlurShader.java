@@ -28,16 +28,16 @@ public class HorizontalBloomBlurShader extends GLShaderProgram{
 		
 		compileShader();
 		
-		addUniform("bloomSampler");
+		addUniform("sceneBrightnessSampler");
 		addUniform("windowWidth");
 		addUniform("windowHeight");
 	}
 	
-	public void updateUniforms(GLTexture bloomTexture, int width, int height)
+	public void updateUniforms(GLTexture sceneBrightnessSampler, int width, int height)
 	{
 		glActiveTexture(GL_TEXTURE0);
-		bloomTexture.bind();
-		setUniformi("bloomSampler", 0);
+		sceneBrightnessSampler.bind();
+		setUniformi("sceneBrightnessSampler", 0);
 		setUniformf("windowWidth", width);
 		setUniformf("windowHeight", height);
 	}

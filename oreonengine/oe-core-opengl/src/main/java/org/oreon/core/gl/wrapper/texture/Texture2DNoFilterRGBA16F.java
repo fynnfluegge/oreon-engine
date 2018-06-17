@@ -16,6 +16,7 @@ public class Texture2DNoFilterRGBA16F extends GLTexture{
 		bind();
 		allocateImage2D(GL_RGBA16F, GL_RGBA, GL_FLOAT);
 		noFilter();
+		clampToEdge();
 		unbind();
 	}
 

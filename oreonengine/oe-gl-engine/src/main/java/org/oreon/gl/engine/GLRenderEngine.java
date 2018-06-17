@@ -282,9 +282,9 @@ public class GLRenderEngine extends RenderEngine{
 			fullScreenQuad.render();
 		}
 		
-		contrastController.render(postProcessingTexture);
+//		contrastController.render(postProcessingTexture);
 		
-		fullScreenQuad.setTexture(contrastController.getContrastTexture());
+		fullScreenQuad.setTexture(postProcessingTexture);
 		fullScreenQuad.render();
 		
 		if (EngineContext.getConfig().isLensFlareEnabled()

@@ -21,6 +21,9 @@ import static org.lwjgl.opengl.GL11.glTexImage2D;
 import static org.lwjgl.opengl.GL11.glTexParameterf;
 import static org.lwjgl.opengl.GL11.glTexParameteri;
 import static org.lwjgl.opengl.GL12.GL_CLAMP_TO_EDGE;
+import static org.lwjgl.opengl.GL13.GL_CLAMP_TO_BORDER;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
+import static org.lwjgl.opengl.GL13.glActiveTexture;
 import static org.lwjgl.opengl.GL14.GL_MIRRORED_REPEAT;
 import static org.lwjgl.opengl.GL30.glGenerateMipmap;
 import static org.lwjgl.opengl.GL32.glTexImage2DMultisample;
@@ -118,6 +121,12 @@ public class GLTexture extends Image{
 		glTexParameteri(target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	}
 	
+	public void clampToBorder(){
+		
+		glTexParameteri(target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+		glTexParameteri(target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+	}
+	
 	public void repeat(){
 		
 		glTexParameteri(target, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -151,6 +160,11 @@ public class GLTexture extends Image{
 		
 		glTextureParameteriEXT(handle, target, GL_TEXTURE_WRAP_S, GL_MIRROR_CLAMP_TO_EDGE_EXT);
 		glTextureParameteriEXT(handle, target, GL_TEXTURE_WRAP_T, GL_MIRROR_CLAMP_TO_EDGE_EXT);
+	}
+	
+	public void activeTextureUnit(int unit){
+		
+		glActiveTexture(GL_TEXTURE0 + unit);
 	}
 	
 	public void allocateImage2D(int internalFormat, int format, int type, ByteBuffer data){
