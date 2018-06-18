@@ -25,7 +25,7 @@ public class TransparencyFbo extends GLFrameBufferObject{
 		GLTexture depthTexture = new Texture2DNoFilterDepth32F(width, height);
 		
 		attachments.put(Attachment.ALBEDO, albedoTexture);
-		attachments.put(Attachment.POSITION, alphaTexture);
+		attachments.put(Attachment.ALPHA, alphaTexture);
 		attachments.put(Attachment.LIGHT_SCATTERING, lightScatteringMask);
 		attachments.put(Attachment.DEPTH, depthTexture);
 		

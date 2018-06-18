@@ -1,10 +1,12 @@
 package org.oreon.gl.engine.transparency;
 
+import org.oreon.core.gl.framebuffer.GLFrameBufferObject;
 import org.oreon.core.gl.surface.FullScreenQuad;
 import org.oreon.core.gl.texture.GLTexture;
 
 public class OpaqueTransparencyBlending extends FullScreenQuad{
 	
+	private GLFrameBufferObject fbo;
 	private OpaqueTransparencyBlendingShader shader;
 	
 	public OpaqueTransparencyBlending() {

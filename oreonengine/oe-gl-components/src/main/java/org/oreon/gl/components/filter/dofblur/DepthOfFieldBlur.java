@@ -28,8 +28,6 @@ public class DepthOfFieldBlur {
 	private GLFramebuffer lowResFbo;
 	private FullScreenQuad fullScreenQuad;
 	private GLTexture lowResSceneSampler;
-	
-	
 		
 	public DepthOfFieldBlur() {
 		

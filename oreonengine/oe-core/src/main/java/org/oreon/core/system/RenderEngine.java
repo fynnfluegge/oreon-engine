@@ -1,7 +1,8 @@
 package org.oreon.core.system;
 
+import org.oreon.core.context.Configuration;
+import org.oreon.core.context.EngineContext;
 import org.oreon.core.platform.Camera;
-import org.oreon.core.platform.Window;
 import org.oreon.core.scenegraph.Scenegraph;
 
 import lombok.Getter;
@@ -10,13 +11,14 @@ public abstract class RenderEngine {
 
 	@Getter
 	protected Scenegraph sceneGraph;
-	
-	protected Window window;
+	protected Configuration config;
 	protected Camera camera;
 	
 	public void init(){
 		
 		sceneGraph = new Scenegraph();
+		config = EngineContext.getConfig();
+		camera = EngineContext.getCamera();
 	}
 	public abstract void render();
 	

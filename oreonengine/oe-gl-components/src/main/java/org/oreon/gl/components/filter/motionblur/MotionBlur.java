@@ -33,7 +33,7 @@ public class MotionBlur {
 		motionBlurShader = MotionBlurShader.getInstance();
 	}
 	
-	public void render(GLTexture depthmap, GLTexture sceneSampler) {
+	public void render(GLTexture sceneSampler, GLTexture depthmap) {
 		
 		pixelVelocityShader.bind();
 		glBindImageTexture(0, pixelVelocityTexture.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA32F);

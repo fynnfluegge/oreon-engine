@@ -28,6 +28,7 @@ import org.oreon.core.vk.descriptor.DescriptorPool;
 import org.oreon.core.vk.device.LogicalDevice;
 import org.oreon.core.vk.device.PhysicalDevice;
 import org.oreon.core.vk.device.VkDeviceBundle;
+import org.oreon.core.vk.framebuffer.VkFrameBufferObject;
 import org.oreon.core.vk.image.VkImageView;
 import org.oreon.core.vk.scenegraph.VkRenderInfo;
 import org.oreon.core.vk.swapchain.SwapChain;
@@ -46,9 +47,9 @@ public class VkRenderEngine extends RenderEngine{
 	private long surface;
 	private VkDeviceBundle majorDevice;
 
-	private OffScreenFbo offScreenFbo;
-	private ReflectionFbo reflectionFbo;
-	private TransparencyFbo transparencyFbo;
+	private VkFrameBufferObject offScreenFbo;
+	private VkFrameBufferObject reflectionFbo;
+	private VkFrameBufferObject transparencyFbo;
 	
 	private PrimaryCmdBuffer offScreenPrimaryCmdBuffer;
 	private LinkedHashMap<String, CommandBuffer> offScreenSecondaryCmdBuffers;
@@ -108,7 +109,6 @@ public class VkRenderEngine extends RenderEngine{
 	    descriptorPool.create();
 	    logicalDevice.addDescriptorPool(Thread.currentThread().getId(), descriptorPool);
 	    
-	    camera = EngineContext.getCamera();
 	    camera.init();
 	    
 	    offScreenFbo = new OffScreenFbo(logicalDevice.getHandle(),
@@ -117,6 +117,10 @@ public class VkRenderEngine extends RenderEngine{
 				physicalDevice.getMemoryProperties());
 	    transparencyFbo = new TransparencyFbo(logicalDevice.getHandle(),
 				physicalDevice.getMemoryProperties());
+	    
+	    VkContext.getResources().setOffScreenFbo(offScreenFbo);
+	    VkContext.getResources().setOffScreenReflectionFbo(reflectionFbo);
+	    VkContext.getResources().setTransparencyFbo(transparencyFbo);
 	    
 	    offScreenPrimaryCmdBuffer =  new PrimaryCmdBuffer(logicalDevice.getHandle(),
 	    		logicalDevice.getGraphicsCommandPool().getHandle());
@@ -127,10 +131,6 @@ public class VkRenderEngine extends RenderEngine{
 	    		logicalDevice.getGraphicsCommandPool().getHandle());
 	    transparencySubmitInfo = new SubmitInfo();
 	    transparencySubmitInfo.setCommandBuffers(transparencyPrimaryCmdBuffer.getHandlePointer());
-
-	    VkContext.getResources().setOffScreenFbo(offScreenFbo);
-	    VkContext.getResources().setOffScreenReflectionFbo(reflectionFbo);
-	    VkContext.getResources().setTransparencyFbo(transparencyFbo);
 	    
 	    sampleCoverageMask = new SampleCoverage(majorDevice,
 	    		EngineContext.getConfig().getX_ScreenResolution(),

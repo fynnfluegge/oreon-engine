@@ -14,4 +14,12 @@ public class GLFrameBufferObject extends FrameBufferObject{
 		
 		return attachments.get(attachment);
 	}
+	
+	public void bind(){
+		frameBuffer.bind();
+	}
+	
+	public void unbind(){
+		frameBuffer.unbind();
+	}
 }

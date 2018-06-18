@@ -187,7 +187,7 @@ public class Water extends Renderable{
 		fft.render();
 		normalmapRenderer.render(fft.getDy());
 		
-		GLContext.getResources().getDeferredFbo().bind();
+		GLContext.getResources().getOffScreenFbo().bind();
 		
 		if (EngineContext.getConfig().isRenderWireframe())
 		{
@@ -200,7 +200,7 @@ public class Water extends Renderable{
 		
 		// glFinish() important, to prevent conflicts with following compute shaders
 		glFinish();
-		GLContext.getResources().getDeferredFbo().unbind();
+		GLContext.getResources().getOffScreenFbo().unbind();
 	}
 		
 	public Vec4f getClipplane() {
