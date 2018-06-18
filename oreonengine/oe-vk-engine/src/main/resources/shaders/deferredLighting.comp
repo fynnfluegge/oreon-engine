@@ -87,7 +87,7 @@ void main(void){
 				diff = diffuse(vec3(0,-1,0), normal, 1);
 				spec = specular(vec3(0,-1,0), normal, eyePosition, position, specular_emission.r, specular_emission.g);
 				
-				vec3 diffuseLight = vec3(0.1,0.1,0.1) + vec3(1,1,1) * diff;
+				vec3 diffuseLight = vec3(0.01,0.01,0.01) + vec3(1,1,1) * diff;
 				vec3 specularLight = (vec3(1,1,1)) * spec;
 
 				// diff = diffuse(directional_light.direction, normal, directional_light.intensity);
