@@ -21,8 +21,8 @@ void main(void){
 	vec3 color = vec3(0,0,0);
 	for (int i=0; i<9; i++){
 		// edge clamp bottom border
-		vec2 currentUV = uv + vec2((i-4)/windowWidth,0);
-		currentUV.y = clamp(currentUV.y,0.0 + (1/windowWidth),1.0);
+		vec2 currentUV = uv + vec2((i-4.0)/windowWidth,0);
+		currentUV.y = clamp(currentUV.y,0.0 + (1.0/windowWidth),1.0);
 		color += texture(sceneBrightnessSampler, currentUV).rgb * gaussianKernel9_sigma1[i];
 		
 	}

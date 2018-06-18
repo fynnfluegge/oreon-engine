@@ -63,8 +63,8 @@ public class Water extends Renderable{
 		
 		renderConfig = new WaterRenderParameter();
 		
-		GLRenderInfo renderInfo = new GLRenderInfo(shader,renderConfig,meshBuffer);
-		GLRenderInfo wireframeRenderInfo = new GLRenderInfo(wireframeShader,renderConfig,meshBuffer);
+		GLRenderInfo renderInfo = new GLRenderInfo(shader, renderConfig, meshBuffer);
+		GLRenderInfo wireframeRenderInfo = new GLRenderInfo(wireframeShader, renderConfig, meshBuffer);
 		
 		dudv = new Texture2DTrilinearFilter("textures/water/dudv/dudv1.jpg");
 		caustics = new Texture2DTrilinearFilter("textures/water/caustics/caustics.jpg");
@@ -75,7 +75,7 @@ public class Water extends Renderable{
 		fft = new FFT(waterConfiguration.getN(), waterConfiguration.getL(),
 				waterConfiguration.getAmplitude(), waterConfiguration.getWindDirection(),
 				waterConfiguration.getWindSpeed(), waterConfiguration.getCapillarWavesSupression());
-		fft.setT_delta(waterConfiguration.getDelta_T());
+		fft.setT_delta(waterConfiguration.getT_delta());
 		fft.setChoppy(waterConfiguration.isChoppy());
 		fft.init();
 		
@@ -83,10 +83,10 @@ public class Water extends Renderable{
 		getNormalmapRenderer().setStrength(waterConfiguration.getNormalStrength());
 		
 		refractionRenderer = new RefracReflecRenderer(EngineContext.getWindow().getWidth()/2,
-													  EngineContext.getWindow().getHeight()/2);
+				EngineContext.getWindow().getHeight()/2);
 		
 		reflectionRenderer = new RefracReflecRenderer(EngineContext.getWindow().getWidth()/2,
-												 	  EngineContext.getWindow().getHeight()/2);
+				EngineContext.getWindow().getHeight()/2);
 	}	
 	
 	public void update()
@@ -121,7 +121,6 @@ public class Water extends Renderable{
 			GLContext.getObject(TerrainConfiguration.class).setWaterReflectionShift(
 					(int) (getClipplane().getW() * 2f));
 		}
-		
 		scenegraph.update();
 		
 		//render reflection to texture

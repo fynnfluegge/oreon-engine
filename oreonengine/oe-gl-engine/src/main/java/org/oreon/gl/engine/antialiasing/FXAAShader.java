@@ -29,7 +29,7 @@ public class FXAAShader extends GLShaderProgram{
 		
 		compileShader();
 		
-		addUniform("sceneTexture");
+		addUniform("sceneSampler");
 		addUniform("width");
 		addUniform("height");
 	} 
@@ -38,8 +38,8 @@ public class FXAAShader extends GLShaderProgram{
 		
 		glActiveTexture(GL_TEXTURE0);
 		sceneTexture.bind();
-		setUniformi("sceneTexture", 0);
-		setUniformi("width", EngineContext.getWindow().getWidth());
-		setUniformi("height", EngineContext.getWindow().getHeight());
+		setUniformi("sceneSampler", 0);
+		setUniformf("width", (float) EngineContext.getWindow().getWidth());
+		setUniformf("height", (float) EngineContext.getWindow().getHeight());
 	}
 }

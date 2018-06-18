@@ -20,7 +20,7 @@ void main(void){
 	
 	vec3 color = vec3(0,0,0);
 	for (int i=0; i<9; i++){
-		vec2 offset = vec2(0,(i-4)/windowHeight);
+		vec2 offset = vec2(0,(i-4.0)/windowHeight);
 		color += texture(horizontalBloomBlurSampler, uv + offset).rgb * gaussianKernel9_sigma1[i];
 	}
 

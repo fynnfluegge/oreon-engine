@@ -61,7 +61,6 @@ float fresnelApproximated(vec3 normal)
 float specularReflection(vec3 direction, vec3 normal, vec3 eyePosition, vec3 vertexPosition, float specularFactor, float emissionFactor)
 {
 	normal.xz *= 2.2;
-
 	vec3 reflectionVector = normalize(reflect(direction, normalize(normal)));
 	vec3 vertexToEye = normalize(eyePosition - vertexPosition);
 	
@@ -75,23 +74,21 @@ void main(void)
 	vertexToEye = normalize(eyePosition - position_FS);
 	float dist = length(eyePosition - position_FS);
 	
+	vec2 waveMotion = wind * vec2(motion);
+
 	// normal
-	vec3 normal = texture(normalmap, texCoord_FS + (wind*motion)).rgb;
+	vec3 normal = texture(normalmap, texCoord_FS + waveMotion).rgb;
 
 	normal = normalize(normal);
 	
-	if (dist < largeDetailRange-50){
-		
+	if (dist < largeDetailRange-50.0){
 		float attenuation = clamp(-dist/(largeDetailRange-50) + 1,0.0,1.0);
-		
 		vec3 bitangent = normalize(cross(tangent, normal));
 		mat3 TBN = mat3(tangent,bitangent,normal);
-		vec3 bumpNormal = texture(normalmap, texCoord_FS*8).rgb;
+		vec3 bumpNormal = texture(normalmap, texCoord_FS*8 + waveMotion).rgb;
 		bumpNormal.z *= 2.8;
 		bumpNormal.xy *= attenuation;
-		
 		bumpNormal = normalize(bumpNormal);
-		
 		normal = normalize(TBN * bumpNormal);
 	}
 	

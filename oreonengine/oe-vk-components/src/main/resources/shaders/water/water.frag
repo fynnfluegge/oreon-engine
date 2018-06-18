@@ -58,7 +58,7 @@ layout (push_constant, std430, row_major) uniform Constants{
 
 const float displacementRange = 100;
 const float Eta = 0.15; // Water
-const vec3 deepOceanColor = vec3(0.1,0.125,0.20);
+const vec3 deepOceanColor = vec3(0.1,0.125,0.24);
 const float zfar = 10000;
 const float znear = 0.1;
 vec3 vertexToEye;
@@ -92,21 +92,19 @@ void main(void)
 	vertexToEye = normalize(eyePosition - inPosition);
 	float dist = length(eyePosition - inPosition);
 	
+	vec2 waveMotion = constants.windDirection * vec2(ubo.motion);
+	
 	// normal
-	vec3 normal = (texture(normalmap, inUV + (constants.windDirection*ubo.motion)).rgb);
+	vec3 normal = texture(normalmap, inUV + waveMotion).rgb;
 	
 	if (dist < constants.highDetailRange-50){
-		
 		float attenuation = clamp(-dist/(constants.highDetailRange-50) + 1,0.0,1.0);
-		
 		vec3 bitangent = normalize(cross(inTangent, normal));
 		mat3 TBN = mat3(inTangent,bitangent,normal);
-		vec3 bumpNormal = normalize(texture(normalmap, inUV*8).rgb);
-		bumpNormal.z *= 2.8;
+		vec3 bumpNormal = texture(normalmap, inUV*8 + waveMotion).rgb;
+		bumpNormal.z *= 5;
 		bumpNormal.xy *= attenuation;
-		
 		bumpNormal = normalize(bumpNormal);
-		
 		normal = normalize(TBN * bumpNormal);
 	}
 	
@@ -130,7 +128,7 @@ void main(void)
 	
 	vec3 fragColor = (reflection + refraction);
 	
-	float spec = specularReflection(vec3(0,-1,0), normal.xzy, eyePosition, inPosition, constants.specular, constants.emission);
+	float spec = specularReflection(normalize(vec3(1,-2,1)), normal.xzy, eyePosition, inPosition, constants.specular, constants.emission);
 	vec3 specularLight = (vec3(1,1,1)) * spec;
 	// float spec = specularReflection(directional_light.direction, normal.xzy, eyePosition, position_FS, specular, emission);
 	// vec3 specularLight = (directional_light.color + vec3(0,0.03,0.08)) * spec;

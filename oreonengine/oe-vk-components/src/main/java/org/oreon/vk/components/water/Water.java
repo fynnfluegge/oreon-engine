@@ -94,6 +94,7 @@ public class Water extends Renderable{
 	@Getter
 	private WaterConfiguration waterConfiguration;
 
+	private long systemTime = System.currentTimeMillis();
 	private FFT fft;
 	private Vec4f clipplane;
 	private float clip_offset;
@@ -229,7 +230,7 @@ public class Water extends Renderable{
 	    		VK_SAMPLER_ADDRESS_MODE_REPEAT);
 		
 		fft = new FFT(deviceBundle,
-				waterConfiguration.getN(), waterConfiguration.getL(),
+				waterConfiguration.getN(), waterConfiguration.getL(), waterConfiguration.getT_delta(),
 				waterConfiguration.getAmplitude(), waterConfiguration.getWindDirection(),
 				waterConfiguration.getWindSpeed(), waterConfiguration.getCapillarWavesSupression());
 		
@@ -592,8 +593,10 @@ public class Water extends Renderable{
 		fence.waitForFence();
 		refractionMipmapSubmitInfo.submit(graphicsQueue);
 		
-		float[] v = {motion += waterConfiguration.getWaveMotion(),
-				distortion += waterConfiguration.getDistortion()};
+		motion += (System.currentTimeMillis() - systemTime) * waterConfiguration.getWaveMotion();
+		distortion += (System.currentTimeMillis() - systemTime) * waterConfiguration.getDistortion();
+		float[] v = {motion, distortion};
 		uniformBuffer.mapMemory(BufferUtil.createByteBuffer(v));
+		systemTime = System.currentTimeMillis();
 	}
 }

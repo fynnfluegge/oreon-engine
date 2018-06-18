@@ -45,7 +45,7 @@ layout(set = 1, binding = 7) uniform UBO {
 	float distortion;
 } ubo;
 
-int displacementRange = 2000;
+int displacementRange = 1000;
 vec3 tangent;
 
 void calcTangent()
@@ -86,7 +86,10 @@ void main()
 			
 	if (dist < displacementRange+100)
 	{	
-		calcTangent();
+	
+		if (dist < constants.highDetailRange){
+			calcTangent();
+		}
 		
 		dy = texture(Dy, inUV[0]+(constants.windDirection*ubo.motion)).r
 			* max(0,(- distance(gl_in[0].gl_Position.xyz, eyePosition)/displacementRange + 1)) * constants.displacementScale;

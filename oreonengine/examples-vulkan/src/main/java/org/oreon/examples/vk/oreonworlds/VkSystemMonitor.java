@@ -25,17 +25,17 @@ public class VkSystemMonitor extends VkGUI {
 		bean = (com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
 		UIScreen screen0 = new UIScreen();
 		screen0.setElements(new UIElement[6]);
-		screen0.getElements()[0] = new VkColorPanel(new Vec4f(0,0,0,0.5f), 0, 225, 325, 225,
+		screen0.getElements()[0] = new VkColorPanel(new Vec4f(0,0,0,0.5f), 960, 225, 325, 225,
 				panelMeshBuffer, guiOverlayFbo);
-		screen0.getElements()[1] = new VkStaticTextPanel("FPS:", 20, 40, 40, 40,
+		screen0.getElements()[1] = new VkStaticTextPanel("FPS:", 1020, 40, 40, 40,
 				fontsImageBundle.getImageView(), fontsImageBundle.getSampler(), guiOverlayFbo);
-		screen0.getElements()[2] = new VkStaticTextPanel("CPU:", 20, 90, 40, 40,
+		screen0.getElements()[2] = new VkStaticTextPanel("CPU:", 1020, 90, 40, 40,
 				fontsImageBundle.getImageView(), fontsImageBundle.getSampler(), guiOverlayFbo);
-		screen0.getElements()[3] = new VkDynamicTextPanel("000", 120, 40, 40, 40,
+		screen0.getElements()[3] = new VkDynamicTextPanel("000", 1120, 40, 40, 40,
 				fontsImageBundle.getImageView(), fontsImageBundle.getSampler(), guiOverlayFbo);
-		screen0.getElements()[4] = new VkDynamicTextPanel("000", 120, 90, 40, 40,
+		screen0.getElements()[4] = new VkDynamicTextPanel("000", 1120, 90, 40, 40,
 				fontsImageBundle.getImageView(), fontsImageBundle.getSampler(), guiOverlayFbo);
-		screen0.getElements()[5] = new VkTexturePanel("textures/logo/VulkanLogo.png", 10, 210, 300, 90,
+		screen0.getElements()[5] = new VkTexturePanel("textures/logo/VulkanLogo.png", 970, 210, 300, 90,
 				panelMeshBuffer, guiOverlayFbo);
 		getScreens().add(screen0);
 	}

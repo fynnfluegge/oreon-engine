@@ -32,6 +32,7 @@ public class FFT {
 	private int N;
 	@Setter
 	private float t;
+	private long systemTime = System.currentTimeMillis();
 	@Setter
 	private float t_delta;
 	private ButterflyShader butterflyShader;
@@ -182,6 +183,7 @@ public class FFT {
 			glFinish();
 		}
 			
-		t += t_delta;
+		t += (System.currentTimeMillis() - systemTime) * t_delta;
+		systemTime = System.currentTimeMillis();
 	}
 }

@@ -51,7 +51,7 @@ public class Hkt extends Renderable{
 	private Fence fence;
 	
 	private float t;
-	private float t_delta = 280;
+	private float t_delta;
 	private long systemTime = System.currentTimeMillis();
 	
 	private VkImage image_dxCoefficients;
@@ -65,8 +65,10 @@ public class Hkt extends Renderable{
 	private CommandBuffer commandBuffer;
 	private SubmitInfo submitInfo;
 	
-	public Hkt(VkDeviceBundle deviceBundle, int N, int L,
+	public Hkt(VkDeviceBundle deviceBundle, int N, int L, float t_delta,
 			VkImageView tilde_h0k, VkImageView tilde_h0minusk) {
+		
+		this.t_delta = t_delta;
 		
 		VkDevice device = deviceBundle.getLogicalDevice().getHandle();
 		VkPhysicalDeviceMemoryProperties memoryProperties = deviceBundle.getPhysicalDevice().getMemoryProperties();
@@ -169,14 +171,10 @@ public class Hkt extends Renderable{
 	
 	public void render(){
 		
-		t += (System.currentTimeMillis() - systemTime) / t_delta;
-		
+		t += (System.currentTimeMillis() - systemTime) * t_delta;
 		float[] v = {t};
-		
 		buffer.mapMemory(BufferUtil.createByteBuffer(v));
-		
 		submitInfo.submit(queue);
-		
 		systemTime = System.currentTimeMillis();
 	}
 	

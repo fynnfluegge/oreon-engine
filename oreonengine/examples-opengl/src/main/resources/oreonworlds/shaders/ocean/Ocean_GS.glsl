@@ -13,13 +13,14 @@ uniform vec3 eyePosition;
 uniform vec4 frustumPlanes[6];
 uniform float motion;
 uniform float displacementScale;
+uniform int largeDetailRange;
 uniform sampler2D Dy;
 uniform sampler2D Dx;
 uniform sampler2D Dz;
 uniform float choppiness;
 
 vec2 wind = vec2(1,0);
-int displacementRange = 2000;
+const int displacementRange = 1000;
 vec3 Tangent;
 
 void calcTangent()
@@ -57,8 +58,9 @@ void main()
 	float dist = (distance(gl_in[0].gl_Position.xyz, eyePosition) + distance(gl_in[1].gl_Position.xyz, eyePosition) + distance(gl_in[0].gl_Position.xyz, eyePosition))/3;
 	if (dist < displacementRange+100)
 	{	
-		calcTangent();
-		
+		if (dist < largeDetailRange){
+			calcTangent();
+		}
 		
 		dy = texture(Dy, texCoord_GS[0]+(wind*motion)).r * max(0,(- distance(gl_in[0].gl_Position.xyz, eyePosition)/displacementRange + 1)) * displacementScale;
 		dx = texture(Dx, texCoord_GS[0]+(wind*motion)).r * max(0,(- distance(gl_in[0].gl_Position.xyz, eyePosition)/displacementRange + 1)) * choppiness;

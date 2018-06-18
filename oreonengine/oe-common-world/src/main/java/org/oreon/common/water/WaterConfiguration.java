@@ -34,7 +34,7 @@ public class WaterConfiguration {
 	private float distortion;
 	private float waveMotion;
 	private float normalStrength;
-	private float delta_T;
+	private float t_delta;
 	private boolean choppy;
 	
 	public void loadFile(String file)
@@ -69,7 +69,7 @@ public class WaterConfiguration {
 		kRefraction = Float.valueOf(properties.getProperty("kRefraction"));
 		normalStrength = Float.valueOf(properties.getProperty("normalStrength"));
 		highDetailRange = Integer.valueOf(properties.getProperty("highDetailRange"));
-		delta_T = Float.valueOf(properties.getProperty("delta_T"));
+		t_delta = Float.valueOf(properties.getProperty("t_delta"));
 		choppy = Boolean.valueOf(properties.getProperty("choppy"));
 	}
 }

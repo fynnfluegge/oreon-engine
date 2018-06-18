@@ -4,8 +4,6 @@ layout (local_size_x = 16, local_size_y = 16) in;
 
 layout (binding = 0, rgba16f) uniform writeonly image2D fxaaScene_out;
 
-layout (binding = 1, rgba16f) uniform readonly image2D sceneImage_in;
-
 // uniform vec2 u_texelStep = vec2(1f,1f);
 // uniform float u_lumaThreshold = 0.5f;
 // uniform float u_mulReduce = 8.0f;
@@ -13,10 +11,10 @@ layout (binding = 1, rgba16f) uniform readonly image2D sceneImage_in;
 // uniform float u_maxSpan = 2.0f;
 // uniform int u_showEdges = 0;
 
-uniform int width;
-uniform int height;
+uniform float width;
+uniform float height;
 
-uniform sampler2D sceneTexture;
+uniform sampler2D sceneSampler;
 
 const float EDGE_THRESHOLD_MIN = 0.0312;
 const float EDGE_THRESHOLD_MAX = 0.125;
@@ -32,20 +30,20 @@ void main(){
 
 	ivec2 computeCoord = ivec2(gl_GlobalInvocationID.x, gl_GlobalInvocationID.y);
 	
-	vec2 uv = vec2(gl_GlobalInvocationID.x/float(width), gl_GlobalInvocationID.y/float(height));
+	vec2 uv = vec2(gl_GlobalInvocationID.x/width, gl_GlobalInvocationID.y/height);
 	
-	vec2 inverseScreenSize = vec2(1.0/float(width), 1.0/float(height));
+	vec2 inverseScreenSize = vec2(1.0/width, 1.0/height);
 	
-	vec3 rgb = imageLoad(sceneImage_in, computeCoord).rgb;
+	vec3 rgb = texture(sceneSampler, uv).rgb;
 	
 	// Luma at the current fragment
 	float lumaCenter = rgb2luma(rgb);
 
 	// Luma at the four direct neighbours of the current fragment.
-	float lumaDown = rgb2luma(imageLoad(sceneImage_in,computeCoord + ivec2(0,-1)).rgb);
-	float lumaUp = rgb2luma(imageLoad(sceneImage_in,computeCoord + ivec2(0,1)).rgb);
-	float lumaLeft = rgb2luma(imageLoad(sceneImage_in,computeCoord + ivec2(-1,0)).rgb);
-	float lumaRight = rgb2luma(imageLoad(sceneImage_in,computeCoord + ivec2(1,0)).rgb);
+	float lumaDown = rgb2luma(texture(sceneSampler,uv + vec2(0,-1.0/height)).rgb);
+	float lumaUp = rgb2luma(texture(sceneSampler,uv + vec2(0,1.0/height)).rgb);
+	float lumaLeft = rgb2luma(texture(sceneSampler,uv + vec2(-1.0/width,0)).rgb);
+	float lumaRight = rgb2luma(texture(sceneSampler,uv + vec2(1.0/width,0)).rgb);
 
 	// Find the maximum and minimum luma around the current fragment.
 	float lumaMin = min(lumaCenter,min(min(lumaDown,lumaUp),min(lumaLeft,lumaRight)));
@@ -54,17 +52,17 @@ void main(){
 	// Compute the delta.
 	float lumaRange = lumaMax - lumaMin;
 
-	// If the luma variation is lower that a threshold (or if we are in a really dark area), we are not on an edge, don't perform any AA.
+	// If the luma variation is lower than a threshold (or if we are in a really dark area), we are not on an edge, don't perform any AA.
 	if(lumaRange < max(EDGE_THRESHOLD_MIN,lumaMax*EDGE_THRESHOLD_MAX)){
 		imageStore(fxaaScene_out, computeCoord, vec4(rgb, 1.0));
 		return;
 	}
 	
 	// Query the 4 remaining corners lumas.
-	float lumaDownLeft = rgb2luma(imageLoad(sceneImage_in,computeCoord + ivec2(-1,-1)).rgb);
-	float lumaUpRight = rgb2luma(imageLoad(sceneImage_in,computeCoord + ivec2(1,1)).rgb);
-	float lumaUpLeft = rgb2luma(imageLoad(sceneImage_in,computeCoord + ivec2(-1,1)).rgb);
-	float lumaDownRight = rgb2luma(imageLoad(sceneImage_in,computeCoord + ivec2(1,-1)).rgb);
+	float lumaDownLeft = rgb2luma(texture(sceneSampler,uv + vec2(-1.0/width,-1.0/height)).rgb);
+	float lumaUpRight = rgb2luma(texture(sceneSampler,uv + vec2(1.0/width,1.0/height)).rgb);
+	float lumaUpLeft = rgb2luma(texture(sceneSampler,uv + vec2(-1.0/width,1.0/height)).rgb);
+	float lumaDownRight = rgb2luma(texture(sceneSampler,uv + vec2(1.0/width,-1.0/height)).rgb);
 
 	// Combine the four edges lumas (using intermediary variables for future computations with the same values).
 	float lumaDownUp = lumaDown + lumaUp;
@@ -125,8 +123,8 @@ void main(){
 	vec2 uv2 = currentUv + offset;
 
 	// Read the lumas at both current extremities of the exploration segment, and compute the delta wrt to the local average luma.
-	float lumaEnd1 = rgb2luma(texture(sceneTexture, uv1).rgb);
-	float lumaEnd2 = rgb2luma(texture(sceneTexture, uv2).rgb);
+	float lumaEnd1 = rgb2luma(texture(sceneSampler, uv1).rgb);
+	float lumaEnd2 = rgb2luma(texture(sceneSampler, uv2).rgb);
 	lumaEnd1 -= lumaLocalAverage;
 	lumaEnd2 -= lumaLocalAverage;
 
@@ -149,12 +147,12 @@ void main(){
 		for(int i = 0; i < ITERATIONS; i++){
 			// If needed, read luma in 1st direction, compute delta.
 			if(!reached1){
-				lumaEnd1 = rgb2luma(texture(sceneTexture, uv1).rgb);
+				lumaEnd1 = rgb2luma(texture(sceneSampler, uv1).rgb);
 				lumaEnd1 = lumaEnd1 - lumaLocalAverage;
 			}
 			// If needed, read luma in opposite direction, compute delta.
 			if(!reached2){
-				lumaEnd2 = rgb2luma(texture(sceneTexture, uv2).rgb);
+				lumaEnd2 = rgb2luma(texture(sceneSampler, uv2).rgb);
 				lumaEnd2 = lumaEnd2 - lumaLocalAverage;
 			}
 			// If the luma deltas at the current extremities is larger than the local gradient, we have reached the side of the edge.
@@ -220,7 +218,7 @@ void main(){
 	}
 
 	// Read the color at the new UV coordinates, and use it.
-	vec3 finalColor = texture(sceneTexture, finalUv).rgb;
+	vec3 finalColor = texture(sceneSampler, finalUv).rgb;
 	
 	imageStore(fxaaScene_out, computeCoord, vec4(finalColor, 1.0));	
 }

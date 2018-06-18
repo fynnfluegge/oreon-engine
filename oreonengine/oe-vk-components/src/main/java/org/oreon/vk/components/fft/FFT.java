@@ -100,7 +100,7 @@ public class FFT extends Renderable{
 	private Fence dxFence;
 	private Fence dzFence;
 	
-	public FFT(VkDeviceBundle deviceBundle, int N, int L,
+	public FFT(VkDeviceBundle deviceBundle, int N, int L, float t_delta,
 			float amplitude, Vec2f direction, float intensity, float capillarSupressFactor) {
 		
 		VkDevice device = deviceBundle.getLogicalDevice().getHandle();
@@ -154,7 +154,7 @@ public class FFT extends Renderable{
 		
 		twiddleFactors = new TwiddleFactors(deviceBundle, N);
 		h0k = new H0k(deviceBundle, N, L, amplitude, direction, intensity, capillarSupressFactor);
-		hkt = new Hkt(deviceBundle, N, L, h0k.getH0k_imageView(), h0k.getH0minusk_imageView());
+		hkt = new Hkt(deviceBundle, N, L, t_delta, h0k.getH0k_imageView(), h0k.getH0minusk_imageView());
 		
 		ByteBuffer ubo = memAlloc(Integer.BYTES * 3);
 		ubo.putInt(0);
