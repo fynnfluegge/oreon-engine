@@ -24,8 +24,7 @@ public class ParallelSplitShadowMapsFbo {
 		config = new ShadowConfig();
 		
 		depthMaps = new Texture2DArrayDepth32F(Constants.PSSM_SHADOWMAP_RESOLUTION,
-										   	   Constants.PSSM_SHADOWMAP_RESOLUTION,
-										   	   Constants.PSSM_SPLITS);
+				Constants.PSSM_SHADOWMAP_RESOLUTION, Constants.PSSM_SPLITS);
 		
 		fbo = new GLFramebuffer();
 		fbo.bind();

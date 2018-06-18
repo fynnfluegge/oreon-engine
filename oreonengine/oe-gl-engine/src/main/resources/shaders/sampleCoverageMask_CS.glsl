@@ -59,5 +59,5 @@ void main()
 	}
 			  
 	imageStore(sampleCoverageMaskImage, computeCoord, vec4(coverageValue,0,0,1));
-	imageStore(lightScatteringMask_out, computeCoord, vec4(lightScatteringMaskValue.x,lightScatteringMaskValue.x,lightScatteringMaskValue.x,lightScatteringMaskValue.y));
+	imageStore(lightScatteringMask_out, computeCoord, vec4(vec3(lightScatteringMaskValue.x),lightScatteringMaskValue.y));
 }

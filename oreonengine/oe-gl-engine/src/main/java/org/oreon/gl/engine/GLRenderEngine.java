@@ -3,16 +3,11 @@ package org.oreon.gl.engine;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glViewport;
-import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT0;
-import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT1;
-
-import java.nio.IntBuffer;
 
 import org.lwjgl.glfw.GLFW;
 import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.context.GLContext;
 import org.oreon.core.gl.framebuffer.GLFrameBufferObject;
-import org.oreon.core.gl.framebuffer.GLFramebuffer;
 import org.oreon.core.gl.light.GLDirectionalLight;
 import org.oreon.core.gl.picking.TerrainPicking;
 import org.oreon.core.gl.shadow.ParallelSplitShadowMapsFbo;
@@ -20,14 +15,11 @@ import org.oreon.core.gl.surface.FullScreenMultisampleQuad;
 import org.oreon.core.gl.surface.FullScreenQuad;
 import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.gl.util.GLUtil;
-import org.oreon.core.gl.wrapper.texture.Texture2DBilinearFilterRGBA16F;
-import org.oreon.core.gl.wrapper.texture.Texture2DNoFilterRGBA16F;
 import org.oreon.core.instanced.InstancedHandler;
 import org.oreon.core.light.LightHandler;
 import org.oreon.core.scenegraph.Scenegraph;
 import org.oreon.core.system.RenderEngine;
 import org.oreon.core.target.FrameBufferObject.Attachment;
-import org.oreon.core.util.BufferUtil;
 import org.oreon.core.util.Constants;
 import org.oreon.gl.components.filter.bloom.Bloom;
 import org.oreon.gl.components.filter.contrast.ContrastController;
@@ -57,13 +49,6 @@ public class GLRenderEngine extends RenderEngine{
 	private FXAA fxaa;
 	
 	private InstancedHandler instancingObjectHandler;
-	
-	private GLFramebuffer finalSceneFbo;
-	private GLTexture finalSceneTexture;
-	private GLTexture sceneDepthmap;
-	private GLTexture lightScatteringSampleCoverageTexture;
-	private GLTexture finalLightScatteringMask;
-	private GLTexture postProcessingTexture;
 	
 	private DeferredLighting deferredLighting;
 	private OpaqueTransparencyBlending opaqueTransparencyBlending;
@@ -114,12 +99,13 @@ public class GLRenderEngine extends RenderEngine{
 		fullScreenQuad = new FullScreenQuad();
 		fullScreenQuadMultisample = new FullScreenMultisampleQuad();
 		pssmFbo = new ParallelSplitShadowMapsFbo();
-		sampleCoverage = new SampleCoverage();
+		sampleCoverage = new SampleCoverage(config.getX_ScreenResolution(), config.getY_ScreenResolution());
 		fxaa = new FXAA();
 		
 		deferredLighting = new DeferredLighting(config.getX_ScreenResolution(),
 				config.getY_ScreenResolution());
-		opaqueTransparencyBlending = new OpaqueTransparencyBlending();
+		opaqueTransparencyBlending = new OpaqueTransparencyBlending(config.getX_ScreenResolution(),
+				config.getY_ScreenResolution());
 		
 		motionBlur = new MotionBlur();
 		dofBlur = new DepthOfFieldBlur();
@@ -130,25 +116,7 @@ public class GLRenderEngine extends RenderEngine{
 		underWaterRenderer = new UnderWaterRenderer();
 		contrastController = new ContrastController();
 		
-		lightScatteringSampleCoverageTexture = new Texture2DBilinearFilterRGBA16F(
-				config.getX_ScreenResolution(), config.getY_ScreenResolution());
-		finalSceneTexture = new Texture2DBilinearFilterRGBA16F(
-				config.getX_ScreenResolution(), config.getY_ScreenResolution());
-		finalLightScatteringMask = new Texture2DNoFilterRGBA16F(
-				config.getX_ScreenResolution(), config.getY_ScreenResolution());
-		
-		IntBuffer drawBuffers = BufferUtil.createIntBuffer(2);
-		drawBuffers.put(GL_COLOR_ATTACHMENT0);
-		drawBuffers.put(GL_COLOR_ATTACHMENT1);
-		drawBuffers.flip();
-		
-		finalSceneFbo = new GLFramebuffer();
-		finalSceneFbo.bind();
-		finalSceneFbo.createColorTextureAttachment(finalSceneTexture.getHandle(),0);
-		finalSceneFbo.createColorTextureAttachment(finalLightScatteringMask.getHandle(),1);
-		finalSceneFbo.setDrawBuffers(drawBuffers);
-		finalSceneFbo.checkStatus();
-		finalSceneFbo.unbind();
+		GLContext.getResources().setSceneDepthMap(offScreenFbo.getAttachmentTexture(Attachment.DEPTH));
 	}
 	
 	@Override
@@ -156,7 +124,6 @@ public class GLRenderEngine extends RenderEngine{
 
 		GLDirectionalLight.getInstance().update();
 
-		GLContext.getResources().setSceneDepthMap(sceneDepthmap);
 		GLUtil.clearScreen();
 		
 		// render shadow maps into pssm framebuffer
@@ -184,8 +151,7 @@ public class GLRenderEngine extends RenderEngine{
 		
 		// render post processing sample coverage mask
 		sampleCoverage.render(offScreenFbo.getAttachmentTexture(Attachment.POSITION),
-				offScreenFbo.getAttachmentTexture(Attachment.LIGHT_SCATTERING),
-				lightScatteringSampleCoverageTexture);
+				offScreenFbo.getAttachmentTexture(Attachment.LIGHT_SCATTERING));
 		
 		// render deferred lighting scene with multisampling
 		deferredLighting.render(sampleCoverage.getSampleCoverageMask(), ssao.getSsaoBlurSceneTexture(),
@@ -205,15 +171,13 @@ public class GLRenderEngine extends RenderEngine{
 		
 		// blend scene/transparent layers
 		// render opaque + transparent (final scene) objects into main offscreen framebuffer
-		finalSceneFbo.bind();
 		opaqueTransparencyBlending.render(deferredLighting.getDeferredLightingSceneTexture(),
 				offScreenFbo.getAttachmentTexture(Attachment.DEPTH),
-				lightScatteringSampleCoverageTexture,
+				sampleCoverage.getLightScatteringMaskDownSampled(),
 				transparencyFbo.getAttachmentTexture(Attachment.ALBEDO),
 				transparencyFbo.getAttachmentTexture(Attachment.DEPTH),
 				transparencyFbo.getAttachmentTexture(Attachment.ALPHA),
 				transparencyFbo.getAttachmentTexture(Attachment.LIGHT_SCATTERING));
-		finalSceneFbo.unbind();
 		
 		// start Threads to update instancing objects
 		instancingObjectHandler.signalAll();
@@ -224,18 +188,18 @@ public class GLRenderEngine extends RenderEngine{
 				((GLTerrain) sceneGraph.getTerrain()).getQuadtree().signal();
 			}
 		}
-
 		
 		// render post processing filters
-		postProcessingTexture = finalSceneTexture;
+		GLTexture displayTexture = opaqueTransparencyBlending.getAttachment(Attachment.ALBEDO);
+		GLTexture lightScatteringMaskTexture = opaqueTransparencyBlending.getAttachment(Attachment.LIGHT_SCATTERING);
 		
 		boolean doMotionBlur = camera.getPreviousPosition().sub(camera.getPosition()).length() > 0.04f
 				|| camera.getForward().sub(camera.getPreviousForward()).length() > 0.01f;
 				
 		// perform FXAA
 		if (!doMotionBlur && EngineContext.getConfig().isFxaaEnabled()){
-			fxaa.render(postProcessingTexture);
-			postProcessingTexture = fxaa.getFxaaSceneTexture();
+			fxaa.render(displayTexture);
+			displayTexture = fxaa.getFxaaSceneTexture();
 		}
 			
 		if (renderPostProcessingEffects){
@@ -243,34 +207,34 @@ public class GLRenderEngine extends RenderEngine{
 			// Depth of Field Blur
 			if (EngineContext.getConfig().isDepthOfFieldBlurEnabled()){
 				dofBlur.render(offScreenFbo.getAttachmentTexture(Attachment.DEPTH),
-						finalLightScatteringMask, postProcessingTexture,
+						lightScatteringMaskTexture, displayTexture,
 						config.getX_ScreenResolution(), config.getY_ScreenResolution());
-				postProcessingTexture = dofBlur.getVerticalBlurSceneTexture();
+				displayTexture = dofBlur.getVerticalBlurSceneTexture();
 			}
 			
 			// Bloom
 			if (EngineContext.getConfig().isBloomEnabled()){
-				bloom.render(postProcessingTexture);
-				postProcessingTexture = bloom.getBloomSceneTexture();
+				bloom.render(displayTexture);
+				displayTexture = bloom.getBloomSceneTexture();
 			}
 			
 			// underwater
 			if (EngineContext.getConfig().isRenderUnderwater()){
-				underWaterRenderer.render(postProcessingTexture,
+				underWaterRenderer.render(displayTexture,
 						offScreenFbo.getAttachmentTexture(Attachment.DEPTH));
-				postProcessingTexture = underWaterRenderer.getUnderwaterSceneTexture();
+				displayTexture = underWaterRenderer.getUnderwaterSceneTexture();
 			}
 			
 			// Motion Blur
 			if (doMotionBlur && EngineContext.getConfig().isMotionBlurEnabled()){
-				motionBlur.render(postProcessingTexture,
+				motionBlur.render(displayTexture,
 						offScreenFbo.getAttachmentTexture(Attachment.DEPTH));
-				postProcessingTexture = motionBlur.getMotionBlurSceneTexture();
+				displayTexture = motionBlur.getMotionBlurSceneTexture();
 			}
 			
 			if (EngineContext.getConfig().isLightScatteringEnabled()){
-				sunlightScattering.render(postProcessingTexture, finalLightScatteringMask);
-				postProcessingTexture = sunlightScattering.getSunLightScatteringSceneTexture();
+				sunlightScattering.render(displayTexture, lightScatteringMaskTexture);
+				displayTexture = sunlightScattering.getSunLightScatteringSceneTexture();
 			}
 		}
 		
@@ -302,7 +266,7 @@ public class GLRenderEngine extends RenderEngine{
 		
 //		contrastController.render(postProcessingTexture);
 		
-		fullScreenQuad.setTexture(postProcessingTexture);
+		fullScreenQuad.setTexture(displayTexture);
 		fullScreenQuad.render();
 		
 		if (EngineContext.getConfig().isLensFlareEnabled()
