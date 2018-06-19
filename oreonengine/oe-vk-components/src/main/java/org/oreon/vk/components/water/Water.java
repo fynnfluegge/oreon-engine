@@ -210,22 +210,22 @@ public class Water extends Renderable{
 				VK_IMAGE_ASPECT_COLOR_BIT,
 				Util.getLog2N(offScreenReflecRefracFbo.getWidth()));
 		
-		dxSampler = new VkSampler(device.getHandle(), VK_FILTER_LINEAR, false, 1,
+		dxSampler = new VkSampler(device.getHandle(), VK_FILTER_LINEAR, false, 0,
 				VK_SAMPLER_MIPMAP_MODE_NEAREST, 0, VK_SAMPLER_ADDRESS_MODE_REPEAT);
-	    dySampler = new VkSampler(device.getHandle(), VK_FILTER_LINEAR, false, 1,
+	    dySampler = new VkSampler(device.getHandle(), VK_FILTER_LINEAR, false, 0,
 	    		VK_SAMPLER_MIPMAP_MODE_NEAREST, 0, VK_SAMPLER_ADDRESS_MODE_REPEAT);
-	    dzSampler = new VkSampler(device.getHandle(), VK_FILTER_LINEAR, false, 1,
+	    dzSampler = new VkSampler(device.getHandle(), VK_FILTER_LINEAR, false, 0,
 	    		VK_SAMPLER_MIPMAP_MODE_NEAREST, 0, VK_SAMPLER_ADDRESS_MODE_REPEAT);
-	    dudvSampler = new VkSampler(device.getHandle(), VK_FILTER_LINEAR, true, 8,
+	    dudvSampler = new VkSampler(device.getHandle(), VK_FILTER_LINEAR, false, 0,
 	    		VK_SAMPLER_MIPMAP_MODE_LINEAR, Util.getMipLevelCount(image_dudv.getMetaData()),
 	    		VK_SAMPLER_ADDRESS_MODE_REPEAT);
-	    normalSampler = new VkSampler(device.getHandle(), VK_FILTER_LINEAR, true, 8,
+	    normalSampler = new VkSampler(device.getHandle(), VK_FILTER_LINEAR, false, 0,
 	    		VK_SAMPLER_MIPMAP_MODE_LINEAR, Util.getLog2N(waterConfiguration.getN()),
 	    		VK_SAMPLER_ADDRESS_MODE_REPEAT);
-	    reflectionSampler = new VkSampler(device.getHandle(), VK_FILTER_LINEAR, false, 8,
+	    reflectionSampler = new VkSampler(device.getHandle(), VK_FILTER_LINEAR, false, 0,
 	    		VK_SAMPLER_MIPMAP_MODE_LINEAR, Util.getLog2N(offScreenReflecRefracFbo.getWidth()),
 	    		VK_SAMPLER_ADDRESS_MODE_REPEAT);
-	    refractionSampler = new VkSampler(device.getHandle(), VK_FILTER_LINEAR, true, 8,
+	    refractionSampler = new VkSampler(device.getHandle(), VK_FILTER_LINEAR, false, 0,
 	    		VK_SAMPLER_MIPMAP_MODE_LINEAR, Util.getLog2N(offScreenReflecRefracFbo.getWidth()),
 	    		VK_SAMPLER_ADDRESS_MODE_REPEAT);
 		
@@ -544,7 +544,7 @@ public class Water extends Renderable{
 					offScreenReflecRefracFbo.getWidth(),
 					offScreenReflecRefracFbo.getHeight(),
 					offScreenReflecRefracFbo.getColorAttachmentCount(),
-					offScreenReflecRefracFbo.getDepthAttachment(),
+					offScreenReflecRefracFbo.getDepthAttachmentCount(),
 					VkUtil.createPointerBuffer(reflectionSecondaryCmdBuffers.values()));
 			offScreenReflectionSubmitInfo.submit(
 					graphicsQueue);
@@ -581,7 +581,7 @@ public class Water extends Renderable{
 					offScreenReflecRefracFbo.getWidth(),
 					offScreenReflecRefracFbo.getHeight(),
 					offScreenReflecRefracFbo.getColorAttachmentCount(),
-					offScreenReflecRefracFbo.getDepthAttachment(),
+					offScreenReflecRefracFbo.getDepthAttachmentCount(),
 					Constants.DEEPOCEAN_COLOR,
 					VkUtil.createPointerBuffer(refractionSecondaryCmdBuffers.values()));
 			offScreenRefractionSubmitInfo.submit(

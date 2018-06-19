@@ -8,7 +8,7 @@ public abstract class FrameBufferObject {
 	protected int height; 
 	protected int width;
 	protected int colorAttachmentCount;
-	protected int depthAttachment;
+	protected int depthAttachmentCount;
 	
 	public enum Attachment {
 		

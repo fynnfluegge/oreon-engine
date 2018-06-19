@@ -227,7 +227,7 @@ public class VkGUI extends GUI{
 					guiOverlayFbo.getWidth(),
 					guiOverlayFbo.getHeight(),
 					guiOverlayFbo.getColorAttachmentCount(),
-					guiOverlayFbo.getDepthAttachment(),
+					guiOverlayFbo.getDepthAttachmentCount(),
 					VkUtil.createPointerBuffer(guiSecondaryCmdBuffers.values()));
 			
 			guiSubmitInfo.submit(queue);
@@ -269,8 +269,8 @@ public class VkGUI extends GUI{
 			renderPass.createSubpass();
 			renderPass.createRenderPass();
 
-			depthAttachment = 0;
-			colorAttachmentCount = renderPass.getAttachmentCount()-depthAttachment;
+			depthAttachmentCount = 0;
+			colorAttachmentCount = renderPass.getAttachmentCount()-depthAttachmentCount;
 			
 			LongBuffer pImageViews = memAllocLong(renderPass.getAttachmentCount());
 			pImageViews.put(0, attachments.get(Attachment.COLOR).getImageView().getHandle());

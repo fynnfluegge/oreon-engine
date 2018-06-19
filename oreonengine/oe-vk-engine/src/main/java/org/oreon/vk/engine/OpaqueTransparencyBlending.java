@@ -201,7 +201,7 @@ public class OpaqueTransparencyBlending {
 				graphicsPipeline.getHandle(), graphicsPipeline.getLayoutHandle(),
 				fbo.getRenderPass().getHandle(), fbo.getFrameBuffer().getHandle(),
 				fbo.getWidth(), fbo.getHeight(),
-				fbo.getColorAttachmentCount(), fbo.getDepthAttachment(),
+				fbo.getColorAttachmentCount(), fbo.getDepthAttachmentCount(),
 				VkUtil.createLongArray(descriptorSets),
 				vertexBufferObject.getHandle(), indexBufferObject.getHandle(),
 				mesh.getIndices().length,
@@ -266,8 +266,8 @@ public class OpaqueTransparencyBlending {
 			renderPass.createSubpass();
 			renderPass.createRenderPass();
 
-			depthAttachment = 0;
-			colorAttachmentCount = renderPass.getAttachmentCount()-depthAttachment;
+			depthAttachmentCount = 0;
+			colorAttachmentCount = renderPass.getAttachmentCount()-depthAttachmentCount;
 			
 			LongBuffer pImageViews = memAllocLong(renderPass.getAttachmentCount());
 			pImageViews.put(0, attachments.get(Attachment.COLOR).getImageView().getHandle());

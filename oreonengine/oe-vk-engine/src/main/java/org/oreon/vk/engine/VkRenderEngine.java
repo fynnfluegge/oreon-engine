@@ -211,7 +211,7 @@ public class VkRenderEngine extends RenderEngine{
 					offScreenFbo.getWidth(),
 					offScreenFbo.getHeight(),
 					offScreenFbo.getColorAttachmentCount(),
-					offScreenFbo.getDepthAttachment(),
+					offScreenFbo.getDepthAttachmentCount(),
 					VkUtil.createPointerBuffer(offScreenSecondaryCmdBuffers.values()));
 		}
 		
@@ -243,7 +243,7 @@ public class VkRenderEngine extends RenderEngine{
 					transparencyFbo.getWidth(),
 					transparencyFbo.getHeight(),
 					transparencyFbo.getColorAttachmentCount(),
-					transparencyFbo.getDepthAttachment(),
+					transparencyFbo.getDepthAttachmentCount(),
 					VkUtil.createPointerBuffer(transparencySecondaryCmdBuffers.values()));
 		}
 		

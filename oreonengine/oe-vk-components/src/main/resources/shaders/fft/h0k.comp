@@ -7,10 +7,10 @@ layout (binding = 0, rgba32f) writeonly uniform image2D tilde_h0k;
 
 layout (binding = 1, rgba32f) writeonly uniform image2D tilde_h0minusk;
 
-layout (binding = 2) uniform sampler2D noise_r0;
-layout (binding = 3) uniform sampler2D noise_i0;
-layout (binding = 4) uniform sampler2D noise_r1;
-layout (binding = 5) uniform sampler2D noise_i1;
+layout (binding = 2, rgba8) uniform image2D noise_r0;
+layout (binding = 3, rgba8) uniform image2D noise_i0;
+layout (binding = 4, rgba8) uniform image2D noise_r1;
+layout (binding = 5, rgba8) uniform image2D noise_i1;
 
 layout (push_constant) uniform pushConstants{
 	int N;
@@ -27,12 +27,12 @@ const float g = 9.81;
 
 vec4 gaussRND()
 {	
-	vec2 texCoord = vec2(gl_GlobalInvocationID.xy)/float(constants.N);
+	vec2 uv = ivec2(gl_GlobalInvocationID.xy);
 	
-	float noise00 = clamp(texture(noise_r0, texCoord).r, 0.001, 1.0);
-	float noise01 = clamp(texture(noise_i0, texCoord).r, 0.001, 1.0);
-	float noise02 = clamp(texture(noise_r1, texCoord).r, 0.001, 1.0);
-	float noise03 = clamp(texture(noise_i1, texCoord).r, 0.001, 1.0);
+	float noise00 = clamp(imageLoad(noise_r0, uv).r, 0.001, 1.0);
+	float noise01 = clamp(imageLoad(noise_i0, uv).r, 0.001, 1.0);
+	float noise02 = clamp(imageLoad(noise_r1, uv).r, 0.001, 1.0);
+	float noise03 = clamp(imageLoad(noise_i1, uv).r, 0.001, 1.0);
 	
 	float u0 = 2.0*M_PI*noise00;
 	float v0 = sqrt(-2.0 * log(noise01));
