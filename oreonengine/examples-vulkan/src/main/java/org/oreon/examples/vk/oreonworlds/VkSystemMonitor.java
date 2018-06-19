@@ -27,13 +27,13 @@ public class VkSystemMonitor extends VkGUI {
 		screen0.setElements(new UIElement[6]);
 		screen0.getElements()[0] = new VkColorPanel(new Vec4f(0,0,0,0.5f), 960, 225, 325, 225,
 				panelMeshBuffer, guiOverlayFbo);
-		screen0.getElements()[1] = new VkStaticTextPanel("FPS:", 1020, 40, 40, 40,
+		screen0.getElements()[1] = new VkStaticTextPanel("FPS:", 1085, 40, 40, 40,
 				fontsImageBundle.getImageView(), fontsImageBundle.getSampler(), guiOverlayFbo);
-		screen0.getElements()[2] = new VkStaticTextPanel("CPU:", 1020, 90, 40, 40,
+		screen0.getElements()[2] = new VkStaticTextPanel("CPU:", 1085, 90, 40, 40,
 				fontsImageBundle.getImageView(), fontsImageBundle.getSampler(), guiOverlayFbo);
-		screen0.getElements()[3] = new VkDynamicTextPanel("000", 1120, 40, 40, 40,
+		screen0.getElements()[3] = new VkDynamicTextPanel("000", 1185, 40, 40, 40,
 				fontsImageBundle.getImageView(), fontsImageBundle.getSampler(), guiOverlayFbo);
-		screen0.getElements()[4] = new VkDynamicTextPanel("000", 1120, 90, 40, 40,
+		screen0.getElements()[4] = new VkDynamicTextPanel("000", 1185, 90, 40, 40,
 				fontsImageBundle.getImageView(), fontsImageBundle.getSampler(), guiOverlayFbo);
 		screen0.getElements()[5] = new VkTexturePanel("textures/logo/VulkanLogo.png", 970, 210, 300, 90,
 				panelMeshBuffer, guiOverlayFbo);
