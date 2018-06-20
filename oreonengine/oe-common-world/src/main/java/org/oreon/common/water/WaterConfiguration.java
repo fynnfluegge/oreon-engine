@@ -50,7 +50,7 @@ public class WaterConfiguration {
 		
 		N = Integer.valueOf(properties.getProperty("fft.resolution"));
 		L = Integer.valueOf(properties.getProperty("fft.L"));
-		amplitude = Integer.valueOf(properties.getProperty("fft.amplitude"));
+		amplitude = Float.valueOf(properties.getProperty("fft.amplitude"));
 		windDirection = new Vec2f(Float.valueOf(properties.getProperty("wind.x")),
 				Float.valueOf(properties.getProperty("wind.y"))).normalize();
 		windSpeed = Float.valueOf(properties.getProperty("wind.speed"));
