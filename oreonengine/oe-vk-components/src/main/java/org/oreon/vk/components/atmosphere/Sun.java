@@ -175,8 +175,9 @@ public class Sun extends Renderable{
 	    		vertexBufferObject.getHandle(), 1,
 	    		pushConstants, VK_SHADER_STAGE_VERTEX_BIT);
 	    
-	    VkMeshData meshData = new VkMeshData(vertexBufferObject, vertexBuffer);
-	    VkRenderInfo mainRenderInfo = new VkRenderInfo(mainCommandBuffer);
+	    VkMeshData meshData = VkMeshData.builder().vertexBufferObject(vertexBufferObject)
+	    		.vertexBuffer(vertexBuffer).build();
+	    VkRenderInfo mainRenderInfo = VkRenderInfo.builder().commandBuffer(mainCommandBuffer).build();
 	    
 	    addComponent(NodeComponentType.MESH_DATA, meshData);
 	    addComponent(NodeComponentType.MAIN_RENDERINFO, mainRenderInfo);

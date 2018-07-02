@@ -147,7 +147,7 @@ public class VkDynamicTextPanel extends UITextPanel{
 		submitInfo = new SubmitInfo();
 		submitInfo.setCommandBuffers(cmdBuffer.getHandlePointer());
 		
-		 VkRenderInfo mainRenderInfo = new VkRenderInfo(cmdBuffer);
+		VkRenderInfo mainRenderInfo = VkRenderInfo.builder().commandBuffer(cmdBuffer).build();
 		addComponent(NodeComponentType.MAIN_RENDERINFO, mainRenderInfo);
 	}
 	

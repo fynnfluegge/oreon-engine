@@ -3,9 +3,7 @@ package org.oreon.examples.vk.oreonworlds;
 import org.oreon.core.system.CoreEngine;
 import org.oreon.core.system.CoreSystem;
 import org.oreon.core.vk.context.VkContext;
-import org.oreon.vk.components.atmosphere.Skydome;
-import org.oreon.vk.components.atmosphere.Sun;
-import org.oreon.vk.components.water.Water;
+import org.oreon.vk.components.planet.Planet;
 import org.oreon.vk.engine.VkRenderEngine;
 
 public class VkOreonworlds {
@@ -22,9 +20,10 @@ public class VkOreonworlds {
 		coreSystem.setRenderEngine(renderEngine);
 		coreEngine.init(coreSystem);
 
-		renderEngine.getSceneGraph().addObject(new Skydome());
-		renderEngine.getSceneGraph().addTransparentObject(new Sun());
-		renderEngine.getSceneGraph().setWater(new Water());
+//		renderEngine.getSceneGraph().addObject(new Skydome());
+//		renderEngine.getSceneGraph().addTransparentObject(new Sun());
+//		renderEngine.getSceneGraph().setWater(new Water());
+		renderEngine.getSceneGraph().setTerrain(new Planet());
 		
 		coreEngine.start();
 	}

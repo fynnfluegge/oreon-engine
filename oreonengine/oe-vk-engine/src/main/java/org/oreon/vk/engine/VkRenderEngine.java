@@ -36,6 +36,7 @@ import org.oreon.core.vk.util.VkUtil;
 import org.oreon.core.vk.wrapper.buffer.VkUniformBuffer;
 import org.oreon.core.vk.wrapper.command.PrimaryCmdBuffer;
 import org.oreon.vk.components.filter.Bloom;
+import org.oreon.vk.components.planet.Planet;
 import org.oreon.vk.components.ui.VkGUI;
 
 import lombok.Setter;
@@ -184,6 +185,8 @@ public class VkRenderEngine extends RenderEngine{
 		}
 	    
 	    swapChain = new SwapChain(logicalDevice, physicalDevice, surface, displayImageView.getHandle());
+//	    swapChain = new SwapChain(logicalDevice, physicalDevice, surface,
+//	    		offScreenFbo.getAttachmentImageView(Attachment.ALBEDO).getHandle());
 	}
     
 	@Override
@@ -192,18 +195,28 @@ public class VkRenderEngine extends RenderEngine{
 		sceneGraph.render();
 		offScreenRenderList.setChanged(false);
 		sceneGraph.record(offScreenRenderList);
+		
+		// update Terrain/Planet Quadtree
+		if (sceneGraph.hasTerrain()){
+			if (camera.isCameraMoved()){
+				// start waiting updateQuadtree thread
+				((Planet) sceneGraph.getTerrain()).getQuadtree().signal();
+			}
+		}
 
 		// record new primary Command Buffer if renderList has changed
-		if (offScreenRenderList.hasChanged()){		
+		if (offScreenRenderList.hasChanged()){
+			
 			offScreenSecondaryCmdBuffers.clear();
 			for (String key : offScreenRenderList.getKeySet()) {
 				if(!offScreenSecondaryCmdBuffers.containsKey(key)){
+					
 					VkRenderInfo mainRenderInfo = offScreenRenderList.get(key)
 							.getComponent(NodeComponentType.MAIN_RENDERINFO);
 					offScreenSecondaryCmdBuffers.put(key, mainRenderInfo.getCommandBuffer());
 				}
 			}
-		
+
 			// primary render command buffer
 			offScreenPrimaryCmdBuffer.reset();
 			offScreenPrimaryCmdBuffer.record(offScreenFbo.getRenderPass().getHandle(),
@@ -275,7 +288,6 @@ public class VkRenderEngine extends RenderEngine{
 	public void update() {
 
 		super.update();
-		
 		gui.update();
 	}
 

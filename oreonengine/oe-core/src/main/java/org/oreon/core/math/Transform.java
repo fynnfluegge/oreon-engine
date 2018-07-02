@@ -32,6 +32,24 @@ public class Transform {
 		return translationMatrix.mul(scalingMatrix.mul(rotationMatrix));
 	}
 	
+	public Matrix4f getWorldMatrixRTS(){
+		
+		Matrix4f translationMatrix = new Matrix4f().Translation(translation);
+		Matrix4f rotationMatrix = new Matrix4f().Rotation(rotation);
+		Matrix4f scalingMatrix = new Matrix4f().Scaling(scaling);
+		
+		return rotationMatrix.mul(translationMatrix.mul(scalingMatrix));
+	}
+	
+	public Matrix4f getWorldMatrixSRT(){
+		
+		Matrix4f translationMatrix = new Matrix4f().Translation(translation);
+		Matrix4f rotationMatrix = new Matrix4f().Rotation(rotation);
+		Matrix4f scalingMatrix = new Matrix4f().Scaling(scaling);
+		
+		return scalingMatrix.mul(rotationMatrix.mul(translationMatrix));
+	}
+	
 	public Matrix4f getModelMatrix()
 	{
 		Matrix4f rotationMatrix = new Matrix4f().Rotation(rotation);
@@ -78,6 +96,10 @@ public class Transform {
 	
 	public void setScaling(float x, float y, float z) {
 		this.scaling = new Vec3f(x, y, z);
+	}
+	
+	public void setScaling(float s) {
+		this.scaling = new Vec3f(s, s, s);
 	}
 
 	public Vec3f getLocalTranslation() {

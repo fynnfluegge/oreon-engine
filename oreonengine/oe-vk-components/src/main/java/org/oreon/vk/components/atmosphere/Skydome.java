@@ -152,10 +152,10 @@ public class Skydome extends Renderable{
 	    		indexBufferObject.getHandle(),
 	    		mesh.getIndices().length);
 	    
-	    VkMeshData meshData = new VkMeshData(vertexBufferObject, vertexBuffer,
-	    		indexBufferObject, indexBuffer);
-	    VkRenderInfo mainRenderInfo = new VkRenderInfo(mainCommandBuffer);
-	    VkRenderInfo reflectionRenderInfo = new VkRenderInfo(reflectionCommandBuffer);
+        VkMeshData meshData = VkMeshData.builder().vertexBufferObject(vertexBufferObject)
+	    		.vertexBuffer(vertexBuffer).build();
+	    VkRenderInfo mainRenderInfo = VkRenderInfo.builder().commandBuffer(mainCommandBuffer).build();
+	    VkRenderInfo reflectionRenderInfo = VkRenderInfo.builder().commandBuffer(reflectionCommandBuffer).build();
 	    
 	    addComponent(NodeComponentType.MESH_DATA, meshData);
 	    addComponent(NodeComponentType.MAIN_RENDERINFO, mainRenderInfo);

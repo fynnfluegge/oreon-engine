@@ -165,6 +165,18 @@ public class BufferUtil {
 		return buffer;
 	}
 	
+	public static FloatBuffer createFlippedBuffer(Vec2f vector)
+	{
+		FloatBuffer buffer = createFloatBuffer(Float.BYTES * 2);
+		
+		buffer.put(vector.getX());
+		buffer.put(vector.getY());
+		
+		buffer.flip();
+		
+		return buffer;
+	}
+	
 	public static FloatBuffer createFlippedBuffer(Vec4f vector)
 	{
 		FloatBuffer buffer = createFloatBuffer(Float.BYTES * 4);
@@ -365,6 +377,11 @@ public class BufferUtil {
 		intBuffer.flip();
 		
 		return byteBuffer;
+	}
+	
+	public static ByteBuffer createByteBuffer(Vec2f vector){
+		
+		return createByteBuffer(createFlippedBuffer(vector));
 	}
 	
 	public static ByteBuffer allocateVertexByteBuffer(VertexLayout layout, int vertexCount){

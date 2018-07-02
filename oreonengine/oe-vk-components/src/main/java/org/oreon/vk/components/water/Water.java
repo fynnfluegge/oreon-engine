@@ -370,9 +370,9 @@ public class Water extends Renderable{
 	    		vertices.length,
 	    		pushConstants, VK_SHADER_STAGE_ALL_GRAPHICS);
 	    
-	    VkMeshData meshData = new VkMeshData(vertexBufferObject, vertexBuffer,
-	    		null, null);
-	    VkRenderInfo mainRenderInfo = new VkRenderInfo(commandBuffer);
+		VkMeshData meshData = VkMeshData.builder().vertexBufferObject(vertexBufferObject)
+		    		.vertexBuffer(vertexBuffer).build();
+		VkRenderInfo mainRenderInfo = VkRenderInfo.builder().commandBuffer(commandBuffer).build();
 	    
 	    addComponent(NodeComponentType.MESH_DATA, meshData);
 	    addComponent(NodeComponentType.MAIN_RENDERINFO, mainRenderInfo);

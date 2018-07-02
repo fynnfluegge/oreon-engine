@@ -12,8 +12,8 @@ public class TerrainHelper {
 		Vec2f pos = new Vec2f();
 		pos.setX(x);
 		pos.setY(z);
-		pos = pos.add(config.getScaleXZ()/2f);
-		pos = pos.div(config.getScaleXZ());
+		pos = pos.add(config.getHorizontalScaling()/2f);
+		pos = pos.div(config.getHorizontalScaling());
 		Vec2f floor = new Vec2f((int) Math.floor(pos.getX()), (int) Math.floor(pos.getY()));
 		pos = pos.sub(floor);
 		pos = pos.mul(config.getHeightmap().getMetaData().getWidth());
@@ -43,7 +43,7 @@ public class TerrainHelper {
         }
         
         h = h0 + (dU * percentU) + (dV * percentV );
-        h *= config.getScaleY();
+        h *= config.getVerticalScaling();
 		
 		return h;
 	}
