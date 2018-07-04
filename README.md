@@ -2,6 +2,9 @@
 # Oreon Engine (Java - OpenGL/Vulkan)
 Welcome to the Cross-Platform Java 3D Engine.
 As OpenGL and Vulkan Binding for Java the [LWJGL 3](https://www.lwjgl.org/) API is used.
+Both OpenGL and the next generation graphics API Vulkan is supported!
+
+<img src="docs/_images/Vulkan_vs_OpenGL.png" width="400px">
 
 ## Build Manual
 * Oreon Engine project uses [lombok](https://projectlombok.org/).
@@ -17,7 +20,7 @@ As OpenGL and Vulkan Binding for Java the [LWJGL 3](https://www.lwjgl.org/) API 
 
 ## Example Vulkan Ocean Demo
 * [examples-vulkan](https://github.com/oreonengine/oreon-engine/tree/master/oreonengine/examples-vulkan)
-  [SimpleVulkanDemo](https://github.com/oreonengine/oreon-engine/blob/master/oreonengine/examples-vulkan/src/main/java/org/oreon/examples/vk/oreonworlds/VkOreonworlds.java)
+  [VkOrenworlds](https://github.com/oreonengine/oreon-engine/blob/master/oreonengine/examples-vulkan/src/main/java/org/oreon/examples/vk/oreonworlds/VkOreonworlds.java)
 
 ## Camera Control
 * Move: W, A, S, D
