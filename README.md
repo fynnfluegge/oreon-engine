@@ -52,11 +52,11 @@ Both OpenGL and the next generation graphics API Vulkan is supported!
 
 ### Post-Processing Effects
 #### Motion Blur, Depth of Field Blur, Bloom
-<img src="docs/_images/Blur.png" width="600px">
+<img src="docs/_images/Blur.png" width="500px">
 
 #### Light Scattering, Lens Flare
-<img src="docs/_images/LightScattering_LensFlare.png" width="300px" align="left">
-<img src="docs/_images/LightScattering_LensFlare2.png" width="300px">
+<img src="docs/_images/LightScattering_LensFlare.png" width="400px" align="left">
+<img src="docs/_images/LightScattering_LensFlare2.png" width="400px">
 
 ### GUI
 ## Credits
