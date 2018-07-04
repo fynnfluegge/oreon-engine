@@ -32,7 +32,7 @@ Both OpenGL and the next generation graphics API Vulkan is supported!
 ### LOD Quadtree 
 #### Terrain
 <img src="docs/_images/Terrain.png" width="400px" align="left">
-<img src="docs/_images/Terrain2.png" width="400px" align="left">
+<img src="docs/_images/Terrain2.png" width="400px">
 
 #### WIP Planet
 <img src="docs/_images/WIP_Planet.png" width="500px">
@@ -56,7 +56,7 @@ Both OpenGL and the next generation graphics API Vulkan is supported!
 
 #### Light Scattering, Lens Flare
 <img src="docs/_images/LightScattering_LensFlare.png" width="300px" align="left">
-<img src="docs/_images/LightScattering_LensFlare2.png" width="300px" align="left">
+<img src="docs/_images/LightScattering_LensFlare2.png" width="300px">
 
 ### GUI
 ## Credits
