@@ -1,9 +1,7 @@
 ![Banner](docs/_images/Banner.png)
 # Oreon Engine (Java - OpenGL/Vulkan)
-Welcome to the Cross-Platform 3D Engine.
+Welcome to the Cross-Platform Java 3D Engine.
 As OpenGL and Vulkan Binding for Java the [LWJGL 3](https://www.lwjgl.org/) API is used.
-
-Documentation: http://oreonengine.github.io/oreon-engine
 
 ## Build Manual
 * Oreon Engine project uses [lombok](https://projectlombok.org/).
@@ -11,15 +9,15 @@ Documentation: http://oreonengine.github.io/oreon-engine
 
 * Getting started guide for Eclipse available [here](http://oreonengine.github.io/oreon-engine/_navigation/Getting_Started.html).
 
-## Running Oreonworlds Open World OpenGL Demo
-* [oe-gl-demo](https://github.com/oreonengine/oreon-engine/tree/master/oreonengine/oe-gl-demo)
-  [OreonWorlds](https://github.com/oreonengine/oreon-engine/blob/master/oreonengine/oe-gl-demo/src/main/java/org/oreon/gl/demo/oreonworlds/Main.java)
+## Example Open World Ocean OpenGL Demo
+* [examples-opengl](https://github.com/oreonengine/oreon-engine/tree/master/oreonengine/examples-opengl)
+  [GLOreonWorlds](https://github.com/oreonengine/oreon-engine/blob/master/oreonengine/examples-opengl/src/main/java/org/oreon/examples/gl/oreonworlds/GLOreonworlds.java)
 
 <img src="docs/_images/thumbnail4.png" width="500px">
 
-## WIP Vulkan Demo
-* [oe-vk-demo](https://github.com/oreonengine/oreon-engine/tree/master/oreonengine/oe-vk-demo)
-  [SimpleVulkanDemo](https://github.com/oreonengine/oreon-engine/blob/master/oreonengine/oe-vk-demo/src/main/java/org/oreon/vk/demo/SimpleVulkanDemo.java)
+## Example Vulkan Ocean Demo
+* [examples-vulkan](https://github.com/oreonengine/oreon-engine/tree/master/oreonengine/examples-vulkan)
+  [SimpleVulkanDemo](https://github.com/oreonengine/oreon-engine/blob/master/oreonengine/examples-vulkan/src/main/java/org/oreon/examples/vk/oreonworlds/VkOreonworlds.java)
 
 ## Camera Control
 * Move: W, A, S, D
