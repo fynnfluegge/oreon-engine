@@ -45,7 +45,7 @@ Both OpenGL and the next generation graphics API Vulkan is supported!
 
 ### Shadow Mapping
 #### Parallel Split Shadow Mapping + Variance Shadows
-<img src="docs/_images/Shadows.png" width="500px">
+<img src="docs/_images/Shadow_Mapping.png" width="500px">
 
 ### Tessellation with Normal-/Displacement-Mapping
 <img src="docs/_images/Normalmapping.png" width="500px">
