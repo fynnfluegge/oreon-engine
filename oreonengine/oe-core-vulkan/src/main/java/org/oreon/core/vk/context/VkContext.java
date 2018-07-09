@@ -28,8 +28,8 @@ public class VkContext extends EngineContext{
         }
 		
 		ByteBuffer[] layers = {
-            	memUTF8("VK_LAYER_LUNARG_standard_validation"),
-            	memUTF8("VK_LAYER_LUNARG_assistant_layer")
+            	memUTF8("VK_LAYER_LUNARG_standard_validation")
+//            	memUTF8("VK_LAYER_LUNARG_assistant_layer")
 		};
 		
 	    VulkanInstance vulkanInstance = new VulkanInstance(
