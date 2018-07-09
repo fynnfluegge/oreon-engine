@@ -33,7 +33,6 @@ import org.oreon.core.vk.image.VkImageView;
 import org.oreon.core.vk.scenegraph.VkRenderInfo;
 import org.oreon.core.vk.swapchain.SwapChain;
 import org.oreon.core.vk.util.VkUtil;
-import org.oreon.core.vk.wrapper.buffer.VkUniformBuffer;
 import org.oreon.core.vk.wrapper.command.PrimaryCmdBuffer;
 import org.oreon.vk.components.filter.Bloom;
 import org.oreon.vk.components.planet.Planet;
@@ -63,9 +62,9 @@ public class VkRenderEngine extends RenderEngine{
 	private SubmitInfo transparencySubmitInfo;
 	
 	// uniform buffers
-	private VkUniformBuffer renderStateUbo;
+//	private VkUniformBuffer renderStateUbo;
 
-	private SampleCoverage sampleCoverageMask;
+	private SampleCoverage sampleCoverage;
 	private DeferredLighting deferredLighting;
 	private FXAA fxaa;
 	private OpaqueTransparencyBlending opaqueTransparencyBlending;
@@ -133,7 +132,7 @@ public class VkRenderEngine extends RenderEngine{
 	    transparencySubmitInfo = new SubmitInfo();
 	    transparencySubmitInfo.setCommandBuffers(transparencyPrimaryCmdBuffer.getHandlePointer());
 	    
-	    sampleCoverageMask = new SampleCoverage(majorDevice,
+	    sampleCoverage = new SampleCoverage(majorDevice,
 	    		EngineContext.getConfig().getX_ScreenResolution(),
 	    		EngineContext.getConfig().getY_ScreenResolution(),
 	    		offScreenFbo.getAttachmentImageView(Attachment.POSITION),
@@ -146,14 +145,14 @@ public class VkRenderEngine extends RenderEngine{
 	    		offScreenFbo.getAttachmentImageView(Attachment.POSITION),
 	    		offScreenFbo.getAttachmentImageView(Attachment.NORMAL),
 	    		offScreenFbo.getAttachmentImageView(Attachment.SPECULAR_EMISSION),
-	    		sampleCoverageMask.getSampleCoverageImageView());
+	    		sampleCoverage.getSampleCoverageImageView());
 	    
 	    opaqueTransparencyBlending = new OpaqueTransparencyBlending(majorDevice,
 	    		EngineContext.getConfig().getX_ScreenResolution(),
 	    		EngineContext.getConfig().getY_ScreenResolution(),
 	    		deferredLighting.getDeferredLightingSceneImageView(),
 	    		offScreenFbo.getAttachmentImageView(Attachment.DEPTH),
-	    		sampleCoverageMask.getLightScatteringImageView(),
+	    		sampleCoverage.getLightScatteringImageView(),
 	    		transparencyFbo.getAttachmentImageView(Attachment.ALBEDO),
 	    		transparencyFbo.getAttachmentImageView(Attachment.DEPTH),
 	    		transparencyFbo.getAttachmentImageView(Attachment.ALPHA),
@@ -226,10 +225,12 @@ public class VkRenderEngine extends RenderEngine{
 					VkUtil.createPointerBuffer(offScreenSecondaryCmdBuffers.values()));
 		}
 		
-		offScreenSubmitInfo.submit(majorDevice.getLogicalDevice().getGraphicsQueue());
+		if (!offScreenRenderList.isEmpty()){
+			offScreenSubmitInfo.submit(majorDevice.getLogicalDevice().getGraphicsQueue());
+		}
 		vkQueueWaitIdle(majorDevice.getLogicalDevice().getGraphicsQueue());
 		
-		sampleCoverageMask.render();
+		sampleCoverage.render();
 		vkQueueWaitIdle(majorDevice.getLogicalDevice().getGraphicsQueue());
 		deferredLighting.render();
 		vkQueueWaitIdle(majorDevice.getLogicalDevice().getComputeQueue());
@@ -258,7 +259,9 @@ public class VkRenderEngine extends RenderEngine{
 					VkUtil.createPointerBuffer(transparencySecondaryCmdBuffers.values()));
 		}
 		
-		transparencySubmitInfo.submit(majorDevice.getLogicalDevice().getGraphicsQueue());
+		if(!transparencyRenderList.isEmpty()){
+			transparencySubmitInfo.submit(majorDevice.getLogicalDevice().getGraphicsQueue());
+		}
 		vkQueueWaitIdle(majorDevice.getLogicalDevice().getGraphicsQueue());
 		
 		opaqueTransparencyBlending.render();
@@ -286,7 +289,9 @@ public class VkRenderEngine extends RenderEngine{
 	public void update() {
 
 		super.update();
-		gui.update();
+		if (gui != null){
+			gui.update();
+		}
 	}
 
 	@Override
@@ -296,6 +301,16 @@ public class VkRenderEngine extends RenderEngine{
 		
 		// wait for queues to be finished before destroy vulkan objects
 		vkDeviceWaitIdle(majorDevice.getLogicalDevice().getHandle());
+		offScreenFbo.destroy();
+		reflectionFbo.destroy();
+		transparencyFbo.destroy();
+		offScreenPrimaryCmdBuffer.destroy();
+		transparencyPrimaryCmdBuffer.destroy();
+		sampleCoverage.shutdown();
+		deferredLighting.shutdown();
+		fxaa.shutdown();
+		opaqueTransparencyBlending.shutdown();
+		bloom.shutdown();
 		vkDestroySwapchainKHR(majorDevice.getLogicalDevice().getHandle(), swapChain.getHandle(), null);
 		swapChain.destroy();
 		EngineContext.getCamera().shutdown();

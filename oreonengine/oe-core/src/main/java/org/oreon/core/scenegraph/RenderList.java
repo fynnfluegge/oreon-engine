@@ -66,4 +66,8 @@ public class RenderList {
 	public boolean hasChanged(){
 		return changed;
 	}
+	
+	public boolean isEmpty(){
+		return objectList.isEmpty();
+	}
 }

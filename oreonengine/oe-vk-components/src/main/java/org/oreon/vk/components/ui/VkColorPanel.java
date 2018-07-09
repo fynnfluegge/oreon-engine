@@ -22,8 +22,8 @@ import org.oreon.core.vk.framebuffer.VkFrameBufferObject;
 import org.oreon.core.vk.pipeline.ShaderPipeline;
 import org.oreon.core.vk.pipeline.VkPipeline;
 import org.oreon.core.vk.pipeline.VkVertexInput;
+import org.oreon.core.vk.scenegraph.VkMeshData;
 import org.oreon.core.vk.scenegraph.VkRenderInfo;
-import org.oreon.core.vk.wrapper.buffer.VkMeshBuffer;
 import org.oreon.core.vk.wrapper.command.SecondaryDrawIndexedCmdBuffer;
 import org.oreon.core.vk.wrapper.pipeline.GraphicsPipelineAlphaBlend;
 
@@ -34,7 +34,7 @@ public class VkColorPanel extends UIElement{
 	private SubmitInfo submitInfo;
 	
 	public VkColorPanel(Vec4f rgba, int xPos, int yPos, int xScaling, int yScaling,
-			VkMeshBuffer panelMeshBuffer, VkFrameBufferObject fbo) {
+			VkMeshData panelMeshBuffer, VkFrameBufferObject fbo) {
 		super(xPos, yPos, xScaling, yScaling);
 		
 		// flip y-axxis for vulkan coordinate system
@@ -76,8 +76,8 @@ public class VkColorPanel extends UIElement{
 				fbo.getRenderPass().getHandle(),
 				0,
 				null,
-				panelMeshBuffer.getVertexBuffer().getHandle(),
-				panelMeshBuffer.getIndexBuffer().getHandle(),
+				panelMeshBuffer.getVertexBufferObject().getHandle(),
+				panelMeshBuffer.getIndexBufferObject().getHandle(),
 				panelMeshBuffer.getIndexCount(),
 				pushConstants,
 				VK_SHADER_STAGE_FRAGMENT_BIT | VK_SHADER_STAGE_VERTEX_BIT);

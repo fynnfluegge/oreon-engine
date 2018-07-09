@@ -18,7 +18,6 @@ import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
 import org.lwjgl.vulkan.VkPhysicalDeviceProperties;
 import org.oreon.core.vk.queue.QueueFamilies;
 import org.oreon.core.vk.swapchain.SwapChainCapabilities;
-import org.oreon.core.vk.util.DeviceCapabilities;
 import org.oreon.core.vk.util.VkUtil;
 
 import lombok.Getter;

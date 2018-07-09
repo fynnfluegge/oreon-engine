@@ -42,8 +42,6 @@ import org.oreon.core.vk.wrapper.pipeline.GraphicsPipeline;
 
 public class Skydome extends Renderable{
 	
-	private VkPipeline graphicsPipeline;
-	private VkPipeline reflectionPipeline;
 	private VkUniformBuffer uniformBuffer;
 	
 	public Skydome() {
@@ -99,7 +97,7 @@ public class Skydome extends Renderable{
 		ByteBuffer vertexBuffer = BufferUtil.createByteBuffer(mesh.getVertices(), VertexLayout.POS);
 		ByteBuffer indexBuffer = BufferUtil.createByteBuffer(mesh.getIndices());
 		
-		graphicsPipeline = new GraphicsPipeline(device.getHandle(),
+		VkPipeline graphicsPipeline = new GraphicsPipeline(device.getHandle(),
 				graphicsShaderPipeline, vertexInput, VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
 				VkUtil.createLongBuffer(descriptorSetLayouts),
 				EngineContext.getConfig().getX_ScreenResolution(),
@@ -108,7 +106,7 @@ public class Skydome extends Renderable{
 				VkContext.getResources().getOffScreenFbo().getColorAttachmentCount(),
 				EngineContext.getConfig().getMultisamples());
 		
-		reflectionPipeline = new GraphicsPipeline(device.getHandle(),
+		VkPipeline reflectionPipeline = new GraphicsPipeline(device.getHandle(),
 				reflectionShaderPipeline, vertexInput, VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
 				VkUtil.createLongBuffer(descriptorSetLayouts),
 				EngineContext.getConfig().getX_ScreenResolution(),
@@ -153,13 +151,19 @@ public class Skydome extends Renderable{
 	    		mesh.getIndices().length);
 	    
         VkMeshData meshData = VkMeshData.builder().vertexBufferObject(vertexBufferObject)
-	    		.vertexBuffer(vertexBuffer).build();
-	    VkRenderInfo mainRenderInfo = VkRenderInfo.builder().commandBuffer(mainCommandBuffer).build();
-	    VkRenderInfo reflectionRenderInfo = VkRenderInfo.builder().commandBuffer(reflectionCommandBuffer).build();
+	    		.vertexBuffer(vertexBuffer).indexBufferObject(indexBufferObject).indexBuffer(indexBuffer)
+	    		.build();
+	    VkRenderInfo mainRenderInfo = VkRenderInfo.builder().commandBuffer(mainCommandBuffer)
+	    		.pipeline(graphicsPipeline).build();
+	    VkRenderInfo reflectionRenderInfo = VkRenderInfo.builder().commandBuffer(reflectionCommandBuffer)
+	    		.pipeline(reflectionPipeline).build();
 	    
 	    addComponent(NodeComponentType.MESH_DATA, meshData);
 	    addComponent(NodeComponentType.MAIN_RENDERINFO, mainRenderInfo);
 	    addComponent(NodeComponentType.REFLECTION_RENDERINFO, reflectionRenderInfo);
+	    
+	    graphicsShaderPipeline.destroy();
+	    reflectionShaderPipeline.destroy();
 	}
 	
 	public void update()

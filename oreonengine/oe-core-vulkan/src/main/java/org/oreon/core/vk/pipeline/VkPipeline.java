@@ -149,7 +149,6 @@ public class VkPipeline {
 		handle = pPipelines.get(0);
 		
 		pipelineCreateInfo.free();
-		shader.destroy();
 	}
 	
 	public void setLayout(LongBuffer pLayouts){

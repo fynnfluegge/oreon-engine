@@ -51,6 +51,7 @@ import org.oreon.core.vk.image.VkSampler;
 import org.oreon.core.vk.memory.VkBuffer;
 import org.oreon.core.vk.pipeline.RenderPass;
 import org.oreon.core.vk.pipeline.ShaderPipeline;
+import org.oreon.core.vk.pipeline.VkPipeline;
 import org.oreon.core.vk.pipeline.VkVertexInput;
 import org.oreon.core.vk.util.VkUtil;
 import org.oreon.core.vk.wrapper.buffer.VkBufferHelper;
@@ -63,7 +64,7 @@ public class OpaqueTransparencyBlending {
 	private VkQueue queue;
 	
 	private VkFrameBufferObject fbo;
-	private GraphicsPipeline graphicsPipeline;
+	private VkPipeline graphicsPipeline;
 	private DescriptorSet descriptorSet;
 	private DescriptorSetLayout descriptorSetLayout;
 	private CommandBuffer cmdBuffer;
@@ -209,11 +210,28 @@ public class OpaqueTransparencyBlending {
 		
 		submitInfo = new SubmitInfo();
 		submitInfo.setCommandBuffers(cmdBuffer.getHandlePointer());
+		
+		graphicsShaderPipeline.destroy();
 	}
 	
 	public void render(){
 	
 		submitInfo.submit(queue);
+	}
+	
+	public void shutdown(){
+		fbo.destroy();
+		graphicsPipeline.destroy();
+		descriptorSet.destroy();
+		descriptorSetLayout.destroy();
+		cmdBuffer.destroy();
+		opaqueSceneSampler.destroy();
+		opaqueSceneDepthSampler.destroy();
+		opaqueSceneLightScatteringSampler.destroy();
+		transparencySceneSampler.destroy();
+		transparencySceneDepthSampler.destroy();
+		transparencyAlphaSampler.destroy();
+		transparencyLightScatteringSampler.destroy();
 	}
 	
 	public VkImageView getColorAttachment(){
@@ -275,7 +293,6 @@ public class OpaqueTransparencyBlending {
 
 			frameBuffer = new VkFrameBuffer(device, width, height, 1, pImageViews, renderPass.getHandle());
 		}
-
 	}
 
 }

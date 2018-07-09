@@ -1,5 +1,9 @@
 package org.oreon.core.vk.context;
 
+import java.util.HashMap;
+
+import javax.management.Descriptor;
+
 import org.oreon.core.vk.framebuffer.VkFrameBufferObject;
 
 import lombok.Getter;
@@ -13,6 +17,6 @@ public class VkResources {
 	private VkFrameBufferObject offScreenReflectionFbo;
 	private VkFrameBufferObject transparencyFbo;
 
-//	private HashMap<String, Descriptor> globalDescriptors;
-	
+	private HashMap<String, Descriptor> descriptors;
+
 }

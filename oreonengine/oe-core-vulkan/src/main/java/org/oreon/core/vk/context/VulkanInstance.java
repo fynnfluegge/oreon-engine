@@ -43,6 +43,9 @@ public class VulkanInstance {
         if (requiredExtensions == null) {
             throw new AssertionError("Failed to find list of required Vulkan extensions");
         }
+        
+        System.out.println(requiredExtensions.getStringASCII(0));
+        System.out.println(requiredExtensions.getStringASCII(1));
 		
         ByteBuffer VK_EXT_DEBUG_REPORT_EXTENSION = memUTF8(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
         
@@ -56,7 +59,7 @@ public class VulkanInstance {
                 .sType(VK_STRUCTURE_TYPE_APPLICATION_INFO)
                 .pApplicationName(memUTF8("Vulkan Demo"))
                 .pEngineName(memUTF8("OREON ENGINE"))
-                .apiVersion(VK_MAKE_VERSION(1, 0, 2));
+                .apiVersion(VK_MAKE_VERSION(1, 1, 70));
         
         VkInstanceCreateInfo pCreateInfo = VkInstanceCreateInfo.calloc()
                 .sType(VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO)

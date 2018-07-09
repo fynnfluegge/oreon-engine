@@ -1,4 +1,4 @@
-package org.oreon.core.vk.util;
+package org.oreon.core.vk.device;
 
 import static org.lwjgl.system.MemoryUtil.memAllocInt;
 import static org.lwjgl.system.MemoryUtil.memFree;
@@ -22,6 +22,7 @@ import org.lwjgl.vulkan.VkPhysicalDevice;
 import org.lwjgl.vulkan.VkPhysicalDeviceFeatures;
 import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
 import org.lwjgl.vulkan.VkPhysicalDeviceProperties;
+import org.oreon.core.vk.util.VkUtil;
 
 import lombok.extern.log4j.Log4j;
 

@@ -19,7 +19,6 @@ import org.oreon.core.model.Vertex.VertexLayout;
 import org.oreon.core.scenegraph.NodeComponentType;
 import org.oreon.core.util.BufferUtil;
 import org.oreon.core.vk.command.CommandBuffer;
-import org.oreon.core.vk.command.SubmitInfo;
 import org.oreon.core.vk.context.DeviceManager.DeviceType;
 import org.oreon.core.vk.context.VkContext;
 import org.oreon.core.vk.descriptor.DescriptorPool;
@@ -41,10 +40,6 @@ import org.oreon.core.vk.wrapper.command.SecondaryDrawIndexedCmdBuffer;
 import org.oreon.core.vk.wrapper.pipeline.GraphicsPipeline;
 
 public class VkStaticTextPanel extends UITextPanel{
-
-	private VkPipeline graphicsPipeline;
-	private CommandBuffer cmdBuffer;
-	private SubmitInfo submitInfo;
 	
 	public VkStaticTextPanel(String text, int xPos, int yPos, int xScaling, int yScaling,
 			VkImageView fontsImageView, VkSampler fontsSampler, VkFrameBufferObject fbo) {
@@ -102,7 +97,7 @@ public class VkStaticTextPanel extends UITextPanel{
         		device.getTransferQueue(),
         		indexBuffer, VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
         
-        graphicsPipeline = new GraphicsPipeline(device.getHandle(),
+        VkPipeline graphicsPipeline = new GraphicsPipeline(device.getHandle(),
 				shaderPipeline, vertexInput, VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
 				VkUtil.createLongBuffer(descriptorSetLayouts),
 				fbo.getWidth(), fbo.getHeight(),
@@ -111,7 +106,7 @@ public class VkStaticTextPanel extends UITextPanel{
 				1, pushConstantRange,
 				VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT);
         
-		cmdBuffer = new SecondaryDrawIndexedCmdBuffer(
+		CommandBuffer cmdBuffer = new SecondaryDrawIndexedCmdBuffer(
 				device.getHandle(),
 				deviceBundle.getLogicalDevice().getGraphicsCommandPool().getHandle(),
 				graphicsPipeline.getHandle(), graphicsPipeline.getLayoutHandle(),
@@ -123,12 +118,13 @@ public class VkStaticTextPanel extends UITextPanel{
 				panel.getIndices().length,
 				pushConstants,
 				VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT);
-		
-		submitInfo = new SubmitInfo();
-		submitInfo.setCommandBuffers(cmdBuffer.getHandlePointer());
 
-		VkRenderInfo mainRenderInfo = VkRenderInfo.builder().commandBuffer(cmdBuffer).build();
+		VkRenderInfo mainRenderInfo = VkRenderInfo.builder().commandBuffer(cmdBuffer)
+				.pipeline(graphicsPipeline).vertexInput(vertexInput).descriptorSetLayouts(descriptorSetLayouts)
+				.descriptorSets(descriptorSets).build();
 		addComponent(NodeComponentType.MAIN_RENDERINFO, mainRenderInfo);
+		
+		shaderPipeline.destroy();
 	}
 
 }

@@ -31,6 +31,7 @@ import org.oreon.core.vk.device.VkDeviceBundle;
 import org.oreon.core.vk.image.VkImage;
 import org.oreon.core.vk.image.VkImageView;
 import org.oreon.core.vk.image.VkSampler;
+import org.oreon.core.vk.pipeline.ShaderModule;
 import org.oreon.core.vk.pipeline.VkPipeline;
 import org.oreon.core.vk.util.VkUtil;
 import org.oreon.core.vk.wrapper.command.ComputeCmdBuffer;
@@ -98,10 +99,12 @@ public class FXAA {
 		descriptorSets.add(descriptorSet);
 		descriptorSetLayouts.add(descriptorSetLayout);
 		
+		ShaderModule shader = new ComputeShader(device, "shaders/fxaa.comp.spv");
+		
 		computePipeline = new VkPipeline(device);
 		computePipeline.setPushConstantsRange(VK_SHADER_STAGE_COMPUTE_BIT, pushConstantRange);
 		computePipeline.setLayout(VkUtil.createLongBuffer(descriptorSetLayouts));
-		computePipeline.createComputePipeline(new ComputeShader(device, "shaders/fxaa.comp.spv"));
+		computePipeline.createComputePipeline(shader);
 		
 		cmdBuffer = new ComputeCmdBuffer(device,
 				deviceBundle.getLogicalDevice().getComputeCommandPool().getHandle(),
@@ -111,10 +114,22 @@ public class FXAA {
 		
 		submitInfo = new SubmitInfo();
 		submitInfo.setCommandBuffers(cmdBuffer.getHandlePointer());
+		
+		shader.destroy();
 	}
 	
 	public void render(){
 		
 		submitInfo.submit(queue);
+	}
+	
+	public void shutdown(){
+		fxaaImage.destroy();
+		fxaaImageView.destroy();
+		computePipeline.destroy();
+		descriptorSet.destroy();
+		descriptorSetLayout.destroy();
+		cmdBuffer.destroy();
+		sceneSampler.destroy();
 	}
 }

@@ -41,9 +41,9 @@ import org.oreon.core.vk.image.VkSampler;
 import org.oreon.core.vk.pipeline.ShaderPipeline;
 import org.oreon.core.vk.pipeline.VkPipeline;
 import org.oreon.core.vk.pipeline.VkVertexInput;
+import org.oreon.core.vk.scenegraph.VkMeshData;
 import org.oreon.core.vk.scenegraph.VkRenderInfo;
 import org.oreon.core.vk.util.VkUtil;
-import org.oreon.core.vk.wrapper.buffer.VkMeshBuffer;
 import org.oreon.core.vk.wrapper.command.SecondaryDrawIndexedCmdBuffer;
 import org.oreon.core.vk.wrapper.image.VkImageBundle;
 import org.oreon.core.vk.wrapper.image.VkImageHelper;
@@ -57,7 +57,7 @@ public class VkTexturePanel  extends UIElement{
 	private VkImageBundle imageBundle;
 
 	public VkTexturePanel(String imageFile, int xPos, int yPos, int xScaling, int yScaling,
-			VkMeshBuffer panelMeshBuffer, VkFrameBufferObject fbo) {
+			VkMeshData panelMeshBuffer, VkFrameBufferObject fbo) {
 		super(xPos, yPos, xScaling, yScaling);
 		
 		// flip y-axxis for vulkan coordinate system
@@ -136,8 +136,8 @@ public class VkTexturePanel  extends UIElement{
 				fbo.getRenderPass().getHandle(),
 				0,
 				VkUtil.createLongArray(descriptorSets),
-				panelMeshBuffer.getVertexBuffer().getHandle(),
-				panelMeshBuffer.getIndexBuffer().getHandle(),
+				panelMeshBuffer.getVertexBufferObject().getHandle(),
+				panelMeshBuffer.getIndexBufferObject().getHandle(),
 				panelMeshBuffer.getIndexCount(),
 				pushConstants,
 				VK_SHADER_STAGE_VERTEX_BIT);

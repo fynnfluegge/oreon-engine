@@ -26,8 +26,8 @@ import org.oreon.core.vk.descriptor.DescriptorSetLayout;
 import org.oreon.core.vk.device.VkDeviceBundle;
 import org.oreon.core.vk.image.VkImage;
 import org.oreon.core.vk.image.VkImageView;
+import org.oreon.core.vk.pipeline.ShaderModule;
 import org.oreon.core.vk.pipeline.VkPipeline;
-import org.oreon.core.vk.synchronization.Fence;
 import org.oreon.core.vk.util.VkUtil;
 import org.oreon.core.vk.wrapper.command.ComputeCmdBuffer;
 import org.oreon.core.vk.wrapper.image.Image2DDeviceLocal;
@@ -50,7 +50,6 @@ public class SampleCoverage {
 	private DescriptorSetLayout descriptorSetLayout;
 	private CommandBuffer cmdBuffer;
 	private SubmitInfo submitInfo;
-	private Fence fence;
 	
 	private final float discontinuitiestThreshold = 1f;
 
@@ -113,10 +112,12 @@ public class SampleCoverage {
 		pushConstants.putFloat(discontinuitiestThreshold);
 		pushConstants.flip();
 		
+		ShaderModule shader = new ComputeShader(device, "shaders/sampleCoverage.comp.spv");
+		
 		computePipeline = new VkPipeline(device);
 		computePipeline.setPushConstantsRange(VK_SHADER_STAGE_COMPUTE_BIT, pushConstantRange);
 		computePipeline.setLayout(VkUtil.createLongBuffer(descriptorSetLayouts));
-		computePipeline.createComputePipeline(new ComputeShader(device, "shaders/sampleCoverage.comp.spv"));
+		computePipeline.createComputePipeline(shader);
 		
 		cmdBuffer = new ComputeCmdBuffer(device,
 				deviceBundle.getLogicalDevice().getComputeCommandPool().getHandle(),
@@ -124,15 +125,25 @@ public class SampleCoverage {
 				VkUtil.createLongArray(descriptorSets), width/16, height/16, 1,
 				pushConstants, VK_SHADER_STAGE_COMPUTE_BIT);
 		
-		fence = new Fence(device);
-		
 		submitInfo = new SubmitInfo();
 		submitInfo.setCommandBuffers(cmdBuffer.getHandlePointer());
-		submitInfo.setFence(fence);
+		
+		shader.destroy();
 	}
 	
 	public void render(){
 		
 		submitInfo.submit(queue);
+	}
+	
+	public void shutdown(){
+		sampleCoverageImage.destroy();
+		sampleCoverageImageView.destroy();
+		lightScatteringImage.destroy();
+		lightScatteringImageView.destroy();
+		computePipeline.destroy();
+		descriptorSet.destroy();
+		descriptorSetLayout.destroy();
+		cmdBuffer.destroy();
 	}
 }

@@ -28,7 +28,7 @@ public class ShaderModule {
 	@Getter
 	private long handle;
 	
-	private VkDevice device;
+	private final VkDevice device;
 	
 	public ShaderModule(VkDevice device, String filePath, int stage) {
 		
@@ -81,6 +81,7 @@ public class ShaderModule {
 	public void destroy(){
 		
 		vkDestroyShaderModule(device, handle, null);
+		handle = -1;
 	}
 
 }

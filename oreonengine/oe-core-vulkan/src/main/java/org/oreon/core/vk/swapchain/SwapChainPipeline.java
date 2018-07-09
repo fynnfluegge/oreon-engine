@@ -35,6 +35,8 @@ public class SwapChainPipeline extends VkPipeline{
 	    setDynamicState();
 	    setLayout(layouts);
 	    createGraphicsPipeline(shaderPipeline, renderPass);
+	    
+	    shaderPipeline.destroy();
 	}
 
 }

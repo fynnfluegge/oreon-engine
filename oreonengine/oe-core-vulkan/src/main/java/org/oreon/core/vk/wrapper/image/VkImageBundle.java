@@ -21,4 +21,13 @@ public class VkImageBundle {
 		this.image = image;
 		this.imageView = imageView;
 	}
+	
+	public void destroy(){
+		
+		if (sampler != null){
+			sampler.destroy();
+		}
+		imageView.destroy();
+		image.destroy();
+	}
 }

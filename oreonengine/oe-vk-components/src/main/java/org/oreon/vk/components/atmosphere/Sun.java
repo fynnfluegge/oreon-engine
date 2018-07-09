@@ -52,7 +52,6 @@ import org.oreon.core.vk.wrapper.pipeline.GraphicsPipeline;
 
 public class Sun extends Renderable{
 	
-	private VkPipeline graphicsPipeline;
 	private VkImageBundle sunImageBundle;
 	private VkImageBundle sunImageBundle_lightScattering;
 
@@ -154,7 +153,7 @@ public class Sun extends Renderable{
 	    shaderPipeline.createFragmentShader("shaders/sun/sun.frag.spv");
 	    shaderPipeline.createShaderPipeline();
 	    
-	    graphicsPipeline = new GraphicsPipeline(device.getHandle(),
+	    VkPipeline graphicsPipeline = new GraphicsPipeline(device.getHandle(),
 	    		shaderPipeline, vertexInput, VK_PRIMITIVE_TOPOLOGY_POINT_LIST,
 	    		VkUtil.createLongBuffer(descriptorSetLayouts),
 				EngineContext.getConfig().getX_ScreenResolution(),
@@ -177,7 +176,8 @@ public class Sun extends Renderable{
 	    
 	    VkMeshData meshData = VkMeshData.builder().vertexBufferObject(vertexBufferObject)
 	    		.vertexBuffer(vertexBuffer).build();
-	    VkRenderInfo mainRenderInfo = VkRenderInfo.builder().commandBuffer(mainCommandBuffer).build();
+	    VkRenderInfo mainRenderInfo = VkRenderInfo.builder().commandBuffer(mainCommandBuffer)
+	    		.pipeline(graphicsPipeline).build();
 	    
 	    addComponent(NodeComponentType.MESH_DATA, meshData);
 	    addComponent(NodeComponentType.MAIN_RENDERINFO, mainRenderInfo);

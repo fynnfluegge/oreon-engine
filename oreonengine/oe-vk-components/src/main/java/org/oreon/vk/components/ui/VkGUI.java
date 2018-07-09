@@ -68,10 +68,10 @@ import org.oreon.core.vk.pipeline.RenderPass;
 import org.oreon.core.vk.pipeline.ShaderPipeline;
 import org.oreon.core.vk.pipeline.VkPipeline;
 import org.oreon.core.vk.pipeline.VkVertexInput;
+import org.oreon.core.vk.scenegraph.VkMeshData;
 import org.oreon.core.vk.scenegraph.VkRenderInfo;
 import org.oreon.core.vk.util.VkUtil;
 import org.oreon.core.vk.wrapper.buffer.VkBufferHelper;
-import org.oreon.core.vk.wrapper.buffer.VkMeshBuffer;
 import org.oreon.core.vk.wrapper.command.PrimaryCmdBuffer;
 import org.oreon.core.vk.wrapper.command.SecondaryDrawIndexedCmdBuffer;
 import org.oreon.core.vk.wrapper.image.VkImageBundle;
@@ -82,7 +82,7 @@ public class VkGUI extends GUI{
 
 	protected VkFrameBufferObject guiOverlayFbo;
 	protected VkImageBundle fontsImageBundle;
-	protected VkMeshBuffer panelMeshBuffer;
+	protected VkMeshData panelMeshBuffer;
 	
 	private PrimaryCmdBuffer guiPrimaryCmdBuffer;
 	private LinkedHashMap<String, CommandBuffer> guiSecondaryCmdBuffers;
@@ -137,7 +137,7 @@ public class VkGUI extends GUI{
 		fontsImageBundle = new VkImageBundle(fontsImage, fontsImageView, sampler);
 		
 		// panel mesh buffer
-		panelMeshBuffer = new VkMeshBuffer(device.getHandle(),
+		panelMeshBuffer = new VkMeshData(device.getHandle(),
 				memoryProperties, device.getTransferCommandPool(), device.getTransferQueue(),
 				UIPanelLoader.load("gui/basicPanel.gui"), VertexLayout.POS2D);
 		

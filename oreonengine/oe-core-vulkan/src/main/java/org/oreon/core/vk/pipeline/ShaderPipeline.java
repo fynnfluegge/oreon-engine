@@ -20,7 +20,7 @@ public class ShaderPipeline {
 	private VkPipelineShaderStageCreateInfo.Buffer stages;
 	private List<ShaderModule> shaderStages = new ArrayList<ShaderModule>();
 	
-	private VkDevice device;
+	private final VkDevice device;
 	
 	public ShaderPipeline(VkDevice device) {
 		
@@ -73,7 +73,9 @@ public class ShaderPipeline {
 		stages.free();
 		
 		for (ShaderModule shaderModule : shaderStages){
-			shaderModule.destroy();
+			if (shaderModule.getHandle() != -1){
+				shaderModule.destroy();
+			}
 		}
 	}
 	

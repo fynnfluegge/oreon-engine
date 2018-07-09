@@ -26,8 +26,8 @@ import org.oreon.core.vk.descriptor.DescriptorSetLayout;
 import org.oreon.core.vk.device.VkDeviceBundle;
 import org.oreon.core.vk.image.VkImage;
 import org.oreon.core.vk.image.VkImageView;
+import org.oreon.core.vk.pipeline.ShaderModule;
 import org.oreon.core.vk.pipeline.VkPipeline;
-import org.oreon.core.vk.synchronization.Fence;
 import org.oreon.core.vk.util.VkUtil;
 import org.oreon.core.vk.wrapper.command.ComputeCmdBuffer;
 import org.oreon.core.vk.wrapper.image.Image2DDeviceLocal;
@@ -47,7 +47,6 @@ public class DeferredLighting {
 	private DescriptorSetLayout descriptorSetLayout;
 	private CommandBuffer cmdBuffer;
 	private SubmitInfo submitInfo;
-	private Fence fence;
 
 	public DeferredLighting(VkDeviceBundle deviceBundle,
 			int width, int height, VkImageView albedoImageView,
@@ -116,10 +115,12 @@ public class DeferredLighting {
 		pushConstants.putFloat(EngineContext.getConfig().getSightRange());
 		pushConstants.flip();
 		
+		ShaderModule shader = new ComputeShader(device, "shaders/deferredLighting.comp.spv");
+		
 		computePipeline = new VkPipeline(device);
 		computePipeline.setPushConstantsRange(VK_SHADER_STAGE_COMPUTE_BIT, pushConstantRange);
 		computePipeline.setLayout(VkUtil.createLongBuffer(descriptorSetLayouts));
-		computePipeline.createComputePipeline(new ComputeShader(device, "shaders/deferredLighting.comp.spv"));
+		computePipeline.createComputePipeline(shader);
 		
 		cmdBuffer = new ComputeCmdBuffer(device,
 				deviceBundle.getLogicalDevice().getComputeCommandPool().getHandle(),
@@ -127,15 +128,23 @@ public class DeferredLighting {
 				VkUtil.createLongArray(descriptorSets), width/16, height/16, 1,
 				pushConstants, VK_SHADER_STAGE_COMPUTE_BIT);
 		
-		fence = new Fence(device);
-		
 		submitInfo = new SubmitInfo();
 		submitInfo.setCommandBuffers(cmdBuffer.getHandlePointer());
-		submitInfo.setFence(fence);
+		
+		shader.destroy();
 	}
 	
 	public void render(){
 		
 		submitInfo.submit(queue);
+	}
+	
+	public void shutdown(){
+		deferredLightingSceneImage.destroy();
+		deferredLightingSceneImageView.destroy();
+		computePipeline.destroy();
+		descriptorSet.destroy();
+		descriptorSetLayout.destroy();
+		cmdBuffer.destroy();
 	}
 }

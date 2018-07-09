@@ -28,4 +28,26 @@ public class VkRenderInfo extends NodeComponent{
 	private List<DescriptorSetLayout> descriptorSetLayouts;
 	private List<DescriptorSet> descriptorSets;
 
+	public void shutdown(){
+		
+		if(pipeline != null){
+			pipeline.destroy();
+		}
+		if (commandBuffer != null){
+			commandBuffer.destroy();
+		}
+		if(shaderPipeline != null){
+			shaderPipeline.destroy();
+		}
+		if(descriptorSetLayouts != null){
+			for (DescriptorSetLayout layout : descriptorSetLayouts){
+				layout.destroy();
+			}
+		}
+		if(descriptorSets != null){
+			for (DescriptorSet set : descriptorSets){
+				set.destroy();
+			}
+		}
+	}
 }

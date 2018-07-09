@@ -1,6 +1,7 @@
 package org.oreon.core.vk.framebuffer;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import org.oreon.core.target.FrameBufferObject;
 import org.oreon.core.vk.image.VkImageView;
@@ -19,5 +20,15 @@ public class VkFrameBufferObject extends FrameBufferObject{
 	public VkImageView getAttachmentImageView(Attachment type){
 		
 		return attachments.get(type).getImageView();
+	}
+	
+	public void destroy(){
+		
+		frameBuffer.destroy();
+		renderPass.destroy();
+		
+		for (Map.Entry<Attachment, VkImageBundle> attachment : attachments.entrySet()) {
+			attachment.getValue().destroy();
+		}
 	}
 }

@@ -10,7 +10,7 @@ import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
 import org.oreon.core.vk.memory.VkBuffer;
 
-public class VkUniformBuffer extends VkBuffer{
+public class VkUniformBuffer extends VkBuffer {
 	
 	public VkUniformBuffer(VkDevice device, VkPhysicalDeviceMemoryProperties memoryProperties,
 						   ByteBuffer data) {
