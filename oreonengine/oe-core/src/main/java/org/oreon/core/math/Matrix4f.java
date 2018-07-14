@@ -62,34 +62,44 @@ public class Matrix4f {
 	
 		return this;
 	}
-	
+
 	public Matrix4f Rotation(Vec3f rotation)
 	{
-		Matrix4f rx = new Matrix4f();
-		Matrix4f ry = new Matrix4f();
-		Matrix4f rz = new Matrix4f();
-		
 		float x = (float)Math.toRadians(rotation.getX());
 		float y = (float)Math.toRadians(rotation.getY());
 		float z = (float)Math.toRadians(rotation.getZ());
-		
-		rz.m[0][0] = (float)Math.cos(z); rz.m[0][1] = -(float)Math.sin(z); 	 rz.m[0][2] = 0; 				   rz.m[0][3] = 0;
-		rz.m[1][0] = (float)Math.sin(z); rz.m[1][1] = (float)Math.cos(z);  	 rz.m[1][2] = 0; 				   rz.m[1][3] = 0;
-		rz.m[2][0] = 0; 				 rz.m[2][1] = 0; 				   	 rz.m[2][2] = 1; 				   rz.m[2][3] = 0;
-		rz.m[3][0] = 0; 				 rz.m[3][1] = 0; 				   	 rz.m[3][2] = 0; 				   rz.m[3][3] = 1;
-		
-		rx.m[0][0] = 1; 				 rx.m[0][1] = 0;					 rx.m[0][2] = 0; 				   rx.m[0][3] = 0;
-		rx.m[1][0] = 0; 				 rx.m[1][1] = (float)Math.cos(x); 	 rx.m[1][2] = -(float)Math.sin(x); rx.m[1][3] = 0;
-		rx.m[2][0] = 0; 				 rx.m[2][1] = (float)Math.sin(x); 	 rx.m[2][2] = (float)Math.cos(x);  rx.m[2][3] = 0;
-		rx.m[3][0] = 0; 				 rx.m[3][1] = 0; 				 	 rx.m[3][2] = 0;				   rx.m[3][3] = 1;
-		
-		ry.m[0][0] = (float)Math.cos(y); ry.m[0][1] = 0; 					 ry.m[0][2] = (float)Math.sin(y);  ry.m[0][3] = 0;
-		ry.m[1][0] = 0; 				 ry.m[1][1] = 1; 				 	 ry.m[1][2] = 0; 				   ry.m[1][3] = 0;
-		ry.m[2][0] = -(float)Math.sin(y);ry.m[2][1] = 0;					 ry.m[2][2] = (float)Math.cos(y);  ry.m[2][3] = 0;
-		ry.m[3][0] = 0; 				 ry.m[3][1] = 0; 					 ry.m[3][2] = 0; 				   ry.m[3][3] = 1;
-	
-		m =  rz.mul(ry.mul(rx)).getM();
-		
+
+		float sinX = (float)Math.sin(x);
+		float sinY = (float)Math.sin(y);
+		float sinZ = (float)Math.sin(z);
+
+		float cosX = (float)Math.cos(x);
+		float cosY = (float)Math.cos(y);
+		float cosZ = (float)Math.cos(z);
+
+		final float sinXsinY = sinX * sinY;
+		final float cosXsinY = cosX * sinY;
+
+		m[0][0] = cosY * cosZ;
+		m[0][1] = cosY * sinZ;
+		m[0][2] = -sinY;
+		m[0][3] = 0f;
+
+		m[1][0] = sinXsinY * cosZ - cosX * sinZ;
+		m[1][1] = sinXsinY * sinZ + cosX * cosZ;
+		m[1][2] = sinX * cosY;
+		m[1][3] = 0f;
+
+		m[2][0] = cosXsinY * cosZ + sinX * sinZ;
+		m[2][1] = cosXsinY * sinZ - sinX * cosZ;
+		m[2][2] = cosX * cosY;
+		m[2][3] = 0f;
+
+		m[3][0] = 0f;
+		m[3][1] = 0f;
+		m[3][2] = 0f;
+		m[3][3] = 1f;
+
 		return this;
 	}
 	
