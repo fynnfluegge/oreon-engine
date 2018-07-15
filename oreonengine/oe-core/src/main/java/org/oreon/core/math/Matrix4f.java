@@ -112,6 +112,58 @@ public class Matrix4f {
 	
 		return this;
 	}
+
+	public Matrix4f MakeTransform(Vec3f translation, Vec3f rotation, Vec3f scaling)
+	{
+		// Convert euler angles to a quaternion
+		float cr = (float)Math.cos(rotation.getX() * 0.5);
+		float sr = (float)Math.sin(rotation.getX() * 0.5);
+		float cp = (float)Math.cos(rotation.getY() * 0.5);
+		float sp = (float)Math.sin(rotation.getY() * 0.5);
+		float cy = (float)Math.cos(rotation.getZ() * 0.5);
+		float sy = (float)Math.sin(rotation.getZ() * 0.5);
+
+		float w = cy * cr * cp + sy * sr * sp;
+		float x = cy * sr * cp - sy * cr * sp;
+		float y = cy * cr * sp + sy * sr * cp;
+		float z = sy * cr * cp - cy * sr * sp;
+
+		// Cache some data for further computations
+		float x2 = x + x;
+		float y2 = y + y;
+		float z2 = z + z;
+
+		float xx = x * x2, xy = x * y2, xz = x * z2;
+		float yy = y * y2, yz = y * z2, zz = z * z2;
+		float wx = w * x2, wy = w * y2, wz = w * z2;
+
+		float scalingX = scaling.getX();
+		float scalingY = scaling.getY();
+		float scalingZ = scaling.getZ();
+
+		// Apply rotation and scale simultaneously, simply adding the translation.
+		m[0][0] = (1f - (yy + zz)) * scalingX;
+		m[0][1] = (xy + wz) * scalingX;
+		m[0][2] = (xz - wy) * scalingX;
+		m[0][3] = translation.getX();
+
+		m[1][0] = (xy - wz) * scalingY;
+		m[1][1] = (1f - (xx + zz)) * scalingY;
+		m[1][2] = (yz + wx) * scalingY;
+		m[1][3] = translation.getY();
+
+		m[2][0] = (xz + wy) * scalingZ;
+		m[2][1] = (yz - wx) * scalingZ;
+		m[2][2] = (1f - (xx + yy)) * scalingZ;
+		m[2][3] = translation.getZ();
+
+		m[3][0] = 0f;
+		m[3][1] = 0f;
+		m[3][2] = 0f;
+		m[3][3] = 1f;
+
+		return this;
+	}
 	
 	public Matrix4f OrthographicProjection(float l, float r, float b, float t, float n, float f){
 		
