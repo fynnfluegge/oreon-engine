@@ -62,34 +62,44 @@ public class Matrix4f {
 	
 		return this;
 	}
-	
+
 	public Matrix4f Rotation(Vec3f rotation)
 	{
-		Matrix4f rx = new Matrix4f();
-		Matrix4f ry = new Matrix4f();
-		Matrix4f rz = new Matrix4f();
-		
 		float x = (float)Math.toRadians(rotation.getX());
 		float y = (float)Math.toRadians(rotation.getY());
 		float z = (float)Math.toRadians(rotation.getZ());
-		
-		rz.m[0][0] = (float)Math.cos(z); rz.m[0][1] = -(float)Math.sin(z); 	 rz.m[0][2] = 0; 				   rz.m[0][3] = 0;
-		rz.m[1][0] = (float)Math.sin(z); rz.m[1][1] = (float)Math.cos(z);  	 rz.m[1][2] = 0; 				   rz.m[1][3] = 0;
-		rz.m[2][0] = 0; 				 rz.m[2][1] = 0; 				   	 rz.m[2][2] = 1; 				   rz.m[2][3] = 0;
-		rz.m[3][0] = 0; 				 rz.m[3][1] = 0; 				   	 rz.m[3][2] = 0; 				   rz.m[3][3] = 1;
-		
-		rx.m[0][0] = 1; 				 rx.m[0][1] = 0;					 rx.m[0][2] = 0; 				   rx.m[0][3] = 0;
-		rx.m[1][0] = 0; 				 rx.m[1][1] = (float)Math.cos(x); 	 rx.m[1][2] = -(float)Math.sin(x); rx.m[1][3] = 0;
-		rx.m[2][0] = 0; 				 rx.m[2][1] = (float)Math.sin(x); 	 rx.m[2][2] = (float)Math.cos(x);  rx.m[2][3] = 0;
-		rx.m[3][0] = 0; 				 rx.m[3][1] = 0; 				 	 rx.m[3][2] = 0;				   rx.m[3][3] = 1;
-		
-		ry.m[0][0] = (float)Math.cos(y); ry.m[0][1] = 0; 					 ry.m[0][2] = (float)Math.sin(y);  ry.m[0][3] = 0;
-		ry.m[1][0] = 0; 				 ry.m[1][1] = 1; 				 	 ry.m[1][2] = 0; 				   ry.m[1][3] = 0;
-		ry.m[2][0] = -(float)Math.sin(y);ry.m[2][1] = 0;					 ry.m[2][2] = (float)Math.cos(y);  ry.m[2][3] = 0;
-		ry.m[3][0] = 0; 				 ry.m[3][1] = 0; 					 ry.m[3][2] = 0; 				   ry.m[3][3] = 1;
-	
-		m =  rz.mul(ry.mul(rx)).getM();
-		
+
+		float sinX = (float)Math.sin(x);
+		float sinY = (float)Math.sin(y);
+		float sinZ = (float)Math.sin(z);
+
+		float cosX = (float)Math.cos(x);
+		float cosY = (float)Math.cos(y);
+		float cosZ = (float)Math.cos(z);
+
+		final float sinXsinY = sinX * sinY;
+		final float cosXsinY = cosX * sinY;
+
+		m[0][0] = cosY * cosZ;
+		m[0][1] = cosY * sinZ;
+		m[0][2] = -sinY;
+		m[0][3] = 0f;
+
+		m[1][0] = sinXsinY * cosZ - cosX * sinZ;
+		m[1][1] = sinXsinY * sinZ + cosX * cosZ;
+		m[1][2] = sinX * cosY;
+		m[1][3] = 0f;
+
+		m[2][0] = cosXsinY * cosZ + sinX * sinZ;
+		m[2][1] = cosXsinY * sinZ - sinX * cosZ;
+		m[2][2] = cosX * cosY;
+		m[2][3] = 0f;
+
+		m[3][0] = 0f;
+		m[3][1] = 0f;
+		m[3][2] = 0f;
+		m[3][3] = 1f;
+
 		return this;
 	}
 	
@@ -100,6 +110,58 @@ public class Matrix4f {
 		m[2][0] = 0; 				m[2][1] = 0; 				m[2][2] = scaling.getZ(); 	m[2][3] = 0;
 		m[3][0] = 0; 				m[3][1] = 0; 				m[3][2] = 0; 				m[3][3] = 1;
 	
+		return this;
+	}
+
+	public Matrix4f MakeTransform(Vec3f translation, Vec3f rotation, Vec3f scaling)
+	{
+		// Convert euler angles to a quaternion
+		float cr = (float)Math.cos(rotation.getX() * 0.5);
+		float sr = (float)Math.sin(rotation.getX() * 0.5);
+		float cp = (float)Math.cos(rotation.getY() * 0.5);
+		float sp = (float)Math.sin(rotation.getY() * 0.5);
+		float cy = (float)Math.cos(rotation.getZ() * 0.5);
+		float sy = (float)Math.sin(rotation.getZ() * 0.5);
+
+		float w = cy * cr * cp + sy * sr * sp;
+		float x = cy * sr * cp - sy * cr * sp;
+		float y = cy * cr * sp + sy * sr * cp;
+		float z = sy * cr * cp - cy * sr * sp;
+
+		// Cache some data for further computations
+		float x2 = x + x;
+		float y2 = y + y;
+		float z2 = z + z;
+
+		float xx = x * x2, xy = x * y2, xz = x * z2;
+		float yy = y * y2, yz = y * z2, zz = z * z2;
+		float wx = w * x2, wy = w * y2, wz = w * z2;
+
+		float scalingX = scaling.getX();
+		float scalingY = scaling.getY();
+		float scalingZ = scaling.getZ();
+
+		// Apply rotation and scale simultaneously, simply adding the translation.
+		m[0][0] = (1f - (yy + zz)) * scalingX;
+		m[0][1] = (xy + wz) * scalingX;
+		m[0][2] = (xz - wy) * scalingX;
+		m[0][3] = translation.getX();
+
+		m[1][0] = (xy - wz) * scalingY;
+		m[1][1] = (1f - (xx + zz)) * scalingY;
+		m[1][2] = (yz + wx) * scalingY;
+		m[1][3] = translation.getY();
+
+		m[2][0] = (xz + wy) * scalingZ;
+		m[2][1] = (yz - wx) * scalingZ;
+		m[2][2] = (1f - (xx + yy)) * scalingZ;
+		m[2][3] = translation.getZ();
+
+		m[3][0] = 0f;
+		m[3][1] = 0f;
+		m[3][2] = 0f;
+		m[3][3] = 1f;
+
 		return this;
 	}
 	

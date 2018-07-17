@@ -25,11 +25,8 @@ public class Transform {
 	
 	public Matrix4f getWorldMatrix()
 	{
-		Matrix4f translationMatrix = new Matrix4f().Translation(translation);
-		Matrix4f rotationMatrix = new Matrix4f().Rotation(rotation);
-		Matrix4f scalingMatrix = new Matrix4f().Scaling(scaling);
-		
-		return translationMatrix.mul(scalingMatrix.mul(rotationMatrix));
+		final Matrix4f matrix4f = new Matrix4f();
+		return matrix4f.MakeTransform(translation, rotation, scaling);
 	}
 	
 	public Matrix4f getWorldMatrixRTS(){
