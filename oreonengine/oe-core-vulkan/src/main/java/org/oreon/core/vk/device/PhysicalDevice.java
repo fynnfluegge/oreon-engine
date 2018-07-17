@@ -60,12 +60,18 @@ public class PhysicalDevice {
         queueFamilies = new QueueFamilies(handle, surface);
         swapChainCapabilities = new SwapChainCapabilities(handle, surface);
         supportedExtensionNames = DeviceCapabilities.getPhysicalDeviceExtensionNamesSupport(handle);
-        
         memoryProperties = VkPhysicalDeviceMemoryProperties.calloc();
         vkGetPhysicalDeviceMemoryProperties(handle, memoryProperties);
         
         properties = DeviceCapabilities.checkPhysicalDeviceProperties(handle);
         features = DeviceCapabilities.checkPhysicalDeviceFeatures(handle);
+        
+//        log.info(properties.apiVersion());
+//        log.info(properties.driverVersion());
+//        log.info(properties.vendorID());
+//        log.info(properties.deviceID());
+//        log.info(properties.deviceType());
+//        log.info(properties.deviceNameString());
 	}
 	
 	public void checkDeviceExtensionsSupport(PointerBuffer ppEnabledExtensionNames){

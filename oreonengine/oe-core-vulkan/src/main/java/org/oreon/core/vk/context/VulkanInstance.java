@@ -43,9 +43,6 @@ public class VulkanInstance {
         if (requiredExtensions == null) {
             throw new AssertionError("Failed to find list of required Vulkan extensions");
         }
-        
-        System.out.println(requiredExtensions.getStringASCII(0));
-        System.out.println(requiredExtensions.getStringASCII(1));
 		
         ByteBuffer VK_EXT_DEBUG_REPORT_EXTENSION = memUTF8(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
         
