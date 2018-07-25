@@ -43,8 +43,8 @@ import lombok.Setter;
 public class VkRenderEngine extends RenderEngine{
 	
 	private VkInstance vkInstance;
-	private SwapChain swapChain;
-	private long surface;
+	private static SwapChain swapChain;
+	private static long surface;
 	private VkDeviceBundle majorDevice;
 
 	private VkFrameBufferObject offScreenFbo;

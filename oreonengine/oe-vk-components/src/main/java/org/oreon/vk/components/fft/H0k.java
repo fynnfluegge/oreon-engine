@@ -200,19 +200,17 @@ public class H0k {
 		    descriptorSet = new DescriptorSet(device, descriptorPool.getHandle(),
 		    		descriptorSetLayout.getHandlePointer());
 		    descriptorSet.updateDescriptorImageBuffer(h0k_imageView.getHandle(),
-		    		VK_IMAGE_LAYOUT_GENERAL, -1,
-		    		0, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
+		    		VK_IMAGE_LAYOUT_GENERAL, -1, 0, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
 		    descriptorSet.updateDescriptorImageBuffer(h0minusk_imageView.getHandle(),
-		    		VK_IMAGE_LAYOUT_GENERAL, -1,
-		    		1, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
-		    descriptorSet.updateDescriptorImageBuffer(noise0.getHandle(), VK_IMAGE_LAYOUT_GENERAL,
-		    		-1, 2, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
-		    descriptorSet.updateDescriptorImageBuffer(noise1.getHandle(), VK_IMAGE_LAYOUT_GENERAL,
-		    		-1, 3, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
-		    descriptorSet.updateDescriptorImageBuffer(noise2.getHandle(), VK_IMAGE_LAYOUT_GENERAL,
-		    		-1, 4, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
-		    descriptorSet.updateDescriptorImageBuffer(noise3.getHandle(), VK_IMAGE_LAYOUT_GENERAL,
-		    		-1, 5, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
+		    		VK_IMAGE_LAYOUT_GENERAL, -1, 1, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
+		    descriptorSet.updateDescriptorImageBuffer(noise0.getHandle(),
+		    		VK_IMAGE_LAYOUT_GENERAL, -1, 2, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
+		    descriptorSet.updateDescriptorImageBuffer(noise1.getHandle(),
+		    		VK_IMAGE_LAYOUT_GENERAL, -1, 3, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
+		    descriptorSet.updateDescriptorImageBuffer(noise2.getHandle(),
+		    		VK_IMAGE_LAYOUT_GENERAL, -1, 4, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
+		    descriptorSet.updateDescriptorImageBuffer(noise3.getHandle(),
+		    		VK_IMAGE_LAYOUT_GENERAL, -1, 5, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
 		}
 	}
 	

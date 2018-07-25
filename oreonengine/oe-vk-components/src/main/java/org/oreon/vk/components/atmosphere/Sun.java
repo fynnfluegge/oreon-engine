@@ -52,7 +52,9 @@ import org.oreon.core.vk.wrapper.pipeline.GraphicsPipeline;
 
 public class Sun extends Renderable{
 	
+	@SuppressWarnings("unused")
 	private VkImageBundle sunImageBundle;
+	@SuppressWarnings("unused")
 	private VkImageBundle sunImageBundle_lightScattering;
 
 	public Sun() {
