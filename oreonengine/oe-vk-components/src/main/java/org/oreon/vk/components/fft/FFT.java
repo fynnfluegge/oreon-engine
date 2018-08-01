@@ -39,7 +39,7 @@ import lombok.Getter;
 
 public class FFT extends Renderable{
 	
-	private VkQueue queue;
+	private VkQueue computeQueue;
 
 	@Getter
 	private VkImageView dxImageView;
@@ -72,6 +72,7 @@ public class FFT extends Renderable{
 	private CommandBuffer dyInversionCmdBuffer;
 	private VkImage dyPingpongImage;
 	private VkImageView dyPingpongImageView;
+//	private CommandBuffer dyMipmapGenerationCmd;
 	
 	// dx fft resources
 	private DescriptorSet dxButterflyDescriptorSet;
@@ -106,7 +107,7 @@ public class FFT extends Renderable{
 		VkDevice device = deviceBundle.getLogicalDevice().getHandle();
 		VkPhysicalDeviceMemoryProperties memoryProperties = deviceBundle.getPhysicalDevice().getMemoryProperties();
 		DescriptorPool descriptorPool = deviceBundle.getLogicalDevice().getDescriptorPool(Thread.currentThread().getId());
-		queue = deviceBundle.getLogicalDevice().getComputeQueue();
+		computeQueue = deviceBundle.getLogicalDevice().getComputeQueue();
 		
 		stages =  (int) (Math.log(N)/Math.log(2));
 		
@@ -279,9 +280,9 @@ public class FFT extends Renderable{
 		{
 			int[] uniforms = {i, pingpong, 0};
 			buffer.mapMemory(BufferUtil.createByteBuffer(uniforms));
-			dySubmitInfo.submit(queue);
-			dxSubmitInfo.submit(queue);
-			dzSubmitInfo.submit(queue);
+			dySubmitInfo.submit(computeQueue);
+			dxSubmitInfo.submit(computeQueue);
+			dzSubmitInfo.submit(computeQueue);
 			
 			dyFence.waitForFence();
 			dxFence.waitForFence();
@@ -296,9 +297,9 @@ public class FFT extends Renderable{
 		{
 			int[] uniforms = {j, pingpong, 1};
 			buffer.mapMemory(BufferUtil.createByteBuffer(uniforms));
-			dySubmitInfo.submit(queue);
-			dxSubmitInfo.submit(queue);
-			dzSubmitInfo.submit(queue);
+			dySubmitInfo.submit(computeQueue);
+			dxSubmitInfo.submit(computeQueue);
+			dzSubmitInfo.submit(computeQueue);
 			
 			dyFence.waitForFence();
 			dxFence.waitForFence();
@@ -312,13 +313,13 @@ public class FFT extends Renderable{
 		buffer.mapMemory(BufferUtil.createByteBuffer(inversionUniforms));
 		
 		inversionSubmitInfo.setCommandBuffers(dyInversionCmdBuffer.getHandlePointer());
-		inversionSubmitInfo.submit(queue);
+		inversionSubmitInfo.submit(computeQueue);
 
 		inversionSubmitInfo.setCommandBuffers(dxInversionCmdBuffer.getHandlePointer());
-		inversionSubmitInfo.submit(queue);
+		inversionSubmitInfo.submit(computeQueue);
 		
 		inversionSubmitInfo.setCommandBuffers(dzInversionCmdBuffer.getHandlePointer());
-		inversionSubmitInfo.submit(queue);
+		inversionSubmitInfo.submit(computeQueue);
 	}
 	
 	private class ButterflyDescriptorSet extends DescriptorSet{

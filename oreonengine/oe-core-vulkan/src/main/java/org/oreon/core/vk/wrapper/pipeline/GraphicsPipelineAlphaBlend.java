@@ -53,7 +53,7 @@ public class GraphicsPipelineAlphaBlend extends VkPipeline{
 			addColorBlendAttachment();
 		}
 		setColorBlendState(VK_BLEND_FACTOR_SRC_ALPHA, VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA,
-				VK_BLEND_OP_ADD, VK_BLEND_FACTOR_ONE, VK_BLEND_FACTOR_ZERO, VK_BLEND_OP_ADD);
+				VK_BLEND_FACTOR_ONE, VK_BLEND_FACTOR_ZERO, VK_BLEND_OP_ADD, VK_BLEND_OP_ADD);
 		setDepthAndStencilTest(true);
 		setDynamicState();
 		setLayout(layout);

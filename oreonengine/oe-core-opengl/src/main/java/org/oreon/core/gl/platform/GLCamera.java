@@ -1,6 +1,7 @@
 package org.oreon.core.gl.platform;
 
 import org.oreon.core.gl.memory.GLUniformBuffer;
+import org.oreon.core.math.Vec3f;
 import org.oreon.core.platform.Camera;
 import org.oreon.core.util.Constants;
 
@@ -10,7 +11,7 @@ public class GLCamera extends Camera{
 	
 	public GLCamera() {
 		
-		super();
+		super(new Vec3f(0,100,0), new Vec3f(0,0,1), new Vec3f(0,1,0));
 	}
 	
 	@Override

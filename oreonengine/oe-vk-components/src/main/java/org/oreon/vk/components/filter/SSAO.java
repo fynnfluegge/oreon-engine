@@ -63,6 +63,7 @@ public class SSAO {
 	
 	// ssao resources
 	private VkImage ssaoImage;
+	@Getter
 	private VkImageView ssaoImageView;
 	private VkPipeline ssaoPipeline;
 	private VkBuffer kernelBuffer;
@@ -81,10 +82,8 @@ public class SSAO {
 	private CommandBuffer ssaoBlurCmdBuffer;
 	private SubmitInfo ssaoBlurSubmitInfo;
 	
-	public SSAO(VkDeviceBundle deviceBundle,
-			int width ,int height, VkImage worldPositionImage, 
-			VkImageView worldPositionImageView,
-			VkImageView normalImageView,
+	public SSAO(VkDeviceBundle deviceBundle, int width, int height, 
+			VkImageView worldPositionImageView, VkImageView normalImageView,
 			VkImageView depthImageView) {
 		
 		VkDevice device = deviceBundle.getLogicalDevice().getHandle();

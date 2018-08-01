@@ -183,7 +183,8 @@ public class VkRenderEngine extends RenderEngine{
 			displayImageView = gui.getImageView();
 		}
 	    
-	    swapChain = new SwapChain(logicalDevice, physicalDevice, surface, displayImageView.getHandle());
+	    swapChain = new SwapChain(logicalDevice, physicalDevice, surface,
+	    		displayImageView.getHandle());
 	}
     
 	@Override
@@ -308,7 +309,9 @@ public class VkRenderEngine extends RenderEngine{
 		transparencyPrimaryCmdBuffer.destroy();
 		sampleCoverage.shutdown();
 		deferredLighting.shutdown();
-		fxaa.shutdown();
+		if (fxaa != null){
+			fxaa.shutdown();
+		}
 		opaqueTransparencyBlending.shutdown();
 		bloom.shutdown();
 		vkDestroySwapchainKHR(majorDevice.getLogicalDevice().getHandle(), swapChain.getHandle(), null);

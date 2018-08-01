@@ -18,7 +18,7 @@ void main()
 	float blue = -0.00019*(abs(worldPosition.y)-2800) + 0.47;
 	
 	albedo_out = vec4(red,green,blue,1);
-	worldPosition_out = vec4(0.0,0.0,0.0,1.0);
+	worldPosition_out = vec4(0.0,0.0,0.0,gl_FragCoord.z);
 	normal_out = vec4(0.0,0.0,0.0,1.0);
 	specularEmission_out = vec4(0,0,0,1.0);
 	lightScattering_out = vec4(0,0,0,0);

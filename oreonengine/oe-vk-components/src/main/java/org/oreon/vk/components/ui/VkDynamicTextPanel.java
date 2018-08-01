@@ -40,7 +40,7 @@ import org.oreon.core.vk.util.VkUtil;
 import org.oreon.core.vk.wrapper.buffer.VkBufferHelper;
 import org.oreon.core.vk.wrapper.buffer.VkUniformBuffer;
 import org.oreon.core.vk.wrapper.command.SecondaryDrawIndexedCmdBuffer;
-import org.oreon.core.vk.wrapper.pipeline.GraphicsPipeline;
+import org.oreon.core.vk.wrapper.pipeline.GraphicsPipelineAlphaBlend;
 
 public class VkDynamicTextPanel extends UITextPanel{
 	
@@ -65,7 +65,7 @@ public class VkDynamicTextPanel extends UITextPanel{
 		
 		ShaderPipeline shaderPipeline = new ShaderPipeline(device.getHandle());
 	    shaderPipeline.createVertexShader("shaders/ui/dynamicTextPanel.vert.spv");
-	    shaderPipeline.createFragmentShader("shaders/ui/dynamicTextPanel.frag.spv");
+	    shaderPipeline.createFragmentShader("shaders/ui/textPanel.frag.spv");
 	    shaderPipeline.createShaderPipeline();
 
 	    int pushConstantRange = Float.BYTES * 16;
@@ -122,7 +122,7 @@ public class VkDynamicTextPanel extends UITextPanel{
         		device.getTransferQueue(),
         		indexBuffer, VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
         
-        graphicsPipeline = new GraphicsPipeline(device.getHandle(),
+        graphicsPipeline = new GraphicsPipelineAlphaBlend(device.getHandle(),
 				shaderPipeline, vertexInput, VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
 				VkUtil.createLongBuffer(descriptorSetLayouts),
 				fbo.getWidth(), fbo.getHeight(),

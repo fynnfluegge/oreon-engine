@@ -171,7 +171,7 @@ public class Hkt extends Renderable{
 	
 	public void render(){
 		
-		t += (System.currentTimeMillis() - systemTime) * t_delta;
+//		t += (System.currentTimeMillis() - systemTime) * t_delta;
 		float[] v = {t};
 		buffer.mapMemory(BufferUtil.createByteBuffer(v));
 		submitInfo.submit(queue);

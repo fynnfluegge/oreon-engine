@@ -38,6 +38,9 @@ import org.oreon.core.vk.wrapper.image.Image2DDeviceLocal;
 import org.oreon.core.vk.wrapper.image.VkImageBundle;
 import org.oreon.core.vk.wrapper.shader.ComputeShader;
 
+import lombok.Getter;
+
+@Getter
 public class Bloom {
 
 	private VkQueue queue;
@@ -718,7 +721,7 @@ public class Bloom {
 				width, height, VK_FORMAT_R16G16B16A16_SFLOAT, VK_IMAGE_USAGE_STORAGE_BIT
 				| VK_IMAGE_USAGE_SAMPLED_BIT);
 		VkImageView sceneBrightnessImageView = new VkImageView(device,
-				VK_FORMAT_R16G16B16A16_SFLOAT, bloomSceneImage.getHandle(), VK_IMAGE_ASPECT_COLOR_BIT);
+				VK_FORMAT_R16G16B16A16_SFLOAT, sceneBrightnessImage.getHandle(), VK_IMAGE_ASPECT_COLOR_BIT);
 		
 		VkSampler brightnessSampler = new VkSampler(device, VK_FILTER_LINEAR,
 				false, 0, VK_SAMPLER_MIPMAP_MODE_LINEAR, 0, VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE);

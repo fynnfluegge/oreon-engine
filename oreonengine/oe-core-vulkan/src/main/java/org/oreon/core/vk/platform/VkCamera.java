@@ -17,10 +17,9 @@ public class VkCamera extends Camera{
 	private CameraDescriptor descriptor;
 
 	public VkCamera() {
-		  
-		super();
 		
-		setPosition(new Vec3f(0,40,0));
+		super(new Vec3f(-160,45,-72), new Vec3f(0.5668308f,-0.028192917f,0.82335174f),
+				new Vec3f(0.015936304f,0.9996025f,0.023256794f));
 		
 		// flip y-axxis for vulkan coordinate system
 		getProjectionMatrix().set(1, 1, -getProjectionMatrix().get(1, 1));

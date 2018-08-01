@@ -56,7 +56,7 @@ public class NormalRenderer {
 	private VkDevice device;
 	private VkQueue computeQueue;
 	private VkQueue transferQueue;
-	private CommandPool transferCommandPool;
+	private CommandPool graphicsCommandPool;
 	
 	@Getter
 	private VkImageView normalImageView;
@@ -70,7 +70,7 @@ public class NormalRenderer {
 		device = deviceBundle.getLogicalDevice().getHandle();
 		computeQueue = deviceBundle.getLogicalDevice().getComputeQueue();
 		transferQueue = deviceBundle.getLogicalDevice().getGraphicsQueue();
-		transferCommandPool= deviceBundle.getLogicalDevice().getGraphicsCommandPool();
+		graphicsCommandPool= deviceBundle.getLogicalDevice().getGraphicsCommandPool();
 		
 		normalImage = new Image2DDeviceLocal(deviceBundle.getLogicalDevice().getHandle(),
 				deviceBundle.getPhysicalDevice().getMemoryProperties(), N, N,
@@ -124,7 +124,7 @@ public class NormalRenderer {
 		submitInfo.setCommandBuffers(commandBuffer.getHandlePointer());
 		
 		mipmapGenerationCmd = new MipMapGenerationCmdBuffer(device,
-				transferCommandPool.getHandle(), normalImage.getHandle(),
+				graphicsCommandPool.getHandle(), normalImage.getHandle(),
 				N, N, Util.getLog2N(N),
 				VK_IMAGE_LAYOUT_UNDEFINED, 0, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
 				VK_IMAGE_LAYOUT_GENERAL, VK_ACCESS_SHADER_READ_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT);

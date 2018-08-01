@@ -15,12 +15,7 @@ void main()
 {
 	vec4 rgba = texture(fontSampler, inUV);
 	
-	if (rgba.a < 1.0){
-		discard;
-	}
-	else{
-		fragColor = rgba;
-	}
+	fragColor = rgba;
 }
 
 

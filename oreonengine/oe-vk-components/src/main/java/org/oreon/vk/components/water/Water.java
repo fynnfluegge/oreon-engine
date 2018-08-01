@@ -210,10 +210,10 @@ public class Water extends Renderable{
 				VK_IMAGE_ASPECT_COLOR_BIT,
 				Util.getLog2N(offScreenReflecRefracFbo.getWidth()));
 		
+		dySampler = new VkSampler(device.getHandle(), VK_FILTER_LINEAR, false, 0,
+				VK_SAMPLER_MIPMAP_MODE_NEAREST, 0, VK_SAMPLER_ADDRESS_MODE_REPEAT);
 		dxSampler = new VkSampler(device.getHandle(), VK_FILTER_LINEAR, false, 0,
 				VK_SAMPLER_MIPMAP_MODE_NEAREST, 0, VK_SAMPLER_ADDRESS_MODE_REPEAT);
-	    dySampler = new VkSampler(device.getHandle(), VK_FILTER_LINEAR, false, 0,
-	    		VK_SAMPLER_MIPMAP_MODE_NEAREST, 0, VK_SAMPLER_ADDRESS_MODE_REPEAT);
 	    dzSampler = new VkSampler(device.getHandle(), VK_FILTER_LINEAR, false, 0,
 	    		VK_SAMPLER_MIPMAP_MODE_NEAREST, 0, VK_SAMPLER_ADDRESS_MODE_REPEAT);
 	    dudvSampler = new VkSampler(device.getHandle(), VK_FILTER_LINEAR, false, 0,

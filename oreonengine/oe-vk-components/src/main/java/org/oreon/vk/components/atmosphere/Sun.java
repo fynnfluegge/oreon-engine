@@ -63,7 +63,7 @@ public class Sun extends Renderable{
 		VkPhysicalDeviceMemoryProperties memoryProperties = 
 				VkContext.getDeviceManager().getPhysicalDevice(DeviceType.MAJOR_GRAPHICS_DEVICE).getMemoryProperties();
 		
-		getWorldTransform().setTranslation(new Vec3f(0,-1,0).mul(-2600));
+		getWorldTransform().setTranslation(new Vec3f(-2,-1.4f,-2).normalize().mul(-2600));
 		Vec3f origin = new Vec3f(0,0,0);
 		Vec3f[] array = new Vec3f[1];
 		array[0] = origin;

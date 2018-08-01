@@ -278,7 +278,7 @@ public class VkPipeline {
 	}
 	
 	public void setColorBlendState(int srcColorBlendFactor, int dstColorBlendFactor,
-			int colorBlendOp, int srcAlphaBlendFactor, int dstAlphaBlendFactor, int alphaBlendOp){
+			int srcAlphaBlendFactor, int dstAlphaBlendFactor, int colorBlendOp, int alphaBlendOp){
 		
 		colorBlendStates =
 				VkPipelineColorBlendAttachmentState.calloc(colorBlendAttachments.size());

@@ -60,9 +60,11 @@ private final Vec3f yAxis = new Vec3f(0,1,0);
 	protected FloatBuffer floatBuffer;
 	protected final int bufferSize = Float.BYTES * (4+16+16+(6*4));
 	
-	protected Camera()
+	protected Camera(Vec3f position, Vec3f forward, Vec3f up)
 	{
-		this(new Vec3f(0,0,-1f), new Vec3f(0,0,1).normalize(), new Vec3f(0,1,0));
+		setPosition(position);
+		setForward(forward.normalize());
+		setUp(up.normalize());
 		setProjection(70, EngineContext.getConfig().getX_ScreenResolution(),
 				EngineContext.getConfig().getY_ScreenResolution());
 		setViewMatrix(new Matrix4f().View(this.getForward(), this.getUp()).mul(
@@ -74,15 +76,6 @@ private final Vec3f yAxis = new Vec3f(0,1,0);
 		setViewProjectionMatrix(getProjectionMatrix().mul(getViewMatrix()));
 		
 		input = EngineContext.getInput();
-	}
-	
-	private Camera(Vec3f position, Vec3f forward, Vec3f up)
-	{
-		setPosition(position);
-		setForward(forward);
-		setUp(up);
-		up.normalize();
-		forward.normalize();
 	}
 	
 	public abstract void init();

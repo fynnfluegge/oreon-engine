@@ -51,7 +51,7 @@ public class SampleCoverage {
 	private CommandBuffer cmdBuffer;
 	private SubmitInfo submitInfo;
 	
-	private final float discontinuitiestThreshold = 1f;
+	private final float discontinuitiestThreshold = 4f;
 
 	public SampleCoverage(VkDeviceBundle deviceBundle,
 			int width, int height, VkImageView worldPositionImageView,
