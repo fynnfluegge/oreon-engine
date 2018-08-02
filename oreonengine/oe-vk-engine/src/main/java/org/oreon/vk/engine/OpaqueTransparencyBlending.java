@@ -1,6 +1,7 @@
 package org.oreon.vk.engine;
 
 import static org.lwjgl.system.MemoryUtil.memAlloc;
+import static org.lwjgl.system.MemoryUtil.memAllocInt;
 import static org.lwjgl.system.MemoryUtil.memAllocLong;
 import static org.lwjgl.vulkan.VK10.VK_ACCESS_COLOR_ATTACHMENT_READ_BIT;
 import static org.lwjgl.vulkan.VK10.VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
@@ -17,6 +18,7 @@ import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_GENERAL;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_UNDEFINED;
 import static org.lwjgl.vulkan.VK10.VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT;
 import static org.lwjgl.vulkan.VK10.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+import static org.lwjgl.vulkan.VK10.VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT ;
 import static org.lwjgl.vulkan.VK10.VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
 import static org.lwjgl.vulkan.VK10.VK_SAMPLER_ADDRESS_MODE_MIRRORED_REPEAT;
 import static org.lwjgl.vulkan.VK10.VK_SAMPLER_MIPMAP_MODE_LINEAR;
@@ -24,6 +26,7 @@ import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_FRAGMENT_BIT;
 import static org.lwjgl.vulkan.VK10.VK_SUBPASS_EXTERNAL;
 
 import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 import java.nio.LongBuffer;
 import java.util.ArrayList;
 import java.util.List;
@@ -83,7 +86,8 @@ public class OpaqueTransparencyBlending {
 			int width ,int height, VkImageView opaqueSceneImageView,
 			VkImageView opaqueSceneDepthMap, VkImageView opaqueSceneLightScatteringImageView,
 			VkImageView transparencySceneImageView, VkImageView transparencySceneDepthMap,
-			VkImageView transparencyAlphaMap, VkImageView transparencyLightScatteringImageView) {
+			VkImageView transparencyAlphaMap, VkImageView transparencyLightScatteringImageView,
+			LongBuffer waitSemaphores) {
 		
 		VkDevice device = deviceBundle.getLogicalDevice().getHandle();
 		VkPhysicalDeviceMemoryProperties memoryProperties = deviceBundle.getPhysicalDevice().getMemoryProperties();
@@ -208,8 +212,13 @@ public class OpaqueTransparencyBlending {
 				mesh.getIndices().length,
 				pushConstants, VK_SHADER_STAGE_FRAGMENT_BIT);
 		
+		IntBuffer pWaitDstStageMask = memAllocInt(2);
+        pWaitDstStageMask.put(0, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT);
+        pWaitDstStageMask.put(1, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT);
 		submitInfo = new SubmitInfo();
 		submitInfo.setCommandBuffers(cmdBuffer.getHandlePointer());
+		submitInfo.setWaitSemaphores(waitSemaphores);
+		submitInfo.setWaitDstStageMask(pWaitDstStageMask);
 		
 		graphicsShaderPipeline.destroy();
 	}
