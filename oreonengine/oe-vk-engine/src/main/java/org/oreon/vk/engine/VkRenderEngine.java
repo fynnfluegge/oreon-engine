@@ -280,7 +280,7 @@ public class VkRenderEngine extends RenderEngine{
 		deferredStageSubmitInfo.submit(majorDevice.getLogicalDevice().getComputeQueue());
 		
 //		sampleCoverage.render();
-//		vkQueueWaitIdle(majorDevice.getLogicalDevice().getGraphicsQueue());
+//		vkQueueWaitIdle(majorDevice.getLogicalDevice().getComputeQueue());
 //		deferredLighting.render();
 		vkQueueWaitIdle(majorDevice.getLogicalDevice().getComputeQueue());
 		
@@ -317,7 +317,7 @@ public class VkRenderEngine extends RenderEngine{
 		vkQueueWaitIdle(majorDevice.getLogicalDevice().getGraphicsQueue());
 		
 		postProcessingSubmitInfo.submit(majorDevice.getLogicalDevice().getComputeQueue());
-		vkQueueWaitIdle(majorDevice.getLogicalDevice().getGraphicsQueue());
+		vkQueueWaitIdle(majorDevice.getLogicalDevice().getComputeQueue());
 		
 //		if (EngineContext.getConfig().isFxaaEnabled()){
 //			fxaa.render();
@@ -364,7 +364,9 @@ public class VkRenderEngine extends RenderEngine{
 			fxaa.shutdown();
 		}
 		opaqueTransparencyBlending.shutdown();
-		bloom.shutdown();
+		if (bloom != null){
+			bloom.shutdown();
+		}
 		vkDestroySwapchainKHR(majorDevice.getLogicalDevice().getHandle(), swapChain.getHandle(), null);
 		swapChain.destroy();
 		EngineContext.getCamera().shutdown();
