@@ -3,10 +3,15 @@ package org.oreon.vk.engine;
 import static org.lwjgl.glfw.GLFWVulkan.glfwCreateWindowSurface;
 import static org.lwjgl.system.MemoryUtil.memAllocLong;
 import static org.lwjgl.vulkan.KHRSwapchain.vkDestroySwapchainKHR;
+import static org.lwjgl.vulkan.VK10.VK_ACCESS_SHADER_READ_BIT;
+import static org.lwjgl.vulkan.VK10.VK_ACCESS_SHADER_WRITE_BIT;
+import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT;
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_STORAGE_IMAGE;
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+import static org.lwjgl.vulkan.VK10.VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import static org.lwjgl.vulkan.VK10.vkDeviceWaitIdle;
 import static org.lwjgl.vulkan.VK10.vkQueueWaitIdle;
@@ -22,6 +27,7 @@ import org.oreon.core.system.RenderEngine;
 import org.oreon.core.target.FrameBufferObject.Attachment;
 import org.oreon.core.vk.command.CommandBuffer;
 import org.oreon.core.vk.command.SubmitInfo;
+import org.oreon.core.vk.command.VkCmdRecordUtil;
 import org.oreon.core.vk.context.DeviceManager.DeviceType;
 import org.oreon.core.vk.context.VkContext;
 import org.oreon.core.vk.descriptor.DescriptorPool;
@@ -50,6 +56,12 @@ public class VkRenderEngine extends RenderEngine{
 	private VkFrameBufferObject offScreenFbo;
 	private VkFrameBufferObject reflectionFbo;
 	private VkFrameBufferObject transparencyFbo;
+	
+	private CommandBuffer deferredStageCmdBuffer;
+	private SubmitInfo deferredStageSubmitInfo;
+	
+	private CommandBuffer postProcessingCmdBuffer;
+	private SubmitInfo postProcessingSubmitInfo;
 	
 	private PrimaryCmdBuffer offScreenPrimaryCmdBuffer;
 	private LinkedHashMap<String, CommandBuffer> offScreenSecondaryCmdBuffers;
@@ -185,6 +197,40 @@ public class VkRenderEngine extends RenderEngine{
 	    
 	    swapChain = new SwapChain(logicalDevice, physicalDevice, surface,
 	    		displayImageView.getHandle());
+	    
+	    // record sample coverage + deferred lighting command buffer
+	    deferredStageCmdBuffer = new CommandBuffer(majorDevice.getLogicalDevice().getHandle(),
+	    		majorDevice.getLogicalDevice().getComputeCommandPool().getHandle(),
+	    		VK_COMMAND_BUFFER_LEVEL_PRIMARY);
+	    deferredStageCmdBuffer.beginRecord(VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT);
+	    sampleCoverage.record(deferredStageCmdBuffer.getHandle());
+	    VkCmdRecordUtil.cmdPipelineMemoryBarrier(deferredStageCmdBuffer.getHandle(),
+	    		VK_ACCESS_SHADER_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT,
+	    		VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+	    		VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT);
+	    deferredLighting.record(deferredStageCmdBuffer.getHandle());
+	    deferredStageCmdBuffer.finishRecord();
+	    
+	    deferredStageSubmitInfo = new SubmitInfo(deferredStageCmdBuffer.getHandlePointer());
+	    
+	    // record post processing command buffer
+	    postProcessingCmdBuffer = new CommandBuffer(majorDevice.getLogicalDevice().getHandle(),
+	    		majorDevice.getLogicalDevice().getComputeCommandPool().getHandle(),
+	    		VK_COMMAND_BUFFER_LEVEL_PRIMARY);
+	    postProcessingCmdBuffer.beginRecord(VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT);
+	    if (EngineContext.getConfig().isFxaaEnabled()){
+	    	fxaa.record(postProcessingCmdBuffer.getHandle());
+	    }
+	    VkCmdRecordUtil.cmdPipelineMemoryBarrier(postProcessingCmdBuffer.getHandle(),
+	    		VK_ACCESS_SHADER_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT,
+	    		VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+	    		VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT);
+	    if (EngineContext.getConfig().isBloomEnabled()){
+	    	bloom.record(postProcessingCmdBuffer.getHandle());
+	    }
+	    postProcessingCmdBuffer.finishRecord();
+	    
+	    postProcessingSubmitInfo = new SubmitInfo(postProcessingCmdBuffer.getHandlePointer());
 	}
     
 	@Override
@@ -231,9 +277,11 @@ public class VkRenderEngine extends RenderEngine{
 		}
 		vkQueueWaitIdle(majorDevice.getLogicalDevice().getGraphicsQueue());
 		
-		sampleCoverage.render();
-		vkQueueWaitIdle(majorDevice.getLogicalDevice().getGraphicsQueue());
-		deferredLighting.render();
+		deferredStageSubmitInfo.submit(majorDevice.getLogicalDevice().getComputeQueue());
+		
+//		sampleCoverage.render();
+//		vkQueueWaitIdle(majorDevice.getLogicalDevice().getGraphicsQueue());
+//		deferredLighting.render();
 		vkQueueWaitIdle(majorDevice.getLogicalDevice().getComputeQueue());
 		
 		transparencyRenderList.setChanged(false);
@@ -268,15 +316,18 @@ public class VkRenderEngine extends RenderEngine{
 		opaqueTransparencyBlending.render();
 		vkQueueWaitIdle(majorDevice.getLogicalDevice().getGraphicsQueue());
 		
-		if (EngineContext.getConfig().isFxaaEnabled()){
-			fxaa.render();
-			vkQueueWaitIdle(majorDevice.getLogicalDevice().getComputeQueue());
-		}
+		postProcessingSubmitInfo.submit(majorDevice.getLogicalDevice().getComputeQueue());
+		vkQueueWaitIdle(majorDevice.getLogicalDevice().getGraphicsQueue());
 		
-		if (EngineContext.getConfig().isBloomEnabled()){
-			bloom.render();
-			vkQueueWaitIdle(majorDevice.getLogicalDevice().getComputeQueue());
-		}
+//		if (EngineContext.getConfig().isFxaaEnabled()){
+//			fxaa.render();
+//			vkQueueWaitIdle(majorDevice.getLogicalDevice().getComputeQueue());
+//		}
+//		
+//		if (EngineContext.getConfig().isBloomEnabled()){
+//			bloom.render();
+//			vkQueueWaitIdle(majorDevice.getLogicalDevice().getComputeQueue());
+//		}
 		
 		if (gui != null){
 			gui.render();

@@ -18,12 +18,14 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.lwjgl.vulkan.VkCommandBuffer;
 import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
 import org.lwjgl.vulkan.VkQueue;
 import org.oreon.core.context.EngineContext;
 import org.oreon.core.vk.command.CommandBuffer;
 import org.oreon.core.vk.command.SubmitInfo;
+import org.oreon.core.vk.command.VkCmdRecordUtil;
 import org.oreon.core.vk.descriptor.DescriptorPool;
 import org.oreon.core.vk.descriptor.DescriptorSet;
 import org.oreon.core.vk.descriptor.DescriptorSetLayout;
@@ -53,6 +55,11 @@ public class FXAA {
 	private CommandBuffer cmdBuffer;
 	private SubmitInfo submitInfo;
 	private VkSampler sceneSampler;
+	
+	private ByteBuffer pushConstants;
+	private List<DescriptorSet> descriptorSets;
+	private int width;
+	private int height;
 
 	public FXAA(VkDeviceBundle deviceBundle, int width ,int height, 
 			VkImageView sceneImageView) {
@@ -61,6 +68,8 @@ public class FXAA {
 		VkPhysicalDeviceMemoryProperties memoryProperties = deviceBundle.getPhysicalDevice().getMemoryProperties();
 		DescriptorPool descriptorPool = deviceBundle.getLogicalDevice().getDescriptorPool(Thread.currentThread().getId());
 		queue = deviceBundle.getLogicalDevice().getComputeQueue();
+		this.width = width;
+		this.height = height;
 		
 		fxaaImage = new Image2DDeviceLocal(device, memoryProperties, 
 				width, height, VK_FORMAT_R16G16B16A16_SFLOAT, VK_IMAGE_USAGE_STORAGE_BIT
@@ -72,7 +81,7 @@ public class FXAA {
 				VK_SAMPLER_MIPMAP_MODE_NEAREST, 0, VK_SAMPLER_ADDRESS_MODE_REPEAT);
 		
 		int pushConstantRange = Float.BYTES * 2;
-		ByteBuffer pushConstants = memAlloc(pushConstantRange);
+		pushConstants = memAlloc(pushConstantRange);
 		pushConstants.putFloat(EngineContext.getConfig().getX_ScreenResolution());
 		pushConstants.putFloat(EngineContext.getConfig().getY_ScreenResolution());
 		pushConstants.flip();
@@ -93,7 +102,7 @@ public class FXAA {
 				VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, sceneSampler.getHandle(), 1,
 	    		VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
 		
-		List<DescriptorSet> descriptorSets = new ArrayList<DescriptorSet>();
+		descriptorSets = new ArrayList<DescriptorSet>();
 		List<DescriptorSetLayout> descriptorSetLayouts = new ArrayList<DescriptorSetLayout>();
 		
 		descriptorSets.add(descriptorSet);
@@ -116,6 +125,15 @@ public class FXAA {
 		submitInfo.setCommandBuffers(cmdBuffer.getHandlePointer());
 		
 		shader.destroy();
+	}
+	
+	public void record(VkCommandBuffer commandBuffer){
+		VkCmdRecordUtil.cmdPushConstants(commandBuffer, computePipeline.getLayoutHandle(),
+				VK_SHADER_STAGE_COMPUTE_BIT, pushConstants);
+		VkCmdRecordUtil.cmdBindComputePipeline(commandBuffer, computePipeline.getHandle());
+		VkCmdRecordUtil.cmdBindComputeDescriptorSets(commandBuffer,
+				computePipeline.getLayoutHandle(), VkUtil.createLongArray(descriptorSets));
+		VkCmdRecordUtil.cmdDispatch(commandBuffer, width/16, height/16, 1);
 	}
 	
 	public void render(){

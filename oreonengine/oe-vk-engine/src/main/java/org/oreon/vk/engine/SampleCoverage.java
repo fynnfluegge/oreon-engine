@@ -14,12 +14,14 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.lwjgl.vulkan.VkCommandBuffer;
 import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
 import org.lwjgl.vulkan.VkQueue;
 import org.oreon.core.context.EngineContext;
 import org.oreon.core.vk.command.CommandBuffer;
 import org.oreon.core.vk.command.SubmitInfo;
+import org.oreon.core.vk.command.VkCmdRecordUtil;
 import org.oreon.core.vk.descriptor.DescriptorPool;
 import org.oreon.core.vk.descriptor.DescriptorSet;
 import org.oreon.core.vk.descriptor.DescriptorSetLayout;
@@ -51,6 +53,11 @@ public class SampleCoverage {
 	private CommandBuffer cmdBuffer;
 	private SubmitInfo submitInfo;
 	
+	private ByteBuffer pushConstants;
+	private List<DescriptorSet> descriptorSets;
+	private int width;
+	private int height;
+	
 	private final float discontinuitiestThreshold = 4f;
 
 	public SampleCoverage(VkDeviceBundle deviceBundle,
@@ -61,6 +68,8 @@ public class SampleCoverage {
 		VkPhysicalDeviceMemoryProperties memoryProperties = deviceBundle.getPhysicalDevice().getMemoryProperties();
 		DescriptorPool descriptorPool = deviceBundle.getLogicalDevice().getDescriptorPool(Thread.currentThread().getId());
 		queue = deviceBundle.getLogicalDevice().getComputeQueue();
+		this.width = width;
+		this.height = height;
 		
 		sampleCoverageImage = new Image2DDeviceLocal(device, memoryProperties, 
 				width, height, VK_FORMAT_R16_SFLOAT, VK_IMAGE_USAGE_STORAGE_BIT
@@ -100,14 +109,14 @@ public class SampleCoverage {
 	    		VK_IMAGE_LAYOUT_GENERAL, -1, 3,
 	    		VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
 		
-		List<DescriptorSet> descriptorSets = new ArrayList<DescriptorSet>();
+		descriptorSets = new ArrayList<DescriptorSet>();
 		List<DescriptorSetLayout> descriptorSetLayouts = new ArrayList<DescriptorSetLayout>();
 		
 		descriptorSets.add(descriptorSet);
 		descriptorSetLayouts.add(descriptorSetLayout);
 		
 		int pushConstantRange = Float.BYTES * 1 + Integer.BYTES * 1;
-		ByteBuffer pushConstants = memAlloc(pushConstantRange);
+		pushConstants = memAlloc(pushConstantRange);
 		pushConstants.putInt(EngineContext.getConfig().getMultisamples());
 		pushConstants.putFloat(discontinuitiestThreshold);
 		pushConstants.flip();
@@ -129,6 +138,16 @@ public class SampleCoverage {
 		submitInfo.setCommandBuffers(cmdBuffer.getHandlePointer());
 		
 		shader.destroy();
+	}
+	
+	public void record(VkCommandBuffer commandBuffer){
+		
+		VkCmdRecordUtil.cmdPushConstants(commandBuffer, computePipeline.getLayoutHandle(),
+				VK_SHADER_STAGE_COMPUTE_BIT, pushConstants);
+		VkCmdRecordUtil.cmdBindComputePipeline(commandBuffer, computePipeline.getHandle());
+		VkCmdRecordUtil.cmdBindComputeDescriptorSets(commandBuffer,
+				computePipeline.getLayoutHandle(), VkUtil.createLongArray(descriptorSets));
+		VkCmdRecordUtil.cmdDispatch(commandBuffer, width/16, height/16, 1);
 	}
 	
 	public void render(){

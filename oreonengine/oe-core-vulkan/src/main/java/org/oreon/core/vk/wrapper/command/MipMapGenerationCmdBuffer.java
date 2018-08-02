@@ -48,7 +48,7 @@ public class MipMapGenerationCmdBuffer extends CommandBuffer{
 					.layerCount(1)
 					.levelCount(1);
 
-		imageLayoutTransition(image,
+		imageBarrier(image,
 				initialSrcStageMask,
 				VK_PIPELINE_STAGE_TRANSFER_BIT,
 				barrier);

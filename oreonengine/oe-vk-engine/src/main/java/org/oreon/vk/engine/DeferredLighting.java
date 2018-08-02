@@ -13,12 +13,14 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.lwjgl.vulkan.VkCommandBuffer;
 import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
 import org.lwjgl.vulkan.VkQueue;
 import org.oreon.core.context.EngineContext;
 import org.oreon.core.vk.command.CommandBuffer;
 import org.oreon.core.vk.command.SubmitInfo;
+import org.oreon.core.vk.command.VkCmdRecordUtil;
 import org.oreon.core.vk.context.VkContext;
 import org.oreon.core.vk.descriptor.DescriptorPool;
 import org.oreon.core.vk.descriptor.DescriptorSet;
@@ -47,6 +49,11 @@ public class DeferredLighting {
 	private DescriptorSetLayout descriptorSetLayout;
 	private CommandBuffer cmdBuffer;
 	private SubmitInfo submitInfo;
+	
+	private ByteBuffer pushConstants;
+	private List<DescriptorSet> descriptorSets;
+	private int width;
+	private int height;
 
 	public DeferredLighting(VkDeviceBundle deviceBundle,
 			int width, int height, VkImageView albedoImageView,
@@ -57,6 +64,8 @@ public class DeferredLighting {
 		VkPhysicalDeviceMemoryProperties memoryProperties = deviceBundle.getPhysicalDevice().getMemoryProperties();
 		DescriptorPool descriptorPool = deviceBundle.getLogicalDevice().getDescriptorPool(Thread.currentThread().getId());
 		queue = deviceBundle.getLogicalDevice().getComputeQueue();
+		this.width = width;
+		this.height = height;
 		
 		deferredLightingSceneImage = new Image2DDeviceLocal(device, memoryProperties, 
 				width, height, VK_FORMAT_R16G16B16A16_SFLOAT, VK_IMAGE_USAGE_STORAGE_BIT
@@ -101,7 +110,7 @@ public class DeferredLighting {
 	    		VK_IMAGE_LAYOUT_GENERAL, -1, 5,
 	    		VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
 		
-		List<DescriptorSet> descriptorSets = new ArrayList<DescriptorSet>();
+		descriptorSets = new ArrayList<DescriptorSet>();
 		List<DescriptorSetLayout> descriptorSetLayouts = new ArrayList<DescriptorSetLayout>();
 		
 		descriptorSets.add(VkContext.getCamera().getDescriptor().getSet());
@@ -110,7 +119,7 @@ public class DeferredLighting {
 		descriptorSetLayouts.add(descriptorSetLayout);
 		
 		int pushConstantRange = Float.BYTES * 1 + Integer.BYTES * 1;
-		ByteBuffer pushConstants = memAlloc(pushConstantRange);
+		pushConstants = memAlloc(pushConstantRange);
 		pushConstants.putInt(EngineContext.getConfig().getMultisamples());
 		pushConstants.putFloat(EngineContext.getConfig().getSightRange());
 		pushConstants.flip();
@@ -132,6 +141,16 @@ public class DeferredLighting {
 		submitInfo.setCommandBuffers(cmdBuffer.getHandlePointer());
 		
 		shader.destroy();
+	}
+	
+	public void record(VkCommandBuffer commandBuffer){
+		
+		VkCmdRecordUtil.cmdPushConstants(commandBuffer, computePipeline.getLayoutHandle(),
+				VK_SHADER_STAGE_COMPUTE_BIT, pushConstants);
+		VkCmdRecordUtil.cmdBindComputePipeline(commandBuffer, computePipeline.getHandle());
+		VkCmdRecordUtil.cmdBindComputeDescriptorSets(commandBuffer,
+				computePipeline.getLayoutHandle(), VkUtil.createLongArray(descriptorSets));
+		VkCmdRecordUtil.cmdDispatch(commandBuffer, width/16, height/16, 1);
 	}
 	
 	public void render(){

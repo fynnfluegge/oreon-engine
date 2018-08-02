@@ -345,7 +345,7 @@ public class CommandBuffer {
 				VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, copyRegion);
 	}
 	
-	public void imageLayoutTransition(long image, int oldLayout, int newLayout,
+	public void imageBarrier(long image, int oldLayout, int newLayout,
 			int srcAccessMask, int dstAccessMask, int srcStageMask, int dstStageMask,
 			int baseMipLevel, int mipLevelCount){
 		
@@ -372,7 +372,7 @@ public class CommandBuffer {
 		barrier.free();
 	}
 	
-	public void imageLayoutTransition(long image, int srcStageMask, int dstStageMask,
+	public void imageBarrier(long image, int srcStageMask, int dstStageMask,
 			VkImageMemoryBarrier.Buffer barrier){
 	
 		vkCmdPipelineBarrier(handle, srcStageMask, dstStageMask,

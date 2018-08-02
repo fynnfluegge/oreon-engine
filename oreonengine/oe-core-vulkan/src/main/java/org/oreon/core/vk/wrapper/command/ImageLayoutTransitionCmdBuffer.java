@@ -18,7 +18,7 @@ public class ImageLayoutTransitionCmdBuffer extends CommandBuffer{
 			int srcStageMask, int dstStageMask, int mipLevels){
 		
 		beginRecord(cmdBufferUsage);
-		imageLayoutTransition(image, oldLayout, newLayout, srcAccessMask, dstAccessMask, 
+		imageBarrier(image, oldLayout, newLayout, srcAccessMask, dstAccessMask, 
 				srcStageMask, dstStageMask, 0, mipLevels);
 		finishRecord();
 	}
