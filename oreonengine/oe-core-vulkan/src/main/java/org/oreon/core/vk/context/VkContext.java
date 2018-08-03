@@ -12,7 +12,12 @@ import org.oreon.core.vk.platform.VkWindow;
 import org.oreon.core.vk.util.VkUtil;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import lombok.Getter;
+
 public class VkContext extends EngineContext{
+	
+	@Getter
+	private static ByteBuffer[] enabledLayers;
 	
 	public static void initialize(){
 		
@@ -31,6 +36,8 @@ public class VkContext extends EngineContext{
             	memUTF8("VK_LAYER_LUNARG_standard_validation")
 //            	memUTF8("VK_LAYER_LUNARG_assistant_layer")
 		};
+		
+		enabledLayers = layers;
 		
 	    VulkanInstance vulkanInstance = new VulkanInstance(
 	    		VkUtil.getValidationLayerNames(

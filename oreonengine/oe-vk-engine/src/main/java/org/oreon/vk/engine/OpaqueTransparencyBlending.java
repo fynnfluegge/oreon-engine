@@ -56,11 +56,14 @@ import org.oreon.core.vk.pipeline.RenderPass;
 import org.oreon.core.vk.pipeline.ShaderPipeline;
 import org.oreon.core.vk.pipeline.VkPipeline;
 import org.oreon.core.vk.pipeline.VkVertexInput;
+import org.oreon.core.vk.synchronization.VkSemaphore;
 import org.oreon.core.vk.util.VkUtil;
 import org.oreon.core.vk.wrapper.buffer.VkBufferHelper;
 import org.oreon.core.vk.wrapper.command.DrawCmdBuffer;
 import org.oreon.core.vk.wrapper.image.VkImageBundle;
 import org.oreon.core.vk.wrapper.pipeline.GraphicsPipeline;
+
+import lombok.Getter;
 
 public class OpaqueTransparencyBlending {
 	
@@ -81,6 +84,9 @@ public class OpaqueTransparencyBlending {
 	private VkSampler transparencySceneDepthSampler;
 	private VkSampler transparencyAlphaSampler;
 	private VkSampler transparencyLightScatteringSampler;
+	
+	@Getter
+	private VkSemaphore signalSemaphore;
 
 	public OpaqueTransparencyBlending(VkDeviceBundle deviceBundle,
 			int width ,int height, VkImageView opaqueSceneImageView,
@@ -212,6 +218,9 @@ public class OpaqueTransparencyBlending {
 				mesh.getIndices().length,
 				pushConstants, VK_SHADER_STAGE_FRAGMENT_BIT);
 		
+		
+		signalSemaphore = new VkSemaphore(device);
+		
 		IntBuffer pWaitDstStageMask = memAllocInt(2);
         pWaitDstStageMask.put(0, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT);
         pWaitDstStageMask.put(1, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT);
@@ -219,6 +228,7 @@ public class OpaqueTransparencyBlending {
 		submitInfo.setCommandBuffers(cmdBuffer.getHandlePointer());
 		submitInfo.setWaitSemaphores(waitSemaphores);
 		submitInfo.setWaitDstStageMask(pWaitDstStageMask);
+		submitInfo.setSignalSemaphores(signalSemaphore.getHandlePointer());
 		
 		graphicsShaderPipeline.destroy();
 	}

@@ -15,7 +15,6 @@ import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 import static org.lwjgl.vulkan.VK10.VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import static org.lwjgl.vulkan.VK10.vkDeviceWaitIdle;
-import static org.lwjgl.vulkan.VK10.vkQueueWaitIdle;
 
 import java.nio.IntBuffer;
 import java.nio.LongBuffer;
@@ -60,9 +59,13 @@ public class VkRenderEngine extends RenderEngine{
 	private VkFrameBufferObject reflectionFbo;
 	private VkFrameBufferObject transparencyFbo;
 	
+	private VkSemaphore deferredStageSemaphore;
+	private VkSemaphore offScreenSemaphore;
+	private VkSemaphore transparencySemaphore;
+	private VkSemaphore postProcessingSemaphore;
+	
 	private CommandBuffer deferredStageCmdBuffer;
 	private SubmitInfo deferredStageSubmitInfo;
-	private VkSemaphore deferredStageSemaphore;
 	
 	private CommandBuffer postProcessingCmdBuffer;
 	private SubmitInfo postProcessingSubmitInfo;
@@ -71,16 +74,14 @@ public class VkRenderEngine extends RenderEngine{
 	private LinkedHashMap<String, CommandBuffer> offScreenSecondaryCmdBuffers;
 	private RenderList offScreenRenderList;
 	private SubmitInfo offScreenSubmitInfo;
-	private VkSemaphore offScreenSemaphore;
 	
 	private PrimaryCmdBuffer transparencyPrimaryCmdBuffer;
 	private LinkedHashMap<String, CommandBuffer> transparencySecondaryCmdBuffers;
 	private RenderList transparencyRenderList;
 	private SubmitInfo transparencySubmitInfo;
-	private VkSemaphore transparencySemaphore;
 	
 	// uniform buffers
-//	private VkUniformBuffer renderStateUbo;
+	// private VkUniformBuffer renderStateUbo;
 
 	private SampleCoverage sampleCoverage;
 	private DeferredLighting deferredLighting;
@@ -144,6 +145,7 @@ public class VkRenderEngine extends RenderEngine{
 	    offScreenSemaphore = new VkSemaphore(majorDevice.getLogicalDevice().getHandle());
 	    deferredStageSemaphore = new VkSemaphore(majorDevice.getLogicalDevice().getHandle());
 	    transparencySemaphore = new VkSemaphore(majorDevice.getLogicalDevice().getHandle());
+	    postProcessingSemaphore = new VkSemaphore(majorDevice.getLogicalDevice().getHandle());
 	    
 	    // offscreen opaque primary command buffer creation
 	    offScreenPrimaryCmdBuffer =  new PrimaryCmdBuffer(logicalDevice.getHandle(),
@@ -210,8 +212,15 @@ public class VkRenderEngine extends RenderEngine{
 	    }
 	    
 	    if (gui != null){
-			gui.init(displayImageView);
-			displayImageView = gui.getImageView();
+	    	// all post procssing effects and FXAA disabled
+	    	if (!EngineContext.getConfig().isFxaaEnabled() && !EngineContext.getConfig().isBloomEnabled()){
+	    		gui.init(displayImageView, opaqueTransparencyBlending.getSignalSemaphore().getHandlePointer());
+				displayImageView = gui.getImageView();
+	    	}
+	    	else{
+	    		gui.init(displayImageView, postProcessingSemaphore.getHandlePointer());
+				displayImageView = gui.getImageView();
+	    	}
 		}
 	    
 	    swapChain = new SwapChain(logicalDevice, physicalDevice, surface,
@@ -230,11 +239,11 @@ public class VkRenderEngine extends RenderEngine{
 	    deferredLighting.record(deferredStageCmdBuffer.getHandle());
 	    deferredStageCmdBuffer.finishRecord();
 	    
+	    IntBuffer pComputeShaderWaitDstStageMask = memAllocInt(1);
+        pComputeShaderWaitDstStageMask.put(0, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT);
 	    deferredStageSubmitInfo = new SubmitInfo(deferredStageCmdBuffer.getHandlePointer());
-	    IntBuffer pWaitDstStageMask = memAllocInt(1);
-        pWaitDstStageMask.put(0, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT);
 	    deferredStageSubmitInfo.setWaitSemaphores(offScreenSemaphore.getHandlePointer());
-	    deferredStageSubmitInfo.setWaitDstStageMask(pWaitDstStageMask);
+	    deferredStageSubmitInfo.setWaitDstStageMask(pComputeShaderWaitDstStageMask);
 	    deferredStageSubmitInfo.setSignalSemaphores(deferredStageSemaphore.getHandlePointer());
 	    
 	    // record post processing command buffer
@@ -255,6 +264,9 @@ public class VkRenderEngine extends RenderEngine{
 	    postProcessingCmdBuffer.finishRecord();
 	
 	    postProcessingSubmitInfo = new SubmitInfo(postProcessingCmdBuffer.getHandlePointer());
+	    postProcessingSubmitInfo.setWaitSemaphores(opaqueTransparencyBlending.getSignalSemaphore().getHandlePointer());
+	    postProcessingSubmitInfo.setWaitDstStageMask(pComputeShaderWaitDstStageMask);
+	    postProcessingSubmitInfo.setSignalSemaphores(postProcessingSemaphore.getHandlePointer());
 	}
     
 	@Override
@@ -335,10 +347,8 @@ public class VkRenderEngine extends RenderEngine{
 		}
 		
 		opaqueTransparencyBlending.render();
-		vkQueueWaitIdle(majorDevice.getLogicalDevice().getGraphicsQueue());
 		
 		postProcessingSubmitInfo.submit(majorDevice.getLogicalDevice().getComputeQueue());
-		vkQueueWaitIdle(majorDevice.getLogicalDevice().getGraphicsQueue());
 		
 //		if (EngineContext.getConfig().isFxaaEnabled()){
 //			fxaa.render();
@@ -354,8 +364,8 @@ public class VkRenderEngine extends RenderEngine{
 			gui.render();
 		}
 		
-		vkQueueWaitIdle(majorDevice.getLogicalDevice().getGraphicsQueue());
-		swapChain.draw(majorDevice.getLogicalDevice().getGraphicsQueue());
+		swapChain.draw(majorDevice.getLogicalDevice().getGraphicsQueue(),
+				gui.getSignalSemaphore());
 	}
 
 	@Override
@@ -385,7 +395,9 @@ public class VkRenderEngine extends RenderEngine{
 			fxaa.shutdown();
 		}
 		opaqueTransparencyBlending.shutdown();
-		bloom.shutdown();
+		if (bloom != null){
+			bloom.shutdown();
+		}
 		vkDestroySwapchainKHR(majorDevice.getLogicalDevice().getHandle(), swapChain.getHandle(), null);
 		swapChain.destroy();
 		EngineContext.getCamera().shutdown();

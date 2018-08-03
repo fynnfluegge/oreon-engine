@@ -1,5 +1,6 @@
 package org.oreon.vk.components.ui;
 
+import static org.lwjgl.system.MemoryUtil.memAllocInt;
 import static org.lwjgl.system.MemoryUtil.memAllocLong;
 import static org.lwjgl.vulkan.VK10.VK_ACCESS_COLOR_ATTACHMENT_READ_BIT;
 import static org.lwjgl.vulkan.VK10.VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
@@ -29,9 +30,9 @@ import static org.lwjgl.vulkan.VK10.VK_SAMPLER_ADDRESS_MODE_REPEAT;
 import static org.lwjgl.vulkan.VK10.VK_SAMPLER_MIPMAP_MODE_NEAREST;
 import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_FRAGMENT_BIT;
 import static org.lwjgl.vulkan.VK10.VK_SUBPASS_EXTERNAL;
-import static org.lwjgl.vulkan.VK10.vkQueueWaitIdle;
 
 import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 import java.nio.LongBuffer;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -70,6 +71,7 @@ import org.oreon.core.vk.pipeline.VkPipeline;
 import org.oreon.core.vk.pipeline.VkVertexInput;
 import org.oreon.core.vk.scenegraph.VkMeshData;
 import org.oreon.core.vk.scenegraph.VkRenderInfo;
+import org.oreon.core.vk.synchronization.VkSemaphore;
 import org.oreon.core.vk.util.VkUtil;
 import org.oreon.core.vk.wrapper.buffer.VkBufferHelper;
 import org.oreon.core.vk.wrapper.command.PrimaryCmdBuffer;
@@ -77,6 +79,8 @@ import org.oreon.core.vk.wrapper.command.SecondaryDrawIndexedCmdBuffer;
 import org.oreon.core.vk.wrapper.image.VkImageBundle;
 import org.oreon.core.vk.wrapper.image.VkImageHelper;
 import org.oreon.core.vk.wrapper.pipeline.GraphicsPipeline;
+
+import lombok.Getter;
 
 public class VkGUI extends GUI{
 
@@ -97,7 +101,10 @@ public class VkGUI extends GUI{
 	private DescriptorSetLayout underlayImageDescriptorSetLayout;
 	private VkSampler underlayImageSampler;
 	
-	public void init(VkImageView underlayImageView) {
+	@Getter
+	private VkSemaphore signalSemaphore;
+	
+	public void init(VkImageView underlayImageView, LongBuffer waitSemaphores) {
 
 		LogicalDevice device = VkContext.getDeviceManager()
 				.getLogicalDevice(DeviceType.MAJOR_GRAPHICS_DEVICE);
@@ -112,8 +119,15 @@ public class VkGUI extends GUI{
 		
 		guiPrimaryCmdBuffer =  new PrimaryCmdBuffer(device.getHandle(),
 				device.getGraphicsCommandPool().getHandle());
-		guiSubmitInfo = new SubmitInfo();
+		
+		IntBuffer pWaitDstStageMask = memAllocInt(1);
+        pWaitDstStageMask.put(0, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT);
+        signalSemaphore = new VkSemaphore(device.getHandle());
+        guiSubmitInfo = new SubmitInfo();
 		guiSubmitInfo.setCommandBuffers(guiPrimaryCmdBuffer.getHandlePointer());
+		guiSubmitInfo.setWaitSemaphores(waitSemaphores);
+		guiSubmitInfo.setWaitDstStageMask(pWaitDstStageMask);
+		guiSubmitInfo.setSignalSemaphores(signalSemaphore.getHandlePointer());
 		
 		// fonts Image 
 		VkImage fontsImage = VkImageHelper.loadImageFromFile(
@@ -232,8 +246,6 @@ public class VkGUI extends GUI{
 			
 			guiSubmitInfo.submit(queue);
 		}
-		
-		vkQueueWaitIdle(queue);
 	}
 	
 	private class SingleAttachmentFbo extends VkFrameBufferObject{

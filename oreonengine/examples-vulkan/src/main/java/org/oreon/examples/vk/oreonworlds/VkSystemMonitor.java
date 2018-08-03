@@ -1,6 +1,7 @@
 package org.oreon.examples.vk.oreonworlds;
 
 import java.lang.management.ManagementFactory;
+import java.nio.LongBuffer;
 
 import org.oreon.common.ui.UIElement;
 import org.oreon.common.ui.UIScreen;
@@ -20,8 +21,8 @@ public class VkSystemMonitor extends VkGUI {
 	
 	@SuppressWarnings("restriction")
 	@Override
-	public void init(VkImageView imageView) {
-		super.init(imageView);
+	public void init(VkImageView imageView, LongBuffer waitSemaphores) {
+		super.init(imageView, waitSemaphores);
 		bean = (com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
 		UIScreen screen0 = new UIScreen();
 		screen0.setElements(new UIElement[6]);

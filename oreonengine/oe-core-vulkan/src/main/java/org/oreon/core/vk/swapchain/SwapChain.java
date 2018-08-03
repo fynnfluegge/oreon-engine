@@ -22,6 +22,7 @@ import static org.lwjgl.vulkan.VK10.VK_IMAGE_ASPECT_COLOR_BIT;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 import static org.lwjgl.vulkan.VK10.VK_NULL_HANDLE;
 import static org.lwjgl.vulkan.VK10.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+import static org.lwjgl.vulkan.VK10.VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
 import static org.lwjgl.vulkan.VK10.VK_SHARING_MODE_EXCLUSIVE;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 
@@ -191,7 +192,8 @@ public class SwapChain {
 				fullScreenQuad.getIndices().length,
 				VkUtil.createLongArray(descriptor.getSet()));
         
-        createSubmitInfo();
+        submitInfo = new SubmitInfo();
+        submitInfo.setSignalSemaphores(renderCompleteSemaphore.getHandlePointer());
 	}
 	
 	public void createImages(){
@@ -262,18 +264,7 @@ public class SwapChain {
 		}
 	}
 	
-	public void createSubmitInfo(){
-		
-		IntBuffer pWaitDstStageMask = memAllocInt(1);
-        pWaitDstStageMask.put(0, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT);
-		
-        submitInfo = new SubmitInfo();
-        submitInfo.setWaitDstStageMask(pWaitDstStageMask);
-        submitInfo.setWaitSemaphores(imageAcquiredSemaphore.getHandlePointer());
-        submitInfo.setSignalSemaphores(renderCompleteSemaphore.getHandlePointer());
-	}
-	
-	public void draw(VkQueue queue){
+	public void draw(VkQueue queue, VkSemaphore waitSemaphore){
 		
 		int err = vkAcquireNextImageKHR(device, handle, UINT64_MAX, imageAcquiredSemaphore.getHandle(), VK_NULL_HANDLE, pAcquiredImageIndex);
         if (err != VK_SUCCESS) {
@@ -281,9 +272,20 @@ public class SwapChain {
         }
         
         CommandBuffer currentRenderCommandBuffer = renderCommandBuffers.get(pAcquiredImageIndex.get(0));
+        
+        IntBuffer pWaitDstStageMask = memAllocInt(2);
+        pWaitDstStageMask.put(0, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT);
+        pWaitDstStageMask.put(1, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT);
+        
+        LongBuffer pWaitSemaphores = memAllocLong(2);
+        pWaitSemaphores.put(0, imageAcquiredSemaphore.getHandle());
+        pWaitSemaphores.put(1, waitSemaphore.getHandle());
+        
         submitInfo.setCommandBuffers(currentRenderCommandBuffer.getHandlePointer());
-
+        submitInfo.setWaitDstStageMask(pWaitDstStageMask);
+        submitInfo.setWaitSemaphores(pWaitSemaphores);
         submitInfo.submit(queue);
+        
 		VkUtil.vkCheckResult(vkQueuePresentKHR(queue, presentInfo));
 	}
 	
