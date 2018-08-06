@@ -58,6 +58,17 @@ public class SubmitInfo {
 		handle.pWaitDstStageMask(waitDstStageMasks);
 	}
 	
+	public void clearWaitSemaphores(){
+		
+		handle.waitSemaphoreCount(0);
+		handle.pWaitSemaphores(null);
+	}
+	
+	public void clearSignalSemaphores(){
+		
+		handle.pSignalSemaphores(null);
+	}
+	
 	public void submit(VkQueue queue){
 		
 		if (fence != null){

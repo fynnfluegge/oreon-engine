@@ -27,7 +27,7 @@ import org.oreon.core.vk.image.VkImage;
 import org.oreon.core.vk.image.VkImageView;
 import org.oreon.core.vk.pipeline.ShaderModule;
 import org.oreon.core.vk.pipeline.VkPipeline;
-import org.oreon.core.vk.synchronization.Fence;
+import org.oreon.core.vk.synchronization.VkSemaphore;
 import org.oreon.core.vk.util.VkUtil;
 import org.oreon.core.vk.wrapper.buffer.VkUniformBuffer;
 import org.oreon.core.vk.wrapper.command.ComputeCmdBuffer;
@@ -48,7 +48,7 @@ public class Hkt extends Renderable{
 	private VkImageView dzCoefficients_imageView;
 	
 	@Getter
-	private Fence fence;
+	private VkSemaphore signalSemaphore;
 	
 	private float t;
 	private float t_delta;
@@ -120,11 +120,11 @@ public class Hkt extends Renderable{
 				VkUtil.createLongArray(descriptor.getDescriptorSet()), N/16, N/16, 1,
 				pushConstants, VK_SHADER_STAGE_COMPUTE_BIT);
 
-		fence = new Fence(device);
+		signalSemaphore = new VkSemaphore(device);
 		
 		submitInfo = new SubmitInfo();
-		submitInfo.setFence(fence);
 		submitInfo.setCommandBuffers(commandBuffer.getHandlePointer());
+		submitInfo.setSignalSemaphores(signalSemaphore.getHandlePointer());
 	}
 	
 	private class CoefficientsDescriptor extends VkDescriptor{

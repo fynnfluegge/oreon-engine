@@ -18,14 +18,12 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.lwjgl.vulkan.VkCommandBuffer;
 import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
 import org.lwjgl.vulkan.VkQueue;
 import org.oreon.core.context.EngineContext;
 import org.oreon.core.vk.command.CommandBuffer;
 import org.oreon.core.vk.command.SubmitInfo;
-import org.oreon.core.vk.command.VkCmdRecordUtil;
 import org.oreon.core.vk.descriptor.DescriptorPool;
 import org.oreon.core.vk.descriptor.DescriptorSet;
 import org.oreon.core.vk.descriptor.DescriptorSetLayout;
@@ -127,13 +125,13 @@ public class FXAA {
 		shader.destroy();
 	}
 	
-	public void record(VkCommandBuffer commandBuffer){
-		VkCmdRecordUtil.cmdPushConstants(commandBuffer, computePipeline.getLayoutHandle(),
+	public void record(CommandBuffer commandBuffer){
+		commandBuffer.pushConstantsCmd(computePipeline.getLayoutHandle(),
 				VK_SHADER_STAGE_COMPUTE_BIT, pushConstants);
-		VkCmdRecordUtil.cmdBindComputePipeline(commandBuffer, computePipeline.getHandle());
-		VkCmdRecordUtil.cmdBindComputeDescriptorSets(commandBuffer,
-				computePipeline.getLayoutHandle(), VkUtil.createLongArray(descriptorSets));
-		VkCmdRecordUtil.cmdDispatch(commandBuffer, width/16, height/16, 1);
+		commandBuffer.bindComputePipelineCmd(computePipeline.getHandle());
+		commandBuffer.bindComputeDescriptorSetsCmd(computePipeline.getLayoutHandle(),
+				VkUtil.createLongArray(descriptorSets));
+		commandBuffer.dispatchCmd(width/16, height/16, 1);
 	}
 	
 	public void render(){
@@ -142,6 +140,7 @@ public class FXAA {
 	}
 	
 	public void shutdown(){
+		
 		fxaaImage.destroy();
 		fxaaImageView.destroy();
 		computePipeline.destroy();

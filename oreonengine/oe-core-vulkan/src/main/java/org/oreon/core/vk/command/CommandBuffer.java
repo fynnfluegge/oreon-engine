@@ -4,14 +4,18 @@ import static org.lwjgl.system.MemoryUtil.memAllocLong;
 import static org.lwjgl.system.MemoryUtil.memAllocPointer;
 import static org.lwjgl.system.MemoryUtil.memFree;
 import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_RESET_RELEASE_RESOURCES_BIT;
+import static org.lwjgl.vulkan.VK10.VK_DEPENDENCY_BY_REGION_BIT;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_ASPECT_COLOR_BIT;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
 import static org.lwjgl.vulkan.VK10.VK_INDEX_TYPE_UINT32;
+import static org.lwjgl.vulkan.VK10.VK_PIPELINE_BIND_POINT_COMPUTE;
+import static org.lwjgl.vulkan.VK10.VK_PIPELINE_BIND_POINT_GRAPHICS;
 import static org.lwjgl.vulkan.VK10.VK_QUEUE_FAMILY_IGNORED;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_MEMORY_BARRIER;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import static org.lwjgl.vulkan.VK10.vkAllocateCommandBuffers;
@@ -51,6 +55,7 @@ import org.lwjgl.vulkan.VkExtent3D;
 import org.lwjgl.vulkan.VkImageMemoryBarrier;
 import org.lwjgl.vulkan.VkImageSubresourceLayers;
 import org.lwjgl.vulkan.VkImageSubresourceRange;
+import org.lwjgl.vulkan.VkMemoryBarrier;
 import org.lwjgl.vulkan.VkOffset3D;
 import org.lwjgl.vulkan.VkRect2D;
 import org.lwjgl.vulkan.VkRenderPassBeginInfo;
@@ -216,9 +221,14 @@ public class CommandBuffer {
 		vkCmdEndRenderPass(handle);
 	}
 	
-	public void bindPipelineCmd(long pipeline, int pipelineBindPoint){
+	public void bindComputePipelineCmd(long pipeline){
 		
-		vkCmdBindPipeline(handle, pipelineBindPoint, pipeline);
+		vkCmdBindPipeline(handle, VK_PIPELINE_BIND_POINT_COMPUTE, pipeline);
+	}
+	
+	public void bindGraphicsPipelineCmd(long pipeline){
+		
+		vkCmdBindPipeline(handle, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
 	}
 	
 	public void viewPortCmd(){
@@ -267,7 +277,19 @@ public class CommandBuffer {
 		memFree(offsets);
 	}
 	
-	public void bindDescriptorSetsCmd(long pipelinyLayout, long[] descriptorSets,
+	public void bindComputeDescriptorSetsCmd(long pipelinyLayout, long[] descriptorSets){
+
+		bindDescriptorSetsCmd(pipelinyLayout, descriptorSets,
+				VK_PIPELINE_BIND_POINT_COMPUTE);
+	}
+	
+	public void bindGraphicsDescriptorSetsCmd(long pipelinyLayout, long[] descriptorSets){
+		
+		bindDescriptorSetsCmd(pipelinyLayout, descriptorSets,
+				VK_PIPELINE_BIND_POINT_GRAPHICS);
+	}
+	
+	private void bindDescriptorSetsCmd(long pipelinyLayout, long[] descriptorSets,
 			int pipelineBindPoint){
 		
 		vkCmdBindDescriptorSets(handle, pipelineBindPoint,
@@ -345,7 +367,7 @@ public class CommandBuffer {
 				VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, copyRegion);
 	}
 	
-	public void imageBarrier(long image, int oldLayout, int newLayout,
+	public void pipelineImageMemoryBarrierCmd(long image, int oldLayout, int newLayout,
 			int srcAccessMask, int dstAccessMask, int srcStageMask, int dstStageMask,
 			int baseMipLevel, int mipLevelCount){
 		
@@ -367,16 +389,34 @@ public class CommandBuffer {
 				.layerCount(1);
 	
 		vkCmdPipelineBarrier(handle, srcStageMask, dstStageMask,
-				0, null, null, barrier);
+				VK_DEPENDENCY_BY_REGION_BIT, null, null, barrier);
 		
 		barrier.free();
 	}
 	
-	public void imageBarrier(long image, int srcStageMask, int dstStageMask,
+	public void pipelineImageMemoryBarrierCmd(long image, int srcStageMask, int dstStageMask,
 			VkImageMemoryBarrier.Buffer barrier){
 	
 		vkCmdPipelineBarrier(handle, srcStageMask, dstStageMask,
-				0, null, null, barrier);
+				VK_DEPENDENCY_BY_REGION_BIT, null, null, barrier);
+	}
+	
+	public void pipelineMemoryBarrierCmd(int srcAccessMask, int dstAccessMask,
+			int srcStageMask, int dstStageMask){
+		
+		VkMemoryBarrier.Buffer barrier = VkMemoryBarrier.calloc(1)
+				.sType(VK_STRUCTURE_TYPE_MEMORY_BARRIER)
+				.srcAccessMask(srcAccessMask)
+				.dstAccessMask(dstAccessMask);
+		
+		vkCmdPipelineBarrier(handle, srcStageMask, dstStageMask,
+				VK_DEPENDENCY_BY_REGION_BIT, barrier, null, null);
+	}
+	
+	public void pipelineBarrierCmd(int srcStageMask, int dstStageMask){
+		
+		vkCmdPipelineBarrier(handle, srcStageMask, dstStageMask,
+				VK_DEPENDENCY_BY_REGION_BIT, null, null, null);
 	}
 	
 	public void recordSecondaryCmdBuffers(PointerBuffer secondaryCmdBuffers){

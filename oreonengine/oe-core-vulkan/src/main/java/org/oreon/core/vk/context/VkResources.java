@@ -18,5 +18,4 @@ public class VkResources {
 	private VkFrameBufferObject transparencyFbo;
 
 	private HashMap<String, Descriptor> descriptors;
-
 }

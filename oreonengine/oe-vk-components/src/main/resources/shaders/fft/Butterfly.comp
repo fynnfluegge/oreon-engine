@@ -9,11 +9,11 @@ layout (binding = 1, rgba32f) uniform image2D pingpong0;
 
 layout (binding = 2, rgba32f) uniform image2D pingpong1;
 
-layout (binding = 3) uniform uniformBuffer{
+layout (push_constant, std430, row_major) uniform pushConstants{
 	int stage;
 	int pingpong;
 	int direction;
-} ubo;
+} constants;
 
 struct complex
 {	
@@ -43,9 +43,9 @@ void horizontalButterflies()
 	complex H;
 	ivec2 x = ivec2(gl_GlobalInvocationID.xy);
 	
-	if(ubo.pingpong == 0)
+	if(constants.pingpong == 0)
 	{
-		vec4 data = imageLoad(twiddlesIndices, ivec2(ubo.stage, x.x)).rgba;
+		vec4 data = imageLoad(twiddlesIndices, ivec2(constants.stage, x.x)).rgba;
 		vec2 p_ = imageLoad(pingpong0, ivec2(data.z, x.y)).rg;
 		vec2 q_ = imageLoad(pingpong0, ivec2(data.w, x.y)).rg;
 		vec2 w_ = vec2(data.x, data.y);
@@ -59,9 +59,9 @@ void horizontalButterflies()
 		
 		imageStore(pingpong1, x, vec4(H.real, H.im, 0, 1));
 	}
-	else if(ubo.pingpong == 1)
+	else if(constants.pingpong == 1)
 	{
-		vec4 data = imageLoad(twiddlesIndices, ivec2(ubo.stage, x.x)).rgba;
+		vec4 data = imageLoad(twiddlesIndices, ivec2(constants.stage, x.x)).rgba;
 		vec2 p_ = imageLoad(pingpong1, ivec2(data.z, x.y)).rg;
 		vec2 q_ = imageLoad(pingpong1, ivec2(data.w, x.y)).rg;
 		vec2 w_ = vec2(data.x, data.y);
@@ -82,9 +82,9 @@ void verticalButterflies()
 	complex H;
 	ivec2 x = ivec2(gl_GlobalInvocationID.xy);
 	
-	if(ubo.pingpong == 0)
+	if(constants.pingpong == 0)
 	{
-		vec4 data = imageLoad(twiddlesIndices, ivec2(ubo.stage, x.y)).rgba;
+		vec4 data = imageLoad(twiddlesIndices, ivec2(constants.stage, x.y)).rgba;
 		vec2 p_ = imageLoad(pingpong0, ivec2(x.x, data.z)).rg;
 		vec2 q_ = imageLoad(pingpong0, ivec2(x.x, data.w)).rg;
 		vec2 w_ = vec2(data.x, data.y);
@@ -98,9 +98,9 @@ void verticalButterflies()
 		
 		imageStore(pingpong1, x, vec4(H.real, H.im, 0, 1));
 	}
-	else if(ubo.pingpong == 1)
+	else if(constants.pingpong == 1)
 	{
-		vec4 data = imageLoad(twiddlesIndices, ivec2(ubo.stage, x.y)).rgba;
+		vec4 data = imageLoad(twiddlesIndices, ivec2(constants.stage, x.y)).rgba;
 		vec2 p_ = imageLoad(pingpong1, ivec2(x.x, data.z)).rg;
 		vec2 q_ = imageLoad(pingpong1, ivec2(x.x, data.w)).rg;
 		vec2 w_ = vec2(data.x, data.y);
@@ -118,8 +118,8 @@ void verticalButterflies()
 
 void main(void)
 {
-	if(ubo.direction == 0)
+	if(constants.direction == 0)
 		horizontalButterflies();
-	else if(ubo.direction == 1)
+	else if(constants.direction == 1)
 		verticalButterflies();
 }

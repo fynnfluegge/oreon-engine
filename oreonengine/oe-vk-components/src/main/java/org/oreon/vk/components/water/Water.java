@@ -1,6 +1,7 @@
 package org.oreon.vk.components.water;
 
 import static org.lwjgl.system.MemoryUtil.memAlloc;
+import static org.lwjgl.system.MemoryUtil.memAllocInt;
 import static org.lwjgl.vulkan.VK10.VK_ACCESS_SHADER_READ_BIT;
 import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
@@ -28,6 +29,7 @@ import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_FRAGMENT_BIT;
 import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_GEOMETRY_BIT;
 
 import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -69,6 +71,7 @@ import org.oreon.core.vk.pipeline.VkVertexInput;
 import org.oreon.core.vk.scenegraph.VkMeshData;
 import org.oreon.core.vk.scenegraph.VkRenderInfo;
 import org.oreon.core.vk.synchronization.Fence;
+import org.oreon.core.vk.synchronization.VkSemaphore;
 import org.oreon.core.vk.util.VkUtil;
 import org.oreon.core.vk.wrapper.buffer.VkBufferHelper;
 import org.oreon.core.vk.wrapper.buffer.VkUniformBuffer;
@@ -88,7 +91,6 @@ public class Water extends Renderable{
 
 	private VkBuffer vertexBufferObject;
 	private VkPipeline graphicsPipeline;
-	private NormalRenderer normalRenderer;
 	private VkUniformBuffer uniformBuffer;
 	
 	@Getter
@@ -96,6 +98,7 @@ public class Water extends Renderable{
 
 	private long systemTime = System.currentTimeMillis();
 	private FFT fft;
+	private NormalRenderer normalRenderer;
 	private Vec4f clipplane;
 	private float clip_offset;
 	private float motion;
@@ -110,7 +113,6 @@ public class Water extends Renderable{
 	private VkSampler normalSampler;
 	private VkSampler reflectionSampler;
 	private VkSampler refractionSampler;
-	private Fence fence;
 	
 	// Reflection/Refraction Resources
 	private VkFrameBufferObject offScreenReflecRefracFbo;
@@ -127,6 +129,9 @@ public class Water extends Renderable{
 	private VkImageView deferredReflectionImageView;
 	private CommandBuffer reflectionMipmapGenerationCmd;
 	private SubmitInfo reflectionMipmapSubmitInfo;
+	private VkSemaphore offscreenReflectionSignalSemaphore;
+	private Fence offScreenReflectionFence;
+	private Fence deferredReflectionFence;
 	
 	// Refraction Resources
 	private RenderList offScreenRefractionRenderList;
@@ -140,7 +145,8 @@ public class Water extends Renderable{
 	private VkImageView deferredRefractionImageView;
 	private CommandBuffer refractionMipmapGenerationCmd;
 	private SubmitInfo refractionMipmapSubmitInfo;
-	
+	private VkSemaphore offscreenRefractionSignalSemaphore;
+	private Fence deferredRefractionFence;
 	
 	// queues for render reflection/refraction
 	private VkQueue graphicsQueue;
@@ -238,6 +244,8 @@ public class Water extends Renderable{
 				VkContext.getDeviceManager().getDeviceBundle(DeviceType.MAJOR_GRAPHICS_DEVICE),
 				waterConfiguration.getN(), waterConfiguration.getNormalStrength(),
 				fft.getDyImageView(), dySampler);
+		
+		normalRenderer.setWaitSemaphores(fft.getFftSignalSemaphore().getHandlePointer());
 		
 		ShaderPipeline shaderPipeline = new ShaderPipeline(device.getHandle());
 	    shaderPipeline.createVertexShader("shaders/water/water.vert.spv");
@@ -359,8 +367,7 @@ public class Water extends Renderable{
 				16);
 		
 		CommandBuffer commandBuffer = new SecondaryDrawCmdBuffer(
-	    		device.getHandle(),
-	    		device.getGraphicsCommandPool().getHandle(), 
+	    		device.getHandle(), device.getGraphicsCommandPool().getHandle(), 
 	    		graphicsPipeline.getHandle(), graphicsPipeline.getLayoutHandle(),
 	    		VkContext.getResources().getOffScreenFbo().getFrameBuffer().getHandle(),
 	    		VkContext.getResources().getOffScreenFbo().getRenderPass().getHandle(),
@@ -464,29 +471,40 @@ public class Water extends Renderable{
 		
 		offscreenReflectionCmdBuffer = new PrimaryCmdBuffer(device.getHandle(), 
 				device.getComputeCommandPool().getHandle());
-		fence = new Fence(device.getHandle());
 		
 		offscreenRefractionCmdBuffer = new PrimaryCmdBuffer(device.getHandle(), 
 				device.getComputeCommandPool().getHandle());
-		fence = new Fence(device.getHandle());
+		
+		offScreenReflectionFence = new Fence(device.getHandle());
+		deferredReflectionFence = new Fence(device.getHandle());
+		deferredRefractionFence = new Fence(device.getHandle());
+		
+		offscreenReflectionSignalSemaphore = new VkSemaphore(device.getHandle());
+		offscreenRefractionSignalSemaphore = new VkSemaphore(device.getHandle());
 		
 		offScreenReflectionSubmitInfo = new SubmitInfo();
-		offScreenReflectionSubmitInfo.setCommandBuffers(
-				offscreenReflectionCmdBuffer.getHandlePointer());
-		offScreenReflectionSubmitInfo.setFence(fence);
+		offScreenReflectionSubmitInfo.setCommandBuffers(offscreenReflectionCmdBuffer.getHandlePointer());
+		offScreenReflectionSubmitInfo.setSignalSemaphores(offscreenReflectionSignalSemaphore.getHandlePointer());
+		offScreenReflectionSubmitInfo.setFence(offScreenReflectionFence);
+		
+		IntBuffer pWaitDstStageMask = memAllocInt(1);
+		pWaitDstStageMask.put(0, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT);
 		
 		offScreenRefractionSubmitInfo = new SubmitInfo();
-		offScreenRefractionSubmitInfo.setCommandBuffers(
-				offscreenRefractionCmdBuffer.getHandlePointer());
-		offScreenRefractionSubmitInfo.setFence(fence);
+		offScreenRefractionSubmitInfo.setCommandBuffers(offscreenRefractionCmdBuffer.getHandlePointer());
+		offScreenRefractionSubmitInfo.setSignalSemaphores(offscreenRefractionSignalSemaphore.getHandlePointer());
 		
 		deferredReflectionSubmitInfo = new SubmitInfo();
 		deferredReflectionSubmitInfo.setCommandBuffers(deferredReflectionCmdBuffer.getHandlePointer());
-		deferredReflectionSubmitInfo.setFence(fence);
+		deferredReflectionSubmitInfo.setWaitSemaphores(offscreenReflectionSignalSemaphore.getHandlePointer());
+		deferredReflectionSubmitInfo.setWaitDstStageMask(pWaitDstStageMask);
+		deferredReflectionSubmitInfo.setFence(deferredReflectionFence);
 		
 		deferredRefractionSubmitInfo = new SubmitInfo();
 		deferredRefractionSubmitInfo.setCommandBuffers(deferredRefractionCmdBuffer.getHandlePointer());
-		deferredRefractionSubmitInfo.setFence(fence);
+		deferredRefractionSubmitInfo.setWaitSemaphores(offscreenRefractionSignalSemaphore.getHandlePointer());
+		deferredRefractionSubmitInfo.setWaitDstStageMask(pWaitDstStageMask);
+		deferredRefractionSubmitInfo.setFence(deferredRefractionFence);
 		
 		reflectionMipmapGenerationCmd = new MipMapGenerationCmdBuffer(device.getHandle(),
 				device.getGraphicsCommandPool().getHandle(), deferredReflectionImage.getHandle(),
@@ -550,10 +568,9 @@ public class Water extends Renderable{
 					graphicsQueue);
 		}
 		
-		fence.waitForFence();
 		deferredReflectionSubmitInfo.submit(computeQueue);
-		fence.waitForFence();
-		reflectionMipmapSubmitInfo.submit(graphicsQueue);
+		
+		offScreenReflectionFence.waitForFence();
 		
 		// antimirror scene to clipplane
 		sceneGraph.getWorldTransform().setScaling(1,1,1);
@@ -588,9 +605,12 @@ public class Water extends Renderable{
 					graphicsQueue);
 		}
 		
-		fence.waitForFence();
 		deferredRefractionSubmitInfo.submit(computeQueue);
-		fence.waitForFence();
+		
+		deferredReflectionFence.waitForFence();
+		reflectionMipmapSubmitInfo.submit(graphicsQueue);
+		
+		deferredRefractionFence.waitForFence();
 		refractionMipmapSubmitInfo.submit(graphicsQueue);
 		
 		motion += (System.currentTimeMillis() - systemTime) * waterConfiguration.getWaveMotion();
@@ -598,5 +618,10 @@ public class Water extends Renderable{
 		float[] v = {motion, distortion};
 		uniformBuffer.mapMemory(BufferUtil.createByteBuffer(v));
 		systemTime = System.currentTimeMillis();
+	}
+	
+	@Override
+	public void shutdown(){
+		fft.destroy();
 	}
 }

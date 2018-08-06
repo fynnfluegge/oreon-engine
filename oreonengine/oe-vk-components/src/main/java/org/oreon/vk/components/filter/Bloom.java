@@ -20,13 +20,11 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.lwjgl.vulkan.VkCommandBuffer;
 import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
 import org.lwjgl.vulkan.VkQueue;
 import org.oreon.core.vk.command.CommandBuffer;
 import org.oreon.core.vk.command.SubmitInfo;
-import org.oreon.core.vk.command.VkCmdRecordUtil;
 import org.oreon.core.vk.descriptor.DescriptorPool;
 import org.oreon.core.vk.descriptor.DescriptorSet;
 import org.oreon.core.vk.descriptor.DescriptorSetLayout;
@@ -707,131 +705,109 @@ public class Bloom {
 		bloomSceneShader.destroy();
 	}
 	
-	public void record(VkCommandBuffer commandBuffer){
+	public void record(CommandBuffer commandBuffer){
 		
 		// scene luminance
-		VkCmdRecordUtil.cmdBindComputePipeline(commandBuffer,
-				sceneBrightnessPipeline.getHandle());
-		VkCmdRecordUtil.cmdBindComputeDescriptorSets(commandBuffer,
-				sceneBrightnessPipeline.getLayoutHandle(),
+		commandBuffer.bindComputePipelineCmd(sceneBrightnessPipeline.getHandle());
+		commandBuffer.bindComputeDescriptorSetsCmd(sceneBrightnessPipeline.getLayoutHandle(),
 				VkUtil.createLongArray(sceneBrightnessDescriptorSets));
-		VkCmdRecordUtil.cmdDispatch(commandBuffer, width/8, height/8, 1);
+		commandBuffer.dispatchCmd(width/8, height/8, 1);
 		
 		// barrier
-		VkCmdRecordUtil.cmdPipelineMemoryBarrier(commandBuffer,
+		commandBuffer.pipelineMemoryBarrierCmd(
 	    		VK_ACCESS_SHADER_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT,
 	    		VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
 	    		VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT);
 		
 		// div2 horizontal blur
-		VkCmdRecordUtil.cmdPushConstants(commandBuffer, horizontalBlurPipeline_div2.getLayoutHandle(),
+		commandBuffer.pushConstantsCmd(horizontalBlurPipeline_div2.getLayoutHandle(),
 				VK_SHADER_STAGE_COMPUTE_BIT, pushConstants_div2);
-		VkCmdRecordUtil.cmdBindComputePipeline(commandBuffer,
-				horizontalBlurPipeline_div2.getHandle());
-		VkCmdRecordUtil.cmdBindComputeDescriptorSets(commandBuffer,
-				horizontalBlurPipeline_div2.getLayoutHandle(),
+		commandBuffer.bindComputePipelineCmd(horizontalBlurPipeline_div2.getHandle());
+		commandBuffer.bindComputeDescriptorSetsCmd(horizontalBlurPipeline_div2.getLayoutHandle(),
 				VkUtil.createLongArray(horizontalBlurDescriptorSets_div2));
-		VkCmdRecordUtil.cmdDispatch(commandBuffer, width/16, height/16, 1);
+		commandBuffer.dispatchCmd(width/16, height/16, 1);
 		// div4 horizontal blur
-		VkCmdRecordUtil.cmdPushConstants(commandBuffer, horizontalBlurPipeline_div4.getLayoutHandle(),
+		commandBuffer.pushConstantsCmd(horizontalBlurPipeline_div4.getLayoutHandle(),
 				VK_SHADER_STAGE_COMPUTE_BIT, pushConstants_div4);
-		VkCmdRecordUtil.cmdBindComputePipeline(commandBuffer,
-				horizontalBlurPipeline_div4.getHandle());
-		VkCmdRecordUtil.cmdBindComputeDescriptorSets(commandBuffer,
-				horizontalBlurPipeline_div4.getLayoutHandle(),
+		commandBuffer.bindComputePipelineCmd(horizontalBlurPipeline_div4.getHandle());
+		commandBuffer.bindComputeDescriptorSetsCmd(horizontalBlurPipeline_div4.getLayoutHandle(),
 				VkUtil.createLongArray(horizontalBlurDescriptorSets_div4));
-		VkCmdRecordUtil.cmdDispatch(commandBuffer, width/32, height/32, 1);
+		commandBuffer.dispatchCmd(width/32, height/32, 1);
 		// div8 horizontal blur
-		VkCmdRecordUtil.cmdPushConstants(commandBuffer, horizontalBlurPipeline_div8.getLayoutHandle(),
+		commandBuffer.pushConstantsCmd(horizontalBlurPipeline_div8.getLayoutHandle(),
 				VK_SHADER_STAGE_COMPUTE_BIT, pushConstants_div8);
-		VkCmdRecordUtil.cmdBindComputePipeline(commandBuffer,
-				horizontalBlurPipeline_div8.getHandle());
-		VkCmdRecordUtil.cmdBindComputeDescriptorSets(commandBuffer,
-				horizontalBlurPipeline_div8.getLayoutHandle(),
+		commandBuffer.bindComputePipelineCmd(horizontalBlurPipeline_div8.getHandle());
+		commandBuffer.bindComputeDescriptorSetsCmd(horizontalBlurPipeline_div8.getLayoutHandle(),
 				VkUtil.createLongArray(horizontalBlurDescriptorSets_div8));
-		VkCmdRecordUtil.cmdDispatch(commandBuffer, width/64, height/64, 1);
+		commandBuffer.dispatchCmd(width/64, height/64, 1);
 		// div16 horizontal blur
-		VkCmdRecordUtil.cmdPushConstants(commandBuffer, horizontalBlurPipeline_div16.getLayoutHandle(),
+		commandBuffer.pushConstantsCmd(horizontalBlurPipeline_div16.getLayoutHandle(),
 				VK_SHADER_STAGE_COMPUTE_BIT, pushConstants_div16);
-		VkCmdRecordUtil.cmdBindComputePipeline(commandBuffer,
-				horizontalBlurPipeline_div16.getHandle());
-		VkCmdRecordUtil.cmdBindComputeDescriptorSets(commandBuffer,
-				horizontalBlurPipeline_div16.getLayoutHandle(),
+		commandBuffer.bindComputePipelineCmd(horizontalBlurPipeline_div16.getHandle());
+		commandBuffer.bindComputeDescriptorSetsCmd(horizontalBlurPipeline_div16.getLayoutHandle(),
 				VkUtil.createLongArray(horizontalBlurDescriptorSets_div16));
-		VkCmdRecordUtil.cmdDispatch(commandBuffer, width/128, height/128, 1);
+		commandBuffer.dispatchCmd(width/128, height/128, 1);
 		
 		// barrier
-		VkCmdRecordUtil.cmdPipelineMemoryBarrier(commandBuffer,
+		commandBuffer.pipelineMemoryBarrierCmd(
 	    		VK_ACCESS_SHADER_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT,
 	    		VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
 	    		VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT);
 		
 		// div2 vertical blur
-		VkCmdRecordUtil.cmdPushConstants(commandBuffer, verticalBlurPipeline_div2.getLayoutHandle(),
+		commandBuffer.pushConstantsCmd(verticalBlurPipeline_div2.getLayoutHandle(),
 				VK_SHADER_STAGE_COMPUTE_BIT, pushConstants_div2);
-		VkCmdRecordUtil.cmdBindComputePipeline(commandBuffer,
-				verticalBlurPipeline_div2.getHandle());
-		VkCmdRecordUtil.cmdBindComputeDescriptorSets(commandBuffer,
-				verticalBlurPipeline_div2.getLayoutHandle(),
+		commandBuffer.bindComputePipelineCmd(verticalBlurPipeline_div2.getHandle());
+		commandBuffer.bindComputeDescriptorSetsCmd(verticalBlurPipeline_div2.getLayoutHandle(),
 				VkUtil.createLongArray(verticalBlurDescriptorSets_div2));
-		VkCmdRecordUtil.cmdDispatch(commandBuffer, width/16, height/16, 1);
+		commandBuffer.dispatchCmd(width/16, height/16, 1);
 		// div4 horizontal blur
-		VkCmdRecordUtil.cmdPushConstants(commandBuffer, verticalBlurPipeline_div4.getLayoutHandle(),
+		commandBuffer.pushConstantsCmd(verticalBlurPipeline_div4.getLayoutHandle(),
 				VK_SHADER_STAGE_COMPUTE_BIT, pushConstants_div4);
-		VkCmdRecordUtil.cmdBindComputePipeline(commandBuffer,
-				verticalBlurPipeline_div4.getHandle());
-		VkCmdRecordUtil.cmdBindComputeDescriptorSets(commandBuffer,
-				verticalBlurPipeline_div4.getLayoutHandle(),
+		commandBuffer.bindComputePipelineCmd(verticalBlurPipeline_div4.getHandle());
+		commandBuffer.bindComputeDescriptorSetsCmd(verticalBlurPipeline_div4.getLayoutHandle(),
 				VkUtil.createLongArray(verticalBlurDescriptorSets_div4));
-		VkCmdRecordUtil.cmdDispatch(commandBuffer, width/32, height/32, 1);
+		commandBuffer.dispatchCmd(width/32, height/32, 1);
 		// div8 horizontal blur
-		VkCmdRecordUtil.cmdPushConstants(commandBuffer, verticalBlurPipeline_div8.getLayoutHandle(),
+		commandBuffer.pushConstantsCmd(verticalBlurPipeline_div8.getLayoutHandle(),
 				VK_SHADER_STAGE_COMPUTE_BIT, pushConstants_div8);
-		VkCmdRecordUtil.cmdBindComputePipeline(commandBuffer,
-				verticalBlurPipeline_div8.getHandle());
-		VkCmdRecordUtil.cmdBindComputeDescriptorSets(commandBuffer,
-				verticalBlurPipeline_div8.getLayoutHandle(),
+		commandBuffer.bindComputePipelineCmd(verticalBlurPipeline_div8.getHandle());
+		commandBuffer.bindComputeDescriptorSetsCmd(verticalBlurPipeline_div8.getLayoutHandle(),
 				VkUtil.createLongArray(verticalBlurDescriptorSets_div8));
-		VkCmdRecordUtil.cmdDispatch(commandBuffer, width/64, height/64, 1);
+		commandBuffer.dispatchCmd(width/64, height/64, 1);
 		// div16 horizontal blur
-		VkCmdRecordUtil.cmdPushConstants(commandBuffer, verticalBlurPipeline_div16.getLayoutHandle(),
+		commandBuffer.pushConstantsCmd(verticalBlurPipeline_div16.getLayoutHandle(),
 				VK_SHADER_STAGE_COMPUTE_BIT, pushConstants_div16);
-		VkCmdRecordUtil.cmdBindComputePipeline(commandBuffer,
-				verticalBlurPipeline_div16.getHandle());
-		VkCmdRecordUtil.cmdBindComputeDescriptorSets(commandBuffer,
-				verticalBlurPipeline_div16.getLayoutHandle(),
+		commandBuffer.bindComputePipelineCmd(verticalBlurPipeline_div16.getHandle());
+		commandBuffer.bindComputeDescriptorSetsCmd(verticalBlurPipeline_div16.getLayoutHandle(),
 				VkUtil.createLongArray(verticalBlurDescriptorSets_div16));
-		VkCmdRecordUtil.cmdDispatch(commandBuffer, width/128, height/128, 1);
+		commandBuffer.dispatchCmd(width/128, height/128, 1);
 		
 		// barrier
-		VkCmdRecordUtil.cmdPipelineMemoryBarrier(commandBuffer,
+		commandBuffer.pipelineMemoryBarrierCmd(
 	    		VK_ACCESS_SHADER_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT,
 	    		VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
 	    		VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT);
 		
 		// additive blend
-		VkCmdRecordUtil.cmdPushConstants(commandBuffer, blendPipeline.getLayoutHandle(),
+		commandBuffer.pushConstantsCmd(blendPipeline.getLayoutHandle(),
 				VK_SHADER_STAGE_COMPUTE_BIT, pushConstants_blend);
-		VkCmdRecordUtil.cmdBindComputePipeline(commandBuffer,
-				blendPipeline.getHandle());
-		VkCmdRecordUtil.cmdBindComputeDescriptorSets(commandBuffer,
-				blendPipeline.getLayoutHandle(),
+		commandBuffer.bindComputePipelineCmd(blendPipeline.getHandle());
+		commandBuffer.bindComputeDescriptorSetsCmd(blendPipeline.getLayoutHandle(),
 				VkUtil.createLongArray(blendDescriptorSets));
-		VkCmdRecordUtil.cmdDispatch(commandBuffer, width/8, height/8, 1);
+		commandBuffer.dispatchCmd(width/8, height/8, 1);
 		
 		// barrier
-		VkCmdRecordUtil.cmdPipelineMemoryBarrier(commandBuffer,
+		commandBuffer.pipelineMemoryBarrierCmd(
 	    		VK_ACCESS_SHADER_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT,
 	    		VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
 	    		VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT);
 		
 		// bloom Scene
-		VkCmdRecordUtil.cmdBindComputePipeline(commandBuffer,
-				bloomScenePipeline.getHandle());
-		VkCmdRecordUtil.cmdBindComputeDescriptorSets(commandBuffer,
-				bloomScenePipeline.getLayoutHandle(),
+		commandBuffer.bindComputePipelineCmd(bloomScenePipeline.getHandle());
+		commandBuffer.bindComputeDescriptorSetsCmd(bloomScenePipeline.getLayoutHandle(),
 				VkUtil.createLongArray(bloomSceneDescriptorSets));
-		VkCmdRecordUtil.cmdDispatch(commandBuffer, width/8, height/8, 1);
+		commandBuffer.dispatchCmd(width/8, height/8, 1);
 	}
 	
 	public void render(){

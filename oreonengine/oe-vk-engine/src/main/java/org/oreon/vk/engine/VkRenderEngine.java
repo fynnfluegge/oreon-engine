@@ -15,6 +15,7 @@ import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 import static org.lwjgl.vulkan.VK10.VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import static org.lwjgl.vulkan.VK10.vkDeviceWaitIdle;
+import static org.lwjgl.vulkan.VK10.vkQueueWaitIdle;
 
 import java.nio.IntBuffer;
 import java.nio.LongBuffer;
@@ -28,7 +29,6 @@ import org.oreon.core.system.RenderEngine;
 import org.oreon.core.target.FrameBufferObject.Attachment;
 import org.oreon.core.vk.command.CommandBuffer;
 import org.oreon.core.vk.command.SubmitInfo;
-import org.oreon.core.vk.command.VkCmdRecordUtil;
 import org.oreon.core.vk.context.DeviceManager.DeviceType;
 import org.oreon.core.vk.context.VkContext;
 import org.oreon.core.vk.descriptor.DescriptorPool;
@@ -59,8 +59,8 @@ public class VkRenderEngine extends RenderEngine{
 	private VkFrameBufferObject reflectionFbo;
 	private VkFrameBufferObject transparencyFbo;
 	
-	private VkSemaphore deferredStageSemaphore;
 	private VkSemaphore offScreenSemaphore;
+	private VkSemaphore deferredStageSemaphore;
 	private VkSemaphore transparencySemaphore;
 	private VkSemaphore postProcessingSemaphore;
 	
@@ -224,19 +224,19 @@ public class VkRenderEngine extends RenderEngine{
 		}
 	    
 	    swapChain = new SwapChain(logicalDevice, physicalDevice, surface,
-	    		displayImageView.getHandle());
+				displayImageView.getHandle());
 	    
 	    // record sample coverage + deferred lighting command buffer
 	    deferredStageCmdBuffer = new CommandBuffer(majorDevice.getLogicalDevice().getHandle(),
 	    		majorDevice.getLogicalDevice().getComputeCommandPool().getHandle(),
 	    		VK_COMMAND_BUFFER_LEVEL_PRIMARY);
 	    deferredStageCmdBuffer.beginRecord(VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT);
-	    sampleCoverage.record(deferredStageCmdBuffer.getHandle());
-	    VkCmdRecordUtil.cmdPipelineMemoryBarrier(deferredStageCmdBuffer.getHandle(),
+	    sampleCoverage.record(deferredStageCmdBuffer);
+	    deferredStageCmdBuffer.pipelineMemoryBarrierCmd(
 	    		VK_ACCESS_SHADER_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT,
 	    		VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
 	    		VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT);
-	    deferredLighting.record(deferredStageCmdBuffer.getHandle());
+	    deferredLighting.record(deferredStageCmdBuffer);
 	    deferredStageCmdBuffer.finishRecord();
 	    
 	    IntBuffer pComputeShaderWaitDstStageMask = memAllocInt(1);
@@ -252,14 +252,14 @@ public class VkRenderEngine extends RenderEngine{
 	    		VK_COMMAND_BUFFER_LEVEL_PRIMARY);
 	    postProcessingCmdBuffer.beginRecord(VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT);
 	    if (EngineContext.getConfig().isFxaaEnabled()){
-	    	fxaa.record(postProcessingCmdBuffer.getHandle());
+	    	fxaa.record(postProcessingCmdBuffer);
 	    }
-	    VkCmdRecordUtil.cmdPipelineMemoryBarrier(postProcessingCmdBuffer.getHandle(),
+	    postProcessingCmdBuffer.pipelineMemoryBarrierCmd(
 	    		VK_ACCESS_SHADER_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT,
 	    		VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
 	    		VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT);
 	    if (EngineContext.getConfig().isBloomEnabled()){
-	    	bloom.record(postProcessingCmdBuffer.getHandle());
+	    	bloom.record(postProcessingCmdBuffer);
 	    }
 	    postProcessingCmdBuffer.finishRecord();
 	
@@ -275,6 +275,8 @@ public class VkRenderEngine extends RenderEngine{
 		sceneGraph.render();
 		offScreenRenderList.setChanged(false);
 		sceneGraph.record(offScreenRenderList);
+		
+		vkQueueWaitIdle(majorDevice.getLogicalDevice().getComputeQueue());
 		
 		// update Terrain/Planet Quadtree
 		if (sceneGraph.hasTerrain()){
@@ -366,6 +368,7 @@ public class VkRenderEngine extends RenderEngine{
 		
 		swapChain.draw(majorDevice.getLogicalDevice().getGraphicsQueue(),
 				gui.getSignalSemaphore());
+		swapChain.getDrawFence().waitForFence();
 	}
 
 	@Override
@@ -380,14 +383,21 @@ public class VkRenderEngine extends RenderEngine{
 	@Override
 	public void shutdown() {
 		
-		super.shutdown();
-		
 		// wait for queues to be finished before destroy vulkan objects
 		vkDeviceWaitIdle(majorDevice.getLogicalDevice().getHandle());
+		
+		super.shutdown();
+		
 		offScreenFbo.destroy();
 		reflectionFbo.destroy();
 		transparencyFbo.destroy();
+		offScreenSemaphore.destroy();
+		deferredStageSemaphore.destroy();
+		transparencySemaphore.destroy();
+		postProcessingSemaphore.destroy();
 		offScreenPrimaryCmdBuffer.destroy();
+		deferredStageCmdBuffer.destroy();
+		postProcessingCmdBuffer.destroy();
 		transparencyPrimaryCmdBuffer.destroy();
 		sampleCoverage.shutdown();
 		deferredLighting.shutdown();

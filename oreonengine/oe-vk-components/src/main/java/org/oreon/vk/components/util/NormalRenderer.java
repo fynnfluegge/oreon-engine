@@ -1,6 +1,7 @@
 package org.oreon.vk.components.util;
 
 import static org.lwjgl.system.MemoryUtil.memAlloc;
+import static org.lwjgl.system.MemoryUtil.memAllocInt;
 import static org.lwjgl.vulkan.VK10.VK_ACCESS_SHADER_READ_BIT;
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_STORAGE_IMAGE;
@@ -17,6 +18,8 @@ import static org.lwjgl.vulkan.VK10.VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
 import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_COMPUTE_BIT;
 
 import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
+import java.nio.LongBuffer;
 
 import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkQueue;
@@ -131,6 +134,14 @@ public class NormalRenderer {
 		
 		mipmapSubmitInfo = new SubmitInfo();
 		mipmapSubmitInfo.setCommandBuffers(mipmapGenerationCmd.getHandlePointer());
+	}
+	
+	public void setWaitSemaphores(LongBuffer waitSemaphore){
+		
+		IntBuffer pWaitDstStageMask = memAllocInt(1);
+        pWaitDstStageMask.put(0, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT);
+        submitInfo.setWaitDstStageMask(pWaitDstStageMask);
+        submitInfo.setWaitSemaphores(waitSemaphore);
 	}
 	
 	public void render(int dstQueueFamilyIndex){

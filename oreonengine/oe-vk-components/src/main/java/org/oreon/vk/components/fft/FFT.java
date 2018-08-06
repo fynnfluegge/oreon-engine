@@ -1,6 +1,11 @@
 package org.oreon.vk.components.fft;
 
 import static org.lwjgl.system.MemoryUtil.memAlloc;
+import static org.lwjgl.system.MemoryUtil.memAllocInt;
+import static org.lwjgl.vulkan.VK10.VK_ACCESS_SHADER_READ_BIT;
+import static org.lwjgl.vulkan.VK10.VK_ACCESS_SHADER_WRITE_BIT;
+import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT;
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_STORAGE_IMAGE;
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_R32G32B32A32_SFLOAT;
@@ -8,6 +13,8 @@ import static org.lwjgl.vulkan.VK10.VK_IMAGE_ASPECT_COLOR_BIT;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_GENERAL;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_SAMPLED_BIT;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_STORAGE_BIT;
+import static org.lwjgl.vulkan.VK10.VK_PIPELINE_STAGE_ALL_COMMANDS_BIT;
+import static org.lwjgl.vulkan.VK10.VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT;
 import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_COMPUTE_BIT;
 
 import java.nio.ByteBuffer;
@@ -18,7 +25,6 @@ import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
 import org.lwjgl.vulkan.VkQueue;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.scenegraph.Renderable;
-import org.oreon.core.util.BufferUtil;
 import org.oreon.core.vk.command.CommandBuffer;
 import org.oreon.core.vk.command.SubmitInfo;
 import org.oreon.core.vk.descriptor.DescriptorPool;
@@ -29,10 +35,8 @@ import org.oreon.core.vk.image.VkImage;
 import org.oreon.core.vk.image.VkImageView;
 import org.oreon.core.vk.pipeline.ShaderModule;
 import org.oreon.core.vk.pipeline.VkPipeline;
-import org.oreon.core.vk.synchronization.Fence;
+import org.oreon.core.vk.synchronization.VkSemaphore;
 import org.oreon.core.vk.util.VkUtil;
-import org.oreon.core.vk.wrapper.buffer.VkUniformBuffer;
-import org.oreon.core.vk.wrapper.command.ComputeCmdBuffer;
 import org.oreon.core.vk.wrapper.image.Image2DDeviceLocal;
 
 import lombok.Getter;
@@ -47,9 +51,6 @@ public class FFT extends Renderable{
 	private VkImageView dyImageView;
 	@Getter
 	private VkImageView dzImageView;
-	
-	private int pingpong;
-	private int stages;
 	
 	private VkImage dxImage;
 	private VkImage dyImage;
@@ -68,38 +69,29 @@ public class FFT extends Renderable{
 	// dy fft resources
 	private DescriptorSet dyButterflyDescriptorSet;
 	private DescriptorSet dyInversionDescriptorSet;
-	private CommandBuffer dyButterflyCmdBuffer;
-	private CommandBuffer dyInversionCmdBuffer;
 	private VkImage dyPingpongImage;
 	private VkImageView dyPingpongImageView;
-//	private CommandBuffer dyMipmapGenerationCmd;
 	
 	// dx fft resources
 	private DescriptorSet dxButterflyDescriptorSet;
 	private DescriptorSet dxInversionDescriptorSet;
-	private CommandBuffer dxButterflyCmdBuffer;
-	private CommandBuffer dxInversionCmdBuffer;
 	private VkImage dxPingpongImage;
 	private VkImageView dxPingpongImageView;
 	
 	// dz fft resources
 	private DescriptorSet dzButterflyDescriptorSet;
 	private DescriptorSet dzInversionDescriptorSet;
-	private CommandBuffer dzButterflyCmdBuffer;
-	private CommandBuffer dzInversionCmdBuffer;
 	private VkImage dzPingpongImage;
 	private VkImageView dzPingpongImageView;
 	
-	private VkUniformBuffer buffer;
-	
-	private SubmitInfo dySubmitInfo;
-	private SubmitInfo dxSubmitInfo;
-	private SubmitInfo dzSubmitInfo;
-	private SubmitInfo inversionSubmitInfo;
-	
-	private Fence dyFence;
-	private Fence dxFence;
-	private Fence dzFence;
+	private ByteBuffer[] horizontalPushConstants;
+	private ByteBuffer[] verticalPushConstants;
+	private ByteBuffer inversionPushConstants;
+	private CommandBuffer fftCommandBuffer;
+	private SubmitInfo fftSubmitInfo;
+
+	@Getter
+	private VkSemaphore fftSignalSemaphore;
 	
 	public FFT(VkDeviceBundle deviceBundle, int N, int L, float t_delta,
 			float amplitude, Vec2f direction, float intensity, float capillarSupressFactor) {
@@ -109,7 +101,7 @@ public class FFT extends Renderable{
 		DescriptorPool descriptorPool = deviceBundle.getLogicalDevice().getDescriptorPool(Thread.currentThread().getId());
 		computeQueue = deviceBundle.getLogicalDevice().getComputeQueue();
 		
-		stages =  (int) (Math.log(N)/Math.log(2));
+		int stages =  (int) (Math.log(N)/Math.log(2));
 		
 		dyPingpongImage = new Image2DDeviceLocal(device, memoryProperties, N, N,
 				VK_FORMAT_R32G32B32A32_SFLOAT,
@@ -157,17 +149,40 @@ public class FFT extends Renderable{
 		h0k = new H0k(deviceBundle, N, L, amplitude, direction, intensity, capillarSupressFactor);
 		hkt = new Hkt(deviceBundle, N, L, t_delta, h0k.getH0k_imageView(), h0k.getH0minusk_imageView());
 		
-		ByteBuffer ubo = memAlloc(Integer.BYTES * 3);
-		ubo.putInt(0);
-		ubo.putInt(0);
-		ubo.putInt(0);
-		ubo.flip();
+		horizontalPushConstants = new ByteBuffer[stages];
+		verticalPushConstants = new ByteBuffer[stages];
+		int pingpong = 0;
+		
+		for (int i=0; i<stages; i++){
+			horizontalPushConstants[i] = memAlloc(Integer.BYTES * 4);
+			horizontalPushConstants[i].putInt(i);
+			horizontalPushConstants[i].putInt(pingpong);
+			horizontalPushConstants[i].putInt(0);
+			horizontalPushConstants[i].flip();
+			
+			pingpong++;
+			pingpong %= 2;
+		}
+		
+		for (int i=0; i<stages; i++){
+			verticalPushConstants[i] = memAlloc(Integer.BYTES * 4);
+			verticalPushConstants[i].putInt(i);
+			verticalPushConstants[i].putInt(pingpong);
+			verticalPushConstants[i].putInt(1);
+			verticalPushConstants[i].flip();
+			
+			pingpong++;
+			pingpong %= 2;
+		}
+		
+		inversionPushConstants = memAlloc(Integer.BYTES * 2);
+		inversionPushConstants.putInt(N);
+		inversionPushConstants.putInt(pingpong);
+		inversionPushConstants.flip();
 		
 		ByteBuffer pushConstants = memAlloc(Integer.BYTES * 1);
 		IntBuffer intBuffer = pushConstants.asIntBuffer();
 		intBuffer.put(N);
-		
-		buffer = new VkUniformBuffer(device, memoryProperties, ubo);
 		
 		descriptorLayout = new DescriptorSetLayout(device, 4);
 		descriptorLayout.addLayoutBinding(0, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
@@ -207,119 +222,137 @@ public class FFT extends Renderable{
 		inversionShader = new ShaderModule(device, "shaders/fft/Inversion.comp.spv", VK_SHADER_STAGE_COMPUTE_BIT);
 		
 		butterflyPipeline = new VkPipeline(device);
+		butterflyPipeline.setPushConstantsRange(VK_SHADER_STAGE_COMPUTE_BIT, Integer.BYTES * 4);
 		butterflyPipeline.setLayout(descriptorLayout.getHandlePointer());
 		butterflyPipeline.createComputePipeline(butterflyShader);
 		
 		inversionPipeline = new VkPipeline(device);
-		inversionPipeline.setPushConstantsRange(VK_SHADER_STAGE_COMPUTE_BIT, Integer.BYTES * 1);
+		inversionPipeline.setPushConstantsRange(VK_SHADER_STAGE_COMPUTE_BIT, Integer.BYTES * 2);
 		inversionPipeline.setLayout(descriptorLayout.getHandlePointer());
 		inversionPipeline.createComputePipeline(inversionShader);
 		
-		dyButterflyCmdBuffer = new ComputeCmdBuffer(device,
-				deviceBundle.getLogicalDevice().getComputeCommandPool().getHandle(),
-				butterflyPipeline.getHandle(), butterflyPipeline.getLayoutHandle(),
-				VkUtil.createLongArray(dyButterflyDescriptorSet), N/16, N/16, 1);
+		butterflyShader.destroy();
+		inversionShader.destroy();
 		
-		dxButterflyCmdBuffer = new ComputeCmdBuffer(device,
-				deviceBundle.getLogicalDevice().getComputeCommandPool().getHandle(),
-				butterflyPipeline.getHandle(), butterflyPipeline.getLayoutHandle(),
-				VkUtil.createLongArray(dxButterflyDescriptorSet), N/16, N/16, 1);
+		record(deviceBundle, N, stages);
 		
-		dzButterflyCmdBuffer = new ComputeCmdBuffer(device,
-				deviceBundle.getLogicalDevice().getComputeCommandPool().getHandle(),
-				butterflyPipeline.getHandle(), butterflyPipeline.getLayoutHandle(),
-				VkUtil.createLongArray(dzButterflyDescriptorSet), N/16, N/16, 1);
+		fftSignalSemaphore = new VkSemaphore(device);
+
+		IntBuffer pWaitDstStageMask = memAllocInt(1);
+		pWaitDstStageMask.put(0, VK_PIPELINE_STAGE_ALL_COMMANDS_BIT);
+		fftSubmitInfo = new SubmitInfo();
+		fftSubmitInfo.setCommandBuffers(fftCommandBuffer.getHandlePointer());
+		fftSubmitInfo.setWaitSemaphores(hkt.getSignalSemaphore().getHandlePointer());
+		fftSubmitInfo.setWaitDstStageMask(pWaitDstStageMask);
+		fftSubmitInfo.setSignalSemaphores(fftSignalSemaphore.getHandlePointer());
+	}
+	
+	public void record(VkDeviceBundle deviceBundle, int N, int stages){
 		
-		dyInversionCmdBuffer = new ComputeCmdBuffer(device,
-				deviceBundle.getLogicalDevice().getComputeCommandPool().getHandle(),
-				inversionPipeline.getHandle(), inversionPipeline.getLayoutHandle(),
-				VkUtil.createLongArray(dyInversionDescriptorSet), N/16, N/16, 1,
-				pushConstants, VK_SHADER_STAGE_COMPUTE_BIT);
+		fftCommandBuffer = new CommandBuffer(deviceBundle.getLogicalDevice().getHandle(),
+	    		deviceBundle.getLogicalDevice().getComputeCommandPool().getHandle(),
+	    		VK_COMMAND_BUFFER_LEVEL_PRIMARY);
 		
-		dxInversionCmdBuffer = new ComputeCmdBuffer(device,
-				deviceBundle.getLogicalDevice().getComputeCommandPool().getHandle(),
-				inversionPipeline.getHandle(), inversionPipeline.getLayoutHandle(),
-				VkUtil.createLongArray(dxInversionDescriptorSet), N/16, N/16, 1,
-				pushConstants, VK_SHADER_STAGE_COMPUTE_BIT);
+		fftCommandBuffer.beginRecord(VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT);
 		
-		dzInversionCmdBuffer = new ComputeCmdBuffer(device,
-				deviceBundle.getLogicalDevice().getComputeCommandPool().getHandle(),
-				inversionPipeline.getHandle(), inversionPipeline.getLayoutHandle(),
-				VkUtil.createLongArray(dzInversionDescriptorSet), N/16, N/16, 1,
-				pushConstants, VK_SHADER_STAGE_COMPUTE_BIT);
+		// horizontal
+		for (int i=0; i<stages; i++){
+			
+			// dy
+			fftCommandBuffer.pushConstantsCmd(butterflyPipeline.getLayoutHandle(),
+					VK_SHADER_STAGE_COMPUTE_BIT, horizontalPushConstants[i]);
+			fftCommandBuffer.bindComputePipelineCmd(butterflyPipeline.getHandle());
+			fftCommandBuffer.bindComputeDescriptorSetsCmd(butterflyPipeline.getLayoutHandle(),
+					VkUtil.createLongArray(dyButterflyDescriptorSet));
+			fftCommandBuffer.dispatchCmd(N/16, N/16, 1);
+			
+			// dx
+			fftCommandBuffer.pushConstantsCmd(butterflyPipeline.getLayoutHandle(),
+					VK_SHADER_STAGE_COMPUTE_BIT, horizontalPushConstants[i]);
+			fftCommandBuffer.bindComputePipelineCmd(butterflyPipeline.getHandle());
+			fftCommandBuffer.bindComputeDescriptorSetsCmd(butterflyPipeline.getLayoutHandle(),
+					VkUtil.createLongArray(dxButterflyDescriptorSet));
+			fftCommandBuffer.dispatchCmd(N/16, N/16, 1);
+			
+			// dz
+			fftCommandBuffer.pushConstantsCmd(butterflyPipeline.getLayoutHandle(),
+					VK_SHADER_STAGE_COMPUTE_BIT, horizontalPushConstants[i]);
+			fftCommandBuffer.bindComputePipelineCmd(butterflyPipeline.getHandle());
+			fftCommandBuffer.bindComputeDescriptorSetsCmd(butterflyPipeline.getLayoutHandle(),
+					VkUtil.createLongArray(dzButterflyDescriptorSet));
+			fftCommandBuffer.dispatchCmd(N/16, N/16, 1);
+			
+			fftCommandBuffer.pipelineMemoryBarrierCmd(
+		    		VK_ACCESS_SHADER_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT,
+		    		VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+		    		VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT);
+		}
 		
-		dyFence = new Fence(device);
-		dxFence = new Fence(device);
-		dzFence = new Fence(device);
+		// vertical
+		for (int i=0; i<stages; i++){
+			
+			// dy
+			fftCommandBuffer.pushConstantsCmd(butterflyPipeline.getLayoutHandle(),
+					VK_SHADER_STAGE_COMPUTE_BIT, verticalPushConstants[i]);
+			fftCommandBuffer.bindComputePipelineCmd(butterflyPipeline.getHandle());
+			fftCommandBuffer.bindComputeDescriptorSetsCmd(butterflyPipeline.getLayoutHandle(),
+					VkUtil.createLongArray(dyButterflyDescriptorSet));
+			fftCommandBuffer.dispatchCmd(N/16, N/16, 1);
+			
+			// dx
+			fftCommandBuffer.pushConstantsCmd(butterflyPipeline.getLayoutHandle(),
+					VK_SHADER_STAGE_COMPUTE_BIT, verticalPushConstants[i]);
+			fftCommandBuffer.bindComputePipelineCmd(butterflyPipeline.getHandle());
+			fftCommandBuffer.bindComputeDescriptorSetsCmd(butterflyPipeline.getLayoutHandle(),
+					VkUtil.createLongArray(dxButterflyDescriptorSet));
+			fftCommandBuffer.dispatchCmd(N/16, N/16, 1);
+			
+			// dz
+			fftCommandBuffer.pushConstantsCmd(butterflyPipeline.getLayoutHandle(),
+					VK_SHADER_STAGE_COMPUTE_BIT, verticalPushConstants[i]);
+			fftCommandBuffer.bindComputePipelineCmd(butterflyPipeline.getHandle());
+			fftCommandBuffer.bindComputeDescriptorSetsCmd(butterflyPipeline.getLayoutHandle(),
+					VkUtil.createLongArray(dzButterflyDescriptorSet));
+			fftCommandBuffer.dispatchCmd(N/16, N/16, 1);
+			
+			fftCommandBuffer.pipelineMemoryBarrierCmd(
+		    		VK_ACCESS_SHADER_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT,
+		    		VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+		    		VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT);
+		}
 		
-		dySubmitInfo = new SubmitInfo();
-		dySubmitInfo.setFence(dyFence);
-		dySubmitInfo.setCommandBuffers(dyButterflyCmdBuffer.getHandlePointer());
+		// inversion
+		// dy
+		fftCommandBuffer.pushConstantsCmd(inversionPipeline.getLayoutHandle(),
+				VK_SHADER_STAGE_COMPUTE_BIT, inversionPushConstants);
+		fftCommandBuffer.bindComputePipelineCmd(inversionPipeline.getHandle());
+		fftCommandBuffer.bindComputeDescriptorSetsCmd(inversionPipeline.getLayoutHandle(),
+				VkUtil.createLongArray(dyInversionDescriptorSet));
+		fftCommandBuffer.dispatchCmd(N/16, N/16, 1);
 		
-		dxSubmitInfo = new SubmitInfo();
-		dxSubmitInfo.setFence(dxFence);
-		dxSubmitInfo.setCommandBuffers(dxButterflyCmdBuffer.getHandlePointer());
+		// dx
+		fftCommandBuffer.pushConstantsCmd(inversionPipeline.getLayoutHandle(),
+				VK_SHADER_STAGE_COMPUTE_BIT, inversionPushConstants);
+		fftCommandBuffer.bindComputePipelineCmd(inversionPipeline.getHandle());
+		fftCommandBuffer.bindComputeDescriptorSetsCmd(inversionPipeline.getLayoutHandle(),
+				VkUtil.createLongArray(dxInversionDescriptorSet));
+		fftCommandBuffer.dispatchCmd(N/16, N/16, 1);
 		
-		dzSubmitInfo = new SubmitInfo();
-		dzSubmitInfo.setFence(dzFence);
-		dzSubmitInfo.setCommandBuffers(dzButterflyCmdBuffer.getHandlePointer());
+		// dz
+		fftCommandBuffer.pushConstantsCmd(inversionPipeline.getLayoutHandle(),
+				VK_SHADER_STAGE_COMPUTE_BIT, inversionPushConstants);
+		fftCommandBuffer.bindComputePipelineCmd(inversionPipeline.getHandle());
+		fftCommandBuffer.bindComputeDescriptorSetsCmd(inversionPipeline.getLayoutHandle(),
+				VkUtil.createLongArray(dzInversionDescriptorSet));
+		fftCommandBuffer.dispatchCmd(N/16, N/16, 1);
 		
-		inversionSubmitInfo = new SubmitInfo();
+		fftCommandBuffer.finishRecord();
 	}
 	
 	public void render(){
 		
 		hkt.render();
-		hkt.getFence().waitForFence();
-		
-		pingpong = 0;
-
-		// Dy-FFT
-		// 1D FFT horizontal 
-		for (int i=0; i<stages; i++)
-		{
-			int[] uniforms = {i, pingpong, 0};
-			buffer.mapMemory(BufferUtil.createByteBuffer(uniforms));
-			dySubmitInfo.submit(computeQueue);
-			dxSubmitInfo.submit(computeQueue);
-			dzSubmitInfo.submit(computeQueue);
-			
-			dyFence.waitForFence();
-			dxFence.waitForFence();
-			dzFence.waitForFence();
-			
-			pingpong++;
-			pingpong %= 2;
-		}
-		
-		//1D FFT vertical 
-		for (int j=0; j<stages; j++)
-		{
-			int[] uniforms = {j, pingpong, 1};
-			buffer.mapMemory(BufferUtil.createByteBuffer(uniforms));
-			dySubmitInfo.submit(computeQueue);
-			dxSubmitInfo.submit(computeQueue);
-			dzSubmitInfo.submit(computeQueue);
-			
-			dyFence.waitForFence();
-			dxFence.waitForFence();
-			dzFence.waitForFence();
-			
-			pingpong++;
-			pingpong %= 2;
-		}
-		
-		int[] inversionUniforms = {0, pingpong, 1};
-		buffer.mapMemory(BufferUtil.createByteBuffer(inversionUniforms));
-		
-		inversionSubmitInfo.setCommandBuffers(dyInversionCmdBuffer.getHandlePointer());
-		inversionSubmitInfo.submit(computeQueue);
-
-		inversionSubmitInfo.setCommandBuffers(dxInversionCmdBuffer.getHandlePointer());
-		inversionSubmitInfo.submit(computeQueue);
-		
-		inversionSubmitInfo.setCommandBuffers(dzInversionCmdBuffer.getHandlePointer());
-		inversionSubmitInfo.submit(computeQueue);
+		fftSubmitInfo.submit(computeQueue);
 	}
 	
 	private class ButterflyDescriptorSet extends DescriptorSet{
@@ -339,8 +372,6 @@ public class FFT extends Renderable{
 		    updateDescriptorImageBuffer(pingpongImage.getHandle(),
 		    		VK_IMAGE_LAYOUT_GENERAL, -1,
 		    		2, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
-		    updateDescriptorBuffer(buffer.getHandle(),
-		    		Integer.BYTES * 3, 0, 3, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);
 		}
 	}
 	
@@ -360,8 +391,6 @@ public class FFT extends Renderable{
 		    updateDescriptorImageBuffer(pingpongImage.getHandle(),
 		    		VK_IMAGE_LAYOUT_GENERAL, -1,
 		    		2, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
-		    updateDescriptorBuffer(buffer.getHandle(),
-		    		Integer.BYTES * 3, 0, 3, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);
 		}
 	}
 	
@@ -369,7 +398,22 @@ public class FFT extends Renderable{
 		
 		twiddleFactors.destroy();
 		h0k.destroy();
-		hkt.shutdown();
-		buffer.destroy();
+		dxImageView.destroy();
+		dyImageView.destroy();
+		dzImageView.destroy();
+		dxImage.destroy();
+		dyImage.destroy();
+		dzImage.destroy();
+		descriptorLayout.destroy();
+		butterflyPipeline.destroy();
+		inversionPipeline.destroy();
+		dyButterflyDescriptorSet.destroy();
+		dyInversionDescriptorSet.destroy();
+		dyPingpongImageView.destroy();
+		dyPingpongImage.destroy();
+		dxButterflyDescriptorSet.destroy();
+		dxInversionDescriptorSet.destroy();
+		dxPingpongImageView.destroy();
+		dxPingpongImage.destroy();
 	}
 }

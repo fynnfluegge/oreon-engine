@@ -152,7 +152,7 @@ public class VkImageHelper {
 					.layerCount(1)
 					.levelCount(1);
 
-		commandBuffer.imageBarrier(image,
+		commandBuffer.pipelineImageMemoryBarrierCmd(image,
 				initialSrcStageMask,
 				VK_PIPELINE_STAGE_TRANSFER_BIT,
 				barrier);

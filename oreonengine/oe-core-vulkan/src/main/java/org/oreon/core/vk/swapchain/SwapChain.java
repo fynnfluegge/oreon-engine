@@ -52,6 +52,7 @@ import org.oreon.core.vk.device.PhysicalDevice;
 import org.oreon.core.vk.framebuffer.VkFrameBuffer;
 import org.oreon.core.vk.image.VkImageView;
 import org.oreon.core.vk.memory.VkBuffer;
+import org.oreon.core.vk.synchronization.Fence;
 import org.oreon.core.vk.synchronization.VkSemaphore;
 import org.oreon.core.vk.util.VkUtil;
 import org.oreon.core.vk.wrapper.buffer.VkBufferHelper;
@@ -63,6 +64,9 @@ public class SwapChain {
 	
 	@Getter
 	private long handle;
+	
+	@Getter
+	private Fence drawFence;
 	
 	private LongBuffer pHandle;
 	private VkExtent2D extent;
@@ -192,8 +196,11 @@ public class SwapChain {
 				fullScreenQuad.getIndices().length,
 				VkUtil.createLongArray(descriptor.getSet()));
         
+        drawFence = new Fence(device);
+        
         submitInfo = new SubmitInfo();
         submitInfo.setSignalSemaphores(renderCompleteSemaphore.getHandlePointer());
+        submitInfo.setFence(drawFence);
 	}
 	
 	public void createImages(){

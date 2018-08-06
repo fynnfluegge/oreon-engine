@@ -2,7 +2,6 @@ package org.oreon.core.vk.wrapper.command;
 
 import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_LEVEL_SECONDARY;
 import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT;
-import static org.lwjgl.vulkan.VK10.VK_PIPELINE_BIND_POINT_GRAPHICS;
 
 import java.nio.ByteBuffer;
 
@@ -53,10 +52,10 @@ public class SecondaryDrawIndexedCmdBuffer extends CommandBuffer{
 		if (pushConstantsStageFlags != -1){
 			pushConstantsCmd(pipelineLayout, pushConstantsStageFlags, pushConstantsData);
 		}
-		bindPipelineCmd(pipeline, VK_PIPELINE_BIND_POINT_GRAPHICS);
+		bindGraphicsPipelineCmd(pipeline);
 		bindVertexInputCmd(vertexBuffer, indexBuffer);
 		if (descriptorSets != null){
-			bindDescriptorSetsCmd(pipelineLayout, descriptorSets, VK_PIPELINE_BIND_POINT_GRAPHICS);
+			bindGraphicsDescriptorSetsCmd(pipelineLayout, descriptorSets);
 		}
 		drawIndexedCmd(indexCount);
 	    finishRecord();
