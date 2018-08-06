@@ -130,7 +130,6 @@ public class Water extends Renderable{
 	private CommandBuffer reflectionMipmapGenerationCmd;
 	private SubmitInfo reflectionMipmapSubmitInfo;
 	private VkSemaphore offscreenReflectionSignalSemaphore;
-	private Fence offScreenReflectionFence;
 	private Fence deferredReflectionFence;
 	
 	// Refraction Resources
@@ -475,7 +474,6 @@ public class Water extends Renderable{
 		offscreenRefractionCmdBuffer = new PrimaryCmdBuffer(device.getHandle(), 
 				device.getComputeCommandPool().getHandle());
 		
-		offScreenReflectionFence = new Fence(device.getHandle());
 		deferredReflectionFence = new Fence(device.getHandle());
 		deferredRefractionFence = new Fence(device.getHandle());
 		
@@ -485,7 +483,6 @@ public class Water extends Renderable{
 		offScreenReflectionSubmitInfo = new SubmitInfo();
 		offScreenReflectionSubmitInfo.setCommandBuffers(offscreenReflectionCmdBuffer.getHandlePointer());
 		offScreenReflectionSubmitInfo.setSignalSemaphores(offscreenReflectionSignalSemaphore.getHandlePointer());
-		offScreenReflectionSubmitInfo.setFence(offScreenReflectionFence);
 		
 		IntBuffer pWaitDstStageMask = memAllocInt(1);
 		pWaitDstStageMask.put(0, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT);
@@ -569,8 +566,7 @@ public class Water extends Renderable{
 		}
 		
 		deferredReflectionSubmitInfo.submit(computeQueue);
-		
-		offScreenReflectionFence.waitForFence();
+		deferredReflectionFence.waitForFence();
 		
 		// antimirror scene to clipplane
 		sceneGraph.getWorldTransform().setScaling(1,1,1);
