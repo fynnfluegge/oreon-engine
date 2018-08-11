@@ -34,4 +34,12 @@ public class UIScreen {
 			element.record(renderList);
 		}
 	}
+	
+	public void shutdown(){
+
+		for (UIElement element: elements)
+		{
+			element.shutdown();
+		}
+	}
 }

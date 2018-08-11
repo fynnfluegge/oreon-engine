@@ -69,5 +69,7 @@ public class DescriptorSetLayout {
 	public void destroy(){
 		
 		vkDestroyDescriptorSetLayout(device, handle, null);
+		
+		handle = -1;
 	}
 }

@@ -35,4 +35,11 @@ public abstract class GUI {
 		}
 	}
 	
+	public void shutdown(){
+
+		for (UIScreen screen: screens ){
+			screen.shutdown();
+		}
+	}
+	
 }

@@ -16,6 +16,7 @@ import java.nio.channels.SeekableByteChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
 import org.lwjgl.BufferUtils;
 
 public class ResourceLoader {
@@ -104,7 +105,7 @@ public class ResourceLoader {
 	                        break;
 	                    }
 	                    if (buffer.remaining() == 0) {
-	                        buffer = resizeBuffer(buffer, buffer.capacity() * 2);
+	                        buffer = BufferUtil.resizeBuffer(buffer, buffer.capacity() * 2);
 	                    }
 	                }
             	}
@@ -114,10 +115,4 @@ public class ResourceLoader {
         return buffer;
     }
 	
-	private static ByteBuffer resizeBuffer(ByteBuffer buffer, int newCapacity) {
-        ByteBuffer newBuffer = BufferUtils.createByteBuffer(newCapacity);
-        buffer.flip();
-        newBuffer.put(buffer);
-        return newBuffer;
-	}
 }

@@ -88,10 +88,6 @@ import org.oreon.vk.components.util.NormalRenderer;
 import lombok.Getter;
 
 public class Water extends Renderable{
-
-	private VkBuffer vertexBufferObject;
-	private VkPipeline graphicsPipeline;
-	private VkUniformBuffer uniformBuffer;
 	
 	@Getter
 	private WaterConfiguration waterConfiguration;
@@ -105,6 +101,8 @@ public class Water extends Renderable{
 	private float distortion;
 	private VkImage image_dudv;
 	private VkImageView imageView_dudv;
+	
+	private VkUniformBuffer uniformBuffer;
 	
 	private VkSampler dxSampler;
 	private VkSampler dySampler;
@@ -328,7 +326,7 @@ public class Water extends Renderable{
 	    
 		ByteBuffer vertexBuffer = BufferUtil.createByteBuffer(vertices);
 		
-		vertexBufferObject = VkBufferHelper.createDeviceLocalBuffer(
+		VkBuffer vertexBufferObject = VkBufferHelper.createDeviceLocalBuffer(
 				device.getHandle(), memoryProperties,
 				device.getTransferCommandPool().getHandle(),
 				device.getTransferQueue(),
@@ -355,7 +353,7 @@ public class Water extends Renderable{
 		pushConstants.putFloat(waterConfiguration.getSpecular());
 		pushConstants.flip();
 		
-		graphicsPipeline = new GraphicsTessellationPipeline(device.getHandle(),
+		VkPipeline graphicsPipeline = new GraphicsTessellationPipeline(device.getHandle(),
 				shaderPipeline, vertexInput, VkUtil.createLongBuffer(descriptorSetLayouts),
 				EngineContext.getConfig().getX_ScreenResolution(),
 				EngineContext.getConfig().getY_ScreenResolution(),
@@ -378,7 +376,9 @@ public class Water extends Renderable{
 	    
 		VkMeshData meshData = VkMeshData.builder().vertexBufferObject(vertexBufferObject)
 		    		.vertexBuffer(vertexBuffer).build();
-		VkRenderInfo mainRenderInfo = VkRenderInfo.builder().commandBuffer(commandBuffer).build();
+		VkRenderInfo mainRenderInfo = VkRenderInfo.builder().commandBuffer(commandBuffer)
+				.descriptorSets(descriptorSets).descriptorSetLayouts(descriptorSetLayouts)
+				.pipeline(graphicsPipeline).build();
 	    
 	    addComponent(NodeComponentType.MESH_DATA, meshData);
 	    addComponent(NodeComponentType.MAIN_RENDERINFO, mainRenderInfo);
@@ -603,7 +603,6 @@ public class Water extends Renderable{
 		
 		deferredRefractionSubmitInfo.submit(computeQueue);
 		
-		deferredReflectionFence.waitForFence();
 		reflectionMipmapSubmitInfo.submit(graphicsQueue);
 		
 		deferredRefractionFence.waitForFence();
@@ -618,6 +617,36 @@ public class Water extends Renderable{
 	
 	@Override
 	public void shutdown(){
+		
+		super.shutdown();
+		
 		fft.destroy();
+		normalRenderer.destroy();
+		image_dudv.destroy();
+		imageView_dudv.destroy();
+		uniformBuffer.destroy();
+		dxSampler.destroy();
+		dySampler.destroy();
+		dzSampler.destroy();
+		dudvSampler.destroy();
+		normalSampler.destroy();
+		reflectionSampler.destroy();
+		refractionSampler.destroy();
+		offscreenReflectionCmdBuffer.destroy();
+		deferredReflectionPipeline.destroy();
+		deferredReflectionCmdBuffer.destroy();
+		deferredReflectionImage.destroy();
+		deferredReflectionImageView.destroy();
+		reflectionMipmapGenerationCmd.destroy();
+		offscreenReflectionSignalSemaphore.destroy();
+		deferredReflectionFence.destroy();
+		offscreenRefractionCmdBuffer.destroy();
+		deferredRefractionPipeline.destroy();
+		deferredRefractionCmdBuffer.destroy();
+		deferredRefractionImage.destroy();
+		deferredRefractionImageView.destroy();
+		refractionMipmapGenerationCmd.destroy();
+		offscreenRefractionSignalSemaphore.destroy();
+		deferredRefractionFence.destroy();
 	}
 }

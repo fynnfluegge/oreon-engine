@@ -15,7 +15,6 @@ import java.nio.ByteBuffer;
 import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
 import org.lwjgl.vulkan.VkQueue;
-import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.util.BufferUtil;
 import org.oreon.core.vk.command.CommandBuffer;
 import org.oreon.core.vk.command.SubmitInfo;
@@ -36,7 +35,7 @@ import org.oreon.core.vk.wrapper.image.Image2DDeviceLocal;
 
 import lombok.Getter;
 
-public class Hkt extends Renderable{
+public class Hkt {
 	
 	private VkQueue queue;
 
@@ -178,10 +177,19 @@ public class Hkt extends Renderable{
 		systemTime = System.currentTimeMillis();
 	}
 	
-	@Override
-	public void shutdown(){
+	public void destroy(){
 		
-		super.shutdown();
+		dxCoefficients_imageView.destroy();
+		dyCoefficients_imageView.destroy();
+		dzCoefficients_imageView.destroy();
+		image_dxCoefficients.destroy();
+		image_dyCoefficients.destroy();
+		image_dzCoefficients.destroy();
+		signalSemaphore.destroy();
+		pipeline.destroy();
+		descriptor.destroy();
+		buffer.destroy();
+		commandBuffer.destroy();
 	}
 	
 }

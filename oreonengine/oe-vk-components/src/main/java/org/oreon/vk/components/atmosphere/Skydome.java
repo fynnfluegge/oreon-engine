@@ -154,7 +154,8 @@ public class Skydome extends Renderable{
 	    		.vertexBuffer(vertexBuffer).indexBufferObject(indexBufferObject).indexBuffer(indexBuffer)
 	    		.build();
 	    VkRenderInfo mainRenderInfo = VkRenderInfo.builder().commandBuffer(mainCommandBuffer)
-	    		.pipeline(graphicsPipeline).build();
+	    		.pipeline(graphicsPipeline).descriptorSets(descriptorSets)
+	    		.descriptorSetLayouts(descriptorSetLayouts).build();
 	    VkRenderInfo reflectionRenderInfo = VkRenderInfo.builder().commandBuffer(reflectionCommandBuffer)
 	    		.pipeline(reflectionPipeline).build();
 	    
@@ -171,6 +172,12 @@ public class Skydome extends Renderable{
 		super.update();
 		
 		uniformBuffer.mapMemory(BufferUtil.createByteBuffer(getWorldTransform().getWorldMatrix()));
+	}
+	
+	public void shutdown(){
+		
+		 super.shutdown();
+		 uniformBuffer.destroy();
 	}
 
 }

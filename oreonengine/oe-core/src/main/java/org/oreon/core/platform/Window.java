@@ -42,7 +42,7 @@ public abstract class Window {
 		image.set(32, 32, bufferedImage);
 		
 		GLFWImage.Buffer images = GLFWImage.malloc(1);
-        images.put(0, image);
+		images.put(0, image);
 		
 		glfwSetWindowIcon(getId(), images);
 	}

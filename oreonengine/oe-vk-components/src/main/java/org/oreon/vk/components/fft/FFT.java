@@ -24,7 +24,6 @@ import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
 import org.lwjgl.vulkan.VkQueue;
 import org.oreon.core.math.Vec2f;
-import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.vk.command.CommandBuffer;
 import org.oreon.core.vk.command.SubmitInfo;
 import org.oreon.core.vk.descriptor.DescriptorPool;
@@ -41,7 +40,7 @@ import org.oreon.core.vk.wrapper.image.Image2DDeviceLocal;
 
 import lombok.Getter;
 
-public class FFT extends Renderable{
+public class FFT {
 	
 	private VkQueue computeQueue;
 
@@ -255,13 +254,14 @@ public class FFT extends Renderable{
 		
 		fftCommandBuffer.beginRecord(VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT);
 		
+		fftCommandBuffer.bindComputePipelineCmd(butterflyPipeline.getHandle());
+		
 		// horizontal
 		for (int i=0; i<stages; i++){
 			
 			// dy
 			fftCommandBuffer.pushConstantsCmd(butterflyPipeline.getLayoutHandle(),
 					VK_SHADER_STAGE_COMPUTE_BIT, horizontalPushConstants[i]);
-			fftCommandBuffer.bindComputePipelineCmd(butterflyPipeline.getHandle());
 			fftCommandBuffer.bindComputeDescriptorSetsCmd(butterflyPipeline.getLayoutHandle(),
 					VkUtil.createLongArray(dyButterflyDescriptorSet));
 			fftCommandBuffer.dispatchCmd(N/16, N/16, 1);
@@ -269,7 +269,6 @@ public class FFT extends Renderable{
 			// dx
 			fftCommandBuffer.pushConstantsCmd(butterflyPipeline.getLayoutHandle(),
 					VK_SHADER_STAGE_COMPUTE_BIT, horizontalPushConstants[i]);
-			fftCommandBuffer.bindComputePipelineCmd(butterflyPipeline.getHandle());
 			fftCommandBuffer.bindComputeDescriptorSetsCmd(butterflyPipeline.getLayoutHandle(),
 					VkUtil.createLongArray(dxButterflyDescriptorSet));
 			fftCommandBuffer.dispatchCmd(N/16, N/16, 1);
@@ -277,7 +276,6 @@ public class FFT extends Renderable{
 			// dz
 			fftCommandBuffer.pushConstantsCmd(butterflyPipeline.getLayoutHandle(),
 					VK_SHADER_STAGE_COMPUTE_BIT, horizontalPushConstants[i]);
-			fftCommandBuffer.bindComputePipelineCmd(butterflyPipeline.getHandle());
 			fftCommandBuffer.bindComputeDescriptorSetsCmd(butterflyPipeline.getLayoutHandle(),
 					VkUtil.createLongArray(dzButterflyDescriptorSet));
 			fftCommandBuffer.dispatchCmd(N/16, N/16, 1);
@@ -294,7 +292,6 @@ public class FFT extends Renderable{
 			// dy
 			fftCommandBuffer.pushConstantsCmd(butterflyPipeline.getLayoutHandle(),
 					VK_SHADER_STAGE_COMPUTE_BIT, verticalPushConstants[i]);
-			fftCommandBuffer.bindComputePipelineCmd(butterflyPipeline.getHandle());
 			fftCommandBuffer.bindComputeDescriptorSetsCmd(butterflyPipeline.getLayoutHandle(),
 					VkUtil.createLongArray(dyButterflyDescriptorSet));
 			fftCommandBuffer.dispatchCmd(N/16, N/16, 1);
@@ -302,7 +299,6 @@ public class FFT extends Renderable{
 			// dx
 			fftCommandBuffer.pushConstantsCmd(butterflyPipeline.getLayoutHandle(),
 					VK_SHADER_STAGE_COMPUTE_BIT, verticalPushConstants[i]);
-			fftCommandBuffer.bindComputePipelineCmd(butterflyPipeline.getHandle());
 			fftCommandBuffer.bindComputeDescriptorSetsCmd(butterflyPipeline.getLayoutHandle(),
 					VkUtil.createLongArray(dxButterflyDescriptorSet));
 			fftCommandBuffer.dispatchCmd(N/16, N/16, 1);
@@ -310,7 +306,6 @@ public class FFT extends Renderable{
 			// dz
 			fftCommandBuffer.pushConstantsCmd(butterflyPipeline.getLayoutHandle(),
 					VK_SHADER_STAGE_COMPUTE_BIT, verticalPushConstants[i]);
-			fftCommandBuffer.bindComputePipelineCmd(butterflyPipeline.getHandle());
 			fftCommandBuffer.bindComputeDescriptorSetsCmd(butterflyPipeline.getLayoutHandle(),
 					VkUtil.createLongArray(dzButterflyDescriptorSet));
 			fftCommandBuffer.dispatchCmd(N/16, N/16, 1);
@@ -322,26 +317,20 @@ public class FFT extends Renderable{
 		}
 		
 		// inversion
-		// dy
+		fftCommandBuffer.bindComputePipelineCmd(inversionPipeline.getHandle());
 		fftCommandBuffer.pushConstantsCmd(inversionPipeline.getLayoutHandle(),
 				VK_SHADER_STAGE_COMPUTE_BIT, inversionPushConstants);
-		fftCommandBuffer.bindComputePipelineCmd(inversionPipeline.getHandle());
+		// dy
 		fftCommandBuffer.bindComputeDescriptorSetsCmd(inversionPipeline.getLayoutHandle(),
 				VkUtil.createLongArray(dyInversionDescriptorSet));
 		fftCommandBuffer.dispatchCmd(N/16, N/16, 1);
 		
 		// dx
-		fftCommandBuffer.pushConstantsCmd(inversionPipeline.getLayoutHandle(),
-				VK_SHADER_STAGE_COMPUTE_BIT, inversionPushConstants);
-		fftCommandBuffer.bindComputePipelineCmd(inversionPipeline.getHandle());
 		fftCommandBuffer.bindComputeDescriptorSetsCmd(inversionPipeline.getLayoutHandle(),
 				VkUtil.createLongArray(dxInversionDescriptorSet));
 		fftCommandBuffer.dispatchCmd(N/16, N/16, 1);
 		
 		// dz
-		fftCommandBuffer.pushConstantsCmd(inversionPipeline.getLayoutHandle(),
-				VK_SHADER_STAGE_COMPUTE_BIT, inversionPushConstants);
-		fftCommandBuffer.bindComputePipelineCmd(inversionPipeline.getHandle());
 		fftCommandBuffer.bindComputeDescriptorSetsCmd(inversionPipeline.getLayoutHandle(),
 				VkUtil.createLongArray(dzInversionDescriptorSet));
 		fftCommandBuffer.dispatchCmd(N/16, N/16, 1);
@@ -398,6 +387,7 @@ public class FFT extends Renderable{
 		
 		twiddleFactors.destroy();
 		h0k.destroy();
+		hkt.destroy();
 		dxImageView.destroy();
 		dyImageView.destroy();
 		dzImageView.destroy();
@@ -407,13 +397,23 @@ public class FFT extends Renderable{
 		descriptorLayout.destroy();
 		butterflyPipeline.destroy();
 		inversionPipeline.destroy();
+		
 		dyButterflyDescriptorSet.destroy();
 		dyInversionDescriptorSet.destroy();
 		dyPingpongImageView.destroy();
 		dyPingpongImage.destroy();
+		
 		dxButterflyDescriptorSet.destroy();
 		dxInversionDescriptorSet.destroy();
 		dxPingpongImageView.destroy();
 		dxPingpongImage.destroy();
+		
+		dzButterflyDescriptorSet.destroy();
+		dzInversionDescriptorSet.destroy();
+		dzPingpongImageView.destroy();
+		dzPingpongImage.destroy();
+		
+		fftCommandBuffer.destroy();
+		fftSignalSemaphore.destroy();
 	}
 }

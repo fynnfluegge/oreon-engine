@@ -41,12 +41,14 @@ public class VkRenderInfo extends NodeComponent{
 		}
 		if(descriptorSetLayouts != null){
 			for (DescriptorSetLayout layout : descriptorSetLayouts){
-				layout.destroy();
+				if (layout.getHandle() != -1)
+					layout.destroy();
 			}
 		}
 		if(descriptorSets != null){
 			for (DescriptorSet set : descriptorSets){
-				set.destroy();
+				if (set.getHandle() != -1)
+					set.destroy();
 			}
 		}
 	}

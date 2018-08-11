@@ -416,4 +416,11 @@ public class BufferUtil {
 		return byteBuffer;
 	}
 	
+	public static ByteBuffer resizeBuffer(ByteBuffer buffer, int newCapacity) {
+        ByteBuffer newBuffer = BufferUtils.createByteBuffer(newCapacity);
+        buffer.flip();
+        newBuffer.put(buffer);
+        return newBuffer;
+	}
+	
 }

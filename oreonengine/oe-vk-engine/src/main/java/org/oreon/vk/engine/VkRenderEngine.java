@@ -15,7 +15,6 @@ import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 import static org.lwjgl.vulkan.VK10.VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import static org.lwjgl.vulkan.VK10.vkDeviceWaitIdle;
-import static org.lwjgl.vulkan.VK10.vkQueueWaitIdle;
 
 import java.nio.IntBuffer;
 import java.nio.LongBuffer;
@@ -48,13 +47,13 @@ import org.oreon.vk.components.ui.VkGUI;
 
 import lombok.Setter;
 
-public class VkRenderEngine extends RenderEngine{
+public class VkRenderEngine extends RenderEngine implements Runnable{
 	
 	private VkInstance vkInstance;
-	private static SwapChain swapChain;
-	private static long surface;
+	private SwapChain swapChain;
+	private long surface;
 	private VkDeviceBundle majorDevice;
-
+	
 	private VkFrameBufferObject offScreenFbo;
 	private VkFrameBufferObject reflectionFbo;
 	private VkFrameBufferObject transparencyFbo;
@@ -276,8 +275,6 @@ public class VkRenderEngine extends RenderEngine{
 		offScreenRenderList.setChanged(false);
 		sceneGraph.record(offScreenRenderList);
 		
-		vkQueueWaitIdle(majorDevice.getLogicalDevice().getComputeQueue());
-		
 		// update Terrain/Planet Quadtree
 		if (sceneGraph.hasTerrain()){
 			if (camera.isCameraMoved()){
@@ -316,10 +313,6 @@ public class VkRenderEngine extends RenderEngine{
 		
 		deferredStageSubmitInfo.submit(majorDevice.getLogicalDevice().getComputeQueue());
 		
-//		sampleCoverage.render();
-//		vkQueueWaitIdle(majorDevice.getLogicalDevice().getGraphicsQueue());
-//		deferredLighting.render();
-		
 		transparencyRenderList.setChanged(false);
 		sceneGraph.recordTransparentObjects(transparencyRenderList);
 		
@@ -352,22 +345,12 @@ public class VkRenderEngine extends RenderEngine{
 		
 		postProcessingSubmitInfo.submit(majorDevice.getLogicalDevice().getComputeQueue());
 		
-//		if (EngineContext.getConfig().isFxaaEnabled()){
-//			fxaa.render();
-//			vkQueueWaitIdle(majorDevice.getLogicalDevice().getComputeQueue());
-//		}
-//		
-//		if (EngineContext.getConfig().isBloomEnabled()){
-//			bloom.render();
-//			vkQueueWaitIdle(majorDevice.getLogicalDevice().getComputeQueue());
-//		}
-		
 		if (gui != null){
 			gui.render();
 		}
 		
 		swapChain.draw(majorDevice.getLogicalDevice().getGraphicsQueue(),
-				gui.getSignalSemaphore());
+				gui != null ? gui.getSignalSemaphore(): postProcessingSemaphore);
 		swapChain.getDrawFence().waitForFence();
 	}
 
@@ -408,11 +391,20 @@ public class VkRenderEngine extends RenderEngine{
 		if (bloom != null){
 			bloom.shutdown();
 		}
+		if (gui != null){
+			gui.shutdown();
+		}
 		vkDestroySwapchainKHR(majorDevice.getLogicalDevice().getHandle(), swapChain.getHandle(), null);
 		swapChain.destroy();
 		EngineContext.getCamera().shutdown();
 		majorDevice.getLogicalDevice().destroy();
 		VkContext.getVulkanInstance().destroy();		
+	}
+
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

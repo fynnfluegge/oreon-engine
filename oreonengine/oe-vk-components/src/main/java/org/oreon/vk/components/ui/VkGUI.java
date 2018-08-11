@@ -294,5 +294,11 @@ public class VkGUI extends GUI{
 	public VkImageView getImageView(){
 		return guiOverlayFbo.getAttachmentImageView(Attachment.COLOR);
 	}
+	
+	public void shutdown(){
+		
+		super.shutdown();
+		
+	}
 
 }

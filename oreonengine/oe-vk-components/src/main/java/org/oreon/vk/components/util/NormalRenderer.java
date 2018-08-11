@@ -53,7 +53,7 @@ public class NormalRenderer {
 	private VkImage normalImage;
 	private Fence fence;
 
-	private CommandBuffer mipmapGenerationCmd;
+	private CommandBuffer mipmapCmdBuffer;
 	private SubmitInfo mipmapSubmitInfo;
 	
 	private VkDevice device;
@@ -126,14 +126,14 @@ public class NormalRenderer {
 		submitInfo.setFence(fence);
 		submitInfo.setCommandBuffers(commandBuffer.getHandlePointer());
 		
-		mipmapGenerationCmd = new MipMapGenerationCmdBuffer(device,
+		mipmapCmdBuffer = new MipMapGenerationCmdBuffer(device,
 				graphicsCommandPool.getHandle(), normalImage.getHandle(),
 				N, N, Util.getLog2N(N),
 				VK_IMAGE_LAYOUT_UNDEFINED, 0, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
 				VK_IMAGE_LAYOUT_GENERAL, VK_ACCESS_SHADER_READ_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT);
 		
 		mipmapSubmitInfo = new SubmitInfo();
-		mipmapSubmitInfo.setCommandBuffers(mipmapGenerationCmd.getHandlePointer());
+		mipmapSubmitInfo.setCommandBuffers(mipmapCmdBuffer.getHandlePointer());
 	}
 	
 	public void setWaitSemaphores(LongBuffer waitSemaphore){
@@ -149,5 +149,17 @@ public class NormalRenderer {
 		submitInfo.submit(computeQueue);
 		fence.waitForFence();
 		mipmapSubmitInfo.submit(transferQueue);
+	}
+	
+	public void destroy(){
+		
+		commandBuffer.destroy();
+		pipeline.destroy();
+		descriptorSet.destroy();
+		descriptorSetLayout.destroy();
+		fence.destroy();
+		mipmapCmdBuffer.destroy();
+		normalImageView.destroy();
+		normalImage.destroy();
 	}
 }

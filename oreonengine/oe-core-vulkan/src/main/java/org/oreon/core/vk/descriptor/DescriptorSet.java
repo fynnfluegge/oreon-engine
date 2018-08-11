@@ -92,5 +92,7 @@ public class DescriptorSet {
 	public void destroy(){
 		
 		vkFreeDescriptorSets(device,descriptorPool,handle);
+		
+		handle = -1;
 	}
 }

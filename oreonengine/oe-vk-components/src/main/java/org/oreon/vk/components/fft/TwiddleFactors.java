@@ -109,7 +109,7 @@ public class TwiddleFactors {
 		memFree(pushConstants);
 	}
 	
-private class TwiddleDescriptor extends VkDescriptor{
+	private class TwiddleDescriptor extends VkDescriptor{
 		
 		public TwiddleDescriptor(VkDevice device, DescriptorPool descriptorPool,
 				VkImageView imageView, VkBuffer buffer, int n) {

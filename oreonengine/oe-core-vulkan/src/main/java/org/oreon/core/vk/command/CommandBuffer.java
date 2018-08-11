@@ -203,13 +203,12 @@ public class CommandBuffer {
 				.sType(VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO)
 				.pNext(0)
 				.renderPass(renderPass)
-				.pClearValues(clearValues);
+				.pClearValues(clearValues)
+				.framebuffer(frameBuffer);
 		
 		VkRect2D renderArea = renderPassBeginInfo.renderArea();
 		renderArea.offset().set(0, 0);
 		renderArea.extent().set(width, height);
-		
-		renderPassBeginInfo.framebuffer(frameBuffer);
 		
 		vkCmdBeginRenderPass(handle, renderPassBeginInfo, flags);
 		
