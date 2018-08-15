@@ -219,6 +219,8 @@ public class VkGUI extends GUI{
 				fullScreenQuad.getIndices().length);
         
         guiSecondaryCmdBuffers.put("0", underlayImageCmdBuffer);
+        
+        shaderPipeline.destroy();
 	}
 	
 	public void render(){
@@ -299,6 +301,15 @@ public class VkGUI extends GUI{
 		
 		super.shutdown();
 		
+		signalSemaphore.destroy();
+		fontsImageBundle.destroy();
+		panelMeshBuffer.shutdown();
+		guiPrimaryCmdBuffer.destroy();
+		underlayImageCmdBuffer.destroy();
+		underlayImagePipeline.destroy();
+		underlayImageDescriptorSet.destroy();
+		underlayImageDescriptorSetLayout.destroy();
+		underlayImageSampler.destroy();
 	}
 
 }

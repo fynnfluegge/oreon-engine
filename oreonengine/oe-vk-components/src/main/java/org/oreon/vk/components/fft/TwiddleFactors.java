@@ -101,6 +101,7 @@ public class TwiddleFactors {
 		
 		fence.waitForFence();
 		
+		computeShader.destroy();
 		pipeline.destroy();
 		commandBuffer.destroy();
 		fence.destroy();

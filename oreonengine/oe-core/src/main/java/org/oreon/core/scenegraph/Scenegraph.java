@@ -46,6 +46,7 @@ public class Scenegraph extends Node{
 		rootObject.renderShadows();
 		terrain.renderShadows();
 		water.renderShadows();
+		transparentObjects.shutdown();
 	}
 	
 	public void record(RenderList renderList){
@@ -79,6 +80,7 @@ public class Scenegraph extends Node{
 		rootObject.shutdown();
 		terrain.shutdown();
 		water.shutdown();
+		transparentObjects.shutdown();
 	}
 
 	public Node getRoot() {

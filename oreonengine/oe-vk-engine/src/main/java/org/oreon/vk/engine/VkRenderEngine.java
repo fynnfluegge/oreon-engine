@@ -3,7 +3,6 @@ package org.oreon.vk.engine;
 import static org.lwjgl.glfw.GLFWVulkan.glfwCreateWindowSurface;
 import static org.lwjgl.system.MemoryUtil.memAllocInt;
 import static org.lwjgl.system.MemoryUtil.memAllocLong;
-import static org.lwjgl.vulkan.KHRSwapchain.vkDestroySwapchainKHR;
 import static org.lwjgl.vulkan.VK10.VK_ACCESS_SHADER_READ_BIT;
 import static org.lwjgl.vulkan.VK10.VK_ACCESS_SHADER_WRITE_BIT;
 import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_LEVEL_PRIMARY;
@@ -394,7 +393,6 @@ public class VkRenderEngine extends RenderEngine implements Runnable{
 		if (gui != null){
 			gui.shutdown();
 		}
-		vkDestroySwapchainKHR(majorDevice.getLogicalDevice().getHandle(), swapChain.getHandle(), null);
 		swapChain.destroy();
 		EngineContext.getCamera().shutdown();
 		majorDevice.getLogicalDevice().destroy();

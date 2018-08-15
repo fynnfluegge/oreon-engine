@@ -149,7 +149,6 @@ public class SampleCoverage {
 	}
 	
 	public void render(){
-		
 		submitInfo.submit(queue);
 	}
 	

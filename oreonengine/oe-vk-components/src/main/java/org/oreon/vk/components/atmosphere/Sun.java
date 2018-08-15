@@ -52,9 +52,7 @@ import org.oreon.core.vk.wrapper.pipeline.GraphicsPipeline;
 
 public class Sun extends Renderable{
 	
-	@SuppressWarnings("unused")
 	private VkImageBundle sunImageBundle;
-	@SuppressWarnings("unused")
 	private VkImageBundle sunImageBundle_lightScattering;
 
 	public Sun() {
@@ -179,11 +177,20 @@ public class Sun extends Renderable{
 	    VkMeshData meshData = VkMeshData.builder().vertexBufferObject(vertexBufferObject)
 	    		.vertexBuffer(vertexBuffer).build();
 	    VkRenderInfo mainRenderInfo = VkRenderInfo.builder().commandBuffer(mainCommandBuffer)
-	    		.pipeline(graphicsPipeline).build();
+	    		.pipeline(graphicsPipeline).descriptorSets(descriptorSets)
+	    		.descriptorSetLayouts(descriptorSetLayouts).build();
 	    
 	    addComponent(NodeComponentType.MESH_DATA, meshData);
 	    addComponent(NodeComponentType.MAIN_RENDERINFO, mainRenderInfo);
 	    
 	    shaderPipeline.destroy();
 	}
+	
+	public void shutdown(){
+		
+		super.shutdown();
+		sunImageBundle.destroy();
+		sunImageBundle_lightScattering.destroy();
+	}
+	
 }

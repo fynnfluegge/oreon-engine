@@ -251,6 +251,7 @@ public class OpaqueTransparencyBlending {
 		transparencySceneDepthSampler.destroy();
 		transparencyAlphaSampler.destroy();
 		transparencyLightScatteringSampler.destroy();
+		signalSemaphore.destroy();
 	}
 	
 	public VkImageView getColorAttachment(){

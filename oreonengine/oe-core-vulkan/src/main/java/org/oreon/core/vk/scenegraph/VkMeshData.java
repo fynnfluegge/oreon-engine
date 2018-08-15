@@ -53,19 +53,19 @@ public class VkMeshData extends NodeComponent{
         		indexByteBuffer, VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
 	}
 	
-	public void destroy(){
-		
+	public void shutdown(){
+
 		if(vertexBufferObject != null){
 			vertexBufferObject.destroy();
 		}
 		if(vertexBuffer != null){
-			memFree(vertexBuffer);
+//			memFree(vertexBuffer);
 		}
 		if(indexBufferObject != null){
 			indexBufferObject.destroy();
 		}
 		if(indexBuffer != null){
-			memFree(indexBuffer);
+//			memFree(indexBuffer);
 		}
 	}
 	

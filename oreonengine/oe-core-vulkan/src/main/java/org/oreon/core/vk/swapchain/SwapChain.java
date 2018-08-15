@@ -13,6 +13,7 @@ import static org.lwjgl.vulkan.KHRSwapchain.VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
 import static org.lwjgl.vulkan.KHRSwapchain.VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
 import static org.lwjgl.vulkan.KHRSwapchain.vkAcquireNextImageKHR;
 import static org.lwjgl.vulkan.KHRSwapchain.vkCreateSwapchainKHR;
+import static org.lwjgl.vulkan.KHRSwapchain.vkDestroySwapchainKHR;
 import static org.lwjgl.vulkan.KHRSwapchain.vkGetSwapchainImagesKHR;
 import static org.lwjgl.vulkan.KHRSwapchain.vkQueuePresentKHR;
 import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
@@ -79,7 +80,8 @@ public class SwapChain {
 	private VkSemaphore renderCompleteSemaphore;
 	private VkSemaphore imageAcquiredSemaphore;
 	private SubmitInfo submitInfo;
-	
+	private VkBuffer vertexBufferObject;
+	private VkBuffer indexBufferObject;
 	private SwapChainPipeline pipeline;
 	private SwapChainRenderPass renderPass;
 	private SwapChainDescriptor descriptor;
@@ -177,13 +179,13 @@ public class SwapChain {
         ByteBuffer vertexBuffer = BufferUtil.createByteBuffer(fullScreenQuad.getVertices(), VertexLayout.POS_UV);
         ByteBuffer indexBuffer = BufferUtil.createByteBuffer(fullScreenQuad.getIndices());
         
-        VkBuffer vertexBufferObject = VkBufferHelper.createDeviceLocalBuffer(device,
+        vertexBufferObject = VkBufferHelper.createDeviceLocalBuffer(device,
         		physicalDevice.getMemoryProperties(),
         		logicalDevice.getTransferCommandPool().getHandle(),
         		logicalDevice.getTransferQueue(),
         		vertexBuffer, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
         
-        VkBuffer indexBufferObject = VkBufferHelper.createDeviceLocalBuffer(device,
+        indexBufferObject = VkBufferHelper.createDeviceLocalBuffer(device,
         		physicalDevice.getMemoryProperties(),
         		logicalDevice.getTransferCommandPool().getHandle(),
         		logicalDevice.getTransferQueue(),
@@ -304,11 +306,18 @@ public class SwapChain {
 		for (VkFrameBuffer framebuffer : frameBuffers){
 			framebuffer.destroy();
 		}
+		for (CommandBuffer commandbuffer : renderCommandBuffers){
+			commandbuffer.destroy();
+		}
+		vertexBufferObject.destroy();
+		indexBufferObject.destroy();
 		renderCompleteSemaphore.destroy();
 		imageAcquiredSemaphore.destroy();
 		descriptor.destroy();
 		pipeline.destroy();
 		renderPass.destroy();
+		drawFence.destroy();
+		vkDestroySwapchainKHR(device, handle, null);
 	}
 
 }
