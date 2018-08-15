@@ -36,7 +36,7 @@ public class VkSystemMonitor extends VkGUI {
 				fontsImageBundle.getImageView(), fontsImageBundle.getSampler(), guiOverlayFbo);
 		screen0.getElements()[4] = new VkDynamicTextPanel("000", 120, 90, 40, 40,
 				fontsImageBundle.getImageView(), fontsImageBundle.getSampler(), guiOverlayFbo);
-		screen0.getElements()[5] = new VkTexturePanel("textures/logo/VulkanLogo.png", 10, 200, 300, 90,
+		screen0.getElements()[5] = new VkTexturePanel("textures/logo/Vulkan_Logo.png", 0, 220, 310, 130,
 				panelMeshBuffer, guiOverlayFbo);
 		getScreens().add(screen0);
 	}

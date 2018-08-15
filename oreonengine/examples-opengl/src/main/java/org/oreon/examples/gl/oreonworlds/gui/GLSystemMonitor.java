@@ -27,7 +27,7 @@ public class GLSystemMonitor extends GLGUI{
 		UIScreen screen0 = new UIScreen();
 		screen0.setElements(new UIElement[6]);
 		screen0.getElements()[0] = new GLColorPanel(new Vec4f(0,0,0,0.5f), 0,
-				EngineContext.getConfig().getWindowHeight()-220, 270, 240, panelMeshBuffer);
+				EngineContext.getConfig().getWindowHeight()-220, 300, 240, panelMeshBuffer);
 		screen0.getElements()[1] = new GLStaticTextPanel("FPS:",
 				10, EngineContext.getConfig().getWindowHeight()-40, 40, 40, fontsTexture);
 		screen0.getElements()[2] = new GLStaticTextPanel("CPU:", 10,
@@ -36,8 +36,8 @@ public class GLSystemMonitor extends GLGUI{
 				EngineContext.getConfig().getWindowHeight()-40, 40, 40, fontsTexture);
 		screen0.getElements()[4] = new GLDynamicTextPanel("000", 110,
 				EngineContext.getConfig().getWindowHeight()-80, 40, 40, fontsTexture);
-		screen0.getElements()[5] = new GLTexturePanel("textures/logo/OpenGLlogo.png", 20,
-				EngineContext.getConfig().getWindowHeight()-190, 240, 100, panelMeshBuffer);
+		screen0.getElements()[5] = new GLTexturePanel("textures/logo/OpenGL_Logo.png", 20,
+				EngineContext.getConfig().getWindowHeight()-210, 280, 120, panelMeshBuffer);
 		getScreens().add(screen0);
 	}
 	
