@@ -44,6 +44,8 @@ public class VkContext extends EngineContext{
 	    				Integer.valueOf(getConfig().getProperties().getProperty("validation.enable")) == 1 ? true : false,
 	    				layers));
 	    VkContext.registerObject(vulkanInstance);
+	    
+	    getWindow().create();
 	}
 	
 	public static VkWindow getWindow(){

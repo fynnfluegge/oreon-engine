@@ -24,7 +24,7 @@ public class LensFlare {
 		texturePanel0.getOrthoTransform().setScaling(200,200,0);
 		texturePanel0.setOrthographicMatrix(new Matrix4f().Orthographic2D().mul(texturePanel0.getOrthoTransform().getWorldMatrix()));
 		texturePanel0.setSpacing(0.06f);
-		texturePanel0.setBrightness(0.4f);
+		texturePanel0.setBrightness(0.2f);
 		lensFlareTexturePanels.add(texturePanel0);
 		
 		LensFlareTexturePanel texturePanel1 = new LensFlareTexturePanel();
@@ -32,7 +32,7 @@ public class LensFlare {
 		texturePanel1.getOrthoTransform().setScaling(400,400,0);
 		texturePanel1.setOrthographicMatrix(new Matrix4f().Orthographic2D().mul(texturePanel1.getOrthoTransform().getWorldMatrix()));
 		texturePanel1.setSpacing(0.0f);
-		texturePanel1.setBrightness(0.6f);
+		texturePanel1.setBrightness(0.4f);
 		lensFlareTexturePanels.add(texturePanel1);
 		
 		LensFlareTexturePanel texturePanel2 = new LensFlareTexturePanel();
@@ -40,7 +40,7 @@ public class LensFlare {
 		texturePanel2.getOrthoTransform().setScaling(250,250,0);
 		texturePanel2.setOrthographicMatrix(new Matrix4f().Orthographic2D().mul(texturePanel2.getOrthoTransform().getWorldMatrix()));
 		texturePanel2.setSpacing(0.2f);
-		texturePanel2.setBrightness(0.4f);
+		texturePanel2.setBrightness(0.25f);
 		lensFlareTexturePanels.add(texturePanel2);
 		
 		LensFlareTexturePanel texturePanel3 = new LensFlareTexturePanel();
@@ -48,7 +48,7 @@ public class LensFlare {
 		texturePanel3.getOrthoTransform().setScaling(200,200,0);
 		texturePanel3.setOrthographicMatrix(new Matrix4f().Orthographic2D().mul(texturePanel3.getOrthoTransform().getWorldMatrix()));
 		texturePanel3.setSpacing(0.4f);
-		texturePanel3.setBrightness(0.4f);
+		texturePanel3.setBrightness(0.2f);
 		lensFlareTexturePanels.add(texturePanel3);
 		
 		LensFlareTexturePanel texturePanel4 = new LensFlareTexturePanel();
@@ -56,7 +56,7 @@ public class LensFlare {
 		texturePanel4.getOrthoTransform().setScaling(100,100,0);
 		texturePanel4.setOrthographicMatrix(new Matrix4f().Orthographic2D().mul(texturePanel4.getOrthoTransform().getWorldMatrix()));
 		texturePanel4.setSpacing(0.6f);
-		texturePanel4.setBrightness(0.4f);
+		texturePanel4.setBrightness(0.2f);
 		lensFlareTexturePanels.add(texturePanel4);
 		
 		LensFlareTexturePanel texturePanel5 = new LensFlareTexturePanel();
@@ -64,7 +64,7 @@ public class LensFlare {
 		texturePanel5.getOrthoTransform().setScaling(100,100,0);
 		texturePanel5.setOrthographicMatrix(new Matrix4f().Orthographic2D().mul(texturePanel5.getOrthoTransform().getWorldMatrix()));
 		texturePanel5.setSpacing(0.8f);
-		texturePanel5.setBrightness(0.4f);
+		texturePanel5.setBrightness(0.1f);
 		lensFlareTexturePanels.add(texturePanel5);
 		
 		LensFlareTexturePanel texturePanel6 = new LensFlareTexturePanel();
@@ -72,7 +72,7 @@ public class LensFlare {
 		texturePanel6.getOrthoTransform().setScaling(100,100,0);
 		texturePanel6.setOrthographicMatrix(new Matrix4f().Orthographic2D().mul(texturePanel6.getOrthoTransform().getWorldMatrix()));
 		texturePanel6.setSpacing(1.1f);
-		texturePanel6.setBrightness(0.4f);
+		texturePanel6.setBrightness(0.1f);
 		lensFlareTexturePanels.add(texturePanel6);
 		
 		LensFlareTexturePanel texturePanel7 = new LensFlareTexturePanel();
@@ -80,7 +80,7 @@ public class LensFlare {
 		texturePanel7.getOrthoTransform().setScaling(100,100,0);
 		texturePanel7.setOrthographicMatrix(new Matrix4f().Orthographic2D().mul(texturePanel7.getOrthoTransform().getWorldMatrix()));
 		texturePanel7.setSpacing(1.3f);
-		texturePanel7.setBrightness(0.4f);
+		texturePanel7.setBrightness(0.1f);
 		lensFlareTexturePanels.add(texturePanel7);
 		
 		LensFlareTexturePanel texturePanel8 = new LensFlareTexturePanel();
@@ -88,7 +88,7 @@ public class LensFlare {
 		texturePanel8.getOrthoTransform().setScaling(300,300,0);
 		texturePanel8.setOrthographicMatrix(new Matrix4f().Orthographic2D().mul(texturePanel8.getOrthoTransform().getWorldMatrix()));
 		texturePanel8.setSpacing(1.7f);
-		texturePanel8.setBrightness(0.4f);
+		texturePanel8.setBrightness(0.05f);
 		lensFlareTexturePanels.add(texturePanel8);
 		
 		LensFlareTexturePanel texturePanel9 = new LensFlareTexturePanel();
@@ -96,7 +96,7 @@ public class LensFlare {
 		texturePanel9.getOrthoTransform().setScaling(400,400,0);
 		texturePanel9.setOrthographicMatrix(new Matrix4f().Orthographic2D().mul(texturePanel9.getOrthoTransform().getWorldMatrix()));
 		texturePanel9.setSpacing(2.0f);
-		texturePanel9.setBrightness(0.4f);
+		texturePanel9.setBrightness(0.05f);
 		lensFlareTexturePanels.add(texturePanel9);
 	}
 	
