@@ -154,7 +154,7 @@ public class LogicalDevice {
         handle = new VkDevice(pDevice.get(0), physicalDevice.getHandle(), deviceCreateInfo);
         
         // create Queues and CommandPools
-        graphicsQueue = createDeviceQueue(graphicsQueueFamilyIndex,0);
+        graphicsQueue = getDeviceQueue(graphicsQueueFamilyIndex,0);
         graphicsCommandPool = new CommandPool(handle, graphicsQueueFamilyIndex);
         
         if (graphicsQueueFamilyIndex == computeQueueFamilyIndex){
@@ -162,7 +162,7 @@ public class LogicalDevice {
         	computeCommandPool = graphicsCommandPool;
         }
         else{
-        	computeQueue = createDeviceQueue(computeQueueFamilyIndex,0);
+        	computeQueue = getDeviceQueue(computeQueueFamilyIndex,0);
         	computeCommandPool = new CommandPool(handle, computeQueueFamilyIndex);
         }
         if (graphicsQueueFamilyIndex == transferQueueFamilyIndex){
@@ -170,7 +170,7 @@ public class LogicalDevice {
         	transferCommandPool = graphicsCommandPool;
         }
         else{
-        	transferQueue = createDeviceQueue(transferQueueFamilyIndex,0);
+        	transferQueue = getDeviceQueue(transferQueueFamilyIndex,0);
         	transferCommandPool = new CommandPool(handle, transferQueueFamilyIndex);
         }
         
@@ -185,10 +185,10 @@ public class LogicalDevice {
         memFree(extensions);
 	}
 	
-	private VkQueue createDeviceQueue(int queueFamilyIndex, int queueIndex) {
+	public VkQueue getDeviceQueue(int queueFamilyIndex, int queueIndex) {
 		
         PointerBuffer pQueue = memAllocPointer(1);
-        vkGetDeviceQueue(handle, queueFamilyIndex, 0, pQueue);
+        vkGetDeviceQueue(handle, queueFamilyIndex, queueIndex, pQueue);
         long queue = pQueue.get(0);
         memFree(pQueue);
         return new VkQueue(queue, handle);
