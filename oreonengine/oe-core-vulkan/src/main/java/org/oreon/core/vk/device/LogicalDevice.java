@@ -65,9 +65,9 @@ public class LogicalDevice {
 			throw new AssertionError("no graphics and presentation queue available on device: " + physicalDevice.getProperties().deviceNameString());
 		}
         try {
-			computeQueueFamilyIndex = physicalDevice.getQueueFamilies().getComputeOnlyQueueFamily().getIndex();
+			computeQueueFamilyIndex = physicalDevice.getQueueFamilies().getComputeExclusiveQueueFamily().getIndex();
 		} catch (Exception e) {
-			log.info("No compute dedicated queue available on device: " + physicalDevice.getProperties().deviceNameString());
+			log.info("No compute exclusive queue available on device: " + physicalDevice.getProperties().deviceNameString());
 			createInfoCount--;
 			try {
 				computeQueueFamilyIndex = physicalDevice.getQueueFamilies().getComputeQueueFamily().getIndex();
@@ -76,9 +76,9 @@ public class LogicalDevice {
 			}
 		}
         try {
-			transferQueueFamilyIndex = physicalDevice.getQueueFamilies().getTransferOnlyQueueFamily().getIndex();
+			transferQueueFamilyIndex = physicalDevice.getQueueFamilies().getTransferExclusiveQueueFamily().getIndex();
 		} catch (Exception e) {
-			log.info("No transfer dedicated queue available on device: " + physicalDevice.getProperties().deviceNameString());
+			log.info("No transfer exclusive queue available on device: " + physicalDevice.getProperties().deviceNameString());
 			createInfoCount--;
 			try {
 				transferQueueFamilyIndex = physicalDevice.getQueueFamilies().getTransferQueueFamily().getIndex();
