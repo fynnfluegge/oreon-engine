@@ -12,7 +12,7 @@ layout (binding = 3, rgba16f) uniform readonly image2DMS lightScatteringMask_in;
 
 uniform int multisamples;
 
-const float threshold = 40;
+const float threshold = 2;
 
 void main()
 {

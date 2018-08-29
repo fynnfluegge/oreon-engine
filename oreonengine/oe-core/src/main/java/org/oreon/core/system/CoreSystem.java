@@ -17,13 +17,10 @@ public class CoreSystem {
 	
 	private GLFWErrorCallback errorCallback;
 	
-	public CoreSystem() {
+	public void init(){
 		
 		window = EngineContext.getWindow();
 		input = EngineContext.getInput();
-	}
-	
-	public void init(){
 		
 		glfwSetErrorCallback(errorCallback = GLFWErrorCallback.createPrint(System.err));
 		

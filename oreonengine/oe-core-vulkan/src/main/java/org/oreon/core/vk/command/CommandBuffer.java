@@ -155,13 +155,13 @@ public class CommandBuffer {
 	}
 	
 	public void beginRenderPassCmd(long renderPass, long frameBuffer,
-			int width, int height, int colorAattachmentCount, int depthAttachment,
+			int width, int height, int colorAttachmentCount, int depthAttachment,
 			int contentsFlag){
 		
 		VkClearValue.Buffer clearValues = VkClearValue.calloc(
-				colorAattachmentCount + depthAttachment);
+				colorAttachmentCount + depthAttachment);
 		
-		for (int i=0; i<colorAattachmentCount; i++){
+		for (int i=0; i<colorAttachmentCount; i++){
 			clearValues.put(VkUtil.getClearValueColor(new Vec3f(0,0,0)));
 		}
 		if (depthAttachment == 1){
@@ -176,13 +176,13 @@ public class CommandBuffer {
 	}
 	
 	public void beginRenderPassCmd(long renderPass, long frameBuffer,
-			int width, int height, int colorAattachmentCount, int depthAttachment,
+			int width, int height, int colorAttachmentCount, int depthAttachment,
 			int contentsFlag, Vec3f clearColor){
 		
 		VkClearValue.Buffer clearValues = VkClearValue.calloc(
-				colorAattachmentCount + depthAttachment);
+				colorAttachmentCount + depthAttachment);
 		
-		for (int i=0; i<colorAattachmentCount; i++){
+		for (int i=0; i<colorAttachmentCount; i++){
 			clearValues.put(VkUtil.getClearValueColor(clearColor));
 		}
 		if (depthAttachment == 1){

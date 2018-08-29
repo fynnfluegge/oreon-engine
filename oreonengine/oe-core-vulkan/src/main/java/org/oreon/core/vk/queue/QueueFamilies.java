@@ -2,14 +2,14 @@ package org.oreon.core.vk.queue;
 
 import static org.lwjgl.system.MemoryUtil.memAllocInt;
 import static org.lwjgl.system.MemoryUtil.memFree;
-import static org.lwjgl.vulkan.VK10.vkGetPhysicalDeviceQueueFamilyProperties;
-import static org.lwjgl.vulkan.VK10.VK_QUEUE_GRAPHICS_BIT;
 import static org.lwjgl.vulkan.KHRSurface.vkGetPhysicalDeviceSurfaceSupportKHR;
 import static org.lwjgl.vulkan.VK10.VK_QUEUE_COMPUTE_BIT;
+import static org.lwjgl.vulkan.VK10.VK_QUEUE_GRAPHICS_BIT;
+import static org.lwjgl.vulkan.VK10.VK_QUEUE_SPARSE_BINDING_BIT;
 import static org.lwjgl.vulkan.VK10.VK_QUEUE_TRANSFER_BIT;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
-import static org.lwjgl.vulkan.VK10.VK_QUEUE_SPARSE_BINDING_BIT;
 import static org.lwjgl.vulkan.VK10.VK_TRUE;
+import static org.lwjgl.vulkan.VK10.vkGetPhysicalDeviceQueueFamilyProperties;
 
 import java.nio.IntBuffer;
 import java.util.ArrayList;
@@ -131,22 +131,22 @@ public class QueueFamilies {
 		throw new Exception("No Queue with both graphics and presentation support found");
 	}
 	
-	public QueueFamily getComputeOnlyQueueFamily() throws Exception{
+	public QueueFamily getComputeExclusiveQueueFamily() throws Exception{
 		
 		for (QueueFamily queueFamily : queueFamilies){
 			if (queueFamily.getFlags() == VK_QUEUE_COMPUTE_BIT)
 				return queueFamily;
 		}
-		throw new Exception("No Queue with compute limited support found");
+		throw new Exception("No Queue with compute exclusive support found");
 	}
 	
-	public QueueFamily getTransferOnlyQueueFamily() throws Exception{
+	public QueueFamily getTransferExclusiveQueueFamily() throws Exception{
 		
 		for (QueueFamily queueFamily : queueFamilies){
 			if (queueFamily.getFlags() == VK_QUEUE_TRANSFER_BIT)
 				return queueFamily;
 		}
-		throw new Exception("No Queue transfer limited support found");
+		throw new Exception("No Queue transfer exclusive support found");
 	}
 
 }

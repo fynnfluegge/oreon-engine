@@ -131,7 +131,8 @@ void main(void)
 		fragColor += (causticsColor/4);
 	}
 	
-	float spec = specularReflection(directional_light.direction, normal.xzy, eyePosition, position_FS, specular, emission);
+	float spec = specularReflection(vec3(directional_light.direction.x, directional_light.direction.y/5, directional_light.direction.z),
+		normal.xzy, eyePosition, position_FS, specular, emission);
 	vec3 specularLight = (directional_light.color + vec3(0,0.03,0.08)) * spec;
 	
 	fragColor += specularLight;
