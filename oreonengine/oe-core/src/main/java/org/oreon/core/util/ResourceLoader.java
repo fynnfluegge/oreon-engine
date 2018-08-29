@@ -1,8 +1,6 @@
 package org.oreon.core.util;
 
-import static org.lwjgl.stb.STBImage.stbi_failure_reason;
-import static org.lwjgl.stb.STBImage.stbi_info_from_memory;
-import static org.lwjgl.stb.STBImage.stbi_load_from_memory;
+import org.lwjgl.BufferUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -17,7 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.lwjgl.BufferUtils;
+import static org.lwjgl.stb.STBImage.*;
 
 public class ResourceLoader {
 
@@ -41,6 +39,7 @@ public class ResourceLoader {
 		}
 		catch(Exception e)
 		{
+			System.err.println("Unable to load file ["+ fileName +"]!");
 			e.printStackTrace();
 			System.exit(1);
 		}
