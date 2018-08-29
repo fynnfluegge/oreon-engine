@@ -1,17 +1,6 @@
 package org.oreon.core.gl.util;
 
-import java.nio.IntBuffer;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.lwjgl.assimp.AIColor4D;
-import org.lwjgl.assimp.AIFace;
-import org.lwjgl.assimp.AIMaterial;
-import org.lwjgl.assimp.AIMesh;
-import org.lwjgl.assimp.AIScene;
-import org.lwjgl.assimp.AIString;
-import org.lwjgl.assimp.AIVector3D;
-import org.lwjgl.assimp.Assimp;
+import org.lwjgl.assimp.*;
 import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.gl.wrapper.texture.Texture2DTrilinearFilter;
 import org.oreon.core.math.Vec2f;
@@ -22,6 +11,10 @@ import org.oreon.core.model.Model;
 import org.oreon.core.model.Vertex;
 import org.oreon.core.util.Util;
 
+import java.nio.IntBuffer;
+import java.util.ArrayList;
+import java.util.List;
+
 public class GLAssimpModelLoader {
 	
 	public static List<Model<GLTexture>> loadModel(String path, String file) {
@@ -30,12 +23,14 @@ public class GLAssimpModelLoader {
 		List<Material<GLTexture>> materials = new ArrayList<>();
 		
 		path = GLAssimpModelLoader.class.getClassLoader().getResource(path).getPath().toString();
+		// For Linux need to keep '/' or else the Assimp.aiImportFile(...) call below returns null!
+		if (System.getProperty("os.name").contains("Windows")) {
+			if (path.startsWith("/"))
+				path = path.substring(1);
+		}
 
-		if (path.startsWith("/"))
-			path = path.substring(1);
-		
 		AIScene aiScene = Assimp.aiImportFile(path + "/" + file, 0);
-		
+
 		if (aiScene.mMaterials() != null){
 			for (int i=0; i<aiScene.mNumMaterials(); i++){
 				AIMaterial aiMaterial = AIMaterial.create(aiScene.mMaterials().get(i));
