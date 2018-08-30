@@ -1,13 +1,13 @@
 package org.oreon.gl.components.filter.motionblur;
 
-import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
-import static org.lwjgl.opengl.GL13.glActiveTexture;
-
 import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.util.ResourceLoader;
+
+import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
+import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 public class PixelVelocityShader extends GLShaderProgram{
 	
@@ -26,7 +26,7 @@ public class PixelVelocityShader extends GLShaderProgram{
 	{
 		super();
 		
-		addComputeShader(ResourceLoader.loadShader("shaders/filter/motionBlur/PixelVelocity.comp"));
+		addComputeShader(ResourceLoader.loadShader("shaders/filter/motionBlur/pixelVelocity.comp"));
 		
 		compileShader();
 		

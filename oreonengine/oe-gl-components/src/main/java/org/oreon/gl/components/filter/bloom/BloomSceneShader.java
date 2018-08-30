@@ -20,7 +20,7 @@ public class BloomSceneShader extends GLShaderProgram{
 	{
 		super();
 		
-		addComputeShader(ResourceLoader.loadShader("shaders/filter/bloom/BloomScene.comp"));
+		addComputeShader(ResourceLoader.loadShader("shaders/filter/bloom/bloomScene.comp"));
 		
 		compileShader();
 	}

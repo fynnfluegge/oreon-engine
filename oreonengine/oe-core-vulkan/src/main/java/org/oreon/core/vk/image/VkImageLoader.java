@@ -1,10 +1,10 @@
 package org.oreon.core.vk.image;
 
-import static org.lwjgl.stb.STBImage.STBI_rgb_alpha;
-import static org.lwjgl.stb.STBImage.stbi_failure_reason;
-import static org.lwjgl.stb.STBImage.stbi_info_from_memory;
-import static org.lwjgl.stb.STBImage.stbi_load;
+import org.lwjgl.BufferUtils;
+import org.lwjgl.stb.STBImage;
+import org.oreon.core.image.ImageMetaData;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -16,8 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.lwjgl.BufferUtils;
-import org.oreon.core.image.ImageMetaData;
+import static org.lwjgl.stb.STBImage.*;
 
 public class VkImageLoader {
 	
@@ -45,17 +44,25 @@ public class VkImageLoader {
 	public static ByteBuffer decodeImage(String file){
 		
 		String absolutePath = VkImageLoader.class.getClassLoader().getResource(file).getPath().substring(1);
+        if (!System.getProperty("os.name").contains("Windows")) { // TODO Language/region agnostic value for 'Windows' ?
+            // stbi_load requires a file system path, NOT a classpath resource path
+            absolutePath = File.separator + absolutePath;
+        }
 
 	    IntBuffer x = BufferUtils.createIntBuffer(1);
 	    IntBuffer y = BufferUtils.createIntBuffer(1);
 	    IntBuffer channels = BufferUtils.createIntBuffer(1);
-	    
+
 	    ByteBuffer image = stbi_load(absolutePath, x, y, channels, STBI_rgb_alpha);
+	    if (image == null) {
+            System.err.println("Could not decode image file ["+ absolutePath +"]: ["+ STBImage.stbi_failure_reason() +"]");
+        }
 	    
 	    return image;
 	}
-	
+
 	public static ByteBuffer ioResourceToByteBuffer(String resource, int bufferSize) throws IOException {
+
         ByteBuffer buffer;
 
         Path path = Paths.get(resource);

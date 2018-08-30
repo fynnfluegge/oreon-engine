@@ -1,20 +1,6 @@
 package org.oreon.vk.components.fft;
 
-import static org.lwjgl.system.MemoryUtil.memAlloc;
-import static org.lwjgl.system.MemoryUtil.memFree;
-import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_STORAGE_BUFFER_BIT;
-import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
-import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_STORAGE_IMAGE;
-import static org.lwjgl.vulkan.VK10.VK_FORMAT_R32G32B32A32_SFLOAT;
-import static org.lwjgl.vulkan.VK10.VK_IMAGE_ASPECT_COLOR_BIT;
-import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_GENERAL;
-import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_SAMPLED_BIT;
-import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_STORAGE_BIT;
-import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_COMPUTE_BIT;
-
-import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
-
+import lombok.Getter;
 import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
 import org.lwjgl.vulkan.VkQueue;
@@ -38,7 +24,12 @@ import org.oreon.core.vk.wrapper.command.ComputeCmdBuffer;
 import org.oreon.core.vk.wrapper.descriptor.VkDescriptor;
 import org.oreon.core.vk.wrapper.image.Image2DDeviceLocal;
 
-import lombok.Getter;
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
+
+import static org.lwjgl.system.MemoryUtil.memAlloc;
+import static org.lwjgl.system.MemoryUtil.memFree;
+import static org.lwjgl.vulkan.VK10.*;
 
 public class TwiddleFactors {
 
@@ -78,7 +69,7 @@ public class TwiddleFactors {
 				imageView, bitReversedIndicesBuffer, n);
 		
 		ShaderModule computeShader = new ShaderModule(device,
-				"shaders/fft/TwiddleFactors.comp.spv", VK_SHADER_STAGE_COMPUTE_BIT);
+				"shaders/fft/twiddleFactors.comp.spv", VK_SHADER_STAGE_COMPUTE_BIT);
 		
 		VkPipeline pipeline = new VkPipeline(device);
 		pipeline.setPushConstantsRange(VK_SHADER_STAGE_COMPUTE_BIT, Integer.BYTES * 1);
