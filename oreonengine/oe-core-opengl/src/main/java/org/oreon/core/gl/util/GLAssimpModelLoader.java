@@ -24,7 +24,7 @@ public class GLAssimpModelLoader {
 		
 		path = GLAssimpModelLoader.class.getClassLoader().getResource(path).getPath().toString();
 		// For Linux need to keep '/' or else the Assimp.aiImportFile(...) call below returns null!
-		if (System.getProperty("os.name").contains("Windows")) {
+		if (System.getProperty("os.name").contains("Windows")) { // TODO Language/region agnostic value for 'Windows' ?
 			if (path.startsWith("/"))
 				path = path.substring(1);
 		}

@@ -1,14 +1,6 @@
 package org.oreon.core.vk.util;
 
-import java.nio.IntBuffer;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.lwjgl.assimp.AIFace;
-import org.lwjgl.assimp.AIMesh;
-import org.lwjgl.assimp.AIScene;
-import org.lwjgl.assimp.AIVector3D;
-import org.lwjgl.assimp.Assimp;
+import org.lwjgl.assimp.*;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.math.Vec3f;
 import org.oreon.core.model.Mesh;
@@ -17,6 +9,10 @@ import org.oreon.core.model.Vertex;
 import org.oreon.core.util.Util;
 import org.oreon.core.vk.image.VkImage;
 
+import java.nio.IntBuffer;
+import java.util.ArrayList;
+import java.util.List;
+
 public class VkAssimpModelLoader {
 	
 	public static List<Model<VkImage>> loadModel(String path, String file) {
@@ -24,11 +20,13 @@ public class VkAssimpModelLoader {
 		List<Model<VkImage>> models = new ArrayList<>();
 //		List<Material<VkImage>> materials = new ArrayList<>();
 		
-		path = VkAssimpModelLoader.class.getClassLoader().getResource(path).getPath().toString();
+		path = VkAssimpModelLoader.class.getClassLoader().getResource(path).getPath();
+		// For Linux need to keep '/' or else the Assimp.aiImportFile(...) call below returns null!
+		if (System.getProperty("os.name").contains("Windows")) { // TODO Language/region agnostic value for 'Windows' ?
+			if (path.startsWith("/"))
+				path = path.substring(1);
+		}
 
-		if (path.startsWith("/"))
-			path = path.substring(1);
-		
 		AIScene aiScene = Assimp.aiImportFile(path + "/" + file, 0);
 		
 //		if (aiScene.mMaterials() != null){
