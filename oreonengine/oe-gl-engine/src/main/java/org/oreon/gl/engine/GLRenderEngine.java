@@ -2,6 +2,7 @@ package org.oreon.gl.engine;
 
 import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.glClear;
+import static org.lwjgl.opengl.GL11.glFinish;
 import static org.lwjgl.opengl.GL11.glViewport;
 
 import org.lwjgl.glfw.GLFW;
@@ -117,6 +118,8 @@ public class GLRenderEngine extends RenderEngine{
 		contrastController = new ContrastController();
 		
 		GLContext.getResources().setSceneDepthMap(offScreenFbo.getAttachmentTexture(Attachment.DEPTH));
+		
+		glFinish();
 	}
 	
 	@Override
@@ -125,11 +128,18 @@ public class GLRenderEngine extends RenderEngine{
 		GLDirectionalLight.getInstance().update();
 
 		GLUtil.clearScreen();
+		offScreenFbo.bind();
+		GLUtil.clearScreen();
+		transparencyFbo.bind();
+		GLUtil.clearScreen();
+		pssmFbo.getFBO().bind();
+		glClear(GL_DEPTH_BUFFER_BIT);
+		pssmFbo.getFBO().unbind();
+		glFinish();
 		
 		// render shadow maps into pssm framebuffer
 		pssmFbo.getFBO().bind();
 		pssmFbo.getConfig().enable();
-		glClear(GL_DEPTH_BUFFER_BIT);
 		glViewport(0,0,Constants.PSSM_SHADOWMAP_RESOLUTION,Constants.PSSM_SHADOWMAP_RESOLUTION);
 		sceneGraph.renderShadows();
 		glViewport(0,0,config.getX_ScreenResolution(),config.getY_ScreenResolution());
@@ -139,9 +149,14 @@ public class GLRenderEngine extends RenderEngine{
 		// deferred scene lighting - opaque objects
 		// render into GBuffer of deffered lighting framebuffer
 		offScreenFbo.bind();
-		GLUtil.clearScreen();
 		sceneGraph.render();
 		offScreenFbo.unbind();
+		
+		// forward scene lighting - transparent objects
+		// render transparent objects into GBuffer of transparency framebuffer
+		transparencyFbo.bind();
+		sceneGraph.renderTransparentObejcts();
+		transparencyFbo.unbind();
 		
 		// render screen space ambient occlusion
 		if (EngineContext.getConfig().isSsaoEnabled()){
@@ -154,20 +169,14 @@ public class GLRenderEngine extends RenderEngine{
 				offScreenFbo.getAttachmentTexture(Attachment.LIGHT_SCATTERING));
 		
 		// render deferred lighting scene with multisampling
-		deferredLighting.render(sampleCoverage.getSampleCoverageMask(), ssao.getSsaoBlurSceneTexture(),
+		deferredLighting.render(sampleCoverage.getSampleCoverageMask(),
+				ssao.getSsaoBlurSceneTexture(),
 				pssmFbo.getDepthMaps(),
 				offScreenFbo.getAttachmentTexture(Attachment.ALBEDO),
 				offScreenFbo.getAttachmentTexture(Attachment.POSITION),
 				offScreenFbo.getAttachmentTexture(Attachment.NORMAL),
 				offScreenFbo.getAttachmentTexture(Attachment.SPECULAR_EMISSION),
 				EngineContext.getConfig().isSsaoEnabled());
-		
-		// forward scene lighting - transparent objects
-		// render transparent objects into GBuffer of transparency framebuffer
-		transparencyFbo.bind();
-		GLUtil.clearScreen();
-		sceneGraph.renderTransparentObejcts();
-		transparencyFbo.unbind();
 		
 		// blend scene/transparent layers
 		// render opaque + transparent (final scene) objects into main offscreen framebuffer
@@ -190,8 +199,8 @@ public class GLRenderEngine extends RenderEngine{
 		}
 		
 		// render post processing filters
-		GLTexture displayTexture = opaqueTransparencyBlending.getAttachment(Attachment.ALBEDO);
-		GLTexture lightScatteringMaskTexture = opaqueTransparencyBlending.getAttachment(Attachment.LIGHT_SCATTERING);
+		GLTexture displayTexture = opaqueTransparencyBlending.getBlendedSceneTexture();
+		GLTexture lightScatteringMaskTexture = opaqueTransparencyBlending.getBlendedLightScatteringTexture();
 		
 		boolean doMotionBlur = camera.getPreviousPosition().sub(camera.getPosition()).length() > 0.04f
 				|| camera.getForward().sub(camera.getPreviousForward()).length() > 0.01f;
@@ -264,7 +273,7 @@ public class GLRenderEngine extends RenderEngine{
 			fullScreenQuad.render();
 		}
 		
-//		contrastController.render(postProcessingTexture);
+//		contrastController.render(displayTexture);
 		
 		fullScreenQuad.setTexture(displayTexture);
 		fullScreenQuad.render();
@@ -284,6 +293,7 @@ public class GLRenderEngine extends RenderEngine{
 		if (gui != null){
 			gui.render();
 		}
+		glFinish();
 	}
 	
 	@Override

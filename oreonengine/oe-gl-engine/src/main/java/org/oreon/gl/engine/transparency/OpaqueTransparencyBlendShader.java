@@ -1,49 +1,42 @@
 package org.oreon.gl.engine.transparency;
 
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
-import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE2;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE3;
-import static org.lwjgl.opengl.GL13.GL_TEXTURE4;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE5;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE6;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
-import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.util.ResourceLoader;
 
-public class OpaqueTransparencyBlendingShader extends GLShaderProgram{
-
-	private static OpaqueTransparencyBlendingShader instance = null;
+public class OpaqueTransparencyBlendShader extends GLShaderProgram{
 	
-	public static OpaqueTransparencyBlendingShader getInstance() 
+private static OpaqueTransparencyBlendShader instance = null;
+	
+	public static OpaqueTransparencyBlendShader getInstance() 
 	{
 		if(instance == null) 
 		{
-			instance = new OpaqueTransparencyBlendingShader();
+			instance = new OpaqueTransparencyBlendShader();
 		}
 		return instance;
 	}
 	
-	protected OpaqueTransparencyBlendingShader() {
+	protected OpaqueTransparencyBlendShader() {
 		
 		super();
 		
-		addVertexShader(ResourceLoader.loadShader("shaders/transparencyBlend_VS.glsl"));
-		addFragmentShader(ResourceLoader.loadShader("shaders/transparencyBlend_FS.glsl"));
+		addComputeShader(ResourceLoader.loadShader("shaders/opaqueTransparencyBlend.comp"));
+		
 		compileShader();
 		
 		addUniform("opaqueSceneTexture");
 		addUniform("opaqueSceneLightScatteringTexture");
-		addUniform("opaqueSceneDepthMap");
 		addUniform("transparencyLayer");
-		addUniform("transparencyLayerDepthMap");
 		addUniform("transparencyAlphaMap");
 		addUniform("transparencyLayerLightScatteringTexture");
-		addUniform("width");
-		addUniform("height");
 	}
 	
 	public void updateUniforms(GLTexture opaqueSceneTexture, GLTexture opaqueSceneDepthMap,
@@ -51,17 +44,11 @@ public class OpaqueTransparencyBlendingShader extends GLShaderProgram{
 			GLTexture transparencyLayer, GLTexture transparencyLayerDepthMap,
 			GLTexture alphaMap, GLTexture transparencyLayerLightScatteringTexture)
 	{
-		setUniformi("width", EngineContext.getWindow().getWidth());
-		setUniformi("height", EngineContext.getWindow().getHeight());
-		
 		glActiveTexture(GL_TEXTURE0);
 		opaqueSceneTexture.bind();
 		setUniformi("opaqueSceneTexture", 0);
-		
-		glActiveTexture(GL_TEXTURE1);
-		opaqueSceneDepthMap.bind();
-		setUniformi("opaqueSceneDepthMap", 1);
-		
+
+		opaqueSceneDepthMap.unbind();
 		glActiveTexture(GL_TEXTURE2);
 		opaqueSceneLightScatteringTexture.bind();
 		setUniformi("opaqueSceneLightScatteringTexture", 2);
@@ -69,10 +56,6 @@ public class OpaqueTransparencyBlendingShader extends GLShaderProgram{
 		glActiveTexture(GL_TEXTURE3);
 		transparencyLayer.bind();
 		setUniformi("transparencyLayer", 3);
-		
-		glActiveTexture(GL_TEXTURE4);
-		transparencyLayerDepthMap.bind();
-		setUniformi("transparencyLayerDepthMap", 4);
 
 		glActiveTexture(GL_TEXTURE5);
 		alphaMap.bind();
@@ -81,5 +64,7 @@ public class OpaqueTransparencyBlendingShader extends GLShaderProgram{
 		glActiveTexture(GL_TEXTURE6);
 		transparencyLayerLightScatteringTexture.bind();
 		setUniformi("transparencyLayerLightScatteringTexture", 6);
+		
 	}
+
 }

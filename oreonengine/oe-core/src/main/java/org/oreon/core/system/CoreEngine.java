@@ -6,7 +6,7 @@ import org.oreon.core.util.Constants;
 public class CoreEngine{
 	
 	private static int fps;
-	private static float framerate = 2000;
+	private static float framerate = 200;
 	private static float frameTime = 1.0f/framerate;
 	private boolean isRunning;
 	private CoreSystem coreSystem;

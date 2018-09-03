@@ -1,0 +1,46 @@
+#version 430 core
+
+layout (local_size_x = 16, local_size_y = 16) in;
+
+layout (binding = 0, rgba16f) uniform writeonly image2D finalColor_out;
+layout (binding = 1, rgba16f) uniform writeonly image2D lightScatteringMask_out;
+layout (binding = 2, rgba32f) uniform readonly image2DMS opaqueSceneDepthMap;
+layout (binding = 3, rgba32f) uniform readonly image2D transparencyLayerDepthMap;
+
+uniform sampler2D opaqueSceneTexture;
+uniform sampler2D opaqueSceneLightScatteringTexture;
+uniform sampler2D transparencyLayer;
+uniform sampler2D transparencyLayerLightScatteringTexture;
+uniform sampler2D transparencyAlphaMap;
+const float width = 1280;
+const float height = 720;
+const float zfar = 10000;
+const float znear = 0.1;
+
+void main()
+{
+	ivec2 computeCoord = ivec2(gl_GlobalInvocationID.x, gl_GlobalInvocationID.y);
+	vec2 uv = vec2(gl_GlobalInvocationID.x/width, gl_GlobalInvocationID.y/height);
+
+	vec4 opaqueColor 	   = texture(opaqueSceneTexture, uv);
+	vec4 transparencyColor = texture(transparencyLayer, uv);
+	vec4 opaqueDepth 	   = imageLoad(opaqueSceneDepthMap, computeCoord, 0);
+	vec4 transparencyDepth = imageLoad(transparencyLayerDepthMap, computeCoord);
+	float alpha 		   = texture(transparencyAlphaMap, uv).r;
+	vec4 transparencyLightScattering = texture(transparencyLayerLightScatteringTexture, uv);
+	vec4 opaqueSceneLightScattering = texture(opaqueSceneLightScatteringTexture, uv);
+	
+	vec4 rgba;
+	vec4 lightScattering;
+	if (opaqueDepth.r <= transparencyDepth.r){
+		rgba = opaqueColor;
+		lightScattering = opaqueSceneLightScattering;
+	}
+	else{
+		rgba = transparencyColor + opaqueColor * (1-alpha);
+		lightScattering = transparencyLightScattering;
+	}
+		
+	imageStore(finalColor_out, computeCoord, rgba);
+	imageStore(lightScatteringMask_out, computeCoord, lightScattering);
+}

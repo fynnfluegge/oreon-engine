@@ -38,7 +38,7 @@ layout (std140, row_major) uniform LightViewProjections{
 uniform sampler2DArray pssm;
 uniform int numSamples;
 uniform float sightRangeFactor;
-uniform int flag;
+uniform int ssaoFlag;
 
 const float zfar = 10000;
 const float znear = 0.1;
@@ -193,7 +193,7 @@ void main(void){
 				vec3 diffuseLight = directional_light.ambient + directional_light.color * diff * shadow;
 				vec3 specularLight = directional_light.color * spec;
 				
-				if (flag == 1)
+				if (ssaoFlag == 1)
 					finalColor += albedo * diffuseLight * ssao + specularLight;
 				else 
 					finalColor += albedo * diffuseLight + specularLight;
@@ -202,10 +202,10 @@ void main(void){
 				finalColor += albedo;
 			}
 		}
-		
 		finalColor /= numSamples;
 	}
 	else {
+		
 		albedo = imageLoad(albedoSceneImage, computeCoord,0).rgb;
 		normal = imageLoad(normalImage, computeCoord,0).rbg;
 		
@@ -221,7 +221,7 @@ void main(void){
 			vec3 diffuseLight = directional_light.ambient + directional_light.color * diff * shadow;
 			vec3 specularLight = directional_light.color * spec;
 			
-			if (flag == 1)
+			if (ssaoFlag == 1)
 				finalColor = albedo * diffuseLight * ssao + specularLight;
 			else 
 				finalColor = albedo * diffuseLight + specularLight;
