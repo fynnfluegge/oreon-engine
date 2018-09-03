@@ -3,8 +3,6 @@ package org.oreon.gl.engine;
 import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT0;
 import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT1;
 import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT2;
-import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT3;
-import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT4;
 
 import java.nio.IntBuffer;
 
@@ -29,19 +27,17 @@ public class TransparencyFbo extends GLFrameBufferObject{
 		attachments.put(Attachment.LIGHT_SCATTERING, lightScatteringMask);
 		attachments.put(Attachment.DEPTH, depthTexture);
 		
-		IntBuffer drawBuffers = BufferUtil.createIntBuffer(5);
+		IntBuffer drawBuffers = BufferUtil.createIntBuffer(3);
 		drawBuffers.put(GL_COLOR_ATTACHMENT0);
 		drawBuffers.put(GL_COLOR_ATTACHMENT1);
 		drawBuffers.put(GL_COLOR_ATTACHMENT2);
-		drawBuffers.put(GL_COLOR_ATTACHMENT3);
-		drawBuffers.put(GL_COLOR_ATTACHMENT4);
 		drawBuffers.flip();
 		
 		frameBuffer = new GLFramebuffer();
 		frameBuffer.bind();
 		frameBuffer.createColorTextureAttachment(albedoTexture.getHandle(),0);
 		frameBuffer.createColorTextureAttachment(alphaTexture.getHandle(),1);
-		frameBuffer.createColorTextureAttachment(lightScatteringMask.getHandle(),4);
+		frameBuffer.createColorTextureAttachment(lightScatteringMask.getHandle(),2);
 		frameBuffer.createDepthTextureAttachment(depthTexture.getHandle());
 		frameBuffer.setDrawBuffers(drawBuffers);
 		frameBuffer.checkStatus();
