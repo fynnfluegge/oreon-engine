@@ -1,6 +1,5 @@
 package org.oreon.core.vk.scenegraph;
 
-import static org.lwjgl.system.MemoryUtil.memFree;
 import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
 import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
 
@@ -58,14 +57,8 @@ public class VkMeshData extends NodeComponent{
 		if(vertexBufferObject != null){
 			vertexBufferObject.destroy();
 		}
-		if(vertexBuffer != null){
-//			memFree(vertexBuffer);
-		}
 		if(indexBufferObject != null){
 			indexBufferObject.destroy();
-		}
-		if(indexBuffer != null){
-//			memFree(indexBuffer);
 		}
 	}
 	

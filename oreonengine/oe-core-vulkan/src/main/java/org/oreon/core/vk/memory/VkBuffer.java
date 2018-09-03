@@ -45,7 +45,7 @@ public class VkBuffer {
 	
 	private VkDevice device;
 	
-	public void create(VkDevice device, int size, int usage){
+	public VkBuffer(VkDevice device, int size, int usage){
 		
 		this.device = device;
 		
@@ -65,11 +65,11 @@ public class VkBuffer {
         bufInfo.free();
         
         if (err != VK_SUCCESS) {
-            throw new AssertionError("Failed to create vertex buffer: " + VkUtil.translateVulkanResult(err));
+            throw new AssertionError("Failed to create buffer: " + VkUtil.translateVulkanResult(err));
         }
 	}
 	
-	public void allocateBuffer(VkPhysicalDeviceMemoryProperties memoryProperties,
+	public void allocate(VkPhysicalDeviceMemoryProperties memoryProperties,
 						 int memoryPropertyFlags){
 		
 		VkMemoryRequirements memRequirements = VkMemoryRequirements.calloc();
@@ -97,7 +97,7 @@ public class VkBuffer {
         memFree(pMemory);
         memAlloc.free();
         if (err != VK_SUCCESS) {
-            throw new AssertionError("Failed to allocate vertex memory: " + VkUtil.translateVulkanResult(err));
+            throw new AssertionError("Failed to allocate buffer memory: " + VkUtil.translateVulkanResult(err));
         }
 	}
 	
@@ -105,19 +105,19 @@ public class VkBuffer {
 	
 		int err = vkBindBufferMemory(device, handle, memory, 0);
         if (err != VK_SUCCESS) {
-            throw new AssertionError("Failed to bind memory to vertex buffer: " + VkUtil.translateVulkanResult(err));
+            throw new AssertionError("Failed to bind memory to buffer: " + VkUtil.translateVulkanResult(err));
         }
 	}
 	
 	public void mapMemory(ByteBuffer buffer){
 		
         PointerBuffer pData = memAllocPointer(1);
-        int err = vkMapMemory(device, memory, 0, allocationSize, 0, pData);
+        int err = vkMapMemory(device, memory, 0, buffer.remaining(), 0, pData);
         
         long data = pData.get(0);
         memFree(pData);
         if (err != VK_SUCCESS) {
-            throw new AssertionError("Failed to map vertex memory: " + VkUtil.translateVulkanResult(err));
+            throw new AssertionError("Failed to map buffer memory: " + VkUtil.translateVulkanResult(err));
         }
         
         memCopy(memAddress(buffer), data, buffer.remaining());

@@ -16,8 +16,8 @@ public class StagingBuffer extends VkBuffer{
 						 VkPhysicalDeviceMemoryProperties memoryProperties, 
 						 ByteBuffer dataBuffer) {
 	    
-		create(device, dataBuffer.limit(), VK_BUFFER_USAGE_TRANSFER_SRC_BIT);
-		allocateBuffer(memoryProperties,
+		super(device, dataBuffer.limit(), VK_BUFFER_USAGE_TRANSFER_SRC_BIT);
+		allocate(memoryProperties,
 				VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
 		bindBufferMemory();
 		mapMemory(dataBuffer);

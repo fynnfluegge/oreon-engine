@@ -25,7 +25,7 @@ public class VkSampler {
 	private VkDevice device;
 	
 	public VkSampler(VkDevice device, int filterMode,
-			boolean anistropic, int maxAnistropy, int mipmapMode, int maxLod,
+			boolean anisotropic, float maxAnisotropy, int mipmapMode, float maxLod,
 			int addressMode){
 		
 		this.device = device;
@@ -37,8 +37,8 @@ public class VkSampler {
 						.addressModeU(addressMode)
 						.addressModeV(addressMode)
 						.addressModeW(addressMode)
-						.anisotropyEnable(anistropic)
-						.maxAnisotropy(maxAnistropy)
+						.anisotropyEnable(anisotropic)
+						.maxAnisotropy(maxAnisotropy)
 						.borderColor(VK_BORDER_COLOR_INT_OPAQUE_BLACK)
 						.unnormalizedCoordinates(false)
 						.compareEnable(false)

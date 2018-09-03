@@ -63,7 +63,7 @@ public class VkVertexInput {
 		}
 	}
 	
-	public void createBindingDescription(int binding, int attributeCount, int stride){
+	private void createBindingDescription(int binding, int attributeCount, int stride){
 		
 		this.binding = binding;
 		
@@ -75,7 +75,7 @@ public class VkVertexInput {
 		attributeDescriptions = VkVertexInputAttributeDescription.calloc(attributeCount);
 	}
 	
-	public void addVertexAttributeDescription(int location, int format, int offset){
+	private void addVertexAttributeDescription(int location, int format, int offset){
 		
 		VkVertexInputAttributeDescription attributeDescription = VkVertexInputAttributeDescription.calloc()
                 .binding(binding)

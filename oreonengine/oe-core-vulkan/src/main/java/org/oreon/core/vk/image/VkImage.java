@@ -115,7 +115,7 @@ public class VkImage extends Image{
 	    memFree(pMemory);
 	    memAlloc.free();
 	    if (err != VK_SUCCESS) {
-	    	throw new AssertionError("Failed to allocate vertex memory: " + VkUtil.translateVulkanResult(err));
+	    	throw new AssertionError("Failed to allocate image memory: " + VkUtil.translateVulkanResult(err));
 	    }
 	}
 	
@@ -123,19 +123,19 @@ public class VkImage extends Image{
 		
 		int err = vkBindImageMemory(device, handle, memory, 0);
         if (err != VK_SUCCESS) {
-            throw new AssertionError("Failed to bind memory to vertex buffer: " + VkUtil.translateVulkanResult(err));
+            throw new AssertionError("Failed to bind memory to image buffer: " + VkUtil.translateVulkanResult(err));
         }
 	}
 	
 	public void mapMemory(ByteBuffer imageBuffer){
 		
         PointerBuffer pData = memAllocPointer(1);
-        int err = vkMapMemory(device, memory, 0, allocationSize, 0, pData);
+        int err = vkMapMemory(device, memory, 0, imageBuffer.remaining(), 0, pData);
         
         long data = pData.get(0);
         memFree(pData);
         if (err != VK_SUCCESS) {
-            throw new AssertionError("Failed to map vertex memory: " + VkUtil.translateVulkanResult(err));
+            throw new AssertionError("Failed to map image memory: " + VkUtil.translateVulkanResult(err));
         }
         
         memCopy(memAddress(imageBuffer), data, imageBuffer.remaining());
