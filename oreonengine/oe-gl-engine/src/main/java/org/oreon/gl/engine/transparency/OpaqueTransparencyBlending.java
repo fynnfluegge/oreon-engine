@@ -39,10 +39,9 @@ public class OpaqueTransparencyBlending extends FullScreenQuad{
 		glBindImageTexture(0, blendedSceneTexture.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
 		glBindImageTexture(1, blendedLightScatteringTexture.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
 		glBindImageTexture(2, opaqueSceneDepthMap.getHandle(), 0, false, 0, GL_READ_ONLY, GL_RGBA32F);
-		glBindImageTexture(2, transparencyLayerDepthMap.getHandle(), 0, false, 0, GL_READ_ONLY, GL_RGBA32F);
-		shader.updateUniforms(opaqueScene, opaqueSceneDepthMap, opaqueSceneLightScatteringTexture, 
-							  transparencyLayer, transparencyLayerDepthMap,
-							  alphaMap, transparencyLayerLightScatteringTexture);
+		glBindImageTexture(3, transparencyLayerDepthMap.getHandle(), 0, false, 0, GL_READ_ONLY, GL_RGBA32F);
+		shader.updateUniforms(opaqueScene, opaqueSceneLightScatteringTexture, 
+							  transparencyLayer, alphaMap, transparencyLayerLightScatteringTexture);
 		glDispatchCompute(EngineContext.getWindow().getWidth()/16, EngineContext.getWindow().getHeight()/16, 1);
 	}
 

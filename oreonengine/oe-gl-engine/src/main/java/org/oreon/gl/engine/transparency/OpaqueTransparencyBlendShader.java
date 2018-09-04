@@ -39,16 +39,13 @@ private static OpaqueTransparencyBlendShader instance = null;
 		addUniform("transparencyLayerLightScatteringTexture");
 	}
 	
-	public void updateUniforms(GLTexture opaqueSceneTexture, GLTexture opaqueSceneDepthMap,
-			GLTexture opaqueSceneLightScatteringTexture,
-			GLTexture transparencyLayer, GLTexture transparencyLayerDepthMap,
-			GLTexture alphaMap, GLTexture transparencyLayerLightScatteringTexture)
+	public void updateUniforms(GLTexture opaqueSceneTexture, GLTexture opaqueSceneLightScatteringTexture,
+			GLTexture transparencyLayer, GLTexture alphaMap, GLTexture transparencyLayerLightScatteringTexture)
 	{
 		glActiveTexture(GL_TEXTURE0);
 		opaqueSceneTexture.bind();
 		setUniformi("opaqueSceneTexture", 0);
 
-		opaqueSceneDepthMap.unbind();
 		glActiveTexture(GL_TEXTURE2);
 		opaqueSceneLightScatteringTexture.bind();
 		setUniformi("opaqueSceneLightScatteringTexture", 2);
