@@ -4,7 +4,7 @@ Welcome to the Cross-Platform Java 3D Engine.
 As OpenGL and Vulkan Binding for Java the [LWJGL 3](https://www.lwjgl.org/) API is used.  
 Both OpenGL and the next generation graphics API Vulkan is supported!
 
-<img src="docs/_images/Vulkan_vs_OpenGL.png" width="800px">
+<img src="docs/_images/gl_vs_vk.png" width="800px">
 
 ## Build Manual
 * Oreon Engine project uses [lombok](https://projectlombok.org/).
