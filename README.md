@@ -58,6 +58,9 @@ Both OpenGL and the next generation graphics API Vulkan is supported!
 <img src="docs/_images/LightScattering_LensFlare.png" width="400px" align="left">
 <img src="docs/_images/LightScattering_LensFlare2.png" width="400px">
 
+#### SSAO
+<img src="docs/_images/ssao.png" width="1000px" align="left">
+
 ### GUI
 ## Credits
 * [Nvidia Corporation](https://developer.nvidia.com/)
