@@ -15,10 +15,8 @@ import java.util.List;
 
 import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
-import org.lwjgl.vulkan.VkQueue;
 import org.oreon.core.context.EngineContext;
 import org.oreon.core.vk.command.CommandBuffer;
-import org.oreon.core.vk.command.SubmitInfo;
 import org.oreon.core.vk.context.VkContext;
 import org.oreon.core.vk.descriptor.DescriptorPool;
 import org.oreon.core.vk.descriptor.DescriptorSet;
@@ -29,7 +27,6 @@ import org.oreon.core.vk.image.VkImageView;
 import org.oreon.core.vk.pipeline.ShaderModule;
 import org.oreon.core.vk.pipeline.VkPipeline;
 import org.oreon.core.vk.util.VkUtil;
-import org.oreon.core.vk.wrapper.command.ComputeCmdBuffer;
 import org.oreon.core.vk.wrapper.image.Image2DDeviceLocal;
 import org.oreon.core.vk.wrapper.shader.ComputeShader;
 
@@ -37,16 +34,12 @@ import lombok.Getter;
 
 public class DeferredLighting {
 	
-	private VkQueue queue;
-	
 	private VkImage deferredLightingSceneImage;
 	@Getter
 	private VkImageView deferredLightingSceneImageView;
 	private VkPipeline computePipeline;
 	private DescriptorSet descriptorSet;
 	private DescriptorSetLayout descriptorSetLayout;
-	private CommandBuffer cmdBuffer;
-	private SubmitInfo submitInfo;
 	
 	private ByteBuffer pushConstants;
 	private List<DescriptorSet> descriptorSets;
@@ -61,7 +54,6 @@ public class DeferredLighting {
 		VkDevice device = deviceBundle.getLogicalDevice().getHandle();
 		VkPhysicalDeviceMemoryProperties memoryProperties = deviceBundle.getPhysicalDevice().getMemoryProperties();
 		DescriptorPool descriptorPool = deviceBundle.getLogicalDevice().getDescriptorPool(Thread.currentThread().getId());
-		queue = deviceBundle.getLogicalDevice().getComputeQueue();
 		this.width = width;
 		this.height = height;
 		
@@ -129,15 +121,6 @@ public class DeferredLighting {
 		computePipeline.setLayout(VkUtil.createLongBuffer(descriptorSetLayouts));
 		computePipeline.createComputePipeline(shader);
 		
-		cmdBuffer = new ComputeCmdBuffer(device,
-				deviceBundle.getLogicalDevice().getComputeCommandPool().getHandle(),
-				computePipeline.getHandle(), computePipeline.getLayoutHandle(),
-				VkUtil.createLongArray(descriptorSets), width/16, height/16, 1,
-				pushConstants, VK_SHADER_STAGE_COMPUTE_BIT);
-		
-		submitInfo = new SubmitInfo();
-		submitInfo.setCommandBuffers(cmdBuffer.getHandlePointer());
-		
 		shader.destroy();
 	}
 	
@@ -151,10 +134,6 @@ public class DeferredLighting {
 		commandBuffer.dispatchCmd(width/16, height/16, 1);
 	}
 	
-	public void render(){
-		
-		submitInfo.submit(queue);
-	}
 	
 	public void shutdown(){
 		deferredLightingSceneImage.destroy();
@@ -162,6 +141,5 @@ public class DeferredLighting {
 		computePipeline.destroy();
 		descriptorSet.destroy();
 		descriptorSetLayout.destroy();
-		cmdBuffer.destroy();
 	}
 }

@@ -1,0 +1,47 @@
+#version 450
+#extension GL_ARB_separate_shader_objects : enable
+
+layout (local_size_x = 16, local_size_y = 16) in;
+
+layout (set = 0, binding = 0, rgba16f) uniform writeonly image2D finalColor_out;
+layout (set = 0, binding = 1, rgba16f) uniform writeonly image2D lightScatteringMask_out;
+layout (set = 0, binding = 2) uniform sampler2D opaqueSceneSampler;
+layout (set = 0, binding = 3) uniform sampler2D opaqueSceneLightScatteringSampler;
+layout (set = 0, binding = 4) uniform sampler2DMS opaqueSceneDepthMap;
+layout (set = 0, binding = 5) uniform sampler2D transparencySampler;
+layout (set = 0, binding = 6) uniform sampler2D transparencyLayerLightScatteringSampler;
+layout (set = 0, binding = 7) uniform sampler2D transparencyLayerDepthMap;
+layout (set = 0, binding = 8) uniform sampler2D transparencyAlphaMap;
+
+layout (push_constant, std430, row_major) uniform pushConstants{
+	float width;
+	float height;
+} constants;
+
+void main()
+{
+	ivec2 computeCoord = ivec2(gl_GlobalInvocationID.x, gl_GlobalInvocationID.y);
+	vec2 uv = vec2(gl_GlobalInvocationID.x/constants.width, gl_GlobalInvocationID.y/constants.height);
+
+	vec4 opaqueColor 	   = texture(opaqueSceneSampler, uv);
+	vec4 transparencyColor = texture(transparencySampler, uv);
+	vec4 opaqueDepth 	   = texelFetch(opaqueSceneDepthMap, computeCoord, 0);
+	vec4 transparencyDepth = texture(transparencyLayerDepthMap, uv);
+	vec4 transparencyLightScattering = texture(transparencyLayerLightScatteringSampler, uv);
+	vec4 opaqueSceneLightScattering = texture(opaqueSceneLightScatteringSampler, uv);
+	float alpha 		   = texture(transparencyAlphaMap, uv).r;
+	
+	vec4 rgba = vec4(0);
+	vec4 lightScattering;
+	if (opaqueDepth.r <= transparencyDepth.r){
+		rgba = opaqueColor;
+		lightScattering = opaqueSceneLightScattering;
+	}
+	else{
+		rgba = transparencyColor * alpha + opaqueColor * (1-alpha);
+		lightScattering = transparencyLightScattering;
+	}
+		
+	imageStore(finalColor_out, computeCoord, rgba);
+	imageStore(lightScatteringMask_out, computeCoord, lightScattering);
+}

@@ -120,7 +120,7 @@ public class VkRenderEngine extends RenderEngine implements Runnable{
 	    
 	    DescriptorPool descriptorPool = new DescriptorPool(logicalDevice.getHandle(), 4);
 	    descriptorPool.addPoolSize(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 33);
-	    descriptorPool.addPoolSize(VK_DESCRIPTOR_TYPE_STORAGE_IMAGE, 59);
+	    descriptorPool.addPoolSize(VK_DESCRIPTOR_TYPE_STORAGE_IMAGE, 61);
 	    descriptorPool.addPoolSize(VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 2);
 	    descriptorPool.addPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 12);
 	    descriptorPool.create();
@@ -189,7 +189,7 @@ public class VkRenderEngine extends RenderEngine implements Runnable{
 	    		transparencyFbo.getAttachmentImageView(Attachment.LIGHT_SCATTERING),
 	    		opaqueTransparencyBlendWaitSemaphores);
 	    
-	    VkImageView displayImageView = opaqueTransparencyBlending.getColorAttachment();
+	    VkImageView displayImageView = opaqueTransparencyBlending.getBlendedSceneImageView();
 
 	    if (EngineContext.getConfig().isFxaaEnabled()){
 		    fxaa = new FXAA(majorDevice,
