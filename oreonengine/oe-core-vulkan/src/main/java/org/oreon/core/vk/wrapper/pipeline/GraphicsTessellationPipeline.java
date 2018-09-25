@@ -24,7 +24,7 @@ public class GraphicsTessellationPipeline extends VkPipeline{
 		setInputAssembly(VK_PRIMITIVE_TOPOLOGY_PATCH_LIST);
 		setViewportAndScissor(width, height);
 		setRasterizer();
-		setMultisampling(samples);
+		setMultisamplingState(samples);
 		for (int i=0; i<colorAttachmentCount; i++){
 			addColorBlendAttachment();
 		}
@@ -47,7 +47,7 @@ public class GraphicsTessellationPipeline extends VkPipeline{
 		setInputAssembly(VK_PRIMITIVE_TOPOLOGY_PATCH_LIST);
 		setViewportAndScissor(width, height);
 		setRasterizer();
-		setMultisampling(samples);
+		setMultisamplingState(samples);
 		for (int i=0; i<colorAttachmentCount; i++){
 			addColorBlendAttachment();
 		}

@@ -28,7 +28,7 @@ public class SwapChainPipeline extends VkPipeline{
 	    setInputAssembly(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
 	    setViewportAndScissor(extent.width(), extent.height());
 	    setRasterizer();
-	    setMultisampling(1);
+	    setMultisamplingState(1);
 	    addColorBlendAttachment();
 	    setColorBlendState();
 	    setDepthAndStencilTest(false);

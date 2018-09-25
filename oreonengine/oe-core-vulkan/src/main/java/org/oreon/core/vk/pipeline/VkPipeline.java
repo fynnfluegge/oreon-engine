@@ -75,12 +75,12 @@ public class VkPipeline {
 	private VkPipelineInputAssemblyStateCreateInfo inputAssembly;
 	private VkPipelineViewportStateCreateInfo viewportAndScissorState;
 	private VkPipelineRasterizationStateCreateInfo rasterizer;
-	private VkPipelineMultisampleStateCreateInfo multisampling;
+	private VkPipelineMultisampleStateCreateInfo multisamplingState;
 	private VkPipelineColorBlendStateCreateInfo colorBlending;
-	private VkPipelineColorBlendAttachmentState.Buffer colorBlendStates;
-	private VkPipelineDepthStencilStateCreateInfo depthStencil;
+	private VkPipelineColorBlendAttachmentState.Buffer colorBlendAttachmentStates;
+	private VkPipelineDepthStencilStateCreateInfo depthStencilState;
 	private VkPipelineDynamicStateCreateInfo dynamicState;
-	private VkPipelineTessellationStateCreateInfo tessellationInfo;
+	private VkPipelineTessellationStateCreateInfo tessellationState;
 	private VkViewport.Buffer viewport;
 	private VkRect2D.Buffer scissor;
 	private IntBuffer pDynamicStates;
@@ -101,11 +101,11 @@ public class VkPipeline {
 				.pInputAssemblyState(inputAssembly)
 				.pViewportState(viewportAndScissorState)
 				.pRasterizationState(rasterizer)
-				.pMultisampleState(multisampling)
-				.pDepthStencilState(depthStencil)
+				.pMultisampleState(multisamplingState)
+				.pDepthStencilState(depthStencilState)
 				.pColorBlendState(colorBlending)
 				.pDynamicState(null)
-				.pTessellationState(tessellationInfo)
+				.pTessellationState(tessellationState)
 				.layout(layoutHandle)
 				.renderPass(renderPass)
 				.subpass(0)
@@ -121,10 +121,10 @@ public class VkPipeline {
 		inputAssembly.free();
 		viewportAndScissorState.free();
 		rasterizer.free();
-		multisampling.free();
+		multisamplingState.free();
 		colorBlending.free();
-		colorBlendStates.free();
-		depthStencil.free();
+		colorBlendAttachmentStates.free();
+		depthStencilState.free();
 		dynamicState.free();
 		viewport.free();
 		scissor.free();
@@ -234,9 +234,9 @@ public class VkPipeline {
 				.depthBiasClamp(0);
 	}
 	
-	public void setMultisampling(int samples){
+	public void setMultisamplingState(int samples){
 		
-		multisampling = VkPipelineMultisampleStateCreateInfo.calloc()
+		multisamplingState = VkPipelineMultisampleStateCreateInfo.calloc()
                 .sType(VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO)
                 .sampleShadingEnable(false)
                 .rasterizationSamples(VkUtil.getSampleCountBit(samples))
@@ -251,26 +251,26 @@ public class VkPipeline {
 		VkPipelineColorBlendAttachmentState colorWriteMask = VkPipelineColorBlendAttachmentState.calloc()
                 .blendEnable(false)
                 .colorWriteMask(VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT
-                				| VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT);
+                		| VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT);
 		
 		colorBlendAttachments.add(colorWriteMask);
 	}
 	
 	public void setColorBlendState(){
 		
-		colorBlendStates =
+		colorBlendAttachmentStates =
 				VkPipelineColorBlendAttachmentState.calloc(colorBlendAttachments.size());
 		
 		for (VkPipelineColorBlendAttachmentState colorBlendAttachment : colorBlendAttachments){
 			colorBlendAttachment.blendEnable(false);
-			colorBlendStates.put(colorBlendAttachment);
+			colorBlendAttachmentStates.put(colorBlendAttachment);
 		}
-		colorBlendStates.flip();
+		colorBlendAttachmentStates.flip();
 	
         colorBlending = VkPipelineColorBlendStateCreateInfo.calloc()
                 .sType(VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO)
                 .logicOpEnable(false)
-                .pAttachments(colorBlendStates);
+                .pAttachments(colorBlendAttachmentStates);
         
         for (VkPipelineColorBlendAttachmentState colorBlendAttachment : colorBlendAttachments){
 			colorBlendAttachment.free();
@@ -280,7 +280,7 @@ public class VkPipeline {
 	public void setColorBlendState(int srcColorBlendFactor, int dstColorBlendFactor,
 			int srcAlphaBlendFactor, int dstAlphaBlendFactor, int colorBlendOp, int alphaBlendOp){
 		
-		colorBlendStates =
+		colorBlendAttachmentStates =
 				VkPipelineColorBlendAttachmentState.calloc(colorBlendAttachments.size());
 		
 		for (VkPipelineColorBlendAttachmentState colorBlendAttachment : colorBlendAttachments){
@@ -291,15 +291,17 @@ public class VkPipeline {
 				.colorBlendOp(colorBlendOp)
 				.srcAlphaBlendFactor(srcAlphaBlendFactor)
 				.dstAlphaBlendFactor(dstAlphaBlendFactor)
-				.alphaBlendOp(alphaBlendOp);
-			colorBlendStates.put(colorBlendAttachment);
+				.alphaBlendOp(alphaBlendOp)
+				.colorWriteMask(VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT
+        				| VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT);
+			colorBlendAttachmentStates.put(colorBlendAttachment);
 		}
-		colorBlendStates.flip();
+		colorBlendAttachmentStates.flip();
 	
         colorBlending = VkPipelineColorBlendStateCreateInfo.calloc()
                 .sType(VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO)
                 .logicOpEnable(false)
-                .pAttachments(colorBlendStates);
+                .pAttachments(colorBlendAttachmentStates);
         
         for (VkPipelineColorBlendAttachmentState colorBlendAttachment : colorBlendAttachments){
 			colorBlendAttachment.free();
@@ -308,18 +310,18 @@ public class VkPipeline {
 	
 	public void setDepthAndStencilTest(boolean depthTestEnable){
 		
-		depthStencil = VkPipelineDepthStencilStateCreateInfo.calloc()
+		depthStencilState = VkPipelineDepthStencilStateCreateInfo.calloc()
                 .sType(VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO)
                 .depthTestEnable(depthTestEnable)
                 .depthWriteEnable(true)
                 .depthCompareOp(VK_COMPARE_OP_LESS)
                 .depthBoundsTestEnable(false)
                 .stencilTestEnable(false);
-		depthStencil.back()
+		depthStencilState.back()
                 .failOp(VK_STENCIL_OP_KEEP)
                 .passOp(VK_STENCIL_OP_KEEP)
                 .compareOp(VK_COMPARE_OP_ALWAYS);
-		depthStencil.front(depthStencil.back());
+		depthStencilState.front(depthStencilState.back());
 	}
 	
 	public void setDynamicState(){
@@ -336,7 +338,7 @@ public class VkPipeline {
 	
 	public void setTessellationState(int patchControlPoints){
 		
-		tessellationInfo = VkPipelineTessellationStateCreateInfo.calloc()
+		tessellationState = VkPipelineTessellationStateCreateInfo.calloc()
 				.sType(VK_STRUCTURE_TYPE_PIPELINE_TESSELLATION_STATE_CREATE_INFO)
 				.flags(0)
 				.patchControlPoints(patchControlPoints);

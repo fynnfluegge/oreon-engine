@@ -46,8 +46,6 @@ import org.oreon.core.util.MeshGenerator;
 import org.oreon.core.vk.command.CommandBuffer;
 import org.oreon.core.vk.command.CommandPool;
 import org.oreon.core.vk.command.SubmitInfo;
-import org.oreon.core.vk.context.DeviceManager.DeviceType;
-import org.oreon.core.vk.context.VkContext;
 import org.oreon.core.vk.device.LogicalDevice;
 import org.oreon.core.vk.device.PhysicalDevice;
 import org.oreon.core.vk.framebuffer.VkFrameBuffer;
@@ -104,23 +102,19 @@ public class SwapChain {
 		int imageFormat = VK_FORMAT_B8G8R8A8_UNORM;
 	    int colorSpace = VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
 	    
-	    VkContext.getDeviceManager().getPhysicalDevice(DeviceType.MAJOR_GRAPHICS_DEVICE)
-	    	.checkDeviceFormatAndColorSpaceSupport(imageFormat, colorSpace);
+	    physicalDevice.checkDeviceFormatAndColorSpaceSupport(imageFormat, colorSpace);
 	    
 		int presentMode = VK_PRESENT_MODE_MAILBOX_KHR;
 		
-	    if (!VkContext.getDeviceManager().getPhysicalDevice(DeviceType.MAJOR_GRAPHICS_DEVICE)
-	    		.checkDevicePresentationModeSupport(presentMode)){
+	    if (!physicalDevice.checkDevicePresentationModeSupport(presentMode)){
 	    	
-	    	if (VkContext.getDeviceManager().getPhysicalDevice(DeviceType.MAJOR_GRAPHICS_DEVICE)
-	    			.checkDevicePresentationModeSupport(VK_PRESENT_MODE_FIFO_KHR))
+	    	if (physicalDevice.checkDevicePresentationModeSupport(VK_PRESENT_MODE_FIFO_KHR))
 	    		presentMode = VK_PRESENT_MODE_FIFO_KHR;
 	    	else
 	    		presentMode = VK_PRESENT_MODE_IMMEDIATE_KHR;
 	    }
 	    
-	    int minImageCount = VkContext.getDeviceManager().getPhysicalDevice(DeviceType.MAJOR_GRAPHICS_DEVICE)
-	    		.getDeviceMinImageCount4TripleBuffering();
+	    int minImageCount = physicalDevice.getDeviceMinImageCount4TripleBuffering();
 	    
 	    descriptor = new SwapChainDescriptor(device,
 	    		logicalDevice.getDescriptorPool(Thread.currentThread().getId()), imageView);

@@ -6,7 +6,6 @@ import static org.lwjgl.vulkan.VK10.VK_ACCESS_COLOR_ATTACHMENT_READ_BIT;
 import static org.lwjgl.vulkan.VK10.VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
 import static org.lwjgl.vulkan.VK10.VK_ACCESS_MEMORY_READ_BIT;
 import static org.lwjgl.vulkan.VK10.VK_ACCESS_SHADER_READ_BIT;
-import static org.lwjgl.vulkan.VK10.VK_ATTACHMENT_LOAD_OP_CLEAR;
 import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
 import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
 import static org.lwjgl.vulkan.VK10.VK_DEPENDENCY_BY_REGION_BIT;
@@ -264,17 +263,17 @@ public class VkGUI extends GUI{
 			attachments.put(Attachment.COLOR, colorAttachment);
 			
 			renderPass = new RenderPass(device);
-			renderPass.setAttachment(VK_FORMAT_R16G16B16A16_SFLOAT, 1, VK_IMAGE_LAYOUT_UNDEFINED,
-					VK_IMAGE_LAYOUT_GENERAL, VK_ATTACHMENT_LOAD_OP_CLEAR);
+			renderPass.addColorAttachment(0, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
+					VK_FORMAT_R16G16B16A16_SFLOAT, 1, VK_IMAGE_LAYOUT_UNDEFINED,
+					VK_IMAGE_LAYOUT_GENERAL);
 			
-			renderPass.addColorAttachmentReference(0, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
-			renderPass.setSubpassDependency(VK_SUBPASS_EXTERNAL, 0,
+			renderPass.addSubpassDependency(VK_SUBPASS_EXTERNAL, 0,
 					VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
 					VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
 					VK_ACCESS_MEMORY_READ_BIT,
 					VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
 					VK_DEPENDENCY_BY_REGION_BIT);
-			renderPass.setSubpassDependency(0, VK_SUBPASS_EXTERNAL,
+			renderPass.addSubpassDependency(0, VK_SUBPASS_EXTERNAL,
 					VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
 					VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
 					VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,

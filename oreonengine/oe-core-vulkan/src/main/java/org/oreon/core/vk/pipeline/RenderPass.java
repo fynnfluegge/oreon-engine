@@ -2,6 +2,7 @@ package org.oreon.core.vk.pipeline;
 
 import static org.lwjgl.system.MemoryUtil.memAllocLong;
 import static org.lwjgl.system.MemoryUtil.memFree;
+import static org.lwjgl.vulkan.VK10.VK_ATTACHMENT_LOAD_OP_CLEAR;
 import static org.lwjgl.vulkan.VK10.VK_ATTACHMENT_LOAD_OP_DONT_CARE;
 import static org.lwjgl.vulkan.VK10.VK_ATTACHMENT_STORE_OP_DONT_CARE;
 import static org.lwjgl.vulkan.VK10.VK_ATTACHMENT_STORE_OP_STORE;
@@ -105,27 +106,25 @@ public class RenderPass {
 		}
         
         if (err != VK_SUCCESS) {
-            throw new AssertionError("Failed to create clear render pass: " + VkUtil.translateVulkanResult(err));
+            throw new AssertionError("Failed to create render pass: " + VkUtil.translateVulkanResult(err));
         }
 	}
 	
-	public void setAttachment(int format, int samples, 
-			int initialLayout, int finalLayout, int loadOpFlag){
+	public void addColorAttachment(int location, int layout, int format,
+			int samples, int initialLayout, int finalLayout){
 		
-		VkAttachmentDescription attachment = VkAttachmentDescription.calloc()
-				.format(format)
-				.samples(VkUtil.getSampleCountBit(samples))
-				.loadOp(loadOpFlag)
-				.storeOp(VK_ATTACHMENT_STORE_OP_STORE)
-				.stencilLoadOp(VK_ATTACHMENT_LOAD_OP_DONT_CARE)
-				.stencilStoreOp(VK_ATTACHMENT_STORE_OP_DONT_CARE)
-				.initialLayout(initialLayout)
-				.finalLayout(finalLayout);
-		
-		attachmentDescriptions.add(attachment);
+		addAttachmentDescription(format, samples, initialLayout, finalLayout);
+		addColorAttachmentReference(location, layout);
 	}
 	
-	public void setSubpassDependency(int srcSubpass, int dstSubpass,
+	public void addDepthAttachment(int location, int layout, int format,
+			int samples, int initialLayout, int finalLayout){
+		
+		addAttachmentDescription(format, samples, initialLayout, finalLayout);
+		addDepthAttachmentReference(location, layout);
+	}
+	
+	public void addSubpassDependency(int srcSubpass, int dstSubpass,
 			int srcStageMask, int dstStageMask, int srcAccessMask,
 			int dstAccessMask, int dependencyFlags){
 
@@ -141,7 +140,7 @@ public class RenderPass {
 		subpassDependendies.add(dependencies);
 	}
 	
-	public void addColorAttachmentReference(int location, int layout){
+	private void addColorAttachmentReference(int location, int layout){
 		
 		VkAttachmentReference attachmentReference = VkAttachmentReference.calloc()
                 .attachment(location)
@@ -150,11 +149,27 @@ public class RenderPass {
 		colorReferences.add(attachmentReference);
 	}
 	
-	public void addDepthAttachmentReference(int location, int layout){
+	private void addDepthAttachmentReference(int location, int layout){
 		
 		depthReference = VkAttachmentReference.calloc()
                 .attachment(location)
                 .layout(layout);
+	}
+	
+	private void addAttachmentDescription(int format, int samples, 
+			int initialLayout, int finalLayout){
+		
+		VkAttachmentDescription attachment = VkAttachmentDescription.calloc()
+				.format(format)
+				.samples(VkUtil.getSampleCountBit(samples))
+				.loadOp(VK_ATTACHMENT_LOAD_OP_CLEAR)
+				.storeOp(VK_ATTACHMENT_STORE_OP_STORE)
+				.stencilLoadOp(VK_ATTACHMENT_LOAD_OP_DONT_CARE)
+				.stencilStoreOp(VK_ATTACHMENT_STORE_OP_DONT_CARE)
+				.initialLayout(initialLayout)
+				.finalLayout(finalLayout);
+		
+		attachmentDescriptions.add(attachment);
 	}
 	
 	public void createSubpass(){

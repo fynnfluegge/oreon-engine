@@ -33,11 +33,11 @@ public class ShaderModule {
 	public ShaderModule(VkDevice device, String filePath, int stage) {
 		
 		this.device = device;
-		handle = createShaderModule(filePath);
-		shaderStageInfo = createShaderStage(handle, stage);
+		createShaderModule(filePath);
+		createShaderStage(stage);
 	}
 	
-	public long createShaderModule(String filePath) {
+	private void createShaderModule(String filePath) {
 		
 		ByteBuffer shaderCode = null;
 		try {
@@ -54,7 +54,7 @@ public class ShaderModule {
 	            .flags(0);
 	    LongBuffer pShaderModule = memAllocLong(1);
 	    err = vkCreateShaderModule(device, moduleCreateInfo, null, pShaderModule);
-	    long shaderModule = pShaderModule.get(0);
+	    handle = pShaderModule.get(0);
 	   
 	    if (err != VK_SUCCESS) {
 	        throw new AssertionError("Failed to create shader module: " + VkUtil.translateVulkanResult(err));
@@ -62,20 +62,16 @@ public class ShaderModule {
 	    
 	    memFree(pShaderModule);
 	    moduleCreateInfo.free();
-	    
-	    return shaderModule;
 	}
 	
-	public VkPipelineShaderStageCreateInfo createShaderStage(long module, int stage){
+	private void createShaderStage(int stage){
 		
-		 VkPipelineShaderStageCreateInfo shaderStage = VkPipelineShaderStageCreateInfo.calloc()
-	                .sType(VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO)
-	                .stage(stage)
-	                .module(module)
-	                .pName(memUTF8("main"))
-	                .pSpecializationInfo(null);
-	       
-		 return shaderStage;
+		 shaderStageInfo = VkPipelineShaderStageCreateInfo.calloc()
+				 .sType(VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO)
+				 .stage(stage)
+				 .module(handle)
+				 .pName(memUTF8("main"))
+				 .pSpecializationInfo(null);
 	}
 	
 	public void destroy(){

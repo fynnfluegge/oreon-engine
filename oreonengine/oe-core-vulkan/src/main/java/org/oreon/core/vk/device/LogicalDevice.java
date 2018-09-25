@@ -48,12 +48,10 @@ public class LogicalDevice {
 	private int transferQueueFamilyIndex;
 	
 	private HashMap<Long, DescriptorPool> descriptorPools;
-	private HashMap<Long, CommandPool> commandPools;
 	
 	public LogicalDevice(PhysicalDevice physicalDevice, float priority){
 		
 		descriptorPools = new HashMap<Long, DescriptorPool>();
-		commandPools = new HashMap<Long, CommandPool>();
 		
 		FloatBuffer pQueuePriorities = memAllocFloat(1).put(priority);
         pQueuePriorities.flip();

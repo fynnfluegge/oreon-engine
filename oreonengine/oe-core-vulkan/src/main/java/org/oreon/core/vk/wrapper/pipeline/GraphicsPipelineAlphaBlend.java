@@ -25,7 +25,7 @@ public class GraphicsPipelineAlphaBlend extends VkPipeline{
 		setInputAssembly(topology);
 		setViewportAndScissor(width, height);
 		setRasterizer();
-		setMultisampling(samples);
+		setMultisamplingState(samples);
 		for (int i=0; i<colorAttachmentCount; i++){
 			addColorBlendAttachment();
 		}
@@ -48,7 +48,7 @@ public class GraphicsPipelineAlphaBlend extends VkPipeline{
 		setPushConstantsRange(pushConstantStageFlags, pushConstantRange);
 		setViewportAndScissor(width, height);
 		setRasterizer();
-		setMultisampling(samples);
+		setMultisamplingState(samples);
 		for (int i=0; i<colorAttachmentCount; i++){
 			addColorBlendAttachment();
 		}
