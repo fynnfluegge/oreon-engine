@@ -1,28 +1,12 @@
 package org.oreon.core.platform;
 
-import static org.lwjgl.glfw.GLFW.GLFW_CURSOR;
-import static org.lwjgl.glfw.GLFW.GLFW_CURSOR_HIDDEN;
-import static org.lwjgl.glfw.GLFW.GLFW_CURSOR_NORMAL;
-import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
-import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
-import static org.lwjgl.glfw.GLFW.glfwPollEvents;
-import static org.lwjgl.glfw.GLFW.glfwSetCursorPos;
-import static org.lwjgl.glfw.GLFW.glfwSetCursorPosCallback;
-import static org.lwjgl.glfw.GLFW.glfwSetScrollCallback;
-import static org.lwjgl.glfw.GLFW.glfwSetInputMode;
-import static org.lwjgl.glfw.GLFW.glfwSetKeyCallback;
-import static org.lwjgl.glfw.GLFW.glfwSetMouseButtonCallback;
-import static org.lwjgl.glfw.GLFW.glfwSetFramebufferSizeCallback;
+import org.lwjgl.glfw.*;
+import org.oreon.core.math.Vec2f;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import org.lwjgl.glfw.GLFWCursorPosCallback;
-import org.lwjgl.glfw.GLFWKeyCallback;
-import org.lwjgl.glfw.GLFWMouseButtonCallback;
-import org.lwjgl.glfw.GLFWScrollCallback;
-import org.oreon.core.math.Vec2f;
-import org.lwjgl.glfw.GLFWFramebufferSizeCallback;
+import static org.lwjgl.glfw.GLFW.*;
 
 public class GLFWInput implements Input{
 	
@@ -76,7 +60,8 @@ public class GLFWInput implements Input{
                 }
             	
                 if (action == GLFW_RELEASE){
-                	keysHolding.remove(new Integer(key));
+					//noinspection UnnecessaryBoxing // Calling remove(Object) not remove(int)
+					keysHolding.remove(Integer.valueOf(key));
                 	releasedKeys.add(key);
                 }
             }
@@ -104,7 +89,8 @@ public class GLFWInput implements Input{
                 
                 if (action == GLFW_RELEASE){
                 	releasedButtons.add(button);
-                	buttonsHolding.remove(new Integer(button));
+					//noinspection UnnecessaryBoxing // Calling remove(Object) not remove(int)
+                	buttonsHolding.remove(Integer.valueOf(button));
                 }
             }
 		}));
