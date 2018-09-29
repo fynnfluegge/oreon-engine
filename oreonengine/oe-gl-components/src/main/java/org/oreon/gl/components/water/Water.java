@@ -26,7 +26,6 @@ import org.oreon.core.util.Constants;
 import org.oreon.core.util.MeshGenerator;
 import org.oreon.gl.components.fft.FFT;
 import org.oreon.gl.components.terrain.GLTerrain;
-import org.oreon.gl.components.terrain.TerrainConfiguration;
 import org.oreon.gl.components.util.NormalRenderer;
 
 import lombok.Getter;
@@ -94,6 +93,16 @@ public class Water extends Renderable{
 		setCameraUnderwater(EngineContext.getCamera().getPosition().getY() < (getWorldTransform().getTranslation().getY())); 
 	}
 	
+	public void renderWireframe(){
+		
+		fft.render();
+		
+		super.renderWireframe();
+		
+		// glFinish() important, to prevent conflicts with following compute shaders
+		glFinish();
+	}
+	
 	public void render()
 	{
 		if (!isCameraUnderwater()){
@@ -116,9 +125,9 @@ public class Water extends Renderable{
 			
 		if (scenegraph.hasTerrain()){
 				
-			GLContext.getObject(TerrainConfiguration.class).setScaleY(
-					GLContext.getObject(TerrainConfiguration.class).getScaleY() * -1f);
-			GLContext.getObject(TerrainConfiguration.class).setWaterReflectionShift(
+			GLTerrain.getConfiguration().setScaleY(
+					GLTerrain.getConfiguration().getScaleY() * -1f);
+			GLTerrain.getConfiguration().setWaterReflectionShift(
 					(int) (getClipplane().getW() * 2f));
 		}
 		scenegraph.update();
@@ -153,9 +162,9 @@ public class Water extends Renderable{
 		scenegraph.getWorldTransform().setScaling(1,1,1);
 
 		if (scenegraph.hasTerrain()){
-			GLContext.getObject(TerrainConfiguration.class).setScaleY(
-					GLContext.getObject(TerrainConfiguration.class).getScaleY() / -1f);
-			GLContext.getObject(TerrainConfiguration.class).setWaterReflectionShift(0);
+			GLTerrain.getConfiguration().setScaleY(
+					GLTerrain.getConfiguration().getScaleY() / -1f);
+			GLTerrain.getConfiguration().setWaterReflectionShift(0);
 		}
 
 		scenegraph.update();
@@ -186,20 +195,12 @@ public class Water extends Renderable{
 		fft.render();
 		normalmapRenderer.render(fft.getDy());
 		
-		GLContext.getResources().getOffScreenFbo().bind();
-		
-		if (EngineContext.getConfig().isRenderWireframe())
-		{
-			getComponents().get(NodeComponentType.WIREFRAME_RENDERINFO).render();
-		}
-		else
-		{
-			getComponents().get(NodeComponentType.MAIN_RENDERINFO).render();
-		}
+		GLContext.getResources().getOpaqueSceneFbo().bind();
+
+		super.render();
 		
 		// glFinish() important, to prevent conflicts with following compute shaders
 		glFinish();
-		GLContext.getResources().getOffScreenFbo().unbind();
 	}
 		
 	public Vec4f getClipplane() {

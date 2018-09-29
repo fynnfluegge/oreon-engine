@@ -8,11 +8,9 @@ import java.util.Random;
 
 import org.lwjgl.glfw.GLFW;
 import org.oreon.core.context.EngineContext;
-import org.oreon.core.gl.context.GLContext;
 import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.gl.components.terrain.FractalMap;
 import org.oreon.gl.components.terrain.GLTerrain;
-import org.oreon.gl.components.terrain.TerrainConfiguration;
 
 public class Terrain extends GLTerrain{
 
@@ -30,7 +28,7 @@ public class Terrain extends GLTerrain{
 			
 			List<FractalMap> newFractals = new ArrayList<>();
 			
-			for (FractalMap fractal : GLContext.getObject(TerrainConfiguration.class).getFractals()){
+			for (FractalMap fractal : getConfiguration().getFractals()){
 				fractal.getHeightmap().delete();
 				
 				FractalMap newfractal = new FractalMap(fractal.getN(), fractal.getL(),
@@ -41,13 +39,13 @@ public class Terrain extends GLTerrain{
 			}
 			
 			// update configurations
-			GLContext.getObject(TerrainConfiguration.class).getFractals().clear();
+			getConfiguration().getFractals().clear();
 			for (FractalMap newFracral : newFractals){
-				GLContext.getObject(TerrainConfiguration.class).getFractals().add(newFracral);
+				getConfiguration().getFractals().add(newFracral);
 			}
-			memFree(GLContext.getObject(TerrainConfiguration.class).getHeightmapDataBuffer());
-			GLContext.getObject(TerrainConfiguration.class).renderFractalMap();
-			GLContext.getObject(TerrainConfiguration.class).createHeightmapDataBuffer();
+			memFree(getConfiguration().getHeightmapDataBuffer());
+			getConfiguration().renderFractalMap();
+			getConfiguration().createHeightmapDataBuffer();
 		}
 	}
 }

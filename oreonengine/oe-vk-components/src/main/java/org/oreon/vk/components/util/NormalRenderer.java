@@ -73,7 +73,7 @@ public class NormalRenderer {
 		device = deviceBundle.getLogicalDevice().getHandle();
 		computeQueue = deviceBundle.getLogicalDevice().getComputeQueue();
 		transferQueue = deviceBundle.getLogicalDevice().getGraphicsQueue();
-		graphicsCommandPool= deviceBundle.getLogicalDevice().getGraphicsCommandPool();
+		graphicsCommandPool= deviceBundle.getLogicalDevice().getGraphicsCommandPool(Thread.currentThread().getId());
 		
 		normalImage = new Image2DDeviceLocal(deviceBundle.getLogicalDevice().getHandle(),
 				deviceBundle.getPhysicalDevice().getMemoryProperties(), N, N,
@@ -115,7 +115,7 @@ public class NormalRenderer {
 				"shaders/util/normals.comp.spv", VK_SHADER_STAGE_COMPUTE_BIT));
 		
 		commandBuffer = new ComputeCmdBuffer(deviceBundle.getLogicalDevice().getHandle(),
-				deviceBundle.getLogicalDevice().getComputeCommandPool().getHandle(),
+				deviceBundle.getLogicalDevice().getComputeCommandPool(Thread.currentThread().getId()).getHandle(),
 				pipeline.getHandle(), pipeline.getLayoutHandle(),
 				VkUtil.createLongArray(descriptorSet), N/16, N/16, 1,
 				pushConstants, VK_SHADER_STAGE_COMPUTE_BIT);

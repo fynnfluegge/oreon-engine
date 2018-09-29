@@ -79,7 +79,7 @@ public class TerrainChunk extends QuadtreeChunk{
 		
 		CommandBuffer commandBuffer = new SecondaryDrawCmdBuffer(
 	    		device.getHandle(),
-	    		device.getGraphicsCommandPool().getHandle(), 
+	    		device.getGraphicsCommandPool(Thread.currentThread().getId()).getHandle(), 
 	    		graphicsPipeline.getHandle(), graphicsPipeline.getLayoutHandle(),
 	    		VkContext.getResources().getOffScreenFbo().getFrameBuffer().getHandle(),
 	    		VkContext.getResources().getOffScreenFbo().getRenderPass().getHandle(),

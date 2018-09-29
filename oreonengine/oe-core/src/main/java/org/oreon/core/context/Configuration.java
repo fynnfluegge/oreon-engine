@@ -46,7 +46,7 @@ public class Configuration {
 	
 	private final Properties properties;
 	
-	private Configuration(){
+	public Configuration(){
 		
 		properties = new Properties();
 		try {

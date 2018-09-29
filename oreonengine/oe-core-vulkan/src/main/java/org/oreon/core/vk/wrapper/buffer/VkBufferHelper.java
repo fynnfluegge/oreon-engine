@@ -1,13 +1,12 @@
 package org.oreon.core.vk.wrapper.buffer;
 
-import static org.lwjgl.vulkan.VK10.vkQueueWaitIdle;
-
 import java.nio.ByteBuffer;
 
 import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
 import org.lwjgl.vulkan.VkQueue;
 import org.oreon.core.vk.memory.VkBuffer;
+import org.oreon.core.vk.synchronization.Fence;
 import org.oreon.core.vk.wrapper.command.BufferCopyCmdBuffer;
 
 public class VkBufferHelper {
@@ -23,9 +22,8 @@ public class VkBufferHelper {
 		BufferCopyCmdBuffer bufferCopyCommand = new BufferCopyCmdBuffer(device, commandPool);
 		bufferCopyCommand.record(stagingBuffer.getHandle(),
 				deviceLocalBuffer.getHandle(), 0, 0, dataBuffer.limit());
-		bufferCopyCommand.submit(queue);
-		
-		vkQueueWaitIdle(queue);
+		Fence fence = new Fence(device);
+		bufferCopyCommand.submit(queue, fence);
 		
 		bufferCopyCommand.destroy();
 		stagingBuffer.destroy();

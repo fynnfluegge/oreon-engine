@@ -114,7 +114,7 @@ public class Hkt {
 		pipeline.createComputePipeline(new ShaderModule(device, "shaders/fft/hkt.comp.spv", VK_SHADER_STAGE_COMPUTE_BIT));
 		
 		commandBuffer = new ComputeCmdBuffer(device,
-				deviceBundle.getLogicalDevice().getComputeCommandPool().getHandle(),
+				deviceBundle.getLogicalDevice().getComputeCommandPool(Thread.currentThread().getId()).getHandle(),
 				pipeline.getHandle(), pipeline.getLayoutHandle(),
 				VkUtil.createLongArray(descriptor.getDescriptorSet()), N/16, N/16, 1,
 				pushConstants, VK_SHADER_STAGE_COMPUTE_BIT);

@@ -17,7 +17,6 @@ import org.lwjgl.vulkan.VkPhysicalDeviceFeatures;
 import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
 import org.lwjgl.vulkan.VkPhysicalDeviceProperties;
 import org.oreon.core.vk.queue.QueueFamilies;
-import org.oreon.core.vk.swapchain.SwapChainCapabilities;
 import org.oreon.core.vk.util.VkUtil;
 
 import lombok.Getter;
@@ -32,7 +31,7 @@ public class PhysicalDevice {
 	private VkPhysicalDeviceFeatures features;
 	private VkPhysicalDeviceMemoryProperties memoryProperties;
 	private QueueFamilies queueFamilies;
-	private SwapChainCapabilities swapChainCapabilities;
+	private SurfaceProperties swapChainCapabilities;
 	private List<String> supportedExtensionNames;
 	
 	public PhysicalDevice(VkInstance vkInstance, long surface) {
@@ -58,7 +57,7 @@ public class PhysicalDevice {
         
         handle =  new VkPhysicalDevice(physicalDevice, vkInstance);
         queueFamilies = new QueueFamilies(handle, surface);
-        swapChainCapabilities = new SwapChainCapabilities(handle, surface);
+        swapChainCapabilities = new SurfaceProperties(handle, surface);
         supportedExtensionNames = DeviceCapabilities.getPhysicalDeviceExtensionNamesSupport(handle);
         memoryProperties = VkPhysicalDeviceMemoryProperties.calloc();
         vkGetPhysicalDeviceMemoryProperties(handle, memoryProperties);

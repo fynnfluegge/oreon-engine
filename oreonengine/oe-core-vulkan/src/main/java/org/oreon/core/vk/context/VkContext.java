@@ -7,10 +7,9 @@ import static org.lwjgl.system.MemoryUtil.memUTF8;
 import java.nio.ByteBuffer;
 
 import org.oreon.core.context.EngineContext;
-import org.oreon.core.vk.platform.VkCamera;
 import org.oreon.core.vk.platform.VkWindow;
+import org.oreon.core.vk.scenegraph.VkCamera;
 import org.oreon.core.vk.util.VkUtil;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import lombok.Getter;
 
@@ -18,12 +17,21 @@ public class VkContext extends EngineContext{
 	
 	@Getter
 	private static ByteBuffer[] enabledLayers;
+	@Getter
+	private static VulkanInstance vkInstance;
+	@Getter
+	private static VkResources resources;
+	@Getter
+	private static DeviceManager deviceManager;
 	
 	public static void initialize(){
 		
-		context = new ClassPathXmlApplicationContext("vk-context.xml");
-		registerObject(new VkWindow());
-		registerObject(new VkCamera());
+		init();
+		
+		window = new VkWindow();
+		camera = new VkCamera();
+		resources = new VkResources();
+		deviceManager = new DeviceManager();
 		
 		if (!glfwInit())
 			throw new IllegalStateException("Unable to initialize GLFW");
@@ -39,38 +47,22 @@ public class VkContext extends EngineContext{
 		
 		enabledLayers = layers;
 		
-	    VulkanInstance vulkanInstance = new VulkanInstance(
+	    vkInstance = new VulkanInstance(
 	    		VkUtil.getValidationLayerNames(
 	    				Integer.valueOf(getConfig().getProperties().getProperty("validation.enable")) == 1 ? true : false,
 	    				layers));
-	    VkContext.registerObject(vulkanInstance);
 	    
 	    getWindow().create();
 	}
 	
-	public static VkWindow getWindow(){
-		
-		return context.getBean(VkWindow.class);
-	}
-	
 	public static VkCamera getCamera(){
 		
-		return context.getBean(VkCamera.class);
+		return (VkCamera) camera;
 	}
 	
-	public static VkResources getResources(){
+	public static VkWindow getWindow(){
 		
-		return context.getBean(VkResources.class);
-	}
-	
-	public static DeviceManager getDeviceManager(){
-		
-		return (DeviceManager) context.getBean("DeviceManager");
-	}
-	
-	public static VulkanInstance getVulkanInstance(){
-		
-		return context.getBean(VulkanInstance.class);
+		return (VkWindow) window;
 	}
 	
 }

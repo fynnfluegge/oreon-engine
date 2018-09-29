@@ -87,9 +87,9 @@ public class Skydome extends Renderable{
 	    descriptorSet.updateDescriptorBuffer(uniformBuffer.getHandle(),
 	    		ubo.limit(), 0, 0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);
 	    
-		descriptorSets.add(VkContext.getCamera().getDescriptor().getSet());
+		descriptorSets.add(VkContext.getCamera().getDescriptorSet());
 		descriptorSets.add(descriptorSet);
-		descriptorSetLayouts.add(VkContext.getCamera().getDescriptor().getLayout());
+		descriptorSetLayouts.add(VkContext.getCamera().getDescriptorSetLayout());
 		descriptorSetLayouts.add(descriptorSetLayout);
 		
 		VkVertexInput vertexInput = new VkVertexInput(VertexLayout.POS);
@@ -116,19 +116,19 @@ public class Skydome extends Renderable{
 		
 		VkBuffer vertexBufferObject = VkBufferHelper.createDeviceLocalBuffer(
 				device.getHandle(), memoryProperties,
-				device.getTransferCommandPool().getHandle(),
+				device.getTransferCommandPool(Thread.currentThread().getId()).getHandle(),
 				device.getTransferQueue(),
 				vertexBuffer, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
 
         VkBuffer indexBufferObject = VkBufferHelper.createDeviceLocalBuffer(
         		device.getHandle(), memoryProperties,
-        		device.getTransferCommandPool().getHandle(),
+        		device.getTransferCommandPool(Thread.currentThread().getId()).getHandle(),
         		device.getTransferQueue(),
         		indexBuffer, VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
         
         CommandBuffer mainCommandBuffer = new SecondaryDrawIndexedCmdBuffer(
 	    		device.getHandle(),
-	    		device.getGraphicsCommandPool().getHandle(), 
+	    		device.getGraphicsCommandPool(Thread.currentThread().getId()).getHandle(), 
 	    		graphicsPipeline.getHandle(), graphicsPipeline.getLayoutHandle(),
 	    		VkContext.getResources().getOffScreenFbo().getFrameBuffer().getHandle(),
 	    		VkContext.getResources().getOffScreenFbo().getRenderPass().getHandle(),
@@ -140,7 +140,7 @@ public class Skydome extends Renderable{
         
         CommandBuffer reflectionCommandBuffer = new SecondaryDrawIndexedCmdBuffer(
 	    		device.getHandle(),
-	    		device.getGraphicsCommandPool().getHandle(), 
+	    		device.getGraphicsCommandPool(Thread.currentThread().getId()).getHandle(), 
 	    		reflectionPipeline.getHandle(), reflectionPipeline.getLayoutHandle(),
 	    		VkContext.getResources().getOffScreenReflectionFbo().getFrameBuffer().getHandle(),
 	    		VkContext.getResources().getOffScreenReflectionFbo().getRenderPass().getHandle(),

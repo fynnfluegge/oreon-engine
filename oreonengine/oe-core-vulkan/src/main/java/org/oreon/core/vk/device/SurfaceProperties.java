@@ -1,4 +1,4 @@
-package org.oreon.core.vk.swapchain;
+package org.oreon.core.vk.device;
 
 import static org.lwjgl.system.MemoryUtil.memAllocInt;
 import static org.lwjgl.system.MemoryUtil.memFree;
@@ -18,13 +18,13 @@ import org.oreon.core.vk.util.VkUtil;
 import lombok.Getter;
 
 @Getter
-public class SwapChainCapabilities {
+public class SurfaceProperties {
 	
 	private VkSurfaceCapabilitiesKHR surfaceCapabilities;
 	private VkSurfaceFormatKHR.Buffer surfaceFormats;
 	private IntBuffer presentModes;
 	
-	public SwapChainCapabilities(VkPhysicalDevice physicalDevice, long surface) {
+	public SurfaceProperties(VkPhysicalDevice physicalDevice, long surface) {
 
 		surfaceCapabilities = VkSurfaceCapabilitiesKHR.calloc();
         int err = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, surface, surfaceCapabilities);

@@ -117,7 +117,7 @@ public class VkGUI extends GUI{
 		guiSecondaryCmdBuffers = new LinkedHashMap<String, CommandBuffer>();
 		
 		guiPrimaryCmdBuffer =  new PrimaryCmdBuffer(device.getHandle(),
-				device.getGraphicsCommandPool().getHandle());
+				device.getGraphicsCommandPool(Thread.currentThread().getId()).getHandle());
 		
 		IntBuffer pWaitDstStageMask = memAllocInt(1);
         pWaitDstStageMask.put(0, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT);
@@ -131,7 +131,7 @@ public class VkGUI extends GUI{
 		// fonts Image 
 		VkImage fontsImage = VkImageHelper.loadImageFromFile(
 				device.getHandle(), memoryProperties,
-				device.getTransferCommandPool().getHandle(),
+				device.getTransferCommandPool(Thread.currentThread().getId()).getHandle(),
 				device.getTransferQueue(),
 				"gui/tex/Fonts.png",
 				VK_IMAGE_USAGE_SAMPLED_BIT,
@@ -151,8 +151,9 @@ public class VkGUI extends GUI{
 		
 		// panel mesh buffer
 		panelMeshBuffer = new VkMeshData(device.getHandle(),
-				memoryProperties, device.getTransferCommandPool(), device.getTransferQueue(),
-				UIPanelLoader.load("gui/basicPanel.gui"), VertexLayout.POS2D);
+				memoryProperties, device.getTransferCommandPool(Thread.currentThread().getId()),
+				device.getTransferQueue(), UIPanelLoader.load("gui/basicPanel.gui"),
+				VertexLayout.POS2D);
 		
 		// fullscreen underlay Image resources
 		ShaderPipeline shaderPipeline = new ShaderPipeline(device.getHandle());
@@ -168,13 +169,13 @@ public class VkGUI extends GUI{
         
         VkBuffer vertexBufferObject = VkBufferHelper.createDeviceLocalBuffer(
         		device.getHandle(), memoryProperties,
-        		device.getTransferCommandPool().getHandle(),
+        		device.getTransferCommandPool(Thread.currentThread().getId()).getHandle(),
         		device.getTransferQueue(),
         		vertexBuffer, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
         
         VkBuffer indexBufferObject = VkBufferHelper.createDeviceLocalBuffer(
         		device.getHandle(), memoryProperties,
-        		device.getTransferCommandPool().getHandle(),
+        		device.getTransferCommandPool(Thread.currentThread().getId()).getHandle(),
         		device.getTransferQueue(),
         		indexBuffer, VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
         
@@ -208,7 +209,7 @@ public class VkGUI extends GUI{
         
         underlayImageCmdBuffer = new SecondaryDrawIndexedCmdBuffer(
 				device.getHandle(),
-				device.getGraphicsCommandPool().getHandle(),
+				device.getGraphicsCommandPool(Thread.currentThread().getId()).getHandle(),
 				underlayImagePipeline.getHandle(), underlayImagePipeline.getLayoutHandle(),
 				guiOverlayFbo.getFrameBuffer().getHandle(),
 				guiOverlayFbo.getRenderPass().getHandle(),

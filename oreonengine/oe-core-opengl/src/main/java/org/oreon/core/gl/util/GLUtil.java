@@ -28,7 +28,7 @@ import static org.lwjgl.opengl.GL32.GL_SAMPLE_MASK;
 
 public class GLUtil {
 
-	public static void initialize() {
+	public static void init() {
 
 		glFrontFace(GL_CW);				
 		glEnable(GL_POINT_SPRITE);

@@ -187,7 +187,7 @@ public class OpaqueTransparencyBlending {
 		computePipeline.createComputePipeline(shader);
 
 		cmdBuffer = new ComputeCmdBuffer(device,
-				deviceBundle.getLogicalDevice().getComputeCommandPool().getHandle(),
+				deviceBundle.getLogicalDevice().getComputeCommandPool(Thread.currentThread().getId()).getHandle(),
 				computePipeline.getHandle(), computePipeline.getLayoutHandle(),
 				VkUtil.createLongArray(descriptorSets), width/16, height/16, 1,
 				pushConstants, VK_SHADER_STAGE_COMPUTE_BIT);

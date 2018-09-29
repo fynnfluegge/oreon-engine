@@ -1,4 +1,4 @@
-package org.oreon.core.platform;
+package org.oreon.core.scenegraph;
 
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_A;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_D;
@@ -16,6 +16,7 @@ import org.oreon.core.context.EngineContext;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.math.Vec3f;
 import org.oreon.core.math.Vec4f;
+import org.oreon.core.platform.Input;
 import org.oreon.core.util.BufferUtil;
 import org.oreon.core.util.Constants;
 import org.oreon.core.util.Util;

@@ -103,9 +103,9 @@ public class DeferredLighting {
 		descriptorSets = new ArrayList<DescriptorSet>();
 		List<DescriptorSetLayout> descriptorSetLayouts = new ArrayList<DescriptorSetLayout>();
 		
-		descriptorSets.add(VkContext.getCamera().getDescriptor().getSet());
+		descriptorSets.add(VkContext.getCamera().getDescriptorSet());
 		descriptorSets.add(descriptorSet);
-		descriptorSetLayouts.add(VkContext.getCamera().getDescriptor().getLayout());
+		descriptorSetLayouts.add(VkContext.getCamera().getDescriptorSetLayout());
 		descriptorSetLayouts.add(descriptorSetLayout);
 		
 		int pushConstantRange = Float.BYTES * 1 + Integer.BYTES * 1;

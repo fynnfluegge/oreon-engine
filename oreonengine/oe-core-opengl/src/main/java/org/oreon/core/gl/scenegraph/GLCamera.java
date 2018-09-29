@@ -1,8 +1,8 @@
-package org.oreon.core.gl.platform;
+package org.oreon.core.gl.scenegraph;
 
 import org.oreon.core.gl.memory.GLUniformBuffer;
 import org.oreon.core.math.Vec3f;
-import org.oreon.core.platform.Camera;
+import org.oreon.core.scenegraph.Camera;
 import org.oreon.core.util.Constants;
 
 public class GLCamera extends Camera{

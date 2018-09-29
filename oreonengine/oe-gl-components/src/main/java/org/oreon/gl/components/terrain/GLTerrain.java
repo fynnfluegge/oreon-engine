@@ -2,7 +2,6 @@ package org.oreon.gl.components.terrain;
 
 import java.util.HashMap;
 
-import org.oreon.core.gl.context.GLContext;
 import org.oreon.core.gl.memory.GLPatchVBO;
 import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.gl.scenegraph.GLRenderInfo;
@@ -17,11 +16,13 @@ import lombok.Getter;
 public class GLTerrain extends Node{
 	
 	@Getter
+	private static TerrainConfiguration configuration;
+	@Getter
 	private TerrainQuadtree quadtree;
 		
 	public GLTerrain(GLShaderProgram shader, GLShaderProgram wireframe, GLShaderProgram shadow)
 	{
-		GLContext.registerObject(new TerrainConfiguration());
+		configuration = new TerrainConfiguration();
 		
 		GLPatchVBO buffer  = new GLPatchVBO();
 		buffer.addData(MeshGenerator.TerrainChunkMesh(),16);

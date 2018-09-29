@@ -112,13 +112,13 @@ public class VkDynamicTextPanel extends UITextPanel{
 		
 		VkBuffer vertexBufferObject = VkBufferHelper.createDeviceLocalBuffer(
 				device.getHandle(), memoryProperties,
-				device.getTransferCommandPool().getHandle(),
+				device.getTransferCommandPool(Thread.currentThread().getId()).getHandle(),
 				device.getTransferQueue(),
 				vertexBuffer, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
 
         VkBuffer indexBufferObject = VkBufferHelper.createDeviceLocalBuffer(
         		device.getHandle(), memoryProperties,
-        		device.getTransferCommandPool().getHandle(),
+        		device.getTransferCommandPool(Thread.currentThread().getId()).getHandle(),
         		device.getTransferQueue(),
         		indexBuffer, VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
         
@@ -133,7 +133,7 @@ public class VkDynamicTextPanel extends UITextPanel{
         
 		cmdBuffer = new SecondaryDrawIndexedCmdBuffer(
 				device.getHandle(),
-				deviceBundle.getLogicalDevice().getGraphicsCommandPool().getHandle(),
+				deviceBundle.getLogicalDevice().getGraphicsCommandPool(Thread.currentThread().getId()).getHandle(),
 				graphicsPipeline.getHandle(), graphicsPipeline.getLayoutHandle(),
 				fbo.getFrameBuffer().getHandle(),
 				fbo.getRenderPass().getHandle(),

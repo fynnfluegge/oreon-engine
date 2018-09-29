@@ -249,7 +249,7 @@ public class FFT {
 	public void record(VkDeviceBundle deviceBundle, int N, int stages){
 		
 		fftCommandBuffer = new CommandBuffer(deviceBundle.getLogicalDevice().getHandle(),
-	    		deviceBundle.getLogicalDevice().getComputeCommandPool().getHandle(),
+	    		deviceBundle.getLogicalDevice().getComputeCommandPool(Thread.currentThread().getId()).getHandle(),
 	    		VK_COMMAND_BUFFER_LEVEL_PRIMARY);
 		
 		fftCommandBuffer.beginRecord(VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT);

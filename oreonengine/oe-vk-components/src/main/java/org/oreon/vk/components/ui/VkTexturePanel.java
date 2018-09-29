@@ -71,7 +71,7 @@ public class VkTexturePanel  extends UIElement{
 		
 		VkImage fontsImage = VkImageHelper.loadImageFromFile(
 				device.getHandle(), memoryProperties,
-				device.getTransferCommandPool().getHandle(),
+				device.getTransferCommandPool(Thread.currentThread().getId()).getHandle(),
 				device.getTransferQueue(),
 				imageFile,
 				VK_IMAGE_USAGE_SAMPLED_BIT,
@@ -130,7 +130,7 @@ public class VkTexturePanel  extends UIElement{
         
 		cmdBuffer = new SecondaryDrawIndexedCmdBuffer(
 				device.getHandle(),
-				deviceBundle.getLogicalDevice().getGraphicsCommandPool().getHandle(),
+				deviceBundle.getLogicalDevice().getGraphicsCommandPool(Thread.currentThread().getId()).getHandle(),
 				graphicsPipeline.getHandle(), graphicsPipeline.getLayoutHandle(),
 				fbo.getFrameBuffer().getHandle(),
 				fbo.getRenderPass().getHandle(),

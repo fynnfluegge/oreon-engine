@@ -68,7 +68,7 @@ public class Sun extends Renderable{
 		
 		VkImage sunImage = VkImageHelper.loadImageFromFile(
 				device.getHandle(), memoryProperties,
-				device.getTransferCommandPool().getHandle(),
+				device.getTransferCommandPool(Thread.currentThread().getId()).getHandle(),
 				device.getTransferQueue(),
 				"textures/sun/sun.png",
 				VK_IMAGE_USAGE_SAMPLED_BIT,
@@ -87,7 +87,7 @@ public class Sun extends Renderable{
 		
 		VkImage sunImage_lightScattering = VkImageHelper.loadImageFromFile(
 				device.getHandle(), memoryProperties,
-				device.getTransferCommandPool().getHandle(),
+				device.getTransferCommandPool(Thread.currentThread().getId()).getHandle(),
 				device.getTransferQueue(),
 				"textures/sun/sun_small1.png",
 				VK_IMAGE_USAGE_SAMPLED_BIT,
@@ -110,7 +110,7 @@ public class Sun extends Renderable{
 		
 		VkBuffer vertexBufferObject = VkBufferHelper.createDeviceLocalBuffer(
 				device.getHandle(), memoryProperties,
-				device.getTransferCommandPool().getHandle(),
+				device.getTransferCommandPool(Thread.currentThread().getId()).getHandle(),
 				device.getTransferQueue(),
 				vertexBuffer, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
 		
@@ -138,9 +138,9 @@ public class Sun extends Renderable{
 				sunImageSampler_lightScattering.getHandle(), 1,
 				VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
 	    
-	    descriptorSets.add(VkContext.getCamera().getDescriptor().getSet());
+	    descriptorSets.add(VkContext.getCamera().getDescriptorSet());
 		descriptorSets.add(descriptorSet);
-		descriptorSetLayouts.add(VkContext.getCamera().getDescriptor().getLayout());
+		descriptorSetLayouts.add(VkContext.getCamera().getDescriptorSetLayout());
 		descriptorSetLayouts.add(descriptorSetLayout);
 		
 		int pushConstantRange = Float.BYTES * 16;
@@ -165,7 +165,7 @@ public class Sun extends Renderable{
 	    
 	    CommandBuffer mainCommandBuffer = new SecondaryDrawCmdBuffer(
 	    		device.getHandle(),
-	    		device.getGraphicsCommandPool().getHandle(), 
+	    		device.getGraphicsCommandPool(Thread.currentThread().getId()).getHandle(), 
 	    		graphicsPipeline.getHandle(), graphicsPipeline.getLayoutHandle(),
 	    		VkContext.getResources().getTransparencyFbo().getFrameBuffer().getHandle(),
 	    		VkContext.getResources().getTransparencyFbo().getRenderPass().getHandle(),

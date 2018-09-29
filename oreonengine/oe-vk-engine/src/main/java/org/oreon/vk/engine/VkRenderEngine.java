@@ -103,7 +103,7 @@ public class VkRenderEngine extends RenderEngine implements Runnable{
 		offScreenSecondaryCmdBuffers = new LinkedHashMap<String, CommandBuffer>();
 		transparencySecondaryCmdBuffers = new LinkedHashMap<String, CommandBuffer>();
 		
-        vkInstance = VkContext.getVulkanInstance().getHandle();
+        vkInstance = VkContext.getVkInstance().getHandle();
        
         LongBuffer pSurface = memAllocLong(1);
 	    int err = glfwCreateWindowSurface(vkInstance, EngineContext.getWindow().getId(), null, pSurface);
@@ -147,14 +147,14 @@ public class VkRenderEngine extends RenderEngine implements Runnable{
 	    
 	    // offscreen opaque primary command buffer creation
 	    offScreenPrimaryCmdBuffer =  new PrimaryCmdBuffer(logicalDevice.getHandle(),
-	    		logicalDevice.getGraphicsCommandPool().getHandle());
+	    		logicalDevice.getGraphicsCommandPool(Thread.currentThread().getId()).getHandle());
 	    offScreenSubmitInfo = new SubmitInfo();
 	    offScreenSubmitInfo.setCommandBuffers(offScreenPrimaryCmdBuffer.getHandlePointer());
 	    offScreenSubmitInfo.setSignalSemaphores(offScreenSemaphore.getHandlePointer());
 	    
 	    // offscreen transparency primary command buffer creation
 	    transparencyPrimaryCmdBuffer =  new PrimaryCmdBuffer(logicalDevice.getHandle(),
-	    		logicalDevice.getGraphicsCommandPool().getHandle());
+	    		logicalDevice.getGraphicsCommandPool(Thread.currentThread().getId()).getHandle());
 	    transparencySubmitInfo = new SubmitInfo();
 	    transparencySubmitInfo.setCommandBuffers(transparencyPrimaryCmdBuffer.getHandlePointer());
 	    transparencySubmitInfo.setSignalSemaphores(transparencySemaphore.getHandlePointer());
@@ -226,7 +226,7 @@ public class VkRenderEngine extends RenderEngine implements Runnable{
 	    
 	    // record sample coverage + deferred lighting command buffer
 	    deferredStageCmdBuffer = new CommandBuffer(majorDevice.getLogicalDevice().getHandle(),
-	    		majorDevice.getLogicalDevice().getComputeCommandPool().getHandle(),
+	    		majorDevice.getLogicalDevice().getComputeCommandPool(Thread.currentThread().getId()).getHandle(),
 	    		VK_COMMAND_BUFFER_LEVEL_PRIMARY);
 	    deferredStageCmdBuffer.beginRecord(VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT);
 	    sampleCoverage.record(deferredStageCmdBuffer);
@@ -246,7 +246,7 @@ public class VkRenderEngine extends RenderEngine implements Runnable{
 	    
 	    // record post processing command buffer
 	    postProcessingCmdBuffer = new CommandBuffer(majorDevice.getLogicalDevice().getHandle(),
-	    		majorDevice.getLogicalDevice().getComputeCommandPool().getHandle(),
+	    		majorDevice.getLogicalDevice().getComputeCommandPool(Thread.currentThread().getId()).getHandle(),
 	    		VK_COMMAND_BUFFER_LEVEL_PRIMARY);
 	    postProcessingCmdBuffer.beginRecord(VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT);
 	    if (EngineContext.getConfig().isFxaaEnabled()){
@@ -396,7 +396,7 @@ public class VkRenderEngine extends RenderEngine implements Runnable{
 		swapChain.destroy();
 		EngineContext.getCamera().shutdown();
 		majorDevice.getLogicalDevice().destroy();
-		VkContext.getVulkanInstance().destroy();		
+		VkContext.getVkInstance().destroy();		
 	}
 
 	@Override

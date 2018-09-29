@@ -22,6 +22,7 @@ public class Skydome extends Renderable{
 												   new CullFaceDisable(),
 												   meshBuffer);
 		addComponent(NodeComponentType.MAIN_RENDERINFO, renderInfo);
+		addComponent(NodeComponentType.WIREFRAME_RENDERINFO, renderInfo);
 	}
 	
 //	public void update()
@@ -33,9 +34,6 @@ public class Skydome extends Renderable{
 	
 	public void render() {
 		if (EngineContext.getConfig().isRenderRefraction() && !EngineContext.getConfig().isRenderUnderwater()){
-			return;
-		}
-		if (EngineContext.getConfig().isRenderWireframe()){
 			return;
 		}
 		else {

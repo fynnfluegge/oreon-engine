@@ -78,16 +78,16 @@ public class TerrainNode extends Renderable{
 		
 		if (renderChunk)
 		{	
-			if (EngineContext.getConfig().isRenderWireframe()){
-				getComponents().get(NodeComponentType.WIREFRAME_RENDERINFO).render();
-			}
-			else{
-				getComponents().get(NodeComponentType.MAIN_RENDERINFO).render();
-			}
+			getComponents().get(NodeComponentType.MAIN_RENDERINFO).render();
 		}
 		
 		for(Node child: getChildren())
 			child.render();
+	}
+	
+	public void renderWireframe(){
+		
+		// TODO
 	}
 	
 	public void renderShadows()

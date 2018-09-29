@@ -104,7 +104,7 @@ public class SSAO {
 		kernel = Util.generateRandomKernel4D(kernelSize);
 		
 		generateNoise(device, memoryProperties, descriptorPool,
-				deviceBundle.getLogicalDevice().getComputeCommandPool());
+				deviceBundle.getLogicalDevice().getComputeCommandPool(Thread.currentThread().getId()));
 		
 		ssaoImage = new Image2DDeviceLocal(device, memoryProperties, 
 				width, height, VK_FORMAT_R16G16B16A16_SFLOAT, VK_IMAGE_USAGE_STORAGE_BIT
@@ -127,7 +127,7 @@ public class SSAO {
 		pushConstants.flip();
 		
 		kernelBuffer = VkBufferHelper.createDeviceLocalBuffer(device, memoryProperties,
-        		deviceBundle.getLogicalDevice().getTransferCommandPool().getHandle(),
+        		deviceBundle.getLogicalDevice().getTransferCommandPool(Thread.currentThread().getId()).getHandle(),
         		deviceBundle.getLogicalDevice().getTransferQueue(),
         		BufferUtil.createByteBuffer(kernel),
         		VK_BUFFER_USAGE_STORAGE_BUFFER_BIT);
@@ -171,9 +171,9 @@ public class SSAO {
 		List<DescriptorSet> descriptorSets = new ArrayList<DescriptorSet>();
 		List<DescriptorSetLayout> descriptorSetLayouts = new ArrayList<DescriptorSetLayout>();
 		
-		descriptorSets.add(VkContext.getCamera().getDescriptor().getSet());
+		descriptorSets.add(VkContext.getCamera().getDescriptorSet());
 		descriptorSets.add(ssaoDescriptorSet);
-		descriptorSetLayouts.add(VkContext.getCamera().getDescriptor().getLayout());
+		descriptorSetLayouts.add(VkContext.getCamera().getDescriptorSetLayout());
 		descriptorSetLayouts.add(ssaoDescriptorSetLayout);
 		
 		ssaoPipeline = new VkPipeline(device);
@@ -182,7 +182,7 @@ public class SSAO {
 		ssaoPipeline.createComputePipeline(new ComputeShader(device, "shaders/filter/ssao/ssao.comp.spv"));
 		
 		ssaoCmdBuffer = new ComputeCmdBuffer(device,
-				deviceBundle.getLogicalDevice().getComputeCommandPool().getHandle(),
+				deviceBundle.getLogicalDevice().getComputeCommandPool(Thread.currentThread().getId()).getHandle(),
 				ssaoPipeline.getHandle(), ssaoPipeline.getLayoutHandle(),
 				VkUtil.createLongArray(descriptorSets), width/16, height/16, 1,
 				pushConstants, VK_SHADER_STAGE_COMPUTE_BIT);
@@ -227,7 +227,7 @@ public class SSAO {
 		ssaoBlurPipeline.createComputePipeline(new ComputeShader(device, "shaders/filter/ssao/ssaoBlur.comp.spv"));
 		
 		ssaoBlurCmdBuffer = new ComputeCmdBuffer(device,
-				deviceBundle.getLogicalDevice().getComputeCommandPool().getHandle(),
+				deviceBundle.getLogicalDevice().getComputeCommandPool(Thread.currentThread().getId()).getHandle(),
 				ssaoBlurPipeline.getHandle(), ssaoBlurPipeline.getLayoutHandle(),
 				VkUtil.createLongArray(descriptorSets), width/16, height/16, 1);
 		

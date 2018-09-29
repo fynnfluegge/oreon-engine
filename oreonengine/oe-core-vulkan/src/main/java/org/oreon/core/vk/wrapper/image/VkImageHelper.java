@@ -18,7 +18,6 @@ import static org.lwjgl.vulkan.VK10.VK_QUEUE_FAMILY_IGNORED;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
 import static org.lwjgl.vulkan.VK10.vkCmdBlitImage;
 import static org.lwjgl.vulkan.VK10.vkCmdPipelineBarrier;
-import static org.lwjgl.vulkan.VK10.vkQueueWaitIdle;
 
 import java.nio.ByteBuffer;
 
@@ -34,6 +33,7 @@ import org.oreon.core.vk.command.CommandBuffer;
 import org.oreon.core.vk.command.SubmitInfo;
 import org.oreon.core.vk.image.VkImage;
 import org.oreon.core.vk.image.VkImageLoader;
+import org.oreon.core.vk.synchronization.Fence;
 import org.oreon.core.vk.wrapper.buffer.StagingBuffer;
 import org.oreon.core.vk.wrapper.command.ImageCopyCmdBuffer;
 import org.oreon.core.vk.wrapper.command.ImageLayoutTransitionCmdBuffer;
@@ -103,9 +103,8 @@ public class VkImageHelper {
 				VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, finalLayout,
 				VK_ACCESS_TRANSFER_WRITE_BIT, dstAccessMask,
 				VK_PIPELINE_STAGE_TRANSFER_BIT, dstStageMask, mipLevels);
-		imageMemoryBarrierLayout1.submit(queue);
-		
-		vkQueueWaitIdle(queue);
+		Fence fence = new Fence(device);
+		imageMemoryBarrierLayout1.submit(queue, fence);
 		
 		if (mipmap){
 			generateMipmap(device, commandPool, queue,
@@ -120,6 +119,7 @@ public class VkImageHelper {
 		imageMemoryBarrierLayout1.destroy();
 		imageCopyCmd.destroy();
 		stagingBuffer.destroy();
+		fence.destroy();
 		
 		return image;
 	}

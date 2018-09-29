@@ -9,6 +9,7 @@ import static org.lwjgl.vulkan.KHRSurface.VK_PRESENT_MODE_FIFO_KHR;
 import static org.lwjgl.vulkan.KHRSurface.VK_PRESENT_MODE_IMMEDIATE_KHR;
 import static org.lwjgl.vulkan.KHRSurface.VK_PRESENT_MODE_MAILBOX_KHR;
 import static org.lwjgl.vulkan.KHRSurface.VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR;
+import static org.lwjgl.vulkan.KHRSwapchain.VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 import static org.lwjgl.vulkan.KHRSwapchain.VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
 import static org.lwjgl.vulkan.KHRSwapchain.VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
 import static org.lwjgl.vulkan.KHRSwapchain.vkAcquireNextImageKHR;
@@ -16,15 +17,27 @@ import static org.lwjgl.vulkan.KHRSwapchain.vkCreateSwapchainKHR;
 import static org.lwjgl.vulkan.KHRSwapchain.vkDestroySwapchainKHR;
 import static org.lwjgl.vulkan.KHRSwapchain.vkGetSwapchainImagesKHR;
 import static org.lwjgl.vulkan.KHRSwapchain.vkQueuePresentKHR;
+import static org.lwjgl.vulkan.VK10.VK_ACCESS_COLOR_ATTACHMENT_READ_BIT;
+import static org.lwjgl.vulkan.VK10.VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
 import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
 import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
+import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+import static org.lwjgl.vulkan.VK10.VK_FILTER_NEAREST;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_B8G8R8A8_UNORM;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_ASPECT_COLOR_BIT;
+import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_UNDEFINED;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 import static org.lwjgl.vulkan.VK10.VK_NULL_HANDLE;
 import static org.lwjgl.vulkan.VK10.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
 import static org.lwjgl.vulkan.VK10.VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
+import static org.lwjgl.vulkan.VK10.VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+import static org.lwjgl.vulkan.VK10.VK_SAMPLER_ADDRESS_MODE_REPEAT;
+import static org.lwjgl.vulkan.VK10.VK_SAMPLER_MIPMAP_MODE_NEAREST;
+import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_FRAGMENT_BIT;
 import static org.lwjgl.vulkan.VK10.VK_SHARING_MODE_EXCLUSIVE;
+import static org.lwjgl.vulkan.VK10.VK_SUBPASS_EXTERNAL;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 
 import java.nio.ByteBuffer;
@@ -44,13 +57,19 @@ import org.oreon.core.model.Vertex.VertexLayout;
 import org.oreon.core.util.BufferUtil;
 import org.oreon.core.util.MeshGenerator;
 import org.oreon.core.vk.command.CommandBuffer;
-import org.oreon.core.vk.command.CommandPool;
 import org.oreon.core.vk.command.SubmitInfo;
+import org.oreon.core.vk.descriptor.DescriptorSet;
+import org.oreon.core.vk.descriptor.DescriptorSetLayout;
 import org.oreon.core.vk.device.LogicalDevice;
 import org.oreon.core.vk.device.PhysicalDevice;
 import org.oreon.core.vk.framebuffer.VkFrameBuffer;
 import org.oreon.core.vk.image.VkImageView;
+import org.oreon.core.vk.image.VkSampler;
 import org.oreon.core.vk.memory.VkBuffer;
+import org.oreon.core.vk.pipeline.RenderPass;
+import org.oreon.core.vk.pipeline.ShaderPipeline;
+import org.oreon.core.vk.pipeline.VkPipeline;
+import org.oreon.core.vk.pipeline.VkVertexInput;
 import org.oreon.core.vk.synchronization.Fence;
 import org.oreon.core.vk.synchronization.VkSemaphore;
 import org.oreon.core.vk.util.VkUtil;
@@ -80,9 +99,11 @@ public class SwapChain {
 	private SubmitInfo submitInfo;
 	private VkBuffer vertexBufferObject;
 	private VkBuffer indexBufferObject;
-	private SwapChainPipeline pipeline;
-	private SwapChainRenderPass renderPass;
-	private SwapChainDescriptor descriptor;
+	private VkPipeline pipeline;
+	private RenderPass renderPass;
+	private VkSampler sampler;
+	private DescriptorSet descriptorSet;
+	private DescriptorSetLayout descriptorSetLayout;
 	
 	private VkDevice device;
 	
@@ -116,12 +137,12 @@ public class SwapChain {
 	    
 	    int minImageCount = physicalDevice.getDeviceMinImageCount4TripleBuffering();
 	    
-	    descriptor = new SwapChainDescriptor(device,
-	    		logicalDevice.getDescriptorPool(Thread.currentThread().getId()), imageView);
+	    createDescriptor(logicalDevice.getDescriptorPool(Thread.currentThread().getId()).getHandle(),
+	    		imageView);
 	    
-	    renderPass = new SwapChainRenderPass(device, imageFormat);
-	    pipeline = new SwapChainPipeline(device, renderPass.getHandle(),
-	    		extent, descriptor.getLayout().getHandlePointer());
+	    createRenderPass(imageFormat);
+	    createPipeline(renderPass.getHandle(),
+	    		descriptorSetLayout.getHandlePointer());
 	    
 		VkSwapchainCreateInfoKHR swapchainCreateInfo = VkSwapchainCreateInfoKHR.calloc()
 				.sType(VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR)
@@ -175,28 +196,80 @@ public class SwapChain {
         
         vertexBufferObject = VkBufferHelper.createDeviceLocalBuffer(device,
         		physicalDevice.getMemoryProperties(),
-        		logicalDevice.getTransferCommandPool().getHandle(),
+        		logicalDevice.getTransferCommandPool(Thread.currentThread().getId()).getHandle(),
         		logicalDevice.getTransferQueue(),
         		vertexBuffer, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
         
         indexBufferObject = VkBufferHelper.createDeviceLocalBuffer(device,
         		physicalDevice.getMemoryProperties(),
-        		logicalDevice.getTransferCommandPool().getHandle(),
+        		logicalDevice.getTransferCommandPool(Thread.currentThread().getId()).getHandle(),
         		logicalDevice.getTransferQueue(),
         		indexBuffer, VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
         
-        createRenderCommandBuffers(logicalDevice.getGraphicsCommandPool(),
+        createRenderCommandBuffers(logicalDevice.getGraphicsCommandPool(Thread.currentThread().getId()).getHandle(),
         		renderPass.getHandle(), 
         		vertexBufferObject.getHandle(),
 				indexBufferObject.getHandle(),
 				fullScreenQuad.getIndices().length,
-				VkUtil.createLongArray(descriptor.getSet()));
+				VkUtil.createLongArray(descriptorSet));
         
         drawFence = new Fence(device);
         
         submitInfo = new SubmitInfo();
         submitInfo.setSignalSemaphores(renderCompleteSemaphore.getHandlePointer());
         submitInfo.setFence(drawFence);
+	}
+	
+	public void createDescriptor(long descriptorPool, long imageView){
+		
+		descriptorSetLayout = new DescriptorSetLayout(device,1);
+	    descriptorSetLayout.addLayoutBinding(0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+	    						VK_SHADER_STAGE_FRAGMENT_BIT);
+	    descriptorSetLayout.create();
+	    
+	    sampler = new VkSampler(device, VK_FILTER_NEAREST, false, 0, 
+	    		VK_SAMPLER_MIPMAP_MODE_NEAREST, 0, VK_SAMPLER_ADDRESS_MODE_REPEAT);
+	    
+	    descriptorSet = new DescriptorSet(device, descriptorPool, descriptorSetLayout.getHandlePointer());
+	    descriptorSet.updateDescriptorImageBuffer(imageView, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+	    		sampler.getHandle(), 0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
+	}
+	
+	public void createRenderPass(int imageFormat){
+		
+		renderPass = new RenderPass(device);
+		renderPass.addColorAttachment(0, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, imageFormat, 1,
+				VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
+		renderPass.addSubpassDependency(VK_SUBPASS_EXTERNAL, 0, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+	    		VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, 0,
+	    		VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT, 0);
+		renderPass.createSubpass();
+		renderPass.createRenderPass();
+	}
+	
+	public void createPipeline(long renderPass, LongBuffer layouts){
+		
+		ShaderPipeline shaderPipeline = new ShaderPipeline(device);
+	    shaderPipeline.createVertexShader("shaders/quad/quad.vert.spv");
+	    shaderPipeline.createFragmentShader("shaders/quad/quad.frag.spv");
+	    shaderPipeline.createShaderPipeline();
+	    
+	    VkVertexInput vertexInputInfo = new VkVertexInput(VertexLayout.POS_UV);
+	    
+	    pipeline = new VkPipeline(device);
+	    pipeline.setVertexInput(vertexInputInfo);
+	    pipeline.setInputAssembly(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
+	    pipeline.setViewportAndScissor(extent.width(), extent.height());
+	    pipeline.setRasterizer();
+	    pipeline.setMultisamplingState(1);
+	    pipeline.addColorBlendAttachment();
+	    pipeline.setColorBlendState();
+	    pipeline.setDepthAndStencilTest(false);
+	    pipeline.setDynamicState();
+	    pipeline.setLayout(layouts);
+	    pipeline.createGraphicsPipeline(shaderPipeline, renderPass);
+	    
+	    shaderPipeline.destroy();
 	}
 	
 	public void createImages(){
@@ -249,7 +322,7 @@ public class SwapChain {
         }
 	}
 	
-	public void createRenderCommandBuffers(CommandPool commandPool, long renderPass,
+	public void createRenderCommandBuffers(long commandPool, long renderPass,
 										   long vertexBuffer, long indexBuffer, int indexCount,
 										   long[] descriptorSets){
 		
@@ -258,7 +331,7 @@ public class SwapChain {
 		for (VkFrameBuffer frameBuffer : frameBuffers){
 			
 			CommandBuffer commandBuffer = new DrawCmdBuffer(
-					device, commandPool.getHandle(), pipeline.getHandle(),
+					device, commandPool, pipeline.getHandle(),
 					pipeline.getLayoutHandle(), renderPass,
 					frameBuffer.getHandle(), extent.width(), extent.height(),
 					1, 0, descriptorSets, vertexBuffer, indexBuffer, indexCount);
@@ -307,7 +380,9 @@ public class SwapChain {
 		indexBufferObject.destroy();
 		renderCompleteSemaphore.destroy();
 		imageAcquiredSemaphore.destroy();
-		descriptor.destroy();
+		descriptorSet.destroy();
+		descriptorSetLayout.destroy();
+		sampler.destroy();
 		pipeline.destroy();
 		renderPass.destroy();
 		drawFence.destroy();

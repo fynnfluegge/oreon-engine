@@ -46,7 +46,7 @@ public class Planet extends Node{
 		ByteBuffer vertexBuffer = BufferUtil.createByteBuffer(mesh);
 		VkBuffer vertexBufferObject = VkBufferHelper.createDeviceLocalBuffer(
 				device.getHandle(), memoryProperties,
-				device.getTransferCommandPool().getHandle(),
+				device.getTransferCommandPool(Thread.currentThread().getId()).getHandle(),
 				device.getTransferQueue(),
 				vertexBuffer, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
 		
@@ -70,8 +70,8 @@ public class Planet extends Node{
 	    
 	    List<DescriptorSet> descriptorSets = new ArrayList<DescriptorSet>();
 		List<DescriptorSetLayout> descriptorSetLayouts = new ArrayList<DescriptorSetLayout>();
-	    descriptorSets.add(VkContext.getCamera().getDescriptor().getSet());
-		descriptorSetLayouts.add(VkContext.getCamera().getDescriptor().getLayout());
+	    descriptorSets.add(VkContext.getCamera().getDescriptorSet());
+		descriptorSetLayouts.add(VkContext.getCamera().getDescriptorSetLayout());
 	    
 	    VkRenderInfo renderInfo = VkRenderInfo.builder().vertexInput(vertexInput)
 	    		.shaderPipeline(shaderPipeline).descriptorSets(descriptorSets)

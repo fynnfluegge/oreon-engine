@@ -2,7 +2,7 @@ package org.oreon.core.system;
 
 import org.oreon.core.context.Configuration;
 import org.oreon.core.context.EngineContext;
-import org.oreon.core.platform.Camera;
+import org.oreon.core.scenegraph.Camera;
 import org.oreon.core.scenegraph.Scenegraph;
 
 import lombok.Getter;

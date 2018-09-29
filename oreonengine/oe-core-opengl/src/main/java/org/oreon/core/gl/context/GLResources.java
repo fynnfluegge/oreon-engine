@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 public class GLResources {
 	
-	private GLFrameBufferObject offScreenFbo;
+	private GLFrameBufferObject opaqueSceneFbo;
 	private GLTexture sceneDepthMap;
 	private GLTexture underwaterDudvMap;
 	private GLTexture underwaterCausticsMap;

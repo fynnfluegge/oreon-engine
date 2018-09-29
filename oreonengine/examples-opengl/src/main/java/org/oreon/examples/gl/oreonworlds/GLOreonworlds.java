@@ -13,7 +13,7 @@ public class GLOreonworlds {
 
 	public static void main(String[] args) {
 
-		GLContext.initialize();
+		GLContext.create();
 		
 		CoreEngine coreEngine = new CoreEngine();
 		

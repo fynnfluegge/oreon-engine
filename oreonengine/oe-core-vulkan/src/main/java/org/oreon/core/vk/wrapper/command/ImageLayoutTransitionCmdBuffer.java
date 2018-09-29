@@ -6,6 +6,7 @@ import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkQueue;
 import org.oreon.core.vk.command.CommandBuffer;
 import org.oreon.core.vk.command.SubmitInfo;
+import org.oreon.core.vk.synchronization.Fence;
 
 public class ImageLayoutTransitionCmdBuffer extends CommandBuffer{
 	
@@ -27,6 +28,14 @@ public class ImageLayoutTransitionCmdBuffer extends CommandBuffer{
 		
 		SubmitInfo submitInfo = new SubmitInfo(getHandlePointer());
 		submitInfo.submit(queue);
+	}
+	
+	public void submit(VkQueue queue, Fence fence){
+		
+		SubmitInfo submitInfo = new SubmitInfo(getHandlePointer());
+		submitInfo.setFence(fence);
+		submitInfo.submit(queue);
+		fence.waitForFence();
 	}
 
 }

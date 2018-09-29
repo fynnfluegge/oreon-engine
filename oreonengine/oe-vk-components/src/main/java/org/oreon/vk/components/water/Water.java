@@ -176,7 +176,7 @@ public class Water extends Renderable{
 		
 		image_dudv = VkImageHelper.loadImageFromFileMipmap(
 				device.getHandle(), memoryProperties,
-				device.getGraphicsCommandPool().getHandle(),
+				device.getGraphicsCommandPool(Thread.currentThread().getId()).getHandle(),
 				device.getGraphicsQueue(),
 				"textures/water/dudv/dudv1.jpg",
 				VK_IMAGE_USAGE_SAMPLED_BIT,
@@ -315,9 +315,9 @@ public class Water extends Renderable{
 	    List<DescriptorSet> descriptorSets = new ArrayList<DescriptorSet>();
 		List<DescriptorSetLayout> descriptorSetLayouts = new ArrayList<DescriptorSetLayout>();
 		
-		descriptorSets.add(VkContext.getCamera().getDescriptor().getSet());
+		descriptorSets.add(VkContext.getCamera().getDescriptorSet());
 		descriptorSets.add(descriptorSet);
-		descriptorSetLayouts.add(VkContext.getCamera().getDescriptor().getLayout());
+		descriptorSetLayouts.add(VkContext.getCamera().getDescriptorSetLayout());
 		descriptorSetLayouts.add(descriptorSetLayout);
 	    
 	    VkVertexInput vertexInput = new VkVertexInput(VertexLayout.POS2D);
@@ -328,7 +328,7 @@ public class Water extends Renderable{
 		
 		VkBuffer vertexBufferObject = VkBufferHelper.createDeviceLocalBuffer(
 				device.getHandle(), memoryProperties,
-				device.getTransferCommandPool().getHandle(),
+				device.getTransferCommandPool(Thread.currentThread().getId()).getHandle(),
 				device.getTransferQueue(),
 				vertexBuffer, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
 		
@@ -364,7 +364,7 @@ public class Water extends Renderable{
 				16);
 		
 		CommandBuffer commandBuffer = new SecondaryDrawCmdBuffer(
-	    		device.getHandle(), device.getGraphicsCommandPool().getHandle(), 
+	    		device.getHandle(), device.getGraphicsCommandPool(Thread.currentThread().getId()).getHandle(), 
 	    		graphicsPipeline.getHandle(), graphicsPipeline.getLayoutHandle(),
 	    		VkContext.getResources().getOffScreenFbo().getFrameBuffer().getHandle(),
 	    		VkContext.getResources().getOffScreenFbo().getRenderPass().getHandle(),
@@ -418,9 +418,9 @@ public class Water extends Renderable{
 	    		VK_IMAGE_LAYOUT_GENERAL, -1,
 	    		2, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
 		
-		descriptorSets.add(VkContext.getCamera().getDescriptor().getSet());
+		descriptorSets.add(VkContext.getCamera().getDescriptorSet());
 		descriptorSets.add(descriptorSetReflection);
-		descriptorSetLayouts.add(VkContext.getCamera().getDescriptor().getLayout());
+		descriptorSetLayouts.add(VkContext.getCamera().getDescriptorSetLayout());
 		descriptorSetLayouts.add(descriptorSetLayout);
 		
 		DescriptorSet descriptorSetRefraction = new DescriptorSet(device.getHandle(),
@@ -446,7 +446,7 @@ public class Water extends Renderable{
 						VK_SHADER_STAGE_COMPUTE_BIT));
 		
 		deferredReflectionCmdBuffer = new ComputeCmdBuffer(device.getHandle(),
-				device.getComputeCommandPool().getHandle(),
+				device.getComputeCommandPool(Thread.currentThread().getId()).getHandle(),
 				deferredReflectionPipeline.getHandle(),
 				deferredReflectionPipeline.getLayoutHandle(),
 				VkUtil.createLongArray(descriptorSets),
@@ -462,17 +462,17 @@ public class Water extends Renderable{
 		descriptorSets.set(1, descriptorSetRefraction);
 		
 		deferredRefractionCmdBuffer = new ComputeCmdBuffer(device.getHandle(),
-				device.getComputeCommandPool().getHandle(),
+				device.getComputeCommandPool(Thread.currentThread().getId()).getHandle(),
 				deferredRefractionPipeline.getHandle(),
 				deferredRefractionPipeline.getLayoutHandle(),
 				VkUtil.createLongArray(descriptorSets),
 				offScreenReflecRefracFbo.getWidth()/8, offScreenReflecRefracFbo.getHeight()/8, 1);
 		
 		offscreenReflectionCmdBuffer = new PrimaryCmdBuffer(device.getHandle(), 
-				device.getComputeCommandPool().getHandle());
+				device.getComputeCommandPool(Thread.currentThread().getId()).getHandle());
 		
 		offscreenRefractionCmdBuffer = new PrimaryCmdBuffer(device.getHandle(), 
-				device.getComputeCommandPool().getHandle());
+				device.getComputeCommandPool(Thread.currentThread().getId()).getHandle());
 		
 		deferredReflectionFence = new Fence(device.getHandle());
 		deferredRefractionFence = new Fence(device.getHandle());
@@ -504,7 +504,8 @@ public class Water extends Renderable{
 		deferredRefractionSubmitInfo.setFence(deferredRefractionFence);
 		
 		reflectionMipmapGenerationCmd = new MipMapGenerationCmdBuffer(device.getHandle(),
-				device.getGraphicsCommandPool().getHandle(), deferredReflectionImage.getHandle(),
+				device.getGraphicsCommandPool(Thread.currentThread().getId()).getHandle(),
+				deferredReflectionImage.getHandle(),
 				offScreenReflecRefracFbo.getWidth(), offScreenReflecRefracFbo.getHeight(),
 				Util.getLog2N(offScreenReflecRefracFbo.getWidth()),
 				VK_IMAGE_LAYOUT_UNDEFINED, 0, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
@@ -514,7 +515,8 @@ public class Water extends Renderable{
 		reflectionMipmapSubmitInfo.setCommandBuffers(reflectionMipmapGenerationCmd.getHandlePointer());
 		
 		refractionMipmapGenerationCmd = new MipMapGenerationCmdBuffer(device.getHandle(),
-				device.getGraphicsCommandPool().getHandle(), deferredRefractionImage.getHandle(),
+				device.getGraphicsCommandPool(Thread.currentThread().getId()).getHandle(),
+				deferredRefractionImage.getHandle(),
 				offScreenReflecRefracFbo.getWidth(), offScreenReflecRefracFbo.getHeight(),
 				Util.getLog2N(offScreenReflecRefracFbo.getWidth()),
 				VK_IMAGE_LAYOUT_UNDEFINED, 0, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,

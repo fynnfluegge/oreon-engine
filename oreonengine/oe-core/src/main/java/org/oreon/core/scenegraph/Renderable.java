@@ -3,8 +3,6 @@
 import java.util.HashMap;
 import java.util.Map;
 
-import org.oreon.core.context.EngineContext;
-
 public class Renderable extends Node{
 
 	private HashMap<NodeComponentType, NodeComponent> components;
@@ -43,15 +41,9 @@ public class Renderable extends Node{
 	
 	public void render()
 	{
-		if (EngineContext.getConfig().isRenderWireframe()){
-			if (components.containsKey(NodeComponentType.WIREFRAME_RENDERINFO)){
-				components.get(NodeComponentType.WIREFRAME_RENDERINFO).render();
-			}
-		}
-		else{
-			if (components.containsKey(NodeComponentType.MAIN_RENDERINFO)){
-				components.get(NodeComponentType.MAIN_RENDERINFO).render();
-			}
+		
+		if (components.containsKey(NodeComponentType.MAIN_RENDERINFO)){
+			components.get(NodeComponentType.MAIN_RENDERINFO).render();
 		}
 		
 		super.render();

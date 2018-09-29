@@ -1,6 +1,20 @@
 package org.oreon.vk.components.fft;
 
-import lombok.Getter;
+import static org.lwjgl.system.MemoryUtil.memAlloc;
+import static org.lwjgl.system.MemoryUtil.memFree;
+import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_STORAGE_BUFFER_BIT;
+import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_STORAGE_IMAGE;
+import static org.lwjgl.vulkan.VK10.VK_FORMAT_R32G32B32A32_SFLOAT;
+import static org.lwjgl.vulkan.VK10.VK_IMAGE_ASPECT_COLOR_BIT;
+import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_GENERAL;
+import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_SAMPLED_BIT;
+import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_STORAGE_BIT;
+import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_COMPUTE_BIT;
+
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
+
 import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
 import org.lwjgl.vulkan.VkQueue;
@@ -24,12 +38,7 @@ import org.oreon.core.vk.wrapper.command.ComputeCmdBuffer;
 import org.oreon.core.vk.wrapper.descriptor.VkDescriptor;
 import org.oreon.core.vk.wrapper.image.Image2DDeviceLocal;
 
-import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
-
-import static org.lwjgl.system.MemoryUtil.memAlloc;
-import static org.lwjgl.system.MemoryUtil.memFree;
-import static org.lwjgl.vulkan.VK10.*;
+import lombok.Getter;
 
 public class TwiddleFactors {
 
@@ -56,7 +65,7 @@ public class TwiddleFactors {
 		
 		VkBuffer bitReversedIndicesBuffer = VkBufferHelper.createDeviceLocalBuffer(device,
 				memoryProperties,
-        		deviceBundle.getLogicalDevice().getTransferCommandPool().getHandle(),
+        		deviceBundle.getLogicalDevice().getTransferCommandPool(Thread.currentThread().getId()).getHandle(),
         		deviceBundle.getLogicalDevice().getTransferQueue(),
         		BufferUtil.createByteBuffer(Util.initBitReversedIndices(n)),
         		VK_BUFFER_USAGE_STORAGE_BUFFER_BIT);
@@ -77,7 +86,7 @@ public class TwiddleFactors {
 		pipeline.createComputePipeline(computeShader);
 		
 		CommandBuffer commandBuffer = new ComputeCmdBuffer(device,
-				deviceBundle.getLogicalDevice().getComputeCommandPool().getHandle(),
+				deviceBundle.getLogicalDevice().getComputeCommandPool(Thread.currentThread().getId()).getHandle(),
 				pipeline.getHandle(), pipeline.getLayoutHandle(),
 				VkUtil.createLongArray(descriptor.getDescriptorSet()),
 				log_2_n, n/16, 1,

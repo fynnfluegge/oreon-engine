@@ -70,7 +70,7 @@ public class H0k {
 		
 		VkImage noise0Image = VkImageHelper.loadImageFromFile(
 				device, memoryProperties,
-				deviceBundle.getLogicalDevice().getTransferCommandPool().getHandle(),
+				deviceBundle.getLogicalDevice().getTransferCommandPool(Thread.currentThread().getId()).getHandle(),
 				deviceBundle.getLogicalDevice().getTransferQueue(),
 				"textures/noise/Noise" + N + "_0.jpg",
 				VK_IMAGE_USAGE_STORAGE_BIT,
@@ -84,7 +84,7 @@ public class H0k {
 		
 		VkImage noise1Image = VkImageHelper.loadImageFromFile(
 				device, memoryProperties,
-				deviceBundle.getLogicalDevice().getTransferCommandPool().getHandle(),
+				deviceBundle.getLogicalDevice().getTransferCommandPool(Thread.currentThread().getId()).getHandle(),
 				deviceBundle.getLogicalDevice().getTransferQueue(),
 				"textures/noise/Noise" + N + "_1.jpg",
 				VK_IMAGE_USAGE_STORAGE_BIT,
@@ -98,7 +98,7 @@ public class H0k {
 		
 		VkImage noise2Image = VkImageHelper.loadImageFromFile(
 				device, memoryProperties,
-				deviceBundle.getLogicalDevice().getTransferCommandPool().getHandle(),
+				deviceBundle.getLogicalDevice().getTransferCommandPool(Thread.currentThread().getId()).getHandle(),
 				deviceBundle.getLogicalDevice().getTransferQueue(),
 				"textures/noise/Noise" + N + "_2.jpg",
 				VK_IMAGE_USAGE_STORAGE_BIT,
@@ -112,7 +112,7 @@ public class H0k {
 		
 		VkImage noise3Image = VkImageHelper.loadImageFromFile(
 				device, memoryProperties,
-				deviceBundle.getLogicalDevice().getTransferCommandPool().getHandle(),
+				deviceBundle.getLogicalDevice().getTransferCommandPool(Thread.currentThread().getId()).getHandle(),
 				deviceBundle.getLogicalDevice().getTransferQueue(),
 				"textures/noise/Noise" + N + "_3.jpg",
 				VK_IMAGE_USAGE_STORAGE_BIT,
@@ -146,7 +146,7 @@ public class H0k {
 		pipeline.createComputePipeline(new ComputeShader(device, "shaders/fft/h0k.comp.spv"));
 		
 		CommandBuffer commandBuffer = new ComputeCmdBuffer(device,
-				deviceBundle.getLogicalDevice().getComputeCommandPool().getHandle(),
+				deviceBundle.getLogicalDevice().getComputeCommandPool(Thread.currentThread().getId()).getHandle(),
 				pipeline.getHandle(), pipeline.getLayoutHandle(),
 				VkUtil.createLongArray(descriptor.getDescriptorSet()), N/16, N/16, 1,
 				pushConstants, VK_SHADER_STAGE_COMPUTE_BIT);

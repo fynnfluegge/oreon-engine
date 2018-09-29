@@ -8,27 +8,32 @@ import org.lwjgl.opengl.GL40;
 import org.lwjgl.opengl.GL42;
 import org.lwjgl.opengl.GL43;
 import org.oreon.core.context.EngineContext;
-import org.oreon.core.gl.platform.GLCamera;
 import org.oreon.core.gl.platform.GLWindow;
+import org.oreon.core.gl.scenegraph.GLCamera;
 import org.oreon.core.gl.util.GLUtil;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 
 @Log4j
 public class GLContext extends EngineContext{
 	
-	public static void initialize(){
+	@Getter
+	private static GLResources resources;
+	
+	public static void create(){
 		
-		context = new ClassPathXmlApplicationContext("gl-context.xml");
-		registerObject(new GLWindow());
-		registerObject(new GLCamera());
+		init();
+		
+		camera = new GLCamera();
+		window = new GLWindow(); 
+		resources = new GLResources();
 
 		if (!glfwInit())
 			throw new IllegalStateException("Unable to initialize GLFW");
 
 		// create OpenGL Context
-		getWindow().create();
+		window.create();
 		
 		log.info("OpenGL version: " + GL11.glGetString(GL11.GL_VERSION) + " bytes");
 		log.info("Max Geometry Uniform Blocks: " + GL11.glGetInteger(GL31.GL_MAX_GEOMETRY_UNIFORM_BLOCKS));
@@ -38,22 +43,17 @@ public class GLContext extends EngineContext{
 		log.info("Max SSBO Block Size: " + GL11.glGetInteger(GL43.GL_MAX_SHADER_STORAGE_BLOCK_SIZE) + " bytes");	
 		log.info("Max Image Bindings: " + GL11.glGetInteger(GL42.GL_MAX_IMAGE_UNITS));
 
-		GLUtil.initialize();
-	}
-	
-	public static GLWindow getWindow(){
-		
-		return context.getBean(GLWindow.class);
+		GLUtil.init();
 	}
 	
 	public static GLCamera getCamera(){
 		
-		return context.getBean(GLCamera.class);
+		return (GLCamera) camera;
 	}
 	
-	public static GLResources getResources(){
+	public static GLWindow getWindow(){
 		
-		return context.getBean(GLResources.class);
+		return (GLWindow) window;
 	}
 
 }

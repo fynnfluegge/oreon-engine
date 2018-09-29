@@ -16,6 +16,7 @@ import static org.lwjgl.vulkan.VK10.vkGetDeviceQueue;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.vulkan.VkDevice;
@@ -39,19 +40,21 @@ public class LogicalDevice {
 	private VkQueue computeQueue;
 	private VkQueue transferQueue;
 	
-	private CommandPool graphicsCommandPool;
-	private CommandPool computeCommandPool;
-	private CommandPool transferCommandPool;
-	
 	private int graphicsQueueFamilyIndex;
 	private int computeQueueFamilyIndex;
 	private int transferQueueFamilyIndex;
 	
 	private HashMap<Long, DescriptorPool> descriptorPools;
+	private HashMap<Long, CommandPool> graphicsCommandPools;
+	private HashMap<Long, CommandPool> computeCommandPools;
+	private HashMap<Long, CommandPool> transferCommandPools;
 	
 	public LogicalDevice(PhysicalDevice physicalDevice, float priority){
 		
 		descriptorPools = new HashMap<Long, DescriptorPool>();
+		graphicsCommandPools = new HashMap<Long, CommandPool>();
+		computeCommandPools = new HashMap<Long, CommandPool>();
+		transferCommandPools = new HashMap<Long, CommandPool>();
 		
 		FloatBuffer pQueuePriorities = memAllocFloat(1).put(priority);
         pQueuePriorities.flip();
@@ -153,23 +156,28 @@ public class LogicalDevice {
         
         // create Queues and CommandPools
         graphicsQueue = getDeviceQueue(graphicsQueueFamilyIndex,0);
-        graphicsCommandPool = new CommandPool(handle, graphicsQueueFamilyIndex);
+        graphicsCommandPools.put(Thread.currentThread().getId(),
+        		new CommandPool(handle, graphicsQueueFamilyIndex));
         
         if (graphicsQueueFamilyIndex == computeQueueFamilyIndex){
         	computeQueue = graphicsQueue;
-        	computeCommandPool = graphicsCommandPool;
+        	computeCommandPools.put(Thread.currentThread().getId(),
+        			graphicsCommandPools.get(Thread.currentThread().getId()));
         }
         else{
         	computeQueue = getDeviceQueue(computeQueueFamilyIndex,0);
-        	computeCommandPool = new CommandPool(handle, computeQueueFamilyIndex);
+        	computeCommandPools.put(Thread.currentThread().getId(),
+        			new CommandPool(handle, computeQueueFamilyIndex));
         }
         if (graphicsQueueFamilyIndex == transferQueueFamilyIndex){
         	transferQueue = graphicsQueue;
-        	transferCommandPool = graphicsCommandPool;
+        	transferCommandPools.put(Thread.currentThread().getId(),
+        			graphicsCommandPools.get(Thread.currentThread().getId()));
         }
         else{
         	transferQueue = getDeviceQueue(transferQueueFamilyIndex,0);
-        	transferCommandPool = new CommandPool(handle, transferQueueFamilyIndex);
+        	transferCommandPools.put(Thread.currentThread().getId(),
+        			new CommandPool(handle, transferQueueFamilyIndex));
         }
         
         deviceCreateInfo.free();
@@ -198,24 +206,45 @@ public class LogicalDevice {
 			descriptorPools.get(key).destroy();
 		}
 		
-		graphicsCommandPool.destroy();
+		for (Entry<Long, CommandPool> entry : graphicsCommandPools.entrySet()){
+			entry.getValue().destroy();
+		}
 		if (graphicsQueueFamilyIndex != computeQueueFamilyIndex){
-			computeCommandPool.destroy();
+			for (Entry<Long, CommandPool> entry : computeCommandPools.entrySet()){
+				entry.getValue().destroy();
+			}
 		}
 		if (graphicsQueueFamilyIndex != transferQueueFamilyIndex){
-			transferCommandPool.destroy();
+			for (Entry<Long, CommandPool> entry : transferCommandPools.entrySet()){
+				entry.getValue().destroy();
+			}
 		}
 		vkDestroyDevice(handle, null);
 	}
 	
-	public void addDescriptorPool(long id, DescriptorPool descriptorPool){
+	public void addDescriptorPool(long threadId, DescriptorPool descriptorPool){
 		
-		descriptorPools.put(id, descriptorPool);
+		descriptorPools.put(threadId, descriptorPool);
 	}
 	
-	public DescriptorPool getDescriptorPool(long id){
+	public DescriptorPool getDescriptorPool(long threadId){
 		
-		return descriptorPools.get(id);
+		return descriptorPools.get(threadId);
+	}
+	
+	public CommandPool getGraphicsCommandPool(long threadId){
+		
+		return graphicsCommandPools.get(threadId);
+	}
+	
+	public CommandPool getComputeCommandPool(long threadId){
+		
+		return computeCommandPools.get(threadId);
+	}
+	
+	public CommandPool getTransferCommandPool(long threadId){
+		
+		return transferCommandPools.get(threadId);
 	}
 	
 }
