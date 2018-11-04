@@ -12,17 +12,17 @@ Both OpenGL and the next generation graphics API Vulkan is supported!
 * Oreon Engine project uses [lombok](https://projectlombok.org/).
   Please download the latest [release](https://projectlombok.org/download) of lombok and run the .jar to install lombok plugin into Eclipse.
 
-* Getting started guide for Eclipse available [here](http://oreonengine.github.io/oreon-engine/_navigation/Getting_Started.html).
+* Getting started guide for Eclipse available [here](http://fynnfluegge.github.io/oreon-engine/_navigation/Getting_Started.html).
 
 ## Example Open World Ocean OpenGL Demo
-* [examples-opengl](https://github.com/oreonengine/oreon-engine/tree/master/oreonengine/examples-opengl)
-  [GLOreonWorlds](https://github.com/oreonengine/oreon-engine/blob/master/oreonengine/examples-opengl/src/main/java/org/oreon/examples/gl/oreonworlds/GLOreonworlds.java)
+* [examples-opengl](https://github.com/fynnfluegge/oreon-engine/tree/master/oreonengine/examples-opengl)
+  [GLOreonWorlds](https://github.com/fynnfluegge/oreon-engine/blob/master/oreonengine/examples-opengl/src/main/java/org/oreon/examples/gl/oreonworlds/GLOreonworlds.java)
 
 <img src="docs/_images/thumbnail4.png" width="500px">
 
 ## Example Vulkan Ocean Demo
-* [examples-vulkan](https://github.com/oreonengine/oreon-engine/tree/master/oreonengine/examples-vulkan)
-  [VkOrenworlds](https://github.com/oreonengine/oreon-engine/blob/master/oreonengine/examples-vulkan/src/main/java/org/oreon/examples/vk/oreonworlds/VkOreonworlds.java)
+* [examples-vulkan](https://github.com/fynnfluegge/oreon-engine/tree/master/oreonengine/examples-vulkan)
+  [VkOrenworlds](https://github.com/fynnfluegge/oreon-engine/blob/master/oreonengine/examples-vulkan/src/main/java/org/oreon/examples/vk/oreonworlds/VkOreonworlds.java)
 
 ## Camera Control
 * Move: W, A, S, D
