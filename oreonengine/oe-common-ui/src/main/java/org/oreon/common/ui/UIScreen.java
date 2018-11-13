@@ -1,5 +1,8 @@
 package org.oreon.common.ui;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.oreon.core.scenegraph.RenderList;
 
 import lombok.Getter;
@@ -9,37 +12,25 @@ public class UIScreen {
 	
 	@Getter
 	@Setter
-	private UIElement[] elements;
+	private List<UIElement> elements = new ArrayList<UIElement>();
 	
 	public void render()
 	{
-		for (UIElement element: elements)
-		{
-			element.render();
-		}
+		elements.forEach(element -> element.render());
 	}
 	
 	public void update()
 	{
-		for (UIElement element: elements)
-		{
-			element.update();
-		}
+		elements.forEach(element -> element.update());
 	}
 	
-	public void record(RenderList renderList){
-
-		for (UIElement element: elements)
-		{
-			element.record(renderList);
-		}
+	public void record(RenderList renderList)
+	{
+		elements.forEach(element -> element.record(renderList));
 	}
 	
-	public void shutdown(){
-
-		for (UIElement element: elements)
-		{
-			element.shutdown();
-		}
+	public void shutdown()
+	{
+		elements.forEach(element -> element.shutdown());
 	}
 }

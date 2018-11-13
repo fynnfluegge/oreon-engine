@@ -5,8 +5,6 @@ import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glFinish;
 import static org.lwjgl.opengl.GL11.glViewport;
 
-import java.util.Map.Entry;
-
 import org.lwjgl.glfw.GLFW;
 import org.oreon.core.context.EngineContext;
 import org.oreon.core.gl.context.GLContext;
@@ -21,7 +19,6 @@ import org.oreon.core.gl.util.GLUtil;
 import org.oreon.core.instanced.InstancedHandler;
 import org.oreon.core.light.LightHandler;
 import org.oreon.core.scenegraph.RenderList;
-import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.scenegraph.Scenegraph;
 import org.oreon.core.system.RenderEngine;
 import org.oreon.core.target.FrameBufferObject.Attachment;
@@ -160,23 +157,22 @@ public class GLRenderEngine extends RenderEngine{
 		// render into GBuffer of deffered lighting framebuffer
 		opaqueSceneFbo.bind();
 		sceneGraph.record(opaqueSceneRenderList);
-		for (Entry<String, Renderable> entry : opaqueSceneRenderList.getEntrySet()){
-			if (EngineContext.getConfig().isRenderWireframe()){
-				entry.getValue().renderWireframe();
-			}
-			else {
-				entry.getValue().render();
-			}
-		}
+		
+		opaqueSceneRenderList.getValues().forEach(object ->
+			{
+				if (EngineContext.getConfig().isRenderWireframe())
+					object.renderWireframe();
+				else
+					object.render();
+			});
+		
 		opaqueSceneFbo.unbind();
 		
 		// forward scene lighting - transparent objects
 		// render transparent objects into GBuffer of transparency framebuffer
 		transparentSceneFbo.bind();
 		sceneGraph.recordTransparentObjects(transparencySceneRenderList);
-		for (Entry<String, Renderable> entry : transparencySceneRenderList.getEntrySet()){
-				entry.getValue().render();
-		}
+		transparencySceneRenderList.getValues().forEach(object -> object.render());
 		transparentSceneFbo.unbind();
 		
 		// render screen space ambient occlusion
@@ -248,7 +244,7 @@ public class GLRenderEngine extends RenderEngine{
 				displayTexture = bloom.getBloomSceneTexture();
 			}
 			
-			// underwater
+			// under water
 			if (EngineContext.getConfig().isRenderUnderwater()){
 				underWaterRenderer.render(displayTexture,
 						opaqueSceneFbo.getAttachmentTexture(Attachment.DEPTH));

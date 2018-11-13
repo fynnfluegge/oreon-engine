@@ -39,38 +39,32 @@ public class Node {
 	
 	public void input()
 	{
-		for(Node child: children)
-			child.input();
+		children.forEach(child -> child.input());
 	}
 	
 	public void render()
 	{
-		for(Node child: children)
-			child.render();
+		children.forEach(child -> child.render());
 	}
 	
 	public void renderWireframe()
 	{
-		for(Node child: children)
-			child.render();
+		children.forEach(child -> child.renderWireframe());
 	}
 	
 	public void renderShadows()
 	{
-		for(Node child: children)
-			child.renderShadows();
+		children.forEach(child -> child.renderShadows());
 	}
 	
-	public void record(RenderList renderList){
-
-		for(Node child: children)
-			child.record(renderList);
+	public void record(RenderList renderList)
+	{
+		children.forEach(child -> child.record(renderList));
 	}
 	
 	public void shutdown()
 	{
-		for(Node child: children)
-			child.shutdown();
+		children.forEach(child -> child.shutdown());
 	}
 
 	public Node getParentNode() {

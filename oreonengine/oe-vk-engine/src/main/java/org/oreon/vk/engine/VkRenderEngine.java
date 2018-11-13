@@ -286,14 +286,15 @@ public class VkRenderEngine extends RenderEngine implements Runnable{
 		if (offScreenRenderList.hasChanged()){
 			
 			offScreenSecondaryCmdBuffers.clear();
-			for (String key : offScreenRenderList.getKeySet()) {
+			
+			offScreenRenderList.getKeySet().forEach(key ->
+			{
 				if(!offScreenSecondaryCmdBuffers.containsKey(key)){
-					
 					VkRenderInfo mainRenderInfo = offScreenRenderList.get(key)
 							.getComponent(NodeComponentType.MAIN_RENDERINFO);
 					offScreenSecondaryCmdBuffers.put(key, mainRenderInfo.getCommandBuffer());
 				}
-			}
+			});
 
 			// primary render command buffer
 			offScreenPrimaryCmdBuffer.reset();
@@ -316,14 +317,17 @@ public class VkRenderEngine extends RenderEngine implements Runnable{
 		sceneGraph.recordTransparentObjects(transparencyRenderList);
 		
 		if (transparencyRenderList.hasChanged()){
+			
 			transparencySecondaryCmdBuffers.clear();
-			for (String key : transparencyRenderList.getKeySet()) {
+			
+			transparencyRenderList.getKeySet().forEach(key ->
+			{
 				if(!transparencySecondaryCmdBuffers.containsKey(key)){
 					VkRenderInfo mainRenderInfo = transparencyRenderList.get(key)
 							.getComponent(NodeComponentType.MAIN_RENDERINFO);
 					transparencySecondaryCmdBuffers.put(key, mainRenderInfo.getCommandBuffer());
 				}
-			}
+			});
 		
 			// primary render command buffer
 			transparencyPrimaryCmdBuffer.reset();

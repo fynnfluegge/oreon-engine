@@ -3,7 +3,6 @@ package org.oreon.examples.vk.oreonworlds;
 import java.lang.management.ManagementFactory;
 import java.nio.LongBuffer;
 
-import org.oreon.common.ui.UIElement;
 import org.oreon.common.ui.UIScreen;
 import org.oreon.core.math.Vec4f;
 import org.oreon.core.system.CoreEngine;
@@ -25,25 +24,24 @@ public class VkSystemMonitor extends VkGUI {
 		super.init(imageView, waitSemaphores);
 		bean = (com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
 		UIScreen screen0 = new UIScreen();
-		screen0.setElements(new UIElement[6]);
-		screen0.getElements()[0] = new VkColorPanel(new Vec4f(0,0,0,0.5f), 0, 215, 325, 225,
-				panelMeshBuffer, guiOverlayFbo);
-		screen0.getElements()[1] = new VkStaticTextPanel("FPS:", 20, 45, 40, 40,
-				fontsImageBundle.getImageView(), fontsImageBundle.getSampler(), guiOverlayFbo);
-		screen0.getElements()[2] = new VkStaticTextPanel("CPU:", 20, 90, 40, 40,
-				fontsImageBundle.getImageView(), fontsImageBundle.getSampler(), guiOverlayFbo);
-		screen0.getElements()[3] = new VkDynamicTextPanel("000", 120, 45, 40, 40,
-				fontsImageBundle.getImageView(), fontsImageBundle.getSampler(), guiOverlayFbo);
-		screen0.getElements()[4] = new VkDynamicTextPanel("000", 120, 90, 40, 40,
-				fontsImageBundle.getImageView(), fontsImageBundle.getSampler(), guiOverlayFbo);
-		screen0.getElements()[5] = new VkTexturePanel("textures/logo/Vulkan_Logo.png", 0, 220, 310, 130,
-				panelMeshBuffer, guiOverlayFbo);
+		screen0.getElements().add(new VkColorPanel(new Vec4f(0,0,0,0.5f), 0, 215, 325, 225,
+				panelMeshBuffer, guiOverlayFbo));
+		screen0.getElements().add(new VkStaticTextPanel("FPS:", 20, 45, 40, 40,
+				fontsImageBundle.getImageView(), fontsImageBundle.getSampler(), guiOverlayFbo));
+		screen0.getElements().add(new VkStaticTextPanel("CPU:", 20, 90, 40, 40,
+				fontsImageBundle.getImageView(), fontsImageBundle.getSampler(), guiOverlayFbo));
+		screen0.getElements().add(new VkDynamicTextPanel("000", 120, 45, 40, 40,
+				fontsImageBundle.getImageView(), fontsImageBundle.getSampler(), guiOverlayFbo));
+		screen0.getElements().add(new VkDynamicTextPanel("000", 120, 90, 40, 40,
+				fontsImageBundle.getImageView(), fontsImageBundle.getSampler(), guiOverlayFbo));
+		screen0.getElements().add(new VkTexturePanel("textures/logo/Vulkan_Logo.png", 0, 220, 310, 130,
+				panelMeshBuffer, guiOverlayFbo));
 		getScreens().add(screen0);
 	}
 	
 	public void update(){
 		
-		getScreens().get(0).getElements()[3].update(Integer.toString(CoreEngine.getFps()));
+		getScreens().get(0).getElements().get(3).update(Integer.toString(CoreEngine.getFps()));
 		@SuppressWarnings("restriction")
 		String cpuLoad = Double.toString(bean.getSystemCpuLoad());
 		if (cpuLoad.length() == 3){
@@ -52,7 +50,7 @@ public class VkSystemMonitor extends VkGUI {
 		else{
 			cpuLoad = cpuLoad.substring(2, 4);
 		}
-		getScreens().get(0).getElements()[4].update(cpuLoad + "%");
+		getScreens().get(0).getElements().get(4).update(cpuLoad + "%");
 	}
 	
 }

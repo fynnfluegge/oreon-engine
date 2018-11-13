@@ -24,17 +24,14 @@ public class Renderable extends Node{
 	
 	public void update()
 	{	
-		for (NodeComponentType key : components.keySet()) {
-			components.get(key).update();
-		}
+		components.values().forEach(component -> component.update());
+		
 		super.update();
 	}
 	
 	public void input()
 	{
-		for (NodeComponentType key : components.keySet()) {
-			components.get(key).input();
-		}
+		components.values().forEach(component -> component.input());
 		
 		super.input();
 	}
@@ -87,9 +84,7 @@ public class Renderable extends Node{
 	
 	public void shutdown(){
 		
-		for (NodeComponentType key : components.keySet()) {
-			components.get(key).shutdown();
-		}
+		components.values().forEach(component -> component.shutdown());
 		
 		super.shutdown();
 	}

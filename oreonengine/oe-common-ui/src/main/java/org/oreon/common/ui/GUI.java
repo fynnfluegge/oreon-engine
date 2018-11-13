@@ -16,30 +16,23 @@ public abstract class GUI {
 	}
 	
 	public void update(){
-		for (UIScreen screen: screens ){
-			screen.update();
-		}
+		
+		screens.forEach(screen -> screen.update());
 	}
 	
 	public void render(){
 		
-		for (UIScreen screen: screens ){
-			screen.render();
-		}
+		screens.forEach(screen -> screen.render());
 	}
 	
 	public void record(RenderList renderList){
 
-		for (UIScreen screen: screens ){
-			screen.record(renderList);
-		}
+		screens.forEach(screen -> screen.record(renderList));
 	}
 	
 	public void shutdown(){
 
-		for (UIScreen screen: screens ){
-			screen.shutdown();
-		}
+		screens.forEach(screen -> screen.shutdown());
 	}
 	
 }
