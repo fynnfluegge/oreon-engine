@@ -3,9 +3,9 @@ package org.oreon.examples.gl.oreonworlds.gui;
 import java.lang.management.ManagementFactory;
 
 import org.oreon.common.ui.UIScreen;
-import org.oreon.core.context.EngineContext;
+import org.oreon.core.CoreEngine;
+import org.oreon.core.context.BaseContext;
 import org.oreon.core.math.Vec4f;
-import org.oreon.core.system.CoreEngine;
 import org.oreon.gl.components.ui.GLColorPanel;
 import org.oreon.gl.components.ui.GLDynamicTextPanel;
 import org.oreon.gl.components.ui.GLGUI;
@@ -19,23 +19,22 @@ public class GLSystemMonitor extends GLGUI{
 	
 	@SuppressWarnings("restriction")
 	
-	@Override
 	public void init() {
 		super.init();
 		bean = (com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
 		UIScreen screen0 = new UIScreen();
 		screen0.getElements().add(new GLColorPanel(new Vec4f(0,0,0,0.5f), 0,
-				EngineContext.getConfig().getWindowHeight()-245, 355, 250, panelMeshBuffer));
+				BaseContext.getConfig().getWindowHeight()-245, 355, 250, panelMeshBuffer));
 		screen0.getElements().add(new GLStaticTextPanel("FPS:",
-				10, EngineContext.getConfig().getWindowHeight()-40, 40, 40, fontsTexture));
+				10, BaseContext.getConfig().getWindowHeight()-40, 40, 40, fontsTexture));
 		screen0.getElements().add(new GLStaticTextPanel("CPU:", 10,
-				EngineContext.getConfig().getWindowHeight()-80, 40, 40, fontsTexture));
+				BaseContext.getConfig().getWindowHeight()-80, 40, 40, fontsTexture));
 		screen0.getElements().add(new GLDynamicTextPanel("000", 110,
-				EngineContext.getConfig().getWindowHeight()-40, 40, 40, fontsTexture));
+				BaseContext.getConfig().getWindowHeight()-40, 40, 40, fontsTexture));
 		screen0.getElements().add(new GLDynamicTextPanel("000", 110,
-				EngineContext.getConfig().getWindowHeight()-80, 40, 40, fontsTexture));
+				BaseContext.getConfig().getWindowHeight()-80, 40, 40, fontsTexture));
 		screen0.getElements().add(new GLTexturePanel("textures/logo/OpenGL_Logo.png", 0,
-				EngineContext.getConfig().getWindowHeight()-240, 360, 160, panelMeshBuffer));
+				BaseContext.getConfig().getWindowHeight()-240, 360, 160, panelMeshBuffer));
 		getScreens().add(screen0);
 	}
 	

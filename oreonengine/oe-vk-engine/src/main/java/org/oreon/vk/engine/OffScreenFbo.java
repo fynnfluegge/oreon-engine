@@ -22,7 +22,7 @@ import java.nio.LongBuffer;
 
 import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
-import org.oreon.core.context.EngineContext;
+import org.oreon.core.context.BaseContext;
 import org.oreon.core.vk.framebuffer.FrameBufferColorAttachment;
 import org.oreon.core.vk.framebuffer.FrameBufferDepthAttachment;
 import org.oreon.core.vk.framebuffer.VkFrameBuffer;
@@ -37,9 +37,9 @@ public class OffScreenFbo extends VkFrameBufferObject {
 
 	public OffScreenFbo(VkDevice device, VkPhysicalDeviceMemoryProperties memoryProperties) {
 
-		width = EngineContext.getConfig().getX_ScreenResolution();
-		height = EngineContext.getConfig().getY_ScreenResolution();
-		int samples = EngineContext.getConfig().getMultisamples();
+		width = BaseContext.getConfig().getX_ScreenResolution();
+		height = BaseContext.getConfig().getY_ScreenResolution();
+		int samples = BaseContext.getConfig().getMultisamples();
 
 		VkImageBundle albedoAttachment = new FrameBufferColorAttachment(device, memoryProperties,
 				width, height, VK_FORMAT_R16G16B16A16_SFLOAT, samples);

@@ -1,6 +1,6 @@
 package org.oreon.gl.components.filter.motionblur;
 
-import org.oreon.core.context.EngineContext;
+import org.oreon.core.context.BaseContext;
 import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.math.Matrix4f;
@@ -46,8 +46,8 @@ public class PixelVelocityShader extends GLShaderProgram{
 		glActiveTexture(GL_TEXTURE0);
 		depthmap.bind();
 		setUniformi("depthmap", 0);
-		setUniformf("windowWidth", EngineContext.getWindow().getWidth());
-		setUniformf("windowHeight", EngineContext.getWindow().getHeight());
+		setUniformf("windowWidth", BaseContext.getWindow().getWidth());
+		setUniformf("windowHeight", BaseContext.getWindow().getHeight());
 		setUniform("projectionMatrix", projectionMatrix);
 		setUniform("inverseViewProjectionMatrix", inverseViewProjectionMatrix);
 		setUniform("previousViewProjectionMatrix", previousViewProjectionMatrix);

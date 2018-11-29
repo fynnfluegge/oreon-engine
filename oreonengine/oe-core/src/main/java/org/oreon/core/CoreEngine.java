@@ -1,6 +1,12 @@
-package org.oreon.core.system;
+package org.oreon.core;
 
-import org.oreon.core.context.EngineContext;
+import static org.lwjgl.glfw.GLFW.glfwSetErrorCallback;
+import static org.lwjgl.glfw.GLFW.glfwTerminate;
+
+import org.lwjgl.glfw.GLFWErrorCallback;
+import org.oreon.core.context.BaseContext;
+import org.oreon.core.platform.Input;
+import org.oreon.core.platform.Window;
 import org.oreon.core.util.Constants;
 
 public class CoreEngine{
@@ -9,17 +15,28 @@ public class CoreEngine{
 	private static float framerate = 200;
 	private static float frameTime = 1.0f/framerate;
 	private boolean isRunning;
-	private CoreSystem coreSystem;
 	
-	public void init(CoreSystem coreSystem)
+	private Window window;
+	private Input input;
+	private RenderEngine renderEngine;
+	private GLFWErrorCallback errorCallback;
+	
+	private void init()
 	{
-		this.coreSystem = coreSystem;
+		glfwSetErrorCallback(errorCallback = GLFWErrorCallback.createPrint(System.err));
 		
-		coreSystem.init();
+		renderEngine = BaseContext.getRenderEngine();
+		window = BaseContext.getWindow();
+		input = BaseContext.getInput();
+		
+		input.create(window.getId());
+		window.show();
 	}
 	
 	public void start()
 	{
+		init();
+		
 		if(isRunning)
 			return;
 		
@@ -53,7 +70,7 @@ public class CoreEngine{
 				render = true;
 				unprocessedTime -= frameTime;
 				
-				if(EngineContext.getWindow().isCloseRequested()){
+				if(BaseContext.getWindow().isCloseRequested()){
 					stop();
 				}
 				
@@ -94,18 +111,23 @@ public class CoreEngine{
 	
 	private void render()
 	{
-		coreSystem.render();
+		renderEngine.render();
+		window.draw();
 	}
 	
 	private void update()
 	{
-		coreSystem.update();
+		input.update();
+		renderEngine.update();
 	}
 	
 	private void shutdown()
 	{
-		coreSystem.shutdown();
-		
+		window.shutdown();
+		input.shutdown();
+		renderEngine.shutdown();
+		errorCallback.free();
+		glfwTerminate();
 	}
 	
 	public static float getFrameTime() {

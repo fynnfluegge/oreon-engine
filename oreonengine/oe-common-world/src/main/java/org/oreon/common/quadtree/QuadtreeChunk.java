@@ -3,7 +3,7 @@ package org.oreon.common.quadtree;
 import java.util.Map;
 
 import org.oreon.common.terrain.TerrainConfiguration;
-import org.oreon.core.context.EngineContext;
+import org.oreon.core.context.BaseContext;
 import org.oreon.core.math.Transform;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.math.Vec3f;
@@ -64,8 +64,8 @@ public abstract class QuadtreeChunk extends Renderable{
 		}
 		
 		// render only first two lod's for reflection/refraction
-		if (EngineContext.getConfig().isRenderReflection() ||
-				EngineContext.getConfig().isRenderRefraction()){
+		if (BaseContext.getConfig().isRenderReflection() ||
+				BaseContext.getConfig().isRenderRefraction()){
 			
 			if (lod == 0 && isleaf){
 				render = true;
@@ -97,8 +97,8 @@ public abstract class QuadtreeChunk extends Renderable{
 		}
 		
 		// render only first two lod's for reflection/refraction
-		if (EngineContext.getConfig().isRenderReflection() ||
-				EngineContext.getConfig().isRenderRefraction()){
+		if (BaseContext.getConfig().isRenderReflection() ||
+				BaseContext.getConfig().isRenderRefraction()){
 			
 			if (lod == 0 && isleaf){
 				render = true;
@@ -130,7 +130,7 @@ public abstract class QuadtreeChunk extends Renderable{
 	private void updateChildNodes(Map<String, QuadtreeChunk> leafChunks,
 			Map<String, QuadtreeChunk> formerLeafChunks){
 		
-		float distance = (EngineContext.getCamera().getPosition().sub(worldPos)).length();
+		float distance = (BaseContext.getCamera().getPosition().sub(worldPos)).length();
 		
 		if (distance < terrainProperties.getLod_range()[lod]){
 			add4ChildNodes(leafChunks, formerLeafChunks, lod+1);

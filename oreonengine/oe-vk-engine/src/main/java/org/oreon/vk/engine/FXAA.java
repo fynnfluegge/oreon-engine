@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
-import org.oreon.core.context.EngineContext;
+import org.oreon.core.context.BaseContext;
 import org.oreon.core.vk.command.CommandBuffer;
 import org.oreon.core.vk.descriptor.DescriptorPool;
 import org.oreon.core.vk.descriptor.DescriptorSet;
@@ -72,8 +72,8 @@ public class FXAA {
 		
 		int pushConstantRange = Float.BYTES * 2;
 		pushConstants = memAlloc(pushConstantRange);
-		pushConstants.putFloat(EngineContext.getConfig().getX_ScreenResolution());
-		pushConstants.putFloat(EngineContext.getConfig().getY_ScreenResolution());
+		pushConstants.putFloat(BaseContext.getConfig().getX_ScreenResolution());
+		pushConstants.putFloat(BaseContext.getConfig().getY_ScreenResolution());
 		pushConstants.flip();
 		
 		descriptorSetLayout = new DescriptorSetLayout(device, 3);

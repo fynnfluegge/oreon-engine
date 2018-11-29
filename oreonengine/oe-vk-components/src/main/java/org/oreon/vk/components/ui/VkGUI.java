@@ -42,7 +42,7 @@ import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
 import org.lwjgl.vulkan.VkQueue;
 import org.oreon.common.ui.GUI;
 import org.oreon.common.ui.UIPanelLoader;
-import org.oreon.core.context.EngineContext;
+import org.oreon.core.context.BaseContext;
 import org.oreon.core.model.Mesh;
 import org.oreon.core.model.Vertex.VertexLayout;
 import org.oreon.core.scenegraph.NodeComponentType;
@@ -102,6 +102,7 @@ public class VkGUI extends GUI{
 	
 	@Getter
 	private VkSemaphore signalSemaphore;
+	
 	
 	public void init(VkImageView underlayImageView, LongBuffer waitSemaphores) {
 
@@ -255,8 +256,8 @@ public class VkGUI extends GUI{
 		public SingleAttachmentFbo(VkDevice device,
 				VkPhysicalDeviceMemoryProperties memoryProperties) {
 			
-			width = EngineContext.getConfig().getX_ScreenResolution();
-			height = EngineContext.getConfig().getY_ScreenResolution();
+			width = BaseContext.getConfig().getX_ScreenResolution();
+			height = BaseContext.getConfig().getY_ScreenResolution();
 			
 			VkImageBundle colorAttachment = new FrameBufferColorAttachment(device, memoryProperties,
 					width, height, VK_FORMAT_R16G16B16A16_SFLOAT, 1);

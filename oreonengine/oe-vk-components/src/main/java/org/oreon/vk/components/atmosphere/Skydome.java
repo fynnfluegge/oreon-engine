@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
-import org.oreon.core.context.EngineContext;
+import org.oreon.core.context.BaseContext;
 import org.oreon.core.model.Mesh;
 import org.oreon.core.model.Vertex.VertexLayout;
 import org.oreon.core.scenegraph.NodeComponentType;
@@ -100,17 +100,17 @@ public class Skydome extends Renderable{
 		VkPipeline graphicsPipeline = new GraphicsPipeline(device.getHandle(),
 				graphicsShaderPipeline, vertexInput, VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
 				VkUtil.createLongBuffer(descriptorSetLayouts),
-				EngineContext.getConfig().getX_ScreenResolution(),
-				EngineContext.getConfig().getY_ScreenResolution(),
+				BaseContext.getConfig().getX_ScreenResolution(),
+				BaseContext.getConfig().getY_ScreenResolution(),
 				VkContext.getResources().getOffScreenFbo().getRenderPass().getHandle(),
 				VkContext.getResources().getOffScreenFbo().getColorAttachmentCount(),
-				EngineContext.getConfig().getMultisamples());
+				BaseContext.getConfig().getMultisamples());
 		
 		VkPipeline reflectionPipeline = new GraphicsPipeline(device.getHandle(),
 				reflectionShaderPipeline, vertexInput, VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
 				VkUtil.createLongBuffer(descriptorSetLayouts),
-				EngineContext.getConfig().getX_ScreenResolution(),
-				EngineContext.getConfig().getY_ScreenResolution(),
+				BaseContext.getConfig().getX_ScreenResolution(),
+				BaseContext.getConfig().getY_ScreenResolution(),
 				VkContext.getResources().getOffScreenReflectionFbo().getRenderPass().getHandle(),
 				VkContext.getResources().getOffScreenReflectionFbo().getColorAttachmentCount(), 1);
 		

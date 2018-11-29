@@ -3,7 +3,7 @@ package org.oreon.core.gl.surface;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
-import org.oreon.core.context.EngineContext;
+import org.oreon.core.context.BaseContext;
 import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.util.ResourceLoader;
@@ -41,8 +41,8 @@ public class FullScreenMSQuadShader extends GLShaderProgram{
 		texture.bind();
 		setUniformi("texture", 0);
 		
-		setUniformi("width", EngineContext.getWindow().getWidth());
-		setUniformi("height", EngineContext.getWindow().getHeight());
-		setUniformi("multisamples", EngineContext.getConfig().getMultisamples());		
+		setUniformi("width", BaseContext.getWindow().getWidth());
+		setUniformi("height", BaseContext.getWindow().getHeight());
+		setUniformi("multisamples", BaseContext.getConfig().getMultisamples());		
 	}
 }

@@ -8,7 +8,7 @@ import static org.lwjgl.opengl.GL42.glBindImageTexture;
 import static org.lwjgl.opengl.GL43.glDispatchCompute;
 
 import org.lwjgl.glfw.GLFW;
-import org.oreon.core.context.EngineContext;
+import org.oreon.core.context.BaseContext;
 import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.gl.wrapper.texture.Texture2DBilinearFilterRGBA16F;
@@ -28,7 +28,7 @@ public class ContrastController {
 	
 		contrastShader = ContrastShader.getInstance();
 		
-		contrastTexture = new Texture2DBilinearFilterRGBA16F(EngineContext.getWindow().getWidth(), EngineContext.getWindow().getHeight());
+		contrastTexture = new Texture2DBilinearFilterRGBA16F(BaseContext.getWindow().getWidth(), BaseContext.getWindow().getHeight());
 		contrastTexture.bind();
 		contrastTexture.clampToEdge();
 		contrastTexture.unbind();
@@ -40,21 +40,21 @@ public class ContrastController {
 		glBindImageTexture(0, sceneSampler.getHandle(), 0, false, 0, GL_READ_ONLY, GL_RGBA16F);
 		glBindImageTexture(1, contrastTexture.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
 		contrastShader.updateUniforms(contrastFactor, brightnessFactor);
-		glDispatchCompute(EngineContext.getWindow().getWidth()/16, EngineContext.getWindow().getHeight()/16, 1);	
+		glDispatchCompute(BaseContext.getWindow().getWidth()/16, BaseContext.getWindow().getHeight()/16, 1);	
 		glFinish();
 	}
 	
 	public void update() {
-		if (EngineContext.getInput().isKeyPushed(GLFW.GLFW_KEY_KP_ADD)){
+		if (BaseContext.getInput().isKeyPushed(GLFW.GLFW_KEY_KP_ADD)){
 			contrastFactor += 0.01f;
 		}
-		if (EngineContext.getInput().isKeyPushed(GLFW.GLFW_KEY_KP_SUBTRACT)){
+		if (BaseContext.getInput().isKeyPushed(GLFW.GLFW_KEY_KP_SUBTRACT)){
 			contrastFactor -= 0.01f;
 		}
-		if (EngineContext.getInput().isKeyPushed(GLFW.GLFW_KEY_KP_MULTIPLY)){
+		if (BaseContext.getInput().isKeyPushed(GLFW.GLFW_KEY_KP_MULTIPLY)){
 			brightnessFactor += 1f;
 		}
-		if (EngineContext.getInput().isKeyPushed(GLFW.GLFW_KEY_KP_DIVIDE)){
+		if (BaseContext.getInput().isKeyPushed(GLFW.GLFW_KEY_KP_DIVIDE)){
 			brightnessFactor -= 1f;
 		}
 	}

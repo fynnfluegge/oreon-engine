@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Random;
 
 import org.lwjgl.glfw.GLFW;
-import org.oreon.core.context.EngineContext;
+import org.oreon.core.context.BaseContext;
 import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.gl.components.terrain.FractalMap;
 import org.oreon.gl.components.terrain.GLTerrain;
@@ -24,7 +24,7 @@ public class Terrain extends GLTerrain{
 		super.update();
 		
 		// create new heightmap from random fractals
-		if (EngineContext.getInput().isKeyPushed(GLFW.GLFW_KEY_L)){
+		if (BaseContext.getInput().isKeyPushed(GLFW.GLFW_KEY_L)){
 			
 			List<FractalMap> newFractals = new ArrayList<>();
 			

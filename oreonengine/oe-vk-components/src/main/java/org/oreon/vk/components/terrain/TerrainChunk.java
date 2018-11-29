@@ -8,7 +8,7 @@ import java.util.Map;
 
 import org.oreon.common.quadtree.QuadtreeCache;
 import org.oreon.common.quadtree.QuadtreeChunk;
-import org.oreon.core.context.EngineContext;
+import org.oreon.core.context.BaseContext;
 import org.oreon.core.math.Transform;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.math.Vec4f;
@@ -69,11 +69,11 @@ public class TerrainChunk extends QuadtreeChunk{
 		VkPipeline graphicsPipeline = new GraphicsTessellationPipeline(device.getHandle(),
 				renderInfo.getShaderPipeline(), renderInfo.getVertexInput(),
 				VkUtil.createLongBuffer(renderInfo.getDescriptorSetLayouts()),
-				EngineContext.getConfig().getX_ScreenResolution(),
-				EngineContext.getConfig().getY_ScreenResolution(),
+				BaseContext.getConfig().getX_ScreenResolution(),
+				BaseContext.getConfig().getY_ScreenResolution(),
 				VkContext.getResources().getOffScreenFbo().getRenderPass().getHandle(),
 				VkContext.getResources().getOffScreenFbo().getColorAttachmentCount(),
-				EngineContext.getConfig().getMultisamples(),
+				BaseContext.getConfig().getMultisamples(),
 				pushConstantsRange, VK_SHADER_STAGE_ALL_GRAPHICS,
 				16);
 		

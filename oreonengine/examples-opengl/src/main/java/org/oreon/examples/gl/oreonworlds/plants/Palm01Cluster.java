@@ -3,7 +3,7 @@ package org.oreon.examples.gl.oreonworlds.plants;
 import java.nio.FloatBuffer;
 import java.util.List;
 
-import org.oreon.core.context.EngineContext;
+import org.oreon.core.context.BaseContext;
 import org.oreon.core.gl.instanced.GLInstancedCluster;
 import org.oreon.core.gl.memory.GLMeshVBO;
 import org.oreon.core.gl.memory.GLUniformBuffer;
@@ -88,7 +88,7 @@ public class Palm01Cluster extends GLInstancedCluster{
 		int index = 0;
 		
 		for (Matrix4f transform : getWorldMatrices()){
-			if (transform.getTranslation().sub(EngineContext.getCamera().getPosition()).length() < 500){
+			if (transform.getTranslation().sub(BaseContext.getCamera().getPosition()).length() < 500){
 				getHighPolyIndices().add(index);
 			}
 
@@ -98,8 +98,8 @@ public class Palm01Cluster extends GLInstancedCluster{
 	}
 	
 	public void render(){
-		if (!EngineContext.getConfig().isRenderReflection() && 
-					!EngineContext.getConfig().isRenderRefraction()){
+		if (!BaseContext.getConfig().isRenderReflection() && 
+					!BaseContext.getConfig().isRenderRefraction()){
 			super.render();
 		}
 	}

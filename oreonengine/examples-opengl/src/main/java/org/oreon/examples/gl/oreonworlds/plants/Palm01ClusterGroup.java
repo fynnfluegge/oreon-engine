@@ -3,7 +3,7 @@ package org.oreon.examples.gl.oreonworlds.plants;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.oreon.core.context.EngineContext;
+import org.oreon.core.context.BaseContext;
 import org.oreon.core.gl.memory.GLMeshVBO;
 import org.oreon.core.gl.scenegraph.GLRenderInfo;
 import org.oreon.core.gl.texture.GLTexture;
@@ -103,7 +103,7 @@ public class Palm01ClusterGroup extends InstancedObject{
 				getChildren().clear();
 				
 				for (InstancedCluster cluster : getClusters()){
-					if (cluster.getCenter().sub(EngineContext.getCamera().getPosition()).length() < 2000){
+					if (cluster.getCenter().sub(BaseContext.getCamera().getPosition()).length() < 2000){
 						cluster.updateUBOs();
 						addChild(cluster);
 					}

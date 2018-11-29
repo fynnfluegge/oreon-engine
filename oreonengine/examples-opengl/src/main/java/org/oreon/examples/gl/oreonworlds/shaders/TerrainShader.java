@@ -7,7 +7,7 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE3;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE4;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
-import org.oreon.core.context.EngineContext;
+import org.oreon.core.context.BaseContext;
 import org.oreon.core.gl.context.GLContext;
 import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.math.Vec2f;
@@ -91,9 +91,9 @@ public class TerrainShader extends GLShaderProgram{
 	{	
 		bindUniformBlock("Camera", Constants.CameraUniformBlockBinding);
 		
-		setUniform("clipplane", EngineContext.getConfig().getClipplane());
-		setUniformi("isRefraction", EngineContext.getConfig().isRenderRefraction() ? 1 : 0);
-		setUniformi("isCameraUnderWater", EngineContext.getConfig().isRenderUnderwater() ? 1 : 0);		
+		setUniform("clipplane", BaseContext.getConfig().getClipplane());
+		setUniformi("isRefraction", BaseContext.getConfig().isRenderRefraction() ? 1 : 0);
+		setUniformi("isCameraUnderWater", BaseContext.getConfig().isRenderUnderwater() ? 1 : 0);		
 		
 		TerrainConfiguration terrConfig = object.getComponent(NodeComponentType.CONFIGURATION);
 		

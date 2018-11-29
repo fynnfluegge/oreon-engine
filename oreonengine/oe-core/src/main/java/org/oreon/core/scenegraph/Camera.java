@@ -12,7 +12,7 @@ import static org.lwjgl.glfw.GLFW.glfwSetCursorPos;
 
 import java.nio.FloatBuffer;
 
-import org.oreon.core.context.EngineContext;
+import org.oreon.core.context.BaseContext;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.math.Vec3f;
 import org.oreon.core.math.Vec4f;
@@ -66,8 +66,8 @@ private final Vec3f yAxis = new Vec3f(0,1,0);
 		setPosition(position);
 		setForward(forward.normalize());
 		setUp(up.normalize());
-		setProjection(70, EngineContext.getConfig().getX_ScreenResolution(),
-				EngineContext.getConfig().getY_ScreenResolution());
+		setProjection(70, BaseContext.getConfig().getX_ScreenResolution(),
+				BaseContext.getConfig().getY_ScreenResolution());
 		setViewMatrix(new Matrix4f().View(this.getForward(), this.getUp()).mul(
 				new Matrix4f().Translation(this.getPosition().mul(-1))));
 		initfrustumPlanes();
@@ -76,7 +76,7 @@ private final Vec3f yAxis = new Vec3f(0,1,0);
 		floatBuffer = BufferUtil.createFloatBuffer(bufferSize);
 		setViewProjectionMatrix(getProjectionMatrix().mul(getViewMatrix()));
 		
-		input = EngineContext.getInput();
+		input = BaseContext.getInput();
 	}
 	
 	public abstract void init();
@@ -194,7 +194,7 @@ private final Vec3f yAxis = new Vec3f(0,1,0);
 				}
 			}
 			
-			glfwSetCursorPos(EngineContext.getWindow().getId(),
+			glfwSetCursorPos(BaseContext.getWindow().getId(),
 					input.getLockedCursorPosition().getX(),
 					input.getLockedCursorPosition().getY());
 		}
@@ -236,8 +236,8 @@ private final Vec3f yAxis = new Vec3f(0,1,0);
 		Vec4f leftPlane = new Vec4f(
 				this.projectionMatrix.get(3, 0) + this.projectionMatrix.get(0, 0)
 					* (float) ((Math.tan(Math.toRadians(this.fovY/2))
-					* ((double) EngineContext.getConfig().getX_ScreenResolution()
-					/ (double) EngineContext.getConfig().getY_ScreenResolution()))),
+					* ((double) BaseContext.getConfig().getX_ScreenResolution()
+					/ (double) BaseContext.getConfig().getY_ScreenResolution()))),
 				this.projectionMatrix.get(3, 1) + this.projectionMatrix.get(0, 1),
 				this.projectionMatrix.get(3, 2) + this.projectionMatrix.get(0, 2),
 				this.projectionMatrix.get(3, 3) + this.projectionMatrix.get(0, 3));
@@ -248,8 +248,8 @@ private final Vec3f yAxis = new Vec3f(0,1,0);
 		Vec4f rightPlane = new Vec4f(
 				this.projectionMatrix.get(3, 0) - this.projectionMatrix.get(0, 0)
 					* (float) ((Math.tan(Math.toRadians(this.fovY/2))
-					* ((double) EngineContext.getConfig().getX_ScreenResolution()
-					/ (double) EngineContext.getConfig().getY_ScreenResolution()))),
+					* ((double) BaseContext.getConfig().getX_ScreenResolution()
+					/ (double) BaseContext.getConfig().getY_ScreenResolution()))),
 				this.projectionMatrix.get(3, 1) - this.projectionMatrix.get(0, 1),
 				this.projectionMatrix.get(3, 2) - this.projectionMatrix.get(0, 2),
 				this.projectionMatrix.get(3, 3) - this.projectionMatrix.get(0, 3));

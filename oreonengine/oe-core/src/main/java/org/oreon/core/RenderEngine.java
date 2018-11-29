@@ -1,7 +1,7 @@
-package org.oreon.core.system;
+package org.oreon.core;
 
+import org.oreon.core.context.BaseContext;
 import org.oreon.core.context.Configuration;
-import org.oreon.core.context.EngineContext;
 import org.oreon.core.scenegraph.Camera;
 import org.oreon.core.scenegraph.Scenegraph;
 
@@ -14,16 +14,18 @@ public abstract class RenderEngine {
 	protected Configuration config;
 	protected Camera camera;
 	
-	public void init(){
-		
+	public void init()
+	{
 		sceneGraph = new Scenegraph();
-		config = EngineContext.getConfig();
-		camera = EngineContext.getCamera();
+		config = BaseContext.getConfig();
+		camera = BaseContext.getCamera();
+		camera.init();
 	}
+	
 	public abstract void render();
 	
-	public void update(){
-		
+	public void update()
+	{
 		sceneGraph.update();
 		camera.update();
 	}
@@ -34,7 +36,6 @@ public abstract class RenderEngine {
 		// thread safety of instancing clusters.
 		// scenegraph sets isRunning to false, render-engine signals all
 		// waiting threads to shutdown
-		
 		sceneGraph.shutdown();
 	}
 	

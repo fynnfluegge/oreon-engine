@@ -4,8 +4,8 @@ import java.lang.management.ManagementFactory;
 import java.nio.LongBuffer;
 
 import org.oreon.common.ui.UIScreen;
+import org.oreon.core.CoreEngine;
 import org.oreon.core.math.Vec4f;
-import org.oreon.core.system.CoreEngine;
 import org.oreon.core.vk.image.VkImageView;
 import org.oreon.vk.components.ui.VkColorPanel;
 import org.oreon.vk.components.ui.VkDynamicTextPanel;

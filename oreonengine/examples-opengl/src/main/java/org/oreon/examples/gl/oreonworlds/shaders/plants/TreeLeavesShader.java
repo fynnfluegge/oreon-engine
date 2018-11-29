@@ -5,7 +5,7 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import java.util.List;
 
-import org.oreon.core.context.EngineContext;
+import org.oreon.core.context.BaseContext;
 import org.oreon.core.gl.instanced.GLInstancedCluster;
 import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.gl.texture.GLTexture;
@@ -61,14 +61,14 @@ public class TreeLeavesShader extends GLShaderProgram{
 		bindUniformBlock("Camera", Constants.CameraUniformBlockBinding);
 //		setUniformi("screenWidth", CoreSystem.getInstance().getWindow().getWidth());
 //		setUniformi("screenHeight", CoreSystem.getInstance().getWindow().getHeight());
-		setUniformi("isReflection", EngineContext.getConfig().isRenderReflection() ? 1 : 0);
+		setUniformi("isReflection", BaseContext.getConfig().isRenderReflection() ? 1 : 0);
 		
 		((GLInstancedCluster) object.getParentNode()).getWorldMatricesBuffer().bindBufferBase(0);
 		bindUniformBlock("worldMatrices", 0);
 		((GLInstancedCluster) object.getParentNode()).getModelMatricesBuffer().bindBufferBase(1);
 		bindUniformBlock("modelMatrices", 1);
 		
-		setUniform("clipplane", EngineContext.getConfig().getClipplane());
+		setUniform("clipplane", BaseContext.getConfig().getClipplane());
 		setUniform("scalingMatrix", new Matrix4f().Scaling(object.getWorldTransform().getScaling()));
 		
 		@SuppressWarnings("unchecked")

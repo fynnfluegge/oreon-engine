@@ -5,7 +5,7 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import java.util.List;
 
-import org.oreon.core.context.EngineContext;
+import org.oreon.core.context.BaseContext;
 import org.oreon.core.gl.instanced.GLInstancedCluster;
 import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.gl.texture.GLTexture;
@@ -55,9 +55,9 @@ public class PalmBillboardShader extends GLShaderProgram{
 	
 	public void updateUniforms(Renderable object){
 		
-		setUniform("clipplane", EngineContext.getConfig().getClipplane());
+		setUniform("clipplane", BaseContext.getConfig().getClipplane());
 		bindUniformBlock("Camera", Constants.CameraUniformBlockBinding);
-		setUniformi("isReflection", EngineContext.getConfig().isRenderReflection() ? 1 : 0);
+		setUniformi("isReflection", BaseContext.getConfig().isRenderReflection() ? 1 : 0);
 		setUniform("scalingMatrix", new Matrix4f().Scaling(object.getWorldTransform().getScaling()));
 		
 		((GLInstancedCluster) object.getParentNode()).getWorldMatricesBuffer().bindBufferBase(0);

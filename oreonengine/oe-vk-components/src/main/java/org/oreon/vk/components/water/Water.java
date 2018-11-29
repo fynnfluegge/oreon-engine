@@ -37,7 +37,7 @@ import java.util.List;
 import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
 import org.lwjgl.vulkan.VkQueue;
 import org.oreon.common.water.WaterConfiguration;
-import org.oreon.core.context.EngineContext;
+import org.oreon.core.context.BaseContext;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.math.Vec4f;
 import org.oreon.core.model.Vertex.VertexLayout;
@@ -347,19 +347,19 @@ public class Water extends Renderable{
 		pushConstants.putInt(waterConfiguration.getHighDetailRange());
 		pushConstants.putFloat(waterConfiguration.getKReflection());
 		pushConstants.putFloat(waterConfiguration.getKRefraction());
-		pushConstants.putInt(EngineContext.getConfig().getWindowWidth());
-		pushConstants.putInt(EngineContext.getConfig().getWindowHeight());
+		pushConstants.putInt(BaseContext.getConfig().getWindowWidth());
+		pushConstants.putInt(BaseContext.getConfig().getWindowHeight());
 		pushConstants.putFloat(waterConfiguration.getEmission());
 		pushConstants.putFloat(waterConfiguration.getSpecular());
 		pushConstants.flip();
 		
 		VkPipeline graphicsPipeline = new GraphicsTessellationPipeline(device.getHandle(),
 				shaderPipeline, vertexInput, VkUtil.createLongBuffer(descriptorSetLayouts),
-				EngineContext.getConfig().getX_ScreenResolution(),
-				EngineContext.getConfig().getY_ScreenResolution(),
+				BaseContext.getConfig().getX_ScreenResolution(),
+				BaseContext.getConfig().getY_ScreenResolution(),
 				VkContext.getResources().getOffScreenFbo().getRenderPass().getHandle(),
 				VkContext.getResources().getOffScreenFbo().getColorAttachmentCount(),
-				EngineContext.getConfig().getMultisamples(),
+				BaseContext.getConfig().getMultisamples(),
 				pushConstantsRange, VK_SHADER_STAGE_ALL_GRAPHICS,
 				16);
 		
@@ -532,7 +532,7 @@ public class Water extends Renderable{
 		normalRenderer.render(VK_QUEUE_FAMILY_IGNORED);
 		
 		// render reflection
-		EngineContext.getConfig().setClipplane(clipplane);
+		BaseContext.getConfig().setClipplane(clipplane);
 		
 		// mirror scene to clipplane
 		Scenegraph sceneGraph = getParentObject();

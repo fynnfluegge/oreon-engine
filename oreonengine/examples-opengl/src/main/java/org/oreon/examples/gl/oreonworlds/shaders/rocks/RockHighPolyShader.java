@@ -8,7 +8,7 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import java.util.List;
 
-import org.oreon.core.context.EngineContext;
+import org.oreon.core.context.BaseContext;
 import org.oreon.core.gl.context.GLContext;
 import org.oreon.core.gl.instanced.GLInstancedCluster;
 import org.oreon.core.gl.pipeline.GLShaderProgram;
@@ -75,13 +75,13 @@ public class RockHighPolyShader extends GLShaderProgram{
 		((GLInstancedCluster) object.getParentNode()).getModelMatricesBuffer().bindBufferBase(1);
 		bindUniformBlock("modelMatrices", 1);
 		
-		setUniformi("isReflection", EngineContext.getConfig().isRenderReflection() ? 1 : 0);
-		setUniformi("isRefraction", EngineContext.getConfig().isRenderRefraction() ? 1 : 0);
+		setUniformi("isReflection", BaseContext.getConfig().isRenderReflection() ? 1 : 0);
+		setUniformi("isRefraction", BaseContext.getConfig().isRenderRefraction() ? 1 : 0);
 		setUniform("scalingMatrix", new Matrix4f().Scaling(object.getWorldTransform().getScaling()));
-		setUniform("clipplane", EngineContext.getConfig().getClipplane());
+		setUniform("clipplane", BaseContext.getConfig().getClipplane());
 		
 		
-		setUniformi("isCameraUnderWater", EngineContext.getConfig().isRenderUnderwater() ? 1 : 0);
+		setUniformi("isCameraUnderWater", BaseContext.getConfig().isRenderUnderwater() ? 1 : 0);
 		
 		@SuppressWarnings("unchecked")
 		Material<GLTexture> material = (Material<GLTexture>) object.getComponent(NodeComponentType.MATERIAL0);

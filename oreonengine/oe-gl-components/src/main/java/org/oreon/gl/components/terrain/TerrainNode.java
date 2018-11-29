@@ -2,7 +2,7 @@ package org.oreon.gl.components.terrain;
 
 import java.util.Map;
 
-import org.oreon.core.context.EngineContext;
+import org.oreon.core.context.BaseContext;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.math.Vec3f;
 import org.oreon.core.scenegraph.Node;
@@ -68,7 +68,7 @@ public class TerrainNode extends Renderable{
 	public void render()
 	{
 		boolean renderChunk = false;
-		if (EngineContext.getConfig().isRenderReflection() || EngineContext.getConfig().isRenderRefraction()){
+		if (BaseContext.getConfig().isRenderReflection() || BaseContext.getConfig().isRenderRefraction()){
 			// render only first two lod's for reflection/refraction
 			renderChunk = (isleaf && lod == 0) || (!isleaf && lod == 0);// || (!isleaf && lod == 1);
 		}
@@ -113,7 +113,7 @@ public class TerrainNode extends Renderable{
 	
 	private void updateChildNodes(){
 		
-		float distance = (EngineContext.getCamera().getPosition().sub(worldPos)).length();
+		float distance = (BaseContext.getCamera().getPosition().sub(worldPos)).length();
 		
 		if (distance < config.getLod_range()[lod]){
 			add4ChildNodes(lod+1);

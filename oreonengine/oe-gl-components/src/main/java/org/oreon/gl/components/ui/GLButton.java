@@ -8,7 +8,7 @@ import java.nio.DoubleBuffer;
 
 import org.lwjgl.BufferUtils;
 import org.oreon.common.ui.UIButton;
-import org.oreon.core.context.EngineContext;
+import org.oreon.core.context.BaseContext;
 import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.gl.pipeline.RenderParameter;
 import org.oreon.core.gl.texture.GLTexture;
@@ -66,7 +66,7 @@ public abstract class GLButton extends UIButton{
 	
 	public void update()
 	{
-		if(EngineContext.getInput().isButtonPushed(0))
+		if(BaseContext.getInput().isButtonPushed(0))
 		{
 			if(onClick())
 			{
@@ -75,7 +75,7 @@ public abstract class GLButton extends UIButton{
 			}
 		}
 		
-		if(EngineContext.getInput().isButtonReleased(0)){
+		if(BaseContext.getInput().isButtonReleased(0)){
 			onClick = false;
 		}
 	}
@@ -85,7 +85,7 @@ public abstract class GLButton extends UIButton{
 		DoubleBuffer xPos = BufferUtils.createDoubleBuffer(1);
 		DoubleBuffer yPos = BufferUtils.createDoubleBuffer(1);
 		
-		glfwGetCursorPos(EngineContext.getWindow().getId(), xPos, yPos);
+		glfwGetCursorPos(BaseContext.getWindow().getId(), xPos, yPos);
 		
 		Vec2f mousePos = new Vec2f((float) xPos.get(),(float) yPos.get());
 		
@@ -93,10 +93,10 @@ public abstract class GLButton extends UIButton{
 		   pos[1].getX() < mousePos.getX() && 
 		   pos[2].getX() > mousePos.getX() && 
 		   pos[3].getX() > mousePos.getX() &&
-		   pos[0].getY() < EngineContext.getWindow().getHeight() - mousePos.getY() && 
-		   pos[3].getY() < EngineContext.getWindow().getHeight() - mousePos.getY() && 
-		   pos[1].getY() > EngineContext.getWindow().getHeight() - mousePos.getY() && 
-		   pos[2].getY() > EngineContext.getWindow().getHeight() - mousePos.getY()) {
+		   pos[0].getY() < BaseContext.getWindow().getHeight() - mousePos.getY() && 
+		   pos[3].getY() < BaseContext.getWindow().getHeight() - mousePos.getY() && 
+		   pos[1].getY() > BaseContext.getWindow().getHeight() - mousePos.getY() && 
+		   pos[2].getY() > BaseContext.getWindow().getHeight() - mousePos.getY()) {
 			
 			return true;
 		}

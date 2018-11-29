@@ -9,11 +9,8 @@ import lombok.Getter;
 public abstract class GUI {
 
 	@Getter
-	private ArrayList<UIScreen> screens;
+	private ArrayList<UIScreen> screens = new ArrayList<UIScreen>();
 	
-	public GUI(){
-		screens = new ArrayList<UIScreen>();
-	}
 	
 	public void update(){
 		

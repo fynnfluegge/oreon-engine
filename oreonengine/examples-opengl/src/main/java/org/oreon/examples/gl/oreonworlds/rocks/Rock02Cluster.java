@@ -3,7 +3,7 @@ package org.oreon.examples.gl.oreonworlds.rocks;
 import java.nio.FloatBuffer;
 import java.util.List;
 
-import org.oreon.core.context.EngineContext;
+import org.oreon.core.context.BaseContext;
 import org.oreon.core.gl.instanced.GLInstancedCluster;
 import org.oreon.core.gl.memory.GLUniformBuffer;
 import org.oreon.core.math.Matrix4f;
@@ -69,13 +69,13 @@ public class Rock02Cluster extends GLInstancedCluster{
 	}
 	
 	public void render(){
-		if (getCenter().sub(EngineContext.getCamera().getPosition()).length() < 800){
+		if (getCenter().sub(BaseContext.getCamera().getPosition()).length() < 800){
 			super.render();
 		}
 	}
 	
 	public void renderShadows(){
-		if (getCenter().sub(EngineContext.getCamera().getPosition()).length() < 800){
+		if (getCenter().sub(BaseContext.getCamera().getPosition()).length() < 800){
 			super.renderShadows();;
 		}
 	}

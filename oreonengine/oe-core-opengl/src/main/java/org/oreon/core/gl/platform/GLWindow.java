@@ -17,7 +17,7 @@ import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
 import static org.lwjgl.opengl.GL11.GL_TRUE;
 
 import org.lwjgl.opengl.GL;
-import org.oreon.core.context.EngineContext;
+import org.oreon.core.context.BaseContext;
 import org.oreon.core.gl.context.GLContext;
 import org.oreon.core.platform.Window;
 
@@ -72,8 +72,8 @@ public class GLWindow extends Window{
 		glfwSetWindowSize(getId(), width, height);
 		setHeight(height);
 		setWidth(width);
-		EngineContext.getConfig().setWindowWidth(width);
-		EngineContext.getConfig().setWindowHeight(height);
+		BaseContext.getConfig().setWindowWidth(width);
+		BaseContext.getConfig().setWindowHeight(height);
 		// TODO set camera projection
 	}
 }

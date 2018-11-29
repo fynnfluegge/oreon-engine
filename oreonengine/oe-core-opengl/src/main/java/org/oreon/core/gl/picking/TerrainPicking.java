@@ -12,7 +12,7 @@ import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 
 import org.lwjgl.BufferUtils;
-import org.oreon.core.context.EngineContext;
+import org.oreon.core.context.BaseContext;
 import org.oreon.core.gl.context.GLContext;
 import org.oreon.core.math.Vec4f;
 import org.oreon.core.math.Vec2f;
@@ -35,32 +35,32 @@ public class TerrainPicking {
 	}
 	
 	private TerrainPicking(){
-		depthmapBuffer = BufferUtil.createFloatBuffer(EngineContext.getWindow().getWidth() * 
-													  EngineContext.getWindow().getHeight());	
+		depthmapBuffer = BufferUtil.createFloatBuffer(BaseContext.getWindow().getWidth() * 
+													  BaseContext.getWindow().getHeight());	
 	}
 	
 	public void getTerrainPosition(){
 		
-		if (isActive() && glfwGetMouseButton(EngineContext.getWindow().getId(),1) == GLFW_PRESS){
+		if (isActive() && glfwGetMouseButton(BaseContext.getWindow().getId(),1) == GLFW_PRESS){
 			Vec3f pos = new Vec3f(0,0,0);
 			DoubleBuffer xPos = BufferUtils.createDoubleBuffer(1);
 			DoubleBuffer yPos = BufferUtils.createDoubleBuffer(1);
-			glfwGetCursorPos(EngineContext.getWindow().getId(), xPos, yPos);
+			glfwGetCursorPos(BaseContext.getWindow().getId(), xPos, yPos);
 			Vec2f screenPos = new Vec2f((float) xPos.get(),(float) yPos.get());
 			
 			GLContext.getResources().getSceneDepthMap().bind();
 			glGetTexImage(GL_TEXTURE_2D,0,GL_DEPTH_COMPONENT,GL_FLOAT,depthmapBuffer);
-			float depth = depthmapBuffer.get((int) (EngineContext.getWindow().getWidth() * screenPos.getY() + screenPos.getX()));
+			float depth = depthmapBuffer.get((int) (BaseContext.getWindow().getWidth() * screenPos.getY() + screenPos.getX()));
 			
 			// window coords
-			Vec2f w = new Vec2f(screenPos.getX()/EngineContext.getWindow().getWidth(),
-								screenPos.getY()/EngineContext.getWindow().getHeight());
+			Vec2f w = new Vec2f(screenPos.getX()/BaseContext.getWindow().getWidth(),
+								screenPos.getY()/BaseContext.getWindow().getHeight());
 			//ndc coords
 			Vec3f ndc = new Vec3f(w.getX() * 2 - 1, w.getY() * 2 - 1, depth);
-			float cw = EngineContext.getCamera().getProjectionMatrix().get(3,2) / (ndc.getZ() - EngineContext.getCamera().getProjectionMatrix().get(2,2)); 
+			float cw = BaseContext.getCamera().getProjectionMatrix().get(3,2) / (ndc.getZ() - BaseContext.getCamera().getProjectionMatrix().get(2,2)); 
 			Vec3f clip = ndc.mul(cw);
 			Vec4f clipPos = new Vec4f(clip.getX(),clip.getY(),clip.getZ(),cw);
-			Vec4f worldPos =  EngineContext.getCamera().getViewProjectionMatrix().invert().mul(clipPos);
+			Vec4f worldPos =  BaseContext.getCamera().getViewProjectionMatrix().invert().mul(clipPos);
 			worldPos = worldPos.div(worldPos.getW());
 		
 			pos.setX(worldPos.getX());

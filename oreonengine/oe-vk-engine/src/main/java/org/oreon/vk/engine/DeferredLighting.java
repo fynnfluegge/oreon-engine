@@ -15,7 +15,7 @@ import java.util.List;
 
 import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
-import org.oreon.core.context.EngineContext;
+import org.oreon.core.context.BaseContext;
 import org.oreon.core.vk.command.CommandBuffer;
 import org.oreon.core.vk.context.VkContext;
 import org.oreon.core.vk.descriptor.DescriptorPool;
@@ -110,8 +110,8 @@ public class DeferredLighting {
 		
 		int pushConstantRange = Float.BYTES * 1 + Integer.BYTES * 1;
 		pushConstants = memAlloc(pushConstantRange);
-		pushConstants.putInt(EngineContext.getConfig().getMultisamples());
-		pushConstants.putFloat(EngineContext.getConfig().getSightRange());
+		pushConstants.putInt(BaseContext.getConfig().getMultisamples());
+		pushConstants.putFloat(BaseContext.getConfig().getSightRange());
 		pushConstants.flip();
 		
 		ShaderModule shader = new ComputeShader(device, "shaders/deferredLighting.comp.spv");

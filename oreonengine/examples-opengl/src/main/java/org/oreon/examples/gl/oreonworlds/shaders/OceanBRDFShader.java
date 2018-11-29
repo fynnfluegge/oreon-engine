@@ -12,7 +12,7 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE8;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import org.oreon.common.water.WaterConfiguration;
-import org.oreon.core.context.EngineContext;
+import org.oreon.core.context.BaseContext;
 import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.util.Constants;
@@ -90,16 +90,16 @@ public class OceanBRDFShader extends GLShaderProgram{
 	{
 		bindUniformBlock("DirectionalLight", Constants.DirectionalLightUniformBlockBinding);	
 		
-		setUniform("projectionViewMatrix", EngineContext.getCamera().getViewProjectionMatrix());
+		setUniform("projectionViewMatrix", BaseContext.getCamera().getViewProjectionMatrix());
 		setUniform("worldMatrix", object.getWorldTransform().getWorldMatrix());
 				
-		setUniform("eyePosition", EngineContext.getCamera().getPosition());
-		setUniformi("windowWidth", EngineContext.getWindow().getWidth());
-		setUniformi("windowHeight", EngineContext.getWindow().getHeight());
+		setUniform("eyePosition", BaseContext.getCamera().getPosition());
+		setUniformi("windowWidth", BaseContext.getWindow().getWidth());
+		setUniformi("windowHeight", BaseContext.getWindow().getHeight());
 		
 		for (int i=0; i<6; i++)
 		{
-			setUniform("frustumPlanes[" + i +"]", EngineContext.getCamera().getFrustumPlanes()[i]);
+			setUniform("frustumPlanes[" + i +"]", BaseContext.getCamera().getFrustumPlanes()[i]);
 		}
 		
 		Water ocean = (Water) object;
@@ -119,7 +119,7 @@ public class OceanBRDFShader extends GLShaderProgram{
 		setUniformf("emission", configuration.getEmission());
 		setUniformf("specular", configuration.getSpecular());
 		setUniformf("motion", ocean.getMotion());
-		setUniformi("isCameraUnderWater", EngineContext.getConfig().isRenderUnderwater() ? 1 : 0);
+		setUniformi("isCameraUnderWater", BaseContext.getConfig().isRenderUnderwater() ? 1 : 0);
 				
 		glActiveTexture(GL_TEXTURE0);
 		ocean.getDudv().bind();

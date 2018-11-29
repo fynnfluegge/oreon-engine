@@ -1,6 +1,6 @@
 package org.oreon.gl.components.atmosphere;
 
-import org.oreon.core.context.EngineContext;
+import org.oreon.core.context.BaseContext;
 import org.oreon.core.gl.light.GLDirectionalLight;
 import org.oreon.core.gl.memory.GLPointVBO3D;
 import org.oreon.core.gl.query.GLOcclusionQuery;
@@ -48,8 +48,8 @@ public class Sun extends Renderable{
 	
 	public void render() {
 		
-		if (!EngineContext.getConfig().isRenderUnderwater()
-				&& !EngineContext.getConfig().isRenderWireframe()){
+		if (!BaseContext.getConfig().isRenderUnderwater()
+				&& !BaseContext.getConfig().isRenderWireframe()){
 			super.render();
 		}
 	}

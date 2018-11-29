@@ -5,7 +5,7 @@ import static org.lwjgl.opengl.GL30.GL_RGBA16F;
 import static org.lwjgl.opengl.GL42.glBindImageTexture;
 import static org.lwjgl.opengl.GL43.glDispatchCompute;
 
-import org.oreon.core.context.EngineContext;
+import org.oreon.core.context.BaseContext;
 import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.gl.wrapper.texture.Texture2DNoFilterRGBA16F;
 
@@ -21,7 +21,7 @@ public class FXAA {
 	
 		shader = FXAAShader.getInstance();
 		
-		fxaaSceneTexture = new Texture2DNoFilterRGBA16F(EngineContext.getWindow().getWidth(), EngineContext.getWindow().getHeight());
+		fxaaSceneTexture = new Texture2DNoFilterRGBA16F(BaseContext.getWindow().getWidth(), BaseContext.getWindow().getHeight());
 	}
 	
 	public void render(GLTexture sceneTexture){
@@ -29,7 +29,7 @@ public class FXAA {
 		shader.bind();
 		glBindImageTexture(0, fxaaSceneTexture.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
 		shader.updateUniforms(sceneTexture);
-		glDispatchCompute(EngineContext.getWindow().getWidth()/16, EngineContext.getWindow().getHeight()/16, 1);	
+		glDispatchCompute(BaseContext.getWindow().getWidth()/16, BaseContext.getWindow().getHeight()/16, 1);	
 	}
 
 }

@@ -22,7 +22,7 @@ import java.util.List;
 import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
 import org.lwjgl.vulkan.VkQueue;
-import org.oreon.core.context.EngineContext;
+import org.oreon.core.context.BaseContext;
 import org.oreon.core.math.Vec4f;
 import org.oreon.core.util.BufferUtil;
 import org.oreon.core.util.Util;
@@ -118,7 +118,7 @@ public class SSAO {
 		// ssao resources
 		int pushConstantRange = Float.BYTES * 21;
 		ByteBuffer pushConstants = memAlloc(pushConstantRange);
-		pushConstants.put(BufferUtil.createByteBuffer(EngineContext.getCamera().getProjectionMatrix()));
+		pushConstants.put(BufferUtil.createByteBuffer(BaseContext.getCamera().getProjectionMatrix()));
 		pushConstants.putFloat(1f);
 		pushConstants.putFloat(0.02f);
 		pushConstants.putFloat(kernelSize);

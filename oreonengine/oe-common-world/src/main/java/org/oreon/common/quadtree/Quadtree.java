@@ -6,7 +6,7 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.oreon.core.context.EngineContext;
+import org.oreon.core.context.BaseContext;
 import org.oreon.core.math.Transform;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.scenegraph.Node;
@@ -46,7 +46,7 @@ public abstract class Quadtree extends Node implements Runnable{
 	
 	public void updateQuadtree(){
 		
-		if (EngineContext.getCamera().isCameraMoved()){
+		if (BaseContext.getCamera().isCameraMoved()){
 			updateCounter++;
 		}
 		

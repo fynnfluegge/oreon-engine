@@ -2,7 +2,7 @@ package org.oreon.core.light;
 
 import java.nio.FloatBuffer;
 
-import org.oreon.core.context.EngineContext;
+import org.oreon.core.context.BaseContext;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.math.Vec3f;
 import org.oreon.core.shadow.PssmCamera;
@@ -64,8 +64,8 @@ public abstract class DirectionalLight extends Light{
 	
 	public void update(){
 		
-		if (EngineContext.getCamera().isCameraRotated() || 
-				EngineContext.getCamera().isCameraMoved()){
+		if (BaseContext.getCamera().isCameraRotated() || 
+				BaseContext.getCamera().isCameraMoved()){
 			floatBufferMatrices.clear();
 			for (PssmCamera lightCamera : splitLightCameras){
 				lightCamera.update(m_View, up, right);

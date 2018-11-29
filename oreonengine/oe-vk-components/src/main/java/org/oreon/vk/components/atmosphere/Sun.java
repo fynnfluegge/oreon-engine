@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
-import org.oreon.core.context.EngineContext;
+import org.oreon.core.context.BaseContext;
 import org.oreon.core.math.Vec3f;
 import org.oreon.core.model.Vertex.VertexLayout;
 import org.oreon.core.scenegraph.NodeComponentType;
@@ -156,8 +156,8 @@ public class Sun extends Renderable{
 	    VkPipeline graphicsPipeline = new GraphicsPipeline(device.getHandle(),
 	    		shaderPipeline, vertexInput, VK_PRIMITIVE_TOPOLOGY_POINT_LIST,
 	    		VkUtil.createLongBuffer(descriptorSetLayouts),
-				EngineContext.getConfig().getX_ScreenResolution(),
-				EngineContext.getConfig().getY_ScreenResolution(),
+				BaseContext.getConfig().getX_ScreenResolution(),
+				BaseContext.getConfig().getY_ScreenResolution(),
 				VkContext.getResources().getTransparencyFbo().getRenderPass().getHandle(),
 				VkContext.getResources().getTransparencyFbo().getColorAttachmentCount(),
 				1,

@@ -1,6 +1,6 @@
 package org.oreon.core.shadow;
 
-import org.oreon.core.context.EngineContext;
+import org.oreon.core.context.BaseContext;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.math.Vec4f;
 import org.oreon.core.math.Vec3f;
@@ -83,10 +83,10 @@ public class PssmCamera {
 	
 	private void updateFrustumCorners(){
 		
-		Vec3f right = EngineContext.getCamera().getUp().cross(EngineContext.getCamera().getForward());
+		Vec3f right = BaseContext.getCamera().getUp().cross(BaseContext.getCamera().getForward());
 		
-		float tanFOV = (float) Math.tan(Math.toRadians(EngineContext.getCamera().getFovY()/2));
-		float aspectRatio = EngineContext.getCamera().getWidth()/EngineContext.getCamera().getHeight();
+		float tanFOV = (float) Math.tan(Math.toRadians(BaseContext.getCamera().getFovY()/2));
+		float aspectRatio = BaseContext.getCamera().getWidth()/BaseContext.getCamera().getHeight();
 		
 		//width and height of near plane
 		float heightNear = 2 * tanFOV * zNear;
@@ -97,18 +97,18 @@ public class PssmCamera {
 		float widthFar = heightFar * aspectRatio;
 		
 		//center of planes
-		Vec3f centerNear = EngineContext.getCamera().getPosition().add(EngineContext.getCamera().getForward().mul(zNear));
-		Vec3f centerFar = EngineContext.getCamera().getPosition().add(EngineContext.getCamera().getForward().mul(zFar));
+		Vec3f centerNear = BaseContext.getCamera().getPosition().add(BaseContext.getCamera().getForward().mul(zNear));
+		Vec3f centerFar = BaseContext.getCamera().getPosition().add(BaseContext.getCamera().getForward().mul(zFar));
 		
-		Vec3f NearTopLeft = centerNear.add( (EngineContext.getCamera().getUp().mul(heightNear/2f)).sub((right.mul(widthNear/2f))) );
-		Vec3f NearTopRight = centerNear.add( (EngineContext.getCamera().getUp().mul(heightNear/2f)).add((right.mul(widthNear/2f))) );
-		Vec3f NearBottomLeft = centerNear.sub( (EngineContext.getCamera().getUp().mul(heightNear/2f)).sub((right.mul(widthNear/2f))) );
-		Vec3f NearBottomRight = centerNear.sub( (EngineContext.getCamera().getUp().mul(heightNear/2f)).add((right.mul(widthNear/2f))) );
+		Vec3f NearTopLeft = centerNear.add( (BaseContext.getCamera().getUp().mul(heightNear/2f)).sub((right.mul(widthNear/2f))) );
+		Vec3f NearTopRight = centerNear.add( (BaseContext.getCamera().getUp().mul(heightNear/2f)).add((right.mul(widthNear/2f))) );
+		Vec3f NearBottomLeft = centerNear.sub( (BaseContext.getCamera().getUp().mul(heightNear/2f)).sub((right.mul(widthNear/2f))) );
+		Vec3f NearBottomRight = centerNear.sub( (BaseContext.getCamera().getUp().mul(heightNear/2f)).add((right.mul(widthNear/2f))) );
 		
-		Vec3f FarTopLeft = centerFar.add( (EngineContext.getCamera().getUp().mul(heightFar/2f)).sub((right.mul(widthFar/2f))) );
-		Vec3f FarTopRight = centerFar.add( (EngineContext.getCamera().getUp().mul(heightFar/2f)).add((right.mul(widthFar/2f))) );
-		Vec3f FarBottomLeft = centerFar.sub( (EngineContext.getCamera().getUp().mul(heightFar/2f)).sub((right.mul(widthFar/2f))) );
-		Vec3f FarBottomRight = centerFar.sub( (EngineContext.getCamera().getUp().mul(heightFar/2f)).add((right.mul(widthFar/2f))) );
+		Vec3f FarTopLeft = centerFar.add( (BaseContext.getCamera().getUp().mul(heightFar/2f)).sub((right.mul(widthFar/2f))) );
+		Vec3f FarTopRight = centerFar.add( (BaseContext.getCamera().getUp().mul(heightFar/2f)).add((right.mul(widthFar/2f))) );
+		Vec3f FarBottomLeft = centerFar.sub( (BaseContext.getCamera().getUp().mul(heightFar/2f)).sub((right.mul(widthFar/2f))) );
+		Vec3f FarBottomRight = centerFar.sub( (BaseContext.getCamera().getUp().mul(heightFar/2f)).add((right.mul(widthFar/2f))) );
 		
 		frustumCorners[0] = NearTopLeft;
 		frustumCorners[1] = NearTopRight;

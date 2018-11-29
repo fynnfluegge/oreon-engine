@@ -1,6 +1,6 @@
 package org.oreon.gl.components.atmosphere;
 
-import org.oreon.core.context.EngineContext;
+import org.oreon.core.context.BaseContext;
 import org.oreon.core.gl.memory.GLMeshVBO;
 import org.oreon.core.gl.scenegraph.GLRenderInfo;
 import org.oreon.core.gl.util.GLAssimpModelLoader;
@@ -33,7 +33,7 @@ public class Skydome extends Renderable{
 //	}
 	
 	public void render() {
-		if (EngineContext.getConfig().isRenderRefraction() && !EngineContext.getConfig().isRenderUnderwater()){
+		if (BaseContext.getConfig().isRenderRefraction() && !BaseContext.getConfig().isRenderUnderwater()){
 			return;
 		}
 		else {

@@ -20,7 +20,7 @@ import java.nio.LongBuffer;
 
 import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
-import org.oreon.core.context.EngineContext;
+import org.oreon.core.context.BaseContext;
 import org.oreon.core.vk.framebuffer.FrameBufferColorAttachment;
 import org.oreon.core.vk.framebuffer.FrameBufferDepthAttachment;
 import org.oreon.core.vk.framebuffer.VkFrameBuffer;
@@ -36,8 +36,8 @@ public class ReflectionFbo extends VkFrameBufferObject{
 	public ReflectionFbo(VkDevice device,
 			VkPhysicalDeviceMemoryProperties memoryProperties) {
 		
-		width = EngineContext.getConfig().getX_ScreenResolution()/1;
-		height = EngineContext.getConfig().getY_ScreenResolution()/1;
+		width = BaseContext.getConfig().getX_ScreenResolution()/1;
+		height = BaseContext.getConfig().getY_ScreenResolution()/1;
 		
 		VkImageBundle albedoBuffer = new FrameBufferColorAttachment(device, memoryProperties, width, height,
 				VK_FORMAT_R8G8B8A8_UNORM, 1);

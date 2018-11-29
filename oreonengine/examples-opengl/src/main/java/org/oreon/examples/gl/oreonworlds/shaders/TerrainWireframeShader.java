@@ -4,7 +4,7 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
-import org.oreon.core.context.EngineContext;
+import org.oreon.core.context.BaseContext;
 import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.scenegraph.NodeComponentType;
@@ -77,7 +77,7 @@ private static TerrainWireframeShader instance = null;
 	{	
 		bindUniformBlock("Camera", Constants.CameraUniformBlockBinding);
 		
-		setUniform("clipplane", EngineContext.getConfig().getClipplane());
+		setUniform("clipplane", BaseContext.getConfig().getClipplane());
 		
 		TerrainConfiguration terrConfig = object.getComponent(NodeComponentType.CONFIGURATION);
 		int lod = ((TerrainNode) object).getLod();
