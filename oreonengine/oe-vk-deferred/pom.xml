@@ -8,7 +8,7 @@
 	</parent>
   
 	<groupId>org.oreon.vk</groupId>
-	<artifactId>oe-vk-engine</artifactId>
+	<artifactId>oe-vk-deferred</artifactId>
 	<packaging>jar</packaging>
 	
 	<dependencies>
@@ -19,7 +19,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.oreon.core</groupId>
-			<artifactId>oe-core-vulkan</artifactId>
+			<artifactId>oe-vk-api</artifactId>
 			<version>${oreon.version}</version>
 		</dependency>
 		<dependency>

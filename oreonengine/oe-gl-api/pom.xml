@@ -7,8 +7,8 @@
 	 	<version>${oreon.version}</version>
 	</parent>
   
-	<groupId>org.oreon.gl</groupId>
-	<artifactId>oe-gl-engine</artifactId>
+	<groupId>org.oreon.core</groupId>
+	<artifactId>oe-gl-api</artifactId>
 	<packaging>jar</packaging>
 	
 	<dependencies>
@@ -17,16 +17,6 @@
 			<artifactId>oe-core</artifactId>
 			<version>${oreon.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.oreon.core</groupId>
-			<artifactId>oe-core-opengl</artifactId>
-			<version>${oreon.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.oreon.gl</groupId>
-			<artifactId>oe-gl-components</artifactId>
-			<version>${oreon.version}</version>
-		</dependency>
 	</dependencies>
-  
+	
 </project>

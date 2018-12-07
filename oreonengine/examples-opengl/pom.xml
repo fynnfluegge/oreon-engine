@@ -51,7 +51,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.oreon.core</groupId>
-			<artifactId>oe-core-opengl</artifactId>
+			<artifactId>oe-gl-api</artifactId>
 			<version>${oreon.version}</version>
 		</dependency>
 		<dependency>
@@ -61,7 +61,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.oreon.gl</groupId>
-			<artifactId>oe-gl-engine</artifactId>
+			<artifactId>oe-gl-deferred</artifactId>
 			<version>${oreon.version}</version>
 		</dependency>
 	</dependencies>

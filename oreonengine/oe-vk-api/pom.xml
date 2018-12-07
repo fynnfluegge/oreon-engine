@@ -8,7 +8,7 @@
 	</parent>
   
 	<groupId>org.oreon.core</groupId>
-	<artifactId>oe-core-vulkan</artifactId>
+	<artifactId>oe-vk-api</artifactId>
 	<packaging>jar</packaging>
 	
 	<dependencies>
