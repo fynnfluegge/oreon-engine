@@ -36,7 +36,7 @@ import org.oreon.vk.components.ui.VkGUI;
 
 import lombok.Setter;
 
-public class VkRenderEngine extends RenderEngine {
+public class VkDeferredEngine extends RenderEngine {
 	
 	private SwapChain swapChain;
 	private VkDeviceBundle graphicsDevice;

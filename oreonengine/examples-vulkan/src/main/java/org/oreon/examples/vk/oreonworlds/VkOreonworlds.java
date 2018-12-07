@@ -4,7 +4,7 @@ import org.oreon.core.vk.context.VkContext;
 import org.oreon.vk.components.atmosphere.Skydome;
 import org.oreon.vk.components.atmosphere.Sun;
 import org.oreon.vk.components.water.Water;
-import org.oreon.vk.engine.VkRenderEngine;
+import org.oreon.vk.engine.VkDeferredEngine;
 
 public class VkOreonworlds {
 	
@@ -12,7 +12,7 @@ public class VkOreonworlds {
 		
 		VkContext.create();
 
-		VkRenderEngine renderEngine = new VkRenderEngine();
+		VkDeferredEngine renderEngine = new VkDeferredEngine();
 		renderEngine.setGui(new VkSystemMonitor());
 		renderEngine.init();
 		

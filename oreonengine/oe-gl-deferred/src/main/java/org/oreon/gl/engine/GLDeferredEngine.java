@@ -39,7 +39,7 @@ import org.oreon.gl.engine.transparency.OpaqueTransparencyBlending;
 
 import lombok.Setter;
 
-public class GLRenderEngine extends RenderEngine{
+public class GLDeferredEngine extends RenderEngine{
 	
 	private RenderList opaqueSceneRenderList;
 	private RenderList transparencySceneRenderList;

@@ -5,7 +5,7 @@ import org.oreon.examples.gl.oreonworlds.gui.GLSystemMonitor;
 import org.oreon.examples.gl.oreonworlds.ocean.Ocean;
 import org.oreon.gl.components.atmosphere.SkySphere;
 import org.oreon.gl.components.atmosphere.Sun;
-import org.oreon.gl.engine.GLRenderEngine;
+import org.oreon.gl.engine.GLDeferredEngine;
 
 public class GLOreonworlds {
 
@@ -13,7 +13,7 @@ public class GLOreonworlds {
 
 		GLContext.create();
 		
-		GLRenderEngine renderEngine = new GLRenderEngine(); 
+		GLDeferredEngine renderEngine = new GLDeferredEngine(); 
 		renderEngine.setGui(new GLSystemMonitor());
 		renderEngine.init();
 		
