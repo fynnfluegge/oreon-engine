@@ -1,0 +1,76 @@
+Getting Started
+===============
+
+System Requirements
+-------------------
+Your System needs to support OpenGL 4.3 and/or Vulkan 1.1
+
+Setup Oreon Engine Java Project
+-------------------------------
+This setup guide demonstrates how to import *Oreon Engine* into the *Eclipse IDE*
+
+Fork or Clone the repository
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+To fork the repository click on the top-right corner of this page (*Fork me on GitHub*).
+You will see *oreon-engine* as a forked repository at your Github account repositories.
+Now you are ready to clone the repository to your local system and set it up as a project in Eclipse.
+Alternatively, you can clone and import the project without a fork by just clicking the *clone* button at.
+
+Import the project into Eclipse
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Open Eclipse IDE, choose File -> Import... -> Projects from Git
+
+.. image:: /_images/Eclipse_Git_Import.png
+
+- Select Clone URI -> Next >
+
+.. image:: /_images/CloneURI.png
+
+
+- Go to your forked Oreon.Engine-OpenGL-Java repository on GitHub
+- copy URL -> paste URL into the URI-field
+	- Eclipse will fill the other fields for you
+- type in your GitHub username and password
+- click Next >
+
+.. image:: /_images/RepoUri_User.png
+
+
+- Select master-branch -> click Next >
+
+- choose a directory for the local repository -> click Next >
+
+.. image:: /_images/local_Repo.png
+
+
+- Eclipse will clone the GitHub repository to the previously created local repository
+
+.. image:: /_images/build_local_repo.png
+- click Finish
+
+.. image:: /_images/cancel.png
+- click Cancel
+
+.. image:: /_images/existing_maven_projects.png	
+- Now once more choose File -> Import... in the Eclipse IDE and select Existing Maven Projects
+
+- click Finish
+
+.. image:: /_images/maven_root.png
+- Select as root directory the subfolder 'oreonengine' of the previously checked out github project *oreon-engine*.
+
+.. image:: /_images/modules.png
+- Select all modules and optionally choose a working set for your project.
+
+Congratulations, you are done!
+You will see the project in your Eclipse package Explorer as with all it's maven modules as shown below.
+Good luck and have fun with the project!
+
+.. image:: /_images/project_setup_finished.png
+
+
+
+
+
