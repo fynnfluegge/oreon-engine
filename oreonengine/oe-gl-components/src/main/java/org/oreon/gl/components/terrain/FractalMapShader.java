@@ -1,9 +1,9 @@
 package org.oreon.gl.components.terrain;
 
-import java.util.List;
-
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
+
+import java.util.List;
 
 import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.util.ResourceLoader;

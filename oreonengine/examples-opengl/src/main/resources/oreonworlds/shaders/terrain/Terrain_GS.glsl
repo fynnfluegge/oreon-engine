@@ -28,7 +28,7 @@ layout (std140, row_major) uniform Camera{
 };
 
 uniform sampler2D splatmap;
-uniform Material materials[4];
+uniform Material materials[3];
 uniform int largeDetailRange;
 uniform vec4 clipplane;
 uniform float scaleXZ;
@@ -83,7 +83,7 @@ void main() {
 			float height = gl_in[k].gl_Position.y;
 			
 			float scale = 0;
-			for (int i=0; i<4; i++){
+			for (int i=0; i<3; i++){
 				scale += texture(materials[i].heightmap, texCoordG[k]/materials[i].horizontalScaling).r * materials[i].heightScaling * blendValues[i];
 			}
 						

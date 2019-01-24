@@ -31,7 +31,7 @@ uniform sampler2D normalmap;
 uniform sampler2D splatmap;
 uniform float scaleY;
 uniform float scaleXZ;
-uniform Material materials[4];
+uniform Material materials[3];
 uniform float sightRangeFactor;
 uniform int largeDetailRange;
 uniform int isReflection;
@@ -73,8 +73,8 @@ void main()
 		mat3 TBN = mat3(tangent,bitangent,normal);
 		
 		vec3 bumpNormal;
-		for (int i=0; i<4; i++){
-			
+		
+		for (int i=0; i<3; i++){
 			bumpNormal += (2*(texture(materials[i].normalmap, texCoordF/materials[i].horizontalScaling).rgb) - 1) * blendValues[i];
 		}
 		
@@ -87,7 +87,7 @@ void main()
 	
 	vec3 fragColor = vec3(0,0,0);
 	
-	for (int i=0; i<4; i++){
+	for (int i=0; i<3; i++){
 		fragColor +=  texture(materials[i].diffusemap, texCoordF/materials[i].horizontalScaling).rgb
 					* blendValues[i];
 	}

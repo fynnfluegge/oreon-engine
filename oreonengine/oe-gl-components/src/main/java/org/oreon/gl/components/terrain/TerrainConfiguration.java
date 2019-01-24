@@ -36,6 +36,7 @@ public class TerrainConfiguration extends NodeComponent{
 	private float tessellationSlope;
 	private float tessellationShift;
 	private int detailRange;
+	private float normalStrength;
 	private GLTexture heightmap;
 	private GLTexture normalmap;
 	private GLTexture ambientmap;
@@ -61,6 +62,7 @@ public class TerrainConfiguration extends NodeComponent{
 		
 		scaleY = Float.valueOf(properties.getProperty("scaleY"));
 		scaleXZ = Float.valueOf(properties.getProperty("scaleXZ"));
+		normalStrength = Float.valueOf(properties.getProperty("normalmap.strength"));
 		
 		if (!properties.getProperty("heightmap").equals("0")){
 			heightmap = new GLTexture(properties.getProperty("heightmap"));
@@ -68,7 +70,7 @@ public class TerrainConfiguration extends NodeComponent{
 			getHeightmap().bilinearFilter();
 			
 			NormalRenderer normalRenderer = new NormalRenderer(getHeightmap().getMetaData().getWidth());
-			normalRenderer.setStrength(Integer.valueOf(properties.getProperty("normalmap.strength")));
+			normalRenderer.setStrength(normalStrength);
 			normalRenderer.render(getHeightmap());
 			normalmap = normalRenderer.getNormalmap();	
 			createHeightmapDataBuffer();
@@ -147,12 +149,12 @@ public class TerrainConfiguration extends NodeComponent{
 		heightmap = fractalMapGenerator.getFractalmap();
 		
 		NormalRenderer normalRenderer = new NormalRenderer(fractalMapResolution);
-		normalRenderer.setStrength(8);
+		normalRenderer.setStrength(normalStrength);
 		normalRenderer.render(getHeightmap());
 		normalmap = normalRenderer.getNormalmap();
 		
 		SplatMapGenerator splatMapGenerator = new SplatMapGenerator(2048);
-		splatMapGenerator.render(getNormalmap());
+		splatMapGenerator.render(getNormalmap(), getHeightmap(), getScaleY());
 		splatmap = splatMapGenerator.getSplatmap();
 	}
 	

@@ -28,10 +28,10 @@ public class SplatMapGenerator {
 		splatmap.unbind();
 	}
 	
-	public void render(GLTexture normalmap){
+	public void render(GLTexture normalmap, GLTexture heightmap, float yScale){
 		
 		shader.bind();
-		shader.updateUniforms(normalmap, N);
+		shader.updateUniforms(normalmap, heightmap, N, yScale);
 		glBindImageTexture(0, splatmap.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
 		glDispatchCompute(N/16,N/16,1);
 		glFinish();

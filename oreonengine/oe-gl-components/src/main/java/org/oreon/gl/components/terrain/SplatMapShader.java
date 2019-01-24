@@ -1,6 +1,6 @@
 package org.oreon.gl.components.terrain;
 
-import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import org.oreon.core.gl.pipeline.GLShaderProgram;
@@ -27,15 +27,23 @@ public class SplatMapShader extends GLShaderProgram{
 		addComputeShader(ResourceLoader.loadShader("shaders/terrain/SplatMap_CS.glsl"));
 		compileShader();
 	
-		addUniform("normalmap");
+//		addUniform("normalmap");
+		addUniform("heightmap");
 		addUniform("N");
+		addUniform("yScale");
 	}
 	
-	public void updateUniforms(GLTexture normalmap, int N)
+	public void updateUniforms(GLTexture normalmap, GLTexture heightmap, int N, float yScale)
 	{
-		glActiveTexture(GL_TEXTURE0);
-		normalmap.bind();
-		setUniformi("normalmap", 0);
+//		glActiveTexture(GL_TEXTURE0);
+//		normalmap.bind();
+//		setUniformi("normalmap", 0);
+		
+		glActiveTexture(GL_TEXTURE1);
+		heightmap.bind();
+		setUniformi("heightmap", 1);
+		
 		setUniformi("N", N);
+		setUniformf("yScale", yScale);
 	}
 }
