@@ -24,7 +24,7 @@ public class SplatMapShader extends GLShaderProgram{
 	
 		super();
 		
-		addComputeShader(ResourceLoader.loadShader("shaders/terrain/SplatMap_CS.glsl"));
+		addComputeShader(ResourceLoader.loadShader("shaders/terrain/SplatMap.comp"));
 		compileShader();
 	
 //		addUniform("normalmap");

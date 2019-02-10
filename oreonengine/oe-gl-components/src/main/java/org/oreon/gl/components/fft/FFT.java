@@ -6,6 +6,7 @@ import static org.lwjgl.opengl.GL30.GL_RGBA32F;
 import static org.lwjgl.opengl.GL42.glBindImageTexture;
 import static org.lwjgl.opengl.GL43.glDispatchCompute;
 
+import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.gl.wrapper.texture.Texture2DStorageRGBA32F;
 import org.oreon.core.math.Vec2f;
@@ -35,12 +36,12 @@ public class FFT {
 	private long systemTime = System.currentTimeMillis();
 	@Setter
 	private float t_delta;
-	private ButterflyShader butterflyShader;
-	private InversionShader inversionShader;
+	private FFTButterflyShader butterflyShader;
+	protected GLShaderProgram inversionShader;
 	private TwiddleFactors twiddleFactors;
 	
-	private H0k h0k;
-	private Hkt hkt;
+	protected H0k h0k;
+	protected Hkt hkt;
 	
 	public FFT(int N, int L, float amplitude, Vec2f direction,
 			float intensity, float capillarSupressFactor){
@@ -50,8 +51,8 @@ public class FFT {
 		h0k = new H0k(N, L, amplitude, direction, intensity, capillarSupressFactor);
 		hkt = new Hkt(N, L);
 		
-		butterflyShader = ButterflyShader.getInstance();
-		inversionShader = InversionShader.getInstance();
+		butterflyShader = FFTButterflyShader.getInstance();
+		inversionShader = FFTInversionShader.getInstance();
 		
 		pingpongTexture = new Texture2DStorageRGBA32F(N,N,1);
 		Dy = new Texture2DStorageRGBA32F(N,N,1);
@@ -106,7 +107,6 @@ public class FFT {
 		glBindImageTexture(0, Dy.getHandle(), 0, false, 0, GL_READ_WRITE, GL_RGBA32F);
 		glDispatchCompute(N/16,N/16,1);
 		glFinish();
-		
 		
 		if (choppy){
 			

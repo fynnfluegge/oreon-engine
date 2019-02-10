@@ -18,6 +18,8 @@ import org.oreon.core.math.Vec2f;
 import org.oreon.core.model.Material;
 import org.oreon.core.scenegraph.NodeComponent;
 import org.oreon.core.util.BufferUtil;
+import org.oreon.gl.components.terrain.fractals.FractalMap;
+import org.oreon.gl.components.terrain.fractals.FractalMapGenerator;
 import org.oreon.gl.components.util.NormalRenderer;
 
 import lombok.Getter;
@@ -119,15 +121,19 @@ public class TerrainConfiguration extends NodeComponent{
 			
 			int L = Integer.valueOf(properties.getProperty("fractal" + i + ".L"));
 			float amplitude = Float.valueOf(properties.getProperty("fractal" + i + ".amplitude"));
-			float capillarSuppression = Float.valueOf(properties.getProperty("fractal" + i + ".capillarSuppression"));;
+			float capillar = Float.valueOf(properties.getProperty("fractal" + i + ".capillar"));;
 			int scaling = Integer.valueOf(properties.getProperty("fractal" + i + ".scaling"));
-			float strength = Float.valueOf(properties.getProperty("fractal" + i + ".strength"));
+			float heightStrength = Float.valueOf(properties.getProperty("fractal" + i + ".heightStrength"));
+			float normalStrength = Float.valueOf(properties.getProperty("fractal" + i + ".normalStrength"));
 			int random = Integer.valueOf(properties.getProperty("fractal" + i + ".random"));
 			Vec2f direction = new Vec2f(Float.valueOf(properties.getProperty("fractal" + i + ".direction.x")),
 					Float.valueOf(properties.getProperty("fractal" + i + ".direction.y")));
 			float intensity = Float.valueOf(properties.getProperty("fractal" + i + ".intensity"));
+			
 			FractalMap fractal = new FractalMap(fractalMapResolution, L, amplitude,
-					direction, intensity, capillarSuppression, scaling, strength, random);
+					direction, intensity, capillar, scaling, heightStrength, normalStrength, random);
+			fractal.render();
+			
 			getFractals().add(fractal);
 		}
 		
@@ -145,17 +151,17 @@ public class TerrainConfiguration extends NodeComponent{
 	public void renderFractalMap(){
 		
 		FractalMapGenerator fractalMapGenerator = new FractalMapGenerator(fractalMapResolution);
-		fractalMapGenerator.render(fractals);
-		heightmap = fractalMapGenerator.getFractalmap();
+		fractalMapGenerator.renderHeightmap(fractals);
+		heightmap = fractalMapGenerator.getHeightmap();
+//		heightmap = fractals.get(2).getHeightmap();
 		
-		NormalRenderer normalRenderer = new NormalRenderer(fractalMapResolution);
-		normalRenderer.setStrength(normalStrength);
-		normalRenderer.render(getHeightmap());
-		normalmap = normalRenderer.getNormalmap();
+		fractalMapGenerator.renderNormalmap(fractals);
+		normalmap = fractalMapGenerator.getNormalmap();
+//		normalmap = fractals.get(2).getNormalmap();
 		
-		SplatMapGenerator splatMapGenerator = new SplatMapGenerator(2048);
-		splatMapGenerator.render(getNormalmap(), getHeightmap(), getScaleY());
+		SplatMapGenerator splatMapGenerator = new SplatMapGenerator(512);
 		splatmap = splatMapGenerator.getSplatmap();
+		splatMapGenerator.render(getNormalmap(), getHeightmap(), getScaleY());
 	}
 	
 	private int updateMorphingArea(int lod){

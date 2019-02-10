@@ -3,20 +3,20 @@ package org.oreon.gl.components.fft;
 import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.util.ResourceLoader;
 
-public class InversionShader extends GLShaderProgram{
+public class FFTInversionShader extends GLShaderProgram{
 
-	private static InversionShader instance = null;
+	private static FFTInversionShader instance = null;
 	
-	public static InversionShader getInstance() 
+	public static FFTInversionShader getInstance() 
 	{
 	    if(instance == null) 
 	    {
-	    	instance = new InversionShader();
+	    	instance = new FFTInversionShader();
 	    }
 	    return instance;
 	}
 		
-	protected InversionShader()
+	protected FFTInversionShader()
 	{
 		super();
 			

@@ -6,7 +6,7 @@ import org.oreon.core.util.ResourceLoader;
 
 public class H0kShader extends GLShaderProgram{
 	
-private static H0kShader instance = null;
+	private static H0kShader instance = null;
 	
 	public static H0kShader getInstance() 
 	{
@@ -29,7 +29,7 @@ private static H0kShader instance = null;
 		addUniform("amplitude");
 		addUniform("direction");
 		addUniform("intensity");
-		addUniform("capillarSupressFactor");
+		addUniform("l");
 		addUniform("noise_r0");
 		addUniform("noise_i0");
 		addUniform("noise_r1");
@@ -44,7 +44,7 @@ private static H0kShader instance = null;
 		setUniformf("amplitude", amplitude);
 		setUniformf("intensity", intensity);
 		setUniform("direction", direction);
-		setUniformf("capillarSupressFactor", capillarSupressFactor);
+		setUniformf("l", capillarSupressFactor);
 	}
 	
 	public void updateUniforms(int texture0, int texture1, int texture2, int texture3)

@@ -22,15 +22,15 @@ void main(void)
 	float xBlend   = clamp((-height)/200,0,1);
 	float slopeFactor = 0;
 	
-	if (normal.y < 1.0){
-		slopeFactor = 1-pow(normal.y,4);
-		zBlend += slopeFactor;
-		zBlend = clamp(zBlend,0,1);
-		yBlend -= slopeFactor;
-		yBlend = clamp(yBlend,0,1);
-		xBlend -= slopeFactor;
-		xBlend = clamp(xBlend,0,1);
-	}
+	// if (normal.y < 1.0){
+		// slopeFactor = 1-pow(normal.y,4);
+		// zBlend += slopeFactor;
+		// zBlend = clamp(zBlend,0,1);
+		// yBlend -= slopeFactor;
+		// yBlend = clamp(yBlend,0,1);
+		// xBlend -= slopeFactor;
+		// xBlend = clamp(xBlend,0,1);
+	// }
 	
 	vec4 blendValues = vec4(0,0,0,0);
 	

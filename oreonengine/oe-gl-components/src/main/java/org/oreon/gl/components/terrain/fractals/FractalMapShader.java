@@ -1,4 +1,4 @@
-package org.oreon.gl.components.terrain;
+package org.oreon.gl.components.terrain.fractals;
 
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
@@ -25,29 +25,44 @@ public class FractalMapShader extends GLShaderProgram{
 		
 		super();
 		
-		addComputeShader(ResourceLoader.loadShader("shaders/terrain/FractalMap_CS.glsl"));
+		addComputeShader(ResourceLoader.loadShader("shaders/terrain/FractalMap.comp"));
 		compileShader();
 		
 		addUniform("N");
+		addUniform("isHeightmap");
 		
 		for (int i=0; i<8; i++){
-			addUniform("fractals[" + i + "].heightmap");
+			addUniform("fractals[" + i + "].map");
 			addUniform("fractals[" + i + "].scaling");
 			addUniform("fractals[" + i + "].strength");
 		}
 	}
 	
-	public void updateUniforms(List<FractalMap> fractals, int N){
+	public void updateUniforms(List<FractalMap> fractals, int N, boolean renderHeight){
 		
 		setUniformi("N", N);
 		
 		for (int i=0; i<8; i++)
 		{
 			glActiveTexture(GL_TEXTURE0 + i);
-			fractals.get(i).getHeightmap().bind();
-			setUniformi("fractals[" + i +"].heightmap", i);	
+			
+			if (renderHeight)
+				fractals.get(i).getHeightmap().bind();
+			else
+				fractals.get(i).getNormalmap().bind();
+			
+			setUniformi("fractals[" + i +"].map", i);	
 			setUniformi("fractals[" + i +"].scaling", fractals.get(i).getScaling());
-			setUniformf("fractals[" + i +"].strength", fractals.get(i).getStrength());
+			
+			if (renderHeight){
+				setUniformi("isHeightmap", 1);
+				setUniformf("fractals[" + i +"].strength", fractals.get(i).getHeightStrength());
+			}
+			else{
+				setUniformf("fractals[" + i +"].strength", fractals.get(i).getNormalStrength());
+				setUniformi("isHeightmap", 0);
+			}
+			
 		}
 	}
 

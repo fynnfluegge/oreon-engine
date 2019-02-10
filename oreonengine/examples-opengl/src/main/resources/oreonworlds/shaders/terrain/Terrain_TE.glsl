@@ -75,13 +75,8 @@ void main(){
 	u * (1 - v) * texCoord2[0] +
 	u * v * texCoord2[3] +
 	(1 - u) * v * texCoord2[15]);
-	
-	float height = 0;
-	height += texture(heightmap, texCoord).r;
-	height *= scaleY;
 					
-	position.y = height;
-	position.y += waterReflectionShift;
+	position.y = texture(heightmap, texCoord).r * scaleY + waterReflectionShift;
 
 	if (bezier == 1)
 		position.xyz = BezierInterpolation();

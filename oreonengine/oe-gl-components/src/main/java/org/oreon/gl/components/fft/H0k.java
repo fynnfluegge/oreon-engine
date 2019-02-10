@@ -10,6 +10,7 @@ import static org.lwjgl.opengl.GL30.GL_RGBA32F;
 import static org.lwjgl.opengl.GL42.glBindImageTexture;
 import static org.lwjgl.opengl.GL43.glDispatchCompute;
 
+import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.gl.wrapper.texture.Texture2DNoFilter;
 import org.oreon.core.gl.wrapper.texture.Texture2DStorageRGBA32F;
@@ -36,7 +37,7 @@ public class H0k {
 	private GLTexture noise2;
 	private GLTexture noise3;
 	
-	private H0kShader shader;
+	protected GLShaderProgram shader;
 	
 	public H0k(int N, int L, float amplitude, Vec2f direction,
 			float intensity, float capillarSupressFactor) {

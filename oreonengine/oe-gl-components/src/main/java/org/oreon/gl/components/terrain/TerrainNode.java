@@ -87,7 +87,9 @@ public class TerrainNode extends Renderable{
 	
 	public void renderWireframe(){
 		
-		// TODO
+		if (isleaf){
+			super.renderWireframe();
+		}
 	}
 	
 	public void renderShadows()

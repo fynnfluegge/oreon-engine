@@ -17,7 +17,7 @@ uniform int L;
 uniform float amplitude;
 uniform float intensity;
 uniform vec2 direction;
-uniform float capillarSupressFactor;
+uniform float l;
 
 const float g = 9.81;
 
@@ -51,16 +51,16 @@ void main(void)
 
 	float L_ = (intensity * intensity)/g;
 	float mag = length(k);
-	if (mag < 0.00001) mag = 0.00001;
+	if (mag < 0.0001) mag = 0.0001;
 	float magSq = mag * mag;
 	
 	//sqrt(Ph(k))/sqrt(2)
 	float h0k = clamp(sqrt((amplitude/(magSq*magSq)) * pow(dot(normalize(k), normalize(direction)), 2.0) * 
-				exp(-(1.0/(magSq * L_ * L_))) * exp(-magSq*pow(capillarSupressFactor,2.0)))/ sqrt(2.0), -4000.0, 4000.0);
+				exp(-(1.0/(magSq * L_ * L_))) * exp(-magSq*pow(l,2.0)))/ sqrt(2.0), -4000.0, 4000.0);
 	
 	//sqrt(Ph(-k))/sqrt(2)
 	float h0minusk = clamp(sqrt((amplitude/(magSq*magSq)) * pow(dot(normalize(-k), normalize(direction)), 2.0) * 
-					 exp(-(1.0/(magSq * L_ * L_))) * exp(-magSq*pow(capillarSupressFactor,2.0)))/ sqrt(2.0), -4000.0, 4000.0);
+					 exp(-(1.0/(magSq * L_ * L_))) * exp(-magSq*pow(l,2.0)))/ sqrt(2.0), -4000.0, 4000.0);
 	
 	vec4 gauss_random = gaussRND();
 	

@@ -257,7 +257,9 @@ public class VkDeferredEngine extends RenderEngine {
 				if(!offScreenSecondaryCmdBuffers.containsKey(key)){
 					VkRenderInfo mainRenderInfo = offScreenRenderList.get(key)
 							.getComponent(NodeComponentType.MAIN_RENDERINFO);
-					offScreenSecondaryCmdBuffers.put(key, mainRenderInfo.getCommandBuffer());
+					
+					if (mainRenderInfo != null)
+						offScreenSecondaryCmdBuffers.put(key, mainRenderInfo.getCommandBuffer());
 				}
 			});
 

@@ -25,13 +25,6 @@ public class Skydome extends Renderable{
 		addComponent(NodeComponentType.WIREFRAME_RENDERINFO, renderInfo);
 	}
 	
-//	public void update()
-//	{	
-//		getWorldTransform().setRotation(getWorldTransform().getLocalRotation().add(getParent().getWorldTransform().getRotation()));
-//		getWorldTransform().setTranslation(getWorldTransform().getLocalTranslation().add(getParent().getWorldTransform().getTranslation()));
-//		getWorldTransform().setScaling(getWorldTransform().getLocalScaling().mul(getParent().getWorldTransform().getScaling()));
-//	}
-	
 	public void render() {
 		if (BaseContext.getConfig().isRenderRefraction() && !BaseContext.getConfig().isRenderUnderwater()){
 			return;

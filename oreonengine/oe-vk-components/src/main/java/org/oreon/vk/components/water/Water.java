@@ -244,13 +244,21 @@ public class Water extends Renderable{
 		
 		normalRenderer.setWaitSemaphores(fft.getFftSignalSemaphore().getHandlePointer());
 		
-		ShaderPipeline shaderPipeline = new ShaderPipeline(device.getHandle());
-	    shaderPipeline.createVertexShader("shaders/water/water.vert.spv");
-	    shaderPipeline.createTessellationControlShader("shaders/water/water.tesc.spv");
-	    shaderPipeline.createTessellationEvaluationShader("shaders/water/water.tese.spv");
-	    shaderPipeline.createGeometryShader("shaders/water/water.geom.spv");
-	    shaderPipeline.createFragmentShader("shaders/water/water.frag.spv");
-	    shaderPipeline.createShaderPipeline();
+		ShaderPipeline graphicsShaderPipeline = new ShaderPipeline(device.getHandle());
+	    graphicsShaderPipeline.createVertexShader("shaders/water/water.vert.spv");
+	    graphicsShaderPipeline.createTessellationControlShader("shaders/water/water.tesc.spv");
+	    graphicsShaderPipeline.createTessellationEvaluationShader("shaders/water/water.tese.spv");
+	    graphicsShaderPipeline.createGeometryShader("shaders/water/water.geom.spv");
+	    graphicsShaderPipeline.createFragmentShader("shaders/water/water.frag.spv");
+	    graphicsShaderPipeline.createShaderPipeline();
+	    
+	    ShaderPipeline wireframeShaderPipeline = new ShaderPipeline(device.getHandle());
+	    wireframeShaderPipeline.createVertexShader("shaders/water/water.vert.spv");
+	    wireframeShaderPipeline.createTessellationControlShader("shaders/water/water.tesc.spv");
+	    wireframeShaderPipeline.createTessellationEvaluationShader("shaders/water/water.tese.spv");
+	    wireframeShaderPipeline.createGeometryShader("shaders/water/water_wireframe.geom.spv");
+	    wireframeShaderPipeline.createFragmentShader("shaders/water/water_wireframe.frag.spv");
+	    wireframeShaderPipeline.createShaderPipeline();
 	    
 	    ByteBuffer ubo = memAlloc(Float.BYTES * 2);
 		ubo.putFloat(0);
@@ -354,7 +362,7 @@ public class Water extends Renderable{
 		pushConstants.flip();
 		
 		VkPipeline graphicsPipeline = new GraphicsTessellationPipeline(device.getHandle(),
-				shaderPipeline, vertexInput, VkUtil.createLongBuffer(descriptorSetLayouts),
+				graphicsShaderPipeline, vertexInput, VkUtil.createLongBuffer(descriptorSetLayouts),
 				BaseContext.getConfig().getX_ScreenResolution(),
 				BaseContext.getConfig().getY_ScreenResolution(),
 				VkContext.getResources().getOffScreenFbo().getRenderPass().getHandle(),
@@ -363,9 +371,30 @@ public class Water extends Renderable{
 				pushConstantsRange, VK_SHADER_STAGE_ALL_GRAPHICS,
 				16);
 		
-		CommandBuffer commandBuffer = new SecondaryDrawCmdBuffer(
+		CommandBuffer graphicsCommandBuffer = new SecondaryDrawCmdBuffer(
 	    		device.getHandle(), device.getGraphicsCommandPool(Thread.currentThread().getId()).getHandle(), 
 	    		graphicsPipeline.getHandle(), graphicsPipeline.getLayoutHandle(),
+	    		VkContext.getResources().getOffScreenFbo().getFrameBuffer().getHandle(),
+	    		VkContext.getResources().getOffScreenFbo().getRenderPass().getHandle(),
+	    		0,
+	    		VkUtil.createLongArray(descriptorSets),
+	    		vertexBufferObject.getHandle(),
+	    		vertices.length,
+	    		pushConstants, VK_SHADER_STAGE_ALL_GRAPHICS);
+		
+		VkPipeline wireframeGraphicsPipeline = new GraphicsTessellationPipeline(device.getHandle(),
+				wireframeShaderPipeline, vertexInput, VkUtil.createLongBuffer(descriptorSetLayouts),
+				BaseContext.getConfig().getX_ScreenResolution(),
+				BaseContext.getConfig().getY_ScreenResolution(),
+				VkContext.getResources().getOffScreenFbo().getRenderPass().getHandle(),
+				VkContext.getResources().getOffScreenFbo().getColorAttachmentCount(),
+				BaseContext.getConfig().getMultisamples(),
+				pushConstantsRange, VK_SHADER_STAGE_ALL_GRAPHICS,
+				16);
+		
+		CommandBuffer wireframeCommandBuffer = new SecondaryDrawCmdBuffer(
+	    		device.getHandle(), device.getGraphicsCommandPool(Thread.currentThread().getId()).getHandle(), 
+	    		wireframeGraphicsPipeline.getHandle(), wireframeGraphicsPipeline.getLayoutHandle(),
 	    		VkContext.getResources().getOffScreenFbo().getFrameBuffer().getHandle(),
 	    		VkContext.getResources().getOffScreenFbo().getRenderPass().getHandle(),
 	    		0,
@@ -376,12 +405,16 @@ public class Water extends Renderable{
 	    
 		VkMeshData meshData = VkMeshData.builder().vertexBufferObject(vertexBufferObject)
 		    		.vertexBuffer(vertexBuffer).build();
-		VkRenderInfo mainRenderInfo = VkRenderInfo.builder().commandBuffer(commandBuffer)
+		VkRenderInfo mainRenderInfo = VkRenderInfo.builder().commandBuffer(graphicsCommandBuffer)
 				.descriptorSets(descriptorSets).descriptorSetLayouts(descriptorSetLayouts)
 				.pipeline(graphicsPipeline).build();
+		VkRenderInfo wireframeRenderInfo = VkRenderInfo.builder().commandBuffer(wireframeCommandBuffer)
+				.descriptorSets(descriptorSets).descriptorSetLayouts(descriptorSetLayouts)
+				.pipeline(wireframeGraphicsPipeline).build();
 	    
 	    addComponent(NodeComponentType.MESH_DATA, meshData);
 	    addComponent(NodeComponentType.MAIN_RENDERINFO, mainRenderInfo);
+	    addComponent(NodeComponentType.WIREFRAME_RENDERINFO, wireframeRenderInfo);
 	    
 	    createReflectionRefractionResources(device, memoryProperties, descriptorPool);
 	}

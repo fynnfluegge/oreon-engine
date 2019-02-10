@@ -161,6 +161,7 @@ public class Skydome extends Renderable{
 	    
 	    addComponent(NodeComponentType.MESH_DATA, meshData);
 	    addComponent(NodeComponentType.MAIN_RENDERINFO, mainRenderInfo);
+	    addComponent(NodeComponentType.WIREFRAME_RENDERINFO, mainRenderInfo);
 	    addComponent(NodeComponentType.REFLECTION_RENDERINFO, reflectionRenderInfo);
 	    
 	    graphicsShaderPipeline.destroy();
