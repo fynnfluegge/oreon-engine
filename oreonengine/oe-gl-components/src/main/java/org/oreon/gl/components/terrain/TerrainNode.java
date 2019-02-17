@@ -8,6 +8,7 @@ import org.oreon.core.math.Vec3f;
 import org.oreon.core.scenegraph.Node;
 import org.oreon.core.scenegraph.NodeComponent;
 import org.oreon.core.scenegraph.NodeComponentType;
+import org.oreon.core.scenegraph.RenderList;
 import org.oreon.core.scenegraph.Renderable;
 
 public class TerrainNode extends Renderable{
@@ -80,15 +81,32 @@ public class TerrainNode extends Renderable{
 		{	
 			getComponents().get(NodeComponentType.MAIN_RENDERINFO).render();
 		}
-		
-		for(Node child: getChildren())
-			child.render();
+		else
+		{
+			for(Node child: getChildren())
+				child.render();
+		}
 	}
 	
 	public void renderWireframe(){
 		
 		if (isleaf){
-			super.renderWireframe();
+			if (getComponents().containsKey(NodeComponentType.WIREFRAME_RENDERINFO)){
+				getComponents().get(NodeComponentType.WIREFRAME_RENDERINFO).render();
+			}
+		}
+		else{
+			for(Node child: getChildren())
+				child.renderWireframe();
+		}
+	}
+	
+	public void record(RenderList renderList){
+		
+		// only lod = 0 is recorded
+		if (!renderList.contains(id)){
+			renderList.add(this);
+			renderList.setChanged(true);
 		}
 	}
 	
@@ -98,7 +116,6 @@ public class TerrainNode extends Renderable{
 			if (getComponents().containsKey(NodeComponentType.SHADOW_RENDERINFO)){
 				getComponents().get(NodeComponentType.SHADOW_RENDERINFO).render();
 			}
-
 		}
 		for(Node child: getChildren())
 			child.renderShadows();

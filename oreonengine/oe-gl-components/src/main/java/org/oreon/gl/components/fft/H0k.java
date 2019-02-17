@@ -30,6 +30,7 @@ public class H0k {
 	private Vec2f direction;
 	private float intensity;
 	private float amplitude;
+	private float alignment;
 	private float capillarSupressFactor;
 	
 	private GLTexture noise0;
@@ -39,7 +40,7 @@ public class H0k {
 	
 	protected GLShaderProgram shader;
 	
-	public H0k(int N, int L, float amplitude, Vec2f direction,
+	public H0k(int N, int L, float amplitude, Vec2f direction, float alignment,
 			float intensity, float capillarSupressFactor) {
 	
 		this.N = N;
@@ -48,6 +49,7 @@ public class H0k {
 		this.amplitude = amplitude;
 		this.intensity = intensity;
 		this.capillarSupressFactor = capillarSupressFactor;
+		this.alignment = alignment;
 		
 		shader = H0kShader.getInstance();
 		
@@ -62,7 +64,7 @@ public class H0k {
 	public void render() {
 		
 		shader.bind();
-		shader.updateUniforms(N, L, amplitude, direction, intensity, capillarSupressFactor);
+		shader.updateUniforms(N, L, amplitude, direction, alignment, intensity, capillarSupressFactor);
 		
 		glActiveTexture(GL_TEXTURE0);
 		noise0.bind();

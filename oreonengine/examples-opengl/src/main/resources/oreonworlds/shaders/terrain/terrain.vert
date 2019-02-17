@@ -1,14 +1,22 @@
-#version 430
+#version 450
+#extension GL_ARB_separate_shader_objects : enable
 
-layout (location = 0) in vec2 position0;
+layout (location = 0) in vec2 inPosition;
 
-out vec2 texCoord1;
+layout (location = 0) out vec2 outUV;
 
 layout (std140, row_major) uniform Camera{
 	vec3 eyePosition;
 	mat4 m_View;
 	mat4 m_ViewProjection;
 	vec4 frustumPlanes[6];
+};
+
+struct Fractal
+{
+	sampler2D heightmap;
+	int scaling;
+	float strength;
 };
 
 uniform sampler2D heightmap;
@@ -117,16 +125,16 @@ vec2 morph(vec2 localPosition, float height, int morph_area){
 
 void main()
 {
-	vec2 localPosition = (localMatrix * vec4(position0.x,0,position0.y,1)).xz;
+	vec2 localPosition = (localMatrix * vec4(inPosition.x,0,inPosition.y,1)).xz;
 	
 	float height = texture(heightmap, localPosition).r;
 	
 	if (lod > 0)
 		localPosition += morph(localPosition,height,lod_morph_area[lod-1]);
 	
-	height = texture(heightmap, localPosition).r;
+	height = texture(heightmap, localPosition).y;
 	
-	texCoord1 = localPosition;
+	outUV = localPosition;
 					
 	gl_Position = worldMatrix * vec4(localPosition.x,height,localPosition.y,1);
 }

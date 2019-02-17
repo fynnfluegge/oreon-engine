@@ -124,14 +124,18 @@ public class TerrainConfiguration extends NodeComponent{
 			float capillar = Float.valueOf(properties.getProperty("fractal" + i + ".capillar"));;
 			int scaling = Integer.valueOf(properties.getProperty("fractal" + i + ".scaling"));
 			float heightStrength = Float.valueOf(properties.getProperty("fractal" + i + ".heightStrength"));
+			float horizontalStrength = Float.valueOf(properties.getProperty("fractal" + i + ".horizontalStrength"));
 			float normalStrength = Float.valueOf(properties.getProperty("fractal" + i + ".normalStrength"));
 			int random = Integer.valueOf(properties.getProperty("fractal" + i + ".random"));
 			Vec2f direction = new Vec2f(Float.valueOf(properties.getProperty("fractal" + i + ".direction.x")),
 					Float.valueOf(properties.getProperty("fractal" + i + ".direction.y")));
 			float intensity = Float.valueOf(properties.getProperty("fractal" + i + ".intensity"));
+			float alignment = Float.valueOf(properties.getProperty("fractal" + i + ".alignment"));
+			boolean choppy = Integer.valueOf(properties.getProperty("fractal" + i + ".choppy")) == 1 ? true : false;
 			
 			FractalMap fractal = new FractalMap(fractalMapResolution, L, amplitude,
-					direction, intensity, capillar, scaling, heightStrength, normalStrength, random);
+					direction, intensity, capillar, alignment, choppy, 
+					scaling, heightStrength, horizontalStrength, normalStrength, random);
 			fractal.render();
 			
 			getFractals().add(fractal);
@@ -150,16 +154,16 @@ public class TerrainConfiguration extends NodeComponent{
 	
 	public void renderFractalMap(){
 		
-		FractalMapGenerator fractalMapGenerator = new FractalMapGenerator(fractalMapResolution);
-		fractalMapGenerator.renderHeightmap(fractals);
+		FractalMapGenerator fractalMapGenerator = new FractalMapGenerator(4096);
+		fractalMapGenerator.render(fractals);
 		heightmap = fractalMapGenerator.getHeightmap();
 //		heightmap = fractals.get(2).getHeightmap();
 		
-		fractalMapGenerator.renderNormalmap(fractals);
+//		fractalMapGenerator.renderNormalmap(fractals);
 		normalmap = fractalMapGenerator.getNormalmap();
 //		normalmap = fractals.get(2).getNormalmap();
 		
-		SplatMapGenerator splatMapGenerator = new SplatMapGenerator(512);
+		SplatMapGenerator splatMapGenerator = new SplatMapGenerator(4096);
 		splatmap = splatMapGenerator.getSplatmap();
 		splatMapGenerator.render(getNormalmap(), getHeightmap(), getScaleY());
 	}

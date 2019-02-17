@@ -1,6 +1,9 @@
 package org.oreon.gl.components.terrain.fractals;
 
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE2;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE3;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import java.util.List;
@@ -29,40 +32,43 @@ public class FractalMapShader extends GLShaderProgram{
 		compileShader();
 		
 		addUniform("N");
-		addUniform("isHeightmap");
 		
 		for (int i=0; i<8; i++){
-			addUniform("fractals[" + i + "].map");
+			addUniform("fractals[" + i + "].dy");
+			addUniform("fractals[" + i + "].dx");
+			addUniform("fractals[" + i + "].dz");
+			addUniform("fractals[" + i + "].normalmap");
 			addUniform("fractals[" + i + "].scaling");
-			addUniform("fractals[" + i + "].strength");
+			addUniform("fractals[" + i + "].verticalStrength");
+			addUniform("fractals[" + i + "].horizontalStrength");
+			addUniform("fractals[" + i + "].normalStrength");
+			addUniform("fractals[" + i + "].choppy");
 		}
 	}
 	
-	public void updateUniforms(List<FractalMap> fractals, int N, boolean renderHeight){
+	public void updateUniforms(List<FractalMap> fractals, int N){
 		
 		setUniformi("N", N);
 		
 		for (int i=0; i<8; i++)
 		{
-			glActiveTexture(GL_TEXTURE0 + i);
+			glActiveTexture(GL_TEXTURE0 + i * 4);
+			fractals.get(i).getHeightmap().bind();
+			glActiveTexture(GL_TEXTURE1 + i * 4);
+			fractals.get(i).getDxDisplacement().bind();
+			glActiveTexture(GL_TEXTURE2 + i * 4);
+			fractals.get(i).getDzDisplacement().bind();
+			glActiveTexture(GL_TEXTURE3 + i * 4);
+			fractals.get(i).getNormalmap().bind();
 			
-			if (renderHeight)
-				fractals.get(i).getHeightmap().bind();
-			else
-				fractals.get(i).getNormalmap().bind();
-			
-			setUniformi("fractals[" + i +"].map", i);	
+			setUniformi("fractals[" + i +"].dy", 0 + i * 4);	
+			setUniformi("fractals[" + i +"].dx", 1 + i * 4);	
+			setUniformi("fractals[" + i +"].dz", 2 + i * 4);	
+			setUniformi("fractals[" + i +"].normalmap", 3 + i * 4);	
 			setUniformi("fractals[" + i +"].scaling", fractals.get(i).getScaling());
-			
-			if (renderHeight){
-				setUniformi("isHeightmap", 1);
-				setUniformf("fractals[" + i +"].strength", fractals.get(i).getHeightStrength());
-			}
-			else{
-				setUniformf("fractals[" + i +"].strength", fractals.get(i).getNormalStrength());
-				setUniformi("isHeightmap", 0);
-			}
-			
+			setUniformf("fractals[" + i +"].verticalStrength", fractals.get(i).getHeightStrength());
+			setUniformf("fractals[" + i +"].horizontalStrength", fractals.get(i).getHorizontalStrength());
+			setUniformi("fractals[" + i +"].choppy", fractals.get(i).isChoppy() ? 1 : 0);
 		}
 	}
 

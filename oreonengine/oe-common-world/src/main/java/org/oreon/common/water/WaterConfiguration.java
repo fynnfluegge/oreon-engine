@@ -18,6 +18,7 @@ public class WaterConfiguration {
 	private float amplitude;
 	private Vec2f windDirection;
 	private float windSpeed;
+	private float alignment;
 	private float capillarWavesSupression;
 	private float motion;
 	private float displacementScale;
@@ -54,6 +55,7 @@ public class WaterConfiguration {
 		windDirection = new Vec2f(Float.valueOf(properties.getProperty("wind.x")),
 				Float.valueOf(properties.getProperty("wind.y"))).normalize();
 		windSpeed = Float.valueOf(properties.getProperty("wind.speed"));
+		alignment = Float.valueOf(properties.getProperty("alignment"));
 		capillarWavesSupression = Float.valueOf(properties.getProperty("fft.capillarwavesSuppression"));
 		displacementScale = Float.valueOf(properties.getProperty("displacementScale"));
 		choppiness = Float.valueOf(properties.getProperty("choppiness"));

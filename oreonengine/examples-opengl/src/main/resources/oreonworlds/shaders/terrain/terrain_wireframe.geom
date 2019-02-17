@@ -1,9 +1,10 @@
-#version 430
+#version 450
+#extension GL_ARB_separate_shader_objects : enable
 
 layout(triangles) in;
 layout(line_strip, max_vertices = 4) out;
 
-in vec2 texCoordG[];
+layout (location = 0) in vec2 inUV[];
 
 struct Material
 {
@@ -54,7 +55,7 @@ void main() {
 			
 			float scale = 0;
 			for (int i=0; i<4; i++){
-				scale += texture(materials[i].heightmap, texCoordG[k]/materials[i].horizontalScaling).r * materials[i].heightScaling * blendValues[i];
+				scale += texture(materials[i].heightmap, inUV[k]/materials[i].horizontalScaling).r * materials[i].heightScaling * blendValues[i];
 			}
 						
 			float attenuation = clamp(- distance(gl_in[k].gl_Position.xyz, eyePosition)/(largeDetailRange-50) + 1,0.0,1.0);

@@ -1,10 +1,11 @@
-#version 430
+#version 450
+#extension GL_ARB_separate_shader_objects : enable
 
 layout(vertices = 16) out;
 
-in vec2 texCoord1[];
+layout (location = 0) in vec2 inUV[];
 
-out vec2 texCoord2[];
+layout (location = 0) out vec2 outUV[];
 
 layout (std140, row_major) uniform Camera{
 	vec3 eyePosition;
@@ -62,5 +63,5 @@ void main()
 	}
 	
 	gl_out[gl_InvocationID].gl_Position = gl_in[gl_InvocationID].gl_Position;
-	texCoord2[gl_InvocationID] = texCoord1[gl_InvocationID];
+	outUV[gl_InvocationID] = inUV[gl_InvocationID];
 }

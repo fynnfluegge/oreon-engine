@@ -43,12 +43,12 @@ public class FFT {
 	protected H0k h0k;
 	protected Hkt hkt;
 	
-	public FFT(int N, int L, float amplitude, Vec2f direction,
+	public FFT(int N, int L, float amplitude, Vec2f direction, float alignment,
 			float intensity, float capillarSupressFactor){
 		this.N = N;
 		log_2_N =  (int) (Math.log(N)/Math.log(2));
 		twiddleFactors = new TwiddleFactors(N);
-		h0k = new H0k(N, L, amplitude, direction, intensity, capillarSupressFactor);
+		h0k = new H0k(N, L, amplitude, direction, alignment, intensity, capillarSupressFactor);
 		hkt = new Hkt(N, L);
 		
 		butterflyShader = FFTButterflyShader.getInstance();

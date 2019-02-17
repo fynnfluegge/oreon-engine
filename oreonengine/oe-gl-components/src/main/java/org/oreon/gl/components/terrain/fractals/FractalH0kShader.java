@@ -30,13 +30,14 @@ public class FractalH0kShader extends GLShaderProgram{
 		addUniform("direction");
 		addUniform("intensity");
 		addUniform("l");
+		addUniform("alignment");		
 		addUniform("noise_r0");
 		addUniform("noise_i0");
 		addUniform("noise_r1");
 		addUniform("noise_i1");
 	}
 	
-	public void updateUniforms(int N, int L, float amplitude, Vec2f direction,
+	public void updateUniforms(int N, int L, float amplitude, Vec2f direction, float alignment,
 			float intensity, float capillarSupressFactor)
 	{
 		setUniformi("N", N);
@@ -45,6 +46,7 @@ public class FractalH0kShader extends GLShaderProgram{
 		setUniformf("intensity", intensity);
 		setUniform("direction", direction);
 		setUniformf("l", capillarSupressFactor);
+		setUniformf("alignment", alignment);
 	}
 	
 	public void updateUniforms(int texture0, int texture1, int texture2, int texture3)

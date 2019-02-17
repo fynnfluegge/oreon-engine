@@ -44,26 +44,16 @@ public class FractalMapGenerator {
 		normalmap.getMetaData().setHeight(N);
 	}
 	
-	public void renderHeightmap(List<FractalMap> fractals){
+	public void render(List<FractalMap> fractals){
 		
 		shader.bind();
-		shader.updateUniforms(fractals, N, true);
+		shader.updateUniforms(fractals, N);
 		glBindImageTexture(0, heightmap.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA32F);
+		glBindImageTexture(1, normalmap.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA32F);
 		glDispatchCompute(N/16,N/16,1);
 		glFinish();
 		heightmap.bind();
 		heightmap.bilinearFilter();
-	}
-	
-	public void renderNormalmap(List<FractalMap> fractals){
-		
-		shader.bind();
-		shader.updateUniforms(fractals, N, false);
-		glBindImageTexture(0, normalmap.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA32F);
-		glDispatchCompute(N/16,N/16,1);
-		glFinish();
-		normalmap.bind();
-		normalmap.bilinearFilter();
 	}
 
 }

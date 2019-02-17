@@ -1,10 +1,16 @@
-#version 430
+#version 450
+#extension GL_ARB_separate_shader_objects : enable
 
 layout(triangles) in;
 
 layout(triangle_strip, max_vertices = 3) out;
 
-in vec2 texCoordG[];
+layout (location = 0) in vec2 inUV[];
+
+layout (location = 0) out vec2 outUV;
+layout (location = 1) out vec4 outViewPos;
+layout (location = 2) out vec3 outWorldPos;
+layout (location = 3) out vec3 outTangent;
 
 struct Material
 {
@@ -14,11 +20,6 @@ struct Material
 	float heightScaling;
 	float horizontalScaling;
 };
-
-out vec2 texCoordF;
-out vec4 viewSpacePos;
-out vec3 position;
-out vec3 tangent;
 
 layout (std140, row_major) uniform Camera{
 	vec3 eyePosition;
@@ -33,7 +34,7 @@ uniform int largeDetailRange;
 uniform vec4 clipplane;
 uniform float scaleXZ;
 
-vec3 Tangent;
+vec3 vTangent;
 
 void calcTangent()
 {	
@@ -45,16 +46,16 @@ void calcTangent()
     vec3 e1 = v1 - v0;
     vec3 e2 = v2 - v0;
 	
-	vec2 uv0 = texCoordG[0];
-	vec2 uv1 = texCoordG[1];
-	vec2 uv2 = texCoordG[2];
+	vec2 uv0 = inUV[0];
+	vec2 uv1 = inUV[1];
+	vec2 uv2 = inUV[2];
 
     vec2 deltaUV1 = uv1 - uv0;
 	vec2 deltaUV2 = uv2 - uv0;
 	
 	float r = 1.0 / (deltaUV1.x * deltaUV2.y - deltaUV1.y * deltaUV2.x);
 	
-	Tangent = normalize((e1 * deltaUV2.y - e2 * deltaUV1.y)*r);
+	vTangent = normalize((e1 * deltaUV2.y - e2 * deltaUV1.y)*r);
 }
 
 vec3 displacement[3];
@@ -84,7 +85,7 @@ void main() {
 			
 			float scale = 0;
 			for (int i=0; i<3; i++){
-				scale += texture(materials[i].heightmap, texCoordG[k]/materials[i].horizontalScaling).r * materials[i].heightScaling * blendValues[i];
+				scale += texture(materials[i].heightmap, inUV[k]/materials[i].horizontalScaling).r * materials[i].heightScaling * blendValues[i];
 			}
 						
 			float attenuation = clamp(- distance(gl_in[k].gl_Position.xyz, eyePosition)/(largeDetailRange-50) + 1,0.0,1.0);
@@ -105,10 +106,10 @@ void main() {
 		gl_ClipDistance[4] = dot(gl_Position ,frustumPlanes[4]);
 		gl_ClipDistance[5] = dot(gl_Position ,frustumPlanes[5]);
 		gl_ClipDistance[6] = dot(worldPos ,clipplane);
-		texCoordF = texCoordG[i];
-		viewSpacePos = m_View * worldPos;
-		position = (worldPos).xyz;
-		tangent = Tangent;
+		outUV = inUV[i];
+		outViewPos = m_View * worldPos;
+		outWorldPos = (worldPos).xyz;
+		outTangent = vTangent;
 		EmitVertex();
 	}
 	EndPrimitive();

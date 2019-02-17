@@ -36,11 +36,9 @@ public class GLTerrain extends Node{
 						    buffer);
 		HashMap<NodeComponentType, NodeComponent> components = new HashMap<NodeComponentType, NodeComponent>();
 		
-		TerrainConfiguration config = new TerrainConfiguration();
-		
 		components.put(NodeComponentType.MAIN_RENDERINFO, renderInfo);
 		components.put(NodeComponentType.WIREFRAME_RENDERINFO, wireframeRenderInfo);
-		components.put(NodeComponentType.CONFIGURATION, config);
+		components.put(NodeComponentType.CONFIGURATION, configuration);
 		
 		quadtree = new TerrainQuadtree(components);
 		

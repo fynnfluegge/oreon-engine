@@ -5,14 +5,14 @@ import org.oreon.gl.components.fft.FFT;
 
 public class FractalFFT extends FFT{
 
-	public FractalFFT(int N, int L, float amplitude, Vec2f direction, float intensity, float capillarSupressFactor)
+	public FractalFFT(int N, int L, float amplitude, Vec2f direction, float alignment, 
+			float intensity, float capillarSupressFactor)
 	{
-		super(N, L, amplitude, direction, intensity, capillarSupressFactor);
+		super(N, L, amplitude, direction, alignment, intensity, capillarSupressFactor);
 		
 		inversionShader = FractalFFTInversionShader.getInstance();
-		h0k = new FractalH0k(N, L, amplitude, direction, intensity, capillarSupressFactor);
+		h0k = new FractalH0k(N, L, amplitude, direction, alignment, intensity, capillarSupressFactor);
 		hkt = new FractalHkt(N, L);
 	}
-
 	
 }

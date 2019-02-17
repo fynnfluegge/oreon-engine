@@ -73,7 +73,8 @@ public class Water extends Renderable{
 
 		fft = new FFT(waterConfiguration.getN(), waterConfiguration.getL(),
 				waterConfiguration.getAmplitude(), waterConfiguration.getWindDirection(),
-				waterConfiguration.getWindSpeed(), waterConfiguration.getCapillarWavesSupression());
+				waterConfiguration.getAlignment(), waterConfiguration.getWindSpeed(),
+				waterConfiguration.getCapillarWavesSupression());
 		fft.setT_delta(waterConfiguration.getT_delta());
 		fft.setChoppy(waterConfiguration.isChoppy());
 		fft.init();

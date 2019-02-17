@@ -92,9 +92,9 @@ public abstract class GLShaderProgram{
 	
 	public void updateUniforms(int l, int n, int t){};
 	
-	public void updateUniforms(int n, int l, float a, Vec2f w, float l2) {}
+	public void updateUniforms(int n, int l, float a, Vec2f w, float j) {}
 	
-	public void updateUniforms(int n, int l, float a, Vec2f w, float v, float l2) {}
+	public void updateUniforms(int n, int l, float a, Vec2f w, float k, float v, float j) {}
 	
 	public void updateUniforms(int i, int j, int k, int l) {}
 	

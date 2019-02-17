@@ -5,9 +5,10 @@ import org.oreon.gl.components.fft.H0k;
 
 public class FractalH0k extends H0k{
 
-	public FractalH0k(int N, int L, float amplitude, Vec2f direction, float intensity, float capillarSupressFactor) {
-		super(N, L, amplitude, direction, intensity, capillarSupressFactor);
+	public FractalH0k(int N, int L, float amplitude, Vec2f direction, float alignment, 
+			float intensity, float capillarSupressFactor) {
 		
+		super(N, L, amplitude, direction, alignment, intensity, capillarSupressFactor);
 		shader = FractalH0kShader.getInstance();
 	}
 

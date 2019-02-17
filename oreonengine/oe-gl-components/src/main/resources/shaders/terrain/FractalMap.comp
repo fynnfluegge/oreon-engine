@@ -2,36 +2,46 @@
 
 layout (local_size_x = 16, local_size_y = 16) in;
 
-layout (binding = 0, rgba32f) uniform writeonly image2D fractalmap;
-layout (binding = 1, rgba32f) uniform readonly image2D inputFFTmap;
+layout (binding = 0, rgba32f) uniform writeonly image2D heightmap;
+layout (binding = 1, rgba32f) uniform writeonly image2D normalmap;
 
 struct Fractal
 {
-	sampler2D map;
+	sampler2D dy;
+	sampler2D dx;
+	sampler2D dz;
+	sampler2D normalmap;
 	int scaling;
-	float strength;
+	float verticalStrength;
+	float horizontalStrength;
+	float normalStrength;
+	int choppy;
 };
 
 uniform Fractal fractals[8];
 uniform int N;
-uniform int isHeightmap;
 
 void main(void)
 {
 	ivec2 x = ivec2(gl_GlobalInvocationID.xy);
-	vec2 texCoord = gl_GlobalInvocationID.xy/float(N);
+	vec2 uv = gl_GlobalInvocationID.xy/float(N);
 	
 	vec3 xyz = vec3(0,0,0);
+	vec3 normal = vec3(0,0,0);
 	
 	for (int i=0; i<8; i++){
-		if (isHeightmap == 1){
-			xyz += texture(fractals[i].map, texCoord*fractals[i].scaling).xyz * fractals[i].strength;
-		}
-		else{
-			if (fractals[i].strength != 0)
-				xyz += texture(fractals[i].map, texCoord*fractals[i].scaling).xyz;
+			
+		if (fractals[i].verticalStrength != 0){
+		
+			xyz.y += texture(fractals[i].dy, uv*fractals[i].scaling).r * fractals[i].verticalStrength;
+			if (fractals[i].choppy == 1){
+				xyz.x += texture(fractals[i].dx, uv*fractals[i].scaling).r * fractals[i].horizontalStrength;
+				xyz.z += texture(fractals[i].dz, uv*fractals[i].scaling).r * fractals[i].horizontalStrength;
+			}
+			normal += texture(fractals[i].normalmap, uv*fractals[i].scaling).xyz;
 		}
 	}
 	
-	imageStore(fractalmap, x, vec4(isHeightmap == 1 ? xyz : normalize(xyz),1));
+	imageStore(heightmap, x, vec4(xyz,1));
+	imageStore(normalmap, x, vec4(normalize(normal),1));
 }

@@ -1,15 +1,16 @@
-#version 430
+#version 450
+#extension GL_ARB_separate_shader_objects : enable
 
-in vec2 texCoordF;
-in vec4 viewSpacePos;
-in vec3 position;
-in vec3 tangent;
+layout (location = 0) in vec2 inUV;
+layout (location = 1) in vec4 inViewPos;
+layout (location = 2) in vec3 inWorldPos;
+layout (location = 3) in vec3 inTangent;
 
-layout(location = 0) out vec4 albedo_out;
-layout(location = 1) out vec4 worldPosition_out;
-layout(location = 2) out vec4 normal_out;
-layout(location = 3) out vec4 specularEmission_out;
-layout(location = 4) out vec4 lightScattering_out;
+layout(location = 0) out vec4 outAlbedo;
+layout(location = 1) out vec4 outWorldPos;
+layout(location = 2) out vec4 outNormal;
+layout(location = 3) out vec4 outSpecularEmission;
+layout(location = 4) out vec4 outLightScattering;
 
 struct Material
 {
@@ -54,11 +55,11 @@ float distancePointPlane(vec3 point, vec4 plane){
 
 void main()
 {		
-	float dist = length(eyePosition - position);
-	float height = position.y;
+	float dist = length(eyePosition - inWorldPos);
+	float height = inWorldPos.y;
 	
 	// normalmap/occlusionmap/splatmap coords
-	vec2 mapCoords = (position.xz + scaleXZ/2)/scaleXZ; 
+	vec2 mapCoords = (inWorldPos.xz + scaleXZ/2)/scaleXZ; 
 	vec3 normal = texture(normalmap, mapCoords).rgb;
 	normal = normalize(normal);
 	
@@ -69,34 +70,32 @@ void main()
 	{
 		float attenuation = clamp(-dist/(largeDetailRange-50) + 1,0.0,1.0);
 		
-		vec3 bitangent = normalize(cross(tangent, normal));
-		mat3 TBN = mat3(tangent,bitangent,normal);
+		vec3 bitangent = normalize(cross(inTangent, normal));
+		mat3 TBN = mat3(inTangent,bitangent,normal);
 		
 		vec3 bumpNormal;
 		
 		for (int i=0; i<3; i++){
-			bumpNormal += (2*(texture(materials[i].normalmap, texCoordF/materials[i].horizontalScaling).rgb) - 1) * blendValues[i];
+			bumpNormal += (2*(texture(materials[i].normalmap, inUV/materials[i].horizontalScaling).rgb) - 1) * blendValues[i];
 		}
 		
 		bumpNormal = normalize(bumpNormal);
-		
 		bumpNormal.xy *= attenuation;
-		
 		normal = normalize(TBN * bumpNormal);
 	}
 	
 	vec3 fragColor = vec3(0,0,0);
 	
 	for (int i=0; i<3; i++){
-		fragColor +=  texture(materials[i].diffusemap, texCoordF/materials[i].horizontalScaling).rgb
+		fragColor +=  texture(materials[i].diffusemap, inUV/materials[i].horizontalScaling).rgb
 					* blendValues[i];
 	}
 	
 	// caustics
 	if (isCameraUnderWater == 1 && isRefraction == 0){
-		vec2 causticsTexCoord = position.xz / 100;
-		vec2 causticDistortion = texture(dudvCaustics, causticsTexCoord*0.2 + distortionCaustics*0.6).rb * 0.18;
-		vec3 causticsColor = texture(caustics, causticsTexCoord + causticDistortion).rbg;
+		vec2 causticsUV = inWorldPos.xz / 100;
+		vec2 causticDistortion = texture(dudvCaustics, causticsUV*0.2 + distortionCaustics*0.6).rb * 0.18;
+		vec3 causticsColor = texture(caustics, causticsUV + causticDistortion).rbg;
 		
 		fragColor += (causticsColor/5);
 	}
@@ -104,15 +103,15 @@ void main()
 	// underwater distance blue blur
 	if (isCameraUnderWater == 0 && isRefraction == 1){
 		
-		float distToWaterSurace = distancePointPlane(position,clipplane);
+		float distToWaterSurace = distancePointPlane(inWorldPos,clipplane);
 		float refractionFactor = clamp(0.025 * distToWaterSurace,0,1);
 		
 		fragColor = mix(fragColor, waterRefractionColor, refractionFactor); 
 	}
 	
-	albedo_out = vec4(fragColor,1);
-	worldPosition_out = vec4(position,1);
-	normal_out = vec4(normal,1);
-	specularEmission_out = vec4(1,0,0,1);
-	lightScattering_out = vec4(0,0,0,1);
+	outAlbedo = vec4(fragColor,1);
+	outWorldPos = vec4(inWorldPos,1);
+	outNormal = vec4(normal,1);
+	outSpecularEmission = vec4(1,0,0,1);
+	outLightScattering = vec4(0,0,0,1);
 }
