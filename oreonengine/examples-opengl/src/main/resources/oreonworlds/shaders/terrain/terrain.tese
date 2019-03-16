@@ -9,6 +9,7 @@ layout (location = 0) out vec2 outUV;
 
 uniform sampler2D heightmap;
 uniform float scaleY;
+uniform float scaleXZ;
 uniform int bezier;
 uniform float texDetail;
 uniform mat4 worldMatrix;
@@ -77,11 +78,13 @@ void main(){
 	u * v * inUV[3] +
 	(1 - u) * v * inUV[15]);
 				
-	float height = texture(heightmap, uv).y * scaleY + waterReflectionShift;
-					
+	vec4 v_heightmap = texture(heightmap, uv).rgba;
+	float height = v_heightmap.y * scaleY + waterReflectionShift;
+	float slope = v_heightmap.z;
+	
 	position.y = height;
-	position.x -= texture(heightmap, uv).x * scaleY;
-	position.z -= texture(heightmap, uv).z * scaleY;
+	position.x -= slope * v_heightmap.x * scaleY;
+	position.z -= slope * v_heightmap.z * scaleY;
 
 	if (bezier == 1)
 		position.xyz = BezierInterpolation();

@@ -11,8 +11,8 @@ public class Ocean extends Water{
 	public Ocean() {
 		super(128, OceanBRDFShader.getInstance(), OceanWireframeShader.getInstance());
 		
-		getWorldTransform().setScaling(Constants.ZFAR,1,Constants.ZFAR);
-		getWorldTransform().setTranslation(-Constants.ZFAR/2,0,-Constants.ZFAR/2);
+		getWorldTransform().setScaling(Constants.ZFAR*1.5f,1,Constants.ZFAR*1.5f);
+		getWorldTransform().setTranslation(-Constants.ZFAR*1.5f/2,0,-Constants.ZFAR*1.5f/2);
 		
 		setClip_offset(4);
 		setClipplane(new Vec4f(0,-1,0,getWorldTransform().getTranslation().getY() + getClip_offset()));

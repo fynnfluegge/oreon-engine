@@ -21,12 +21,14 @@ struct Fractal
 
 uniform sampler2D heightmap;
 uniform float scaleY;
+uniform float scaleXZ;
 uniform int lod;
 uniform vec2 index;
 uniform mat4 localMatrix;
 uniform mat4 worldMatrix;
 uniform float gap;
 uniform vec2 location;
+uniform int diamond_square;
 
 uniform int lod_morph_area[8];
 
@@ -84,7 +86,7 @@ float morphLongitude(vec2 position)
 	return 0;
 }
 
-vec2 morph(vec2 localPosition, float height, int morph_area){
+vec2 diamondSquare(vec2 localPosition, float height, int morph_area){
 	
 	vec2 morphing = vec2(0,0);
 	
@@ -127,10 +129,12 @@ void main()
 {
 	vec2 localPosition = (localMatrix * vec4(inPosition.x,0,inPosition.y,1)).xz;
 	
-	float height = texture(heightmap, localPosition).r;
+	float height = texture(heightmap, localPosition).y;
 	
-	if (lod > 0)
-		localPosition += morph(localPosition,height,lod_morph_area[lod-1]);
+	if (diamond_square == 1){
+		if (lod > 0)
+		localPosition += diamondSquare(localPosition,height,lod_morph_area[lod-1]);
+	}
 	
 	height = texture(heightmap, localPosition).y;
 	

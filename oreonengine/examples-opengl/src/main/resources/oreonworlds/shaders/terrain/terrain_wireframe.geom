@@ -10,7 +10,7 @@ struct Material
 {
 	sampler2D heightmap;
 	float heightScaling;
-	float horizontalScaling;
+	float uvScaling;
 };
 
 out vec2 texCoordF;
@@ -55,7 +55,7 @@ void main() {
 			
 			float scale = 0;
 			for (int i=0; i<4; i++){
-				scale += texture(materials[i].heightmap, inUV[k]/materials[i].horizontalScaling).r * materials[i].heightScaling * blendValues[i];
+				scale += texture(materials[i].heightmap, inUV[k]/materials[i].uvScaling).r * materials[i].heightScaling * blendValues[i];
 			}
 						
 			float attenuation = clamp(- distance(gl_in[k].gl_Position.xyz, eyePosition)/(largeDetailRange-50) + 1,0.0,1.0);

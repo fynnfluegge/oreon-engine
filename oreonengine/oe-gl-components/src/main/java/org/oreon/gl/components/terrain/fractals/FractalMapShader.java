@@ -41,7 +41,6 @@ public class FractalMapShader extends GLShaderProgram{
 			addUniform("fractals[" + i + "].scaling");
 			addUniform("fractals[" + i + "].verticalStrength");
 			addUniform("fractals[" + i + "].horizontalStrength");
-			addUniform("fractals[" + i + "].normalStrength");
 			addUniform("fractals[" + i + "].choppy");
 		}
 	}
@@ -58,6 +57,7 @@ public class FractalMapShader extends GLShaderProgram{
 			fractals.get(i).getDxDisplacement().bind();
 			glActiveTexture(GL_TEXTURE2 + i * 4);
 			fractals.get(i).getDzDisplacement().bind();
+			
 			glActiveTexture(GL_TEXTURE3 + i * 4);
 			fractals.get(i).getNormalmap().bind();
 			

@@ -18,7 +18,7 @@ struct Material
 	sampler2D normalmap;
 	sampler2D heightmap;
 	float heightScaling;
-	float horizontalScaling;
+	float uvScaling;
 };
 
 layout (std140, row_major) uniform Camera{
@@ -76,7 +76,7 @@ void main()
 		vec3 bumpNormal;
 		
 		for (int i=0; i<3; i++){
-			bumpNormal += (2*(texture(materials[i].normalmap, inUV/materials[i].horizontalScaling).rgb) - 1) * blendValues[i];
+			bumpNormal += (2*(texture(materials[i].normalmap, inUV/materials[i].uvScaling).rgb) - 1) * blendValues[i];
 		}
 		
 		bumpNormal = normalize(bumpNormal);
@@ -87,7 +87,7 @@ void main()
 	vec3 fragColor = vec3(0,0,0);
 	
 	for (int i=0; i<3; i++){
-		fragColor +=  texture(materials[i].diffusemap, inUV/materials[i].horizontalScaling).rgb
+		fragColor +=  texture(materials[i].diffusemap, inUV/materials[i].uvScaling).rgb
 					* blendValues[i];
 	}
 	

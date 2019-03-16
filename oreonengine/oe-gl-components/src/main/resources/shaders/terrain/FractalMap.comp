@@ -1,4 +1,5 @@
 #version 430 core
+#define M_PI 3.1415926535897932384626433832795
 
 layout (local_size_x = 16, local_size_y = 16) in;
 
@@ -14,12 +15,12 @@ struct Fractal
 	int scaling;
 	float verticalStrength;
 	float horizontalStrength;
-	float normalStrength;
 	int choppy;
 };
 
 uniform Fractal fractals[8];
 uniform int N;
+uniform int edgeElevation = 1;
 
 void main(void)
 {
@@ -42,6 +43,162 @@ void main(void)
 		}
 	}
 	
-	imageStore(heightmap, x, vec4(xyz,1));
+	if (edgeElevation == 0)
+	{
+		xyz.y += 0.8;
+	}
+	
+	// compute edge elevation/flattening
+	// elevation
+	// min graph 0.5*sin(64*(x+pi/128)) + 0.5
+	// y = 0 => x = 2 * M_PI / 128
+	// y = 1 => x = 0, x = 2 * M_PI / 64
+	// max graph 0.5*sin(64*(x+pi/128-1)) + 0.5
+	// y = 0 => x = 1 - 2 * M_PI / 128
+	// y = 1 => x = 1, x = 1 - 2 * M_PI / 64
+	
+	// flattening
+	// min graph sin(64*(x+3pi/128)) + 1
+	// y = 0 => x = 0
+	// y = 1 => x = 2 * M_PI / 128
+	// max graph sin(64*(x+3pi/128-1)) + 1
+	// y = 0 => x = 1
+	// y = 1 => x = 1 - 2 * M_PI / 128
+	
+	
+	float xSlope = 0;
+	float zSlope = 0;
+	
+	if (uv.x < 0.5)
+	{
+		xSlope = (edgeElevation == 1)
+			? (0.5 * sin(64*(uv.x + M_PI/128.0)) + 0.5)
+			: 20*uv.x; //(sin(64*(uv.x + 3*M_PI/128.0)));
+	}
+	else
+	{
+		xSlope = (edgeElevation == 1)
+			? (0.5 * sin(64*(uv.x + M_PI/128.0-1)) + 0.5)
+			: -20*(uv.x-1); //(sin(64*(uv.x + 3*M_PI/128.0 -1)));
+	}
+	if (uv.y < 0.5)
+	{
+		zSlope = (edgeElevation == 1)
+			? (0.5 * sin(64*(uv.y + M_PI/128.0)) + 0.5)
+			: 20*uv.y; //(sin(64*(uv.y + 3*M_PI/128.0)));
+	}
+	else
+	{
+		zSlope = (edgeElevation == 1)
+			? (0.5 * sin(64*(uv.y + M_PI/128.0-1)) + 0.5)
+			: -20*(uv.y-1); //(sin(64*(uv.y + 3*M_PI/128.0 - 1)));
+	}
+	
+	float vMinLow = 2.0f * M_PI / 128.0f;
+	float vMaxLow = 1.0f - 2.0f * M_PI / 128.0f;
+	float vMinHigh = (edgeElevation == 1) 
+						? (2.0f * M_PI / 64.0f)
+						: 0.05; //(2.0f * M_PI / 128.0f);
+	float vMaxHigh = (edgeElevation == 1)
+						? (1.0f - 2.0f * M_PI / 64.0f)
+						: 0.95; //(1.0f - 2.0f * M_PI / 128.0f);
+	
+	// xSlope = clamp(xSlope, 0.0, 1.0);
+	// zSlope = clamp(zSlope, 0.0, 1.0);
+	
+	float slope = 0;
+	if (edgeElevation == 1)
+	{
+		if (uv.x < vMinLow || uv.x > vMaxLow) 
+		{
+			slope = xSlope;
+		}
+		else if (uv.y < vMinLow || uv.y > vMaxLow) 
+		{
+			slope = zSlope;
+		}
+		else if ((uv.x > vMinLow && uv.x < vMinHigh)||
+				 (uv.x > vMaxHigh && uv.x < vMaxLow))
+		{
+			slope = xSlope;
+		}
+		else if ((uv.y > vMinLow && uv.y < vMinHigh)||
+				 (uv.y > vMaxHigh && uv.y < vMaxLow))
+		{
+			slope = zSlope;
+		}
+	}
+	else
+	{
+		if (uv.x < vMinHigh || uv.x > vMaxHigh) 
+		{
+			slope = xSlope;
+		}
+		else if (uv.y < vMinHigh || uv.y > vMaxHigh) 
+		{
+			slope = zSlope;
+		}
+	}
+	
+	//--------------- Corners ---------------//
+	if (edgeElevation == 1)
+	{
+		if ((uv.x < vMinLow && uv.y < vMinLow) ||
+			(uv.x < vMinLow && uv.y > vMaxLow) ||
+			(uv.x > vMaxLow && uv.y < vMinLow) ||
+			(uv.x > vMaxLow && uv.y > vMaxLow))
+		{
+			slope = clamp(xSlope + zSlope, 0, 1);
+		}
+		if ((uv.x > vMinLow && uv.x < vMinHigh && uv.y > vMinLow && uv.y < vMinHigh) ||
+			(uv.x > vMinLow && uv.x < vMinHigh && uv.y > vMaxHigh && uv.y < vMaxLow) ||
+			(uv.x > vMaxHigh && uv.x < vMaxLow && uv.y > vMaxHigh && uv.y < vMaxLow) ||
+			(uv.x > vMaxHigh && uv.x < vMaxLow && uv.y > vMinLow && uv.y < vMinHigh))
+		{
+			slope = clamp(xSlope * zSlope, 0, 1);
+		}
+	}
+	else if (edgeElevation == 0)
+	{
+		if ((uv.x <= vMinHigh && uv.y <= vMinHigh) ||
+			(uv.x >= vMaxHigh && uv.y <= vMinHigh) ||
+			(uv.x <= vMinHigh && uv.y >= vMaxHigh) ||
+			(uv.x >= vMaxHigh && uv.y >= vMaxHigh))
+		{
+			slope = min(xSlope, zSlope);
+		}
+	}
+	//---------------------------------------//
+	
+	//------------- Inner Field -------------//
+	if (uv.x >= vMinHigh && uv.x <= vMaxHigh && uv.y >= vMinHigh && uv.y <= vMaxHigh)
+	{
+		slope = 1;
+	}
+	//---------------------------------------//
+	
+	xyz.y *= slope;
+	
+	//---------------- Edges ----------------//
+	if (edgeElevation == 1)
+	{
+		if (uv.x < vMinLow || uv.y < vMinLow ||
+			uv.x > vMaxLow || uv.y > vMaxLow)
+		{
+			xyz.y = slope * 0.4f + abs(xyz.y) * 0.6f;
+		}
+	}
+	else if (edgeElevation == 0)
+	{
+		if (uv.x <= 0 || uv.y <= 0 ||
+			uv.x >= 1 || uv.y >= 1)
+		{
+			xyz.y = 0;
+		}
+	}
+	//---------------------------------------//
+	
+	
+	imageStore(heightmap, x, vec4(xyz, slope));
 	imageStore(normalmap, x, vec4(normalize(normal),1));
 }

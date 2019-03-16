@@ -42,6 +42,7 @@ private static TerrainWireframeShader instance = null;
 		addUniform("worldMatrix");
 		addUniform("scaleXZ");
 		addUniform("scaleY");
+		addUniform("diamond_square");
 		
 		addUniform("bezier");
 		addUniform("tessFactor");
@@ -65,7 +66,7 @@ private static TerrainWireframeShader instance = null;
 		for (int i=0; i<4; i++){
 			addUniform("materials[" + i + "].heightmap");
 			addUniform("materials[" + i + "].heightScaling");
-			addUniform("materials[" + i + "].horizontalScaling");
+			addUniform("materials[" + i + "].uvScaling");
 		}
 		
 		addUniform("clipplane");
@@ -109,6 +110,7 @@ private static TerrainWireframeShader instance = null;
 		setUniformf("gap", gap);
 		setUniform("location", location);
 		setUniformi("waterReflectionShift", terrConfig.getWaterReflectionShift());
+		setUniformi("diamond_square", terrConfig.isDiamond_square() ? 1 : 0);
 		
 		for (int i=0; i<8; i++){
 			setUniformi("lod_morph_area[" + i + "]", terrConfig.getLod_morphing_area()[i]);
@@ -123,7 +125,7 @@ private static TerrainWireframeShader instance = null;
 			texUnit++;
 			
 			setUniformf("materials[" + i + "].heightScaling", terrConfig.getMaterials().get(i).getHeightScaling());
-			setUniformf("materials[" + i + "].horizontalScaling", terrConfig.getMaterials().get(i).getHorizontalScaling());
+			setUniformf("materials[" + i + "].uvScaling", terrConfig.getMaterials().get(i).getHorizontalScaling());
 		}
 	}
 

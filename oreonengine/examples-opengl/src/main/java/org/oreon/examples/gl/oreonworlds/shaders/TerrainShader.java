@@ -46,6 +46,7 @@ public class TerrainShader extends GLShaderProgram{
 		addUniform("worldMatrix");
 		addUniform("scaleXZ");
 		addUniform("scaleY");
+		addUniform("diamond_square");
 		
 		addUniform("bezier");
 		addUniform("tessFactor");
@@ -78,7 +79,7 @@ public class TerrainShader extends GLShaderProgram{
 			addUniform("materials[" + i + "].normalmap");
 			addUniform("materials[" + i + "].heightmap");
 			addUniform("materials[" + i + "].heightScaling");
-			addUniform("materials[" + i + "].horizontalScaling");
+			addUniform("materials[" + i + "].uvScaling");
 		}
 		
 		addUniform("clipplane");
@@ -130,6 +131,7 @@ public class TerrainShader extends GLShaderProgram{
 		setUniformf("gap", gap);
 		setUniform("location", location);
 		setUniformi("waterReflectionShift", terrConfig.getWaterReflectionShift());
+		setUniformi("diamond_square", terrConfig.isDiamond_square() ? 1 : 0);
 		
 		glActiveTexture(GL_TEXTURE3);
 		GLContext.getResources().getUnderwaterCausticsMap().bind();
@@ -162,7 +164,7 @@ public class TerrainShader extends GLShaderProgram{
 			texUnit++;
 			
 			setUniformf("materials[" + i + "].heightScaling", terrConfig.getMaterials().get(i).getHeightScaling());
-			setUniformf("materials[" + i + "].horizontalScaling", terrConfig.getMaterials().get(i).getHorizontalScaling());
+			setUniformf("materials[" + i + "].uvScaling", terrConfig.getMaterials().get(i).getHorizontalScaling());
 		}
 	}
 }

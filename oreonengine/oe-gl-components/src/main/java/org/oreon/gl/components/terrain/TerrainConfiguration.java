@@ -1,7 +1,7 @@
 package org.oreon.gl.components.terrain;
 
 import static org.lwjgl.opengl.GL11.GL_FLOAT;
-import static org.lwjgl.opengl.GL11.GL_RED;
+import static org.lwjgl.opengl.GL11.GL_GREEN;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.glGetTexImage;
 
@@ -39,17 +39,20 @@ public class TerrainConfiguration extends NodeComponent{
 	private float tessellationShift;
 	private int detailRange;
 	private float normalStrength;
+	private float heightStrength;
 	private GLTexture heightmap;
 	private GLTexture normalmap;
 	private GLTexture ambientmap;
 	private GLTexture splatmap;
 	private FloatBuffer heightmapDataBuffer;
+	private int heightmapResolution;
 	private List<Material<GLTexture>> materials = new ArrayList<>();
 	private int fractalMapResolution;
 	private List<FractalMap> fractals = new ArrayList<>();
 	
 	private int[] lod_range = new int[8];
 	private int[] lod_morphing_area = new int[8];
+	private boolean diamond_square;
 	
 	public TerrainConfiguration() {
 		
@@ -70,6 +73,8 @@ public class TerrainConfiguration extends NodeComponent{
 			heightmap = new GLTexture(properties.getProperty("heightmap"));
 			getHeightmap().bind();
 			getHeightmap().bilinearFilter();
+			
+			heightStrength = Float.valueOf(properties.getProperty("heightmap.strength"));
 			
 			NormalRenderer normalRenderer = new NormalRenderer(getHeightmap().getMetaData().getWidth());
 			normalRenderer.setStrength(normalStrength);
@@ -103,6 +108,8 @@ public class TerrainConfiguration extends NodeComponent{
 		
 		detailRange = Integer.valueOf(properties.getProperty("detailRange"));
 		
+		diamond_square = Integer.valueOf(properties.getProperty("diamond_square")) == 1 ? true : false; 
+		
 		for (int i=0; i<Integer.valueOf(properties.getProperty("lod.count")); i++){
 			
 			if (Integer.valueOf(properties.getProperty("lodRanges.lod" + i)) == 0){
@@ -116,6 +123,7 @@ public class TerrainConfiguration extends NodeComponent{
 		
 		int fractalCount = Integer.valueOf(properties.getProperty("fractals.count"));
 		fractalMapResolution = Integer.valueOf(properties.getProperty("fractals.resolution"));
+		heightmapResolution = Integer.valueOf(properties.getProperty("heightmap.resolution"));
 		
 		for (int i=0; i<fractalCount; i++){
 			
@@ -149,12 +157,13 @@ public class TerrainConfiguration extends NodeComponent{
 		
 		heightmapDataBuffer = BufferUtil.createFloatBuffer(getHeightmap().getMetaData().getWidth() * getHeightmap().getMetaData().getHeight());
 		heightmap.bind();
-		glGetTexImage(GL_TEXTURE_2D,0,GL_RED,GL_FLOAT,heightmapDataBuffer);
+		// GL_GREEN since y-space (height) stored in green channel
+		glGetTexImage(GL_TEXTURE_2D, 0, GL_GREEN, GL_FLOAT, heightmapDataBuffer);
 	}
 	
 	public void renderFractalMap(){
 		
-		FractalMapGenerator fractalMapGenerator = new FractalMapGenerator(4096);
+		FractalMapGenerator fractalMapGenerator = new FractalMapGenerator(heightmapResolution);
 		fractalMapGenerator.render(fractals);
 		heightmap = fractalMapGenerator.getHeightmap();
 //		heightmap = fractals.get(2).getHeightmap();
@@ -163,7 +172,7 @@ public class TerrainConfiguration extends NodeComponent{
 		normalmap = fractalMapGenerator.getNormalmap();
 //		normalmap = fractals.get(2).getNormalmap();
 		
-		SplatMapGenerator splatMapGenerator = new SplatMapGenerator(4096);
+		SplatMapGenerator splatMapGenerator = new SplatMapGenerator(heightmapResolution);
 		splatmap = splatMapGenerator.getSplatmap();
 		splatMapGenerator.render(getNormalmap(), getHeightmap(), getScaleY());
 	}

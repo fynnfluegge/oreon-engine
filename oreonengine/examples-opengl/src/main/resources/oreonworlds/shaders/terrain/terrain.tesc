@@ -35,31 +35,31 @@ void main()
 
 	if(gl_InvocationID == 0)
 	{
-			vec3 abMid = vec3((gl_in[0].gl_Position.x + gl_in[3].gl_Position.x)/2, 
-							  (gl_in[0].gl_Position.y + gl_in[3].gl_Position.y)/2, 
-							  (gl_in[0].gl_Position.z + gl_in[3].gl_Position.z)/2);
-			vec3 bcMid = vec3((gl_in[3].gl_Position.x + gl_in[15].gl_Position.x)/2,
-							  (gl_in[3].gl_Position.y + gl_in[15].gl_Position.y)/2,
-							  (gl_in[3].gl_Position.z + gl_in[15].gl_Position.z)/2);
-			vec3 cdMid = vec3((gl_in[15].gl_Position.x + gl_in[12].gl_Position.x)/2,
-							  (gl_in[15].gl_Position.y + gl_in[12].gl_Position.y)/2,
-							  (gl_in[15].gl_Position.z + gl_in[12].gl_Position.z)/2);
-			vec3 daMid = vec3((gl_in[12].gl_Position.x + gl_in[0].gl_Position.x)/2, 
-							  (gl_in[12].gl_Position.y + gl_in[0].gl_Position.y)/2, 
-							  (gl_in[12].gl_Position.z + gl_in[0].gl_Position.z)/2);
-	
-			float distanceAB = distance(abMid, eyePosition);
-			float distanceBC = distance(bcMid, eyePosition);
-			float distanceCD = distance(cdMid, eyePosition);
-			float distanceDA = distance(daMid, eyePosition);
-			
-			gl_TessLevelOuter[AB] = mix(1, gl_MaxTessGenLevel, LODfactor(distanceAB));
-			gl_TessLevelOuter[BC] = mix(1, gl_MaxTessGenLevel, LODfactor(distanceBC));
-			gl_TessLevelOuter[CD] = mix(1, gl_MaxTessGenLevel, LODfactor(distanceCD));
-			gl_TessLevelOuter[DA] = mix(1, gl_MaxTessGenLevel, LODfactor(distanceDA));
-	
-			gl_TessLevelInner[0] = (gl_TessLevelOuter[BC] + gl_TessLevelOuter[DA])/4;
-			gl_TessLevelInner[1] = (gl_TessLevelOuter[AB] + gl_TessLevelOuter[CD])/4;	
+		vec3 abMid = vec3((gl_in[0].gl_Position.x + gl_in[3].gl_Position.x)/2, 
+						  (gl_in[0].gl_Position.y + gl_in[3].gl_Position.y)/2, 
+						  (gl_in[0].gl_Position.z + gl_in[3].gl_Position.z)/2);
+		vec3 bcMid = vec3((gl_in[3].gl_Position.x + gl_in[15].gl_Position.x)/2,
+						  (gl_in[3].gl_Position.y + gl_in[15].gl_Position.y)/2,
+						  (gl_in[3].gl_Position.z + gl_in[15].gl_Position.z)/2);
+		vec3 cdMid = vec3((gl_in[15].gl_Position.x + gl_in[12].gl_Position.x)/2,
+						  (gl_in[15].gl_Position.y + gl_in[12].gl_Position.y)/2,
+						  (gl_in[15].gl_Position.z + gl_in[12].gl_Position.z)/2);
+		vec3 daMid = vec3((gl_in[12].gl_Position.x + gl_in[0].gl_Position.x)/2, 
+						  (gl_in[12].gl_Position.y + gl_in[0].gl_Position.y)/2, 
+						  (gl_in[12].gl_Position.z + gl_in[0].gl_Position.z)/2);
+
+		float distanceAB = distance(abMid, eyePosition);
+		float distanceBC = distance(bcMid, eyePosition);
+		float distanceCD = distance(cdMid, eyePosition);
+		float distanceDA = distance(daMid, eyePosition);
+		
+		gl_TessLevelOuter[AB] = mix(1, gl_MaxTessGenLevel, LODfactor(distanceAB));
+		gl_TessLevelOuter[BC] = mix(1, gl_MaxTessGenLevel, LODfactor(distanceBC));
+		gl_TessLevelOuter[CD] = mix(1, gl_MaxTessGenLevel, LODfactor(distanceCD));
+		gl_TessLevelOuter[DA] = mix(1, gl_MaxTessGenLevel, LODfactor(distanceDA));
+
+		gl_TessLevelInner[0] = (gl_TessLevelOuter[BC] + gl_TessLevelOuter[DA])/4;
+		gl_TessLevelInner[1] = (gl_TessLevelOuter[AB] + gl_TessLevelOuter[CD])/4;	
 	}
 	
 	gl_out[gl_InvocationID].gl_Position = gl_in[gl_InvocationID].gl_Position;
