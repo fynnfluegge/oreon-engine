@@ -61,7 +61,7 @@ public class Sun extends Renderable{
 		VkPhysicalDeviceMemoryProperties memoryProperties = 
 				VkContext.getDeviceManager().getPhysicalDevice(DeviceType.MAJOR_GRAPHICS_DEVICE).getMemoryProperties();
 		
-		getWorldTransform().setTranslation(new Vec3f(-2,-1.4f,-2).normalize().mul(-2600));
+		getWorldTransform().setTranslation(BaseContext.getConfig().getSunPosition().normalize().mul(-2600));
 		Vec3f origin = new Vec3f(0,0,0);
 		Vec3f[] array = new Vec3f[1];
 		array[0] = origin;
@@ -89,7 +89,7 @@ public class Sun extends Renderable{
 				device.getHandle(), memoryProperties,
 				device.getTransferCommandPool(Thread.currentThread().getId()).getHandle(),
 				device.getTransferQueue(),
-				"textures/sun/sun_small1.png",
+				"textures/sun/sun_small.png",
 				VK_IMAGE_USAGE_SAMPLED_BIT,
 				VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
 				VK_ACCESS_SHADER_READ_BIT,
