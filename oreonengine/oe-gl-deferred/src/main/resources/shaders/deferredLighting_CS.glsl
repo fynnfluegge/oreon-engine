@@ -231,9 +231,12 @@ void main(void){
 		}
 	}
 	
-	float dist = length(eyePosition - position);
-	float fogFactor = getFogFactor(dist);
-	finalColor = mix(fogColor, finalColor, clamp(fogFactor,0,1));
+	// float dist = length(eyePosition - position);
+	// float fogFactor = getFogFactor(dist);
+	// if (normal != vec3(0,0,0))
+	// {
+		// finalColor = mix(fogColor, finalColor, clamp(fogFactor,0,1));
+	// }
 	
 	imageStore(defferedSceneImage, computeCoord, vec4(finalColor,1.0));
 }

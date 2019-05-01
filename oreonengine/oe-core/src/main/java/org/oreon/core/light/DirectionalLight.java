@@ -29,15 +29,20 @@ public abstract class DirectionalLight extends Light{
 										 + Float.BYTES * 24;
 	
 	protected DirectionalLight(){
-		this(new Vec3f(-2f,-1.4f,-2f).normalize(),new Vec3f(0.02f,0.02f,0.02f),new Vec3f(1,0.95f,0.87f),1.0f);
+		this(BaseContext.getConfig().getSunPosition().normalize(),
+			new Vec3f(BaseContext.getConfig().getAmbient()),
+			BaseContext.getConfig().getSunColor(),
+			BaseContext.getConfig().getSunIntensity());
 	}
 	
-	protected DirectionalLight(Vec3f direction, Vec3f ambient, Vec3f color, float intensity) {
+	private DirectionalLight(Vec3f direction, Vec3f ambient, Vec3f color, float intensity) {
 		
 		super(color, intensity);
 		this.direction = direction;
 		this.setAmbient(ambient);
-		up = new Vec3f(1,1,1).normalize();
+		
+		up = new Vec3f(direction.getX(),0,direction.getZ());
+		up.setY(-(up.getX() * direction.getX() + up.getZ() * direction.getZ())/direction.getY());
 		
 		if (direction.dot(up) != 0) 
 			log.warn("DirectionalLight vector up " + up + " and direction " +  direction + " not orthogonal");

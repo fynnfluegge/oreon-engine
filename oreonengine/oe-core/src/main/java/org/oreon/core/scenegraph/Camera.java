@@ -33,9 +33,13 @@ private final Vec3f yAxis = new Vec3f(0,1,0);
 	private Vec3f up;
 	private float movAmt = 2.0f;
 	private float rotAmt = 2.0f;
-	private Matrix4f viewMatrix;
 	private Matrix4f projectionMatrix;
+	private Matrix4f viewMatrix;
 	private Matrix4f viewProjectionMatrix;
+	private Matrix4f originViewMatrix;
+	private Matrix4f originViewProjectionMatrix;
+	private Matrix4f xzOriginViewMatrix;
+	private Matrix4f xzOriginViewProjectionMatrix;
 	private Matrix4f previousViewMatrix;
 	private Matrix4f previousViewProjectionMatrix;
 	private boolean isCameraMoved;
@@ -68,13 +72,19 @@ private final Vec3f yAxis = new Vec3f(0,1,0);
 		setUp(up.normalize());
 		setProjection(70, BaseContext.getConfig().getX_ScreenResolution(),
 				BaseContext.getConfig().getY_ScreenResolution());
-		setViewMatrix(new Matrix4f().View(this.getForward(), this.getUp()).mul(
-				new Matrix4f().Translation(this.getPosition().mul(-1))));
+		setViewMatrix(new Matrix4f().View(getForward(), getUp()).mul(
+				new Matrix4f().Translation(getPosition().mul(-1))));
+		setOriginViewMatrix(new Matrix4f().View(getForward(), getUp()).mul(
+				new Matrix4f().Identity()));
+		setXzOriginViewMatrix(new Matrix4f().View(getForward(), getUp()).mul(
+				new Matrix4f().Translation(
+					new Vec3f(0, getPosition().getY(), 0).mul(-1))));
 		initfrustumPlanes();
 		previousViewMatrix = new Matrix4f().Zero();
 		previousViewProjectionMatrix = new Matrix4f().Zero();
 		floatBuffer = BufferUtil.createFloatBuffer(bufferSize);
 		setViewProjectionMatrix(getProjectionMatrix().mul(getViewMatrix()));
+		setOriginViewProjectionMatrix(getProjectionMatrix().mul(getOriginViewMatrix()));
 		
 		input = BaseContext.getInput();
 	}
@@ -209,9 +219,15 @@ private final Vec3f yAxis = new Vec3f(0,1,0);
 		
 		setPreviousViewMatrix(getViewMatrix());
 		setPreviousViewProjectionMatrix(getViewProjectionMatrix());
-		setViewMatrix(new Matrix4f().View(this.getForward(), this.getUp()).mul(
-				new Matrix4f().Translation(this.getPosition().mul(-1))));
+		Matrix4f vOriginViewMatrix = new Matrix4f().View(this.getForward(), this.getUp());
+		setViewMatrix(vOriginViewMatrix.mul(new Matrix4f().Translation(this.getPosition().mul(-1))));
+		setOriginViewMatrix(vOriginViewMatrix);
+		setXzOriginViewMatrix(vOriginViewMatrix.mul(
+				new Matrix4f().Translation(
+						new Vec3f(0, getPosition().getY(), 0).mul(-1))));
 		setViewProjectionMatrix(getProjectionMatrix().mul(getViewMatrix()));
+		setOriginViewProjectionMatrix(getProjectionMatrix().mul(getOriginViewMatrix()));
+		setXzOriginViewProjectionMatrix(getProjectionMatrix().mul(getXzOriginViewMatrix()));
 		
 		floatBuffer.clear();
 		floatBuffer.put(BufferUtil.createFlippedBuffer(getPosition()));
@@ -352,6 +368,22 @@ private final Vec3f yAxis = new Vec3f(0,1,0);
 	public void setViewMatrix(Matrix4f viewMatrix) {
 		this.viewMatrix = viewMatrix;
 	}
+	
+	public Matrix4f getOriginViewMatrix() {
+		return originViewMatrix;
+	}
+
+	public void setOriginViewMatrix(Matrix4f viewMatrix) {
+		this.originViewMatrix = viewMatrix;
+	}
+	
+	public Matrix4f getXzOriginViewMatrix() {
+		return xzOriginViewMatrix;
+	}
+
+	public void setXzOriginViewMatrix(Matrix4f viewMatrix) {
+		this.xzOriginViewMatrix = viewMatrix;
+	}
 
 	public Vec3f getPosition() {
 		return position;
@@ -399,6 +431,22 @@ private final Vec3f yAxis = new Vec3f(0,1,0);
 	
 	public Matrix4f getViewProjectionMatrix() {
 		return viewProjectionMatrix;
+	}
+	
+	public void setOriginViewProjectionMatrix(Matrix4f viewProjectionMatrix) {
+		this.originViewProjectionMatrix = viewProjectionMatrix;
+	}
+	
+	public Matrix4f getOriginViewProjectionMatrix() {
+		return originViewProjectionMatrix;
+	}
+	
+	public Matrix4f getXzOriginViewProjectionMatrix() {
+		return xzOriginViewProjectionMatrix;
+	}
+
+	public void setXzOriginViewProjectionMatrix(Matrix4f xzOriginViewProjectionMatrix) {
+		this.xzOriginViewProjectionMatrix = xzOriginViewProjectionMatrix;
 	}
 
 	public Matrix4f getPreviousViewProjectionMatrix() {
@@ -541,4 +589,5 @@ private final Vec3f yAxis = new Vec3f(0,1,0);
 	public void setRightRotation(boolean isRightRotation) {
 		this.isRightRotation = isRightRotation;
 	}
+	
 }

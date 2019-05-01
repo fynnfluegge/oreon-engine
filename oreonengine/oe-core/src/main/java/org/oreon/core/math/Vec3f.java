@@ -21,6 +21,13 @@ public class Vec3f {
 		this.setZ(z);
 	}
 	
+	public Vec3f(float x)
+	{
+		this.setX(x);
+		this.setY(x);
+		this.setZ(x);
+	}
+	
 	public Vec3f(Vec3f v)
 	{
 		this.X = v.getX();

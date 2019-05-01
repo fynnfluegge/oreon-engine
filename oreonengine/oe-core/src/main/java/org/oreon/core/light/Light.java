@@ -1,11 +1,11 @@
 package org.oreon.core.light;
 
-import org.oreon.core.query.OcclusionQuery;
-import org.oreon.core.scenegraph.NodeComponent;
 import org.oreon.core.context.BaseContext;
-import org.oreon.core.math.Vec4f;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.math.Vec3f;
+import org.oreon.core.math.Vec4f;
+import org.oreon.core.query.OcclusionQuery;
+import org.oreon.core.scenegraph.NodeComponent;
 
 public class Light extends NodeComponent{
 	
@@ -19,8 +19,7 @@ public class Light extends NodeComponent{
 		this.intensity = intensity;
 	}
 	
-	public Light() {
-	}
+	public Light() {}
 	
 	public Vec2f getScreenSpacePosition(){
 		

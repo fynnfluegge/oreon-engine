@@ -1,9 +1,7 @@
 package org.oreon.gl.engine.transparency;
 
-import static org.lwjgl.opengl.GL15.GL_READ_ONLY;
 import static org.lwjgl.opengl.GL15.GL_WRITE_ONLY;
 import static org.lwjgl.opengl.GL30.GL_RGBA16F;
-import static org.lwjgl.opengl.GL30.GL_RGBA32F;
 import static org.lwjgl.opengl.GL42.glBindImageTexture;
 import static org.lwjgl.opengl.GL43.glDispatchCompute;
 
@@ -38,10 +36,9 @@ public class OpaqueTransparencyBlending extends FullScreenQuad{
 		shader.bind();
 		glBindImageTexture(0, blendedSceneTexture.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
 		glBindImageTexture(1, blendedLightScatteringTexture.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
-		glBindImageTexture(2, opaqueSceneDepthMap.getHandle(), 0, false, 0, GL_READ_ONLY, GL_RGBA32F);
-		glBindImageTexture(3, transparencyLayerDepthMap.getHandle(), 0, false, 0, GL_READ_ONLY, GL_RGBA32F);
 		shader.updateUniforms(opaqueScene, opaqueSceneLightScatteringTexture, 
-							  transparencyLayer, alphaMap, transparencyLayerLightScatteringTexture);
+							  transparencyLayer, alphaMap, transparencyLayerLightScatteringTexture,
+							  opaqueSceneDepthMap, transparencyLayerDepthMap);
 		glDispatchCompute(BaseContext.getWindow().getWidth()/16, BaseContext.getWindow().getHeight()/16, 1);
 	}
 

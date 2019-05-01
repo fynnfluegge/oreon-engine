@@ -11,7 +11,7 @@ public class GLCamera extends Camera{
 	
 	public GLCamera() {
 		
-		super(new Vec3f(-160,45,-72), new Vec3f(0.5668308f,-0.028192917f,0.82335174f),
+		super(new Vec3f(1725.7053f,970.38794f,-416.0429f), new Vec3f(0.5668308f,-0.028192917f,0.82335174f),
 				new Vec3f(0.015936304f,0.9996025f,0.023256794f));
 	}
 	

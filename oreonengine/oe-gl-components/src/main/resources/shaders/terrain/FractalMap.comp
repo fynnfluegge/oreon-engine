@@ -20,7 +20,7 @@ struct Fractal
 
 uniform Fractal fractals[8];
 uniform int N;
-uniform int edgeElevation = 1;
+uniform int edgeElevation = 0;
 
 void main(void)
 {
@@ -58,10 +58,10 @@ void main(void)
 	// y = 1 => x = 1, x = 1 - 2 * M_PI / 64
 	
 	// flattening
-	// min graph sin(64*(x+3pi/128)) + 1
+	// min graph 0.5 * sin(64*(x+3pi/128)) + 0.5
 	// y = 0 => x = 0
 	// y = 1 => x = 2 * M_PI / 128
-	// max graph sin(64*(x+3pi/128-1)) + 1
+	// max graph 0.5 + sin(64*(x+3pi/128-1)) + 0.5
 	// y = 0 => x = 1
 	// y = 1 => x = 1 - 2 * M_PI / 128
 	
@@ -71,40 +71,37 @@ void main(void)
 	
 	if (uv.x < 0.5)
 	{
-		xSlope = (edgeElevation == 1)
-			? (0.5 * sin(64*(uv.x + M_PI/128.0)) + 0.5)
-			: 20*uv.x; //(sin(64*(uv.x + 3*M_PI/128.0)));
+		xSlope = edgeElevation == 1
+			? 0.5 * sin(64*(uv.x + M_PI/128.0)) + 0.5
+			: /*20*uv.x;*/ 0.5 * sin(64*(uv.x + 3*M_PI/128.0)) + 0.5;
 	}
 	else
 	{
-		xSlope = (edgeElevation == 1)
-			? (0.5 * sin(64*(uv.x + M_PI/128.0-1)) + 0.5)
-			: -20*(uv.x-1); //(sin(64*(uv.x + 3*M_PI/128.0 -1)));
+		xSlope = edgeElevation == 1
+			? 0.5 * sin(64*(uv.x + M_PI/128.0-1)) + 0.5
+			: /*-20*(uv.x-1);*/ 0.5 * sin(64*(uv.x + 3*M_PI/128.0 -1)) + 0.5;
 	}
 	if (uv.y < 0.5)
 	{
-		zSlope = (edgeElevation == 1)
-			? (0.5 * sin(64*(uv.y + M_PI/128.0)) + 0.5)
-			: 20*uv.y; //(sin(64*(uv.y + 3*M_PI/128.0)));
+		zSlope = edgeElevation == 1
+			? 0.5 * sin(64*(uv.y + M_PI/128.0)) + 0.5
+			: /*20*uv.y;*/ 0.5 * sin(64*(uv.y + 3*M_PI/128.0)) + 0.5;
 	}
 	else
 	{
-		zSlope = (edgeElevation == 1)
-			? (0.5 * sin(64*(uv.y + M_PI/128.0-1)) + 0.5)
-			: -20*(uv.y-1); //(sin(64*(uv.y + 3*M_PI/128.0 - 1)));
+		zSlope = edgeElevation == 1
+			? 0.5 * sin(64*(uv.y + M_PI/128.0-1)) + 0.5
+			: /*-20*(uv.y-1);*/ 0.5 * sin(64*(uv.y + 3*M_PI/128.0 - 1)) + 0.5;
 	}
 	
 	float vMinLow = 2.0f * M_PI / 128.0f;
 	float vMaxLow = 1.0f - 2.0f * M_PI / 128.0f;
-	float vMinHigh = (edgeElevation == 1) 
-						? (2.0f * M_PI / 64.0f)
-						: 0.05; //(2.0f * M_PI / 128.0f);
-	float vMaxHigh = (edgeElevation == 1)
-						? (1.0f - 2.0f * M_PI / 64.0f)
-						: 0.95; //(1.0f - 2.0f * M_PI / 128.0f);
-	
-	// xSlope = clamp(xSlope, 0.0, 1.0);
-	// zSlope = clamp(zSlope, 0.0, 1.0);
+	float vMinHigh = edgeElevation == 1
+						? 2.0f * M_PI / 64.0f
+						: 2.0f * M_PI / 128.0f;
+	float vMaxHigh = edgeElevation == 1
+						? 1.0f - 2.0f * M_PI / 64.0f
+						: 1.0f - 2.0f * M_PI / 128.0f;
 	
 	float slope = 0;
 	if (edgeElevation == 1)

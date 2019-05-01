@@ -10,21 +10,11 @@ import lombok.Getter;
 
 @Getter
 public class GLDirectionalLight extends DirectionalLight{
-
-	private static GLDirectionalLight instance = null;
 	
 	private GLUniformBuffer ubo_light;
 	private GLUniformBuffer ubo_matrices;
 	
-	public static GLDirectionalLight getInstance(){
-		if(instance == null) 
-	    {
-	    	instance = new GLDirectionalLight();
-	    }
-	      return instance;
-	}
-	
-	protected GLDirectionalLight(){
+	public GLDirectionalLight(){
 		
 		super(); 
 		

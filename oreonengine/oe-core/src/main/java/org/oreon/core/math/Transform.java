@@ -58,6 +58,16 @@ public class Transform {
 	{
 		return BaseContext.getCamera().getViewProjectionMatrix().mul(getWorldMatrix());
 	}
+	
+	public Matrix4f getOriginModelViewProjectionMatrix()
+	{
+		return BaseContext.getCamera().getOriginViewProjectionMatrix().mul(getWorldMatrix());
+	}
+	
+	public Matrix4f getXzOriginModelViewProjectionMatrix()
+	{
+		return BaseContext.getCamera().getXzOriginViewProjectionMatrix().mul(getWorldMatrix());
+	}
 
 	public Vec3f getTranslation() {
 		return translation;

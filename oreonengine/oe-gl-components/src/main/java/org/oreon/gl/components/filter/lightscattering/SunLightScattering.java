@@ -17,7 +17,7 @@ public class SunLightScattering {
 
 	@Getter
 	private GLTexture sunLightScatteringSceneTexture;
-	
+	@Getter
 	private GLTexture sunLightScatteringTexture;
 	private SunLightScatteringShader lightScatteringShader;
 	private SunLightScatteringAdditiveBlendShader additiveBlendShader;
@@ -47,7 +47,7 @@ public class SunLightScattering {
 		glBindImageTexture(1, sunLightScatteringTexture.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
 		lightScatteringShader.updateUniforms(BaseContext.getWindow().getWidth(), 
 											 BaseContext.getWindow().getHeight(), 
-										     BaseContext.getCamera().getViewProjectionMatrix());
+										     BaseContext.getCamera().getOriginViewProjectionMatrix());
 		glDispatchCompute(BaseContext.getWindow().getWidth()/8, BaseContext.getWindow().getHeight()/8, 1);	
 		glFinish();
 		

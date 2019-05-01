@@ -4,14 +4,15 @@ layout (local_size_x = 16, local_size_y = 16) in;
 
 layout (binding = 0, rgba16f) uniform writeonly image2D finalColor_out;
 layout (binding = 1, rgba16f) uniform writeonly image2D lightScatteringMask_out;
-layout (binding = 2, rgba32f) uniform readonly image2DMS opaqueSceneDepthMap;
-layout (binding = 3, rgba32f) uniform readonly image2D transparencyLayerDepthMap;
 
-uniform sampler2D opaqueSceneTexture;
-uniform sampler2D opaqueSceneLightScatteringTexture;
-uniform sampler2D transparencyLayer;
-uniform sampler2D transparencyLayerLightScatteringTexture;
-uniform sampler2D transparencyAlphaMap;
+layout(binding = 2) uniform sampler2D opaqueSceneTexture;
+layout(binding = 3) uniform sampler2D opaqueSceneLightScatteringTexture;
+layout(binding = 4) uniform sampler2DMS opaqueSceneDepthMap;
+layout(binding = 5) uniform sampler2D transparencyLayer;
+layout(binding = 6) uniform sampler2D transparencyAlphaMap;
+layout(binding = 7) uniform sampler2D transparencyLayerLightScatteringTexture;
+layout(binding = 8) uniform sampler2D transparencyLayerDepthMap;
+
 uniform float width;
 uniform float height;
 const float zfar = 10000;
@@ -24,8 +25,8 @@ void main()
 
 	vec4 opaqueColor 	   = texture(opaqueSceneTexture, uv);
 	vec4 transparencyColor = texture(transparencyLayer, uv);
-	vec4 opaqueDepth 	   = imageLoad(opaqueSceneDepthMap, computeCoord, 0);
-	vec4 transparencyDepth = imageLoad(transparencyLayerDepthMap, computeCoord);
+	vec4 opaqueDepth 	   = texelFetch(opaqueSceneDepthMap, computeCoord, 0);
+	vec4 transparencyDepth = texture(transparencyLayerDepthMap, uv);
 	float alpha 		   = texture(transparencyAlphaMap, uv).r;
 	vec4 transparencyLightScattering = texture(transparencyLayerLightScatteringTexture, uv);
 	vec4 opaqueSceneLightScattering = texture(opaqueSceneLightScatteringTexture, uv);

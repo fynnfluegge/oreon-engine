@@ -10,7 +10,6 @@ import org.oreon.core.RenderEngine;
 import org.oreon.core.context.BaseContext;
 import org.oreon.core.gl.context.GLContext;
 import org.oreon.core.gl.framebuffer.GLFrameBufferObject;
-import org.oreon.core.gl.light.GLDirectionalLight;
 import org.oreon.core.gl.picking.TerrainPicking;
 import org.oreon.core.gl.shadow.ParallelSplitShadowMapsFbo;
 import org.oreon.core.gl.surface.FullScreenMultisampleQuad;
@@ -44,8 +43,8 @@ public class GLDeferredEngine extends RenderEngine{
 	private RenderList opaqueSceneRenderList;
 	private RenderList transparencySceneRenderList;
 	
-	private GLFrameBufferObject opaqueSceneFbo;
-	private GLFrameBufferObject transparentSceneFbo;
+	private GLFrameBufferObject primarySceneFbo;
+	private GLFrameBufferObject secondarySceneFbo;
 	
 	private FullScreenQuad fullScreenQuad;
 	private FullScreenMultisampleQuad fullScreenQuadMultisample;
@@ -92,11 +91,11 @@ public class GLDeferredEngine extends RenderEngine{
 		instancingObjectHandler = InstancedHandler.getInstance();
 		
 		// frameBuffers
-		opaqueSceneFbo = new OffScreenFbo(config.getX_ScreenResolution(),
+		primarySceneFbo = new OffScreenFbo(config.getX_ScreenResolution(),
 				config.getY_ScreenResolution(), config.getMultisamples());
-		transparentSceneFbo = new TransparencyFbo(config.getX_ScreenResolution(),
+		secondarySceneFbo = new TransparencyFbo(config.getX_ScreenResolution(),
 				config.getY_ScreenResolution());
-		GLContext.getResources().setOpaqueSceneFbo(opaqueSceneFbo);
+		GLContext.getResources().setOpaqueSceneFbo(primarySceneFbo);
 		
 		fullScreenQuad = new FullScreenQuad();
 		fullScreenQuadMultisample = new FullScreenMultisampleQuad();
@@ -118,7 +117,7 @@ public class GLDeferredEngine extends RenderEngine{
 		underWaterRenderer = new UnderWaterRenderer();
 		contrastController = new ContrastController();
 		
-		GLContext.getResources().setSceneDepthMap(opaqueSceneFbo.getAttachmentTexture(Attachment.DEPTH));
+		GLContext.getResources().setSceneDepthMap(primarySceneFbo.getAttachmentTexture(Attachment.DEPTH));
 		
 		if (gui != null){
 			gui.init();
@@ -130,12 +129,10 @@ public class GLDeferredEngine extends RenderEngine{
 	@Override
 	public void render() {
 
-		GLDirectionalLight.getInstance().update();
-
 		GLUtil.clearScreen();
-		opaqueSceneFbo.bind();
+		primarySceneFbo.bind();
 		GLUtil.clearScreen();
-		transparentSceneFbo.bind();
+		secondarySceneFbo.bind();
 		GLUtil.clearScreen();
 		pssmFbo.getFBO().bind();
 		glClear(GL_DEPTH_BUFFER_BIT);
@@ -153,7 +150,8 @@ public class GLDeferredEngine extends RenderEngine{
 		
 		// deferred scene lighting - opaque objects
 		// render into GBuffer of deffered lighting framebuffer
-		opaqueSceneFbo.bind();
+		
+		primarySceneFbo.bind();
 		sceneGraph.record(opaqueSceneRenderList);
 		
 		opaqueSceneRenderList.getValues().forEach(object ->
@@ -164,44 +162,44 @@ public class GLDeferredEngine extends RenderEngine{
 					object.render();
 			});
 		
-		opaqueSceneFbo.unbind();
+		primarySceneFbo.unbind();
 		
 		// forward scene lighting - transparent objects
 		// render transparent objects into GBuffer of transparency framebuffer
-		transparentSceneFbo.bind();
+		secondarySceneFbo.bind();
 		sceneGraph.recordTransparentObjects(transparencySceneRenderList);
 		transparencySceneRenderList.getValues().forEach(object -> object.render());
-		transparentSceneFbo.unbind();
+		secondarySceneFbo.unbind();
 		
 		// render screen space ambient occlusion
 		if (BaseContext.getConfig().isSsaoEnabled()){
-			ssao.render(opaqueSceneFbo.getAttachmentTexture(Attachment.POSITION),
-					opaqueSceneFbo.getAttachmentTexture(Attachment.NORMAL));
+			ssao.render(primarySceneFbo.getAttachmentTexture(Attachment.POSITION),
+					primarySceneFbo.getAttachmentTexture(Attachment.NORMAL));
 		}
 		
 		// render post processing sample coverage mask
-		sampleCoverage.render(opaqueSceneFbo.getAttachmentTexture(Attachment.POSITION),
-				opaqueSceneFbo.getAttachmentTexture(Attachment.LIGHT_SCATTERING));
+		sampleCoverage.render(primarySceneFbo.getAttachmentTexture(Attachment.POSITION),
+				primarySceneFbo.getAttachmentTexture(Attachment.LIGHT_SCATTERING));
 		
 		// render deferred lighting scene with multisampling
 		deferredLighting.render(sampleCoverage.getSampleCoverageMask(),
 				ssao.getSsaoBlurSceneTexture(),
 				pssmFbo.getDepthMaps(),
-				opaqueSceneFbo.getAttachmentTexture(Attachment.ALBEDO),
-				opaqueSceneFbo.getAttachmentTexture(Attachment.POSITION),
-				opaqueSceneFbo.getAttachmentTexture(Attachment.NORMAL),
-				opaqueSceneFbo.getAttachmentTexture(Attachment.SPECULAR_EMISSION),
+				primarySceneFbo.getAttachmentTexture(Attachment.ALBEDO),
+				primarySceneFbo.getAttachmentTexture(Attachment.POSITION),
+				primarySceneFbo.getAttachmentTexture(Attachment.NORMAL),
+				primarySceneFbo.getAttachmentTexture(Attachment.SPECULAR_EMISSION),
 				BaseContext.getConfig().isSsaoEnabled());
 		
 		// blend scene/transparent layers
 		// render opaque + transparent (final scene) objects into main offscreen framebuffer
-		opaqueTransparencyBlending.render(deferredLighting.getDeferredLightingSceneTexture(),
-				opaqueSceneFbo.getAttachmentTexture(Attachment.DEPTH),
-				sampleCoverage.getLightScatteringMaskDownSampled(),
-				transparentSceneFbo.getAttachmentTexture(Attachment.ALBEDO),
-				transparentSceneFbo.getAttachmentTexture(Attachment.DEPTH),
-				transparentSceneFbo.getAttachmentTexture(Attachment.ALPHA),
-				transparentSceneFbo.getAttachmentTexture(Attachment.LIGHT_SCATTERING));
+//		opaqueTransparencyBlending.render(deferredLighting.getDeferredLightingSceneTexture(),
+//				primarySceneFbo.getAttachmentTexture(Attachment.DEPTH),
+//				sampleCoverage.getLightScatteringMaskDownSampled(),
+//				secondarySceneFbo.getAttachmentTexture(Attachment.ALBEDO),
+//				secondarySceneFbo.getAttachmentTexture(Attachment.DEPTH),
+//				secondarySceneFbo.getAttachmentTexture(Attachment.ALPHA),
+//				secondarySceneFbo.getAttachmentTexture(Attachment.LIGHT_SCATTERING));
 		
 		// start Threads to update instancing objects
 		instancingObjectHandler.signalAll();
@@ -214,8 +212,8 @@ public class GLDeferredEngine extends RenderEngine{
 		}
 		
 		// render post processing filters
-		GLTexture displayTexture = opaqueTransparencyBlending.getBlendedSceneTexture();
-		GLTexture lightScatteringMaskTexture = opaqueTransparencyBlending.getBlendedLightScatteringTexture();
+		GLTexture displayTexture = deferredLighting.getDeferredLightingSceneTexture();
+		GLTexture lightScatteringMaskTexture = sampleCoverage.getLightScatteringMaskDownSampled();
 		
 		boolean doMotionBlur = camera.getPreviousPosition().sub(camera.getPosition()).length() > 0.04f
 				|| camera.getForward().sub(camera.getPreviousForward()).length() > 0.01f;
@@ -230,7 +228,7 @@ public class GLDeferredEngine extends RenderEngine{
 			
 			// Depth of Field Blur
 			if (BaseContext.getConfig().isDepthOfFieldBlurEnabled()){
-				dofBlur.render(opaqueSceneFbo.getAttachmentTexture(Attachment.DEPTH),
+				dofBlur.render(primarySceneFbo.getAttachmentTexture(Attachment.DEPTH),
 						lightScatteringMaskTexture, displayTexture,
 						config.getX_ScreenResolution(), config.getY_ScreenResolution());
 				displayTexture = dofBlur.getVerticalBlurSceneTexture();
@@ -245,14 +243,14 @@ public class GLDeferredEngine extends RenderEngine{
 			// under water
 			if (BaseContext.getConfig().isRenderUnderwater()){
 				underWaterRenderer.render(displayTexture,
-						opaqueSceneFbo.getAttachmentTexture(Attachment.DEPTH));
+						primarySceneFbo.getAttachmentTexture(Attachment.DEPTH));
 				displayTexture = underWaterRenderer.getUnderwaterSceneTexture();
 			}
 			
 			// Motion Blur
 			if (doMotionBlur && BaseContext.getConfig().isMotionBlurEnabled()){
 				motionBlur.render(displayTexture,
-						opaqueSceneFbo.getAttachmentTexture(Attachment.DEPTH));
+						primarySceneFbo.getAttachmentTexture(Attachment.DEPTH));
 				displayTexture = motionBlur.getMotionBlurSceneTexture();
 			}
 			
@@ -264,15 +262,15 @@ public class GLDeferredEngine extends RenderEngine{
 		
 		if (BaseContext.getConfig().isRenderWireframe()
 				|| renderAlbedoBuffer){
-			fullScreenQuadMultisample.setTexture(opaqueSceneFbo.getAttachmentTexture(Attachment.ALBEDO));
+			fullScreenQuadMultisample.setTexture(primarySceneFbo.getAttachmentTexture(Attachment.ALBEDO));
 			fullScreenQuadMultisample.render();
 		}
 		if (renderNormalBuffer){
-			fullScreenQuadMultisample.setTexture(opaqueSceneFbo.getAttachmentTexture(Attachment.NORMAL));
+			fullScreenQuadMultisample.setTexture(primarySceneFbo.getAttachmentTexture(Attachment.NORMAL));
 			fullScreenQuadMultisample.render();
 		}
 		if (renderPositionBuffer){
-			fullScreenQuadMultisample.setTexture(opaqueSceneFbo.getAttachmentTexture(Attachment.POSITION));
+			fullScreenQuadMultisample.setTexture(primarySceneFbo.getAttachmentTexture(Attachment.POSITION));
 			fullScreenQuadMultisample.render();
 		}
 		if (renderSampleCoverageMask){
@@ -289,6 +287,9 @@ public class GLDeferredEngine extends RenderEngine{
 		}
 		
 //		contrastController.render(displayTexture);
+
+//		fullScreenQuadMultisample.setTexture(primarySceneFbo.getAttachmentTexture(Attachment.LIGHT_SCATTERING));
+//		fullScreenQuadMultisample.render();
 		
 		fullScreenQuad.setTexture(displayTexture);
 		fullScreenQuad.render();
@@ -298,9 +299,9 @@ public class GLDeferredEngine extends RenderEngine{
 			&& !renderSampleCoverageMask && !renderPositionBuffer
 			&& !renderNormalBuffer && !renderAlbedoBuffer){
 			
-			opaqueSceneFbo.bind();
+			primarySceneFbo.bind();
 			LightHandler.doOcclusionQueries();
-			opaqueSceneFbo.unbind();
+			primarySceneFbo.unbind();
 			
 			lensFlare.render();
 		}

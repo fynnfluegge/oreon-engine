@@ -2,9 +2,12 @@ package org.oreon.core.scenegraph;
 
 import org.oreon.core.math.Transform;
 
+import lombok.Getter;
+
+@Getter
 public class Scenegraph extends Node{
 	
-	private Node rootObject;
+	private Node root;
 	private Node terrain;
 	private Node water;
 	private Node transparentObjects;
@@ -14,117 +17,104 @@ public class Scenegraph extends Node{
 	public Scenegraph(){
 		
 		setWorldTransform(new Transform());
-		rootObject = new Node();
+		
+		root = new Node();
 		terrain = new Node();
 		water = new Node();
 		transparentObjects = new Node();
-		rootObject.setParent(this);
+		
+		root.setParent(this);
 		terrain.setParent(this);
 		water.setParent(this);
 		transparentObjects.setParent(this);
 	}
-	
-	public void render(){
-		
-		rootObject.render();
+
+	public void render()
+	{
+		root.render();
 		terrain.render();
 		water.render();
 	}
 	
-	public void renderWireframe(){
-		
-		rootObject.renderWireframe();
+	public void renderWireframe()
+	{
+		root.renderWireframe();
 		terrain.renderWireframe();
 		water.renderWireframe();
 	}
 	
-	public void renderTransparentObejcts(){
-		
+	public void renderTransparentObejcts()
+	{
 		transparentObjects.render();
 	}
 	
-	public void renderShadows(){
-		
-		rootObject.renderShadows();
+	public void renderShadows()
+	{
+		root.renderShadows();
 		terrain.renderShadows();
 		water.renderShadows();
 	}
 	
-	public void record(RenderList renderList){
-
-		rootObject.record(renderList);
+	public void record(RenderList renderList)
+	{
+		root.record(renderList);
 		terrain.record(renderList);
 		water.record(renderList);
 	}
 	
-	public void recordTransparentObjects(RenderList renderList){
-
+	public void recordTransparentObjects(RenderList renderList)
+	{
 		transparentObjects.record(renderList);
 	}
 	
-	public void update(){
-
-		rootObject.update();
+	public void update()
+	{
+		root.update();
 		terrain.update();
 		water.update();
 		transparentObjects.update();
 	}
 	
-	public void input(){
-		rootObject.input();
+	public void input()
+	{
+		root.input();
 		terrain.input();
 		water.input();
 	}
 	
 	public void shutdown()
 	{
-		rootObject.shutdown();
+		root.shutdown();
 		terrain.shutdown();
 		water.shutdown();
 		transparentObjects.shutdown();
 	}
-
-	public Node getRoot() {
-		return rootObject;
+	
+	public void addObject(Node object)
+	{
+		root.addChild(object);
 	}
 	
-	public void addObject(Node object){
-		rootObject.addChild(object);
-	}
-	
-	public void addTransparentObject(Node object){
+	public void addTransparentObject(Node object)
+	{
 		transparentObjects.addChild(object);
 	}
 
-	public void setTerrain(Node terrain) {
-		terrain.setParent(this);
+	public void setTerrain(Node vTerrain)
+	{
+		vTerrain.setParent(this);
 		hasTerrain = true;
-		this.terrain = terrain;
+		terrain = vTerrain;
 	}
 	
-	public Node getTerrain() {
-		return terrain;
-	}
-
-	public Node getWater() {
-		return water;
-	}
-
-	public void setWater(Node water) {
-		water.setParent(this);
-		this.water = water;
+	public void setWater(Node vWater)
+	{
+		vWater.setParent(this);
+		water = vWater;
 	}
 
 	public boolean hasTerrain() {
 		return hasTerrain;
-	}
-
-	public Node getTransparentObjects() {
-		return transparentObjects;
-	}
-
-	public void setTransparentObjects(Node transparentObjects) {
-		this.transparentObjects = transparentObjects;
 	}
 
 }

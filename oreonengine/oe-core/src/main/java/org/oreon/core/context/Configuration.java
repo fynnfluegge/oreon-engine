@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+import org.oreon.core.math.Vec3f;
 import org.oreon.core.math.Vec4f;
 import org.oreon.core.util.Constants;
 
@@ -27,8 +28,6 @@ public class Configuration {
 	private final int multisamples;
 	private boolean fxaaEnabled;
 	
-	// static render settings
-	private float sightRange;
 	// post processing effects
 	private boolean ssaoEnabled;
 	private boolean bloomEnabled;
@@ -43,16 +42,26 @@ public class Configuration {
 	private boolean renderReflection;
 	private boolean renderRefraction;
 	private Vec4f clipplane;
+	private float sightRange;
 	
-	private final Properties properties;
+	// Vulkan Validation
+	private boolean vkValidation;
+	
+	// Atmosphere parameter
+	private float sunRadius;
+	private Vec3f sunPosition;
+	private Vec3f sunColor;
+	private float sunIntensity;
+	private float ambient;
+	private boolean AtmosphericScatteringApproximation;
 	
 	public Configuration(){
 		
-		properties = new Properties();
+		Properties properties = new Properties();
 		try {
-			InputStream stream = Configuration.class.getClassLoader().getResourceAsStream("oe-config.properties");
-			properties.load(stream);
-			stream.close();
+			InputStream vInputStream = Configuration.class.getClassLoader().getResourceAsStream("oe-config.properties");
+			properties.load(vInputStream);
+			vInputStream.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -73,11 +82,38 @@ public class Configuration {
 		depthOfFieldBlurEnabled = Integer.valueOf(properties.getProperty("depthOfFieldBlur.enable")) == 1 ? true : false;
 		lensFlareEnabled = Integer.valueOf(properties.getProperty("lensFlare.enable")) == 1 ? true : false;
 		
+		if (properties.getProperty("validation.enable") != null){
+			vkValidation = Integer.valueOf(properties.getProperty("validation.enable")) == 1 ? true : false;
+		}
+		
 		renderWireframe = false;
 		renderUnderwater = false;
 		renderReflection = false;
 		renderRefraction = false;
 		clipplane = Constants.ZEROPLANE;
 		
+		
+		try {
+			InputStream vInputStream = Configuration.class.getClassLoader().getResourceAsStream("atmosphere-config.properties");
+			if (vInputStream != null){
+				properties.load(vInputStream);
+				vInputStream.close();
+				
+				sunRadius = Float.valueOf(properties.getProperty("sun.radius"));
+				sunPosition = new Vec3f(
+						Float.valueOf(properties.getProperty("sun.position.x")),
+						Float.valueOf(properties.getProperty("sun.position.y")),
+						Float.valueOf(properties.getProperty("sun.position.z")));
+				sunColor = new Vec3f(
+						Float.valueOf(properties.getProperty("sun.color.r")),
+						Float.valueOf(properties.getProperty("sun.color.g")),
+						Float.valueOf(properties.getProperty("sun.color.b")));
+				sunIntensity = Float.valueOf(properties.getProperty("sun.intensity"));
+				ambient = Float.valueOf(properties.getProperty("ambient"));
+				AtmosphericScatteringApproximation = Integer.valueOf(properties.getProperty("atmosphere.scattering.approximation")) == 1 ? true : false;
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

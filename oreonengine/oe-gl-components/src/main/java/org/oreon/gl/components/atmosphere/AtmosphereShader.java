@@ -1,7 +1,9 @@
 package org.oreon.gl.components.atmosphere;
 
+import org.oreon.core.context.BaseContext;
 import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.scenegraph.Renderable;
+import org.oreon.core.util.Constants;
 import org.oreon.core.util.ResourceLoader;
 
 public class AtmosphereShader extends GLShaderProgram{
@@ -27,11 +29,19 @@ public class AtmosphereShader extends GLShaderProgram{
 			
 		addUniform("modelViewProjectionMatrix");
 		addUniform("worldMatrix");
+		addUniform("m_ViewProjection");
+		addUniform("v_SunWorld");
+		addUniform("width");
+		addUniform("height");
 	}
 		
 	public void updateUniforms(Renderable object)
 	{
 		setUniform("modelViewProjectionMatrix", object.getWorldTransform().getModelViewProjectionMatrix());
 		setUniform("worldMatrix", object.getWorldTransform().getWorldMatrix());
+		setUniform("m_ViewProjection", BaseContext.getCamera().getOriginViewProjectionMatrix());
+		setUniform("v_SunWorld", BaseContext.getConfig().getSunPosition().mul(-Constants.ZFAR));
+		setUniformi("width", BaseContext.getConfig().getX_ScreenResolution());
+		setUniformi("height", BaseContext.getConfig().getY_ScreenResolution());
 	}
 }
