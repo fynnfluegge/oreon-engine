@@ -37,7 +37,7 @@ public class AtmosphericScatteringShader extends GLShaderProgram{
 	
 	public void updateUniforms(Renderable object)
 	{
-		setUniform("m_MVP", object.getWorldTransform().getXzOriginModelViewProjectionMatrix());
+		setUniform("m_MVP", object.getWorldTransform().getModelViewProjectionMatrix());
 		setUniform("m_Projection", BaseContext.getCamera().getProjectionMatrix());
 		setUniform("m_View", BaseContext.getCamera().getViewMatrix());
 		setUniform("v_Sun", BaseContext.getConfig().getSunPosition().mul(-1));

@@ -20,7 +20,7 @@ struct Fractal
 
 uniform Fractal fractals[8];
 uniform int N;
-uniform int edgeElevation = 0;
+uniform int edgeElevation = 1;
 
 void main(void)
 {

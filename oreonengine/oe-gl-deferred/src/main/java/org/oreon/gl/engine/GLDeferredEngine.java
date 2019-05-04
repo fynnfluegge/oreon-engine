@@ -193,13 +193,13 @@ public class GLDeferredEngine extends RenderEngine{
 		
 		// blend scene/transparent layers
 		// render opaque + transparent (final scene) objects into main offscreen framebuffer
-//		opaqueTransparencyBlending.render(deferredLighting.getDeferredLightingSceneTexture(),
-//				primarySceneFbo.getAttachmentTexture(Attachment.DEPTH),
-//				sampleCoverage.getLightScatteringMaskDownSampled(),
-//				secondarySceneFbo.getAttachmentTexture(Attachment.ALBEDO),
-//				secondarySceneFbo.getAttachmentTexture(Attachment.DEPTH),
-//				secondarySceneFbo.getAttachmentTexture(Attachment.ALPHA),
-//				secondarySceneFbo.getAttachmentTexture(Attachment.LIGHT_SCATTERING));
+		opaqueTransparencyBlending.render(deferredLighting.getDeferredLightingSceneTexture(),
+				primarySceneFbo.getAttachmentTexture(Attachment.DEPTH),
+				sampleCoverage.getLightScatteringMaskDownSampled(),
+				secondarySceneFbo.getAttachmentTexture(Attachment.ALBEDO),
+				secondarySceneFbo.getAttachmentTexture(Attachment.DEPTH),
+				secondarySceneFbo.getAttachmentTexture(Attachment.ALPHA),
+				secondarySceneFbo.getAttachmentTexture(Attachment.LIGHT_SCATTERING));
 		
 		// start Threads to update instancing objects
 		instancingObjectHandler.signalAll();
@@ -212,7 +212,7 @@ public class GLDeferredEngine extends RenderEngine{
 		}
 		
 		// render post processing filters
-		GLTexture displayTexture = deferredLighting.getDeferredLightingSceneTexture();
+		GLTexture displayTexture = opaqueTransparencyBlending.getBlendedSceneTexture();
 		GLTexture lightScatteringMaskTexture = sampleCoverage.getLightScatteringMaskDownSampled();
 		
 		boolean doMotionBlur = camera.getPreviousPosition().sub(camera.getPosition()).length() > 0.04f

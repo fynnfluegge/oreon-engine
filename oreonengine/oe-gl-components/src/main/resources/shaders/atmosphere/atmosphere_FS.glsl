@@ -12,6 +12,7 @@ layout(location = 4) out vec4 lightScattering_out;
 
 uniform mat4 m_ViewProjection;
 uniform vec3 v_SunWorld;
+uniform float r_Sun;
 uniform int width;
 uniform int height;
 
@@ -36,19 +37,14 @@ void main()
     vec3 v_World = (clip / clip.w).xyz;
 	float sunRadius = length(normalize(v_World)- normalize(v_SunWorld));
 
-	float maxRadius = 1.0;
-	if(sunRadius < maxRadius)
+	if(sunRadius < r_Sun)
 	{
-		sunRadius /= maxRadius;
+		sunRadius /= r_Sun;
 		float smoothRadius = smoothstep(0,1,0.1f/sunRadius-0.1f);
 		out_Color = mix(out_Color, sunBaseColor * 4, smoothRadius);
 		
-		if (sunRadius * maxRadius < maxRadius * 0.2)
-		{
-			// float smoothRadius = smoothstep(0,1,0.2f/sunRadius-1);
-			// out_LightScattering = mix(vec4(0), vec4(sunBaseColor,0), smoothRadius);
-			out_LightScattering = vec4(sunBaseColor,0);
-		}
+		smoothRadius = smoothstep(0,1,0.2f/sunRadius-0.4);
+		out_LightScattering = mix(vec4(0), vec4(sunBaseColor,0), smoothRadius);
 	}
 	
 	albedo_out = vec4(out_Color,1);

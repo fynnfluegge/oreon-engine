@@ -164,10 +164,8 @@ void main() {
 		float smoothRadius = smoothstep(0,1,0.1f/sunRadius-0.1f);
 		out_Color = mix(out_Color, sunBaseColor * 4, smoothRadius);
 		
-		if (sunRadius * r_Sun < r_Sun * 0.22)
-		{
-			out_LightScattering = vec4(sunBaseColor,0);
-		}
+		smoothRadius = smoothstep(0,1,0.28f/sunRadius-0.6);
+		out_LightScattering = mix(vec4(0), vec4(sunBaseColor,0), smoothRadius);
 	}
 
     albedo_out = vec4(out_Color, 1);
