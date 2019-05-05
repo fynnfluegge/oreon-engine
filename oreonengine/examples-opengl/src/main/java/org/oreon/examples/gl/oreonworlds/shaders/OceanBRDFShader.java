@@ -36,11 +36,11 @@ public class OceanBRDFShader extends GLShaderProgram{
 	{
 		super();
 		
-		addVertexShader(ResourceLoader.loadShader("oreonworlds/shaders/ocean/Ocean_VS.glsl"));
-		addTessellationControlShader(ResourceLoader.loadShader("oreonworlds/shaders/ocean/Ocean_TC.glsl"));
-		addTessellationEvaluationShader(ResourceLoader.loadShader("oreonworlds/shaders/ocean/Ocean_TE.glsl"));
-		addGeometryShader(ResourceLoader.loadShader("oreonworlds/shaders/ocean/Ocean_GS.glsl"));
-		addFragmentShader(ResourceLoader.loadShader("oreonworlds/shaders/ocean/Ocean_FS.glsl"));
+		addVertexShader(ResourceLoader.loadShader("shaders/water/water.vert"));
+		addTessellationControlShader(ResourceLoader.loadShader("shaders/water/water.tesc"));
+		addTessellationEvaluationShader(ResourceLoader.loadShader("shaders/water/water.tese"));
+		addGeometryShader(ResourceLoader.loadShader("shaders/water/water.geom"));
+		addFragmentShader(ResourceLoader.loadShader("shaders/water/water.frag"));
 		compileShader();
 		
 		addUniform("projectionViewMatrix");

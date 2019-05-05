@@ -30,7 +30,7 @@ public class H0kShader extends GLShaderProgram{
 		addUniform("direction");
 		addUniform("intensity");
 		addUniform("l");
-		addUniform("alignment");
+//		addUniform("alignment");
 		addUniform("noise_r0");
 		addUniform("noise_i0");
 		addUniform("noise_r1");
@@ -46,7 +46,7 @@ public class H0kShader extends GLShaderProgram{
 		setUniformf("intensity", intensity);
 		setUniform("direction", direction);
 		setUniformf("l", capillarSupressFactor);
-		setUniformf("alignment", alignment);
+//		setUniformf("alignment", alignment);
 	}
 	
 	public void updateUniforms(int texture0, int texture1, int texture2, int texture3)

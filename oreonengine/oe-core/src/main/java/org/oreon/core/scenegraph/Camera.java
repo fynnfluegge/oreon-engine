@@ -53,7 +53,7 @@ private final Vec3f yAxis = new Vec3f(0,1,0);
 	private float rotYamt = 0;
 	private float rotXstride;
 	private float rotXamt = 0;
-	private float mouseSensitivity = 0.008f;
+	private float mouseSensitivity = 0.015f;
 	private boolean isUpRotation;
 	private boolean isDownRotation;	
 	private boolean isLeftRotation;	
@@ -122,7 +122,7 @@ private final Vec3f yAxis = new Vec3f(0,1,0);
 			rotateY(getRotAmt()/8f);
 		
 		// free mouse rotation
-		if(input.isButtonHolding(2))
+		if(input.isButtonHolding(0) || input.isButtonHolding(2))
 		{
 			float dy = input.getLockedCursorPosition().getY() - input.getCursorPosition().getY();
 			float dx = input.getLockedCursorPosition().getX() - input.getCursorPosition().getX();

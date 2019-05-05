@@ -23,8 +23,8 @@ public class AtmosphereShader extends GLShaderProgram{
 	{
 		super();
 
-		addVertexShader(ResourceLoader.loadShader("shaders/atmosphere/atmosphere_VS.glsl"));
-		addFragmentShader(ResourceLoader.loadShader("shaders/atmosphere/atmosphere_FS.glsl"));
+		addVertexShader(ResourceLoader.loadShader("shaders/atmosphere/atmosphere.vert"));
+		addFragmentShader(ResourceLoader.loadShader("shaders/atmosphere/atmosphere.frag"));
 		compileShader();
 			
 		addUniform("modelViewProjectionMatrix");
@@ -34,6 +34,7 @@ public class AtmosphereShader extends GLShaderProgram{
 		addUniform("r_Sun");
 		addUniform("width");
 		addUniform("height");
+		addUniform("isReflection");
 	}
 		
 	public void updateUniforms(Renderable object)
@@ -45,5 +46,6 @@ public class AtmosphereShader extends GLShaderProgram{
 		setUniformf("r_Sun", BaseContext.getConfig().getSunRadius());
 		setUniformi("width", BaseContext.getConfig().getX_ScreenResolution());
 		setUniformi("height", BaseContext.getConfig().getY_ScreenResolution());
+		setUniformi("isReflection", BaseContext.getConfig().isRenderReflection() ? 1 : 0);
 	}
 }

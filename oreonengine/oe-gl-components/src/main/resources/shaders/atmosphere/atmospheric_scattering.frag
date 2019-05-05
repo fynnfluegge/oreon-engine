@@ -20,6 +20,7 @@ uniform vec3 v_Sun;
 uniform float r_Sun;
 uniform int width;
 uniform int height;
+uniform int isReflection;
 
 const vec3 sunBaseColor = vec3(1.0f,0.79f,0.43f);
 
@@ -137,6 +138,9 @@ void main() {
 	ray_eye = vec4(ray_eye.xy, 1.0, 0.0);
 	vec3 ray_world = (inverse(m_View) * ray_eye).xyz;
 	
+	if (isReflection == 1)
+		ray_world.y *= -1;
+	
 	vec4 out_LightScattering = vec4(0);
 	
     vec3 out_Color = atmosphere(
@@ -158,7 +162,8 @@ void main() {
 	
 	float sunRadius = length(normalize(ray_world)- normalize(v_Sun));
 	
-	if(sunRadius < r_Sun)
+	// no sun rendering when scene reflection
+	if(sunRadius < r_Sun && isReflection == 0)
 	{
 		sunRadius /= r_Sun;
 		float smoothRadius = smoothstep(0,1,0.1f/sunRadius-0.1f);

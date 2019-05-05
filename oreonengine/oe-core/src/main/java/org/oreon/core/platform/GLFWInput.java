@@ -1,12 +1,28 @@
 package org.oreon.core.platform;
 
-import org.lwjgl.glfw.*;
-import org.oreon.core.math.Vec2f;
+import static org.lwjgl.glfw.GLFW.GLFW_CURSOR;
+import static org.lwjgl.glfw.GLFW.GLFW_CURSOR_HIDDEN;
+import static org.lwjgl.glfw.GLFW.GLFW_CURSOR_NORMAL;
+import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
+import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
+import static org.lwjgl.glfw.GLFW.glfwPollEvents;
+import static org.lwjgl.glfw.GLFW.glfwSetCursorPos;
+import static org.lwjgl.glfw.GLFW.glfwSetCursorPosCallback;
+import static org.lwjgl.glfw.GLFW.glfwSetFramebufferSizeCallback;
+import static org.lwjgl.glfw.GLFW.glfwSetInputMode;
+import static org.lwjgl.glfw.GLFW.glfwSetKeyCallback;
+import static org.lwjgl.glfw.GLFW.glfwSetMouseButtonCallback;
+import static org.lwjgl.glfw.GLFW.glfwSetScrollCallback;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.lwjgl.glfw.GLFW.*;
+import org.lwjgl.glfw.GLFWCursorPosCallback;
+import org.lwjgl.glfw.GLFWFramebufferSizeCallback;
+import org.lwjgl.glfw.GLFWKeyCallback;
+import org.lwjgl.glfw.GLFWMouseButtonCallback;
+import org.lwjgl.glfw.GLFWScrollCallback;
+import org.oreon.core.math.Vec2f;
 
 public class GLFWInput implements Input{
 	
@@ -71,12 +87,12 @@ public class GLFWInput implements Input{
 
             @Override
             public void invoke(long window, int button, int action, int mods) {
-                if(button == 2 && action == GLFW_PRESS) {
+                if((button == 2 || button == 0) && action == GLFW_PRESS) {
                 	lockedCursorPosition = new Vec2f(cursorPosition);
                 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
                 }
 
-                if(button == 2 && action == GLFW_RELEASE) {
+                if((button == 2 || button == 0) && action == GLFW_RELEASE) {
                 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
                 }
                 

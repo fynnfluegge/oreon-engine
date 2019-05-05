@@ -15,6 +15,7 @@ uniform vec3 v_SunWorld;
 uniform float r_Sun;
 uniform int width;
 uniform int height;
+uniform int isReflection;
 
 const vec3 sunBaseColor = vec3(1.0f,0.79f,0.43f);
 
@@ -26,25 +27,30 @@ void main()
 	
 	vec3 out_Color = vec3(red, green, blue);
 	vec4 out_LightScattering = vec4(0);
-	
-	vec4 ndc = vec4(
+
+	// no sun rendering when scene reflection
+	if (isReflection == 0)
+	{
+		vec4 ndc = vec4(
         (gl_FragCoord.x / width - 0.5) * 2.0,
         (gl_FragCoord.y / height - 0.5) * 2.0,
         (gl_FragCoord.z - 0.5) * 2.0,
         1.0);
+	
+		vec4 clip = inverse(m_ViewProjection) * ndc;
+		vec3 v_World = (clip / clip.w).xyz;
 		
-	vec4 clip = inverse(m_ViewProjection) * ndc;
-    vec3 v_World = (clip / clip.w).xyz;
-	float sunRadius = length(normalize(v_World)- normalize(v_SunWorld));
+		float sunRadius = length(normalize(v_World)- normalize(v_SunWorld));
 
-	if(sunRadius < r_Sun)
-	{
-		sunRadius /= r_Sun;
-		float smoothRadius = smoothstep(0,1,0.1f/sunRadius-0.1f);
-		out_Color = mix(out_Color, sunBaseColor * 4, smoothRadius);
-		
-		smoothRadius = smoothstep(0,1,0.2f/sunRadius-0.4);
-		out_LightScattering = mix(vec4(0), vec4(sunBaseColor,0), smoothRadius);
+		if(sunRadius < r_Sun)
+		{
+			sunRadius /= r_Sun;
+			float smoothRadius = smoothstep(0,1,0.1f/sunRadius-0.1f);
+			out_Color = mix(out_Color, sunBaseColor * 4, smoothRadius);
+			
+			smoothRadius = smoothstep(0,1,0.2f/sunRadius-0.4);
+			out_LightScattering = mix(vec4(0), vec4(sunBaseColor,0), smoothRadius);
+		}
 	}
 	
 	albedo_out = vec4(out_Color,1);

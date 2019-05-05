@@ -151,6 +151,10 @@ public class GLDeferredEngine extends RenderEngine{
 		// deferred scene lighting - opaque objects
 		// render into GBuffer of deffered lighting framebuffer
 		
+//		sceneGraph.getWorldTransform().setScaling(1,-1,1);
+//		sceneGraph.update();
+//		BaseContext.getConfig().setRenderReflection(true);
+		
 		primarySceneFbo.bind();
 		sceneGraph.record(opaqueSceneRenderList);
 		

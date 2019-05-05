@@ -33,6 +33,7 @@ public class AtmosphericScatteringShader extends GLShaderProgram{
 		addUniform("r_Sun");
 		addUniform("width");
 		addUniform("height");
+		addUniform("isReflection");
 	}
 	
 	public void updateUniforms(Renderable object)
@@ -44,6 +45,7 @@ public class AtmosphericScatteringShader extends GLShaderProgram{
 		setUniformf("r_Sun", BaseContext.getConfig().getSunRadius());
 		setUniformi("width", BaseContext.getConfig().getX_ScreenResolution());
 		setUniformi("height", BaseContext.getConfig().getY_ScreenResolution());
+		setUniformi("isReflection", BaseContext.getConfig().isRenderReflection() ? 1 : 0);
 	}
 
 }

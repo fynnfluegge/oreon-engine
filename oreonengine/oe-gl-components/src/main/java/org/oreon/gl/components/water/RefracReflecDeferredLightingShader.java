@@ -21,7 +21,7 @@ public class RefracReflecDeferredLightingShader extends GLShaderProgram{
 	{
 		super();
 		
-		addComputeShader(ResourceLoader.loadShader("shaders/ocean/RefractionReflectionShader_CS.glsl"));
+		addComputeShader(ResourceLoader.loadShader("shaders/water/refraction_reflection.comp"));
 		compileShader();
 		
 		addUniformBlock("Camera");

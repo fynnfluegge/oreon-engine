@@ -18,7 +18,7 @@ public class Atmosphere extends Renderable{
 	public Atmosphere()
 	{
 		getWorldTransform().setLocalScaling(Constants.ZFAR, Constants.ZFAR, Constants.ZFAR);
-		getWorldTransform().setLocalTranslation(0,-100,0);
+		getWorldTransform().setLocalTranslation(0,0,0);
 
 		Mesh mesh = GLAssimpModelLoader.loadModel("models/obj/dome", "dome.obj").get(0).getMesh();
 		ProceduralTexturing.dome(mesh);
@@ -37,6 +37,7 @@ public class Atmosphere extends Renderable{
 	
 	public void render() {
 		
+		// prevent refraction rendering of atmosphere when camera is above water surface
 		if (BaseContext.getConfig().isRenderRefraction() && !BaseContext.getConfig().isRenderUnderwater()){
 			return;
 		}

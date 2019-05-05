@@ -135,7 +135,11 @@ public class Water extends Renderable{
 		
 		//render reflection to texture
 
-		glViewport(0,0,BaseContext.getWindow().getWidth()/2, BaseContext.getWindow().getHeight()/2);
+		int tempScreenResolutionX = BaseContext.getConfig().getX_ScreenResolution(); 
+		int tempScreenResolutionY = BaseContext.getConfig().getY_ScreenResolution(); 
+		BaseContext.getConfig().setX_ScreenResolution(tempScreenResolutionX/2);
+		BaseContext.getConfig().setY_ScreenResolution(tempScreenResolutionY/2);
+		glViewport(0,0,tempScreenResolutionX/2, tempScreenResolutionY/2);
 		
 		BaseContext.getConfig().setRenderReflection(true);
 		
@@ -191,7 +195,9 @@ public class Water extends Renderable{
 		glDisable(GL_CLIP_DISTANCE6);
 		BaseContext.getConfig().setClipplane(Constants.ZEROPLANE);	
 	
-		glViewport(0,0,BaseContext.getWindow().getWidth(), BaseContext.getWindow().getHeight());
+		glViewport(0,0,tempScreenResolutionX, tempScreenResolutionY);
+		BaseContext.getConfig().setX_ScreenResolution(tempScreenResolutionX);
+		BaseContext.getConfig().setY_ScreenResolution(tempScreenResolutionY);
 		
 		fft.render();
 		normalmapRenderer.render(fft.getDy());
