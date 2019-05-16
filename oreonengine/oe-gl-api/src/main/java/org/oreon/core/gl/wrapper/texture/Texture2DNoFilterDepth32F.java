@@ -15,7 +15,7 @@ public class Texture2DNoFilterDepth32F extends GLTexture{
 		
 		bind();
 		allocateImage2D(GL_DEPTH_COMPONENT32F, GL_DEPTH_COMPONENT, GL_FLOAT);
-		noFilter();
+		nearestFilter();
 		unbind();
 	}
 	

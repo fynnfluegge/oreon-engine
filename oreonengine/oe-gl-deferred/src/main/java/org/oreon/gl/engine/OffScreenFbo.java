@@ -11,23 +11,30 @@ import java.nio.IntBuffer;
 import org.oreon.core.gl.framebuffer.GLFrameBufferObject;
 import org.oreon.core.gl.framebuffer.GLFramebuffer;
 import org.oreon.core.gl.texture.GLTexture;
-import org.oreon.core.gl.wrapper.texture.Texture2DMultisampleDepth32F;
-import org.oreon.core.gl.wrapper.texture.Texture2DMultisampleRGBA16F;
-import org.oreon.core.gl.wrapper.texture.Texture2DMultisampleRGBA32F;
+import org.oreon.core.gl.wrapper.texture.TextureImage2DMultisample;
+import org.oreon.core.image.Image.ImageFormat;
+import org.oreon.core.image.Image.SamplerFilter;
+import org.oreon.core.image.Image.TextureWrapMode;
 import org.oreon.core.util.BufferUtil;
 
 public class OffScreenFbo extends GLFrameBufferObject{
 
 	public OffScreenFbo(int width, int height, int samples) {
 		
-		GLTexture albedoTexture = new Texture2DMultisampleRGBA16F(width, height, samples);
-		GLTexture worldPositionTexture = new Texture2DMultisampleRGBA32F(width, height, samples);
-		GLTexture normalTexture = new Texture2DMultisampleRGBA32F(width, height, samples);
-		GLTexture specularEmissionTexture = new Texture2DMultisampleRGBA16F(width, height, samples);
-		GLTexture lightScatteringMask = new Texture2DMultisampleRGBA16F(width, height, samples);
-		GLTexture depthTexture = new Texture2DMultisampleDepth32F(width, height, samples);
+		GLTexture albedoTexture = new TextureImage2DMultisample(width, height, samples,
+				ImageFormat.RGBA16FLOAT, SamplerFilter.Nearest, TextureWrapMode.None);
+		GLTexture worldPositionTexture = new TextureImage2DMultisample(width, height, samples,
+				ImageFormat.RGBA32FLOAT, SamplerFilter.Nearest, TextureWrapMode.None);
+		GLTexture normalTexture = new TextureImage2DMultisample(width, height, samples,
+				ImageFormat.RGBA32FLOAT, SamplerFilter.Nearest, TextureWrapMode.None);
+		GLTexture specularEmissionTexture = new TextureImage2DMultisample(width, height, samples,
+				ImageFormat.RGBA16FLOAT, SamplerFilter.Nearest, TextureWrapMode.None);
+		GLTexture lightScatteringMask = new TextureImage2DMultisample(width, height, samples,
+				ImageFormat.RGBA16FLOAT, SamplerFilter.Nearest, TextureWrapMode.None);
+		GLTexture depthTexture = new TextureImage2DMultisample(width, height, samples,
+				ImageFormat.DEPTH32FLOAT, SamplerFilter.Nearest, TextureWrapMode.None);
 
-		attachments.put(Attachment.ALBEDO, albedoTexture);
+		attachments.put(Attachment.COLOR, albedoTexture);
 		attachments.put(Attachment.POSITION, worldPositionTexture);
 		attachments.put(Attachment.NORMAL, normalTexture);
 		attachments.put(Attachment.SPECULAR_EMISSION, specularEmissionTexture);

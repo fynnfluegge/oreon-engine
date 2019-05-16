@@ -13,7 +13,6 @@ public abstract class FrameBufferObject {
 	public enum Attachment {
 		
 		COLOR,
-		ALBEDO,
 		ALPHA,
 		NORMAL,
 		POSITION,

@@ -46,7 +46,7 @@ public class TransparencyFbo extends VkFrameBufferObject{
 		VkImageBundle depthBuffer = new FrameBufferDepthAttachment(device, memoryProperties,
 				width, height, VK_FORMAT_D32_SFLOAT, 1);
 		
-		attachments.put(Attachment.ALBEDO, albedoAttachment);
+		attachments.put(Attachment.COLOR, albedoAttachment);
 		attachments.put(Attachment.ALPHA, alphaAttachment);
 		attachments.put(Attachment.LIGHT_SCATTERING, lightScatteringAttachment);
 		attachments.put(Attachment.DEPTH, depthBuffer);
@@ -84,7 +84,7 @@ public class TransparencyFbo extends VkFrameBufferObject{
 		colorAttachmentCount = renderPass.getAttachmentCount()-depthAttachmentCount;
 
 		LongBuffer pImageViews = memAllocLong(renderPass.getAttachmentCount());
-		pImageViews.put(0, attachments.get(Attachment.ALBEDO).getImageView().getHandle());
+		pImageViews.put(0, attachments.get(Attachment.COLOR).getImageView().getHandle());
 		pImageViews.put(1, attachments.get(Attachment.ALPHA).getImageView().getHandle());
 		pImageViews.put(2, attachments.get(Attachment.LIGHT_SCATTERING).getImageView().getHandle());
 		pImageViews.put(3, attachments.get(Attachment.DEPTH).getImageView().getHandle());

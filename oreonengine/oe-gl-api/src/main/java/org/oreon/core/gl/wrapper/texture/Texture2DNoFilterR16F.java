@@ -15,7 +15,7 @@ public class Texture2DNoFilterR16F extends GLTexture{
 		
 		bind();
 		allocateImage2D(GL_R16F, GL_RED, GL_FLOAT);
-		noFilter();
+		nearestFilter();
 		unbind();
 	} 
 

@@ -32,7 +32,7 @@ public class TerrainConfiguration extends NodeComponent{
 	private float scaleY;
 	private float scaleXZ;
 	private int bezier;
-	private int waterReflectionShift;
+	private int reflectionOffset;
 	private float texDetail;
 	private int tessellationFactor;
 	private float tessellationSlope;

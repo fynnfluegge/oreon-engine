@@ -8,20 +8,26 @@ import static org.lwjgl.opengl.GL11.glFinish;
 import static org.lwjgl.opengl.GL11.glFrontFace;
 import static org.lwjgl.opengl.GL11.glViewport;
 import static org.lwjgl.opengl.GL30.GL_CLIP_DISTANCE6;
+import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT0;
+
+import java.nio.IntBuffer;
 
 import org.oreon.common.water.WaterConfiguration;
 import org.oreon.core.context.BaseContext;
 import org.oreon.core.gl.context.GLContext;
+import org.oreon.core.gl.framebuffer.GLFramebuffer;
 import org.oreon.core.gl.memory.GLPatchVBO;
 import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.gl.scenegraph.GLRenderInfo;
 import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.gl.wrapper.parameter.WaterRenderParameter;
+import org.oreon.core.gl.wrapper.texture.Texture2DNoFilterRGBA16F;
 import org.oreon.core.gl.wrapper.texture.Texture2DTrilinearFilter;
 import org.oreon.core.math.Vec4f;
 import org.oreon.core.scenegraph.NodeComponentType;
 import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.scenegraph.Scenegraph;
+import org.oreon.core.util.BufferUtil;
 import org.oreon.core.util.Constants;
 import org.oreon.core.util.MeshGenerator;
 import org.oreon.gl.components.fft.FFT;
@@ -33,14 +39,16 @@ import lombok.Getter;
 public class Water extends Renderable{
 	
 	private Vec4f clipplane;
-	private float clip_offset;
+	private int clip_offset;
 	private float motion;
 	private float distortion;
 	private GLTexture dudv;
 	private GLTexture caustics;
 	
-	private RefracReflecRenderer refractionRenderer;
-	private RefracReflecRenderer reflectionRenderer;
+	private GLFramebuffer reflection_fbo;
+	private GLTexture reflection_texture;
+	private GLFramebuffer refraction_fbo;
+	private GLTexture refraction_texture;
 	
 	@Getter
 	private FFT fft;
@@ -82,11 +90,33 @@ public class Water extends Renderable{
 		normalmapRenderer = new NormalRenderer(waterConfiguration.getN());
 		getNormalmapRenderer().setStrength(waterConfiguration.getNormalStrength());
 		
-		refractionRenderer = new RefracReflecRenderer(BaseContext.getWindow().getWidth()/2,
+		reflection_texture = new Texture2DNoFilterRGBA16F(BaseContext.getWindow().getWidth()/2,
 				BaseContext.getWindow().getHeight()/2);
 		
-		reflectionRenderer = new RefracReflecRenderer(BaseContext.getWindow().getWidth()/2,
+		IntBuffer drawBuffers = BufferUtil.createIntBuffer(1);
+		drawBuffers.put(GL_COLOR_ATTACHMENT0);
+		drawBuffers.flip();
+		
+		reflection_fbo = new GLFramebuffer();
+		reflection_fbo.bind();
+		reflection_fbo.createColorTextureAttachment(reflection_texture.getHandle(),0);
+		reflection_fbo.createDepthBufferAttachment(BaseContext.getWindow().getWidth()/2,
 				BaseContext.getWindow().getHeight()/2);
+		reflection_fbo.setDrawBuffers(drawBuffers);
+		reflection_fbo.checkStatus();
+		reflection_fbo.unbind();
+		
+		refraction_texture = new Texture2DNoFilterRGBA16F(BaseContext.getWindow().getWidth()/2,
+				BaseContext.getWindow().getHeight()/2);
+		
+		refraction_fbo = new GLFramebuffer();
+		refraction_fbo.bind();
+		refraction_fbo.createColorTextureAttachment(refraction_texture.getHandle(),0);
+		refraction_fbo.createDepthBufferAttachment(BaseContext.getWindow().getWidth()/2,
+				BaseContext.getWindow().getHeight()/2);
+		refraction_fbo.setDrawBuffers(drawBuffers);
+		refraction_fbo.checkStatus();
+		refraction_fbo.unbind();
 	}	
 	
 	public void update()
@@ -100,7 +130,6 @@ public class Water extends Renderable{
 		
 		super.renderWireframe();
 		
-		// glFinish() important, to prevent conflicts with following compute shaders
 		glFinish();
 	}
 	
@@ -121,19 +150,24 @@ public class Water extends Renderable{
 		
 		BaseContext.getConfig().setClipplane(getClipplane());
 			
-		//mirror scene to clipplane
+		//-----------------------------------//
+		//     mirror scene to clipplane     //
+		//-----------------------------------//
+		
 		scenegraph.getWorldTransform().setScaling(1,-1,1);
 			
 		if (scenegraph.hasTerrain()){
 				
 			GLTerrain.getConfiguration().setScaleY(
 					GLTerrain.getConfiguration().getScaleY() * -1f);
-			GLTerrain.getConfiguration().setWaterReflectionShift(
-					(int) (getClipplane().getW() * 2f));
+			GLTerrain.getConfiguration().setReflectionOffset(
+					getClip_offset() * 2);
 		}
 		scenegraph.update();
 		
-		//render reflection to texture
+		//-----------------------------------//
+		//    render reflection to texture   //
+		//-----------------------------------//
 
 		int tempScreenResolutionX = BaseContext.getConfig().getX_ScreenResolution(); 
 		int tempScreenResolutionY = BaseContext.getConfig().getY_ScreenResolution(); 
@@ -143,7 +177,7 @@ public class Water extends Renderable{
 		
 		BaseContext.getConfig().setRenderReflection(true);
 		
-		reflectionRenderer.getFbo().bind();
+		reflection_fbo.bind();
 		renderConfig.clearScreenDeepOcean();
 		glFrontFace(GL_CCW);
 		
@@ -157,27 +191,31 @@ public class Water extends Renderable{
 		// glFinish() important, to prevent conflicts with following compute shaders
 		glFinish(); 
 		glFrontFace(GL_CW);
-		reflectionRenderer.getFbo().unbind();
-		reflectionRenderer.render();
+		reflection_fbo.unbind();
 		
 		BaseContext.getConfig().setRenderReflection(false);
 		
-		// antimirror scene to clipplane
+		//-----------------------------------//
+		//   antimirror scene to clipplane   //
+		//-----------------------------------//
 	
 		scenegraph.getWorldTransform().setScaling(1,1,1);
 
 		if (scenegraph.hasTerrain()){
 			GLTerrain.getConfiguration().setScaleY(
 					GLTerrain.getConfiguration().getScaleY() / -1f);
-			GLTerrain.getConfiguration().setWaterReflectionShift(0);
+			GLTerrain.getConfiguration().setReflectionOffset(0);
 		}
 
 		scenegraph.update();
 		
-		// render to refraction texture
+		//-----------------------------------//
+		//    render refraction to texture   //
+		//-----------------------------------//
+		
 		BaseContext.getConfig().setRenderRefraction(true);
 		
-		refractionRenderer.getFbo().bind();
+		refraction_fbo.bind();
 		renderConfig.clearScreenDeepOcean();
 	
 		scenegraph.getRoot().render();
@@ -187,8 +225,11 @@ public class Water extends Renderable{
 		
 		// glFinish() important, to prevent conflicts with following compute shaders
 		glFinish();
-		refractionRenderer.getFbo().unbind();
-		refractionRenderer.render();
+		refraction_fbo.unbind();
+		
+		//-----------------------------------//
+		//     reset rendering settings      //
+		//-----------------------------------//
 		
 		BaseContext.getConfig().setRenderRefraction(false);
 		
@@ -199,10 +240,13 @@ public class Water extends Renderable{
 		BaseContext.getConfig().setX_ScreenResolution(tempScreenResolutionX);
 		BaseContext.getConfig().setY_ScreenResolution(tempScreenResolutionY);
 		
+		GLContext.getResources().getOpaqueSceneFbo().bind();
+		
+		//-----------------------------------//
+		//            render FFT'S           //
+		//-----------------------------------//
 		fft.render();
 		normalmapRenderer.render(fft.getDy());
-		
-		GLContext.getResources().getOpaqueSceneFbo().bind();
 
 		super.render();
 		
@@ -230,11 +274,11 @@ public class Water extends Renderable{
 		return distortion;
 	}
 
-	public float getClip_offset() {
+	public int getClip_offset() {
 		return clip_offset;
 	}
 
-	public void setClip_offset(float clip_offset) {
+	public void setClip_offset(int clip_offset) {
 		this.clip_offset = clip_offset;
 	}
 
@@ -256,11 +300,11 @@ public class Water extends Renderable{
 
 	
 	public GLTexture getRefractionTexture(){
-		return refractionRenderer.getDeferredLightingSceneTexture();
+		return refraction_texture;
 	}
 	
 	public GLTexture getReflectionTexture(){
-		return reflectionRenderer.getDeferredLightingSceneTexture();
+		return reflection_texture;
 	}
 
 	public GLTexture getDudv() {

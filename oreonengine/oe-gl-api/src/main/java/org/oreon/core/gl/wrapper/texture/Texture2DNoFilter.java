@@ -9,7 +9,7 @@ public class Texture2DNoFilter extends GLTexture{
 		super(file);
 		
 		bind();
-		noFilter();
+		nearestFilter();
 		unbind();
 	}
 
