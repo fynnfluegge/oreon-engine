@@ -1,8 +1,21 @@
 package org.oreon.core.gl.util;
 
-import org.lwjgl.assimp.*;
+import java.nio.IntBuffer;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.lwjgl.assimp.AIColor4D;
+import org.lwjgl.assimp.AIFace;
+import org.lwjgl.assimp.AIMaterial;
+import org.lwjgl.assimp.AIMesh;
+import org.lwjgl.assimp.AIScene;
+import org.lwjgl.assimp.AIString;
+import org.lwjgl.assimp.AIVector3D;
+import org.lwjgl.assimp.Assimp;
 import org.oreon.core.gl.texture.GLTexture;
-import org.oreon.core.gl.wrapper.texture.Texture2DTrilinearFilter;
+import org.oreon.core.gl.wrapper.texture.TextureImage2D;
+import org.oreon.core.image.Image.SamplerFilter;
+import org.oreon.core.image.Image.TextureWrapMode;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.math.Vec3f;
 import org.oreon.core.model.Material;
@@ -10,10 +23,6 @@ import org.oreon.core.model.Mesh;
 import org.oreon.core.model.Model;
 import org.oreon.core.model.Vertex;
 import org.oreon.core.util.Util;
-
-import java.nio.IntBuffer;
-import java.util.ArrayList;
-import java.util.List;
 
 public class GLAssimpModelLoader {
 	
@@ -162,7 +171,8 @@ public class GLAssimpModelLoader {
 
 	    GLTexture diffuseTexture = null;
 	    if (textPath != null && textPath.length() > 0) {
-	    	diffuseTexture = new Texture2DTrilinearFilter(texturesDir + "/" + textPath);
+	    	diffuseTexture = new TextureImage2D(texturesDir + "/" + textPath,
+	    			SamplerFilter.Trilinear, TextureWrapMode.None);
 	    }
 
 	    AIColor4D color = AIColor4D.create();

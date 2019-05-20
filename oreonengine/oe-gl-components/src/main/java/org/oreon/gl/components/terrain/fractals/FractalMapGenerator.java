@@ -9,7 +9,8 @@ import static org.lwjgl.opengl.GL43.glDispatchCompute;
 import java.util.List;
 
 import org.oreon.core.gl.texture.GLTexture;
-import org.oreon.core.gl.wrapper.texture.Texture2DStorageRGBA32F;
+import org.oreon.core.gl.wrapper.texture.TextureStorage2D;
+import org.oreon.core.image.Image.ImageFormat;
 
 import lombok.Getter;
 
@@ -29,14 +30,14 @@ public class FractalMapGenerator {
 		this.N = N;
 		shader = FractalMapShader.getInstance();
 		
-		heightmap = new Texture2DStorageRGBA32F(N,N,(int) (Math.log(N)/Math.log(2)));
+		heightmap = new TextureStorage2D(N,N,(int) (Math.log(N)/Math.log(2)), ImageFormat.RGBA32FLOAT);
 		heightmap.bind();
 		heightmap.bilinearFilter();
 		heightmap.unbind();
 		heightmap.getMetaData().setWidth(N);
 		heightmap.getMetaData().setHeight(N);
 		
-		normalmap = new Texture2DStorageRGBA32F(N,N,(int) (Math.log(N)/Math.log(2)));
+		normalmap = new TextureStorage2D(N,N,(int) (Math.log(N)/Math.log(2)), ImageFormat.RGBA32FLOAT);
 		normalmap.bind();
 		normalmap.bilinearFilter();
 		normalmap.unbind();

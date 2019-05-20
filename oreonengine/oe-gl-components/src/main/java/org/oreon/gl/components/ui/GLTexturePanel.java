@@ -10,7 +10,9 @@ import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.gl.pipeline.RenderParameter;
 import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.gl.wrapper.parameter.AlphaBlending;
-import org.oreon.core.gl.wrapper.texture.Texture2DBilinearFilter;
+import org.oreon.core.gl.wrapper.texture.TextureImage2D;
+import org.oreon.core.image.Image.SamplerFilter;
+import org.oreon.core.image.Image.TextureWrapMode;
 
 public class GLTexturePanel extends UIElement{
 	
@@ -25,7 +27,8 @@ public class GLTexturePanel extends UIElement{
 		shader = UITexturePanelShader.getInstance();
 		vao = panelMeshBuffer;
 		config = new AlphaBlending(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		texture = new Texture2DBilinearFilter(imageFile);
+		texture = new TextureImage2D(imageFile,
+				SamplerFilter.Bilinear, TextureWrapMode.None);
 	}
 	
 	public void render()

@@ -13,7 +13,9 @@ public class Image {
 
 		RGBA32FLOAT,
 		RGBA16FLOAT,
-		DEPTH32FLOAT
+		DEPTH32FLOAT,
+		R16FLOAT,
+		R32FLOAT
 	}
 	
 	public enum SamplerFilter {

@@ -9,8 +9,8 @@ import static org.lwjgl.opengl.GL43.glDispatchCompute;
 
 import org.oreon.core.context.BaseContext;
 import org.oreon.core.gl.texture.GLTexture;
-import org.oreon.core.gl.wrapper.texture.Texture2DNoFilterRGBA16F;
-import org.oreon.core.gl.wrapper.texture.Texture2DStorageRGBA16F;
+import org.oreon.core.gl.wrapper.texture.TextureStorage2D;
+import org.oreon.core.image.Image.ImageFormat;
 
 import lombok.Getter;
 
@@ -45,62 +45,62 @@ public class Bloom {
 		verticalBlurShader = VerticalBloomBlurShader.getInstance();
 		bloomSceneShader = BloomSceneShader.getInstance();
 		
-		sceneBrightnessTexture = new Texture2DStorageRGBA16F(BaseContext.getWindow().getWidth(),
-				BaseContext.getWindow().getHeight(), 1);
+		sceneBrightnessTexture = new TextureStorage2D(BaseContext.getWindow().getWidth(),
+				BaseContext.getWindow().getHeight(), 1, ImageFormat.RGBA16FLOAT); 
 		sceneBrightnessTexture.bind();
 		sceneBrightnessTexture.clampToEdge();
 		sceneBrightnessTexture.unbind();
 		
-		additiveBlendBloomTexture = new Texture2DStorageRGBA16F(BaseContext.getWindow().getWidth(),
-				BaseContext.getWindow().getHeight(), 1);
+		additiveBlendBloomTexture = new TextureStorage2D(BaseContext.getWindow().getWidth(),
+				BaseContext.getWindow().getHeight(), 1, ImageFormat.RGBA16FLOAT);
 		
-		bloomSceneTexture = new Texture2DStorageRGBA16F(BaseContext.getWindow().getWidth(),
-						BaseContext.getWindow().getHeight(), 1);
+		bloomSceneTexture = new TextureStorage2D(BaseContext.getWindow().getWidth(),
+				BaseContext.getWindow().getHeight(), 1, ImageFormat.RGBA16FLOAT);
 		
-		horizontalBloomBlurTexture_div2 = new Texture2DNoFilterRGBA16F(BaseContext.getWindow().getWidth()/2,
-				BaseContext.getWindow().getHeight()/2);
+		horizontalBloomBlurTexture_div2 = new TextureStorage2D(BaseContext.getWindow().getWidth()/2,
+				BaseContext.getWindow().getHeight()/2, 1, ImageFormat.RGBA16FLOAT);
 		horizontalBloomBlurTexture_div2.bind();
 		horizontalBloomBlurTexture_div2.clampToEdge();
 		horizontalBloomBlurTexture_div2.unbind();
 		
-		verticalBloomBlurTexture_div2 = new Texture2DStorageRGBA16F(BaseContext.getWindow().getWidth()/2,
-				BaseContext.getWindow().getHeight()/2, 1);
+		verticalBloomBlurTexture_div2 = new TextureStorage2D(BaseContext.getWindow().getWidth()/2,
+				BaseContext.getWindow().getHeight()/2, 1, ImageFormat.RGBA16FLOAT);
 		verticalBloomBlurTexture_div2.bind();
 		verticalBloomBlurTexture_div2.clampToEdge();
 		verticalBloomBlurTexture_div2.unbind();
 		
-		horizontalBloomBlurTexture_div4 = new Texture2DStorageRGBA16F(BaseContext.getWindow().getWidth()/4,
-				BaseContext.getWindow().getHeight()/4, 1);
+		horizontalBloomBlurTexture_div4 = new TextureStorage2D(BaseContext.getWindow().getWidth()/4,
+				BaseContext.getWindow().getHeight()/4, 1, ImageFormat.RGBA16FLOAT);
 		horizontalBloomBlurTexture_div4.bind();
 		horizontalBloomBlurTexture_div4.clampToEdge();
 		horizontalBloomBlurTexture_div4.unbind();
 		
-		verticalBloomBlurTexture_div4 = new Texture2DStorageRGBA16F(BaseContext.getWindow().getWidth()/4,
-				BaseContext.getWindow().getHeight()/4, 1);
+		verticalBloomBlurTexture_div4 = new TextureStorage2D(BaseContext.getWindow().getWidth()/4,
+				BaseContext.getWindow().getHeight()/4, 1, ImageFormat.RGBA16FLOAT);
 		verticalBloomBlurTexture_div4.bind();
 		verticalBloomBlurTexture_div4.clampToEdge();
 		verticalBloomBlurTexture_div4.unbind();
 		
-		horizontalBloomBlurTexture_div8 = new Texture2DStorageRGBA16F(BaseContext.getWindow().getWidth()/8,
-				BaseContext.getWindow().getHeight()/8, 1);
+		horizontalBloomBlurTexture_div8 = new TextureStorage2D(BaseContext.getWindow().getWidth()/8,
+				BaseContext.getWindow().getHeight()/8, 1, ImageFormat.RGBA16FLOAT);
 		horizontalBloomBlurTexture_div8.bind();
 		horizontalBloomBlurTexture_div8.clampToEdge();
 		horizontalBloomBlurTexture_div8.unbind();
 		
-		verticalBloomBlurTexture_div8 = new Texture2DStorageRGBA16F(BaseContext.getWindow().getWidth()/8,
-				BaseContext.getWindow().getHeight()/8, 1);
+		verticalBloomBlurTexture_div8 = new TextureStorage2D(BaseContext.getWindow().getWidth()/8,
+				BaseContext.getWindow().getHeight()/8, 1, ImageFormat.RGBA16FLOAT);
 		verticalBloomBlurTexture_div8.bind();
 		verticalBloomBlurTexture_div8.clampToEdge();
 		verticalBloomBlurTexture_div8.unbind();
 		
-		horizontalBloomBlurTexture_div12 = new Texture2DStorageRGBA16F(BaseContext.getWindow().getWidth()/12,
-				BaseContext.getWindow().getHeight()/12, 1);
+		horizontalBloomBlurTexture_div12 = new TextureStorage2D(BaseContext.getWindow().getWidth()/12,
+				BaseContext.getWindow().getHeight()/12, 1, ImageFormat.RGBA16FLOAT);
 		horizontalBloomBlurTexture_div12.bind();
 		horizontalBloomBlurTexture_div12.clampToEdge();
 		horizontalBloomBlurTexture_div12.unbind();
 		
-		verticalBloomBlurTexture_div12 = new Texture2DStorageRGBA16F(BaseContext.getWindow().getWidth()/12,
-				BaseContext.getWindow().getHeight()/12, 1);
+		verticalBloomBlurTexture_div12 = new TextureStorage2D(BaseContext.getWindow().getWidth()/12,
+				BaseContext.getWindow().getHeight()/12, 1, ImageFormat.RGBA16FLOAT);
 		verticalBloomBlurTexture_div12.bind();
 		verticalBloomBlurTexture_div12.clampToEdge();
 		verticalBloomBlurTexture_div12.unbind();

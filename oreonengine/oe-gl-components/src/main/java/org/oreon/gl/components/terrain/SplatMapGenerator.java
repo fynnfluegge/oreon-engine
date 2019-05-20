@@ -7,7 +7,8 @@ import static org.lwjgl.opengl.GL42.glBindImageTexture;
 import static org.lwjgl.opengl.GL43.glDispatchCompute;
 
 import org.oreon.core.gl.texture.GLTexture;
-import org.oreon.core.gl.wrapper.texture.Texture2DStorageRGBA16F;
+import org.oreon.core.gl.wrapper.texture.TextureStorage2D;
+import org.oreon.core.image.Image.ImageFormat;
 
 import lombok.Getter;
 
@@ -22,7 +23,7 @@ public class SplatMapGenerator {
 		
 		this.N = N;
 		shader = SplatMapShader.getInstance();
-		splatmap = new Texture2DStorageRGBA16F(N,N,(int) (Math.log(N)/Math.log(2)));
+		splatmap = new TextureStorage2D(N,N,(int) (Math.log(N)/Math.log(2)), ImageFormat.RGBA16FLOAT); 
 		splatmap.bind();
 		splatmap.bilinearFilter();
 		splatmap.unbind();

@@ -8,7 +8,8 @@ import static org.lwjgl.opengl.GL43.glDispatchCompute;
 
 import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.gl.texture.GLTexture;
-import org.oreon.core.gl.wrapper.texture.Texture2DStorageRGBA32F;
+import org.oreon.core.gl.wrapper.texture.TextureStorage2D;
+import org.oreon.core.image.Image.ImageFormat;
 
 import lombok.Getter;
 
@@ -24,7 +25,7 @@ public class NormalRenderer {
 	public NormalRenderer(int N){
 		this.N = N;
 		computeShader = NormalMapShader.getInstance();
-		normalmap = new Texture2DStorageRGBA32F(N, N, (int) (Math.log(N)/Math.log(2)));
+		normalmap = new TextureStorage2D(N,N,(int) (Math.log(N)/Math.log(2)), ImageFormat.RGBA32FLOAT);
 		normalmap.bind();
 		normalmap.trilinearFilter();
 		normalmap.unbind();

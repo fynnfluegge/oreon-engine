@@ -7,7 +7,8 @@ import static org.lwjgl.opengl.GL43.glDispatchCompute;
 
 import org.oreon.core.gl.memory.GLShaderStorageBuffer;
 import org.oreon.core.gl.texture.GLTexture;
-import org.oreon.core.gl.wrapper.texture.Texture2DStorageRGBA32F;
+import org.oreon.core.gl.wrapper.texture.TextureStorage2D;
+import org.oreon.core.image.Image.ImageFormat;
 
 import lombok.Getter;
 
@@ -30,7 +31,7 @@ public class TwiddleFactors {
 		
 		log_2_N = (int) (Math.log(N)/Math.log(2));
 		shader = TwiddleFactorsShader.getInstance();
-		texture = new Texture2DStorageRGBA32F(log_2_N,N,1);
+		texture = new TextureStorage2D(log_2_N,N,1, ImageFormat.RGBA32FLOAT); 
 	}
 	
 	public void render()

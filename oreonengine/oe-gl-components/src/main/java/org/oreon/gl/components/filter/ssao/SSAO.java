@@ -8,7 +8,10 @@ import static org.lwjgl.opengl.GL43.glDispatchCompute;
 
 import org.oreon.core.context.BaseContext;
 import org.oreon.core.gl.texture.GLTexture;
-import org.oreon.core.gl.wrapper.texture.Texture2DNoFilterRGBA32F;
+import org.oreon.core.gl.wrapper.texture.TextureImage2D;
+import org.oreon.core.image.Image.ImageFormat;
+import org.oreon.core.image.Image.SamplerFilter;
+import org.oreon.core.image.Image.TextureWrapMode;
 import org.oreon.core.math.Vec3f;
 import org.oreon.core.util.Util;
 
@@ -54,9 +57,12 @@ public class SSAO {
 		ssaoShader = SSAOShader.getInstance();
 		blurShader = SSAOBlurShader.getInstance();
 		
-		noiseTexture = new Texture2DNoFilterRGBA32F(4,4);
-		ssaoSceneTexture = new Texture2DNoFilterRGBA32F(width, height);
-		ssaoBlurSceneTexture = new Texture2DNoFilterRGBA32F(width, height);
+		noiseTexture = new TextureImage2D(4,4,
+				ImageFormat.RGBA32FLOAT, SamplerFilter.Nearest, TextureWrapMode.None);
+		ssaoSceneTexture = new TextureImage2D(width, height,
+				ImageFormat.RGBA32FLOAT, SamplerFilter.Nearest, TextureWrapMode.None);
+		ssaoBlurSceneTexture = new TextureImage2D(width, height,
+				ImageFormat.RGBA32FLOAT, SamplerFilter.Nearest, TextureWrapMode.None);
 		
 		// generate Noise
 		noiseTextureShader.bind();

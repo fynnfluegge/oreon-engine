@@ -8,7 +8,8 @@ import static org.lwjgl.opengl.GL43.glDispatchCompute;
 
 import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.gl.texture.GLTexture;
-import org.oreon.core.gl.wrapper.texture.Texture2DStorageRGBA32F;
+import org.oreon.core.gl.wrapper.texture.TextureStorage2D;
+import org.oreon.core.image.Image.ImageFormat;
 import org.oreon.core.math.Vec2f;
 
 import lombok.Getter;
@@ -54,10 +55,10 @@ public class FFT {
 		butterflyShader = FFTButterflyShader.getInstance();
 		inversionShader = FFTInversionShader.getInstance();
 		
-		pingpongTexture = new Texture2DStorageRGBA32F(N,N,1);
-		Dy = new Texture2DStorageRGBA32F(N,N,1);
-		Dx = new Texture2DStorageRGBA32F(N,N,1);;
-		Dz = new Texture2DStorageRGBA32F(N,N,1);
+		pingpongTexture = new TextureStorage2D(N, N, 1, ImageFormat.RGBA32FLOAT);
+		Dy = new TextureStorage2D(N, N, 1, ImageFormat.RGBA32FLOAT);
+		Dx = new TextureStorage2D(N, N, 1, ImageFormat.RGBA32FLOAT);
+		Dz = new TextureStorage2D(N, N, 1, ImageFormat.RGBA32FLOAT);
 	}
 	
 	public void init()

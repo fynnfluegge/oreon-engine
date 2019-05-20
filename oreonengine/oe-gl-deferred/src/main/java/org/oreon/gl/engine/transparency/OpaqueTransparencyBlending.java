@@ -8,7 +8,10 @@ import static org.lwjgl.opengl.GL43.glDispatchCompute;
 import org.oreon.core.context.BaseContext;
 import org.oreon.core.gl.surface.FullScreenQuad;
 import org.oreon.core.gl.texture.GLTexture;
-import org.oreon.core.gl.wrapper.texture.Texture2DBilinearFilterRGBA16F;
+import org.oreon.core.gl.wrapper.texture.TextureImage2D;
+import org.oreon.core.image.Image.ImageFormat;
+import org.oreon.core.image.Image.SamplerFilter;
+import org.oreon.core.image.Image.TextureWrapMode;
 
 import lombok.Getter;
 
@@ -24,8 +27,10 @@ public class OpaqueTransparencyBlending extends FullScreenQuad{
 		
 		super();
 		shader = OpaqueTransparencyBlendShader.getInstance();
-		blendedSceneTexture = new Texture2DBilinearFilterRGBA16F(width, height);
-		blendedLightScatteringTexture = new Texture2DBilinearFilterRGBA16F(width, height);
+		blendedSceneTexture = new TextureImage2D(width, height,
+				ImageFormat.RGBA16FLOAT, SamplerFilter.Bilinear, TextureWrapMode.None);
+		blendedLightScatteringTexture = new TextureImage2D(width, height,
+				ImageFormat.RGBA16FLOAT, SamplerFilter.Bilinear, TextureWrapMode.None);
 	}
 	
 	public void render(GLTexture opaqueScene, GLTexture opaqueSceneDepthMap,

@@ -10,8 +10,10 @@ import static org.lwjgl.opengl.GL43.glDispatchCompute;
 
 import org.oreon.core.context.BaseContext;
 import org.oreon.core.gl.texture.GLTexture;
-import org.oreon.core.gl.wrapper.texture.Texture2DBilinearFilterRGBA16F;
-import org.oreon.core.gl.wrapper.texture.Texture2DNoFilterR16F;
+import org.oreon.core.gl.wrapper.texture.TextureImage2D;
+import org.oreon.core.image.Image.ImageFormat;
+import org.oreon.core.image.Image.SamplerFilter;
+import org.oreon.core.image.Image.TextureWrapMode;
 
 import lombok.Getter;
 
@@ -27,8 +29,10 @@ public class SampleCoverage {
 		
 		shader = SampleCoverageShader.getInstance();
 		
-		sampleCoverageMask = new Texture2DNoFilterR16F(width, height);
-		lightScatteringMaskDownSampled = new Texture2DBilinearFilterRGBA16F(width, height);
+		sampleCoverageMask = new TextureImage2D(width, height,
+				ImageFormat.R16FLOAT, SamplerFilter.Nearest, TextureWrapMode.None);
+		lightScatteringMaskDownSampled = new TextureImage2D(width, height,
+				ImageFormat.RGBA16FLOAT, SamplerFilter.Bilinear, TextureWrapMode.None);
 	}
 	
 	public void render(GLTexture worldPositionTexture, GLTexture LightScatteringMaskMS) {

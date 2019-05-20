@@ -21,8 +21,10 @@ import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.gl.scenegraph.GLRenderInfo;
 import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.gl.wrapper.parameter.WaterRenderParameter;
-import org.oreon.core.gl.wrapper.texture.Texture2DNoFilterRGBA16F;
-import org.oreon.core.gl.wrapper.texture.Texture2DTrilinearFilter;
+import org.oreon.core.gl.wrapper.texture.TextureImage2D;
+import org.oreon.core.image.Image.ImageFormat;
+import org.oreon.core.image.Image.SamplerFilter;
+import org.oreon.core.image.Image.TextureWrapMode;
 import org.oreon.core.math.Vec4f;
 import org.oreon.core.scenegraph.NodeComponentType;
 import org.oreon.core.scenegraph.Renderable;
@@ -73,8 +75,10 @@ public class Water extends Renderable{
 		GLRenderInfo renderInfo = new GLRenderInfo(shader, renderConfig, meshBuffer);
 		GLRenderInfo wireframeRenderInfo = new GLRenderInfo(wireframeShader, renderConfig, meshBuffer);
 		
-		dudv = new Texture2DTrilinearFilter("textures/water/dudv/dudv1.jpg");
-		caustics = new Texture2DTrilinearFilter("textures/water/caustics/caustics.jpg");
+		dudv = new TextureImage2D("textures/water/dudv/dudv1.jpg",
+				SamplerFilter.Trilinear, TextureWrapMode.None);
+		caustics = new TextureImage2D("textures/water/caustics/caustics.jpg",
+				SamplerFilter.Trilinear, TextureWrapMode.None);
 		
 		addComponent(NodeComponentType.MAIN_RENDERINFO, renderInfo);
 		addComponent(NodeComponentType.WIREFRAME_RENDERINFO, wireframeRenderInfo);
@@ -90,8 +94,9 @@ public class Water extends Renderable{
 		normalmapRenderer = new NormalRenderer(waterConfiguration.getN());
 		getNormalmapRenderer().setStrength(waterConfiguration.getNormalStrength());
 		
-		reflection_texture = new Texture2DNoFilterRGBA16F(BaseContext.getWindow().getWidth()/2,
-				BaseContext.getWindow().getHeight()/2);
+		reflection_texture = new TextureImage2D(BaseContext.getWindow().getWidth()/2,
+				BaseContext.getWindow().getHeight()/2,
+				ImageFormat.RGBA16FLOAT, SamplerFilter.Nearest, TextureWrapMode.None);
 		
 		IntBuffer drawBuffers = BufferUtil.createIntBuffer(1);
 		drawBuffers.put(GL_COLOR_ATTACHMENT0);
@@ -106,8 +111,9 @@ public class Water extends Renderable{
 		reflection_fbo.checkStatus();
 		reflection_fbo.unbind();
 		
-		refraction_texture = new Texture2DNoFilterRGBA16F(BaseContext.getWindow().getWidth()/2,
-				BaseContext.getWindow().getHeight()/2);
+		refraction_texture = new TextureImage2D(BaseContext.getWindow().getWidth()/2,
+				BaseContext.getWindow().getHeight()/2,
+				ImageFormat.RGBA16FLOAT, SamplerFilter.Nearest, TextureWrapMode.None);
 		
 		refraction_fbo = new GLFramebuffer();
 		refraction_fbo.bind();

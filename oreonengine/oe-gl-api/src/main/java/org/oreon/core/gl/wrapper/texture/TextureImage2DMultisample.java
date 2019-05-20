@@ -1,6 +1,8 @@
 package org.oreon.core.gl.wrapper.texture;
 
 import static org.lwjgl.opengl.GL30.GL_DEPTH_COMPONENT32F;
+import static org.lwjgl.opengl.GL30.GL_R16F;
+import static org.lwjgl.opengl.GL30.GL_R32F;
 import static org.lwjgl.opengl.GL30.GL_RGBA16F;
 import static org.lwjgl.opengl.GL30.GL_RGBA32F;
 import static org.lwjgl.opengl.GL32.GL_TEXTURE_2D_MULTISAMPLE;
@@ -24,6 +26,10 @@ public class TextureImage2DMultisample extends GLTexture{
 				allocateImage2DMultisample(samples, GL_RGBA32F); break;
 			case DEPTH32FLOAT:
 				allocateImage2DMultisample(samples, GL_DEPTH_COMPONENT32F); break;
+			case R16FLOAT:
+				allocateImage2DMultisample(samples, GL_R16F); break;
+			case R32FLOAT:
+				allocateImage2DMultisample(samples, GL_R32F); break;
 		}
 		
 		switch(samplerFilter)

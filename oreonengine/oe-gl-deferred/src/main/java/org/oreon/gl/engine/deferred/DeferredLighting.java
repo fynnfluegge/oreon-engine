@@ -10,7 +10,10 @@ import static org.lwjgl.opengl.GL43.glDispatchCompute;
 
 import org.oreon.core.context.BaseContext;
 import org.oreon.core.gl.texture.GLTexture;
-import org.oreon.core.gl.wrapper.texture.Texture2DNoFilterRGBA16F;
+import org.oreon.core.gl.wrapper.texture.TextureImage2D;
+import org.oreon.core.image.Image.ImageFormat;
+import org.oreon.core.image.Image.SamplerFilter;
+import org.oreon.core.image.Image.TextureWrapMode;
 
 import lombok.Getter;
 
@@ -24,7 +27,8 @@ public class DeferredLighting {
 		
 		shader = DeferredLightingShader.getInstance();
 
-		deferredLightingSceneTexture = new Texture2DNoFilterRGBA16F(width, height);
+		deferredLightingSceneTexture = new TextureImage2D(width, height,
+				ImageFormat.RGBA16FLOAT, SamplerFilter.Nearest, TextureWrapMode.None);
 	}
 	
 	public void render(GLTexture sampleCoverageMask, GLTexture ssaoBlurTexture, GLTexture pssm,
