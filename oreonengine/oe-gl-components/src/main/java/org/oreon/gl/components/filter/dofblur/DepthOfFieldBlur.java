@@ -39,15 +39,20 @@ public class DepthOfFieldBlur {
 		
 		fullScreenQuad = new FullScreenQuad();
 		
-		horizontalBlurSceneTexture = new TextureStorage2D(BaseContext.getWindow().getWidth(),
-				BaseContext.getWindow().getHeight(), 1, ImageFormat.RGBA16FLOAT);
+		horizontalBlurSceneTexture = new TextureImage2D(BaseContext.getWindow().getWidth(),
+				BaseContext.getWindow().getHeight(), ImageFormat.RGBA16FLOAT,
+				SamplerFilter.Nearest, TextureWrapMode.ClampToEdge);
 		
-		verticalBlurSceneTexture = new TextureStorage2D(BaseContext.getWindow().getWidth(),
+		verticalBlurSceneTexture = new TextureImage2D(BaseContext.getWindow().getWidth(),
+				BaseContext.getWindow().getHeight(), ImageFormat.RGBA16FLOAT,
+				SamplerFilter.Nearest, TextureWrapMode.ClampToEdge); 
+				
+				new TextureStorage2D(BaseContext.getWindow().getWidth(),
 				BaseContext.getWindow().getHeight(), 1, ImageFormat.RGBA16FLOAT);
 		
 		lowResSceneSampler = new TextureImage2D((int)(BaseContext.getWindow().getWidth()/1.2f),
 				(int)(BaseContext.getWindow().getHeight()/1.2f), ImageFormat.RGBA16FLOAT,
-				SamplerFilter.Bilinear, TextureWrapMode.ClampToEdge);
+				SamplerFilter.Nearest, TextureWrapMode.ClampToEdge);
 		
 		lowResFbo = new GLFramebuffer();
 		lowResFbo.bind();
@@ -56,14 +61,15 @@ public class DepthOfFieldBlur {
 		lowResFbo.unbind();
 	}
 	
-	public void render(GLTexture depthmap, GLTexture lightScatteringMask, GLTexture sceneSampler, int width, int height) {
+	public void render(GLTexture depthmap, GLTexture lightScatteringMask, GLTexture sceneSampler) {
 		
-		getLowResFbo().bind();
+		lowResFbo.bind();
 		fullScreenQuad.setTexture(sceneSampler);
-		glViewport(0,0,(int)(width/1.2f),(int)(height/1.2f));
+		glViewport(0,0,(int)(BaseContext.getConfig().getX_ScreenResolution()/1.2f),
+				(int)(BaseContext.getConfig().getY_ScreenResolution()/1.2f));
 		fullScreenQuad.render();
-		getLowResFbo().unbind();
-		glViewport(0,0, width, height);
+		lowResFbo.unbind();
+		glViewport(0,0, BaseContext.getConfig().getX_ScreenResolution(), BaseContext.getConfig().getY_ScreenResolution());
 		
 		horizontalBlurShader.bind();
 		glBindImageTexture(0, sceneSampler.getHandle(), 0, false, 0, GL_READ_ONLY, GL_RGBA16F);
@@ -83,7 +89,4 @@ public class DepthOfFieldBlur {
 		glFinish();
 	}
 
-	public GLFramebuffer getLowResFbo() {
-		return lowResFbo;
-	}
 }

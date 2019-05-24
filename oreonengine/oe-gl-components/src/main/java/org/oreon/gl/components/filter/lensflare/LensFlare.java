@@ -6,7 +6,6 @@ import java.util.List;
 import org.oreon.core.context.BaseContext;
 import org.oreon.core.gl.wrapper.texture.TextureImage2D;
 import org.oreon.core.image.Image.SamplerFilter;
-import org.oreon.core.image.Image.TextureWrapMode;
 import org.oreon.core.light.Light;
 import org.oreon.core.light.LightHandler;
 import org.oreon.core.math.Matrix4f;
@@ -22,8 +21,7 @@ public class LensFlare {
 	public LensFlare(){
 		
 		LensFlareTexturePanel texturePanel0 = new LensFlareTexturePanel();
-		texturePanel0.setTexture(new TextureImage2D("textures/lens_flare/tex4.png",
-				SamplerFilter.Bilinear, TextureWrapMode.None));
+		texturePanel0.setTexture(new TextureImage2D("textures/lens_flare/tex4.png", SamplerFilter.Bilinear));
 		texturePanel0.getOrthoTransform().setScaling(200,200,0);
 		texturePanel0.setOrthographicMatrix(new Matrix4f().Orthographic2D().mul(texturePanel0.getOrthoTransform().getWorldMatrix()));
 		texturePanel0.setSpacing(0.06f);
@@ -31,8 +29,7 @@ public class LensFlare {
 		lensFlareTexturePanels.add(texturePanel0);
 		
 		LensFlareTexturePanel texturePanel1 = new LensFlareTexturePanel();
-		texturePanel1.setTexture(new TextureImage2D("textures/lens_flare/tex01.png",
-				SamplerFilter.Bilinear, TextureWrapMode.None));
+		texturePanel1.setTexture(new TextureImage2D("textures/lens_flare/tex01.png", SamplerFilter.Bilinear));
 		texturePanel1.getOrthoTransform().setScaling(400,400,0);
 		texturePanel1.setOrthographicMatrix(new Matrix4f().Orthographic2D().mul(texturePanel1.getOrthoTransform().getWorldMatrix()));
 		texturePanel1.setSpacing(0.0f);
@@ -40,8 +37,7 @@ public class LensFlare {
 		lensFlareTexturePanels.add(texturePanel1);
 		
 		LensFlareTexturePanel texturePanel2 = new LensFlareTexturePanel();
-		texturePanel2.setTexture(new TextureImage2D("textures/lens_flare/tex2.png",
-				SamplerFilter.Bilinear, TextureWrapMode.None));
+		texturePanel2.setTexture(new TextureImage2D("textures/lens_flare/tex2.png", SamplerFilter.Bilinear));
 		texturePanel2.getOrthoTransform().setScaling(250,250,0);
 		texturePanel2.setOrthographicMatrix(new Matrix4f().Orthographic2D().mul(texturePanel2.getOrthoTransform().getWorldMatrix()));
 		texturePanel2.setSpacing(0.2f);
@@ -49,8 +45,7 @@ public class LensFlare {
 		lensFlareTexturePanels.add(texturePanel2);
 		
 		LensFlareTexturePanel texturePanel3 = new LensFlareTexturePanel();
-		texturePanel3.setTexture(new TextureImage2D("textures/lens_flare/tex7.png",
-				SamplerFilter.Bilinear, TextureWrapMode.None));
+		texturePanel3.setTexture(new TextureImage2D("textures/lens_flare/tex7.png", SamplerFilter.Bilinear));
 		texturePanel3.getOrthoTransform().setScaling(200,200,0);
 		texturePanel3.setOrthographicMatrix(new Matrix4f().Orthographic2D().mul(texturePanel3.getOrthoTransform().getWorldMatrix()));
 		texturePanel3.setSpacing(0.4f);
@@ -58,8 +53,7 @@ public class LensFlare {
 		lensFlareTexturePanels.add(texturePanel3);
 		
 		LensFlareTexturePanel texturePanel4 = new LensFlareTexturePanel();
-		texturePanel4.setTexture(new TextureImage2D("textures/lens_flare/tex5.png",
-				SamplerFilter.Bilinear, TextureWrapMode.None));
+		texturePanel4.setTexture(new TextureImage2D("textures/lens_flare/tex5.png", SamplerFilter.Bilinear));
 		texturePanel4.getOrthoTransform().setScaling(100,100,0);
 		texturePanel4.setOrthographicMatrix(new Matrix4f().Orthographic2D().mul(texturePanel4.getOrthoTransform().getWorldMatrix()));
 		texturePanel4.setSpacing(0.6f);
@@ -67,8 +61,7 @@ public class LensFlare {
 		lensFlareTexturePanels.add(texturePanel4);
 		
 		LensFlareTexturePanel texturePanel5 = new LensFlareTexturePanel();
-		texturePanel5.setTexture(new TextureImage2D("textures/lens_flare/tex3.png",
-				SamplerFilter.Bilinear, TextureWrapMode.None));
+		texturePanel5.setTexture(new TextureImage2D("textures/lens_flare/tex3.png", SamplerFilter.Bilinear));
 		texturePanel5.getOrthoTransform().setScaling(100,100,0);
 		texturePanel5.setOrthographicMatrix(new Matrix4f().Orthographic2D().mul(texturePanel5.getOrthoTransform().getWorldMatrix()));
 		texturePanel5.setSpacing(0.8f);
@@ -76,8 +69,7 @@ public class LensFlare {
 		lensFlareTexturePanels.add(texturePanel5);
 		
 		LensFlareTexturePanel texturePanel6 = new LensFlareTexturePanel();
-		texturePanel6.setTexture(new TextureImage2D("textures/lens_flare/tex9.png",
-				SamplerFilter.Bilinear, TextureWrapMode.None));
+		texturePanel6.setTexture(new TextureImage2D("textures/lens_flare/tex9.png", SamplerFilter.Bilinear));
 		texturePanel6.getOrthoTransform().setScaling(100,100,0);
 		texturePanel6.setOrthographicMatrix(new Matrix4f().Orthographic2D().mul(texturePanel6.getOrthoTransform().getWorldMatrix()));
 		texturePanel6.setSpacing(1.1f);
@@ -85,8 +77,7 @@ public class LensFlare {
 		lensFlareTexturePanels.add(texturePanel6);
 		
 		LensFlareTexturePanel texturePanel7 = new LensFlareTexturePanel();
-		texturePanel7.setTexture(new TextureImage2D("textures/lens_flare/tex1.png",
-				SamplerFilter.Bilinear, TextureWrapMode.None));
+		texturePanel7.setTexture(new TextureImage2D("textures/lens_flare/tex1.png", SamplerFilter.Bilinear));
 		texturePanel7.getOrthoTransform().setScaling(100,100,0);
 		texturePanel7.setOrthographicMatrix(new Matrix4f().Orthographic2D().mul(texturePanel7.getOrthoTransform().getWorldMatrix()));
 		texturePanel7.setSpacing(1.3f);
@@ -94,8 +85,7 @@ public class LensFlare {
 		lensFlareTexturePanels.add(texturePanel7);
 		
 		LensFlareTexturePanel texturePanel8 = new LensFlareTexturePanel();
-		texturePanel8.setTexture(new TextureImage2D("textures/lens_flare/tex4.png",
-				SamplerFilter.Bilinear, TextureWrapMode.None));
+		texturePanel8.setTexture(new TextureImage2D("textures/lens_flare/tex4.png", SamplerFilter.Bilinear));
 		texturePanel8.getOrthoTransform().setScaling(300,300,0);
 		texturePanel8.setOrthographicMatrix(new Matrix4f().Orthographic2D().mul(texturePanel8.getOrthoTransform().getWorldMatrix()));
 		texturePanel8.setSpacing(1.7f);
@@ -103,8 +93,7 @@ public class LensFlare {
 		lensFlareTexturePanels.add(texturePanel8);
 		
 		LensFlareTexturePanel texturePanel9 = new LensFlareTexturePanel();
-		texturePanel9.setTexture(new TextureImage2D("textures/lens_flare/tex8.png",
-				SamplerFilter.Bilinear, TextureWrapMode.None));
+		texturePanel9.setTexture(new TextureImage2D("textures/lens_flare/tex8.png", SamplerFilter.Bilinear));
 		texturePanel9.getOrthoTransform().setScaling(400,400,0);
 		texturePanel9.setOrthographicMatrix(new Matrix4f().Orthographic2D().mul(texturePanel9.getOrthoTransform().getWorldMatrix()));
 		texturePanel9.setSpacing(2.0f);

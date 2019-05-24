@@ -5,13 +5,14 @@ layout (local_size_x = 16, local_size_y = 16) in;
 layout (binding = 0, rgba16f) uniform writeonly image2D finalColor_out;
 layout (binding = 1, rgba16f) uniform writeonly image2D lightScatteringMask_out;
 
-layout(binding = 2) uniform sampler2D opaqueSceneTexture;
-layout(binding = 3) uniform sampler2D opaqueSceneLightScatteringTexture;
-layout(binding = 4) uniform sampler2DMS opaqueSceneDepthMap;
-layout(binding = 5) uniform sampler2D transparencyLayer;
-layout(binding = 6) uniform sampler2D transparencyAlphaMap;
-layout(binding = 7) uniform sampler2D transparencyLayerLightScatteringTexture;
-layout(binding = 8) uniform sampler2D transparencyLayerDepthMap;
+
+layout(binding = 2, rgba16f) uniform readonly image2D opaqueSceneTexture;
+layout(binding = 3, rgba16f) uniform readonly image2D transparencyLayer;
+layout(binding = 4) uniform sampler2D opaqueSceneLightScatteringTexture;
+layout(binding = 5) uniform sampler2D transparencyLayerLightScatteringTexture;
+layout(binding = 6) uniform sampler2DMS opaqueSceneDepthMap;
+layout(binding = 7) uniform sampler2D transparencyLayerDepthMap;
+layout(binding = 8) uniform sampler2D transparencyAlphaMap;
 
 uniform float width;
 uniform float height;
@@ -23,13 +24,13 @@ void main()
 	ivec2 computeCoord = ivec2(gl_GlobalInvocationID.x, gl_GlobalInvocationID.y);
 	vec2 uv = vec2(gl_GlobalInvocationID.x/width, gl_GlobalInvocationID.y/height);
 
-	vec4 opaqueColor 	   = texture(opaqueSceneTexture, uv);
-	vec4 transparencyColor = texture(transparencyLayer, uv);
+	vec4 opaqueColor 	   = imageLoad(opaqueSceneTexture, computeCoord);
+	vec4 transparencyColor = imageLoad(transparencyLayer, computeCoord);
 	vec4 opaqueDepth 	   = texelFetch(opaqueSceneDepthMap, computeCoord, 0);
 	vec4 transparencyDepth = texture(transparencyLayerDepthMap, uv);
-	float alpha 		   = texture(transparencyAlphaMap, uv).r;
 	vec4 transparencyLightScattering = texture(transparencyLayerLightScatteringTexture, uv);
 	vec4 opaqueSceneLightScattering = texture(opaqueSceneLightScatteringTexture, uv);
+	float alpha 		   = texture(transparencyAlphaMap, uv).r;
 	
 	vec4 rgba;
 	vec4 lightScattering;
@@ -39,7 +40,7 @@ void main()
 	}
 	else{
 		rgba = transparencyColor + opaqueColor * (1-alpha);
-		lightScattering = transparencyLightScattering;
+		lightScattering = opaqueSceneLightScattering;
 	}
 		
 	imageStore(finalColor_out, computeCoord, rgba);

@@ -239,7 +239,9 @@ public class GLDeferredEngine extends RenderEngine{
 		}
 		
 		
-		GLTexture displayTexture = opaqueTransparencyBlending.getBlendedSceneTexture();
+		GLTexture prePostprocessingScene = opaqueTransparencyBlending.getBlendedSceneTexture();
+		GLTexture currentScene = prePostprocessingScene;
+		
 		GLTexture lightScatteringMaskTexture = sampleCoverage.getLightScatteringMaskDownSampled();
 		
 		boolean doMotionBlur = camera.getPreviousPosition().sub(camera.getPosition()).length() > 0.04f
@@ -251,8 +253,8 @@ public class GLDeferredEngine extends RenderEngine{
 		//-----------------------------------------------//
 		
 		if (!doMotionBlur && BaseContext.getConfig().isFxaaEnabled()){
-			fxaa.render(displayTexture);
-			displayTexture = fxaa.getFxaaSceneTexture();
+			fxaa.render(currentScene);
+			currentScene = fxaa.getFxaaSceneTexture();
 		}
 		
 		
@@ -268,9 +270,8 @@ public class GLDeferredEngine extends RenderEngine{
 			
 			if (BaseContext.getConfig().isDepthOfFieldBlurEnabled()){
 				dofBlur.render(primarySceneFbo.getAttachmentTexture(Attachment.DEPTH),
-						lightScatteringMaskTexture, displayTexture,
-						config.getX_ScreenResolution(), config.getY_ScreenResolution());
-				displayTexture = dofBlur.getVerticalBlurSceneTexture();
+						lightScatteringMaskTexture, currentScene);
+				currentScene = dofBlur.getVerticalBlurSceneTexture();
 			}
 			
 			//--------------------------------------------//
@@ -278,8 +279,8 @@ public class GLDeferredEngine extends RenderEngine{
 			//--------------------------------------------//
 			
 			if (BaseContext.getConfig().isBloomEnabled()){
-				bloom.render(displayTexture);
-				displayTexture = bloom.getBloomSceneTexture();
+				bloom.render(prePostprocessingScene, currentScene);
+				currentScene = bloom.getBloomSceneTexture();
 			}
 			
 			//--------------------------------------------//
@@ -287,9 +288,9 @@ public class GLDeferredEngine extends RenderEngine{
 			//--------------------------------------------//
 			
 			if (BaseContext.getConfig().isRenderUnderwater()){
-				underWaterRenderer.render(displayTexture,
+				underWaterRenderer.render(currentScene,
 						primarySceneFbo.getAttachmentTexture(Attachment.DEPTH));
-				displayTexture = underWaterRenderer.getUnderwaterSceneTexture();
+				currentScene = underWaterRenderer.getUnderwaterSceneTexture();
 			}
 			
 			//--------------------------------------------//
@@ -297,17 +298,17 @@ public class GLDeferredEngine extends RenderEngine{
 			//--------------------------------------------//
 			
 			if (doMotionBlur && BaseContext.getConfig().isMotionBlurEnabled()){
-				motionBlur.render(displayTexture,
+				motionBlur.render(currentScene,
 						primarySceneFbo.getAttachmentTexture(Attachment.DEPTH));
-				displayTexture = motionBlur.getMotionBlurSceneTexture();
+				currentScene = motionBlur.getMotionBlurSceneTexture();
 			}
 			
 			//--------------------------------------------//
 			//             Light Scattering               //
 			//--------------------------------------------//
 			if (BaseContext.getConfig().isLightScatteringEnabled()){
-				sunlightScattering.render(displayTexture, lightScatteringMaskTexture);
-				displayTexture = sunlightScattering.getSunLightScatteringSceneTexture();
+				sunlightScattering.render(currentScene, lightScatteringMaskTexture);
+				currentScene = sunlightScattering.getSunLightScatteringSceneTexture();
 			}
 		}
 		
@@ -342,7 +343,12 @@ public class GLDeferredEngine extends RenderEngine{
 //		fullScreenQuadMultisample.setTexture(primarySceneFbo.getAttachmentTexture(Attachment.LIGHT_SCATTERING));
 //		fullScreenQuadMultisample.render();
 		
-		fullScreenQuad.setTexture(displayTexture);
+//		fullScreenQuad.setTexture(opaqueTransparencyBlending.getBlendedSceneTexture());
+//		fullScreenQuad.setTexture(sampleCoverage.getLightScatteringMaskDownSampled());
+//		fullScreenQuad.setTexture(deferredLighting.getDeferredLightingSceneTexture());
+//		fullScreenQuad.setTexture(dofBlur.getVerticalBlurSceneTexture());
+//		fullScreenQuad.setTexture(bloom.getBloomSceneTexture());
+		fullScreenQuad.setTexture(currentScene);
 		fullScreenQuad.render();
 		
 		if (BaseContext.getConfig().isLensFlareEnabled()
@@ -358,7 +364,7 @@ public class GLDeferredEngine extends RenderEngine{
 		}
 		
 		if (gui != null){
-			gui.render();
+//			gui.render();
 		}
 		
 		glFinish();

@@ -22,17 +22,17 @@ public class OffScreenFbo extends GLFrameBufferObject{
 	public OffScreenFbo(int width, int height, int samples) {
 		
 		GLTexture albedoTexture = new TextureImage2DMultisample(width, height, samples,
-				ImageFormat.RGBA16FLOAT, SamplerFilter.Nearest, TextureWrapMode.None);
+				ImageFormat.RGBA16FLOAT, SamplerFilter.Nearest, TextureWrapMode.ClampToEdge);
 		GLTexture worldPositionTexture = new TextureImage2DMultisample(width, height, samples,
-				ImageFormat.RGBA32FLOAT, SamplerFilter.Nearest, TextureWrapMode.None);
+				ImageFormat.RGBA32FLOAT, SamplerFilter.Nearest, TextureWrapMode.ClampToEdge);
 		GLTexture normalTexture = new TextureImage2DMultisample(width, height, samples,
-				ImageFormat.RGBA32FLOAT, SamplerFilter.Nearest, TextureWrapMode.None);
+				ImageFormat.RGBA32FLOAT, SamplerFilter.Nearest, TextureWrapMode.ClampToEdge);
 		GLTexture specularEmissionTexture = new TextureImage2DMultisample(width, height, samples,
-				ImageFormat.RGBA16FLOAT, SamplerFilter.Nearest, TextureWrapMode.None);
+				ImageFormat.RGBA16FLOAT, SamplerFilter.Nearest, TextureWrapMode.ClampToEdge);
 		GLTexture lightScatteringMask = new TextureImage2DMultisample(width, height, samples,
-				ImageFormat.RGBA16FLOAT, SamplerFilter.Nearest, TextureWrapMode.None);
+				ImageFormat.RGBA16FLOAT, SamplerFilter.Nearest, TextureWrapMode.ClampToEdge);
 		GLTexture depthTexture = new TextureImage2DMultisample(width, height, samples,
-				ImageFormat.DEPTH32FLOAT, SamplerFilter.Nearest, TextureWrapMode.None);
+				ImageFormat.DEPTH32FLOAT, SamplerFilter.Nearest, TextureWrapMode.ClampToEdge);
 
 		attachments.put(Attachment.COLOR, albedoTexture);
 		attachments.put(Attachment.POSITION, worldPositionTexture);

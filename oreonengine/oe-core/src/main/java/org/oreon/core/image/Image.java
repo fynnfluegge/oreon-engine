@@ -12,10 +12,12 @@ public class Image {
 	public enum ImageFormat {
 
 		RGBA32FLOAT,
+		RGB32FLOAT,
 		RGBA16FLOAT,
 		DEPTH32FLOAT,
 		R16FLOAT,
-		R32FLOAT
+		R32FLOAT,
+		R8
 	}
 	
 	public enum SamplerFilter {
@@ -28,7 +30,6 @@ public class Image {
 	
 	public enum TextureWrapMode {
 		
-		None,
 		ClampToEdge,
 		ClampToBorder,
 		Repeat,

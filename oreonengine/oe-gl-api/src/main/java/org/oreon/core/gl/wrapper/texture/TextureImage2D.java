@@ -5,9 +5,11 @@ import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import static org.lwjgl.opengl.GL11.GL_RED;
 import static org.lwjgl.opengl.GL11.GL_RGBA;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.GL_UNSIGNED_BYTE;
 import static org.lwjgl.opengl.GL30.GL_DEPTH_COMPONENT32F;
 import static org.lwjgl.opengl.GL30.GL_R16F;
 import static org.lwjgl.opengl.GL30.GL_R32F;
+import static org.lwjgl.opengl.GL30.GL_R8;
 import static org.lwjgl.opengl.GL30.GL_RGBA16F;
 import static org.lwjgl.opengl.GL30.GL_RGBA32F;
 
@@ -15,8 +17,7 @@ import org.oreon.core.gl.texture.GLTexture;
 
 public class TextureImage2D extends GLTexture{
 
-	public TextureImage2D(int width, int height,
-			ImageFormat imageFormat, SamplerFilter samplerFilter, TextureWrapMode textureWrapMode) {
+	public TextureImage2D(int width, int height, ImageFormat imageFormat){
 		
 		super(GL_TEXTURE_2D, width, height);
 		
@@ -34,7 +35,20 @@ public class TextureImage2D extends GLTexture{
 				allocateImage2D(GL_R16F, GL_RED, GL_FLOAT); break;
 			case R32FLOAT:
 				allocateImage2D(GL_R32F, GL_RED, GL_FLOAT); break;
+			case R8:
+				allocateImage2D(GL_R8, GL_RED, GL_UNSIGNED_BYTE); break;
+			default:
+				throw new IllegalArgumentException("Format not supported yet");
 		}
+		
+		unbind();
+	}
+	
+	public TextureImage2D(int width, int height, ImageFormat imageFormat, SamplerFilter samplerFilter){
+		
+		this(width, height, imageFormat);
+		
+		bind();
 		
 		switch(samplerFilter)
 		{
@@ -46,8 +60,17 @@ public class TextureImage2D extends GLTexture{
 				trilinearFilter(); break;
 			case Anistropic:
 				anisotropicFilter(); break;
-
 		}
+		
+		unbind();
+	}
+	
+	public TextureImage2D(int width, int height,
+			ImageFormat imageFormat, SamplerFilter samplerFilter, TextureWrapMode textureWrapMode) {
+		
+		this(width, height, imageFormat, samplerFilter);
+		
+		bind();
 		
 		switch(textureWrapMode)
 		{
@@ -59,14 +82,12 @@ public class TextureImage2D extends GLTexture{
 				mirrorRepeat(); break;
 			case Repeat:
 				repeat(); break;
-			case None: break;
 		}
 		
 		unbind();
 	}
 	
-	public TextureImage2D(String file, SamplerFilter samplerFilter,
-			TextureWrapMode textureWrapMode) {
+	public TextureImage2D(String file, SamplerFilter samplerFilter){
 		
 		super(file);
 		
@@ -84,6 +105,16 @@ public class TextureImage2D extends GLTexture{
 				anisotropicFilter(); break;
 		}
 		
+		unbind();
+	}
+	
+	public TextureImage2D(String file, SamplerFilter samplerFilter,
+			TextureWrapMode textureWrapMode) {
+		
+		this(file, samplerFilter);
+		
+		bind();
+		
 		switch(textureWrapMode)
 		{
 			case ClampToBorder:
@@ -94,7 +125,6 @@ public class TextureImage2D extends GLTexture{
 				mirrorRepeat(); break;
 			case Repeat:
 				repeat(); break;
-			case None: break;
 		}
 		
 		unbind();

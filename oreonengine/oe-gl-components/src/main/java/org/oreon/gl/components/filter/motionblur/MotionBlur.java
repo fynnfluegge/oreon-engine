@@ -29,7 +29,7 @@ public class MotionBlur {
 	public MotionBlur() {
 		pixelVelocityTexture = new TextureImage2D(BaseContext.getWindow().getWidth(),
 				BaseContext.getWindow().getHeight(),
-				ImageFormat.RGBA32FLOAT, SamplerFilter.Nearest, TextureWrapMode.None);
+				ImageFormat.RGBA32FLOAT, SamplerFilter.Nearest, TextureWrapMode.ClampToEdge);
 		motionBlurSceneTexture = new TextureStorage2D(BaseContext.getWindow().getWidth(),
 				BaseContext.getWindow().getHeight(), 1, ImageFormat.RGBA16FLOAT);
 		

@@ -9,7 +9,6 @@ import org.oreon.common.ui.UIPanelLoader;
 import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.gl.wrapper.texture.TextureImage2D;
 import org.oreon.core.image.Image.SamplerFilter;
-import org.oreon.core.image.Image.TextureWrapMode;
 
 public class GLGUI extends GUI{
 	
@@ -17,8 +16,7 @@ public class GLGUI extends GUI{
 	protected GUIVAO panelMeshBuffer;
 	
 	public void init() {
-		fontsTexture = new TextureImage2D("gui/tex/Fonts.png",
-				SamplerFilter.Bilinear, TextureWrapMode.None);
+		fontsTexture = new TextureImage2D("gui/tex/Fonts.png", SamplerFilter.Bilinear);
 		panelMeshBuffer = new GUIVAO();
 		panelMeshBuffer.addData(UIPanelLoader.load("gui/basicPanel.gui"));
 	}

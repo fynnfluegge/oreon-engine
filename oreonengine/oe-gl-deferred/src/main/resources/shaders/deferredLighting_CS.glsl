@@ -12,9 +12,9 @@ layout (binding = 4, rgba32f) uniform readonly image2DMS normalImage;
 
 layout (binding = 5, rgba16f)   uniform readonly image2DMS specularEmissionImage;
 
-layout (binding = 6, r16f) uniform readonly image2D sampleCoverageMask;
+layout (binding = 6, r8) uniform readonly image2D sampleCoverageMask;
 
-layout (binding = 7, rgba32f) uniform readonly image2D ssaoBlurImage;
+layout (binding = 7, r16f) uniform readonly image2D ssaoBlurImage;
 
 layout (std140, row_major) uniform Camera{
 	vec3 eyePosition;
@@ -188,7 +188,7 @@ void main(void){
 				diff = diffuse(directional_light.direction, normal, directional_light.intensity);
 				spec = specular(directional_light.direction, normal, eyePosition, position, specular_emission.r, specular_emission.g);
 				shadow = applyShadowMapping(position);
-				vec3 ssao = imageLoad(ssaoBlurImage, computeCoord).rgb;
+				float ssao = imageLoad(ssaoBlurImage, computeCoord).r;
 				
 				vec3 diffuseLight = directional_light.ambient + directional_light.color * diff * shadow;
 				vec3 specularLight = directional_light.color * spec;
@@ -216,7 +216,7 @@ void main(void){
 			diff = diffuse(directional_light.direction, normal, directional_light.intensity);
 			spec = specular(directional_light.direction, normal, eyePosition, position, specular_emission.r, specular_emission.g);
 			shadow = applyShadowMapping(position);
-			vec3 ssao = imageLoad(ssaoBlurImage, computeCoord).rgb;
+			float ssao = imageLoad(ssaoBlurImage, computeCoord).r;
 			
 			vec3 diffuseLight = directional_light.ambient + directional_light.color * diff * shadow;
 			vec3 specularLight = directional_light.color * spec;

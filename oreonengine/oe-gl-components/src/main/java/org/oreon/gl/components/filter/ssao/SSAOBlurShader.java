@@ -20,16 +20,7 @@ public class SSAOBlurShader extends GLShaderProgram{
 		
 		super();
 		
-		addComputeShader(ResourceLoader.loadShader("shaders/filter/ssao/SSAOBlur_CS.glsl"));
+		addComputeShader(ResourceLoader.loadShader("shaders/filter/ssao/ssao_blur.comp"));
 		compileShader();
-		
-		addUniform("width");
-		addUniform("height");
-	}
-	
-	public void updateUniforms(int width, int height){
-		
-		setUniformi("width", width);
-		setUniformi("height", height);
 	}
 }

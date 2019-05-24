@@ -11,8 +11,7 @@ import org.oreon.core.gl.texture.GLTexture;
 
 public class TextureImage2DArrray extends GLTexture{
 
-	public TextureImage2DArrray(int width, int height, int layers,
-			ImageFormat imageFormat, SamplerFilter samplerFilter, TextureWrapMode textureWrapMode) {
+	public TextureImage2DArrray(int width, int height, int layers, ImageFormat imageFormat){
 		
 		super(GL_TEXTURE_2D_ARRAY, width, height);
 		
@@ -30,7 +29,19 @@ public class TextureImage2DArrray extends GLTexture{
 				allocateStorage3D(1, layers, GL_R16F); break;
 			case R32FLOAT:
 				allocateStorage3D(1, layers, GL_R32F); break;
+			default:
+				throw new IllegalArgumentException("Format not supported yet");
 		}
+		
+		unbind();
+	}
+	
+	public TextureImage2DArrray(int width, int height, int layers,
+			ImageFormat imageFormat, SamplerFilter samplerFilter){
+		
+		this(width, height, layers, imageFormat);
+		
+		bind();
 		
 		switch(samplerFilter)
 		{
@@ -42,8 +53,17 @@ public class TextureImage2DArrray extends GLTexture{
 				trilinearFilter(); break;
 			case Anistropic:
 				anisotropicFilter(); break;
-
 		}
+		
+		unbind();
+	}
+	
+	public TextureImage2DArrray(int width, int height, int layers,
+			ImageFormat imageFormat, SamplerFilter samplerFilter, TextureWrapMode textureWrapMode) {
+		
+		this(width, height, layers, imageFormat, samplerFilter);
+		
+		bind();
 		
 		switch(textureWrapMode)
 		{
@@ -55,7 +75,6 @@ public class TextureImage2DArrray extends GLTexture{
 				mirrorRepeat(); break;
 			case Repeat:
 				repeat(); break;
-			case None: break;
 		}
 		
 		unbind();

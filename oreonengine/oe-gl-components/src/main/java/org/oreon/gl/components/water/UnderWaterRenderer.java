@@ -31,13 +31,12 @@ public class UnderWaterRenderer {
 	public UnderWaterRenderer() {
 		underWaterShader = UnderWaterShader.getInstance();
 		
-		underwaterSceneTexture = new TextureImage2D(BaseContext.getWindow().getWidth(), BaseContext.getWindow().getHeight(),
+		underwaterSceneTexture = new TextureImage2D(BaseContext.getWindow().getWidth(),
+				BaseContext.getWindow().getHeight(),
 				ImageFormat.RGBA16FLOAT, SamplerFilter.Bilinear, TextureWrapMode.ClampToEdge);
 		
-		dudvMap = new TextureImage2D("textures/water/dudv/dudv1.jpg",
-				SamplerFilter.Trilinear, TextureWrapMode.None);
-		causticsMap = new TextureImage2D("textures/water/caustics/caustics.jpg",
-				SamplerFilter.Trilinear, TextureWrapMode.None);
+		dudvMap = new TextureImage2D("textures/water/dudv/dudv1.jpg", SamplerFilter.Trilinear);
+		causticsMap = new TextureImage2D("textures/water/caustics/caustics.jpg", SamplerFilter.Trilinear);
 		
 		GLContext.getResources().setUnderwaterCausticsMap(causticsMap);
 		GLContext.getResources().setUnderwaterDudvMap(dudvMap);

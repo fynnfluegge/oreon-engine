@@ -15,7 +15,6 @@ import org.lwjgl.assimp.Assimp;
 import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.gl.wrapper.texture.TextureImage2D;
 import org.oreon.core.image.Image.SamplerFilter;
-import org.oreon.core.image.Image.TextureWrapMode;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.math.Vec3f;
 import org.oreon.core.model.Material;
@@ -171,8 +170,7 @@ public class GLAssimpModelLoader {
 
 	    GLTexture diffuseTexture = null;
 	    if (textPath != null && textPath.length() > 0) {
-	    	diffuseTexture = new TextureImage2D(texturesDir + "/" + textPath,
-	    			SamplerFilter.Trilinear, TextureWrapMode.None);
+	    	diffuseTexture = new TextureImage2D(texturesDir + "/" + textPath, SamplerFilter.Trilinear);
 	    }
 
 	    AIColor4D color = AIColor4D.create();

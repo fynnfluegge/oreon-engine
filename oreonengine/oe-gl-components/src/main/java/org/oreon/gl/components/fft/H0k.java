@@ -16,7 +16,6 @@ import org.oreon.core.gl.wrapper.texture.TextureImage2D;
 import org.oreon.core.gl.wrapper.texture.TextureStorage2D;
 import org.oreon.core.image.Image.ImageFormat;
 import org.oreon.core.image.Image.SamplerFilter;
-import org.oreon.core.image.Image.TextureWrapMode;
 import org.oreon.core.math.Vec2f;
 
 import lombok.Getter;
@@ -58,14 +57,10 @@ public class H0k {
 		
 		imageH0k = new TextureStorage2D(N, N, 1, ImageFormat.RGBA32FLOAT);
 		imageH0minusK = new TextureStorage2D(N, N, 1, ImageFormat.RGBA32FLOAT);
-		noise0 = new TextureImage2D("textures/noise/Noise256_0.jpg",
-				SamplerFilter.Nearest, TextureWrapMode.None);
-		noise1 = new TextureImage2D("textures/noise/Noise256_1.jpg",
-				SamplerFilter.Nearest, TextureWrapMode.None);
-		noise2 = new TextureImage2D("textures/noise/Noise256_2.jpg",
-				SamplerFilter.Nearest, TextureWrapMode.None);
-		noise3 = new TextureImage2D("textures/noise/Noise256_3.jpg",
-				SamplerFilter.Nearest, TextureWrapMode.None);
+		noise0 = new TextureImage2D("textures/noise/Noise256_0.jpg", SamplerFilter.Nearest);
+		noise1 = new TextureImage2D("textures/noise/Noise256_1.jpg", SamplerFilter.Nearest);
+		noise2 = new TextureImage2D("textures/noise/Noise256_2.jpg", SamplerFilter.Nearest);
+		noise3 = new TextureImage2D("textures/noise/Noise256_3.jpg", SamplerFilter.Nearest);
 	}
 	
 	public void render() {

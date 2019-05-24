@@ -24,7 +24,6 @@ import org.oreon.core.gl.wrapper.parameter.WaterRenderParameter;
 import org.oreon.core.gl.wrapper.texture.TextureImage2D;
 import org.oreon.core.image.Image.ImageFormat;
 import org.oreon.core.image.Image.SamplerFilter;
-import org.oreon.core.image.Image.TextureWrapMode;
 import org.oreon.core.math.Vec4f;
 import org.oreon.core.scenegraph.NodeComponentType;
 import org.oreon.core.scenegraph.Renderable;
@@ -75,10 +74,8 @@ public class Water extends Renderable{
 		GLRenderInfo renderInfo = new GLRenderInfo(shader, renderConfig, meshBuffer);
 		GLRenderInfo wireframeRenderInfo = new GLRenderInfo(wireframeShader, renderConfig, meshBuffer);
 		
-		dudv = new TextureImage2D("textures/water/dudv/dudv1.jpg",
-				SamplerFilter.Trilinear, TextureWrapMode.None);
-		caustics = new TextureImage2D("textures/water/caustics/caustics.jpg",
-				SamplerFilter.Trilinear, TextureWrapMode.None);
+		dudv = new TextureImage2D("textures/water/dudv/dudv1.jpg", SamplerFilter.Trilinear);
+		caustics = new TextureImage2D("textures/water/caustics/caustics.jpg", SamplerFilter.Trilinear);
 		
 		addComponent(NodeComponentType.MAIN_RENDERINFO, renderInfo);
 		addComponent(NodeComponentType.WIREFRAME_RENDERINFO, wireframeRenderInfo);
@@ -96,7 +93,7 @@ public class Water extends Renderable{
 		
 		reflection_texture = new TextureImage2D(BaseContext.getWindow().getWidth()/2,
 				BaseContext.getWindow().getHeight()/2,
-				ImageFormat.RGBA16FLOAT, SamplerFilter.Nearest, TextureWrapMode.None);
+				ImageFormat.RGBA16FLOAT, SamplerFilter.Nearest);
 		
 		IntBuffer drawBuffers = BufferUtil.createIntBuffer(1);
 		drawBuffers.put(GL_COLOR_ATTACHMENT0);
@@ -113,7 +110,7 @@ public class Water extends Renderable{
 		
 		refraction_texture = new TextureImage2D(BaseContext.getWindow().getWidth()/2,
 				BaseContext.getWindow().getHeight()/2,
-				ImageFormat.RGBA16FLOAT, SamplerFilter.Nearest, TextureWrapMode.None);
+				ImageFormat.RGBA16FLOAT, SamplerFilter.Nearest);
 		
 		refraction_fbo = new GLFramebuffer();
 		refraction_fbo.bind();

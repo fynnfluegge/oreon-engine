@@ -29,6 +29,30 @@ public class TextureStorage2D extends GLTexture{
 				allocateStorage2D(levels, GL_R16F); break;
 			case R32FLOAT:
 				allocateStorage2D(levels, GL_R32F); break;
+			default:
+				throw new IllegalArgumentException("Format not supported yet");
+		}
+		
+		unbind();
+	}
+	
+	public TextureStorage2D(int width, int height, int levels, ImageFormat imageFormat,
+			TextureWrapMode textureWrapMode) {
+
+		this(width, height, levels, imageFormat);
+		
+		bind();
+		
+		switch(textureWrapMode)
+		{
+			case ClampToBorder:
+				clampToBorder(); break;
+			case ClampToEdge:
+				clampToEdge(); break;
+			case MirrorRepeat:
+				mirrorRepeat(); break;
+			case Repeat:
+				repeat(); break;
 		}
 		
 		unbind();
