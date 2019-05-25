@@ -10,8 +10,10 @@ import static org.lwjgl.opengl.GL43.glDispatchCompute;
 import org.oreon.core.context.BaseContext;
 import org.oreon.core.gl.context.GLContext;
 import org.oreon.core.gl.texture.GLTexture;
-import org.oreon.core.gl.wrapper.texture.Texture2DBilinearFilterRGBA16F;
-import org.oreon.core.gl.wrapper.texture.Texture2DTrilinearFilter;
+import org.oreon.core.gl.wrapper.texture.TextureImage2D;
+import org.oreon.core.image.Image.ImageFormat;
+import org.oreon.core.image.Image.SamplerFilter;
+import org.oreon.core.image.Image.TextureWrapMode;
 
 import lombok.Getter;
 
@@ -29,13 +31,12 @@ public class UnderWaterRenderer {
 	public UnderWaterRenderer() {
 		underWaterShader = UnderWaterShader.getInstance();
 		
-		underwaterSceneTexture = new Texture2DBilinearFilterRGBA16F(BaseContext.getWindow().getWidth(), BaseContext.getWindow().getHeight());
-		underwaterSceneTexture.bind();
-		underwaterSceneTexture.clampToEdge();
-		underwaterSceneTexture.unbind();
+		underwaterSceneTexture = new TextureImage2D(BaseContext.getWindow().getWidth(),
+				BaseContext.getWindow().getHeight(),
+				ImageFormat.RGBA16FLOAT, SamplerFilter.Bilinear, TextureWrapMode.ClampToEdge);
 		
-		dudvMap = new Texture2DTrilinearFilter("textures/water/dudv/dudv1.jpg");
-		causticsMap = new Texture2DTrilinearFilter("textures/water/caustics/caustics.jpg");
+		dudvMap = new TextureImage2D("textures/water/dudv/dudv1.jpg", SamplerFilter.Trilinear);
+		causticsMap = new TextureImage2D("textures/water/caustics/caustics.jpg", SamplerFilter.Trilinear);
 		
 		GLContext.getResources().setUnderwaterCausticsMap(causticsMap);
 		GLContext.getResources().setUnderwaterDudvMap(dudvMap);

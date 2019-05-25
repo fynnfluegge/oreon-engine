@@ -47,13 +47,25 @@ public class Configuration {
 	// Vulkan Validation
 	private boolean vkValidation;
 	
-	// Atmosphere parameter
+	// Atmosphere parameters
 	private float sunRadius;
 	private Vec3f sunPosition;
 	private Vec3f sunColor;
 	private float sunIntensity;
 	private float ambient;
 	private boolean AtmosphericScatteringApproximation;
+	private float atmosphereBloomFactor;
+	
+	// postprocessing parameters
+	private int lightscatteringSampleCount;
+	private float lightscatteringDensity;
+	private float lightscatteringDecay;
+	private float lightscatteringExposure;
+	private float lightscatteringWeight;
+	private float motionblurSamples;
+	private int motionblurBlurfactor;
+	private int bloomKernels;
+	private int bloomSigma;
 	
 	public Configuration(){
 		
@@ -111,6 +123,27 @@ public class Configuration {
 				sunIntensity = Float.valueOf(properties.getProperty("sun.intensity"));
 				ambient = Float.valueOf(properties.getProperty("ambient"));
 				AtmosphericScatteringApproximation = Integer.valueOf(properties.getProperty("atmosphere.scattering.approximation")) == 1 ? true : false;
+				atmosphereBloomFactor = Float.valueOf(properties.getProperty("atmosphere.bloom.factor"));
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		try {
+			InputStream vInputStream = Configuration.class.getClassLoader().getResourceAsStream("postprocessing-config.properties");
+			if (vInputStream != null){
+				properties.load(vInputStream);
+				vInputStream.close();
+				
+				lightscatteringSampleCount = Integer.valueOf(properties.getProperty("lightscattering.samples"));
+				lightscatteringDensity = Float.valueOf(properties.getProperty("lightscattering.density"));
+				lightscatteringDecay = Float.valueOf(properties.getProperty("lightscattering.decay"));
+				lightscatteringExposure = Float.valueOf(properties.getProperty("lightscattering.exposure"));
+				lightscatteringWeight = Float.valueOf(properties.getProperty("lightscattering.weight"));
+				motionblurBlurfactor = Integer.valueOf(properties.getProperty("motionblur.blurfactor"));
+				motionblurSamples = Integer.valueOf(properties.getProperty("motionblur.samples"));
+				bloomKernels = Integer.valueOf(properties.getProperty("bloom.kernels"));
+				bloomSigma = Integer.valueOf(properties.getProperty("bloom.sigma"));
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

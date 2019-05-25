@@ -443,7 +443,7 @@ public class Water extends Renderable{
 	    		VK_IMAGE_LAYOUT_GENERAL, -1,
 	    		0, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
 	    descriptorSetReflection.updateDescriptorImageBuffer(
-	    		offScreenReflecRefracFbo.getAttachmentImageView(Attachment.ALBEDO).getHandle(),
+	    		offScreenReflecRefracFbo.getAttachmentImageView(Attachment.COLOR).getHandle(),
 	    		VK_IMAGE_LAYOUT_GENERAL, -1,
 	    		1, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
 	    descriptorSetReflection.updateDescriptorImageBuffer(
@@ -464,7 +464,7 @@ public class Water extends Renderable{
 	    		VK_IMAGE_LAYOUT_GENERAL, -1,
 	    		0, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
 		descriptorSetRefraction.updateDescriptorImageBuffer(
-				offScreenReflecRefracFbo.getAttachmentImageView(Attachment.ALBEDO).getHandle(),
+				offScreenReflecRefracFbo.getAttachmentImageView(Attachment.COLOR).getHandle(),
 	    		VK_IMAGE_LAYOUT_GENERAL, -1,
 	    		1, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
 		descriptorSetRefraction.updateDescriptorImageBuffer(

@@ -15,7 +15,7 @@ public class Ocean extends Water{
 		getWorldTransform().setTranslation(-Constants.ZFAR*1.95f/2,0,-Constants.ZFAR*1.95f/2);
 		
 		setClip_offset(4);
-		setClipplane(new Vec4f(0,-1,0,getWorldTransform().getTranslation().getY() + getClip_offset()));
+		setClipplane(new Vec4f(0,-1,0,getWorldTransform().getTranslation().getY() + 20));
 	}
 
 }

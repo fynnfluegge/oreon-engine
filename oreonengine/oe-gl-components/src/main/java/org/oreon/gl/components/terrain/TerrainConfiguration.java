@@ -13,7 +13,8 @@ import java.util.List;
 import java.util.Properties;
 
 import org.oreon.core.gl.texture.GLTexture;
-import org.oreon.core.gl.wrapper.texture.Texture2DTrilinearFilter;
+import org.oreon.core.gl.wrapper.texture.TextureImage2D;
+import org.oreon.core.image.Image.SamplerFilter;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.model.Material;
 import org.oreon.core.scenegraph.NodeComponent;
@@ -32,7 +33,7 @@ public class TerrainConfiguration extends NodeComponent{
 	private float scaleY;
 	private float scaleXZ;
 	private int bezier;
-	private int waterReflectionShift;
+	private int reflectionOffset;
 	private float texDetail;
 	private int tessellationFactor;
 	private float tessellationSlope;
@@ -87,13 +88,16 @@ public class TerrainConfiguration extends NodeComponent{
 			
 			getMaterials().add(new Material<GLTexture>());
 			
-			GLTexture diffusemap = new Texture2DTrilinearFilter(properties.getProperty("materials.material" + i + "_DIF"));
+			GLTexture diffusemap = new TextureImage2D(properties.getProperty("materials.material" + i + "_DIF"),
+					SamplerFilter.Trilinear);
 			getMaterials().get(materials.size()-1).setDiffusemap(diffusemap);
 			
-			GLTexture normalmap = new Texture2DTrilinearFilter(properties.getProperty("materials.material" + i + "_NRM"));
+			GLTexture normalmap = new TextureImage2D(properties.getProperty("materials.material" + i + "_NRM"),
+					SamplerFilter.Trilinear);
 			getMaterials().get(materials.size()-1).setNormalmap(normalmap);
 			
-			GLTexture heightmap = new Texture2DTrilinearFilter(properties.getProperty("materials.material" + i + "_DISP"));
+			GLTexture heightmap = new TextureImage2D(properties.getProperty("materials.material" + i + "_DISP"),
+					SamplerFilter.Trilinear);
 			getMaterials().get(materials.size()-1).setHeightmap(heightmap);
 			
 			getMaterials().get(materials.size()-1).setHeightScaling(Float.valueOf(properties.getProperty("materials.material" + i + "_heightScaling")));

@@ -54,7 +54,7 @@ private static TerrainWireframeShader instance = null;
 		addUniform("lod");
 		addUniform("location");
 		addUniform("texDetail");
-		addUniform("waterReflectionShift");
+		addUniform("reflectionOffset");
 		
 		addUniform("heightmap");
 		addUniform("splatmap");
@@ -109,7 +109,7 @@ private static TerrainWireframeShader instance = null;
 		setUniform("index", index);
 		setUniformf("gap", gap);
 		setUniform("location", location);
-		setUniformi("waterReflectionShift", terrConfig.getWaterReflectionShift());
+		setUniformi("reflectionOffset", terrConfig.getReflectionOffset());
 		setUniformi("diamond_square", terrConfig.isDiamond_square() ? 1 : 0);
 		
 		for (int i=0; i<8; i++){

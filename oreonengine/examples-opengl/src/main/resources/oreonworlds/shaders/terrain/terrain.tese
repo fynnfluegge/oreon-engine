@@ -13,7 +13,7 @@ uniform float scaleXZ;
 uniform int bezier;
 uniform float texDetail;
 uniform mat4 worldMatrix;
-uniform int waterReflectionShift;
+uniform int reflectionOffset;
 
 
 // 		-1  3 -3  1
@@ -79,7 +79,7 @@ void main(){
 	(1 - u) * v * inUV[15]);
 				
 	vec4 v_heightmap = texture(heightmap, uv).rgba;
-	float height = v_heightmap.y * scaleY + waterReflectionShift;
+	float height = v_heightmap.y * scaleY + reflectionOffset;
 	float slope = v_heightmap.z;
 	
 	position.y = height;

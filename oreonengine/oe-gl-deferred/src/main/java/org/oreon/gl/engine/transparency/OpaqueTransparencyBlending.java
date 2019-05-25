@@ -1,5 +1,6 @@
 package org.oreon.gl.engine.transparency;
 
+import static org.lwjgl.opengl.GL15.GL_READ_ONLY;
 import static org.lwjgl.opengl.GL15.GL_WRITE_ONLY;
 import static org.lwjgl.opengl.GL30.GL_RGBA16F;
 import static org.lwjgl.opengl.GL42.glBindImageTexture;
@@ -8,7 +9,9 @@ import static org.lwjgl.opengl.GL43.glDispatchCompute;
 import org.oreon.core.context.BaseContext;
 import org.oreon.core.gl.surface.FullScreenQuad;
 import org.oreon.core.gl.texture.GLTexture;
-import org.oreon.core.gl.wrapper.texture.Texture2DBilinearFilterRGBA16F;
+import org.oreon.core.gl.wrapper.texture.TextureImage2D;
+import org.oreon.core.image.Image.ImageFormat;
+import org.oreon.core.image.Image.SamplerFilter;
 
 import lombok.Getter;
 
@@ -24,8 +27,10 @@ public class OpaqueTransparencyBlending extends FullScreenQuad{
 		
 		super();
 		shader = OpaqueTransparencyBlendShader.getInstance();
-		blendedSceneTexture = new Texture2DBilinearFilterRGBA16F(width, height);
-		blendedLightScatteringTexture = new Texture2DBilinearFilterRGBA16F(width, height);
+		blendedSceneTexture = new TextureImage2D(width, height,
+				ImageFormat.RGBA16FLOAT, SamplerFilter.Nearest);
+		blendedLightScatteringTexture = new TextureImage2D(width, height,
+				ImageFormat.RGBA16FLOAT, SamplerFilter.Nearest);
 	}
 	
 	public void render(GLTexture opaqueScene, GLTexture opaqueSceneDepthMap,
@@ -36,8 +41,10 @@ public class OpaqueTransparencyBlending extends FullScreenQuad{
 		shader.bind();
 		glBindImageTexture(0, blendedSceneTexture.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
 		glBindImageTexture(1, blendedLightScatteringTexture.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
-		shader.updateUniforms(opaqueScene, opaqueSceneLightScatteringTexture, 
-							  transparencyLayer, alphaMap, transparencyLayerLightScatteringTexture,
+		glBindImageTexture(2, opaqueScene.getHandle(), 0, false, 0, GL_READ_ONLY, GL_RGBA16F);
+		glBindImageTexture(3, transparencyLayer.getHandle(), 0, false, 0, GL_READ_ONLY, GL_RGBA16F);
+		shader.updateUniforms(opaqueSceneLightScatteringTexture, 
+							  alphaMap, transparencyLayerLightScatteringTexture,
 							  opaqueSceneDepthMap, transparencyLayerDepthMap);
 		glDispatchCompute(BaseContext.getWindow().getWidth()/16, BaseContext.getWindow().getHeight()/16, 1);
 	}

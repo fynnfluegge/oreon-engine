@@ -12,8 +12,10 @@ import static org.lwjgl.opengl.GL43.glDispatchCompute;
 
 import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.gl.texture.GLTexture;
-import org.oreon.core.gl.wrapper.texture.Texture2DNoFilter;
-import org.oreon.core.gl.wrapper.texture.Texture2DStorageRGBA32F;
+import org.oreon.core.gl.wrapper.texture.TextureImage2D;
+import org.oreon.core.gl.wrapper.texture.TextureStorage2D;
+import org.oreon.core.image.Image.ImageFormat;
+import org.oreon.core.image.Image.SamplerFilter;
 import org.oreon.core.math.Vec2f;
 
 import lombok.Getter;
@@ -53,12 +55,12 @@ public class H0k {
 		
 		shader = H0kShader.getInstance();
 		
-		imageH0k = new Texture2DStorageRGBA32F(N,N,1);
-		imageH0minusK = new Texture2DStorageRGBA32F(N,N,1);
-		noise0 = new Texture2DNoFilter("textures/noise/Noise256_0.jpg");
-		noise1 = new Texture2DNoFilter("textures/noise/Noise256_1.jpg");
-		noise2 = new Texture2DNoFilter("textures/noise/Noise256_2.jpg");
-		noise3 = new Texture2DNoFilter("textures/noise/Noise256_3.jpg");
+		imageH0k = new TextureStorage2D(N, N, 1, ImageFormat.RGBA32FLOAT);
+		imageH0minusK = new TextureStorage2D(N, N, 1, ImageFormat.RGBA32FLOAT);
+		noise0 = new TextureImage2D("textures/noise/Noise256_0.jpg", SamplerFilter.Nearest);
+		noise1 = new TextureImage2D("textures/noise/Noise256_1.jpg", SamplerFilter.Nearest);
+		noise2 = new TextureImage2D("textures/noise/Noise256_2.jpg", SamplerFilter.Nearest);
+		noise3 = new TextureImage2D("textures/noise/Noise256_3.jpg", SamplerFilter.Nearest);
 	}
 	
 	public void render() {

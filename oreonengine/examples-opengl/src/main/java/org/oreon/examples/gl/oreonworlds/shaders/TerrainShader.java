@@ -58,7 +58,7 @@ public class TerrainShader extends GLShaderProgram{
 		addUniform("lod");
 		addUniform("location");
 		addUniform("texDetail");
-		addUniform("waterReflectionShift");
+		addUniform("reflectionOffset");
 		addUniform("isRefraction");
 		addUniform("isCameraUnderWater");
 		
@@ -130,7 +130,7 @@ public class TerrainShader extends GLShaderProgram{
 		setUniform("index", index);
 		setUniformf("gap", gap);
 		setUniform("location", location);
-		setUniformi("waterReflectionShift", terrConfig.getWaterReflectionShift());
+		setUniformi("reflectionOffset", terrConfig.getReflectionOffset());
 		setUniformi("diamond_square", terrConfig.isDiamond_square() ? 1 : 0);
 		
 		glActiveTexture(GL_TEXTURE3);

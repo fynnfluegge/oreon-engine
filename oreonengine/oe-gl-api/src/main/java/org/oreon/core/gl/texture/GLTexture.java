@@ -85,7 +85,7 @@ public class GLTexture extends Image{
 	}
 	
 	
-	public void noFilter(){
+	public void nearestFilter(){
 		
 		glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -133,7 +133,7 @@ public class GLTexture extends Image{
 		glTexParameteri(target, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	}
 	
-	public void mirroredRepeat(){
+	public void mirrorRepeat(){
 		
 		glTexParameteri(target, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
 		glTexParameteri(target, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);

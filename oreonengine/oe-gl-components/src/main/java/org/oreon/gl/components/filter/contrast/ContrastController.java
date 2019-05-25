@@ -11,7 +11,10 @@ import org.lwjgl.glfw.GLFW;
 import org.oreon.core.context.BaseContext;
 import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.gl.texture.GLTexture;
-import org.oreon.core.gl.wrapper.texture.Texture2DBilinearFilterRGBA16F;
+import org.oreon.core.gl.wrapper.texture.TextureImage2D;
+import org.oreon.core.image.Image.ImageFormat;
+import org.oreon.core.image.Image.SamplerFilter;
+import org.oreon.core.image.Image.TextureWrapMode;
 
 import lombok.Getter;
 
@@ -28,10 +31,8 @@ public class ContrastController {
 	
 		contrastShader = ContrastShader.getInstance();
 		
-		contrastTexture = new Texture2DBilinearFilterRGBA16F(BaseContext.getWindow().getWidth(), BaseContext.getWindow().getHeight());
-		contrastTexture.bind();
-		contrastTexture.clampToEdge();
-		contrastTexture.unbind();
+		contrastTexture = new TextureImage2D(BaseContext.getWindow().getWidth(), BaseContext.getWindow().getHeight(),
+				ImageFormat.RGBA16FLOAT, SamplerFilter.Bilinear, TextureWrapMode.ClampToEdge);
 	}
 	
 	public void render(GLTexture sceneSampler) {

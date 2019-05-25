@@ -9,7 +9,8 @@ import static org.lwjgl.opengl.GL43.glDispatchCompute;
 
 import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.gl.texture.GLTexture;
-import org.oreon.core.gl.wrapper.texture.Texture2DStorageRGBA32F;
+import org.oreon.core.gl.wrapper.texture.TextureStorage2D;
+import org.oreon.core.image.Image.ImageFormat;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -39,9 +40,9 @@ public class Hkt {
 
 		shader = HktShader.getInstance();
 		
-		imageDyCoeficcients = new Texture2DStorageRGBA32F(N,N,1);
-		imageDxCoefficients = new Texture2DStorageRGBA32F(N,N,1);
-		imageDzCoefficients = new Texture2DStorageRGBA32F(N,N,1);
+		imageDyCoeficcients = new TextureStorage2D(N, N, 1, ImageFormat.RGBA32FLOAT);
+		imageDxCoefficients = new TextureStorage2D(N, N, 1, ImageFormat.RGBA32FLOAT);
+		imageDzCoefficients = new TextureStorage2D(N, N, 1, ImageFormat.RGBA32FLOAT);
 
 	}
 	

@@ -2,12 +2,9 @@
 
 layout (local_size_x = 16, local_size_y = 16) in;
 
-layout (binding = 0, rgba32f) uniform writeonly image2D ssaoBlur_out;
+layout (binding = 0, r16f) uniform writeonly image2D ssaoBlur_out;
 
-layout (binding = 1, rgba32f) uniform readonly image2D ssao_in;
-
-uniform int width;
-uniform int height;
+layout (binding = 1, r16f) uniform readonly image2D ssao_in;
 
 const int uBlurSize = 4;
 
@@ -24,15 +21,10 @@ void main() {
 		for (int j = 0; j < uBlurSize; ++j) {
 			ivec2 offset = hlim + ivec2(i,j);
 			ivec2 sampleCoord = computeCoord + offset;
-			if (sampleCoord.x < width && sampleCoord.y < height && sampleCoord.x >= 0 && sampleCoord.y >= 0){		
-				result += imageLoad(ssao_in, computeCoord + offset).r;
-			}
-			else{
-				kernelSize--;
-			}
+			result += imageLoad(ssao_in, computeCoord + offset).r;
 		}
 	}
  
 	result = result / kernelSize;
-	imageStore(ssaoBlur_out, computeCoord, vec4(result,result,result,1.0));
+	imageStore(ssaoBlur_out, computeCoord, vec4(result,0,0,1.0));
 }

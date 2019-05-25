@@ -7,37 +7,37 @@ import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.util.ResourceLoader;
 
-public class HorizontalBloomBlurShader extends GLShaderProgram{
+public class BloomVerticalBlurShader extends GLShaderProgram{
 
-	private static HorizontalBloomBlurShader instance = null;
+	private static BloomVerticalBlurShader instance = null;
 	
-	public static HorizontalBloomBlurShader getInstance() 
+	public static BloomVerticalBlurShader getInstance() 
 	{
 	    if(instance == null) 
 	    {
-	    	instance = new HorizontalBloomBlurShader();
+	    	instance = new BloomVerticalBlurShader();
 	    }
 	      return instance;
 	}
 	
-	protected HorizontalBloomBlurShader()
+	protected BloomVerticalBlurShader()
 	{
 		super();
 		
-		addComputeShader(ResourceLoader.loadShader("shaders/filter/bloom/horizontalGaussianBlur.comp"));
+		addComputeShader(ResourceLoader.loadShader("shaders/filter/bloom/bloom_verticalGaussianBlur.comp"));
 		
 		compileShader();
 		
-		addUniform("sceneBrightnessSampler");
+		addUniform("horizontalBloomBlurSampler");
 		addUniform("windowWidth");
 		addUniform("windowHeight");
 	}
 	
-	public void updateUniforms(GLTexture sceneBrightnessSampler, int width, int height)
+	public void updateUniforms(GLTexture horizontalBloomBlurSampler, int width, int height)
 	{
 		glActiveTexture(GL_TEXTURE0);
-		sceneBrightnessSampler.bind();
-		setUniformi("sceneBrightnessSampler", 0);
+		horizontalBloomBlurSampler.bind();
+		setUniformi("horizontalBloomBlurSampler", 0);
 		setUniformf("windowWidth", width);
 		setUniformf("windowHeight", height);
 	}

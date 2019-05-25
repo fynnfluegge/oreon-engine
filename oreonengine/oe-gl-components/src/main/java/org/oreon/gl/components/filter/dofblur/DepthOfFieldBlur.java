@@ -12,8 +12,11 @@ import org.oreon.core.context.BaseContext;
 import org.oreon.core.gl.framebuffer.GLFramebuffer;
 import org.oreon.core.gl.surface.FullScreenQuad;
 import org.oreon.core.gl.texture.GLTexture;
-import org.oreon.core.gl.wrapper.texture.Texture2DBilinearFilterRGBA16F;
-import org.oreon.core.gl.wrapper.texture.Texture2DStorageRGBA16F;
+import org.oreon.core.gl.wrapper.texture.TextureImage2D;
+import org.oreon.core.gl.wrapper.texture.TextureStorage2D;
+import org.oreon.core.image.Image.ImageFormat;
+import org.oreon.core.image.Image.SamplerFilter;
+import org.oreon.core.image.Image.TextureWrapMode;
 
 import lombok.Getter;
 
@@ -36,17 +39,20 @@ public class DepthOfFieldBlur {
 		
 		fullScreenQuad = new FullScreenQuad();
 		
-		horizontalBlurSceneTexture = new Texture2DStorageRGBA16F(BaseContext.getWindow().getWidth(),
-				BaseContext.getWindow().getHeight(),1);
+		horizontalBlurSceneTexture = new TextureImage2D(BaseContext.getWindow().getWidth(),
+				BaseContext.getWindow().getHeight(), ImageFormat.RGBA16FLOAT,
+				SamplerFilter.Nearest, TextureWrapMode.ClampToEdge);
 		
-		verticalBlurSceneTexture = new Texture2DStorageRGBA16F(BaseContext.getWindow().getWidth(),
-				BaseContext.getWindow().getHeight(),1);
+		verticalBlurSceneTexture = new TextureImage2D(BaseContext.getWindow().getWidth(),
+				BaseContext.getWindow().getHeight(), ImageFormat.RGBA16FLOAT,
+				SamplerFilter.Nearest, TextureWrapMode.ClampToEdge); 
+				
+				new TextureStorage2D(BaseContext.getWindow().getWidth(),
+				BaseContext.getWindow().getHeight(), 1, ImageFormat.RGBA16FLOAT);
 		
-		lowResSceneSampler = new Texture2DBilinearFilterRGBA16F((int)(BaseContext.getWindow().getWidth()/1.2f),
-				(int)(BaseContext.getWindow().getHeight()/1.2f));
-		lowResSceneSampler.bind();
-		lowResSceneSampler.clampToEdge();
-		lowResSceneSampler.unbind();
+		lowResSceneSampler = new TextureImage2D((int)(BaseContext.getWindow().getWidth()/1.2f),
+				(int)(BaseContext.getWindow().getHeight()/1.2f), ImageFormat.RGBA16FLOAT,
+				SamplerFilter.Nearest, TextureWrapMode.ClampToEdge);
 		
 		lowResFbo = new GLFramebuffer();
 		lowResFbo.bind();
@@ -55,14 +61,15 @@ public class DepthOfFieldBlur {
 		lowResFbo.unbind();
 	}
 	
-	public void render(GLTexture depthmap, GLTexture lightScatteringMask, GLTexture sceneSampler, int width, int height) {
+	public void render(GLTexture depthmap, GLTexture lightScatteringMask, GLTexture sceneSampler) {
 		
-		getLowResFbo().bind();
+		lowResFbo.bind();
 		fullScreenQuad.setTexture(sceneSampler);
-		glViewport(0,0,(int)(width/1.2f),(int)(height/1.2f));
+		glViewport(0,0,(int)(BaseContext.getConfig().getX_ScreenResolution()/1.2f),
+				(int)(BaseContext.getConfig().getY_ScreenResolution()/1.2f));
 		fullScreenQuad.render();
-		getLowResFbo().unbind();
-		glViewport(0,0, width, height);
+		lowResFbo.unbind();
+		glViewport(0,0, BaseContext.getConfig().getX_ScreenResolution(), BaseContext.getConfig().getY_ScreenResolution());
 		
 		horizontalBlurShader.bind();
 		glBindImageTexture(0, sceneSampler.getHandle(), 0, false, 0, GL_READ_ONLY, GL_RGBA16F);
@@ -82,7 +89,4 @@ public class DepthOfFieldBlur {
 		glFinish();
 	}
 
-	public GLFramebuffer getLowResFbo() {
-		return lowResFbo;
-	}
 }

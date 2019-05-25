@@ -2,7 +2,7 @@
 
 layout (local_size_x = 16, local_size_y = 16) in;
 
-layout (binding = 0, rgba32f) uniform writeonly image2D ssao_out;
+layout (binding = 0, r16f) uniform writeonly image2D ssao_out;
 
 layout (binding = 1, rgba32f) uniform readonly image2DMS worldPositionImage;
 
@@ -53,22 +53,17 @@ void main(void){
 		offset.xy /= offset.w;
 		offset.xy = offset.xy * 0.5 + 0.5;
 		  
-		if (offset.x < 1.0 && offset.y < 1.0 && offset.x >= 0.0 && offset.y >= 0.0){
-			// get sample depth:
-			float sampleDepth = (m_View * vec4(imageLoad(worldPositionImage, ivec2(offset.x * width, offset.y * height), 0).rgb,1.0)).z;
-		  
-			// range check & accumulate:
-			float rangeCheck= abs(actualDepth - sampleDepth) < threshold ? 1.0 : 0.0;
-			
-			occlusionOffset = (sampleDepth/zfar <= smple.z/zfar ? 1.0 : 0.0) * rangeCheck;
-			occlusion += occlusionOffset;
-		}
-		else{
-			occlusion += 0.4f;
-		}
+		// get sample depth:
+		float sampleDepth = (m_View * vec4(imageLoad(worldPositionImage,ivec2(offset.x * width, offset.y * height), 0).rgb,1.0)).z/zfar;
+	  
+		// range check & accumulate:
+		float rangeCheck= abs(actualDepth - sampleDepth) < threshold ? 1.0 : 0.0;
+		
+		occlusionOffset = (sampleDepth <= smple.z/zfar ? 1.0 : 0.0) * rangeCheck;
+		occlusion += occlusionOffset;
 	}
 	
 	occlusion = (1.0 - (occlusion / float(kernelSize)));
 	
-	imageStore(ssao_out, computeCoord, vec4(occlusion,occlusion,occlusion,1.0));
+	imageStore(ssao_out, computeCoord, vec4(occlusion,0,0,1.0));
 }

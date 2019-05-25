@@ -11,8 +11,6 @@ layout (binding = 2, rgba16f) uniform readonly image2D depthOfFieldBlurMask;
 layout (binding = 3, rgba16f) uniform writeonly image2D horizontalBlurSceneSampler;
 
 uniform sampler2DMS depthmap;
-uniform float windowWidth;
-uniform float windowHeight;
 
 const float gaussianKernel9_Sigma2[9]   = float[9](0.028532,0.067234,0.124009,0.179044,0.20236,0.179044,0.124009,0.067234,0.028532);
 const float gaussianKernel7_Sigma1_5[7] = float[7](0.038735,0.113085,0.215007,0.266346,0.215007,0.113085,0.038735);
@@ -28,9 +26,6 @@ float linearize(float depth)
 void main(void){
 
 	ivec2 computeCoord = ivec2(gl_GlobalInvocationID.x, gl_GlobalInvocationID.y);
-	
-	// window coords
-	// vec2 w = vec2(gl_GlobalInvocationID.x/windowWidth, gl_GlobalInvocationID.y/windowHeight);
 	
 	// Get the depth buffer value at this pixel.  
 	float depth = texelFetch(depthmap, computeCoord, 0).r ; 
@@ -48,45 +43,40 @@ void main(void){
 		return;
 	}   
 	
-	if (gl_GlobalInvocationID.x > 3 && gl_GlobalInvocationID.y > 3
-		&& gl_GlobalInvocationID.x < windowWidth-4
-		&& gl_GlobalInvocationID.y < windowHeight-4)
-	{
-		if (linDepth > 0.06) {
-			color = vec3(0,0,0);
-			
-			for (int i=0; i<9; i++){
-				if (linearize(texelFetch(depthmap, computeCoord + ivec2(((i-4)*1.4),0),0).r) > 0.059)
-					color += imageLoad(lowResSceneSampler, computeCoordLowRes + ivec2((i-4),0)).rgb * gaussianKernel9_Sigma2[i];
-				else
-					color += imageLoad(lowResSceneSampler, computeCoordLowRes).rgb * gaussianKernel9_Sigma2[i];
-			}
+	if (linDepth > 0.06) {
+		color = vec3(0,0,0);
+		
+		for (int i=0; i<9; i++){
+			if (linearize(texelFetch(depthmap, computeCoord + ivec2(((i-4)*1.4),0),0).r) > 0.059)
+				color += imageLoad(lowResSceneSampler, computeCoordLowRes + ivec2((i-4),0)).rgb * gaussianKernel9_Sigma2[i];
+			else
+				color += imageLoad(lowResSceneSampler, computeCoordLowRes).rgb * gaussianKernel9_Sigma2[i];
 		}
-		else if (linDepth > 0.04) {
-			color = vec3(0,0,0);
-			
-			for (int i=0; i<9; i++){
-				if (linearize(texelFetch(depthmap, computeCoord + ivec2((i-4),0),0).r) > 0.039)
-					color += imageLoad(sceneSampler, computeCoord + ivec2(i-4,0)).rgb * gaussianKernel9_Sigma2[i];
-				else
-					color += imageLoad(sceneSampler, computeCoord).rgb * gaussianKernel9_Sigma2[i];
-			}
+	}
+	else if (linDepth > 0.04) {
+		color = vec3(0,0,0);
+		
+		for (int i=0; i<9; i++){
+			if (linearize(texelFetch(depthmap, computeCoord + ivec2((i-4),0),0).r) > 0.039)
+				color += imageLoad(sceneSampler, computeCoord + ivec2(i-4,0)).rgb * gaussianKernel9_Sigma2[i];
+			else
+				color += imageLoad(sceneSampler, computeCoord).rgb * gaussianKernel9_Sigma2[i];
 		}
-		else if (linDepth > 0.02) {
-			color = vec3(0,0,0);
-			
-			for (int i=0; i<7; i++){
-				if (linearize(texelFetch(depthmap, computeCoord + ivec2((i-3),0),0).r) > 0.019)
-					color += imageLoad(sceneSampler, computeCoord + ivec2(i-3,0)).rgb * gaussianKernel7_Sigma1_5[i];
-				else
-					color += imageLoad(sceneSampler, computeCoord).rgb * gaussianKernel7_Sigma1_5[i];
-			}
+	}
+	else if (linDepth > 0.02) {
+		color = vec3(0,0,0);
+		
+		for (int i=0; i<7; i++){
+			if (linearize(texelFetch(depthmap, computeCoord + ivec2((i-3),0),0).r) > 0.019)
+				color += imageLoad(sceneSampler, computeCoord + ivec2(i-3,0)).rgb * gaussianKernel7_Sigma1_5[i];
+			else
+				color += imageLoad(sceneSampler, computeCoord).rgb * gaussianKernel7_Sigma1_5[i];
 		}
-		else if (linDepth > 0.01){
-			color = vec3(0,0,0);
-			for (int i=0; i<7; i++){
-				color += imageLoad(sceneSampler, computeCoord + ivec2(i-3,0)).rgb * gaussianKernel7_Sigma1[i];
-			}
+	}
+	else if (linDepth > 0.01){
+		color = vec3(0,0,0);
+		for (int i=0; i<7; i++){
+			color += imageLoad(sceneSampler, computeCoord + ivec2(i-3,0)).rgb * gaussianKernel7_Sigma1[i];
 		}
 	}
 	

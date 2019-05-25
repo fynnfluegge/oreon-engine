@@ -38,6 +38,7 @@ public class FXAAShader extends GLShaderProgram{
 		
 		glActiveTexture(GL_TEXTURE0);
 		sceneTexture.bind();
+		sceneTexture.bilinearFilter();
 		setUniformi("sceneSampler", 0);
 		setUniformf("width", (float) BaseContext.getWindow().getWidth());
 		setUniformf("height", (float) BaseContext.getWindow().getHeight());

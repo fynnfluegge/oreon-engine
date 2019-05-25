@@ -59,7 +59,7 @@ public class OffScreenFbo extends VkFrameBufferObject {
 		VkImageBundle depthBuffer = new FrameBufferDepthAttachment(device, memoryProperties,
 				width, height, VK_FORMAT_D32_SFLOAT, samples);
 
-		attachments.put(Attachment.ALBEDO, albedoAttachment);
+		attachments.put(Attachment.COLOR, albedoAttachment);
 		attachments.put(Attachment.POSITION, worldPositionAttachment);
 		attachments.put(Attachment.NORMAL, normalAttachment);
 		attachments.put(Attachment.LIGHT_SCATTERING, lightScatteringMaskAttachment);
@@ -107,7 +107,7 @@ public class OffScreenFbo extends VkFrameBufferObject {
 		colorAttachmentCount = renderPass.getAttachmentCount()-depthAttachmentCount;
 
 		LongBuffer pImageViews = memAllocLong(renderPass.getAttachmentCount());
-		pImageViews.put(0, attachments.get(Attachment.ALBEDO).getImageView().getHandle());
+		pImageViews.put(0, attachments.get(Attachment.COLOR).getImageView().getHandle());
 		pImageViews.put(1, attachments.get(Attachment.POSITION).getImageView().getHandle());
 		pImageViews.put(2, attachments.get(Attachment.NORMAL).getImageView().getHandle());
 		pImageViews.put(3, attachments.get(Attachment.SPECULAR_EMISSION).getImageView().getHandle());
