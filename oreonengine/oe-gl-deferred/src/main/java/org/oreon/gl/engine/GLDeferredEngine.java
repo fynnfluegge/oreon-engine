@@ -220,13 +220,16 @@ public class GLDeferredEngine extends RenderEngine{
 		//         blend opaque/transparent scene        //
 		//-----------------------------------------------//
 		
-		opaqueTransparencyBlending.render(deferredLighting.getDeferredLightingSceneTexture(),
-				primarySceneFbo.getAttachmentTexture(Attachment.DEPTH),
-				sampleCoverage.getLightScatteringMaskDownSampled(),
-				secondarySceneFbo.getAttachmentTexture(Attachment.COLOR),
-				secondarySceneFbo.getAttachmentTexture(Attachment.DEPTH),
-				secondarySceneFbo.getAttachmentTexture(Attachment.ALPHA),
-				secondarySceneFbo.getAttachmentTexture(Attachment.LIGHT_SCATTERING));
+		if (transparencySceneRenderList.getObjectList().size() > 0){
+			
+			opaqueTransparencyBlending.render(deferredLighting.getDeferredLightingSceneTexture(),
+					primarySceneFbo.getAttachmentTexture(Attachment.DEPTH),
+					sampleCoverage.getLightScatteringMaskDownSampled(),
+					secondarySceneFbo.getAttachmentTexture(Attachment.COLOR),
+					secondarySceneFbo.getAttachmentTexture(Attachment.DEPTH),
+					secondarySceneFbo.getAttachmentTexture(Attachment.ALPHA),
+					secondarySceneFbo.getAttachmentTexture(Attachment.LIGHT_SCATTERING));
+		}
 		
 		// start Threads to update instancing objects
 		instancingObjectHandler.signalAll();
@@ -238,21 +241,20 @@ public class GLDeferredEngine extends RenderEngine{
 			}
 		}
 		
-		
-		GLTexture prePostprocessingScene = opaqueTransparencyBlending.getBlendedSceneTexture();
+		GLTexture prePostprocessingScene = transparencySceneRenderList.getObjectList().size() > 0 ?
+				opaqueTransparencyBlending.getBlendedSceneTexture() : deferredLighting.getDeferredLightingSceneTexture();
 		GLTexture currentScene = prePostprocessingScene;
 		
 		GLTexture lightScatteringMaskTexture = sampleCoverage.getLightScatteringMaskDownSampled();
 		
 		boolean doMotionBlur = camera.getPreviousPosition().sub(camera.getPosition()).length() > 0.04f
 				|| camera.getForward().sub(camera.getPreviousForward()).length() > 0.01f;
-		
 				
 		//-----------------------------------------------//
 		//                  render FXAA                  //
 		//-----------------------------------------------//
 		
-		if (!doMotionBlur && BaseContext.getConfig().isFxaaEnabled()){
+		if (!camera.isCameraMoved() && !camera.isCameraRotated() && BaseContext.getConfig().isFxaaEnabled()){
 			fxaa.render(currentScene);
 			currentScene = fxaa.getFxaaSceneTexture();
 		}
@@ -340,9 +342,10 @@ public class GLDeferredEngine extends RenderEngine{
 		
 //		contrastController.render(displayTexture);
 
-//		fullScreenQuadMultisample.setTexture(primarySceneFbo.getAttachmentTexture(Attachment.LIGHT_SCATTERING));
+//		fullScreenQuadMultisample.setTexture(primarySceneFbo.getAttachmentTexture(Attachment.COLOR));
 //		fullScreenQuadMultisample.render();
 		
+//		fullScreenQuad.setTexture(deferredLighting.getDeferredLightingSceneTexture());
 //		fullScreenQuad.setTexture(opaqueTransparencyBlending.getBlendedSceneTexture());
 //		fullScreenQuad.setTexture(sampleCoverage.getLightScatteringMaskDownSampled());
 //		fullScreenQuad.setTexture(deferredLighting.getDeferredLightingSceneTexture());
@@ -364,7 +367,7 @@ public class GLDeferredEngine extends RenderEngine{
 		}
 		
 		if (gui != null){
-//			gui.render();
+			gui.render();
 		}
 		
 		glFinish();

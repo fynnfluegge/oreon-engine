@@ -40,7 +40,7 @@ void main()
 	}
 	else{
 		rgba = transparencyColor + opaqueColor * (1-alpha);
-		lightScattering = opaqueSceneLightScattering;
+		lightScattering = transparencyLightScattering;
 	}
 		
 	imageStore(finalColor_out, computeCoord, rgba);
