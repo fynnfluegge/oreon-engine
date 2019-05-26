@@ -225,7 +225,7 @@ public class GLDeferredEngine extends RenderEngine{
 			
 			opaqueTransparencyBlending.render(deferredLighting.getDeferredLightingSceneTexture(),
 					primarySceneFbo.getAttachmentTexture(Attachment.DEPTH),
-					sampleCoverage.getLightScatteringMaskDownSampled(),
+					sampleCoverage.getLightScatteringMaskSingleSample(),
 					secondarySceneFbo.getAttachmentTexture(Attachment.COLOR),
 					secondarySceneFbo.getAttachmentTexture(Attachment.DEPTH),
 					secondarySceneFbo.getAttachmentTexture(Attachment.ALPHA),
@@ -246,7 +246,8 @@ public class GLDeferredEngine extends RenderEngine{
 				opaqueTransparencyBlending.getBlendedSceneTexture() : deferredLighting.getDeferredLightingSceneTexture();
 		GLTexture currentScene = prePostprocessingScene;
 		
-		GLTexture lightScatteringMaskTexture = sampleCoverage.getLightScatteringMaskDownSampled();
+		GLTexture lightScatteringMask = sampleCoverage.getLightScatteringMaskSingleSample();
+		GLTexture specularEmissionBloomMask = sampleCoverage.getSpecularEmissionBloomMaskSingleSample();
 		
 		boolean doMotionBlur = camera.getPreviousPosition().sub(camera.getPosition()).length() > 0.04f
 				|| camera.getForward().sub(camera.getPreviousForward()).length() > 0.01f;
@@ -274,7 +275,7 @@ public class GLDeferredEngine extends RenderEngine{
 			
 			if (BaseContext.getConfig().isDepthOfFieldBlurEnabled()){
 				DepthOfField.render(primarySceneFbo.getAttachmentTexture(Attachment.DEPTH),
-						lightScatteringMaskTexture, currentScene);
+						lightScatteringMask, currentScene);
 				currentScene = DepthOfField.getVerticalBlurSceneTexture();
 			}
 			
@@ -283,8 +284,7 @@ public class GLDeferredEngine extends RenderEngine{
 			//--------------------------------------------//
 			
 			if (BaseContext.getConfig().isBloomEnabled()){
-				bloom.render(prePostprocessingScene, currentScene,
-						sampleCoverage.getSpecular_emission_bloomMaskDownSampled());
+				bloom.render(prePostprocessingScene, currentScene, specularEmissionBloomMask);
 				currentScene = bloom.getBloomSceneTexture();
 			}
 			
@@ -312,7 +312,7 @@ public class GLDeferredEngine extends RenderEngine{
 			//             Light Scattering               //
 			//--------------------------------------------//
 			if (BaseContext.getConfig().isLightScatteringEnabled()){
-				sunlightScattering.render(currentScene, lightScatteringMaskTexture);
+				sunlightScattering.render(currentScene, lightScatteringMask);
 				currentScene = sunlightScattering.getSunLightScatteringSceneTexture();
 			}
 		}
@@ -348,14 +348,7 @@ public class GLDeferredEngine extends RenderEngine{
 //		fullScreenQuadMultisample.setTexture(primarySceneFbo.getAttachmentTexture(Attachment.COLOR));
 //		fullScreenQuadMultisample.render();
 		
-//		fullScreenQuad.setTexture(deferredLighting.getDeferredLightingSceneTexture());
-//		fullScreenQuad.setTexture(opaqueTransparencyBlending.getBlendedSceneTexture());
-//		fullScreenQuad.setTexture(sampleCoverage.getLightScatteringMaskDownSampled());
-//		fullScreenQuad.setTexture(deferredLighting.getDeferredLightingSceneTexture());
-//		fullScreenQuad.setTexture(dofBlur.getVerticalBlurSceneTexture());
-//		fullScreenQuad.setTexture(bloom.getBloomSceneTexture());
 		fullScreenQuad.setTexture(currentScene);
-//		fullScreenQuad.setTexture(bloom.getVerticalBloomBlurDownsampling3());
 		fullScreenQuad.render();
 		
 		if (BaseContext.getConfig().isLensFlareEnabled()
