@@ -199,7 +199,8 @@ public class GLDeferredEngine extends RenderEngine{
 		//---------------------------------------------------//
 		
 		sampleCoverage.render(primarySceneFbo.getAttachmentTexture(Attachment.POSITION),
-				primarySceneFbo.getAttachmentTexture(Attachment.LIGHT_SCATTERING));
+				primarySceneFbo.getAttachmentTexture(Attachment.LIGHT_SCATTERING),
+				primarySceneFbo.getAttachmentTexture(Attachment.SPECULAR_EMISSION_BLOOM));
 		
 
 		//-----------------------------------------------------//
@@ -282,7 +283,8 @@ public class GLDeferredEngine extends RenderEngine{
 			//--------------------------------------------//
 			
 			if (BaseContext.getConfig().isBloomEnabled()){
-				bloom.render(prePostprocessingScene, currentScene, primarySceneFbo.getAttachmentTexture(Attachment.SPECULAR_EMISSION_BLOOM));
+				bloom.render(prePostprocessingScene, currentScene,
+						sampleCoverage.getSpecular_emission_bloomMaskDownSampled());
 				currentScene = bloom.getBloomSceneTexture();
 			}
 			

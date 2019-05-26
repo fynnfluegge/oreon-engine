@@ -176,6 +176,6 @@ void main() {
     albedo_out = vec4(out_Color, 1);
 	worldPosition_out = vec4(0.0,0.0,0.0,1.0);
 	normal_out = vec4(0.0,0.0,0.0,1.0);
-	specularEmission_out = vec4(0,0,1,1.0);
+	specularEmission_out = vec4(0,0,0,1.0);
 	lightScattering_out = out_LightScattering;
 }

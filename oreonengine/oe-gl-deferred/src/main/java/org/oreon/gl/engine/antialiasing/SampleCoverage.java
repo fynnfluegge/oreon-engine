@@ -35,15 +35,20 @@ public class SampleCoverage {
 				ImageFormat.R8, SamplerFilter.Nearest, TextureWrapMode.ClampToEdge);
 		lightScatteringMaskDownSampled = new TextureImage2D(width, height,
 				ImageFormat.RGBA16FLOAT, SamplerFilter.Nearest, TextureWrapMode.ClampToEdge);
+		specular_emission_bloomMaskDownSampled = new TextureImage2D(width, height,
+				ImageFormat.RGBA16FLOAT, SamplerFilter.Nearest, TextureWrapMode.ClampToEdge);
 	}
 	
-	public void render(GLTexture worldPositionTexture, GLTexture LightScatteringMaskMS) {
+	public void render(GLTexture worldPositionTexture, GLTexture lightScatteringMask,
+			GLTexture specular_emission_bloom_mask) {
 		
 		shader.bind();
 		glBindImageTexture(0, sampleCoverageMask.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_R8);
 		glBindImageTexture(1, worldPositionTexture.getHandle(), 0, false, 0, GL_READ_ONLY, GL_RGBA32F);
 		glBindImageTexture(2, lightScatteringMaskDownSampled.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
-		glBindImageTexture(3, LightScatteringMaskMS.getHandle(), 0, false, 0, GL_READ_ONLY, GL_RGBA16F);
+		glBindImageTexture(3, lightScatteringMask.getHandle(), 0, false, 0, GL_READ_ONLY, GL_RGBA16F);
+		glBindImageTexture(4, specular_emission_bloomMaskDownSampled.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
+		glBindImageTexture(5, specular_emission_bloom_mask.getHandle(), 0, false, 0, GL_READ_ONLY, GL_RGBA16F);
 		shader.updateUniforms();
 		glDispatchCompute(BaseContext.getWindow().getWidth()/16, BaseContext.getWindow().getHeight()/16, 1);	
 	}

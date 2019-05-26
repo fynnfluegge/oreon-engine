@@ -10,6 +10,10 @@ layout (binding = 2, rgba16f) uniform writeonly image2D lightScatteringMask_out;
 
 layout (binding = 3, rgba16f) uniform readonly image2DMS lightScatteringMask_in;
 
+layout (binding = 4, rgba16f) uniform writeonly image2D specular_emission_bloom_out;
+
+layout (binding = 5, rgba16f) uniform readonly image2DMS specular_emission_bloom_in;
+
 uniform int multisamples;
 
 const float threshold = 1;
@@ -33,9 +37,26 @@ void main()
 	if(positionDiscontinuities > threshold){	
 		coverageValue = 1.0;
 	}
-	
-	vec4 lightScatteringMaskValue = imageLoad(lightScatteringMask_in, computeCoord, 0).rgba;
+
+	vec4 lightScatteringMaskValue = vec4(0);
+	vec4 specularEmissionBloomMaskValue = vec4(0); 
+
+	if (coverageValue == 1.0){	
+
+		for (int i=0; i<multisamples; i++){
+			lightScatteringMaskValue += imageLoad(lightScatteringMask_in, computeCoord, i).rgba;
+			specularEmissionBloomMaskValue += imageLoad(specular_emission_bloom_in, computeCoord, i).rgba;
+		}
+
+		lightScatteringMaskValue /= multisamples;
+		specularEmissionBloomMaskValue /= multisamples;
+	}
+	else{
+		lightScatteringMaskValue = imageLoad(lightScatteringMask_in, computeCoord, 0).rgba;
+		specularEmissionBloomMaskValue = imageLoad(specular_emission_bloom_in, computeCoord, 0).rgba;
+	}
 			  
 	imageStore(sampleCoverageMaskImage, computeCoord, vec4(coverageValue,0,0,1));
 	imageStore(lightScatteringMask_out, computeCoord, lightScatteringMaskValue);
+	imageStore(specular_emission_bloom_out, computeCoord, specularEmissionBloomMaskValue);
 }
