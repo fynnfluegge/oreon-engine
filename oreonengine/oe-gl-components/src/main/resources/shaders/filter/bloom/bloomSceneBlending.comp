@@ -6,7 +6,9 @@ layout (binding = 0, rgba16f) uniform readonly image2D sceneSampler;
 
 layout (binding = 1, rgba16f) uniform readonly image2D additiveBlendBloomSampler;
 
-layout (binding = 2, rgba16f) uniform writeonly image2D bloomSceneSampler;
+layout (binding = 2, rgba16f) uniform readonly image2D specular_emission_bloom_attachment;
+
+layout (binding = 3, rgba16f) uniform writeonly image2D bloomSceneSampler;
 
 
 void main()
@@ -17,7 +19,7 @@ void main()
     vec3 bloomColor = imageLoad(additiveBlendBloomSampler, computeCoord).rgb;
 	
 	// additive blending
-    hdrColor += bloomColor;
+    hdrColor += bloomColor * imageLoad(specular_emission_bloom_attachment, computeCoord).b;
 	
     imageStore(bloomSceneSampler, computeCoord, vec4(hdrColor, 1.0));
 } 

@@ -26,7 +26,7 @@ public class DeferredLightingShader extends GLShaderProgram{
 	{
 		super();
 		
-		addComputeShader(ResourceLoader.loadShader("shaders/deferredLighting_CS.glsl"));
+		addComputeShader(ResourceLoader.loadShader("shaders/deferredLighting.comp"));
 		compileShader();
 		
 		addUniformBlock("Camera");
@@ -34,7 +34,7 @@ public class DeferredLightingShader extends GLShaderProgram{
 		addUniformBlock("LightViewProjections");
 		addUniform("numSamples");
 		addUniform("pssm");
-//		addUniform("sightRangeFactor");
+		addUniform("sightRangeFactor");
 		addUniform("ssaoFlag");
 	}
 	
@@ -43,7 +43,7 @@ public class DeferredLightingShader extends GLShaderProgram{
 		bindUniformBlock("Camera", Constants.CameraUniformBlockBinding);
 		bindUniformBlock("DirectionalLight", Constants.DirectionalLightUniformBlockBinding);	
 		bindUniformBlock("LightViewProjections",Constants.LightMatricesUniformBlockBinding);
-//		setUniformf("sightRangeFactor", BaseContext.getConfig().getSightRange());
+		setUniformf("sightRangeFactor", BaseContext.getConfig().getSightRange());
 		
 		glActiveTexture(GL_TEXTURE1);
 		pssm.bind();

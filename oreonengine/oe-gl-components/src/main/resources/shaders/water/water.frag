@@ -101,7 +101,7 @@ void main(void)
     // Reflection //
 	vec2 reflecCoords = projCoord.xy + dudvCoord.rb * kReflection;
 	reflecCoords = clamp(reflecCoords, kReflection, 1-kReflection);
-    vec3 reflection = mix(texture(waterReflection, reflecCoords).rgb, deepOceanColor,  0.0);
+    vec3 reflection = mix(texture(waterReflection, reflecCoords).rgb, deepOceanColor,  0.2);
     reflection *= F;
  
     // Refraction //
@@ -140,6 +140,6 @@ void main(void)
 	albedo_out = vec4(fragColor,1);
 	worldPosition_out = vec4(position_FS,1);
 	normal_out = vec4(normal,1);
-	specularEmission_out = vec4(1,0,0,1);
+	specularEmission_out = vec4(1,0,1,1);
 	lightScattering_out = vec4(0,0,0,1);
 }

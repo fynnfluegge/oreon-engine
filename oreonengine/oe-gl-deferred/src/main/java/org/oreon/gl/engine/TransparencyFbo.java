@@ -18,15 +18,15 @@ public class TransparencyFbo extends GLFrameBufferObject{
 
 	public TransparencyFbo(int width, int height) {
 
-		GLTexture albedoTexture = new TextureImage2D(width, height, ImageFormat.RGBA16FLOAT, SamplerFilter.Nearest);
-		GLTexture alphaTexture = new TextureImage2D(width, height, ImageFormat.RGBA16FLOAT, SamplerFilter.Nearest);
-		GLTexture lightScatteringMask = new TextureImage2D(width, height, ImageFormat.RGBA16FLOAT, SamplerFilter.Nearest);
-		GLTexture depthTexture = new TextureImage2D(width, height, ImageFormat.DEPTH32FLOAT, SamplerFilter.Nearest);
+		GLTexture albedoAttachment = new TextureImage2D(width, height, ImageFormat.RGBA16FLOAT, SamplerFilter.Nearest);
+		GLTexture alphaAttachment = new TextureImage2D(width, height, ImageFormat.RGBA16FLOAT, SamplerFilter.Nearest);
+		GLTexture lightScatteringAttachment = new TextureImage2D(width, height, ImageFormat.RGBA16FLOAT, SamplerFilter.Nearest);
+		GLTexture depthAttachment = new TextureImage2D(width, height, ImageFormat.DEPTH32FLOAT, SamplerFilter.Nearest);
 		
-		attachments.put(Attachment.COLOR, albedoTexture);
-		attachments.put(Attachment.ALPHA, alphaTexture);
-		attachments.put(Attachment.LIGHT_SCATTERING, lightScatteringMask);
-		attachments.put(Attachment.DEPTH, depthTexture);
+		attachments.put(Attachment.COLOR, albedoAttachment);
+		attachments.put(Attachment.ALPHA, alphaAttachment);
+		attachments.put(Attachment.LIGHT_SCATTERING, lightScatteringAttachment);
+		attachments.put(Attachment.DEPTH, depthAttachment);
 		
 		IntBuffer drawBuffers = BufferUtil.createIntBuffer(3);
 		drawBuffers.put(GL_COLOR_ATTACHMENT0);
@@ -36,10 +36,10 @@ public class TransparencyFbo extends GLFrameBufferObject{
 		
 		frameBuffer = new GLFramebuffer();
 		frameBuffer.bind();
-		frameBuffer.createColorTextureAttachment(albedoTexture.getHandle(),0);
-		frameBuffer.createColorTextureAttachment(alphaTexture.getHandle(),1);
-		frameBuffer.createColorTextureAttachment(lightScatteringMask.getHandle(),2);
-		frameBuffer.createDepthTextureAttachment(depthTexture.getHandle());
+		frameBuffer.createColorTextureAttachment(albedoAttachment.getHandle(),0);
+		frameBuffer.createColorTextureAttachment(alphaAttachment.getHandle(),1);
+		frameBuffer.createColorTextureAttachment(lightScatteringAttachment.getHandle(),2);
+		frameBuffer.createDepthTextureAttachment(depthAttachment.getHandle());
 		frameBuffer.setDrawBuffers(drawBuffers);
 		frameBuffer.checkStatus();
 		frameBuffer.unbind();

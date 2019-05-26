@@ -16,7 +16,7 @@ public abstract class FrameBufferObject {
 		ALPHA,
 		NORMAL,
 		POSITION,
-		SPECULAR_EMISSION,
+		SPECULAR_EMISSION_BLOOM,
 		LIGHT_SCATTERING,
 		DEPTH;
 	}

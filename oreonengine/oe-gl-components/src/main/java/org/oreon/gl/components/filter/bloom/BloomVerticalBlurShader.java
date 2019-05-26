@@ -1,6 +1,9 @@
 package org.oreon.gl.components.filter.bloom;
 
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE2;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE3;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import org.oreon.core.gl.pipeline.GLShaderProgram;
@@ -28,17 +31,40 @@ public class BloomVerticalBlurShader extends GLShaderProgram{
 		
 		compileShader();
 		
-		addUniform("horizontalBloomBlurSampler");
-		addUniform("windowWidth");
-		addUniform("windowHeight");
+		addUniform("horizontalBloomBlurSampler0");
+		addUniform("horizontalBloomBlurSampler1");
+		addUniform("horizontalBloomBlurSampler2");
+		addUniform("horizontalBloomBlurSampler3");
+		addUniform("width");
+		addUniform("height");
+		
+		for (int i=0; i<4; i++){
+			addUniform("downsamplingFactors[" + i + "]");
+		}
 	}
 	
-	public void updateUniforms(GLTexture horizontalBloomBlurSampler, int width, int height)
+	public void updateUniforms(GLTexture horizontalBloomBlurSampler0, GLTexture horizontalBloomBlurSampler1,
+			GLTexture horizontalBloomBlurSampler2, GLTexture horizontalBloomBlurSampler3,
+			int[] downsamplingFactors, int width, int height)
 	{
 		glActiveTexture(GL_TEXTURE0);
-		horizontalBloomBlurSampler.bind();
-		setUniformi("horizontalBloomBlurSampler", 0);
-		setUniformf("windowWidth", width);
-		setUniformf("windowHeight", height);
+		horizontalBloomBlurSampler0.bind();
+		setUniformi("horizontalBloomBlurSampler0", 0);
+		glActiveTexture(GL_TEXTURE1);
+		horizontalBloomBlurSampler1.bind();
+		setUniformi("horizontalBloomBlurSampler1", 1);
+		glActiveTexture(GL_TEXTURE2);
+		horizontalBloomBlurSampler2.bind();
+		setUniformi("horizontalBloomBlurSampler2", 2);
+		glActiveTexture(GL_TEXTURE3);
+		horizontalBloomBlurSampler3.bind();
+		setUniformi("horizontalBloomBlurSampler3", 3);
+		
+		setUniformf("width", width);
+		setUniformf("height", height);
+		
+		for (int i=0; i<4; i++){
+			setUniformf("downsamplingFactors[" + i + "]", downsamplingFactors[i]);
+		}
 	}
 }

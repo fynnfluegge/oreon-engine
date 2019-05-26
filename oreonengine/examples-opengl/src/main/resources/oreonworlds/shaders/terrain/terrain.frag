@@ -112,6 +112,6 @@ void main()
 	outAlbedo = vec4(fragColor,1);
 	outWorldPos = vec4(inWorldPos,1);
 	outNormal = vec4(normal,1);
-	outSpecularEmission = vec4(1,0,0,1);
+	outSpecularEmission = vec4(1,0,1,1);
 	outLightScattering = vec4(0,0,0,1);
 }

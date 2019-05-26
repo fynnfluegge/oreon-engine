@@ -21,7 +21,7 @@ public class SampleCoverageShader extends GLShaderProgram{
 	{
 		super();
 		
-		addComputeShader(ResourceLoader.loadShader("shaders/sampleCoverageMask_CS.glsl"));
+		addComputeShader(ResourceLoader.loadShader("shaders/sampleCoverage.comp"));
 		
 		compileShader();
 		

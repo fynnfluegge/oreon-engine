@@ -23,7 +23,7 @@ import org.oreon.core.target.FrameBufferObject.Attachment;
 import org.oreon.core.util.Constants;
 import org.oreon.gl.components.filter.bloom.Bloom;
 import org.oreon.gl.components.filter.contrast.ContrastController;
-import org.oreon.gl.components.filter.dofblur.DepthOfFieldBlur;
+import org.oreon.gl.components.filter.dofblur.DepthOfField;
 import org.oreon.gl.components.filter.lensflare.LensFlare;
 import org.oreon.gl.components.filter.lightscattering.SunLightScattering;
 import org.oreon.gl.components.filter.motionblur.MotionBlur;
@@ -63,7 +63,7 @@ public class GLDeferredEngine extends RenderEngine{
 	
 	// post processing effects
 	private MotionBlur motionBlur;
-	private DepthOfFieldBlur dofBlur;
+	private DepthOfField DepthOfField;
 	private Bloom bloom;
 	private SunLightScattering sunlightScattering;
 	private LensFlare lensFlare;
@@ -108,7 +108,7 @@ public class GLDeferredEngine extends RenderEngine{
 				config.getY_ScreenResolution());
 		
 		motionBlur = new MotionBlur();
-		dofBlur = new DepthOfFieldBlur();
+		DepthOfField = new DepthOfField();
 		bloom = new Bloom();
 		sunlightScattering = new SunLightScattering();
 		lensFlare = new LensFlare();
@@ -199,7 +199,8 @@ public class GLDeferredEngine extends RenderEngine{
 		//---------------------------------------------------//
 		
 		sampleCoverage.render(primarySceneFbo.getAttachmentTexture(Attachment.POSITION),
-				primarySceneFbo.getAttachmentTexture(Attachment.LIGHT_SCATTERING));
+				primarySceneFbo.getAttachmentTexture(Attachment.LIGHT_SCATTERING),
+				primarySceneFbo.getAttachmentTexture(Attachment.SPECULAR_EMISSION_BLOOM));
 		
 
 		//-----------------------------------------------------//
@@ -212,7 +213,7 @@ public class GLDeferredEngine extends RenderEngine{
 				primarySceneFbo.getAttachmentTexture(Attachment.COLOR),
 				primarySceneFbo.getAttachmentTexture(Attachment.POSITION),
 				primarySceneFbo.getAttachmentTexture(Attachment.NORMAL),
-				primarySceneFbo.getAttachmentTexture(Attachment.SPECULAR_EMISSION),
+				primarySceneFbo.getAttachmentTexture(Attachment.SPECULAR_EMISSION_BLOOM),
 				BaseContext.getConfig().isSsaoEnabled());
 		
 		
@@ -224,7 +225,7 @@ public class GLDeferredEngine extends RenderEngine{
 			
 			opaqueTransparencyBlending.render(deferredLighting.getDeferredLightingSceneTexture(),
 					primarySceneFbo.getAttachmentTexture(Attachment.DEPTH),
-					sampleCoverage.getLightScatteringMaskDownSampled(),
+					sampleCoverage.getLightScatteringMaskSingleSample(),
 					secondarySceneFbo.getAttachmentTexture(Attachment.COLOR),
 					secondarySceneFbo.getAttachmentTexture(Attachment.DEPTH),
 					secondarySceneFbo.getAttachmentTexture(Attachment.ALPHA),
@@ -245,16 +246,18 @@ public class GLDeferredEngine extends RenderEngine{
 				opaqueTransparencyBlending.getBlendedSceneTexture() : deferredLighting.getDeferredLightingSceneTexture();
 		GLTexture currentScene = prePostprocessingScene;
 		
-		GLTexture lightScatteringMaskTexture = sampleCoverage.getLightScatteringMaskDownSampled();
+		GLTexture lightScatteringMask = sampleCoverage.getLightScatteringMaskSingleSample();
+		GLTexture specularEmissionBloomMask = sampleCoverage.getSpecularEmissionBloomMaskSingleSample();
 		
 		boolean doMotionBlur = camera.getPreviousPosition().sub(camera.getPosition()).length() > 0.04f
 				|| camera.getForward().sub(camera.getPreviousForward()).length() > 0.01f;
+		boolean doFXAA = !camera.isCameraMoved() && !camera.isCameraRotated();
 				
 		//-----------------------------------------------//
 		//                  render FXAA                  //
 		//-----------------------------------------------//
 		
-		if (!camera.isCameraMoved() && !camera.isCameraRotated() && BaseContext.getConfig().isFxaaEnabled()){
+		if (doFXAA && BaseContext.getConfig().isFxaaEnabled()){
 			fxaa.render(currentScene);
 			currentScene = fxaa.getFxaaSceneTexture();
 		}
@@ -271,9 +274,9 @@ public class GLDeferredEngine extends RenderEngine{
 			//--------------------------------------------//
 			
 			if (BaseContext.getConfig().isDepthOfFieldBlurEnabled()){
-				dofBlur.render(primarySceneFbo.getAttachmentTexture(Attachment.DEPTH),
-						lightScatteringMaskTexture, currentScene);
-				currentScene = dofBlur.getVerticalBlurSceneTexture();
+				DepthOfField.render(primarySceneFbo.getAttachmentTexture(Attachment.DEPTH),
+						lightScatteringMask, currentScene);
+				currentScene = DepthOfField.getVerticalBlurSceneTexture();
 			}
 			
 			//--------------------------------------------//
@@ -281,7 +284,7 @@ public class GLDeferredEngine extends RenderEngine{
 			//--------------------------------------------//
 			
 			if (BaseContext.getConfig().isBloomEnabled()){
-				bloom.render(prePostprocessingScene, currentScene);
+				bloom.render(prePostprocessingScene, currentScene, specularEmissionBloomMask);
 				currentScene = bloom.getBloomSceneTexture();
 			}
 			
@@ -309,7 +312,7 @@ public class GLDeferredEngine extends RenderEngine{
 			//             Light Scattering               //
 			//--------------------------------------------//
 			if (BaseContext.getConfig().isLightScatteringEnabled()){
-				sunlightScattering.render(currentScene, lightScatteringMaskTexture);
+				sunlightScattering.render(currentScene, lightScatteringMask);
 				currentScene = sunlightScattering.getSunLightScatteringSceneTexture();
 			}
 		}
@@ -345,12 +348,6 @@ public class GLDeferredEngine extends RenderEngine{
 //		fullScreenQuadMultisample.setTexture(primarySceneFbo.getAttachmentTexture(Attachment.COLOR));
 //		fullScreenQuadMultisample.render();
 		
-//		fullScreenQuad.setTexture(deferredLighting.getDeferredLightingSceneTexture());
-//		fullScreenQuad.setTexture(opaqueTransparencyBlending.getBlendedSceneTexture());
-//		fullScreenQuad.setTexture(sampleCoverage.getLightScatteringMaskDownSampled());
-//		fullScreenQuad.setTexture(deferredLighting.getDeferredLightingSceneTexture());
-//		fullScreenQuad.setTexture(dofBlur.getVerticalBlurSceneTexture());
-//		fullScreenQuad.setTexture(bloom.getBloomSceneTexture());
 		fullScreenQuad.setTexture(currentScene);
 		fullScreenQuad.render();
 		
