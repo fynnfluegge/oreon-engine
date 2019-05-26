@@ -26,7 +26,7 @@ public class DeferredLightingShader extends GLShaderProgram{
 	{
 		super();
 		
-		addComputeShader(ResourceLoader.loadShader("shaders/deferredLighting_CS.glsl"));
+		addComputeShader(ResourceLoader.loadShader("shaders/deferredLighting.comp"));
 		compileShader();
 		
 		addUniformBlock("Camera");

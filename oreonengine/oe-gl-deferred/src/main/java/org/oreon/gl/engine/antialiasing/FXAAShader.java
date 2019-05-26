@@ -25,7 +25,7 @@ public class FXAAShader extends GLShaderProgram{
 	{
 		super();
 		
-		addComputeShader(ResourceLoader.loadShader("shaders/fxaa_CS.glsl"));
+		addComputeShader(ResourceLoader.loadShader("shaders/fxaa.comp"));
 		
 		compileShader();
 		

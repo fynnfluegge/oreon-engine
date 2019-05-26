@@ -20,7 +20,7 @@ import org.oreon.core.image.Image.TextureWrapMode;
 
 import lombok.Getter;
 
-public class DepthOfFieldBlur {
+public class DepthOfField {
 	
 	private GLTexture horizontalBlurSceneTexture;
 	@Getter
@@ -32,7 +32,7 @@ public class DepthOfFieldBlur {
 	private FullScreenQuad fullScreenQuad;
 	private GLTexture lowResSceneSampler;
 		
-	public DepthOfFieldBlur() {
+	public DepthOfField() {
 		
 		horizontalBlurShader = DepthOfFieldHorizontalBlurShader.getInstance();
 		verticalBlurShader = DepthOfFieldVerticalBlurShader.getInstance();
@@ -41,18 +41,18 @@ public class DepthOfFieldBlur {
 		
 		horizontalBlurSceneTexture = new TextureImage2D(BaseContext.getWindow().getWidth(),
 				BaseContext.getWindow().getHeight(), ImageFormat.RGBA16FLOAT,
-				SamplerFilter.Nearest, TextureWrapMode.ClampToEdge);
+				SamplerFilter.Bilinear, TextureWrapMode.ClampToEdge);
 		
 		verticalBlurSceneTexture = new TextureImage2D(BaseContext.getWindow().getWidth(),
 				BaseContext.getWindow().getHeight(), ImageFormat.RGBA16FLOAT,
-				SamplerFilter.Nearest, TextureWrapMode.ClampToEdge); 
+				SamplerFilter.Bilinear, TextureWrapMode.ClampToEdge); 
 				
 				new TextureStorage2D(BaseContext.getWindow().getWidth(),
 				BaseContext.getWindow().getHeight(), 1, ImageFormat.RGBA16FLOAT);
 		
 		lowResSceneSampler = new TextureImage2D((int)(BaseContext.getWindow().getWidth()/1.2f),
 				(int)(BaseContext.getWindow().getHeight()/1.2f), ImageFormat.RGBA16FLOAT,
-				SamplerFilter.Nearest, TextureWrapMode.ClampToEdge);
+				SamplerFilter.Bilinear, TextureWrapMode.ClampToEdge);
 		
 		lowResFbo = new GLFramebuffer();
 		lowResFbo.bind();

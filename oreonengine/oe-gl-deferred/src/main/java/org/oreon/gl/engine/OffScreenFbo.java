@@ -21,25 +21,25 @@ public class OffScreenFbo extends GLFrameBufferObject{
 
 	public OffScreenFbo(int width, int height, int samples) {
 		
-		GLTexture albedoTexture = new TextureImage2DMultisample(width, height, samples,
+		GLTexture albedoAttachment = new TextureImage2DMultisample(width, height, samples,
 				ImageFormat.RGBA16FLOAT, SamplerFilter.Nearest, TextureWrapMode.ClampToEdge);
-		GLTexture worldPositionTexture = new TextureImage2DMultisample(width, height, samples,
+		GLTexture worldPositionAttachment = new TextureImage2DMultisample(width, height, samples,
 				ImageFormat.RGBA32FLOAT, SamplerFilter.Nearest, TextureWrapMode.ClampToEdge);
-		GLTexture normalTexture = new TextureImage2DMultisample(width, height, samples,
+		GLTexture normalAttachment = new TextureImage2DMultisample(width, height, samples,
 				ImageFormat.RGBA32FLOAT, SamplerFilter.Nearest, TextureWrapMode.ClampToEdge);
-		GLTexture specularEmissionTexture = new TextureImage2DMultisample(width, height, samples,
+		GLTexture specularEmissionBloomAttachment = new TextureImage2DMultisample(width, height, samples,
 				ImageFormat.RGBA16FLOAT, SamplerFilter.Nearest, TextureWrapMode.ClampToEdge);
-		GLTexture lightScatteringMask = new TextureImage2DMultisample(width, height, samples,
+		GLTexture lightScatteringAttachment = new TextureImage2DMultisample(width, height, samples,
 				ImageFormat.RGBA16FLOAT, SamplerFilter.Nearest, TextureWrapMode.ClampToEdge);
-		GLTexture depthTexture = new TextureImage2DMultisample(width, height, samples,
+		GLTexture depthAttachment = new TextureImage2DMultisample(width, height, samples,
 				ImageFormat.DEPTH32FLOAT, SamplerFilter.Nearest, TextureWrapMode.ClampToEdge);
 
-		attachments.put(Attachment.COLOR, albedoTexture);
-		attachments.put(Attachment.POSITION, worldPositionTexture);
-		attachments.put(Attachment.NORMAL, normalTexture);
-		attachments.put(Attachment.SPECULAR_EMISSION, specularEmissionTexture);
-		attachments.put(Attachment.LIGHT_SCATTERING, lightScatteringMask);
-		attachments.put(Attachment.DEPTH, depthTexture);
+		attachments.put(Attachment.COLOR, albedoAttachment);
+		attachments.put(Attachment.POSITION, worldPositionAttachment);
+		attachments.put(Attachment.NORMAL, normalAttachment);
+		attachments.put(Attachment.SPECULAR_EMISSION_BLOOM, specularEmissionBloomAttachment);
+		attachments.put(Attachment.LIGHT_SCATTERING, lightScatteringAttachment);
+		attachments.put(Attachment.DEPTH, depthAttachment);
 		
 		IntBuffer drawBuffers = BufferUtil.createIntBuffer(5);
 		drawBuffers.put(GL_COLOR_ATTACHMENT0);
@@ -51,12 +51,12 @@ public class OffScreenFbo extends GLFrameBufferObject{
 		
 		frameBuffer = new GLFramebuffer();
 		frameBuffer.bind();
-		frameBuffer.createColorTextureMultisampleAttachment(albedoTexture.getHandle(),0);
-		frameBuffer.createColorTextureMultisampleAttachment(worldPositionTexture.getHandle(),1);
-		frameBuffer.createColorTextureMultisampleAttachment(normalTexture.getHandle(),2);
-		frameBuffer.createColorTextureMultisampleAttachment(specularEmissionTexture.getHandle(),3);
-		frameBuffer.createColorTextureMultisampleAttachment(lightScatteringMask.getHandle(),4);
-		frameBuffer.createDepthTextureMultisampleAttachment(depthTexture.getHandle());
+		frameBuffer.createColorTextureMultisampleAttachment(albedoAttachment.getHandle(),0);
+		frameBuffer.createColorTextureMultisampleAttachment(worldPositionAttachment.getHandle(),1);
+		frameBuffer.createColorTextureMultisampleAttachment(normalAttachment.getHandle(),2);
+		frameBuffer.createColorTextureMultisampleAttachment(specularEmissionBloomAttachment.getHandle(),3);
+		frameBuffer.createColorTextureMultisampleAttachment(lightScatteringAttachment.getHandle(),4);
+		frameBuffer.createDepthTextureMultisampleAttachment(depthAttachment.getHandle());
 		frameBuffer.setDrawBuffers(drawBuffers);
 		frameBuffer.checkStatus();
 		frameBuffer.unbind();

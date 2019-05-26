@@ -23,7 +23,7 @@ import org.oreon.core.target.FrameBufferObject.Attachment;
 import org.oreon.core.util.Constants;
 import org.oreon.gl.components.filter.bloom.Bloom;
 import org.oreon.gl.components.filter.contrast.ContrastController;
-import org.oreon.gl.components.filter.dofblur.DepthOfFieldBlur;
+import org.oreon.gl.components.filter.dofblur.DepthOfField;
 import org.oreon.gl.components.filter.lensflare.LensFlare;
 import org.oreon.gl.components.filter.lightscattering.SunLightScattering;
 import org.oreon.gl.components.filter.motionblur.MotionBlur;
@@ -63,7 +63,7 @@ public class GLDeferredEngine extends RenderEngine{
 	
 	// post processing effects
 	private MotionBlur motionBlur;
-	private DepthOfFieldBlur dofBlur;
+	private DepthOfField DepthOfField;
 	private Bloom bloom;
 	private SunLightScattering sunlightScattering;
 	private LensFlare lensFlare;
@@ -108,7 +108,7 @@ public class GLDeferredEngine extends RenderEngine{
 				config.getY_ScreenResolution());
 		
 		motionBlur = new MotionBlur();
-		dofBlur = new DepthOfFieldBlur();
+		DepthOfField = new DepthOfField();
 		bloom = new Bloom();
 		sunlightScattering = new SunLightScattering();
 		lensFlare = new LensFlare();
@@ -212,7 +212,7 @@ public class GLDeferredEngine extends RenderEngine{
 				primarySceneFbo.getAttachmentTexture(Attachment.COLOR),
 				primarySceneFbo.getAttachmentTexture(Attachment.POSITION),
 				primarySceneFbo.getAttachmentTexture(Attachment.NORMAL),
-				primarySceneFbo.getAttachmentTexture(Attachment.SPECULAR_EMISSION),
+				primarySceneFbo.getAttachmentTexture(Attachment.SPECULAR_EMISSION_BLOOM),
 				BaseContext.getConfig().isSsaoEnabled());
 		
 		
@@ -249,12 +249,13 @@ public class GLDeferredEngine extends RenderEngine{
 		
 		boolean doMotionBlur = camera.getPreviousPosition().sub(camera.getPosition()).length() > 0.04f
 				|| camera.getForward().sub(camera.getPreviousForward()).length() > 0.01f;
+		boolean doFXAA = !camera.isCameraMoved() && !camera.isCameraRotated();
 				
 		//-----------------------------------------------//
 		//                  render FXAA                  //
 		//-----------------------------------------------//
 		
-		if (!camera.isCameraMoved() && !camera.isCameraRotated() && BaseContext.getConfig().isFxaaEnabled()){
+		if (doFXAA && BaseContext.getConfig().isFxaaEnabled()){
 			fxaa.render(currentScene);
 			currentScene = fxaa.getFxaaSceneTexture();
 		}
@@ -271,9 +272,9 @@ public class GLDeferredEngine extends RenderEngine{
 			//--------------------------------------------//
 			
 			if (BaseContext.getConfig().isDepthOfFieldBlurEnabled()){
-				dofBlur.render(primarySceneFbo.getAttachmentTexture(Attachment.DEPTH),
+				DepthOfField.render(primarySceneFbo.getAttachmentTexture(Attachment.DEPTH),
 						lightScatteringMaskTexture, currentScene);
-				currentScene = dofBlur.getVerticalBlurSceneTexture();
+				currentScene = DepthOfField.getVerticalBlurSceneTexture();
 			}
 			
 			//--------------------------------------------//
@@ -281,7 +282,7 @@ public class GLDeferredEngine extends RenderEngine{
 			//--------------------------------------------//
 			
 			if (BaseContext.getConfig().isBloomEnabled()){
-				bloom.render(prePostprocessingScene, currentScene);
+				bloom.render(prePostprocessingScene, currentScene, primarySceneFbo.getAttachmentTexture(Attachment.SPECULAR_EMISSION_BLOOM));
 				currentScene = bloom.getBloomSceneTexture();
 			}
 			
@@ -352,6 +353,7 @@ public class GLDeferredEngine extends RenderEngine{
 //		fullScreenQuad.setTexture(dofBlur.getVerticalBlurSceneTexture());
 //		fullScreenQuad.setTexture(bloom.getBloomSceneTexture());
 		fullScreenQuad.setTexture(currentScene);
+//		fullScreenQuad.setTexture(bloom.getVerticalBloomBlurDownsampling3());
 		fullScreenQuad.render();
 		
 		if (BaseContext.getConfig().isLensFlareEnabled()

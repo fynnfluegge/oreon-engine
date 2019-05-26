@@ -136,7 +136,7 @@ public class VkDeferredEngine extends RenderEngine {
 	    		offScreenFbo.getAttachmentImageView(Attachment.COLOR),
 	    		offScreenFbo.getAttachmentImageView(Attachment.POSITION),
 	    		offScreenFbo.getAttachmentImageView(Attachment.NORMAL),
-	    		offScreenFbo.getAttachmentImageView(Attachment.SPECULAR_EMISSION),
+	    		offScreenFbo.getAttachmentImageView(Attachment.SPECULAR_EMISSION_BLOOM),
 	    		sampleCoverage.getSampleCoverageImageView());
 	    
 	    LongBuffer opaqueTransparencyBlendWaitSemaphores = memAllocLong(2);

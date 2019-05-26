@@ -14,13 +14,13 @@ uniform float windowHeight;
 void main(void){
 
 	ivec2 computeCoord = ivec2(gl_GlobalInvocationID.x, gl_GlobalInvocationID.y);
-	vec2 texCoord = vec2(gl_GlobalInvocationID.x/windowWidth,gl_GlobalInvocationID.y/windowHeight);
+	vec2 uv = vec2(gl_GlobalInvocationID.x/windowWidth,gl_GlobalInvocationID.y/windowHeight);
 
 	vec3 color = vec3(0,0,0);
-	color += texture(bloomBlurSampler_div2, texCoord).rgb;
-	color += texture(bloomBlurSampler_div4, texCoord).rgb;
-	color += texture(bloomBlurSampler_div8, texCoord).rgb;
-	color += texture(bloomBlurSampler_div16, texCoord).rgb;
+	color += texture(bloomBlurSampler_div2, uv).rgb;
+	color += texture(bloomBlurSampler_div4, uv).rgb;
+	color += texture(bloomBlurSampler_div8, uv).rgb;
+	color += texture(bloomBlurSampler_div16, uv).rgb;
 	
 	color /= 4;
 

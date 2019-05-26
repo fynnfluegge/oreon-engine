@@ -23,6 +23,8 @@ public class SampleCoverage {
 	private GLTexture sampleCoverageMask;
 	@Getter
 	private GLTexture lightScatteringMaskDownSampled;
+	@Getter
+	private GLTexture specular_emission_bloomMaskDownSampled;
 	private SampleCoverageShader shader;
 	
 	public SampleCoverage(int width, int height) {
