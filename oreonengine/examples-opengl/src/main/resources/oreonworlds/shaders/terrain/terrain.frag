@@ -28,6 +28,13 @@ layout (std140, row_major) uniform Camera{
 	vec4 frustumPlanes[6];
 };
 
+layout (std140) uniform DirectionalLight{
+	vec3 direction;
+	float intensity;
+	vec3 ambient;
+	vec3 color;
+} directional_light;
+
 uniform sampler2D normalmap;
 uniform sampler2D splatmap;
 uniform float scaleY;
@@ -47,6 +54,16 @@ const float zfar = 10000;
 const float znear = 0.1;
 const vec3 fogColor = vec3(0.65,0.85,0.9);
 const vec3 waterRefractionColor = vec3(0.1,0.125,0.19);
+
+float diffuse(vec3 direction, vec3 normal, float intensity)
+{
+	return max(0.0, dot(normal, -direction) * intensity);
+}
+
+float getFogFactor(float dist)
+{
+	return -0.0002/sightRangeFactor*(dist-(zfar)/10*sightRangeFactor) + 1;
+}
 
 float distancePointPlane(vec3 point, vec4 plane){
 	return abs(plane.x*point.x + plane.y*point.y + plane.z*point.z + plane.w) / 
@@ -107,6 +124,18 @@ void main()
 		float refractionFactor = clamp(0.025 * distToWaterSurace,0,1);
 		
 		fragColor = mix(fragColor, waterRefractionColor, refractionFactor); 
+	}
+	
+	if (isReflection == 1 || isRefraction == 1){
+		float diff = diffuse(directional_light.direction, normal, directional_light.intensity);
+		vec3 diffuseLight = directional_light.ambient + directional_light.color * diff;
+		fragColor *= diffuseLight;
+	}
+	
+	if (isReflection == 1){
+		float dist = length(eyePosition - inWorldPos);
+		float fogFactor = getFogFactor(dist);
+		fragColor = mix(fogColor, fragColor, clamp(fogFactor,0,1));
 	}
 	
 	outAlbedo = vec4(fragColor,1);

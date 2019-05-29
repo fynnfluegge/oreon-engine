@@ -60,6 +60,7 @@ public class TerrainShader extends GLShaderProgram{
 		addUniform("texDetail");
 		addUniform("reflectionOffset");
 		addUniform("isRefraction");
+		addUniform("isReflection");
 		addUniform("isCameraUnderWater");
 		
 		addUniform("caustics");
@@ -83,17 +84,23 @@ public class TerrainShader extends GLShaderProgram{
 		}
 		
 		addUniform("clipplane");
+		addUniform("sightRangeFactor");
 		
 		addUniformBlock("Camera");
+		addUniformBlock("DirectionalLight");
 	}
 	
 	@Override
 	public void updateUniforms(Renderable object)
 	{	
 		bindUniformBlock("Camera", Constants.CameraUniformBlockBinding);
+		bindUniformBlock("DirectionalLight", Constants.DirectionalLightUniformBlockBinding);
+		
+		setUniformf("sightRangeFactor", BaseContext.getConfig().getSightRange());
 		
 		setUniform("clipplane", BaseContext.getConfig().getClipplane());
 		setUniformi("isRefraction", BaseContext.getConfig().isRenderRefraction() ? 1 : 0);
+		setUniformi("isReflection", BaseContext.getConfig().isRenderReflection() ? 1 : 0);
 		setUniformi("isCameraUnderWater", BaseContext.getConfig().isRenderUnderwater() ? 1 : 0);		
 		
 		TerrainConfiguration terrConfig = object.getComponent(NodeComponentType.CONFIGURATION);

@@ -101,7 +101,7 @@ void main(void)
 	vec2 reflecCoords = projCoord.xy + dudvCoord.rb * kReflection;
 	reflecCoords = clamp(reflecCoords, kReflection, 1-kReflection);
     vec3 reflection = mix(texture(waterReflection, reflecCoords).rgb, deepOceanColor,  0.0);
-    reflection *= F;
+    //reflection *= F;
  
     // Refraction //
 	vec2 refracCoords = projCoord.xy + dudvCoord.rb * kRefraction;
@@ -119,7 +119,7 @@ void main(void)
 		refraction *= 1-F;
 	}
 	
-	vec3 fragColor = reflection + refraction;
+	vec3 fragColor = reflection;// + refraction;
 	
 	// caustics
 	if (isCameraUnderWater == 1){
