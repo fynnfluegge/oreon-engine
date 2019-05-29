@@ -154,7 +154,8 @@ public class VkDeferredEngine extends RenderEngine {
 	    		transparencyFbo.getAttachmentImageView(Attachment.LIGHT_SCATTERING),
 	    		opaqueTransparencyBlendWaitSemaphores);
 	    
-	    VkImageView displayImageView = opaqueTransparencyBlending.getBlendedSceneImageView();
+//	    VkImageView displayImageView = opaqueTransparencyBlending.getBlendedSceneImageView();
+	    VkImageView displayImageView = deferredLighting.getDeferredLightingSceneImageView();
 
 	    if (BaseContext.getConfig().isFxaaEnabled()){
 		    fxaa = new FXAA(graphicsDevice,
@@ -227,7 +228,8 @@ public class VkDeferredEngine extends RenderEngine {
 	    postProcessingCmdBuffer.finishRecord();
 	
 	    postProcessingSubmitInfo = new SubmitInfo(postProcessingCmdBuffer.getHandlePointer());
-	    postProcessingSubmitInfo.setWaitSemaphores(opaqueTransparencyBlending.getSignalSemaphore().getHandlePointer());
+//	    postProcessingSubmitInfo.setWaitSemaphores(opaqueTransparencyBlending.getSignalSemaphore().getHandlePointer());
+	    postProcessingSubmitInfo.setWaitSemaphores(deferredStageSemaphore.getHandlePointer());
 	    postProcessingSubmitInfo.setWaitDstStageMask(pComputeShaderWaitDstStageMask);
 	    postProcessingSubmitInfo.setSignalSemaphores(postProcessingSemaphore.getHandlePointer());
 	}
@@ -283,7 +285,7 @@ public class VkDeferredEngine extends RenderEngine {
 		transparencyRenderList.setChanged(false);
 		sceneGraph.recordTransparentObjects(transparencyRenderList);
 		
-		if (transparencyRenderList.hasChanged()){
+		if (transparencyRenderList.hasChanged() && !transparencyRenderList.isEmpty()){
 			
 			transparencySecondaryCmdBuffers.clear();
 			
@@ -309,9 +311,8 @@ public class VkDeferredEngine extends RenderEngine {
 		
 		if(!transparencyRenderList.isEmpty()){
 			transparencySubmitInfo.submit(graphicsDevice.getLogicalDevice().getGraphicsQueue());
+			opaqueTransparencyBlending.render();
 		}
-		
-		opaqueTransparencyBlending.render();
 		
 		postProcessingSubmitInfo.submit(graphicsDevice.getLogicalDevice().getComputeQueue());
 		

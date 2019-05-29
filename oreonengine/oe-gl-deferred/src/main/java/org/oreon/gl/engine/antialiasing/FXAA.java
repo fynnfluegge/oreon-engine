@@ -10,6 +10,7 @@ import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.gl.wrapper.texture.TextureImage2D;
 import org.oreon.core.image.Image.ImageFormat;
 import org.oreon.core.image.Image.SamplerFilter;
+import org.oreon.core.image.Image.TextureWrapMode;
 
 import lombok.Getter;
 
@@ -24,7 +25,7 @@ public class FXAA {
 		shader = FXAAShader.getInstance();
 		
 		fxaaSceneTexture = new TextureImage2D(BaseContext.getWindow().getWidth(), BaseContext.getWindow().getHeight(),
-				ImageFormat.RGBA16FLOAT, SamplerFilter.Nearest);
+				ImageFormat.RGBA16FLOAT, SamplerFilter.Nearest, TextureWrapMode.ClampToEdge);
 	}
 	
 	public void render(GLTexture sceneTexture){
