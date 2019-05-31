@@ -41,8 +41,8 @@ uniform float sightRangeFactor;
 uniform int isCameraUnderWater;
 
 const vec2 wind = vec2(1,1);
-const float Eta = 0.15; // Water
-const vec3 deepOceanColor = vec3(0.1,0.125,0.20);
+const float Eta = 0.15;
+const vec3 deepOceanColor = vec3(0.0,0.0,0.0);
 const float zfar = 10000;
 const float znear = 0.1;
 vec3 vertexToEye;
@@ -100,8 +100,8 @@ void main(void)
     // Reflection //
 	vec2 reflecCoords = projCoord.xy + dudvCoord.rb * kReflection;
 	reflecCoords = clamp(reflecCoords, kReflection, 1-kReflection);
-    vec3 reflection = mix(texture(waterReflection, reflecCoords).rgb, deepOceanColor,  0.0);
-    //reflection *= F;
+    vec3 reflection = mix(texture(waterReflection, reflecCoords).rgb, deepOceanColor,  0.1);
+    reflection *= F;
  
     // Refraction //
 	vec2 refracCoords = projCoord.xy + dudvCoord.rb * kRefraction;
@@ -119,7 +119,7 @@ void main(void)
 		refraction *= 1-F;
 	}
 	
-	vec3 fragColor = reflection;// + refraction;
+	vec3 fragColor = reflection + refraction;
 	
 	// caustics
 	if (isCameraUnderWater == 1){

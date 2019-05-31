@@ -345,11 +345,11 @@ public class GLDeferredEngine extends RenderEngine{
 		
 //		contrastController.render(displayTexture);
 
-		fullScreenQuadMultisample.setTexture(primarySceneFbo.getAttachmentTexture(Attachment.COLOR));
-		fullScreenQuadMultisample.render();
+//		fullScreenQuadMultisample.setTexture(primarySceneFbo.getAttachmentTexture(Attachment.COLOR));
+//		fullScreenQuadMultisample.render();
 		
-//		fullScreenQuad.setTexture(currentScene);
-//		fullScreenQuad.render();
+		fullScreenQuad.setTexture(currentScene);
+		fullScreenQuad.render();
 		
 		if (BaseContext.getConfig().isLensFlareEnabled()
 			&& !renderDeferredLightingScene && !renderSSAOBuffer

@@ -53,7 +53,7 @@ uniform float distortionCaustics;
 const float zfar = 10000;
 const float znear = 0.1;
 const vec3 fogColor = vec3(0.65,0.85,0.9);
-const vec3 waterRefractionColor = vec3(0.1,0.125,0.19);
+const vec3 waterRefractionColor = vec3(0.0,0.0,0.0);
 
 float diffuse(vec3 direction, vec3 normal, float intensity)
 {
@@ -104,8 +104,7 @@ void main()
 	vec3 fragColor = vec3(0,0,0);
 	
 	for (int i=0; i<3; i++){
-		fragColor +=  texture(materials[i].diffusemap, inUV/materials[i].uvScaling).rgb
-					* blendValues[i];
+		fragColor +=  texture(materials[i].diffusemap, inUV/materials[i].uvScaling).rgb * blendValues[i];
 	}
 	
 	// caustics
@@ -117,6 +116,12 @@ void main()
 		fragColor += (causticsColor/5);
 	}
 	
+	if (isReflection == 1 || isRefraction == 1){
+		float diff = diffuse(directional_light.direction, normal, directional_light.intensity);
+		vec3 diffuseLight = directional_light.ambient + directional_light.color * diff;
+		fragColor *= diffuseLight;
+	}
+
 	// underwater distance blue blur
 	if (isCameraUnderWater == 0 && isRefraction == 1){
 		
@@ -124,12 +129,6 @@ void main()
 		float refractionFactor = clamp(0.025 * distToWaterSurace,0,1);
 		
 		fragColor = mix(fragColor, waterRefractionColor, refractionFactor); 
-	}
-	
-	if (isReflection == 1 || isRefraction == 1){
-		float diff = diffuse(directional_light.direction, normal, directional_light.intensity);
-		vec3 diffuseLight = directional_light.ambient + directional_light.color * diff;
-		fragColor *= diffuseLight;
 	}
 	
 	if (isReflection == 1){

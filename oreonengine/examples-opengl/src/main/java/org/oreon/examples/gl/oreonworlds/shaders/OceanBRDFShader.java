@@ -50,7 +50,9 @@ public class OceanBRDFShader extends GLShaderProgram{
 		addUniform("windowHeight");
 		
 		addUniform("waterReflection");
+		addUniform("kReflection");
 		addUniform("waterRefraction");
+		addUniform("kRefraction");
 		addUniform("dudvRefracReflec");
 		addUniform("dudvCaustics");
 		addUniform("caustics");
@@ -62,8 +64,6 @@ public class OceanBRDFShader extends GLShaderProgram{
 		addUniform("tessFactor");
 		addUniform("tessSlope");
 		addUniform("tessShift");
-		addUniform("kReflection");
-		addUniform("kRefraction");
 		addUniform("largeDetailRange");
 		
 		addUniform("emission");
@@ -114,8 +114,6 @@ public class OceanBRDFShader extends GLShaderProgram{
 		setUniformi("largeDetailRange", configuration.getHighDetailRange());
 		setUniformf("distortionRefracReflec", ocean.getDistortion());
 		setUniformf("distortionCaustics", 0);
-		setUniformf("kReflection", configuration.getKReflection());
-		setUniformf("kRefraction", configuration.getKRefraction());
 		setUniformf("emission", configuration.getEmission());
 		setUniformf("specular", configuration.getSpecular());
 		setUniformf("motion", ocean.getMotion());
@@ -127,9 +125,11 @@ public class OceanBRDFShader extends GLShaderProgram{
 		glActiveTexture(GL_TEXTURE1);
 		ocean.getReflectionTexture().bind();
 		setUniformi("waterReflection", 1);
+		setUniformf("kReflection", configuration.getKReflection());
 		glActiveTexture(GL_TEXTURE2);
 		ocean.getRefractionTexture().bind();
 		setUniformi("waterRefraction", 2);
+		setUniformf("kRefraction", configuration.getKRefraction());
 		glActiveTexture(GL_TEXTURE3);
 		ocean.getNormalmapRenderer().getNormalmap().bind();
 		setUniformi("normalmap",  3);
