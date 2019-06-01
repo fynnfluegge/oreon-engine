@@ -66,7 +66,7 @@ public class WaterConfiguration {
 		tessellationSlope = Float.valueOf(properties.getProperty("tessellationSlope"));
 		tessellationShift = Float.valueOf(properties.getProperty("tessellationShift"));
 		specular = Float.valueOf(properties.getProperty("specular.factor"));
-		emission = Float.valueOf(properties.getProperty("emission"));
+		emission = Float.valueOf(properties.getProperty("emission.factor"));
 		kReflection = Float.valueOf(properties.getProperty("kReflection"));
 		kRefraction = Float.valueOf(properties.getProperty("kRefraction"));
 		normalStrength = Float.valueOf(properties.getProperty("normalStrength"));

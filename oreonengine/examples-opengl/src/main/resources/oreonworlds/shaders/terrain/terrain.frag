@@ -53,7 +53,7 @@ uniform float distortionCaustics;
 const float zfar = 10000;
 const float znear = 0.1;
 const vec3 fogColor = vec3(0.65,0.85,0.9);
-const vec3 waterRefractionColor = vec3(0.0,0.0,0.0);
+const vec3 waterRefractionColor = vec3(0);
 
 float diffuse(vec3 direction, vec3 normal, float intensity)
 {
@@ -117,7 +117,7 @@ void main()
 	}
 	
 	if (isReflection == 1 || isRefraction == 1){
-		float diff = diffuse(directional_light.direction, normal, directional_light.intensity);
+		float diff = diffuse(directional_light.direction, normal.xzy, directional_light.intensity);
 		vec3 diffuseLight = directional_light.ambient + directional_light.color * diff;
 		fragColor *= diffuseLight;
 	}

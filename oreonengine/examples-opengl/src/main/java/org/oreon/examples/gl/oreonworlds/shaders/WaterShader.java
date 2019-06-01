@@ -19,20 +19,20 @@ import org.oreon.core.util.Constants;
 import org.oreon.core.util.ResourceLoader;
 import org.oreon.gl.components.water.Water;
 
-public class OceanBRDFShader extends GLShaderProgram{
+public class WaterShader extends GLShaderProgram{
 
-	private static OceanBRDFShader instance = null;
+	private static WaterShader instance = null;
 
-	public static OceanBRDFShader getInstance() 
+	public static WaterShader getInstance() 
 	{
 	    if(instance == null) 
 	    {
-	    	instance = new OceanBRDFShader();
+	    	instance = new WaterShader();
 	    }
 	      return instance;
 	}
 	
-	protected OceanBRDFShader()
+	protected WaterShader()
 	{
 		super();
 		

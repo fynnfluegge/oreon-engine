@@ -39,29 +39,28 @@ uniform float emission;
 uniform float specular;
 uniform float sightRangeFactor;
 uniform int isCameraUnderWater;
+uniform float deepOceanColorReflectionBlend = 0.0;
+uniform vec3 deepOceanColor = vec3(0.064,0.085,0.12);
 
 const vec2 wind = vec2(1,1);
 const float Eta = 0.15;
-const vec3 deepOceanColor = vec3(0.0,0.0,0.0);
 const float zfar = 10000;
 const float znear = 0.1;
-vec3 vertexToEye;
 
-float fresnelApproximated(vec3 normal)
+float fresnelApproximated(vec3 normal, vec3 vertexToEye)
 {
 	vec3 halfDirection = normalize(normal + vertexToEye);
     
     float cosine = dot(halfDirection, vertexToEye);
 
-	float fresnel = Eta + (1.0 - Eta) * pow(max(0.0, 1.0 - dot(vertexToEye, normal)), 5.0);
+	float fresnel = Eta + (1.0 - Eta) * pow(max(0.0, 1.0 - dot(vertexToEye, normal)), 6.0);
 	
 	return clamp(pow(fresnel, 1.0),0.0,1.0);
 }
 
-float specularReflection(vec3 direction, vec3 normal, vec3 eyePosition, vec3 vertexPosition, float specularFactor, float emissionFactor)
+float specularReflection(vec3 direction, vec3 normal, vec3 eyePosition, float specularFactor, float emissionFactor, vec3 vertexToEye)
 {
 	vec3 reflectionVector = normalize(reflect(direction, normalize(normal)));
-	vec3 vertexToEye = normalize(eyePosition - vertexPosition);
 	
 	float specular = max(0.0, dot(vertexToEye, reflectionVector));
 	
@@ -70,7 +69,7 @@ float specularReflection(vec3 direction, vec3 normal, vec3 eyePosition, vec3 ver
  
 void main(void)
 {
-	vertexToEye = normalize(eyePosition - position_FS);
+	vec3 vertexToEye = normalize(eyePosition - position_FS);
 	float dist = length(eyePosition - position_FS);
 	
 	vec2 waveMotion = wind * vec2(motion);
@@ -91,7 +90,7 @@ void main(void)
 		normal = normalize(TBN * bumpNormal);
 	}
 	
-	float F = fresnelApproximated(normal.xzy);
+	float fresnel = fresnelApproximated(normal.xzy, vertexToEye);
 	
 	// projCoord //
 	vec3 dudvCoord = normalize((2 * texture(dudvRefracReflec, texCoord_FS*4 + distortionRefracReflec).rbg) - 1);
@@ -100,8 +99,8 @@ void main(void)
     // Reflection //
 	vec2 reflecCoords = projCoord.xy + dudvCoord.rb * kReflection;
 	reflecCoords = clamp(reflecCoords, kReflection, 1-kReflection);
-    vec3 reflection = mix(texture(waterReflection, reflecCoords).rgb, deepOceanColor,  0.1);
-    reflection *= F;
+    vec3 reflection = mix(texture(waterReflection, reflecCoords).rgb, deepOceanColor, deepOceanColorReflectionBlend);
+    reflection *= fresnel;
  
     // Refraction //
 	vec2 refracCoords = projCoord.xy + dudvCoord.rb * kRefraction;
@@ -116,7 +115,7 @@ void main(void)
 	}
 	else {
 		refraction = texture(waterRefraction, refracCoords).rgb;
-		refraction *= 1-F;
+		refraction *= 1-fresnel;
 	}
 	
 	vec3 fragColor = reflection + refraction;
@@ -130,15 +129,15 @@ void main(void)
 		fragColor += (causticsColor/4);
 	}
 	
-	float spec = specularReflection(vec3(directional_light.direction.x, directional_light.direction.y/6, directional_light.direction.z),
-		normal.xzy, eyePosition, position_FS, specular, emission);
+	float spec = specularReflection(vec3(directional_light.direction.x, directional_light.direction.y/8, directional_light.direction.z),
+		normal.xzy, eyePosition, specular, emission, vertexToEye);
 	vec3 specularLight = (directional_light.color + vec3(0,0.03,0.08)) * spec;
 	
 	fragColor += specularLight;
 	
 	albedo_out = vec4(fragColor,1);
 	worldPosition_out = vec4(position_FS,1);
-	normal_out = vec4(normal,1);
+	normal_out = vec4(0,0,1,1);
 	specularEmission_out = vec4(1,0,1,1);
 	lightScattering_out = vec4(0,0,0,1);
 }

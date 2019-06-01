@@ -23,6 +23,7 @@ uniform int height;
 uniform int isReflection;
 
 const vec3 sunBaseColor = vec3(1.0f,0.79f,0.43f);
+const float horizonVerticalShift = 0.1;
 
 vec2 rsi(vec3 r0, vec3 rd, float sr) {
     // ray-sphere intersection that assumes
@@ -138,8 +139,15 @@ void main() {
 	ray_eye = vec4(ray_eye.xy, 1.0, 0.0);
 	vec3 ray_world = (inverse(m_View) * ray_eye).xyz;
 	
-	if (isReflection == 1)
+	//ray_world.y += 0.1;//clamp(ray_world.y, 0.0, 1.0);
+	
+	if (isReflection == 1){
 		ray_world.y *= -1;
+		ray_world.y += horizonVerticalShift;
+	}
+	else{
+		ray_world.y += horizonVerticalShift;
+	}
 	
 	vec4 out_LightScattering = vec4(0);
 	
@@ -176,6 +184,6 @@ void main() {
     albedo_out = vec4(out_Color, 1);
 	worldPosition_out = vec4(0.0,0.0,0.0,1.0);
 	normal_out = vec4(0.0,0.0,0.0,1.0);
-	specularEmission_out = vec4(0,0,0,1.0);
+	specularEmission_out = vec4(0,0,0.1,1.0);
 	lightScattering_out = out_LightScattering;
 }
