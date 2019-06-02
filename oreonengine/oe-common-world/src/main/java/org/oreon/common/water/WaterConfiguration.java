@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.util.Properties;
 
 import org.oreon.core.math.Vec2f;
+import org.oreon.core.math.Vec3f;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -28,15 +29,22 @@ public class WaterConfiguration {
 	private float tessellationSlope;
 	private int highDetailRange;
 	private int uvScale;
-	private float specular;
+	private float specularFactor;
+	private float specularAmplifier;
 	private float emission;
 	private float kReflection;
 	private float kRefraction;
 	private float distortion;
+	private float fresnelFactor;
 	private float waveMotion;
 	private float normalStrength;
 	private float t_delta;
 	private boolean choppy;
+	private Vec3f baseColor;
+	private float reflectionBlendFactor;
+	private float capillarStrength;
+	private float capillarDownsampling;
+	private float dudvDownsampling;
 	
 	public void loadFile(String file)
 	{
@@ -65,7 +73,8 @@ public class WaterConfiguration {
 		tessellationFactor = Integer.valueOf(properties.getProperty("tessellationFactor"));
 		tessellationSlope = Float.valueOf(properties.getProperty("tessellationSlope"));
 		tessellationShift = Float.valueOf(properties.getProperty("tessellationShift"));
-		specular = Float.valueOf(properties.getProperty("specular.factor"));
+		specularFactor = Float.valueOf(properties.getProperty("specular.factor"));
+		specularAmplifier = Float.valueOf(properties.getProperty("specular.amplifier"));
 		emission = Float.valueOf(properties.getProperty("emission.factor"));
 		kReflection = Float.valueOf(properties.getProperty("kReflection"));
 		kRefraction = Float.valueOf(properties.getProperty("kRefraction"));
@@ -73,5 +82,13 @@ public class WaterConfiguration {
 		highDetailRange = Integer.valueOf(properties.getProperty("highDetailRange"));
 		t_delta = Float.valueOf(properties.getProperty("t_delta"));
 		choppy = Boolean.valueOf(properties.getProperty("choppy"));
+		fresnelFactor = Float.valueOf(properties.getProperty("fresnel.factor"));
+		reflectionBlendFactor = Float.valueOf(properties.getProperty("reflection.blendfactor"));
+		baseColor = new Vec3f(Float.valueOf(properties.getProperty("water.basecolor.x")),
+				Float.valueOf(properties.getProperty("water.basecolor.y")),
+				Float.valueOf(properties.getProperty("water.basecolor.z")));
+		capillarStrength = Float.valueOf(properties.getProperty("capillar.strength"));
+		capillarDownsampling = Float.valueOf(properties.getProperty("capillar.downsampling"));
+		dudvDownsampling = Float.valueOf(properties.getProperty("dudv.downsampling"));
 	}
 }

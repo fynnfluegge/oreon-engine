@@ -15,4 +15,5 @@ public class GLResources {
 	private GLTexture underwaterDudvMap;
 	private GLTexture underwaterCausticsMap;
 	private float underwaterDistortion;
+	private float underwaterBlurFactor;
 }

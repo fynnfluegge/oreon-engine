@@ -85,6 +85,7 @@ public class TerrainShader extends GLShaderProgram{
 		
 		addUniform("clipplane");
 		addUniform("sightRangeFactor");
+		addUniform("fogColor");
 		
 		addUniformBlock("Camera");
 		addUniformBlock("DirectionalLight");
@@ -97,6 +98,7 @@ public class TerrainShader extends GLShaderProgram{
 		bindUniformBlock("DirectionalLight", Constants.DirectionalLightUniformBlockBinding);
 		
 		setUniformf("sightRangeFactor", BaseContext.getConfig().getSightRange());
+		setUniform("fogColor", BaseContext.getConfig().getFogColor());
 		
 		setUniform("clipplane", BaseContext.getConfig().getClipplane());
 		setUniformi("isRefraction", BaseContext.getConfig().isRenderRefraction() ? 1 : 0);

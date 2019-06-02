@@ -44,7 +44,6 @@ public class Water extends Renderable{
 	private float motion;
 	private float distortion;
 	private GLTexture dudv;
-	private GLTexture caustics;
 	
 	private GLFramebuffer reflection_fbo;
 	private GLTexture reflection_texture;
@@ -75,7 +74,6 @@ public class Water extends Renderable{
 		GLRenderInfo wireframeRenderInfo = new GLRenderInfo(wireframeShader, renderConfig, meshBuffer);
 		
 		dudv = new TextureImage2D("textures/water/dudv/dudv1.jpg", SamplerFilter.Trilinear);
-		caustics = new TextureImage2D("textures/water/caustics/caustics.jpg", SamplerFilter.Trilinear);
 		
 		addComponent(NodeComponentType.MAIN_RENDERINFO, renderInfo);
 		addComponent(NodeComponentType.WIREFRAME_RENDERINFO, wireframeRenderInfo);
@@ -314,7 +312,4 @@ public class Water extends Renderable{
 		return dudv;
 	}
 
-	public GLTexture getCaustics() {
-		return caustics;
-	}
 }

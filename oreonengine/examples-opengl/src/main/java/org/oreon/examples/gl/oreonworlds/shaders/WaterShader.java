@@ -7,8 +7,6 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE3;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE4;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE5;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE6;
-import static org.lwjgl.opengl.GL13.GL_TEXTURE7;
-import static org.lwjgl.opengl.GL13.GL_TEXTURE8;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import org.oreon.common.water.WaterConfiguration;
@@ -53,11 +51,8 @@ public class WaterShader extends GLShaderProgram{
 		addUniform("kReflection");
 		addUniform("waterRefraction");
 		addUniform("kRefraction");
-		addUniform("dudvRefracReflec");
-		addUniform("dudvCaustics");
-		addUniform("caustics");
-		addUniform("distortionRefracReflec");
-		addUniform("distortionCaustics");
+		addUniform("dudvMap");
+		addUniform("distortion");
 		addUniform("displacementScale");
 		addUniform("choppiness");
 		addUniform("texDetail");
@@ -65,9 +60,16 @@ public class WaterShader extends GLShaderProgram{
 		addUniform("tessSlope");
 		addUniform("tessShift");
 		addUniform("largeDetailRange");
+		addUniform("fresnelFactor");
+		addUniform("reflectionBlendFactor");
+		addUniform("waterColor");
+		addUniform("capillarStrength");
+		addUniform("capillarDownsampling");
+		addUniform("dudvDownsampling");
 		
 		addUniform("emission");
-		addUniform("specular");
+		addUniform("specularFactor");
+		addUniform("specularAmplifier");
 
 		addUniform("isCameraUnderWater");
 		
@@ -77,6 +79,7 @@ public class WaterShader extends GLShaderProgram{
 		addUniform("Dx");
 		addUniform("Dz");
 		addUniform("motion");
+		addUniform("wind");
 		
 		for (int i=0; i<6; i++)
 		{
@@ -112,16 +115,23 @@ public class WaterShader extends GLShaderProgram{
 		setUniformf("tessSlope", configuration.getTessellationSlope());
 		setUniformf("tessShift", configuration.getTessellationShift());
 		setUniformi("largeDetailRange", configuration.getHighDetailRange());
-		setUniformf("distortionRefracReflec", ocean.getDistortion());
-		setUniformf("distortionCaustics", 0);
+		setUniformf("distortion", ocean.getDistortion());
 		setUniformf("emission", configuration.getEmission());
-		setUniformf("specular", configuration.getSpecular());
+		setUniformf("specularFactor", configuration.getSpecularFactor());
+		setUniformf("specularAmplifier", configuration.getSpecularAmplifier());
 		setUniformf("motion", ocean.getMotion());
 		setUniformi("isCameraUnderWater", BaseContext.getConfig().isRenderUnderwater() ? 1 : 0);
-				
+		setUniformf("fresnelFactor", configuration.getFresnelFactor());
+		setUniformf("reflectionBlendFactor", configuration.getReflectionBlendFactor());
+		setUniform("waterColor", configuration.getBaseColor());
+		setUniformf("capillarStrength", configuration.getCapillarStrength());		
+		setUniformf("capillarDownsampling", configuration.getCapillarDownsampling());		
+		setUniformf("dudvDownsampling", configuration.getDudvDownsampling());		
+		setUniform("wind", configuration.getWindDirection());
+		
 		glActiveTexture(GL_TEXTURE0);
 		ocean.getDudv().bind();
-		setUniformi("dudvRefracReflec", 0);
+		setUniformi("dudvMap", 0);
 		glActiveTexture(GL_TEXTURE1);
 		ocean.getReflectionTexture().bind();
 		setUniformi("waterReflection", 1);
@@ -142,11 +152,5 @@ public class WaterShader extends GLShaderProgram{
 		glActiveTexture(GL_TEXTURE6);
 		ocean.getFft().getDz().bind();
 		setUniformi("Dz", 6);
-		glActiveTexture(GL_TEXTURE7);
-		ocean.getCaustics().bind();;
-		setUniformi("caustics", 7);
-		glActiveTexture(GL_TEXTURE8);
-		ocean.getDudv().bind();
-		setUniformi("dudvCaustics", 8);
 	}
 }

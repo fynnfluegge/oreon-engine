@@ -42,7 +42,6 @@ public class Configuration {
 	private boolean renderReflection;
 	private boolean renderRefraction;
 	private Vec4f clipplane;
-	private float sightRange;
 	
 	// Vulkan Validation
 	private boolean vkValidation;
@@ -55,6 +54,9 @@ public class Configuration {
 	private float ambient;
 	private boolean AtmosphericScatteringApproximation;
 	private float atmosphereBloomFactor;
+	private Vec3f fogColor;
+	private float horizonVerticalShift;
+	private float sightRange;
 	
 	// postprocessing parameters
 	private int lightscatteringSampleCount;
@@ -85,7 +87,6 @@ public class Configuration {
 		y_ScreenResolution = Integer.valueOf(properties.getProperty("screen.resolution.y"));
 		multisamples = Integer.valueOf(properties.getProperty("multisamples"));
 		fxaaEnabled = Integer.valueOf(properties.getProperty("fxaa.enable")) == 1 ? true : false;
-		sightRange = Float.valueOf(properties.getProperty("sightRange"));
 		
 		bloomEnabled = Integer.valueOf(properties.getProperty("bloom.enable")) == 1 ? true : false;
 		ssaoEnabled = Integer.valueOf(properties.getProperty("ssao.enable")) == 1 ? true : false;
@@ -124,6 +125,10 @@ public class Configuration {
 				ambient = Float.valueOf(properties.getProperty("ambient"));
 				AtmosphericScatteringApproximation = Integer.valueOf(properties.getProperty("atmosphere.scattering.approximation")) == 1 ? true : false;
 				atmosphereBloomFactor = Float.valueOf(properties.getProperty("atmosphere.bloom.factor"));
+				sightRange = Float.valueOf(properties.getProperty("sightRange"));
+				fogColor = new Vec3f(Float.valueOf(properties.getProperty("fog.color.r")),
+						Float.valueOf(properties.getProperty("fog.color.g")),
+						Float.valueOf(properties.getProperty("fog.color.b")));
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

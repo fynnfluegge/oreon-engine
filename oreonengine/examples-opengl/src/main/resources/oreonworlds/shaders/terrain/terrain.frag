@@ -49,11 +49,11 @@ uniform vec4 clipplane;
 uniform sampler2D dudvCaustics;
 uniform sampler2D caustics;
 uniform float distortionCaustics;
+uniform vec3 fogColor;
 
 const float zfar = 10000;
 const float znear = 0.1;
-const vec3 fogColor = vec3(0.65,0.85,0.9);
-const vec3 waterRefractionColor = vec3(0);
+const float underwaterBlurFactor = 0.01;
 
 float diffuse(vec3 direction, vec3 normal, float intensity)
 {
@@ -122,13 +122,11 @@ void main()
 		fragColor *= diffuseLight;
 	}
 
-	// underwater distance blue blur
+	// underwater blur
 	if (isCameraUnderWater == 0 && isRefraction == 1){
-		
 		float distToWaterSurace = distancePointPlane(inWorldPos,clipplane);
-		float refractionFactor = clamp(0.025 * distToWaterSurace,0,1);
-		
-		fragColor = mix(fragColor, waterRefractionColor, refractionFactor); 
+		float refractionFactor = smoothstep(0,1,1-1/(underwaterBlurFactor*distToWaterSurace+1) + 0.1);
+		fragColor = mix(fragColor, vec3(0), refractionFactor); 
 	}
 	
 	if (isReflection == 1){
