@@ -50,10 +50,10 @@ uniform sampler2D dudvCaustics;
 uniform sampler2D caustics;
 uniform float distortionCaustics;
 uniform vec3 fogColor;
+uniform float underwaterBlurFactor;
 
 const float zfar = 10000;
 const float znear = 0.1;
-const float underwaterBlurFactor = 0.01;
 
 float diffuse(vec3 direction, vec3 normal, float intensity)
 {

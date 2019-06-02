@@ -45,6 +45,8 @@ public class WaterConfiguration {
 	private float capillarStrength;
 	private float capillarDownsampling;
 	private float dudvDownsampling;
+	private float underwaterBlur;
+	private float underwaterDistortion;
 	
 	public void loadFile(String file)
 	{
@@ -90,5 +92,6 @@ public class WaterConfiguration {
 		capillarStrength = Float.valueOf(properties.getProperty("capillar.strength"));
 		capillarDownsampling = Float.valueOf(properties.getProperty("capillar.downsampling"));
 		dudvDownsampling = Float.valueOf(properties.getProperty("dudv.downsampling"));
+		underwaterBlur = Float.valueOf(properties.getProperty("underwater.blurfactor"));
 	}
 }

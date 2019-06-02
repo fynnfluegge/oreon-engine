@@ -94,7 +94,7 @@ public class GLDeferredEngine extends RenderEngine{
 				config.getY_ScreenResolution(), config.getMultisamples());
 		secondarySceneFbo = new TransparencyFbo(config.getX_ScreenResolution(),
 				config.getY_ScreenResolution());
-		GLContext.getResources().setOpaqueSceneFbo(primarySceneFbo);
+		GLContext.getResources().setPrimaryFbo(primarySceneFbo);
 		
 		fullScreenQuad = new FullScreenQuad();
 		fullScreenQuadMultisample = new FullScreenMultisampleQuad();

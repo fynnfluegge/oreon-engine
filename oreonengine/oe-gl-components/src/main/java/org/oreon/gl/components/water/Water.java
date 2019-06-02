@@ -64,6 +64,7 @@ public class Water extends Renderable{
 	{		
 		waterConfiguration = new WaterConfiguration();
 		waterConfiguration.loadFile("water-config.properties");
+		GLContext.getResources().setWaterConfig(waterConfiguration);
 		
 		GLPatchVBO meshBuffer = new GLPatchVBO();
 		meshBuffer.addData(MeshGenerator.generatePatch2D4x4(patches),16);
@@ -241,7 +242,7 @@ public class Water extends Renderable{
 		BaseContext.getConfig().setX_ScreenResolution(tempScreenResolutionX);
 		BaseContext.getConfig().setY_ScreenResolution(tempScreenResolutionY);
 		
-		GLContext.getResources().getOpaqueSceneFbo().bind();
+		GLContext.getResources().getPrimaryFbo().bind();
 		
 		//-----------------------------------//
 		//            render FFT'S           //

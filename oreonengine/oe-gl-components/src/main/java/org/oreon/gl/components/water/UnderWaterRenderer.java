@@ -53,7 +53,7 @@ public class UnderWaterRenderer {
 		
 		distortion += distortion_delta;
 		
-		GLContext.getResources().setUnderwaterDistortion(distortion);
+		GLContext.getResources().getWaterConfig().setUnderwaterDistortion(distortion);
 	}
 
 }
