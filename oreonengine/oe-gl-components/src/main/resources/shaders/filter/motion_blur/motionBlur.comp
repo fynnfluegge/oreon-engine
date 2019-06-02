@@ -63,7 +63,7 @@ void main(void)
 		}  
 		
 	// Average all of the samples to get the final blur color.  
-   vec4 finalColor = blurredColor / samples;
-   imageStore(motionBlur, ivec2(gl_GlobalInvocationID.xy), finalColor);
+    vec4 finalColor = blurredColor / samples;
+    imageStore(motionBlur, ivec2(gl_GlobalInvocationID.xy), finalColor);
 }   
 

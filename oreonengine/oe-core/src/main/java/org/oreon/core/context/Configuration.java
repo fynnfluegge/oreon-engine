@@ -124,6 +124,7 @@ public class Configuration {
 				sunIntensity = Float.valueOf(properties.getProperty("sun.intensity"));
 				ambient = Float.valueOf(properties.getProperty("ambient"));
 				AtmosphericScatteringApproximation = Integer.valueOf(properties.getProperty("atmosphere.scattering.approximation")) == 1 ? true : false;
+				horizonVerticalShift = Float.valueOf(properties.getProperty("horizon.verticalShift"));
 				atmosphereBloomFactor = Float.valueOf(properties.getProperty("atmosphere.bloom.factor"));
 				sightRange = Float.valueOf(properties.getProperty("sightRange"));
 				fogColor = new Vec3f(Float.valueOf(properties.getProperty("fog.color.r")),

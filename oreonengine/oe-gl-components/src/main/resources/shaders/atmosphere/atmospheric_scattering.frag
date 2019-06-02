@@ -21,9 +21,8 @@ uniform float r_Sun;
 uniform int width;
 uniform int height;
 uniform int isReflection;
-
+uniform float horizonVerticalShift;
 const vec3 sunBaseColor = vec3(1.0f,0.79f,0.43f);
-const float horizonVerticalShift = 0.1;
 
 vec2 rsi(vec3 r0, vec3 rd, float sr) {
     // ray-sphere intersection that assumes

@@ -124,7 +124,7 @@ void main(void)
 	
 	float spec = specularReflection(vec3(directional_light.direction.x, directional_light.direction.y/specularAmplifier, directional_light.direction.z),
 		normal.xzy, eyePosition, specularFactor, emission, vertexToEye);
-	vec3 specularLight = (directional_light.color + vec3(0,0.03,0.08)) * spec;
+	vec3 specularLight = directional_light.color * spec;
 	
 	fragColor += specularLight;
 	

@@ -36,6 +36,7 @@ public class DeferredLightingShader extends GLShaderProgram{
 		addUniform("pssm");
 		addUniform("sightRangeFactor");
 		addUniform("ssaoFlag");
+		addUniform("fogColor");
 	}
 	
 	public void updateUniforms(GLTexture pssm, boolean ssaoFlag){
@@ -44,6 +45,7 @@ public class DeferredLightingShader extends GLShaderProgram{
 		bindUniformBlock("DirectionalLight", Constants.DirectionalLightUniformBlockBinding);	
 		bindUniformBlock("LightViewProjections",Constants.LightMatricesUniformBlockBinding);
 		setUniformf("sightRangeFactor", BaseContext.getConfig().getSightRange());
+		setUniform("fogColor", BaseContext.getConfig().getFogColor());
 		
 		glActiveTexture(GL_TEXTURE1);
 		pssm.bind();
