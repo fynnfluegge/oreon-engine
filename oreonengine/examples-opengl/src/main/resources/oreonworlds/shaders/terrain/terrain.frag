@@ -62,7 +62,7 @@ float diffuse(vec3 direction, vec3 normal, float intensity)
 
 float getFogFactor(float dist)
 {
-	return -0.0002/sightRangeFactor*(dist-(zfar)/10*sightRangeFactor) + 1;
+	return smoothstep(0,1,-0.0002/sightRangeFactor*(dist-(zfar)/10*sightRangeFactor) + 1);
 }
 
 float distancePointPlane(vec3 point, vec4 plane){
@@ -109,8 +109,8 @@ void main()
 	
 	// caustics
 	if (isCameraUnderWater == 1 && isRefraction == 0){
-		vec2 causticsUV = inWorldPos.xz / 100;
-		vec2 causticDistortion = texture(dudvCaustics, causticsUV*0.2 + distortionCaustics*0.6).rb * 0.18;
+		vec2 causticsUV = inWorldPos.xz / 400;
+		vec2 causticDistortion = texture(dudvCaustics, causticsUV*0.2 + distortionCaustics*0.4).rb * 0.18;
 		vec3 causticsColor = texture(caustics, causticsUV + causticDistortion).rbg;
 		
 		fragColor += (causticsColor/5);

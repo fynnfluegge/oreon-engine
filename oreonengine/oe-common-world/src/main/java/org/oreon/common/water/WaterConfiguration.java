@@ -69,7 +69,7 @@ public class WaterConfiguration {
 		capillarWavesSupression = Float.valueOf(properties.getProperty("fft.capillarwavesSuppression"));
 		displacementScale = Float.valueOf(properties.getProperty("displacementScale"));
 		choppiness = Float.valueOf(properties.getProperty("choppiness"));
-		distortion = Float.valueOf(properties.getProperty("distortion"));
+		distortion = Float.valueOf(properties.getProperty("distortion_delta"));
 		waveMotion = Float.valueOf(properties.getProperty("wavemotion"));
 		uvScale = Integer.valueOf(properties.getProperty("uvScale"));
 		tessellationFactor = Integer.valueOf(properties.getProperty("tessellationFactor"));

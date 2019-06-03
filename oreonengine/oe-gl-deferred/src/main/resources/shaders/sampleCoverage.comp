@@ -16,7 +16,7 @@ layout (binding = 5, rgba16f) uniform readonly image2DMS specularEmissionBloom_i
 
 uniform int multisamples;
 
-const float threshold = 1;
+const float threshold = 1.0;
 
 void main()
 {

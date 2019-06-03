@@ -45,15 +45,19 @@ public class BloomAdditiveBlendShader extends GLShaderProgram{
 	{
 		glActiveTexture(GL_TEXTURE1);
 		bloomBlurTexture_div2.bind();
+		bloomBlurTexture_div2.bilinearFilter();
 		setUniformi("bloomBlurSampler_div2", 1);
 		glActiveTexture(GL_TEXTURE2);
 		bloomBlurTexture_div4.bind();
+		bloomBlurTexture_div4.bilinearFilter();
 		setUniformi("bloomBlurSampler_div4", 2);
 		glActiveTexture(GL_TEXTURE3);
-		bloomBlurTexture_div4.bind();
+		bloomBlurTexture_div8.bind();
+		bloomBlurTexture_div8.bilinearFilter();
 		setUniformi("bloomBlurSampler_div8", 3);
 		glActiveTexture(GL_TEXTURE0);
 		bloomBlurTexture_div16.bind();
+		bloomBlurTexture_div16.bilinearFilter();
 		setUniformi("bloomBlurSampler_div16", 0);
 		setUniformf("windowWidth", width);
 		setUniformf("windowHeight", height);

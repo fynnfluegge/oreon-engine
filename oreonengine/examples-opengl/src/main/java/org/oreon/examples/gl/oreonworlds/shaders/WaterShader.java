@@ -117,7 +117,7 @@ public class WaterShader extends GLShaderProgram{
 		setUniformf("tessShift", configuration.getTessellationShift());
 		setUniformi("largeDetailRange", configuration.getHighDetailRange());
 		setUniformf("distortion", configuration.getDistortion());
-		setUniformf("distortion", configuration.isDiffuse() ? 1 : 0);
+		setUniformf("diffuseEnable", configuration.isDiffuse() ? 1 : 0);
 		setUniformf("emission", configuration.getEmission());
 		setUniformf("specularFactor", configuration.getSpecularFactor());
 		setUniformf("specularAmplifier", configuration.getSpecularAmplifier());

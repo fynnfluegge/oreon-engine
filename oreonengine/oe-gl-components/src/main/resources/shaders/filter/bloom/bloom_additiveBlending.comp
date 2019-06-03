@@ -8,6 +8,7 @@ uniform sampler2D bloomBlurSampler_div2;
 uniform sampler2D bloomBlurSampler_div4;
 uniform sampler2D bloomBlurSampler_div8;
 uniform sampler2D bloomBlurSampler_div16;
+
 uniform float windowWidth;
 uniform float windowHeight;
 

@@ -61,7 +61,7 @@ float specular(vec3 direction, vec3 normal, vec3 eyePosition, vec3 vertexPositio
 
 float getFogFactor(float dist)
 {
-	return -0.0002/sightRangeFactor*(dist-(zfar)/10*sightRangeFactor) + 1;
+	return smoothstep(0,1,-0.0002/sightRangeFactor*(dist-(zfar)/10*sightRangeFactor) + 1);
 }
 
 float linearizeDepth(float depth)

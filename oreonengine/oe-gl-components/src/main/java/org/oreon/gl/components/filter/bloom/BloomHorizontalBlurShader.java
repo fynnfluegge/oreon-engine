@@ -31,10 +31,6 @@ public class BloomHorizontalBlurShader extends GLShaderProgram{
 		addUniform("sceneBrightnessSampler");
 		addUniform("width");
 		addUniform("height");
-		
-		for (int i=0; i<4; i++){
-			addUniform("downsamplingFactors[" + i + "]");
-		}
 	}
 	
 	public void updateUniforms(GLTexture sceneBrightnessSampler, int[] downsamplingFactors, int width, int height)
@@ -44,9 +40,5 @@ public class BloomHorizontalBlurShader extends GLShaderProgram{
 		setUniformi("sceneBrightnessSampler", 0);
 		setUniformf("width", width);
 		setUniformf("height", height);
-		
-		for (int i=0; i<4; i++){
-			setUniformf("downsamplingFactors[" + i + "]", downsamplingFactors[i]);
-		}
 	}
 }

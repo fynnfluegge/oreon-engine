@@ -61,9 +61,9 @@ float fresnelApproximated(vec3 normal, vec3 vertexToEye)
 	return clamp(pow(fresnel, 1.0),0.0,1.0);
 }
 
-float specularReflection(vec3 direction, vec3 normal, vec3 eyePosition, float specularFactor, float emissionFactor, vec3 vertexToEye)
+float specularReflection(vec3 direction, vec3 normal, float specularFactor, float emissionFactor, vec3 vertexToEye)
 {
-	vec3 reflectionVector = normalize(reflect(direction, normalize(normal)));
+	vec3 reflectionVector = normalize(reflect(direction, normal));
 	
 	float specular = max(0.0, dot(vertexToEye, reflectionVector));
 	
@@ -124,7 +124,7 @@ void main(void)
 	vec3 fragColor = reflection + refraction;
 	
 	float spec = specularReflection(vec3(directional_light.direction.x, directional_light.direction.y/specularAmplifier, directional_light.direction.z),
-		normal.xzy, eyePosition, specularFactor, emission, vertexToEye);
+		normal.xzy, specularFactor, emission, vertexToEye);
 	vec3 specularLight = directional_light.color * spec;
 	
 	fragColor += specularLight;
