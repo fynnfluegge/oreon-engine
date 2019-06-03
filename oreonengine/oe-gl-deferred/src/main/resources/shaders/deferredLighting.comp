@@ -231,9 +231,9 @@ void main(void){
 		}
 	}
 	
-	float dist = length(eyePosition - position);
+	float dist = length(eyePosition - imageLoad(worldPositionImage, computeCoord,0).rgb);
 	float fogFactor = getFogFactor(dist);
-	if (normal != vec3(0,0,0))
+	if (imageLoad(normalImage, computeCoord,0).rbg != vec3(0,0,0))
 	{
 		finalColor = mix(fogColor, finalColor, clamp(fogFactor,0,1));
 	}

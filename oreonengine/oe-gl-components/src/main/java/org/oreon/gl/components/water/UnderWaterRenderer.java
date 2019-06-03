@@ -25,8 +25,6 @@ public class UnderWaterRenderer {
 	
 	private GLTexture dudvMap;
 	private GLTexture causticsMap;
-	private float distortion;
-	private float distortion_delta = 0.001f;
 	
 	public UnderWaterRenderer() {
 		underWaterShader = UnderWaterShader.getInstance();
@@ -50,10 +48,6 @@ public class UnderWaterRenderer {
 		underWaterShader.updateUniforms(sceneDepthMap);
 		glDispatchCompute(BaseContext.getWindow().getWidth()/8, BaseContext.getWindow().getHeight()/8, 1);	
 		glFinish();
-		
-		distortion += distortion_delta;
-		
-		GLContext.getResources().getWaterConfig().setUnderwaterDistortion(distortion);
 	}
 
 }

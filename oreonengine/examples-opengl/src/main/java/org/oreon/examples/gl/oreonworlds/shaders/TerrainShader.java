@@ -146,7 +146,7 @@ public class TerrainShader extends GLShaderProgram {
 		glActiveTexture(GL_TEXTURE4);
 		GLContext.getResources().getUnderwaterDudvMap().bind();
 		setUniformi("dudvCaustics", 4);
-		setUniformf("distortionCaustics", GLContext.getResources().getWaterConfig().getUnderwaterDistortion());
+		setUniformf("distortionCaustics", GLContext.getResources().getWaterConfig().getDistortion());
 		setUniformf("underwaterBlurFactor", GLContext.getResources().getWaterConfig().getUnderwaterBlur());
 		
 		for (int i=0; i<8; i++){

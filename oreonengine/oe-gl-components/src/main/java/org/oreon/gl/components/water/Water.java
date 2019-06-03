@@ -42,7 +42,7 @@ public class Water extends Renderable{
 	private Vec4f clipplane;
 	private int clip_offset;
 	private float motion;
-	private float distortion;
+	private float distortion_delta;
 	private GLTexture dudv;
 	
 	private GLFramebuffer reflection_fbo;
@@ -65,6 +65,8 @@ public class Water extends Renderable{
 		waterConfiguration = new WaterConfiguration();
 		waterConfiguration.loadFile("water-config.properties");
 		GLContext.getResources().setWaterConfig(waterConfiguration);
+		
+		distortion_delta = waterConfiguration.getDistortion(); 
 		
 		GLPatchVBO meshBuffer = new GLPatchVBO();
 		meshBuffer.addData(MeshGenerator.generatePatch2D4x4(patches),16);
@@ -145,7 +147,7 @@ public class Water extends Renderable{
 			BaseContext.getConfig().setRenderUnderwater(true);
 		}
 			
-		distortion += waterConfiguration.getDistortion();
+		waterConfiguration.setDistortion(waterConfiguration.getDistortion() + distortion_delta);
 		motion += waterConfiguration.getWaveMotion();
 		
 		Scenegraph scenegraph = ((Scenegraph) getParentNode());
@@ -270,10 +272,6 @@ public class Water extends Renderable{
 
 	public void setMotion(float motion) {
 		this.motion = motion;
-	}
-
-	public float getDistortion() {
-		return distortion;
 	}
 
 	public int getClip_offset() {

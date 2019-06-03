@@ -32,6 +32,7 @@ uniform float kRefraction;
 uniform int windowWidth;
 uniform int windowHeight;
 uniform int texDetail;
+uniform int diffuseEnable;
 uniform float emission;
 uniform float specularFactor;
 uniform float specularAmplifier;
@@ -128,9 +129,12 @@ void main(void)
 	
 	fragColor += specularLight;
 	
+	if (diffuseEnable == 0)
+		normal = vec3(0,0,1);
+	
 	albedo_out = vec4(fragColor,1);
 	worldPosition_out = vec4(position_FS,1);
-	normal_out = vec4(0,0,1,1);
+	normal_out = vec4(normal,1);
 	specularEmission_out = vec4(1,0,1,1);
 	lightScattering_out = vec4(0,0,0,1);
 }

@@ -31,6 +31,7 @@ public class WaterConfiguration {
 	private int uvScale;
 	private float specularFactor;
 	private float specularAmplifier;
+	private boolean diffuse;
 	private float emission;
 	private float kReflection;
 	private float kRefraction;
@@ -46,7 +47,6 @@ public class WaterConfiguration {
 	private float capillarDownsampling;
 	private float dudvDownsampling;
 	private float underwaterBlur;
-	private float underwaterDistortion;
 	
 	public void loadFile(String file)
 	{
@@ -93,5 +93,6 @@ public class WaterConfiguration {
 		capillarDownsampling = Float.valueOf(properties.getProperty("capillar.downsampling"));
 		dudvDownsampling = Float.valueOf(properties.getProperty("dudv.downsampling"));
 		underwaterBlur = Float.valueOf(properties.getProperty("underwater.blurfactor"));
+		diffuse = Integer.valueOf(properties.getProperty("diffuse.enable")) == 0 ? false : true;
 	}
 }
