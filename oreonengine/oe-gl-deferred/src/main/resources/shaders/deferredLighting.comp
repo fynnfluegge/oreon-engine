@@ -235,8 +235,11 @@ void main(void){
 	float fogFactor = getFogFactor(dist);
 	if (imageLoad(normalImage, computeCoord,0).rbg != vec3(0,0,0))
 	{
-		finalColor = mix(fogColor, finalColor, clamp(fogFactor,0,1));
+		// finalColor = mix(fogColor, finalColor, clamp(fogFactor,0,1));
 	}
 	
+	// float shadowMapDepth = texture(pssm, vec3(vec2(computeCoord.x/1280.0, computeCoord.y/720.0),5)).r;
+	
+	// imageStore(defferedSceneImage, computeCoord, vec4(linearizeDepth(shadowMapDepth),linearizeDepth(shadowMapDepth),linearizeDepth(shadowMapDepth),1.0));
 	imageStore(defferedSceneImage, computeCoord, vec4(finalColor,1.0));
 }

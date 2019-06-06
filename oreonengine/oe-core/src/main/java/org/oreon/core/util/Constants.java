@@ -12,12 +12,12 @@ public class Constants {
 	public static Vec3f DEEPOCEAN_COLOR = new Vec3f(0.1f,0.125f,0.24f);
 	public static int CLIPOFFSET;
 	public static final int PSSM_SPLITS = 6;
-	public static final float[] PSSM_SPLIT_SHEME= { -0.005f,0.005f,
+	public static final float[] PSSM_SPLIT_SHEME = { -0.005f,0.005f,
 													-0.005f,0.01f, 
 													0.0f,0.02f,
 													0.01f,0.04f,
 													0.02f,0.06f,
-													0.05f,0.16f };
+													0.05f,1f };
 	
 	public static final int PSSM_SHADOWMAP_RESOLUTION = 4096;
 	

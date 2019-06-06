@@ -12,21 +12,21 @@ import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.util.ResourceLoader;
 import org.oreon.gl.components.water.Water;
 
-public class OceanWireframeShader extends GLShaderProgram{
+public class WaterWireframeShader extends GLShaderProgram{
 
-private static OceanWireframeShader instance = null;
+private static WaterWireframeShader instance = null;
 	
 
-	public static OceanWireframeShader getInstance() 
+	public static WaterWireframeShader getInstance() 
 	{
 	    if(instance == null) 
 	    {
-	    	instance = new OceanWireframeShader();
+	    	instance = new WaterWireframeShader();
 	    }
 	      return instance;
 	}
 	
-	protected OceanWireframeShader()
+	protected WaterWireframeShader()
 	{
 		super();
 		

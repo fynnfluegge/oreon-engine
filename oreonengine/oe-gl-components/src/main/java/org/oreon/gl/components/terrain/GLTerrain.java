@@ -34,11 +34,20 @@ public class GLTerrain extends Node{
 		GLRenderInfo wireframeRenderInfo = new GLRenderInfo(wireframe,
 						    new DefaultRenderParams(),
 						    buffer);
+		
 		HashMap<NodeComponentType, NodeComponent> components = new HashMap<NodeComponentType, NodeComponent>();
 		
 		components.put(NodeComponentType.MAIN_RENDERINFO, renderInfo);
 		components.put(NodeComponentType.WIREFRAME_RENDERINFO, wireframeRenderInfo);
 		components.put(NodeComponentType.CONFIGURATION, configuration);
+		
+		if (shadow != null){
+			GLRenderInfo shadowRenderInfo = new GLRenderInfo(shadow,
+				    new DefaultRenderParams(),
+				    buffer);
+			
+			components.put(NodeComponentType.SHADOW_RENDERINFO, shadowRenderInfo);
+		}
 		
 		quadtree = new TerrainQuadtree(components);
 		
