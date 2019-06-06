@@ -1,7 +1,7 @@
 #version 450
 #extension GL_ARB_separate_shader_objects : enable
 
-layout(triangles, invocations = 6) in;
+layout(triangles, invocations = 7) in;
 layout(triangle_strip, max_vertices = 3) out;
 
 layout (location = 0) in vec2 inUV[];
@@ -25,7 +25,7 @@ layout (std140, row_major) uniform Camera{
 };
 
 layout (std140, row_major) uniform LightViewProjections{
-	mat4 m_lightViewProjection[6];
+	mat4 m_lightViewProjection[7];
 };
 
 uniform sampler2D splatmap;
