@@ -68,9 +68,9 @@ public class WaterShader extends GLShaderProgram{
 		addUniform("dudvDownsampling");
 		
 		addUniform("diffuseEnable");
-		addUniform("emission");
-		addUniform("specularFactor");
-		addUniform("specularAmplifier");
+//		addUniform("emission");
+//		addUniform("specularFactor");
+//		addUniform("specularAmplifier");
 
 		addUniform("isCameraUnderWater");
 		
@@ -117,10 +117,10 @@ public class WaterShader extends GLShaderProgram{
 		setUniformf("tessShift", configuration.getTessellationShift());
 		setUniformi("largeDetailRange", configuration.getHighDetailRange());
 		setUniformf("distortion", configuration.getDistortion());
-		setUniformf("diffuseEnable", configuration.isDiffuse() ? 1 : 0);
-		setUniformf("emission", configuration.getEmission());
-		setUniformf("specularFactor", configuration.getSpecularFactor());
-		setUniformf("specularAmplifier", configuration.getSpecularAmplifier());
+		setUniformi("diffuseEnable", configuration.isDiffuse() ? 1 : 0);
+//		setUniformf("emission", configuration.getEmission());
+//		setUniformf("specularFactor", configuration.getSpecularFactor());
+//		setUniformf("specularAmplifier", configuration.getSpecularAmplifier());
 		setUniformf("motion", ocean.getMotion());
 		setUniformi("isCameraUnderWater", BaseContext.getConfig().isRenderUnderwater() ? 1 : 0);
 		setUniformf("fresnelFactor", configuration.getFresnelFactor());
