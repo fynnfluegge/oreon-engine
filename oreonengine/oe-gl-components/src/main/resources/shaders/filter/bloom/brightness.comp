@@ -2,15 +2,20 @@
 
 layout (local_size_x = 8, local_size_y = 8) in;
 
-layout (binding = 0, rgba16f) uniform readonly image2D sceneSampler;
+// layout (binding = 0, rgba16f) uniform readonly image2D sceneSampler;
 
 layout (binding = 1, rgba16f) uniform writeonly image2D bloomSampler;
+
+uniform sampler2DMS sceneSampler;
 
 void main(void){
 
 	ivec2 computeCoord = ivec2(gl_GlobalInvocationID.x, gl_GlobalInvocationID.y);
+	vec2 uv = vec2((computeCoord.x+0.5)/1280.0, (computeCoord.y+0.5)/720.0);
 
-	vec3 color = imageLoad(sceneSampler, computeCoord).rgb;  
+	// vec3 color = imageLoad(sceneSampler, computeCoord).rgb;
+
+	vec3 color = texelFetch(sceneSampler, computeCoord, 0).rgb;
 	
 	float brightness = dot(color, vec3(0.2126, 0.7152, 0.0722));
 
