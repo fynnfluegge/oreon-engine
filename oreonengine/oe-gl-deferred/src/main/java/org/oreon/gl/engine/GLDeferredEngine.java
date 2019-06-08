@@ -284,7 +284,7 @@ public class GLDeferredEngine extends RenderEngine{
 			//--------------------------------------------//
 			
 			if (BaseContext.getConfig().isBloomEnabled()){
-				bloom.render(primarySceneFbo.getAttachmentTexture(Attachment.COLOR), currentScene, specularEmissionBloomMask);
+				bloom.render(prePostprocessingScene, currentScene, specularEmissionBloomMask);
 				currentScene = bloom.getBloomSceneTexture();
 			}
 			
@@ -345,10 +345,9 @@ public class GLDeferredEngine extends RenderEngine{
 		
 //		contrastController.render(displayTexture);
 
-//		fullScreenQuadMultisample.setTexture(primarySceneFbo.getAttachmentTexture(Attachment.LIGHT_SCATTERING));
+//		fullScreenQuadMultisample.setTexture(primarySceneFbo.getAttachmentTexture(Attachment.COLOR));
 //		fullScreenQuadMultisample.render();
 		
-//		fullScreenQuad.setTexture(bloom.getSceneBrightnessTexture());
 		fullScreenQuad.setTexture(currentScene);
 		fullScreenQuad.render();
 		

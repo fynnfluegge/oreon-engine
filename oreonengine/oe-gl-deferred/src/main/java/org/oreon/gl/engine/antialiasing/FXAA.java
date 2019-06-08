@@ -1,5 +1,6 @@
 package org.oreon.gl.engine.antialiasing;
 
+import static org.lwjgl.opengl.GL11.glFinish;
 import static org.lwjgl.opengl.GL15.GL_WRITE_ONLY;
 import static org.lwjgl.opengl.GL30.GL_RGBA16F;
 import static org.lwjgl.opengl.GL42.glBindImageTexture;
@@ -30,6 +31,7 @@ public class FXAA {
 	
 	public void render(GLTexture sceneTexture){
 		
+		glFinish();
 		shader.bind();
 		glBindImageTexture(0, fxaaSceneTexture.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
 		shader.updateUniforms(sceneTexture);

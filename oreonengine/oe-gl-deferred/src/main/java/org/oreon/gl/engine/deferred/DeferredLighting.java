@@ -1,5 +1,6 @@
 package org.oreon.gl.engine.deferred;
 
+import static org.lwjgl.opengl.GL11.glFinish;
 import static org.lwjgl.opengl.GL15.GL_READ_ONLY;
 import static org.lwjgl.opengl.GL15.GL_WRITE_ONLY;
 import static org.lwjgl.opengl.GL30.GL_R16F;
@@ -34,6 +35,8 @@ public class DeferredLighting {
 	public void render(GLTexture sampleCoverageMask, GLTexture ssaoBlurTexture, GLTexture shadowmap,
 			GLTexture albedoTexture, GLTexture worldPositionTexture, GLTexture normalTexture,
 			GLTexture specularEmissionDiffuseSsaoBloomTexture){
+		
+		glFinish();
 		
 		shader.bind();
 		glBindImageTexture(0, deferredLightingSceneTexture.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);

@@ -63,6 +63,7 @@ public class DepthOfField {
 	
 	public void render(GLTexture depthmap, GLTexture lightScatteringMask, GLTexture sceneSampler) {
 		
+		glFinish();
 		lowResFbo.bind();
 		fullScreenQuad.setTexture(sceneSampler);
 		glViewport(0,0,(int)(BaseContext.getConfig().getX_ScreenResolution()/1.2f),
@@ -85,7 +86,7 @@ public class DepthOfField {
 		glBindImageTexture(1, lightScatteringMask.getHandle(), 0, false, 0, GL_READ_ONLY, GL_RGBA16F);
 		glBindImageTexture(2, verticalBlurSceneTexture.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
 		verticalBlurShader.updateUniforms(depthmap);
-		glDispatchCompute(BaseContext.getWindow().getWidth()/8, BaseContext.getWindow().getHeight()/8, 1);	
+		glDispatchCompute(BaseContext.getWindow().getWidth()/8, BaseContext.getWindow().getHeight()/8, 1);
 		glFinish();
 	}
 
