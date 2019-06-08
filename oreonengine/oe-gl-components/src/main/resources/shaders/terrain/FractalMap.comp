@@ -20,7 +20,7 @@ struct Fractal
 
 uniform Fractal fractals[8];
 uniform int N;
-uniform int edgeElevation = 1;
+uniform int edgeElevation;
 
 void main(void)
 {
@@ -73,35 +73,35 @@ void main(void)
 	{
 		xSlope = edgeElevation == 1
 			? 0.5 * sin(64*(uv.x + M_PI/128.0)) + 0.5
-			: /*20*uv.x;*/ 0.5 * sin(64*(uv.x + 3*M_PI/128.0)) + 0.5;
+			: /*20*uv.x;*/ 0.5 * sin(16.0*(uv.x + 3*M_PI/32.0)) + 0.5;
 	}
 	else
 	{
 		xSlope = edgeElevation == 1
 			? 0.5 * sin(64*(uv.x + M_PI/128.0-1)) + 0.5
-			: /*-20*(uv.x-1);*/ 0.5 * sin(64*(uv.x + 3*M_PI/128.0 -1)) + 0.5;
+			: /*-20*(uv.x-1);*/ 0.5 * sin(16.0*(uv.x + 3*M_PI/32.0 -1)) + 0.5;
 	}
 	if (uv.y < 0.5)
 	{
 		zSlope = edgeElevation == 1
 			? 0.5 * sin(64*(uv.y + M_PI/128.0)) + 0.5
-			: /*20*uv.y;*/ 0.5 * sin(64*(uv.y + 3*M_PI/128.0)) + 0.5;
+			: /*20*uv.y;*/ 0.5 * sin(16.0*(uv.y + 3*M_PI/32.0)) + 0.5;
 	}
 	else
 	{
 		zSlope = edgeElevation == 1
 			? 0.5 * sin(64*(uv.y + M_PI/128.0-1)) + 0.5
-			: /*-20*(uv.y-1);*/ 0.5 * sin(64*(uv.y + 3*M_PI/128.0 - 1)) + 0.5;
+			: /*-20*(uv.y-1);*/ 0.5 * sin(16.0*(uv.y + 3*M_PI/32.0 - 1)) + 0.5;
 	}
 	
 	float vMinLow = 2.0f * M_PI / 128.0f;
 	float vMaxLow = 1.0f - 2.0f * M_PI / 128.0f;
 	float vMinHigh = edgeElevation == 1
 						? 2.0f * M_PI / 64.0f
-						: 2.0f * M_PI / 128.0f;
+						: 2.0f * M_PI / 32.0f;
 	float vMaxHigh = edgeElevation == 1
 						? 1.0f - 2.0f * M_PI / 64.0f
-						: 1.0f - 2.0f * M_PI / 128.0f;
+						: 1.0f - 2.0f * M_PI / 32.0f;
 	
 	float slope = 0;
 	if (edgeElevation == 1)
@@ -162,7 +162,7 @@ void main(void)
 			(uv.x <= vMinHigh && uv.y >= vMaxHigh) ||
 			(uv.x >= vMaxHigh && uv.y >= vMaxHigh))
 		{
-			slope = min(xSlope, zSlope);
+			slope = clamp(xSlope * zSlope, 0, 1);
 		}
 	}
 	//---------------------------------------//
@@ -194,6 +194,11 @@ void main(void)
 		}
 	}
 	//---------------------------------------//
+	
+	if (edgeElevation == 0)
+	{
+		xyz -= 0.2;
+	}
 	
 	
 	imageStore(heightmap, x, vec4(xyz, slope));

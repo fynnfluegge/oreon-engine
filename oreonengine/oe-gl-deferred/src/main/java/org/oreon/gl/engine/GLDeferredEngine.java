@@ -20,7 +20,6 @@ import org.oreon.core.instanced.InstancedHandler;
 import org.oreon.core.light.LightHandler;
 import org.oreon.core.scenegraph.RenderList;
 import org.oreon.core.target.FrameBufferObject.Attachment;
-import org.oreon.core.util.Constants;
 import org.oreon.gl.components.filter.bloom.Bloom;
 import org.oreon.gl.components.filter.contrast.ContrastController;
 import org.oreon.gl.components.filter.dofblur.DepthOfField;
@@ -137,9 +136,9 @@ public class GLDeferredEngine extends RenderEngine{
 		GLUtil.clearScreen();
 		secondarySceneFbo.bind();
 		GLUtil.clearScreen();
-		pssmFbo.getFBO().bind();
+		pssmFbo.getFbo().bind();
 		glClear(GL_DEPTH_BUFFER_BIT);
-		pssmFbo.getFBO().unbind();
+		pssmFbo.getFbo().unbind();
 		glFinish();
 		
 		
@@ -147,13 +146,15 @@ public class GLDeferredEngine extends RenderEngine{
 		//        render shadow maps        //
 		//----------------------------------//
 		
-		pssmFbo.getFBO().bind();
-		pssmFbo.getConfig().enable();
-		glViewport(0,0,Constants.PSSM_SHADOWMAP_RESOLUTION,Constants.PSSM_SHADOWMAP_RESOLUTION);
-		sceneGraph.renderShadows();
-		glViewport(0,0,config.getX_ScreenResolution(),config.getY_ScreenResolution());
-		pssmFbo.getConfig().disable();
-		pssmFbo.getFBO().unbind();
+		if (BaseContext.getConfig().isShadowsEnable()){
+			pssmFbo.getFbo().bind();
+			pssmFbo.getConfig().enable();
+			glViewport(0,0,BaseContext.getConfig().getShadowMapResolution(),BaseContext.getConfig().getShadowMapResolution());
+			sceneGraph.renderShadows();
+			glViewport(0,0,config.getX_ScreenResolution(),config.getY_ScreenResolution());
+			pssmFbo.getConfig().disable();
+			pssmFbo.getFbo().unbind();
+		}
 		
 		
 		//----------------------------------------------//
@@ -200,7 +201,7 @@ public class GLDeferredEngine extends RenderEngine{
 		
 		sampleCoverage.render(primarySceneFbo.getAttachmentTexture(Attachment.POSITION),
 				primarySceneFbo.getAttachmentTexture(Attachment.LIGHT_SCATTERING),
-				primarySceneFbo.getAttachmentTexture(Attachment.SPECULAR_EMISSION_BLOOM));
+				primarySceneFbo.getAttachmentTexture(Attachment.SPECULAR_EMISSION_DIFFUSE_SSAO_BLOOM));
 		
 
 		//-----------------------------------------------------//
@@ -209,12 +210,11 @@ public class GLDeferredEngine extends RenderEngine{
 		
 		deferredLighting.render(sampleCoverage.getSampleCoverageMask(),
 				ssao.getSsaoBlurSceneTexture(),
-				pssmFbo.getDepthMaps(),
+				pssmFbo.getDepthMap(),
 				primarySceneFbo.getAttachmentTexture(Attachment.COLOR),
 				primarySceneFbo.getAttachmentTexture(Attachment.POSITION),
 				primarySceneFbo.getAttachmentTexture(Attachment.NORMAL),
-				primarySceneFbo.getAttachmentTexture(Attachment.SPECULAR_EMISSION_BLOOM),
-				BaseContext.getConfig().isSsaoEnabled());
+				primarySceneFbo.getAttachmentTexture(Attachment.SPECULAR_EMISSION_DIFFUSE_SSAO_BLOOM));
 		
 		
 		//-----------------------------------------------//

@@ -32,6 +32,7 @@ public class FractalMapShader extends GLShaderProgram{
 		compileShader();
 		
 		addUniform("N");
+		addUniform("edgeElevation");
 		
 		for (int i=0; i<8; i++){
 			addUniform("fractals[" + i + "].dy");
@@ -45,9 +46,10 @@ public class FractalMapShader extends GLShaderProgram{
 		}
 	}
 	
-	public void updateUniforms(List<FractalMap> fractals, int N){
+	public void updateUniforms(List<FractalMap> fractals, int N, boolean edgeElevation){
 		
 		setUniformi("N", N);
+		setUniformi("edgeElevation", edgeElevation ? 1 : 0);
 		
 		for (int i=0; i<8; i++)
 		{

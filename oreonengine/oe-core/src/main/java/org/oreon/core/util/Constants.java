@@ -20,8 +20,6 @@ public class Constants {
 													0.05f,2f,
 													-1f,1f};
 	
-	public static final int PSSM_SHADOWMAP_RESOLUTION = 4096;
-	
 	// Global Uniform Block Bindings
 	public static final int CameraUniformBlockBinding = 51;
 	public static final int DirectionalLightUniformBlockBinding = 52;

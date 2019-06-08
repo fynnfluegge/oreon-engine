@@ -39,7 +39,7 @@ public class Bloom {
 	private BloomSceneBlendingShader bloomSceneShader;
 	private BloomAdditiveBlendShader additiveBlendShader;
 	
-	private final int[] downsamplingFactors = {2,4,8,16};
+	private final int[] downsamplingFactors = {2,4,8,24};
 	
 	public Bloom(){
 		

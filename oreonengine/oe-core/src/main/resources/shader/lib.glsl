@@ -1,3 +1,8 @@
+const int shadowMapResolution = 4096;
+const float zfar = 10000;
+const float znear = 0.1;
+const vec3 sunBaseColor = vec3(1.0f,0.79f,0.43f);
+
 float linearizeDepth(float depth)
 {
 	return (2 * znear) / (zfar + znear - depth * (zfar - znear));

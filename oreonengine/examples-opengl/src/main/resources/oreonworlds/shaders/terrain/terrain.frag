@@ -6,11 +6,11 @@ layout (location = 1) in vec4 inViewPos;
 layout (location = 2) in vec3 inWorldPos;
 layout (location = 3) in vec3 inTangent;
 
-layout(location = 0) out vec4 outAlbedo;
-layout(location = 1) out vec4 outWorldPos;
-layout(location = 2) out vec4 outNormal;
-layout(location = 3) out vec4 outSpecularEmission;
-layout(location = 4) out vec4 outLightScattering;
+layout(location = 0) out vec4 albedo_out;
+layout(location = 1) out vec4 worldPosition_out;
+layout(location = 2) out vec4 normal_out;
+layout(location = 3) out vec4 specular_emission_diffuse_ssao_bloom_out;
+layout(location = 4) out vec4 lightScattering_out;
 
 struct Material
 {
@@ -135,9 +135,9 @@ void main()
 		fragColor = mix(fogColor, fragColor, clamp(fogFactor,0,1));
 	}
 	
-	outAlbedo = vec4(fragColor,1);
-	outWorldPos = vec4(inWorldPos,1);
-	outNormal = vec4(normal,1);
-	outSpecularEmission = vec4(1,0,1,1);
-	outLightScattering = vec4(0,0,0,1);
+	albedo_out = vec4(fragColor,1);
+	worldPosition_out = vec4(inWorldPos,1);
+	normal_out = vec4(normal,1);
+	specular_emission_diffuse_ssao_bloom_out = vec4(1,0,11,1);
+	lightScattering_out = vec4(0,0,0,1);
 }

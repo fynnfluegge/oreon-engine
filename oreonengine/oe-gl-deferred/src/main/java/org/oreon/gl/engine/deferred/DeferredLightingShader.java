@@ -34,24 +34,26 @@ public class DeferredLightingShader extends GLShaderProgram{
 		addUniformBlock("LightViewProjections");
 		addUniform("numSamples");
 		addUniform("pssm");
-//		addUniform("sightRangeFactor");
-		addUniform("ssaoFlag");
-//		addUniform("fogColor");
+		addUniform("sightRangeFactor");
+		addUniform("fogColor");
+		addUniform("shadowsEnable");
+		addUniform("ssaoEnable");
 	}
 	
-	public void updateUniforms(GLTexture pssm, boolean ssaoFlag){
+	public void updateUniforms(GLTexture pssm){
 		
 		bindUniformBlock("Camera", Constants.CameraUniformBlockBinding);
 		bindUniformBlock("DirectionalLight", Constants.DirectionalLightUniformBlockBinding);	
 		bindUniformBlock("LightViewProjections",Constants.LightMatricesUniformBlockBinding);
-//		setUniformf("sightRangeFactor", BaseContext.getConfig().getSightRange());
-//		setUniform("fogColor", BaseContext.getConfig().getFogColor());
+		setUniformf("sightRangeFactor", BaseContext.getConfig().getSightRange());
+		setUniform("fogColor", BaseContext.getConfig().getFogColor());
+		setUniformi("shadowsEnable", BaseContext.getConfig().isShadowsEnable() ? 1 : 0);
 		
 		glActiveTexture(GL_TEXTURE1);
 		pssm.bind();
 		setUniformi("pssm", 1);
 		
-		setUniformi("ssaoFlag", ssaoFlag ? 1 : 0);
+		setUniformi("ssaoEnable", BaseContext.getConfig().isSsaoEnabled() ? 1 : 0);
 		
 		setUniformi("numSamples", BaseContext.getConfig().getMultisamples());
 	}

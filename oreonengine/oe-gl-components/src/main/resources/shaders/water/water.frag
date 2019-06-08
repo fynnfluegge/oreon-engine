@@ -8,7 +8,7 @@ in vec3 tangent;
 layout(location = 0) out vec4 albedo_out;
 layout(location = 1) out vec4 worldPosition_out;
 layout(location = 2) out vec4 normal_out;
-layout(location = 3) out vec4 specularEmission_out;
+layout(location = 3) out vec4 specular_emission_diffuse_ssao_bloom_out;
 layout(location = 4) out vec4 lightScattering_out;
 
 layout (std140) uniform DirectionalLight{
@@ -82,6 +82,8 @@ void main(void)
 
 	normal = normalize(normal);
 	
+	float fresnel = fresnelApproximated(normal.xzy, vertexToEye);
+	
 	if (dist < largeDetailRange-50.0){
 		float attenuation = clamp(-dist/(largeDetailRange-50) + 1,0.0,1.0);
 		vec3 bitangent = normalize(cross(tangent, normal));
@@ -92,8 +94,6 @@ void main(void)
 		bumpNormal = normalize(bumpNormal);
 		normal = normalize(TBN * bumpNormal);
 	}
-	
-	float fresnel = fresnelApproximated(normal.xzy, vertexToEye);
 	
 	// projCoord //
 	vec3 dudvCoord = normalize((2 * texture(dudvMap, texCoord_FS * dudvDownsampling + distortion).rbg) - 1);
@@ -135,6 +135,6 @@ void main(void)
 	albedo_out = vec4(fragColor,1);
 	worldPosition_out = vec4(position_FS,1);
 	normal_out = vec4(normal,1);
-	specularEmission_out = vec4(150,1,1,1);
+	specular_emission_diffuse_ssao_bloom_out = vec4(280,2,0,1);
 	lightScattering_out = vec4(0,0,0,1);
 }

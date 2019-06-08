@@ -23,7 +23,7 @@ public class SunLightScatteringShader extends GLShaderProgram{
 	{
 		super();
 		
-		addComputeShader(ResourceLoader.loadShader("shaders/filter/light_scattering/lightScattering_CS.glsl"));
+		addComputeShader(ResourceLoader.loadShader("shaders/filter/light_scattering/lightScattering.comp"));
 		
 		compileShader();
 		

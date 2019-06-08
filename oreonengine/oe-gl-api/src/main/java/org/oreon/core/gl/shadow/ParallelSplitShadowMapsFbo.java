@@ -6,6 +6,7 @@ import static org.lwjgl.opengl.GL30.GL_DEPTH_ATTACHMENT;
 import static org.lwjgl.opengl.GL30.GL_FRAMEBUFFER;
 import static org.lwjgl.opengl.GL32.glFramebufferTexture;
 
+import org.oreon.core.context.BaseContext;
 import org.oreon.core.gl.framebuffer.GLFramebuffer;
 import org.oreon.core.gl.pipeline.RenderParameter;
 import org.oreon.core.gl.texture.GLTexture;
@@ -16,43 +17,32 @@ import org.oreon.core.image.Image.SamplerFilter;
 import org.oreon.core.image.Image.TextureWrapMode;
 import org.oreon.core.util.Constants;
 
+import lombok.Getter;
+
+@Getter
 public class ParallelSplitShadowMapsFbo {
 
 	private GLFramebuffer fbo;
-	private GLTexture depthMaps;
+	private GLTexture depthMap;
 	private RenderParameter config;
 
 	public ParallelSplitShadowMapsFbo(){
 		
 		config = new ShadowConfig();
 		
-		depthMaps = new TextureImage2DArrray(Constants.PSSM_SHADOWMAP_RESOLUTION,
-				Constants.PSSM_SHADOWMAP_RESOLUTION, Constants.PSSM_SPLITS,
+		depthMap = new TextureImage2DArrray(BaseContext.getConfig().getShadowMapResolution(),
+				BaseContext.getConfig().getShadowMapResolution(), Constants.PSSM_SPLITS,
 				ImageFormat.DEPTH32FLOAT, SamplerFilter.Bilinear, TextureWrapMode.ClampToEdge); 
 		
 		fbo = new GLFramebuffer();
 		fbo.bind();
 		glFramebufferTexture(GL_FRAMEBUFFER,
 				GL_DEPTH_ATTACHMENT,
-				depthMaps.getHandle(),
+				depthMap.getHandle(),
 				0);
 		glDrawBuffers(GL_NONE);
 		fbo.checkStatus();
 		fbo.unbind();	
 	}
-	
-	public GLFramebuffer getFBO(){
-		return fbo;
-	}
-	public GLTexture getDepthMaps(){
-		return depthMaps;
-	}
 
-	public RenderParameter getConfig() {
-		return config;
-	}
-	
-	public void setConfig(RenderParameter config) {
-		this.config = config;
-	}
 }
