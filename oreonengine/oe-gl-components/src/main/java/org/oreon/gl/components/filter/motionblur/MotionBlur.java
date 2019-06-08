@@ -49,8 +49,6 @@ public class MotionBlur {
 		glDispatchCompute(BaseContext.getWindow().getWidth()/8, BaseContext.getWindow().getHeight()/8, 1);	
 		glFinish();
 		
-		motionBlurSceneTexture.bind();
-		
 		motionBlurShader.bind();
 		glBindImageTexture(0, motionBlurSceneTexture.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
 		glBindImageTexture(1, sceneSampler.getHandle(), 0, false, 0, GL_READ_ONLY, GL_RGBA16F);
