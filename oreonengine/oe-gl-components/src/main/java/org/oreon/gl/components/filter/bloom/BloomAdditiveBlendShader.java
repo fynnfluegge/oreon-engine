@@ -31,35 +31,35 @@ public class BloomAdditiveBlendShader extends GLShaderProgram{
 		
 		compileShader();
 		
-		addUniform("bloomBlurSampler_div2");
-		addUniform("bloomBlurSampler_div4");
-		addUniform("bloomBlurSampler_div8");
-		addUniform("bloomBlurSampler_div16");
-		addUniform("windowWidth");
-		addUniform("windowHeight");
+		addUniform("bloomBlurSampler0");
+		addUniform("bloomBlurSampler1");
+		addUniform("bloomBlurSampler2");
+		addUniform("bloomBlurSampler3");
+		addUniform("width");
+		addUniform("height");
 	}
 	
-	public void updateUniforms(GLTexture bloomBlurTexture_div2,
-			GLTexture bloomBlurTexture_div4, GLTexture bloomBlurTexture_div8, 
-			GLTexture bloomBlurTexture_div16,int width,int height)
+	public void updateUniforms(GLTexture bloomBlurTexture0,
+			GLTexture bloomBlurTexture1, GLTexture bloomBlurTexture2, 
+			GLTexture bloomBlurTexture3,int width,int height)
 	{
 		glActiveTexture(GL_TEXTURE1);
-		bloomBlurTexture_div2.bind();
-		bloomBlurTexture_div2.bilinearFilter();
-		setUniformi("bloomBlurSampler_div2", 1);
+		bloomBlurTexture0.bind();
+		bloomBlurTexture0.bilinearFilter();
+		setUniformi("bloomBlurSampler0", 1);
 		glActiveTexture(GL_TEXTURE2);
-		bloomBlurTexture_div4.bind();
-		bloomBlurTexture_div4.bilinearFilter();
-		setUniformi("bloomBlurSampler_div4", 2);
+		bloomBlurTexture1.bind();
+		bloomBlurTexture1.bilinearFilter();
+		setUniformi("bloomBlurSampler1", 2);
 		glActiveTexture(GL_TEXTURE3);
-		bloomBlurTexture_div8.bind();
-		bloomBlurTexture_div8.bilinearFilter();
-		setUniformi("bloomBlurSampler_div8", 3);
+		bloomBlurTexture2.bind();
+		bloomBlurTexture2.bilinearFilter();
+		setUniformi("bloomBlurSampler2", 3);
 		glActiveTexture(GL_TEXTURE0);
-		bloomBlurTexture_div16.bind();
-		bloomBlurTexture_div16.bilinearFilter();
-		setUniformi("bloomBlurSampler_div16", 0);
-		setUniformf("windowWidth", width);
-		setUniformf("windowHeight", height);
+		bloomBlurTexture3.bind();
+		bloomBlurTexture3.bilinearFilter();
+		setUniformi("bloomBlurSampler3", 0);
+		setUniformf("width", width);
+		setUniformf("height", height);
 	}
 }

@@ -29,8 +29,8 @@ void main(void){
 	
 	for (int i=0; i<9; i++){
 
-		ivec2 uvOffset_ = ivec2(0,i-4);
-		ivec2 uv = computeCoord + uvOffset_;
+		ivec2 uvOffset = ivec2(0,i-4);
+		ivec2 uv = computeCoord + uvOffset;
 		color0 += imageLoad(horizontalBloomBlurSampler0Image, uv).rgb * gaussianKernel9_sigma2[i];
 		color1 += imageLoad(horizontalBloomBlurSampler1Image, uv).rgb * gaussianKernel9_sigma2[i];
 		color2 += imageLoad(horizontalBloomBlurSampler2Image, uv).rgb * gaussianKernel9_sigma2[i];

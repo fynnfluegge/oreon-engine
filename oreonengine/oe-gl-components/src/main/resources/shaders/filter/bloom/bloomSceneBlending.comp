@@ -30,10 +30,15 @@ void main()
 	ivec2 computeCoord = ivec2(gl_GlobalInvocationID.x, gl_GlobalInvocationID.y);
 
     vec3 hdrColor = imageLoad(sceneSampler, computeCoord).rgb;    
-    vec3 bloomColor = blur(computeCoord, 5);
+	
+	float factor = imageLoad(specular_emission_bloom_attachment, computeCoord).a;
+	vec3 bloomColor = vec3(0);
+	
+	if (factor > 0)
+		bloomColor = blur(computeCoord, 5);
 	
 	// additive blending
-    hdrColor += bloomColor * imageLoad(specular_emission_bloom_attachment, computeCoord).a;
+    hdrColor += bloomColor * factor;
 	
     imageStore(bloomSceneSampler, computeCoord, vec4(hdrColor, 1.0));
 } 

@@ -21,7 +21,6 @@ public class BloomVerticalBlurShader extends GLShaderProgram{
 		super();
 		
 		addComputeShader(ResourceLoader.loadShader("shaders/filter/bloom/bloom_verticalGaussianBlur.comp"));
-		
 		compileShader();
 	}
 }

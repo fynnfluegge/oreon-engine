@@ -39,7 +39,7 @@ public class Bloom {
 	private BloomSceneBlendingShader bloomSceneShader;
 	private BloomAdditiveBlendShader additiveBlendShader;
 	
-	private final int[] downsamplingFactors = {2,4,8,24};
+	private final int[] downsamplingFactors = {2,4,8,12};
 	
 	public Bloom(){
 		
@@ -108,22 +108,19 @@ public class Bloom {
 		horizontalBlurShader.updateUniforms(sceneBrightnessTexture, downsamplingFactors,
 				BaseContext.getWindow().getWidth()/downsamplingFactors[0], BaseContext.getWindow().getHeight()/downsamplingFactors[0]);
 		glDispatchCompute(BaseContext.getWindow().getWidth()/16, BaseContext.getWindow().getHeight()/16, 1);	
-		glFinish();
 		
 		glBindImageTexture(0, horizontalBloomBlurDownsampling1.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
-		horizontalBlurShader.updateUniforms(horizontalBloomBlurDownsampling0, downsamplingFactors,
+		horizontalBlurShader.updateUniforms(sceneBrightnessTexture, downsamplingFactors,
 				BaseContext.getWindow().getWidth()/downsamplingFactors[1], BaseContext.getWindow().getHeight()/downsamplingFactors[1]);
 		glDispatchCompute(BaseContext.getWindow().getWidth()/16, BaseContext.getWindow().getHeight()/16, 1);	
-		glFinish();
 		
 		glBindImageTexture(0, horizontalBloomBlurDownsampling2.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
-		horizontalBlurShader.updateUniforms(horizontalBloomBlurDownsampling1, downsamplingFactors,
+		horizontalBlurShader.updateUniforms(sceneBrightnessTexture, downsamplingFactors,
 				BaseContext.getWindow().getWidth()/downsamplingFactors[2], BaseContext.getWindow().getHeight()/downsamplingFactors[2]);
 		glDispatchCompute(BaseContext.getWindow().getWidth()/16, BaseContext.getWindow().getHeight()/16, 1);	
-		glFinish();
 		
 		glBindImageTexture(0, horizontalBloomBlurDownsampling3.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
-		horizontalBlurShader.updateUniforms(horizontalBloomBlurDownsampling2, downsamplingFactors,
+		horizontalBlurShader.updateUniforms(sceneBrightnessTexture, downsamplingFactors,
 				BaseContext.getWindow().getWidth()/downsamplingFactors[3], BaseContext.getWindow().getHeight()/downsamplingFactors[3]);
 		glDispatchCompute(BaseContext.getWindow().getWidth()/16, BaseContext.getWindow().getHeight()/16, 1);	
 		glFinish();
