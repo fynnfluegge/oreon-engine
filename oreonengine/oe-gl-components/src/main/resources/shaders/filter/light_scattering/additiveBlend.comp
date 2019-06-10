@@ -12,9 +12,10 @@ layout (binding = 2, rgba16f) uniform writeonly image2D lightScatteringSceneSamp
 vec3 blur(ivec2 computeCoord, int kernels){
 	
 	vec3 rgb = vec3(0,0,0);
-	
+
 	for (int i=-kernels; i<=kernels; i++){
 		for (int j=-kernels; j<=kernels; j++){
+			
 			rgb += imageLoad(lightScatteringSampler, computeCoord + ivec2(i,j)).rgb;  
 		}
 	}
@@ -28,7 +29,7 @@ void main(void){
 
 	ivec2 computeCoord = ivec2(gl_GlobalInvocationID.x, gl_GlobalInvocationID.y);
 
-	vec3 lightScatteringColor = blur(computeCoord, 5);   
+	vec3 lightScatteringColor = blur(computeCoord, 3);   
     vec3 sceneColor = imageLoad(sceneSampler, computeCoord).rgb;
 
 	imageStore(lightScatteringSceneSampler, computeCoord, vec4(lightScatteringColor + sceneColor, 1.0));

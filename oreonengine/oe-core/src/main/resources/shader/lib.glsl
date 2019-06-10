@@ -3,6 +3,21 @@ const float zfar = 10000;
 const float znear = 0.1;
 const vec3 sunBaseColor = vec3(1.0f,0.79f,0.43f);
 
+vec3 plainBlur(ivec2 computeCoord, int kernels, image2D vImage)
+{
+	vec3 rgb = vec3(0,0,0);
+	
+	for (int i=-kernels; i<=kernels; i++){
+		for (int j=-kernels; j<=kernels; j++){
+			rgb += imageLoad(vImage, computeCoord + ivec2(i,j)).rgb;  
+		}
+	}
+
+	rgb *= 1/ pow(kernels*2+1,2);
+	
+	return rgb;
+}
+
 float linearizeDepth(float depth)
 {
 	return (2 * znear) / (zfar + znear - depth * (zfar - znear));

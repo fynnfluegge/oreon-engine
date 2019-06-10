@@ -63,15 +63,16 @@ private final Vec3f yAxis = new Vec3f(0,1,0);
 	private Vec3f[] frustumCorners = new Vec3f[8];
 	
 	protected FloatBuffer floatBuffer;
-	protected final int bufferSize = Float.BYTES * (4+16+16+(6*4));
+	protected final int bufferSize = Float.BYTES * (4+16+16+(6*4)+(4));
 	
 	protected Camera(Vec3f position, Vec3f forward, Vec3f up)
 	{
+		width = BaseContext.getConfig().getX_ScreenResolution();
+		height = BaseContext.getConfig().getY_ScreenResolution();
 		setPosition(position);
 		setForward(forward.normalize());
 		setUp(up.normalize());
-		setProjection(70, BaseContext.getConfig().getX_ScreenResolution(),
-				BaseContext.getConfig().getY_ScreenResolution());
+		setProjection(70, width, height);
 		setViewMatrix(new Matrix4f().View(getForward(), getUp()).mul(
 				new Matrix4f().Translation(getPosition().mul(-1))));
 		setOriginViewMatrix(new Matrix4f().View(getForward(), getUp()).mul(
@@ -235,6 +236,10 @@ private final Vec3f yAxis = new Vec3f(0,1,0);
 		floatBuffer.put(BufferUtil.createFlippedBuffer(getViewMatrix()));
 		floatBuffer.put(BufferUtil.createFlippedBuffer(getViewProjectionMatrix()));
 		floatBuffer.put(BufferUtil.createFlippedBuffer(getFrustumPlanes()));
+		floatBuffer.put(width);
+		floatBuffer.put(height);
+		floatBuffer.put(0);
+		floatBuffer.put(0);
 		floatBuffer.flip();
 	}
 	

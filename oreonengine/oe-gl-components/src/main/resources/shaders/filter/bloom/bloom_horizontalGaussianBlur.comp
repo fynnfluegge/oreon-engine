@@ -2,11 +2,20 @@
 
 layout (local_size_x = 8, local_size_y = 8) in;
 
-layout (binding = 0, rgba16f) uniform writeonly image2D horizontalBloomBlurImage;
+layout (binding = 0, rgba16f) uniform writeonly image2D horizontalBloomBlurImage0;
+layout (binding = 1, rgba16f) uniform writeonly image2D horizontalBloomBlurImage1;
+layout (binding = 2, rgba16f) uniform writeonly image2D horizontalBloomBlurImage2;
+layout (binding = 3, rgba16f) uniform writeonly image2D horizontalBloomBlurImage3;
 
 uniform sampler2D sceneBrightnessSampler;
-uniform float width;
-uniform float height;
+uniform float width0;
+uniform float height0;
+uniform float width1;
+uniform float height1;
+uniform float width2;
+uniform float height2;
+uniform float width3;
+uniform float height3;
 
 const float gaussianKernel7_sigma2[7] = float[7](0.071303,0.131514,0.189879,0.214607,0.189879,0.131514,0.071303);
 const float gaussianKernel9_sigma3[9] = float[9](0.063327,0.093095,0.122589,0.144599,0.152781,0.144599,0.122589,0.093095,0.063327);
@@ -17,16 +26,35 @@ const float gaussianKernel9_sigma1[9] = float[9](0.000229,0.005977,0.060598,0.24
 void main(void){
 
 	ivec2 computeCoord = ivec2(gl_GlobalInvocationID.x, gl_GlobalInvocationID.y);
-	vec2 uv = vec2(gl_GlobalInvocationID.x/width,gl_GlobalInvocationID.y/height);
+	vec2 uv = vec2(gl_GlobalInvocationID.x,gl_GlobalInvocationID.y);
 	vec2 tmpUv = vec2(0);
+	vec2 uvOffset = vec2(0);
 	
-	vec3 color = vec3(0);
+	vec3 color0 = vec3(0);
+	vec3 color1 = vec3(0);
+	vec3 color2 = vec3(0);
+	vec3 color3 = vec3(0);
 	
 	for (int i=0; i<9; i++){
-		vec2 uvOffset = vec2((i-3.5)/width,0.5/height);
+		uvOffset = vec2((i-3.5),0.5);
 		tmpUv = uv + uvOffset;
-		color += texture(sceneBrightnessSampler, tmpUv).rgb * gaussianKernel9_sigma2[i];
+		color0 += texture(sceneBrightnessSampler, vec2(tmpUv.x/width0, tmpUv.y/height0)).rgb * gaussianKernel9_sigma2[i];
+		
+		uvOffset = vec2((i-3.5),0.5);
+		tmpUv = uv + uvOffset;
+		color1 += texture(sceneBrightnessSampler, vec2(tmpUv.x/width1, tmpUv.y/height1)).rgb * gaussianKernel9_sigma2[i];
+		
+		uvOffset = vec2((i-3.5),0.5);
+		tmpUv = uv + uvOffset;
+		color2 += texture(sceneBrightnessSampler, vec2(tmpUv.x/width2, tmpUv.y/height2)).rgb * gaussianKernel9_sigma2[i];
+		
+		uvOffset = vec2((i-3.5),0.5);
+		tmpUv = uv + uvOffset;
+		color3 += texture(sceneBrightnessSampler, vec2(tmpUv.x/width3, tmpUv.y/height3)).rgb * gaussianKernel9_sigma2[i];
 	}
 
-	imageStore(horizontalBloomBlurImage, computeCoord, vec4(color, 1.0));
+	imageStore(horizontalBloomBlurImage0, computeCoord, vec4(color0, 1.0));
+	imageStore(horizontalBloomBlurImage1, computeCoord, vec4(color1, 1.0));
+	imageStore(horizontalBloomBlurImage2, computeCoord, vec4(color2, 1.0));
+	imageStore(horizontalBloomBlurImage3, computeCoord, vec4(color3, 1.0));
 }
