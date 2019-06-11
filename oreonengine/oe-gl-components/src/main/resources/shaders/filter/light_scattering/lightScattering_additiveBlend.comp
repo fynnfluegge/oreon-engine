@@ -27,7 +27,7 @@ vec3 blur(ivec2 computeCoord, int kernels){
 		}
 	}
 
-	rgb *= 1/ pow(kernels*2+1,2);
+	rgb *= 1/ divisor;
 	
 	return rgb;
 }
@@ -39,7 +39,7 @@ void main(void){
 	vec3 lightScatteringColor = imageLoad(lightScatteringSampler, computeCoord).rgb;
 	
 	if (lightScatteringColor != vec3(0))
-		lightScatteringColor = blur(computeCoord, 1);
+		lightScatteringColor = blur(computeCoord, 2);
 		
     vec3 sceneColor = imageLoad(sceneSampler, computeCoord).rgb;
 
