@@ -28,6 +28,10 @@ public class Configuration {
 	private final int multisamples;
 	private boolean fxaaEnabled;
 	
+	// shadows settings
+	private boolean shadowsEnable;
+	private int shadowMapResolution;
+	
 	// post processing effects
 	private boolean ssaoEnabled;
 	private boolean bloomEnabled;
@@ -42,7 +46,6 @@ public class Configuration {
 	private boolean renderReflection;
 	private boolean renderRefraction;
 	private Vec4f clipplane;
-	private float sightRange;
 	
 	// Vulkan Validation
 	private boolean vkValidation;
@@ -53,8 +56,11 @@ public class Configuration {
 	private Vec3f sunColor;
 	private float sunIntensity;
 	private float ambient;
-	private boolean AtmosphericScatteringApproximation;
+	private boolean AtmosphericScatteringEnable;
 	private float atmosphereBloomFactor;
+	private Vec3f fogColor;
+	private float horizonVerticalShift;
+	private float sightRange;
 	
 	// postprocessing parameters
 	private int lightscatteringSampleCount;
@@ -85,8 +91,8 @@ public class Configuration {
 		y_ScreenResolution = Integer.valueOf(properties.getProperty("screen.resolution.y"));
 		multisamples = Integer.valueOf(properties.getProperty("multisamples"));
 		fxaaEnabled = Integer.valueOf(properties.getProperty("fxaa.enable")) == 1 ? true : false;
-		sightRange = Float.valueOf(properties.getProperty("sightRange"));
-		
+		shadowsEnable = Integer.valueOf(properties.getProperty("shadows.enable")) == 1 ? true : false;
+		shadowMapResolution = Integer.valueOf(properties.getProperty("shadows.map.resolution"));
 		bloomEnabled = Integer.valueOf(properties.getProperty("bloom.enable")) == 1 ? true : false;
 		ssaoEnabled = Integer.valueOf(properties.getProperty("ssao.enable")) == 1 ? true : false;
 		motionBlurEnabled = Integer.valueOf(properties.getProperty("motionBlur.enable")) == 1 ? true : false;
@@ -122,8 +128,13 @@ public class Configuration {
 						Float.valueOf(properties.getProperty("sun.color.b")));
 				sunIntensity = Float.valueOf(properties.getProperty("sun.intensity"));
 				ambient = Float.valueOf(properties.getProperty("ambient"));
-				AtmosphericScatteringApproximation = Integer.valueOf(properties.getProperty("atmosphere.scattering.approximation")) == 1 ? true : false;
+				AtmosphericScatteringEnable = Integer.valueOf(properties.getProperty("atmosphere.scattering.enable")) == 1 ? true : false;
+				horizonVerticalShift = Float.valueOf(properties.getProperty("horizon.verticalShift"));
 				atmosphereBloomFactor = Float.valueOf(properties.getProperty("atmosphere.bloom.factor"));
+				sightRange = Float.valueOf(properties.getProperty("sightRange"));
+				fogColor = new Vec3f(Float.valueOf(properties.getProperty("fog.color.r")),
+						Float.valueOf(properties.getProperty("fog.color.g")),
+						Float.valueOf(properties.getProperty("fog.color.b")));
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

@@ -2,14 +2,14 @@ package org.oreon.examples.gl.oreonworlds.ocean;
 
 import org.oreon.core.math.Vec4f;
 import org.oreon.core.util.Constants;
-import org.oreon.examples.gl.oreonworlds.shaders.OceanBRDFShader;
-import org.oreon.examples.gl.oreonworlds.shaders.OceanWireframeShader;
+import org.oreon.examples.gl.oreonworlds.shaders.WaterWireframeShader;
+import org.oreon.examples.gl.oreonworlds.shaders.WaterShader;
 import org.oreon.gl.components.water.Water;
 
 public class Ocean extends Water{
 
 	public Ocean() {
-		super(128, OceanBRDFShader.getInstance(), OceanWireframeShader.getInstance());
+		super(128, WaterShader.getInstance(), WaterWireframeShader.getInstance());
 		
 		getWorldTransform().setScaling(Constants.ZFAR*1.95f,1,Constants.ZFAR*1.95f);
 		getWorldTransform().setTranslation(-Constants.ZFAR*1.95f/2,0,-Constants.ZFAR*1.95f/2);

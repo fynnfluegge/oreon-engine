@@ -40,11 +40,11 @@ import org.oreon.core.vk.wrapper.buffer.VkUniformBuffer;
 import org.oreon.core.vk.wrapper.command.SecondaryDrawIndexedCmdBuffer;
 import org.oreon.core.vk.wrapper.pipeline.GraphicsPipeline;
 
-public class Skydome extends Renderable{
+public class Atmosphere extends Renderable{
 	
 	private VkUniformBuffer uniformBuffer;
 	
-	public Skydome() {
+	public Atmosphere() {
 		
 		LogicalDevice device = VkContext.getDeviceManager().getLogicalDevice(DeviceType.MAJOR_GRAPHICS_DEVICE);
 		VkPhysicalDeviceMemoryProperties memoryProperties = 

@@ -41,6 +41,7 @@ public class SunLightScattering {
 	
 	public void render(GLTexture sceneSampler, GLTexture lightScatteringMask) {
 		
+		glFinish();
 		lightScatteringShader.bind();
 		glBindImageTexture(0, lightScatteringMask.getHandle(), 0, false, 0, GL_READ_ONLY, GL_RGBA16F);
 		glBindImageTexture(1, sunLightScatteringTexture.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);

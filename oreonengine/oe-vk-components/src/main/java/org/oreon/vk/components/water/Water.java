@@ -358,7 +358,7 @@ public class Water extends Renderable{
 		pushConstants.putInt(BaseContext.getConfig().getWindowWidth());
 		pushConstants.putInt(BaseContext.getConfig().getWindowHeight());
 		pushConstants.putFloat(waterConfiguration.getEmission());
-		pushConstants.putFloat(waterConfiguration.getSpecular());
+		pushConstants.putFloat(waterConfiguration.getSpecularFactor());
 		pushConstants.flip();
 		
 		VkPipeline graphicsPipeline = new GraphicsTessellationPipeline(device.getHandle(),

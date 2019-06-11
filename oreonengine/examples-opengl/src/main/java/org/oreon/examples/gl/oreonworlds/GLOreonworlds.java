@@ -4,6 +4,7 @@ import org.oreon.core.gl.context.GLContext;
 import org.oreon.examples.gl.oreonworlds.gui.GLSystemMonitor;
 import org.oreon.examples.gl.oreonworlds.ocean.Ocean;
 import org.oreon.examples.gl.oreonworlds.shaders.TerrainShader;
+import org.oreon.examples.gl.oreonworlds.shaders.TerrainShadowShader;
 import org.oreon.examples.gl.oreonworlds.shaders.TerrainWireframeShader;
 import org.oreon.examples.gl.oreonworlds.terrain.Terrain;
 import org.oreon.gl.components.atmosphere.Atmosphere;
@@ -22,7 +23,7 @@ public class GLOreonworlds {
 		renderEngine.getSceneGraph().addObject(new Atmosphere());	
 		renderEngine.getSceneGraph().setWater(new Ocean());
 		renderEngine.getSceneGraph().setTerrain(new Terrain(TerrainShader.getInstance(),
-				TerrainWireframeShader.getInstance(), null));
+				TerrainWireframeShader.getInstance(), TerrainShadowShader.getInstance()));
 		
 		
 		GLContext.setRenderEngine(renderEngine);

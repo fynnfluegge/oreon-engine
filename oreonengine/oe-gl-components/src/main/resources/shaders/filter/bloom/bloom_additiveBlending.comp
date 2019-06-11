@@ -4,23 +4,24 @@ layout (local_size_x = 8, local_size_y = 8) in;
 
 layout (binding = 0, rgba16f) uniform writeonly image2D AdditiveBlendedBloomSampler;
 
-uniform sampler2D bloomBlurSampler_div2;
-uniform sampler2D bloomBlurSampler_div4;
-uniform sampler2D bloomBlurSampler_div8;
-uniform sampler2D bloomBlurSampler_div16;
-uniform float windowWidth;
-uniform float windowHeight;
+uniform sampler2D bloomBlurSampler0;
+uniform sampler2D bloomBlurSampler1;
+uniform sampler2D bloomBlurSampler2;
+uniform sampler2D bloomBlurSampler3;
+
+uniform float width;
+uniform float height;
 
 void main(void){
 
 	ivec2 computeCoord = ivec2(gl_GlobalInvocationID.x, gl_GlobalInvocationID.y);
-	vec2 uv = vec2(gl_GlobalInvocationID.x/windowWidth,gl_GlobalInvocationID.y/windowHeight);
+	vec2 uv = vec2(gl_GlobalInvocationID.x/width,gl_GlobalInvocationID.y/height);
 
 	vec3 color = vec3(0,0,0);
-	color += texture(bloomBlurSampler_div2, uv).rgb;
-	color += texture(bloomBlurSampler_div4, uv).rgb;
-	color += texture(bloomBlurSampler_div8, uv).rgb;
-	color += texture(bloomBlurSampler_div16, uv).rgb;
+	color += texture(bloomBlurSampler0, uv).rgb;
+	color += texture(bloomBlurSampler1, uv).rgb;
+	color += texture(bloomBlurSampler2, uv).rgb;
+	color += texture(bloomBlurSampler3, uv).rgb;
 	
 	color /= 4;
 

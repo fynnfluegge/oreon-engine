@@ -8,7 +8,7 @@ in vec3 tangent;
 layout(location = 0) out vec4 albedo_out;
 layout(location = 1) out vec4 worldPosition_out;
 layout(location = 2) out vec4 normal_out;
-layout(location = 3) out vec4 specularEmission_out;
+layout(location = 3) out vec4 specular_emission_diffuse_ssao_bloom_out;
 layout(location = 4) out vec4 lightScattering_out;
 
 layout (std140) uniform DirectionalLight{
@@ -22,11 +22,8 @@ uniform int largeDetailRange;
 uniform mat4 modelViewProjectionMatrix;
 uniform sampler2D waterReflection;
 uniform sampler2D waterRefraction;
-uniform sampler2D dudvRefracReflec;
-uniform float distortionRefracReflec;
-uniform sampler2D dudvCaustics;
-uniform float distortionCaustics;
-uniform sampler2D caustics;
+uniform sampler2D dudvMap;
+uniform float distortion;
 uniform float motion;
 uniform sampler2D normalmap;
 uniform vec3 eyePosition;
@@ -35,34 +32,38 @@ uniform float kRefraction;
 uniform int windowWidth;
 uniform int windowHeight;
 uniform int texDetail;
+uniform int diffuseEnable;
 uniform float emission;
-uniform float specular;
+uniform float specularFactor;
+uniform float specularAmplifier;
 uniform float sightRangeFactor;
 uniform int isCameraUnderWater;
+uniform float reflectionBlendFactor;
+uniform vec3 waterColor;
+uniform float fresnelFactor;
+uniform float capillarStrength;
+uniform float capillarDownsampling;
+uniform float dudvDownsampling;
+uniform vec2 wind;
 
-const vec2 wind = vec2(1,1);
-const float Eta = 0.15; // Water
-const vec3 deepOceanColor = vec3(0.1,0.125,0.20);
+const float Eta = 0.15;
 const float zfar = 10000;
 const float znear = 0.1;
-vec3 vertexToEye;
 
-float fresnelApproximated(vec3 normal)
+float fresnelApproximated(vec3 normal, vec3 vertexToEye)
 {
 	vec3 halfDirection = normalize(normal + vertexToEye);
     
     float cosine = dot(halfDirection, vertexToEye);
 
-	float fresnel = Eta + (1.0 - Eta) * pow(max(0.0, 1.0 - dot(vertexToEye, normal)), 6.0);
+	float fresnel = Eta + (1.0 - Eta) * pow(max(0.0, 1.0 - dot(vertexToEye, normal)), fresnelFactor);
 	
 	return clamp(pow(fresnel, 1.0),0.0,1.0);
 }
 
-float specularReflection(vec3 direction, vec3 normal, vec3 eyePosition, vec3 vertexPosition, float specularFactor, float emissionFactor)
+float specularReflection(vec3 direction, vec3 normal, float specularFactor, float emissionFactor, vec3 vertexToEye)
 {
-	normal.xz *= 2.2;
-	vec3 reflectionVector = normalize(reflect(direction, normalize(normal)));
-	vec3 vertexToEye = normalize(eyePosition - vertexPosition);
+	vec3 reflectionVector = normalize(reflect(direction, normal));
 	
 	float specular = max(0.0, dot(vertexToEye, reflectionVector));
 	
@@ -71,7 +72,7 @@ float specularReflection(vec3 direction, vec3 normal, vec3 eyePosition, vec3 ver
  
 void main(void)
 {
-	vertexToEye = normalize(eyePosition - position_FS);
+	vec3 vertexToEye = normalize(eyePosition - position_FS);
 	float dist = length(eyePosition - position_FS);
 	
 	vec2 waveMotion = wind * vec2(motion);
@@ -81,28 +82,28 @@ void main(void)
 
 	normal = normalize(normal);
 	
+	float fresnel = fresnelApproximated(normal.xzy, vertexToEye);
+	
 	if (dist < largeDetailRange-50.0){
 		float attenuation = clamp(-dist/(largeDetailRange-50) + 1,0.0,1.0);
 		vec3 bitangent = normalize(cross(tangent, normal));
 		mat3 TBN = mat3(tangent,bitangent,normal);
-		vec3 bumpNormal = texture(normalmap, texCoord_FS*8 + waveMotion).rgb;
-		bumpNormal.z *= 2.8;
+		vec3 bumpNormal = texture(normalmap, texCoord_FS * capillarDownsampling + waveMotion).rgb;
+		bumpNormal.z *= capillarStrength;
 		bumpNormal.xy *= attenuation;
 		bumpNormal = normalize(bumpNormal);
 		normal = normalize(TBN * bumpNormal);
 	}
 	
-	float F = fresnelApproximated(normal.xzy);
-	
 	// projCoord //
-	vec3 dudvCoord = normalize((2 * texture(dudvRefracReflec, texCoord_FS*4 + distortionRefracReflec).rbg) - 1);
+	vec3 dudvCoord = normalize((2 * texture(dudvMap, texCoord_FS * dudvDownsampling + distortion).rbg) - 1);
 	vec2 projCoord = vec2(gl_FragCoord.x/windowWidth, gl_FragCoord.y/windowHeight);
  
     // Reflection //
 	vec2 reflecCoords = projCoord.xy + dudvCoord.rb * kReflection;
 	reflecCoords = clamp(reflecCoords, kReflection, 1-kReflection);
-    vec3 reflection = mix(texture(waterReflection, reflecCoords).rgb, deepOceanColor,  0.2);
-    reflection *= F;
+    vec3 reflection = mix(texture(waterReflection, reflecCoords).rgb, waterColor, reflectionBlendFactor);
+    reflection *= fresnel;
  
     // Refraction //
 	vec2 refracCoords = projCoord.xy + dudvCoord.rb * kRefraction;
@@ -117,29 +118,23 @@ void main(void)
 	}
 	else {
 		refraction = texture(waterRefraction, refracCoords).rgb;
-		refraction *= 1-F;
+		refraction *= 1-fresnel;
 	}
 	
-	vec3 fragColor = (reflection + refraction);
+	vec3 fragColor = reflection + refraction;
 	
-	// caustics
-	if (isCameraUnderWater == 1){
-		vec2 causticsTexCoord = position_FS.xz / 80;
-		vec2 causticDistortion = texture(dudvCaustics, causticsTexCoord*0.2 + distortionCaustics*0.6).rb * 0.18;
-		vec3 causticsColor = texture(caustics, causticsTexCoord + causticDistortion).rbg;
-		
-		fragColor += (causticsColor/4);
-	}
+	float spec = specularReflection(vec3(directional_light.direction.x, directional_light.direction.y/specularAmplifier, directional_light.direction.z),
+		normal.xzy, specularFactor, emission, vertexToEye);
+	vec3 specularLight = directional_light.color * spec;
 	
-	float spec = specularReflection(vec3(directional_light.direction.x, directional_light.direction.y/5, directional_light.direction.z),
-		normal.xzy, eyePosition, position_FS, specular, emission);
-	vec3 specularLight = (directional_light.color + vec3(0,0.03,0.08)) * spec;
+	// fragColor += specularLight;
 	
-	fragColor += specularLight;
+	if (diffuseEnable == 0)
+		normal = vec3(0,0,1);
 	
 	albedo_out = vec4(fragColor,1);
 	worldPosition_out = vec4(position_FS,1);
 	normal_out = vec4(normal,1);
-	specularEmission_out = vec4(1,0,1,1);
+	specular_emission_diffuse_ssao_bloom_out = vec4(280,2,0,1);
 	lightScattering_out = vec4(0,0,0,1);
 }

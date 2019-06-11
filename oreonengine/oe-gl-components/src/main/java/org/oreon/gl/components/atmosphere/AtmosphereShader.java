@@ -35,6 +35,7 @@ public class AtmosphereShader extends GLShaderProgram{
 		addUniform("width");
 		addUniform("height");
 		addUniform("isReflection");
+		addUniform("bloom");
 	}
 		
 	public void updateUniforms(Renderable object)
@@ -47,5 +48,6 @@ public class AtmosphereShader extends GLShaderProgram{
 		setUniformi("width", BaseContext.getConfig().getX_ScreenResolution());
 		setUniformi("height", BaseContext.getConfig().getY_ScreenResolution());
 		setUniformi("isReflection", BaseContext.getConfig().isRenderReflection() ? 1 : 0);
+		setUniformf("bloom", BaseContext.getConfig().getAtmosphereBloomFactor());
 	}
 }

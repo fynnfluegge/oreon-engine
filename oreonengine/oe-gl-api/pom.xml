@@ -17,6 +17,11 @@
 			<artifactId>oe-core</artifactId>
 			<version>${oreon.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.oreon.common</groupId>
+			<artifactId>oe-common-world</artifactId>
+			<version>${oreon.version}</version>
+		</dependency>
 	</dependencies>
 	
 </project>

@@ -16,7 +16,7 @@ layout (binding = 5, rgba16f) uniform readonly image2DMS specularEmissionBloom_i
 
 uniform int multisamples;
 
-const float threshold = 1;
+const float threshold = 1.0;
 
 void main()
 {
@@ -40,15 +40,19 @@ void main()
 
 	vec4 lightScatteringMaskValue = vec4(0);
 	vec4 specularEmissionBloomMaskValue = vec4(0); 
+	bool lightScatteringAlphaFlag = false;
 
 	if (coverageValue == 1.0){	
 
 		for (int i=0; i<multisamples; i++){
-			lightScatteringMaskValue += imageLoad(lightScatteringMask_in, computeCoord, i).rgba;
+			if (!lightScatteringAlphaFlag){
+				lightScatteringMaskValue = imageLoad(lightScatteringMask_in, computeCoord, i).rgba;
+				if (lightScatteringMaskValue.a == 1.0)
+					lightScatteringAlphaFlag = true;
+			}
 			specularEmissionBloomMaskValue += imageLoad(specularEmissionBloom_in, computeCoord, i).rgba;
 		}
 
-		lightScatteringMaskValue /= multisamples;
 		specularEmissionBloomMaskValue /= multisamples;
 	}
 	else{

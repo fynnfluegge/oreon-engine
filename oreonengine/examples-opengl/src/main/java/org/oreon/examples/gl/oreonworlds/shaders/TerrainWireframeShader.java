@@ -16,7 +16,7 @@ import org.oreon.gl.components.terrain.TerrainNode;
 
 public class TerrainWireframeShader extends GLShaderProgram{
 	
-private static TerrainWireframeShader instance = null;
+	private static TerrainWireframeShader instance = null;
 	
 	public static TerrainWireframeShader getInstance() 
 	{

@@ -47,6 +47,7 @@ public class TerrainConfiguration extends NodeComponent{
 	private GLTexture splatmap;
 	private FloatBuffer heightmapDataBuffer;
 	private int heightmapResolution;
+	private boolean edgeElevation;
 	private List<Material<GLTexture>> materials = new ArrayList<>();
 	private int fractalMapResolution;
 	private List<FractalMap> fractals = new ArrayList<>();
@@ -128,6 +129,7 @@ public class TerrainConfiguration extends NodeComponent{
 		int fractalCount = Integer.valueOf(properties.getProperty("fractals.count"));
 		fractalMapResolution = Integer.valueOf(properties.getProperty("fractals.resolution"));
 		heightmapResolution = Integer.valueOf(properties.getProperty("heightmap.resolution"));
+		edgeElevation = Integer.valueOf(properties.getProperty("edge.elevation")) == 1 ? true : false;
 		
 		for (int i=0; i<fractalCount; i++){
 			
@@ -167,7 +169,7 @@ public class TerrainConfiguration extends NodeComponent{
 	
 	public void renderFractalMap(){
 		
-		FractalMapGenerator fractalMapGenerator = new FractalMapGenerator(heightmapResolution);
+		FractalMapGenerator fractalMapGenerator = new FractalMapGenerator(heightmapResolution, edgeElevation);
 		fractalMapGenerator.render(fractals);
 		heightmap = fractalMapGenerator.getHeightmap();
 //		heightmap = fractals.get(2).getHeightmap();

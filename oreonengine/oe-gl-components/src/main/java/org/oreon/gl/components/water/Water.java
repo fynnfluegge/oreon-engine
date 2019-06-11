@@ -42,9 +42,8 @@ public class Water extends Renderable{
 	private Vec4f clipplane;
 	private int clip_offset;
 	private float motion;
-	private float distortion;
+	private float distortion_delta;
 	private GLTexture dudv;
-	private GLTexture caustics;
 	
 	private GLFramebuffer reflection_fbo;
 	private GLTexture reflection_texture;
@@ -65,6 +64,9 @@ public class Water extends Renderable{
 	{		
 		waterConfiguration = new WaterConfiguration();
 		waterConfiguration.loadFile("water-config.properties");
+		GLContext.getResources().setWaterConfig(waterConfiguration);
+		
+		distortion_delta = waterConfiguration.getDistortion(); 
 		
 		GLPatchVBO meshBuffer = new GLPatchVBO();
 		meshBuffer.addData(MeshGenerator.generatePatch2D4x4(patches),16);
@@ -75,7 +77,6 @@ public class Water extends Renderable{
 		GLRenderInfo wireframeRenderInfo = new GLRenderInfo(wireframeShader, renderConfig, meshBuffer);
 		
 		dudv = new TextureImage2D("textures/water/dudv/dudv1.jpg", SamplerFilter.Trilinear);
-		caustics = new TextureImage2D("textures/water/caustics/caustics.jpg", SamplerFilter.Trilinear);
 		
 		addComponent(NodeComponentType.MAIN_RENDERINFO, renderInfo);
 		addComponent(NodeComponentType.WIREFRAME_RENDERINFO, wireframeRenderInfo);
@@ -146,7 +147,7 @@ public class Water extends Renderable{
 			BaseContext.getConfig().setRenderUnderwater(true);
 		}
 			
-		distortion += waterConfiguration.getDistortion();
+		waterConfiguration.setDistortion(waterConfiguration.getDistortion() + distortion_delta);
 		motion += waterConfiguration.getWaveMotion();
 		
 		Scenegraph scenegraph = ((Scenegraph) getParentNode());
@@ -243,7 +244,7 @@ public class Water extends Renderable{
 		BaseContext.getConfig().setX_ScreenResolution(tempScreenResolutionX);
 		BaseContext.getConfig().setY_ScreenResolution(tempScreenResolutionY);
 		
-		GLContext.getResources().getOpaqueSceneFbo().bind();
+		GLContext.getResources().getPrimaryFbo().bind();
 		
 		//-----------------------------------//
 		//            render FFT'S           //
@@ -271,10 +272,6 @@ public class Water extends Renderable{
 
 	public void setMotion(float motion) {
 		this.motion = motion;
-	}
-
-	public float getDistortion() {
-		return distortion;
 	}
 
 	public int getClip_offset() {
@@ -314,7 +311,4 @@ public class Water extends Renderable{
 		return dudv;
 	}
 
-	public GLTexture getCaustics() {
-		return caustics;
-	}
 }

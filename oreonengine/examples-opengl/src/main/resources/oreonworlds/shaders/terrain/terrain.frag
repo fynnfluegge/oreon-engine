@@ -6,11 +6,11 @@ layout (location = 1) in vec4 inViewPos;
 layout (location = 2) in vec3 inWorldPos;
 layout (location = 3) in vec3 inTangent;
 
-layout(location = 0) out vec4 outAlbedo;
-layout(location = 1) out vec4 outWorldPos;
-layout(location = 2) out vec4 outNormal;
-layout(location = 3) out vec4 outSpecularEmission;
-layout(location = 4) out vec4 outLightScattering;
+layout(location = 0) out vec4 albedo_out;
+layout(location = 1) out vec4 worldPosition_out;
+layout(location = 2) out vec4 normal_out;
+layout(location = 3) out vec4 specular_emission_diffuse_ssao_bloom_out;
+layout(location = 4) out vec4 lightScattering_out;
 
 struct Material
 {
@@ -28,6 +28,13 @@ layout (std140, row_major) uniform Camera{
 	vec4 frustumPlanes[6];
 };
 
+layout (std140) uniform DirectionalLight{
+	vec3 direction;
+	float intensity;
+	vec3 ambient;
+	vec3 color;
+} directional_light;
+
 uniform sampler2D normalmap;
 uniform sampler2D splatmap;
 uniform float scaleY;
@@ -42,11 +49,21 @@ uniform vec4 clipplane;
 uniform sampler2D dudvCaustics;
 uniform sampler2D caustics;
 uniform float distortionCaustics;
+uniform vec3 fogColor;
+uniform float underwaterBlurFactor;
 
 const float zfar = 10000;
 const float znear = 0.1;
-const vec3 fogColor = vec3(0.65,0.85,0.9);
-const vec3 waterRefractionColor = vec3(0.1,0.125,0.19);
+
+float diffuse(vec3 direction, vec3 normal, float intensity)
+{
+	return max(0.0, dot(normal, -direction) * intensity);
+}
+
+float getFogFactor(float dist)
+{
+	return smoothstep(0,1,-0.0002/sightRangeFactor*(dist-(zfar)/10*sightRangeFactor) + 1);
+}
 
 float distancePointPlane(vec3 point, vec4 plane){
 	return abs(plane.x*point.x + plane.y*point.y + plane.z*point.z + plane.w) / 
@@ -87,31 +104,40 @@ void main()
 	vec3 fragColor = vec3(0,0,0);
 	
 	for (int i=0; i<3; i++){
-		fragColor +=  texture(materials[i].diffusemap, inUV/materials[i].uvScaling).rgb
-					* blendValues[i];
+		fragColor +=  texture(materials[i].diffusemap, inUV/materials[i].uvScaling).rgb * blendValues[i];
 	}
 	
 	// caustics
 	if (isCameraUnderWater == 1 && isRefraction == 0){
-		vec2 causticsUV = inWorldPos.xz / 100;
-		vec2 causticDistortion = texture(dudvCaustics, causticsUV*0.2 + distortionCaustics*0.6).rb * 0.18;
+		vec2 causticsUV = inWorldPos.xz / 400;
+		vec2 causticDistortion = texture(dudvCaustics, causticsUV*0.2 + distortionCaustics).rb * 0.18;
 		vec3 causticsColor = texture(caustics, causticsUV + causticDistortion).rbg;
 		
-		fragColor += (causticsColor/5);
+		fragColor += (causticsColor/4);
 	}
 	
-	// underwater distance blue blur
+	if (isReflection == 1 || isRefraction == 1){
+		float diff = diffuse(directional_light.direction, normal.xzy, directional_light.intensity);
+		vec3 diffuseLight = directional_light.ambient + directional_light.color * diff;
+		fragColor *= diffuseLight;
+	}
+
+	// underwater blur
 	if (isCameraUnderWater == 0 && isRefraction == 1){
-		
 		float distToWaterSurace = distancePointPlane(inWorldPos,clipplane);
-		float refractionFactor = clamp(0.025 * distToWaterSurace,0,1);
-		
-		fragColor = mix(fragColor, waterRefractionColor, refractionFactor); 
+		float refractionFactor = smoothstep(0,1,1-1/(underwaterBlurFactor*distToWaterSurace+1) + 0.1);
+		fragColor = mix(fragColor, vec3(0), refractionFactor); 
 	}
 	
-	outAlbedo = vec4(fragColor,1);
-	outWorldPos = vec4(inWorldPos,1);
-	outNormal = vec4(normal,1);
-	outSpecularEmission = vec4(1,0,1,1);
-	outLightScattering = vec4(0,0,0,1);
+	if (isReflection == 1){
+		float dist = length(eyePosition - inWorldPos);
+		float fogFactor = getFogFactor(dist);
+		fragColor = mix(fogColor, fragColor, clamp(fogFactor,0,1));
+	}
+	
+	albedo_out = vec4(fragColor,1);
+	worldPosition_out = vec4(inWorldPos,1);
+	normal_out = vec4(normal,1);
+	specular_emission_diffuse_ssao_bloom_out = vec4(1,0,11,1);
+	lightScattering_out = vec4(0,0,0,1);
 }

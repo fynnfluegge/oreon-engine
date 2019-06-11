@@ -63,7 +63,7 @@ public class OffScreenFbo extends VkFrameBufferObject {
 		attachments.put(Attachment.POSITION, worldPositionAttachment);
 		attachments.put(Attachment.NORMAL, normalAttachment);
 		attachments.put(Attachment.LIGHT_SCATTERING, lightScatteringMaskAttachment);
-		attachments.put(Attachment.SPECULAR_EMISSION_BLOOM, specularEmissionAttachment);
+		attachments.put(Attachment.SPECULAR_EMISSION_DIFFUSE_SSAO_BLOOM, specularEmissionAttachment);
 		attachments.put(Attachment.DEPTH, depthBuffer);
 
 		renderPass = new RenderPass(device);
@@ -110,7 +110,7 @@ public class OffScreenFbo extends VkFrameBufferObject {
 		pImageViews.put(0, attachments.get(Attachment.COLOR).getImageView().getHandle());
 		pImageViews.put(1, attachments.get(Attachment.POSITION).getImageView().getHandle());
 		pImageViews.put(2, attachments.get(Attachment.NORMAL).getImageView().getHandle());
-		pImageViews.put(3, attachments.get(Attachment.SPECULAR_EMISSION_BLOOM).getImageView().getHandle());
+		pImageViews.put(3, attachments.get(Attachment.SPECULAR_EMISSION_DIFFUSE_SSAO_BLOOM).getImageView().getHandle());
 		pImageViews.put(4, attachments.get(Attachment.LIGHT_SCATTERING).getImageView().getHandle());
 		pImageViews.put(5, attachments.get(Attachment.DEPTH).getImageView().getHandle());
 		

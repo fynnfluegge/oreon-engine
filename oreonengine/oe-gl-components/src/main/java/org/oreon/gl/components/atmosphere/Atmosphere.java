@@ -24,8 +24,8 @@ public class Atmosphere extends Renderable{
 		ProceduralTexturing.dome(mesh);
 		GLMeshVBO meshBuffer = new GLMeshVBO();
 		meshBuffer.addData(mesh);
-		GLRenderInfo renderInfo = new GLRenderInfo(BaseContext.getConfig().isAtmosphericScatteringApproximation()
-				? AtmosphereShader.getInstance() : AtmosphericScatteringShader.getInstance(),
+		GLRenderInfo renderInfo = new GLRenderInfo(BaseContext.getConfig().isAtmosphericScatteringEnable()
+				? AtmosphericScatteringShader.getInstance() : AtmosphereShader.getInstance(),
 				new CullFaceDisable(), meshBuffer);
 		
 		GLDirectionalLight sunLight = new GLDirectionalLight();

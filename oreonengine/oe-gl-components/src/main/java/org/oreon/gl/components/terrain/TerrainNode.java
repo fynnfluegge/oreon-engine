@@ -33,6 +33,9 @@ public class TerrainNode extends Renderable{
 		try {
 			addComponent(NodeComponentType.MAIN_RENDERINFO, components.get(NodeComponentType.MAIN_RENDERINFO).clone());
 			addComponent(NodeComponentType.WIREFRAME_RENDERINFO, components.get(NodeComponentType.WIREFRAME_RENDERINFO).clone());
+			if (components.containsKey(NodeComponentType.SHADOW_RENDERINFO)){
+				addComponent(NodeComponentType.SHADOW_RENDERINFO, components.get(NodeComponentType.SHADOW_RENDERINFO).clone());
+			}
 			addComponent(NodeComponentType.CONFIGURATION, components.get(NodeComponentType.CONFIGURATION));
 		} catch (CloneNotSupportedException e) {
 			e.printStackTrace();

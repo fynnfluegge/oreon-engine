@@ -10,16 +10,35 @@ layout (binding = 2, rgba16f) uniform readonly image2D specular_emission_bloom_a
 
 layout (binding = 3, rgba16f) uniform writeonly image2D bloomSceneSampler;
 
+vec3 blur(ivec2 computeCoord, int kernels){
+	
+	vec3 rgb = vec3(0,0,0);
+	
+	for (int i=-kernels; i<=kernels; i++){
+		for (int j=-kernels; j<=kernels; j++){
+			rgb += imageLoad(additiveBlendBloomSampler, computeCoord + ivec2(i,j)).rgb;  
+		}
+	}
+
+	rgb *= 1/ pow(kernels*2+1,2);
+	
+	return rgb;
+}
 
 void main()
 {          
 	ivec2 computeCoord = ivec2(gl_GlobalInvocationID.x, gl_GlobalInvocationID.y);
 
     vec3 hdrColor = imageLoad(sceneSampler, computeCoord).rgb;    
-    vec3 bloomColor = imageLoad(additiveBlendBloomSampler, computeCoord).rgb;
+	
+	float factor = imageLoad(specular_emission_bloom_attachment, computeCoord).a;
+	vec3 bloomColor = vec3(0);
+	
+	if (factor > 0)
+		bloomColor = blur(computeCoord, 5);
 	
 	// additive blending
-    hdrColor += bloomColor * imageLoad(specular_emission_bloom_attachment, computeCoord).b;
+    hdrColor += bloomColor * factor;
 	
     imageStore(bloomSceneSampler, computeCoord, vec4(hdrColor, 1.0));
 } 

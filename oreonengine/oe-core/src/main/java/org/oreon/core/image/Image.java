@@ -34,7 +34,6 @@ public class Image {
 		ClampToBorder,
 		Repeat,
 		MirrorRepeat
-		
 	}
 		
 }

@@ -7,7 +7,7 @@ layout (location = 0) in vec3 worldPosition;
 layout(location = 0) out vec4 albedo_out;
 layout(location = 1) out vec4 worldPosition_out;
 layout(location = 2) out vec4 normal_out;
-layout(location = 3) out vec4 specularEmission_out;
+layout(location = 3) out vec4 specular_emission_diffuse_ssao_bloom_out;
 layout(location = 4) out vec4 lightScattering_out;
 
 uniform mat4 m_ViewProjection;
@@ -16,7 +16,7 @@ uniform float r_Sun;
 uniform int width;
 uniform int height;
 uniform int isReflection;
-
+uniform float bloom;
 const vec3 sunBaseColor = vec3(1.0f,0.79f,0.43f);
 
 void main()
@@ -26,7 +26,7 @@ void main()
 	float blue = -0.00009*(abs(worldPosition.y)-11000);
 	
 	vec3 out_Color = vec3(red, green, blue);
-	vec4 out_LightScattering = vec4(0);
+	vec3 out_LightScattering = vec3(0);
 
 	// no sun rendering when scene reflection
 	if (isReflection == 0)
@@ -48,14 +48,14 @@ void main()
 			float smoothRadius = smoothstep(0,1,0.1f/sunRadius-0.1f);
 			out_Color = mix(out_Color, sunBaseColor * 4, smoothRadius);
 			
-			smoothRadius = smoothstep(0,1,0.2f/sunRadius-0.4);
-			out_LightScattering = mix(vec4(0), vec4(sunBaseColor,0), smoothRadius);
+			smoothRadius = smoothstep(0,1,0.18f/sunRadius-0.2f);
+			out_LightScattering = mix(vec3(0), sunBaseColor, smoothRadius);
 		}
 	}
 	
 	albedo_out = vec4(out_Color,1);
-	worldPosition_out = vec4(0.0,0.0,0.0,1.0);
-	normal_out = vec4(0.0,0.0,0.0,1.0);
-	specularEmission_out = vec4(0,0,0,1.0);
-	lightScattering_out = out_LightScattering;
+	worldPosition_out = vec4(0,0,0,0);
+	normal_out = vec4(0,0,0,0);
+	specular_emission_diffuse_ssao_bloom_out = vec4(0,0,0,bloom);
+	lightScattering_out = vec4(out_LightScattering,0);
 }

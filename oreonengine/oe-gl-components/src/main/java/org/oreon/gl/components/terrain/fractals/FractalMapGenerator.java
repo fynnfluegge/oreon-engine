@@ -24,10 +24,12 @@ public class FractalMapGenerator {
 	
 	private FractalMapShader shader;
 	private int N;
+	private boolean edgeElevation;
 
-	public FractalMapGenerator(int N) {
+	public FractalMapGenerator(int N, boolean edgeElevation) {
 		
 		this.N = N;
+		this.edgeElevation = edgeElevation;
 		shader = FractalMapShader.getInstance();
 		
 		heightmap = new TextureStorage2D(N,N,(int) (Math.log(N)/Math.log(2)), ImageFormat.RGBA32FLOAT);
@@ -48,7 +50,7 @@ public class FractalMapGenerator {
 	public void render(List<FractalMap> fractals){
 		
 		shader.bind();
-		shader.updateUniforms(fractals, N);
+		shader.updateUniforms(fractals, N, edgeElevation);
 		glBindImageTexture(0, heightmap.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA32F);
 		glBindImageTexture(1, normalmap.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA32F);
 		glDispatchCompute(N/16,N/16,1);

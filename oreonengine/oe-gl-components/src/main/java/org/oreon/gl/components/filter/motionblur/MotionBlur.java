@@ -39,6 +39,7 @@ public class MotionBlur {
 	
 	public void render(GLTexture sceneSampler, GLTexture depthmap) {
 		
+		glFinish();
 		pixelVelocityShader.bind();
 		glBindImageTexture(0, pixelVelocityTexture.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA32F);
 		pixelVelocityShader.updateUniforms(BaseContext.getCamera().getProjectionMatrix(), 
@@ -47,8 +48,6 @@ public class MotionBlur {
 										   depthmap);
 		glDispatchCompute(BaseContext.getWindow().getWidth()/8, BaseContext.getWindow().getHeight()/8, 1);	
 		glFinish();
-		
-		motionBlurSceneTexture.bind();
 		
 		motionBlurShader.bind();
 		glBindImageTexture(0, motionBlurSceneTexture.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);

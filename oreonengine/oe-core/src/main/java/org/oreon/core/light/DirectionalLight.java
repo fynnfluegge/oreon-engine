@@ -25,8 +25,8 @@ public abstract class DirectionalLight extends Light{
 	private FloatBuffer floatBufferMatrices;
 	private final int lightBufferSize = Float.BYTES * 12;
 
-	private final int matricesBufferSize = Float.BYTES * 96
-										 + Float.BYTES * 24;
+	private final int matricesBufferSize = Float.BYTES * 16 * 7 // 6 matrices, 16 floats per matrix 
+										 + Float.BYTES * 24;	// 6 floats, 3 floats offset each
 	
 	protected DirectionalLight(){
 		this(BaseContext.getConfig().getSunPosition().normalize(),

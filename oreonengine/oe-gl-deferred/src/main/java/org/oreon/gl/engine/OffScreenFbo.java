@@ -27,7 +27,7 @@ public class OffScreenFbo extends GLFrameBufferObject{
 				ImageFormat.RGBA32FLOAT, SamplerFilter.Nearest, TextureWrapMode.ClampToEdge);
 		GLTexture normalAttachment = new TextureImage2DMultisample(width, height, samples,
 				ImageFormat.RGBA32FLOAT, SamplerFilter.Nearest, TextureWrapMode.ClampToEdge);
-		GLTexture specularEmissionBloomAttachment = new TextureImage2DMultisample(width, height, samples,
+		GLTexture specularEmissionDiffuseSsaoBloomAttachment = new TextureImage2DMultisample(width, height, samples,
 				ImageFormat.RGBA16FLOAT, SamplerFilter.Nearest, TextureWrapMode.ClampToEdge);
 		GLTexture lightScatteringAttachment = new TextureImage2DMultisample(width, height, samples,
 				ImageFormat.RGBA16FLOAT, SamplerFilter.Nearest, TextureWrapMode.ClampToEdge);
@@ -37,7 +37,7 @@ public class OffScreenFbo extends GLFrameBufferObject{
 		attachments.put(Attachment.COLOR, albedoAttachment);
 		attachments.put(Attachment.POSITION, worldPositionAttachment);
 		attachments.put(Attachment.NORMAL, normalAttachment);
-		attachments.put(Attachment.SPECULAR_EMISSION_BLOOM, specularEmissionBloomAttachment);
+		attachments.put(Attachment.SPECULAR_EMISSION_DIFFUSE_SSAO_BLOOM, specularEmissionDiffuseSsaoBloomAttachment);
 		attachments.put(Attachment.LIGHT_SCATTERING, lightScatteringAttachment);
 		attachments.put(Attachment.DEPTH, depthAttachment);
 		
@@ -54,7 +54,7 @@ public class OffScreenFbo extends GLFrameBufferObject{
 		frameBuffer.createColorTextureMultisampleAttachment(albedoAttachment.getHandle(),0);
 		frameBuffer.createColorTextureMultisampleAttachment(worldPositionAttachment.getHandle(),1);
 		frameBuffer.createColorTextureMultisampleAttachment(normalAttachment.getHandle(),2);
-		frameBuffer.createColorTextureMultisampleAttachment(specularEmissionBloomAttachment.getHandle(),3);
+		frameBuffer.createColorTextureMultisampleAttachment(specularEmissionDiffuseSsaoBloomAttachment.getHandle(),3);
 		frameBuffer.createColorTextureMultisampleAttachment(lightScatteringAttachment.getHandle(),4);
 		frameBuffer.createDepthTextureMultisampleAttachment(depthAttachment.getHandle());
 		frameBuffer.setDrawBuffers(drawBuffers);
