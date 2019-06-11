@@ -26,9 +26,9 @@ void main(){
 	
 	vec3 sceneColor = imageLoad(sceneSampler, computeCoord).rgb;
 	
-	float refractionFactor = clamp(2 * pow(depth,0.2) + 0.1,0.0,0.98);
+	float refractionFactor = clamp(2 * pow(depth,0.25) + 0.1,0.0,0.98);
 	
-	vec3 rgb = mix(sceneColor, waterRefractionColor, refractionFactor); 
+	vec3 rgb = mix(sceneColor, waterRefractionColor * 0.25, refractionFactor); 
 	
 	
 	imageStore(underwaterSceneSampler, computeCoord, vec4(rgb,1));

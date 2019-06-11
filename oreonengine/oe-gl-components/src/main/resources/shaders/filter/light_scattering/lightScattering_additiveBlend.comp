@@ -39,7 +39,7 @@ void main(void){
 	vec3 lightScatteringColor = imageLoad(lightScatteringSampler, computeCoord).rgb;
 	
 	if (lightScatteringColor != vec3(0))
-		lightScatteringColor = blur(computeCoord, 2);
+		lightScatteringColor = blur(computeCoord, 3);
 		
     vec3 sceneColor = imageLoad(sceneSampler, computeCoord).rgb;
 

@@ -253,6 +253,7 @@ public class GLDeferredEngine extends RenderEngine{
 				|| camera.getForward().sub(camera.getPreviousForward()).length() > 0.01f;
 		boolean doFXAA = !camera.isCameraMoved() && !camera.isCameraRotated();
 				
+		
 		//-----------------------------------------------//
 		//                  render FXAA                  //
 		//-----------------------------------------------//
@@ -299,6 +300,14 @@ public class GLDeferredEngine extends RenderEngine{
 			}
 			
 			//--------------------------------------------//
+			//             Light Scattering               //
+			//--------------------------------------------//
+			if (BaseContext.getConfig().isLightScatteringEnabled()){
+				sunlightScattering.render(currentScene, lightScatteringMask);
+				currentScene = sunlightScattering.getSunLightScatteringSceneTexture();
+			}
+			
+			//--------------------------------------------//
 			//                Motion Blur                 //
 			//--------------------------------------------//
 			
@@ -306,14 +315,6 @@ public class GLDeferredEngine extends RenderEngine{
 				motionBlur.render(currentScene,
 						primarySceneFbo.getAttachmentTexture(Attachment.DEPTH));
 				currentScene = motionBlur.getMotionBlurSceneTexture();
-			}
-			
-			//--------------------------------------------//
-			//             Light Scattering               //
-			//--------------------------------------------//
-			if (BaseContext.getConfig().isLightScatteringEnabled()){
-				sunlightScattering.render(currentScene, lightScatteringMask);
-				currentScene = sunlightScattering.getSunLightScatteringSceneTexture();
 			}
 		}
 		
