@@ -293,7 +293,7 @@ public class GLDeferredEngine extends RenderEngine{
 			//                  Underwater                //
 			//--------------------------------------------//
 			
-			if (BaseContext.getConfig().isRenderUnderwater()){
+			if (BaseContext.getConfig().isRenderUnderwater() ){
 				underWaterRenderer.render(currentScene,
 						primarySceneFbo.getAttachmentTexture(Attachment.DEPTH));
 				currentScene = underWaterRenderer.getUnderwaterSceneTexture();

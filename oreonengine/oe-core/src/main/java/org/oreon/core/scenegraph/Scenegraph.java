@@ -13,6 +13,7 @@ public class Scenegraph extends Node{
 	private Node transparentObjects;
 	
 	private boolean hasTerrain = false;
+	private boolean hasWater = false;
 	
 	public Scenegraph(){
 		
@@ -110,11 +111,16 @@ public class Scenegraph extends Node{
 	public void setWater(Node vWater)
 	{
 		vWater.setParent(this);
+		hasWater = true;
 		water = vWater;
 	}
 
 	public boolean hasTerrain() {
 		return hasTerrain;
+	}
+	
+	public boolean hasWater() {
+		return hasWater;
 	}
 
 }

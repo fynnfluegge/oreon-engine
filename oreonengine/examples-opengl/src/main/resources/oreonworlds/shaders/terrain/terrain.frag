@@ -138,6 +138,6 @@ void main()
 	albedo_out = vec4(fragColor,1);
 	worldPosition_out = vec4(inWorldPos,1);
 	normal_out = vec4(normal,1);
-	specular_emission_diffuse_ssao_bloom_out = vec4(1,0,11,1);
+	specular_emission_diffuse_ssao_bloom_out = vec4(1,0.1,11,1);
 	lightScattering_out = vec4(0,0,0,1);
 }
