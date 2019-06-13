@@ -180,7 +180,7 @@ public class TerrainConfiguration extends NodeComponent{
 		
 		SplatMapGenerator splatMapGenerator = new SplatMapGenerator(heightmapResolution);
 		splatmap = splatMapGenerator.getSplatmap();
-		splatMapGenerator.render(getNormalmap(), getHeightmap(), getScaleY());
+		splatMapGenerator.render(getNormalmap(), getHeightmap());
 	}
 	
 	private int updateMorphingArea(int lod){

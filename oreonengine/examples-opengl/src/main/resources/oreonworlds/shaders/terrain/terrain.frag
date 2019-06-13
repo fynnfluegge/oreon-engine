@@ -87,7 +87,7 @@ void main()
 	{
 		float attenuation = clamp(-dist/(largeDetailRange-50) + 1,0.0,1.0);
 		
-		vec3 bitangent = normalize(cross(inTangent, normal));
+		vec3 bitangent = normalize(cross(normal, inTangent));
 		mat3 TBN = mat3(inTangent,bitangent,normal);
 		
 		vec3 bumpNormal;
@@ -138,6 +138,6 @@ void main()
 	albedo_out = vec4(fragColor,1);
 	worldPosition_out = vec4(inWorldPos,1);
 	normal_out = vec4(normal,1);
-	specular_emission_diffuse_ssao_bloom_out = vec4(1,0,11,1);
+	specular_emission_diffuse_ssao_bloom_out = vec4(1,0.1,11,1);
 	lightScattering_out = vec4(0,0,0,1);
 }
