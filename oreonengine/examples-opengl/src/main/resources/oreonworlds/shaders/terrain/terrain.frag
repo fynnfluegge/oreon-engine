@@ -87,7 +87,7 @@ void main()
 	{
 		float attenuation = clamp(-dist/(largeDetailRange-50) + 1,0.0,1.0);
 		
-		vec3 bitangent = normalize(cross(inTangent, normal));
+		vec3 bitangent = normalize(cross(normal, inTangent));
 		mat3 TBN = mat3(inTangent,bitangent,normal);
 		
 		vec3 bumpNormal;

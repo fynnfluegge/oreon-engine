@@ -3,41 +3,42 @@
 layout (local_size_x = 16, local_size_y = 16) in;
 
 layout (binding = 0, rgba16f) uniform writeonly image2D splatmap;
-
-uniform sampler2D normalmap;
-uniform sampler2D heightmap;
-uniform int N;
-uniform float yScale;
+layout (binding = 1, rgba32f) uniform readonly image2D heightmap;
+layout (binding = 2, rgba32f) uniform readonly image2D normalmap;
 
 void main(void)
 {
-	ivec2 x = ivec2(gl_GlobalInvocationID.xy);
-	vec2 texCoord = gl_GlobalInvocationID.xy/float(N);
+	ivec2 uv = ivec2(gl_GlobalInvocationID.xy);
 	
-	vec3 normal = normalize((texture(normalmap, texCoord).rgb));
-	float height = texture(heightmap, texCoord).r * yScale;
+	vec3 normal = normalize((imageLoad(normalmap, uv).rgb));
+	vec4 v_heightmap= imageLoad(heightmap, uv).rgba;
 	
-	float zBlend  = clamp(height/200,0,1);
-	float yBlend  = clamp((height+200)/200,0,1) - zBlend;
-	float xBlend   = clamp((-height)/200,0,1);
+	float red = smoothstep(0,1,-5*(v_heightmap.g-0.1));
+
+	float green = 0;
+	if (v_heightmap.g < 0.1)
+		green = smoothstep(1,0,-5*(v_heightmap.g-0.1));
+	else if (v_heightmap.g >= 0.1 && v_heightmap.g < 0.2)
+		green = 1;
+	else if (v_heightmap.g >= 0.2)
+		green = smoothstep(0,1,-5*(v_heightmap.g-0.4));
+
+	float blue = smoothstep(1,0,-5*(v_heightmap.g-0.4));
+
 	float slopeFactor = 0;
 	
-	// if (normal.y < 1.0){
-		// slopeFactor = 1-pow(normal.y,4);
-		// zBlend += slopeFactor;
-		// zBlend = clamp(zBlend,0,1);
-		// yBlend -= slopeFactor;
-		// yBlend = clamp(yBlend,0,1);
-		// xBlend -= slopeFactor;
-		// xBlend = clamp(xBlend,0,1);
-	// }
+	float scarpness = smoothstep(0,1,-32*(normal.z-1));
+	
+	blue = max(blue, scarpness);
+	red -= red * blue;
+	green -= green * blue;
 	
 	vec4 blendValues = vec4(0,0,0,0);
 	
-	blendValues.x = xBlend;
-	blendValues.y = yBlend;
-	blendValues.z = zBlend;
-	blendValues.a = 0.0;
+	blendValues.x = red;
+	blendValues.y = green;
+	blendValues.z = blue;
+	blendValues.a = 1.0;
 	
-	imageStore(splatmap, x, blendValues);
+	imageStore(splatmap, uv, blendValues);
 }

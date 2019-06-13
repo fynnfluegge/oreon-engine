@@ -43,10 +43,10 @@ void main(void)
 		}
 	}
 	
-	if (edgeElevation == 0)
-	{
-		xyz.y += 0.8;
-	}
+	// if (edgeElevation == 0)
+	// {
+		// xyz.y += 0.8;
+	// }
 	
 	// compute edge elevation/flattening
 	// elevation
@@ -194,11 +194,6 @@ void main(void)
 		}
 	}
 	//---------------------------------------//
-	
-	if (edgeElevation == 0)
-	{
-		xyz -= 0.2;
-	}
 	
 	
 	imageStore(heightmap, x, vec4(xyz, slope));
