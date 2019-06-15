@@ -285,7 +285,7 @@ public class GLDeferredEngine extends RenderEngine{
 			//--------------------------------------------//
 			
 			if (BaseContext.getConfig().isBloomEnabled()){
-				bloom.render(prePostprocessingScene, currentScene, specularEmissionBloomMask);
+				bloom.render(currentScene, currentScene, specularEmissionBloomMask);
 				currentScene = bloom.getBloomSceneTexture();
 			}
 			

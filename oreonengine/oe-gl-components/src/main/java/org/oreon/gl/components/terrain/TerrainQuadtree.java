@@ -36,7 +36,7 @@ public class TerrainQuadtree extends Node implements Runnable{
 		
 		updateCounter++;
 		
-		if (updateCounter == 4){
+		if (updateCounter == 1){
 			
 			for (Node node : getChildren()){
 				((TerrainNode) node).updateQuadtree();

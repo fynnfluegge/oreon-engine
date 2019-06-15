@@ -630,7 +630,7 @@ public class Water extends Renderable{
 					offScreenReflecRefracFbo.getHeight(),
 					offScreenReflecRefracFbo.getColorAttachmentCount(),
 					offScreenReflecRefracFbo.getDepthAttachmentCount(),
-					Constants.DEEPOCEAN_COLOR,
+					waterConfiguration.getBaseColor(),
 					VkUtil.createPointerBuffer(refractionSecondaryCmdBuffers.values()));
 			offScreenRefractionSubmitInfo.submit(
 					graphicsQueue);
