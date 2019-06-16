@@ -73,13 +73,13 @@ public class Palm01ClusterGroup extends InstancedObject{
 		}
 	
 		addCluster(new Palm01Cluster(8,new Vec3f(-166,0,-826),objects));
-		addCluster(new Palm01Cluster(8,new Vec3f(-290,0,-666),objects));
-//		addCluster(new Palm01Cluster(8,new Vec3f(-185,0,-850),getObjectData()));
-//		addCluster(new Palm01Cluster(8,new Vec3f(-314,0,-566),getObjectData()));
-//		addCluster(new Palm01Cluster(10,new Vec3f(-334,0,-667),getObjectData()));
-//		addCluster(new Palm01Cluster(6,new Vec3f(-2049,0,2883),getObjectData()));
-//		addCluster(new Palm01Cluster(4,new Vec3f(-355,0,-259),getObjectData()));
-//		addCluster(new Palm01Cluster(4,new Vec3f(-160,0,-318),getObjectData()));
+//		addCluster(new Palm01Cluster(8,new Vec3f(-290,0,-666),objects));
+//		addCluster(new Palm01Cluster(8,new Vec3f(-185,0,-850),objects));
+//		addCluster(new Palm01Cluster(8,new Vec3f(-314,0,-566),objects));
+//		addCluster(new Palm01Cluster(10,new Vec3f(-334,0,-667),objects));
+//		addCluster(new Palm01Cluster(6,new Vec3f(-2049,0,2883),objects));
+//		addCluster(new Palm01Cluster(4,new Vec3f(-355,0,-259),objects));
+//		addCluster(new Palm01Cluster(4,new Vec3f(-160,0,-318),objects));
 		
 		setThread(new Thread(this));
 		getThread().start();
@@ -103,7 +103,7 @@ public class Palm01ClusterGroup extends InstancedObject{
 				getChildren().clear();
 				
 				for (InstancedCluster cluster : getClusters()){
-					if (cluster.getCenter().sub(BaseContext.getCamera().getPosition()).length() < 2000){
+					if (cluster.getCenter().sub(BaseContext.getCamera().getPosition()).length() < 10000){
 						cluster.updateUBOs();
 						addChild(cluster);
 					}

@@ -172,11 +172,7 @@ public class TerrainConfiguration extends NodeComponent{
 		FractalMapGenerator fractalMapGenerator = new FractalMapGenerator(heightmapResolution, edgeElevation);
 		fractalMapGenerator.render(fractals);
 		heightmap = fractalMapGenerator.getHeightmap();
-//		heightmap = fractals.get(2).getHeightmap();
-		
-//		fractalMapGenerator.renderNormalmap(fractals);
 		normalmap = fractalMapGenerator.getNormalmap();
-//		normalmap = fractals.get(2).getNormalmap();
 		
 		SplatMapGenerator splatMapGenerator = new SplatMapGenerator(heightmapResolution);
 		splatmap = splatMapGenerator.getSplatmap();

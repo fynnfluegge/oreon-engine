@@ -22,6 +22,15 @@ uniform Fractal fractals[8];
 uniform int N;
 uniform int edgeElevation;
 
+// shifting and scaling factors
+uniform const float EdgeFlatteningInnerVerticalShift = 0.58;
+uniform const float EdgeFlatteningInnerVerticalScaling = 0.8;
+uniform const float EdgeFlatteningVerticalShift = -0.2;
+
+uniform const float EdgeElevationInnerVerticalShift = 0.0;
+uniform const float EdgeElevationInnerVerticalScaling = 1;
+uniform const float EdgeElevationVerticalShift = 0.01;
+
 void main(void)
 {
 	ivec2 x = ivec2(gl_GlobalInvocationID.xy);
@@ -43,10 +52,16 @@ void main(void)
 		}
 	}
 	
-	// if (edgeElevation == 0)
-	// {
-		// xyz.y += 0.8;
-	// }
+	if (edgeElevation == 0)
+	{
+		xyz.y += EdgeFlatteningInnerVerticalShift;
+		xyz.y *= EdgeFlatteningInnerVerticalScaling;
+	}
+	else if (edgeElevation == 1)
+	{
+		xyz.y += EdgeElevationInnerVerticalShift;
+		xyz.y *= EdgeElevationInnerVerticalScaling;
+	}
 	
 	// compute edge elevation/flattening
 	// elevation
@@ -68,31 +83,7 @@ void main(void)
 	
 	float xSlope = 0;
 	float zSlope = 0;
-	
-	if (uv.x < 0.5)
-	{
-		xSlope = edgeElevation == 1
-			? 0.5 * sin(64*(uv.x + M_PI/128.0)) + 0.5
-			: /*20*uv.x;*/ 0.5 * sin(16.0*(uv.x + 3*M_PI/32.0)) + 0.5;
-	}
-	else
-	{
-		xSlope = edgeElevation == 1
-			? 0.5 * sin(64*(uv.x + M_PI/128.0-1)) + 0.5
-			: /*-20*(uv.x-1);*/ 0.5 * sin(16.0*(uv.x + 3*M_PI/32.0 -1)) + 0.5;
-	}
-	if (uv.y < 0.5)
-	{
-		zSlope = edgeElevation == 1
-			? 0.5 * sin(64*(uv.y + M_PI/128.0)) + 0.5
-			: /*20*uv.y;*/ 0.5 * sin(16.0*(uv.y + 3*M_PI/32.0)) + 0.5;
-	}
-	else
-	{
-		zSlope = edgeElevation == 1
-			? 0.5 * sin(64*(uv.y + M_PI/128.0-1)) + 0.5
-			: /*-20*(uv.y-1);*/ 0.5 * sin(16.0*(uv.y + 3*M_PI/32.0 - 1)) + 0.5;
-	}
+	float slope = 0;
 	
 	float vMinLow = 2.0f * M_PI / 128.0f;
 	float vMaxLow = 1.0f - 2.0f * M_PI / 128.0f;
@@ -103,7 +94,31 @@ void main(void)
 						? 1.0f - 2.0f * M_PI / 64.0f
 						: 1.0f - 2.0f * M_PI / 32.0f;
 	
-	float slope = 0;
+	if (uv.x < 0.5)
+	{
+		xSlope = edgeElevation == 1
+			? 0.5 * sin(64*(uv.x + M_PI/128.0)) + 0.5
+			: 0.5 * sin(16.0*(uv.x + 3*M_PI/32.0)) + 0.5;
+	}
+	else
+	{
+		xSlope = edgeElevation == 1
+			? 0.5 * sin(64*(uv.x + M_PI/128.0-1)) + 0.5
+			: 0.5 * sin(16.0*(uv.x + 3*M_PI/32.0 -1)) + 0.5;
+	}
+	if (uv.y < 0.5)
+	{
+		zSlope = edgeElevation == 1
+			? 0.5 * sin(64*(uv.y + M_PI/128.0)) + 0.5
+			: 0.5 * sin(16.0*(uv.y + 3*M_PI/32.0)) + 0.5;
+	}
+	else
+	{
+		zSlope = edgeElevation == 1
+			? 0.5 * sin(64*(uv.y + M_PI/128.0-1)) + 0.5
+			: 0.5 * sin(16.0*(uv.y + 3*M_PI/32.0 - 1)) + 0.5;
+	}
+	
 	if (edgeElevation == 1)
 	{
 		if (uv.x < vMinLow || uv.x > vMaxLow) 
@@ -182,7 +197,7 @@ void main(void)
 		if (uv.x < vMinLow || uv.y < vMinLow ||
 			uv.x > vMaxLow || uv.y > vMaxLow)
 		{
-			xyz.y = slope * 0.4f + abs(xyz.y) * 0.6f;
+			xyz.y = slope * 0.5f + abs(xyz.y) * 0.5f;
 		}
 	}
 	else if (edgeElevation == 0)
@@ -195,6 +210,14 @@ void main(void)
 	}
 	//---------------------------------------//
 	
+	if (edgeElevation == 0)
+	{
+		xyz.y += EdgeFlatteningVerticalShift;
+	}
+	else if (edgeElevation == 1)
+	{
+		xyz.y += EdgeElevationVerticalShift;
+	}
 	
 	imageStore(heightmap, x, vec4(xyz, slope));
 	imageStore(normalmap, x, vec4(normalize(normal),1));

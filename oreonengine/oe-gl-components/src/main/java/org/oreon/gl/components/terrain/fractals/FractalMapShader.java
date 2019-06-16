@@ -28,7 +28,7 @@ public class FractalMapShader extends GLShaderProgram{
 		
 		super();
 		
-		addComputeShader(ResourceLoader.loadShader("shaders/terrain/FractalMap.comp"));
+		addComputeShader(ResourceLoader.loadShader("shaders/terrain/HeightMap.comp"));
 		compileShader();
 		
 		addUniform("N");
