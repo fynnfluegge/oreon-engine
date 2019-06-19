@@ -73,18 +73,20 @@ public class GLDirectionalLight extends DirectionalLight{
 		}
 		if (BaseContext.getInput().isKeyHolding(GLFW.GLFW_KEY_K)) {
 			
-			setDirection(getDirection().add(new Vec3f(0,0.001f,0)).normalize());
-			setFloatBufferLight(BufferUtil.createFloatBuffer(getLightBufferSize()));
-			getFloatBufferLight().put(BufferUtil.createFlippedBuffer(getDirection()));
-			getFloatBufferLight().put(intensity);
-			getFloatBufferLight().put(BufferUtil.createFlippedBuffer(getAmbient()));
-			getFloatBufferLight().put(0);
-			getFloatBufferLight().put(BufferUtil.createFlippedBuffer(getColor()));
-			getFloatBufferLight().put(0);
-			getUbo_light().updateData(getFloatBufferLight(), getLightBufferSize());
-			
-			updateShadowMatrices();
-			getUbo_matrices().updateData(getFloatBufferMatrices(), getMatricesBufferSize());
+			if (getDirection().getY() <= -0.02f) {
+				setDirection(getDirection().add(new Vec3f(0,0.001f,0)).normalize());
+				setFloatBufferLight(BufferUtil.createFloatBuffer(getLightBufferSize()));
+				getFloatBufferLight().put(BufferUtil.createFlippedBuffer(getDirection()));
+				getFloatBufferLight().put(intensity);
+				getFloatBufferLight().put(BufferUtil.createFlippedBuffer(getAmbient()));
+				getFloatBufferLight().put(0);
+				getFloatBufferLight().put(BufferUtil.createFlippedBuffer(getColor()));
+				getFloatBufferLight().put(0);
+				getUbo_light().updateData(getFloatBufferLight(), getLightBufferSize());
+				
+				updateShadowMatrices();
+				getUbo_matrices().updateData(getFloatBufferMatrices(), getMatricesBufferSize());
+			}
 		}
 		if (BaseContext.getInput().isKeyHolding(GLFW.GLFW_KEY_J)) {
 			
