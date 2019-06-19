@@ -121,7 +121,7 @@ public class Configuration {
 				sunPosition = new Vec3f(
 						Float.valueOf(properties.getProperty("sun.position.x")),
 						Float.valueOf(properties.getProperty("sun.position.y")),
-						Float.valueOf(properties.getProperty("sun.position.z")));
+						Float.valueOf(properties.getProperty("sun.position.z"))).normalize();
 				sunColor = new Vec3f(
 						Float.valueOf(properties.getProperty("sun.color.r")),
 						Float.valueOf(properties.getProperty("sun.color.g")),

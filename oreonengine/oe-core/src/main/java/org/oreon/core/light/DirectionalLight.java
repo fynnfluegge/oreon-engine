@@ -71,11 +71,17 @@ public abstract class DirectionalLight extends Light{
 		
 		if (BaseContext.getCamera().isCameraRotated() || 
 				BaseContext.getCamera().isCameraMoved()){
-			floatBufferMatrices.clear();
-			for (PssmCamera lightCamera : splitLightCameras){
-				lightCamera.update(m_View, up, right);
-				floatBufferMatrices.put(BufferUtil.createFlippedBuffer(lightCamera.getM_orthographicViewProjection()));
-			}
+			
+			updateShadowMatrices();
+		}
+	}
+	
+	public void updateShadowMatrices() {
+		
+		floatBufferMatrices.clear();
+		for (PssmCamera lightCamera : splitLightCameras){
+			lightCamera.update(m_View, up, right);
+			floatBufferMatrices.put(BufferUtil.createFlippedBuffer(lightCamera.getM_orthographicViewProjection()));
 		}
 	}
 	
@@ -84,8 +90,17 @@ public abstract class DirectionalLight extends Light{
 	}
 	
 	public void setDirection(Vec3f direction) {
+		
 		this.direction = direction;
-		// TODO update up, right, m_View;
+		up = new Vec3f(direction.getX(),0,direction.getZ());
+		up.setY(-(up.getX() * direction.getX() + up.getZ() * direction.getZ())/direction.getY());
+		
+		if (direction.dot(up) != 0) 
+			log.warn("DirectionalLight vector up " + up + " and direction " +  direction + " not orthogonal");
+		right = up.cross(getDirection()).normalize();
+		m_View = new Matrix4f().View(getDirection(), up);
+		
+		BaseContext.getConfig().setSunPosition(getDirection());
 	}
 
 	public Vec3f getUp() {

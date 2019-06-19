@@ -48,6 +48,11 @@ const float znear = 0.1;
 
 float diffuse(vec3 direction, vec3 normal, float intensity)
 {
+	if (direction.y < -0.1)
+	{
+		direction.y = -0.1;
+		direction = normalize(direction);
+	}
 	return max(0.0, dot(normal, -direction) * intensity);
 }
 

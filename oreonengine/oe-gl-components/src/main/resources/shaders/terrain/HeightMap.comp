@@ -23,13 +23,13 @@ uniform int N;
 uniform int edgeElevation;
 
 // shifting and scaling factors
-uniform const float EdgeFlatteningInnerVerticalShift = 0.58;
-uniform const float EdgeFlatteningInnerVerticalScaling = 0.8;
-uniform const float EdgeFlatteningVerticalShift = -0.2;
+const float EdgeFlatteningInnerVerticalShift = 0.58;
+const float EdgeFlatteningInnerVerticalScaling = 0.8;
+const float EdgeFlatteningVerticalShift = -0.2;
 
-uniform const float EdgeElevationInnerVerticalShift = 0.0;
-uniform const float EdgeElevationInnerVerticalScaling = 1;
-uniform const float EdgeElevationVerticalShift = 0.01;
+const float EdgeElevationInnerVerticalShift = 0.0;
+const float EdgeElevationInnerVerticalScaling = 1;
+const float EdgeElevationVerticalShift = 0.01;
 
 void main(void)
 {

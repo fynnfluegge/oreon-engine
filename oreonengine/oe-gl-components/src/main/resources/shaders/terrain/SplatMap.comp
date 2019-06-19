@@ -6,6 +6,8 @@ layout (binding = 0, rgba16f) uniform writeonly image2D splatmap;
 layout (binding = 1, rgba32f) uniform readonly image2D heightmap;
 layout (binding = 2, rgba32f) uniform readonly image2D normalmap;
 
+const float[2] regions = { 0.2 , 0.3 };
+
 void main(void)
 {
 	ivec2 uv = ivec2(gl_GlobalInvocationID.xy);
@@ -13,21 +15,21 @@ void main(void)
 	vec3 normal = normalize((imageLoad(normalmap, uv).rgb));
 	vec4 v_heightmap= imageLoad(heightmap, uv).rgba;
 	
-	float red = smoothstep(0,1,-5*(v_heightmap.g-0.1));
+	float red = smoothstep(0,1,-5*(v_heightmap.g-regions[0]));
 
 	float green = 0;
-	if (v_heightmap.g < 0.1)
-		green = smoothstep(1,0,-5*(v_heightmap.g-0.1));
-	else if (v_heightmap.g >= 0.1 && v_heightmap.g < 0.2)
+	if (v_heightmap.g < regions[0])
+		green = smoothstep(1,0,-5*(v_heightmap.g-regions[0]));
+	else if (v_heightmap.g >= regions[0] && v_heightmap.g < regions[1])
 		green = 1;
-	else if (v_heightmap.g >= 0.2)
-		green = smoothstep(0,1,-5*(v_heightmap.g-0.4));
+	else if (v_heightmap.g >= regions[1])
+		green = smoothstep(0,1,-5*(v_heightmap.g-(regions[0]+regions[1])));
 
-	float blue = smoothstep(1,0,-5*(v_heightmap.g-0.4));
+	float blue = smoothstep(1,0,-5*(v_heightmap.g-(regions[0]+regions[1])));
 
 	float slopeFactor = 0;
 	
-	float scarpness = smoothstep(0,1,-32*(normal.z-1));
+	float scarpness = smoothstep(0,1,-1*(normal.z-1));
 	
 	blue = max(blue, scarpness);
 	red -= red * blue;
