@@ -1,4 +1,5 @@
 #version 430 core
+#define M_PI 3.1415926535897932384626433832795
 
 layout (local_size_x = 16, local_size_y = 16) in;
 
@@ -8,9 +9,13 @@ layout (binding = 2, rgba32f) uniform readonly image2D normalmap;
 
 const float[2] regions = { 0.2 , 0.3 };
 
+uniform int edgeElevation = 1;
+uniform float edgeBorder = 2.0f * M_PI / 128.0f;
+
 void main(void)
 {
 	ivec2 uv = ivec2(gl_GlobalInvocationID.xy);
+	vec2 uvInv = vec2(uv)/float(4096);
 	
 	vec3 normal = normalize((imageLoad(normalmap, uv).rgb));
 	vec4 v_heightmap= imageLoad(heightmap, uv).rgba;
@@ -31,6 +36,46 @@ void main(void)
 	
 	float scarpness = smoothstep(0,1,-1*(normal.z-1));
 	
+	
+	if (edgeElevation == 1)
+	{
+		float vMinLow = 2.0f * M_PI / 128.0f;
+		float vMaxLow = 1 - 2.0f * M_PI / 128.0f;
+		float slope = blue;
+		float xSlope = 0;
+		float zSlope = 0;
+		
+		if (uvInv.x < vMinLow)
+		{
+			xSlope = clamp(1 * sin(64*(uvInv.x + M_PI/128.0)) + 1,0,1);
+			slope = xSlope;
+		}
+		if (uvInv.x > vMaxLow)
+		{
+			xSlope = clamp(1 * sin(64*(uvInv.x + M_PI/128.0-1)) + 1,0,1);
+			slope = xSlope;
+		}
+		if (uvInv.y < vMinLow)
+		{
+			zSlope = clamp(1 * sin(64*(uvInv.y + M_PI/128.0)) + 1,0,1);
+			slope = zSlope;
+		}
+		if (uvInv.y > vMaxLow)
+		{
+			zSlope = clamp(1 * sin(64*(uvInv.y + M_PI/128.0-1)) + 1,0,1);
+			slope = zSlope;
+		}
+		if ((uvInv.x < vMinLow && uvInv.y < vMinLow) ||
+			(uvInv.x < vMinLow && uvInv.y > vMaxLow) ||
+			(uvInv.x > vMaxLow && uvInv.y < vMinLow) ||
+			(uvInv.x > vMaxLow && uvInv.y > vMaxLow))
+		{
+			slope = clamp(xSlope + zSlope, 0, 1);
+		}
+		
+		blue = slope;
+	}
+
 	blue = max(blue, scarpness);
 	red -= red * blue;
 	green -= green * blue;
