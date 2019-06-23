@@ -139,8 +139,6 @@ void main() {
 	ray_eye = vec4(ray_eye.xy, 1.0, 0.0);
 	vec3 ray_world = (inverse(m_View) * ray_eye).xyz;
 	
-	//ray_world.y += 0.1;//clamp(ray_world.y, 0.0, 1.0);
-	
 	if (isReflection == 1){
 		ray_world.y *= -1;
 		ray_world.y += horizonVerticalShift;
