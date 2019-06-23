@@ -67,7 +67,7 @@ public class Atmosphere extends Renderable{
 		
 		ShaderPipeline graphicsShaderPipeline = new ShaderPipeline(device.getHandle());
 	    graphicsShaderPipeline.addShaderModule(vertexShader);
-	    graphicsShaderPipeline.createFragmentShader("shaders/atmosphere/frag.spv");
+	    graphicsShaderPipeline.createFragmentShader("shaders/atmosphere/atmospheric_scattering.frag.spv");
 	    graphicsShaderPipeline.createShaderPipeline();
 	    
 	    ShaderPipeline reflectionShaderPipeline = new ShaderPipeline(device.getHandle());
