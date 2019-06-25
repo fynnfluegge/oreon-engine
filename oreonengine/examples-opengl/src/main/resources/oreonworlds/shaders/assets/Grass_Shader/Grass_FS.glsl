@@ -45,7 +45,7 @@ void main()
 	
 	// alpha *= alphaDistanceFactor(dist);
 
-	albedo_out = vec4(albedo,alpha);
+	albedo_out = vec4(1,1,1,1);
 	worldPosition_out = vec4(position_FS,1);
 	normal_out = vec4(normal_FS.xzy,1);
 	specularEmission_out = vec4(1,0,0,1);

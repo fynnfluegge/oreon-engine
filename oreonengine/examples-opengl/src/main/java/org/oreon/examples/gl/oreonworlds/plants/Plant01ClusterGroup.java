@@ -74,7 +74,7 @@ public class Plant01ClusterGroup extends InstancedObject{
 				getChildren().clear();
 		
 				for (InstancedCluster cluster : getClusters()){
-					if (cluster.getCenter().sub(BaseContext.getCamera().getPosition()).length() < 600){
+					if (cluster.getCenter().sub(BaseContext.getCamera().getPosition()).length() < 6000){
 						addChild(cluster);
 					}
 				}

@@ -139,7 +139,6 @@ public class GLDeferredEngine extends RenderEngine{
 		pssmFbo.getFbo().bind();
 		glClear(GL_DEPTH_BUFFER_BIT);
 		pssmFbo.getFbo().unbind();
-		glFinish();
 		
 		
 		//----------------------------------//
@@ -349,7 +348,6 @@ public class GLDeferredEngine extends RenderEngine{
 //		fullScreenQuadMultisample.setTexture(primarySceneFbo.getAttachmentTexture(Attachment.COLOR));
 //		fullScreenQuadMultisample.render();
 		
-//		fullScreenQuad.setTexture(sunlightScattering.getSunLightScatteringTexture());
 		fullScreenQuad.setTexture(currentScene);
 		fullScreenQuad.render();
 		

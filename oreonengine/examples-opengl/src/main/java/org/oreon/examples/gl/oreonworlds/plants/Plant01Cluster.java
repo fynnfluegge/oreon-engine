@@ -21,7 +21,7 @@ public class Plant01Cluster extends GLInstancedCluster{
 		
 		for (int i=0; i<instances; i++){
 			
-			float s = (float)(Math.random()*2 + 8);
+			float s = (float)(Math.random()*2 + 1000);
 			Vec3f translation = new Vec3f((float)(Math.random()*100)-50 + getCenter().getX(), 0, (float)(Math.random()*100)-50 + getCenter().getZ());
 			Vec3f scaling = new Vec3f(s,s,s);
 			Vec3f rotation = new Vec3f(0,(float) Math.random()*360f,0);
@@ -66,7 +66,7 @@ public class Plant01Cluster extends GLInstancedCluster{
 	}
 	
 	public void render(){
-		if (getCenter().sub(BaseContext.getCamera().getPosition()).length() < 600){
+		if (getCenter().sub(BaseContext.getCamera().getPosition()).length() < 60000){
 			super.render();
 		}
 	}

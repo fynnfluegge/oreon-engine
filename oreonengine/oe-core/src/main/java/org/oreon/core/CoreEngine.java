@@ -12,8 +12,9 @@ import org.oreon.core.util.Constants;
 public class CoreEngine{
 	
 	private static int fps;
-	private static float framerate = 200;
+	private static float framerate = 50;
 	private static float frameTime = 1.0f/framerate;
+	public static float currentFrameTime = 0;
 	private boolean isRunning;
 	
 	private Window window;
@@ -74,28 +75,28 @@ public class CoreEngine{
 					stop();
 				}
 				
-				update();
-				
 				if(frameCounter >= Constants.NANOSECOND)
 				{
 					setFps(frames);
+					currentFrameTime = 1.0f/fps;
 					frames = 0;
 					frameCounter = 0;
 				}
 			}
 			if(render)
 			{
+				update();
 				render();
 				frames++;
-			}
+			}	
 			else
 			{
-				try {
-					Thread.sleep(10);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}		
+//				try {
+//					Thread.sleep(10);
+//				} catch (InterruptedException e) {
+//					e.printStackTrace();
+//				}
+			}
 		}
 		
 		shutdown();	

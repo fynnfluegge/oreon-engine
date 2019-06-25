@@ -36,6 +36,4 @@ public class GLOreonworlds {
 		GLContext.setRenderEngine(renderEngine);
 		GLContext.getCoreEngine().start();
 	}
-
-	
 }
