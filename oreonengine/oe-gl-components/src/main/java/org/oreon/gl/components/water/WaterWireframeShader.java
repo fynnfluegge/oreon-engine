@@ -1,4 +1,4 @@
-package org.oreon.examples.gl.oreonworlds.shaders;
+package org.oreon.gl.components.water;
 
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
@@ -10,7 +10,6 @@ import org.oreon.core.context.BaseContext;
 import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.util.ResourceLoader;
-import org.oreon.gl.components.water.Water;
 
 public class WaterWireframeShader extends GLShaderProgram{
 

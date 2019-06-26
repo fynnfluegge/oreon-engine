@@ -1,7 +1,7 @@
 package org.oreon.core;
 
 import org.oreon.core.context.BaseContext;
-import org.oreon.core.context.Configuration;
+import org.oreon.core.context.Config;
 import org.oreon.core.scenegraph.Camera;
 import org.oreon.core.scenegraph.Scenegraph;
 
@@ -11,7 +11,7 @@ public abstract class RenderEngine {
 
 	@Getter
 	protected Scenegraph sceneGraph;
-	protected Configuration config;
+	protected Config config;
 	protected Camera camera;
 	
 	public void init()

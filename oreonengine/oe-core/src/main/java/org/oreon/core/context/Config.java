@@ -13,7 +13,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class Configuration {
+public class Config {
 	
 	// screen settings
 	private int x_ScreenResolution;
@@ -23,6 +23,9 @@ public class Configuration {
 	private String displayTitle;
 	private int windowWidth;
 	private int windowHeight;
+	
+	// glfw opengl vsync
+	private boolean glfwGLVSync;
 	
 	// anitaliasing
 	private final int multisamples;
@@ -73,11 +76,11 @@ public class Configuration {
 	private int bloomKernels;
 	private int bloomSigma;
 	
-	public Configuration(){
+	public Config(){
 		
 		Properties properties = new Properties();
 		try {
-			InputStream vInputStream = Configuration.class.getClassLoader().getResourceAsStream("oe-config.properties");
+			InputStream vInputStream = Config.class.getClassLoader().getResourceAsStream("oe-config.properties");
 			properties.load(vInputStream);
 			vInputStream.close();
 		} catch (IOException e) {
@@ -104,6 +107,10 @@ public class Configuration {
 			vkValidation = Integer.valueOf(properties.getProperty("validation.enable")) == 1 ? true : false;
 		}
 		
+		if (properties.getProperty("glfw.vsync") != null){
+			glfwGLVSync = Integer.valueOf(properties.getProperty("glfw.vsync")) == 1 ? true : false;
+		}
+		
 		renderWireframe = false;
 		renderUnderwater = false;
 		renderReflection = false;
@@ -112,7 +119,7 @@ public class Configuration {
 		
 		
 		try {
-			InputStream vInputStream = Configuration.class.getClassLoader().getResourceAsStream("atmosphere-config.properties");
+			InputStream vInputStream = Config.class.getClassLoader().getResourceAsStream("atmosphere-config.properties");
 			if (vInputStream != null){
 				properties.load(vInputStream);
 				vInputStream.close();
@@ -135,13 +142,16 @@ public class Configuration {
 				fogColor = new Vec3f(Float.valueOf(properties.getProperty("fog.color.r")),
 						Float.valueOf(properties.getProperty("fog.color.g")),
 						Float.valueOf(properties.getProperty("fog.color.b")));
+				float fogBrightness = Float.valueOf(properties.getProperty("fog.brightness"));
+				
+				fogColor = fogColor.mul(fogBrightness);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
 		try {
-			InputStream vInputStream = Configuration.class.getClassLoader().getResourceAsStream("postprocessing-config.properties");
+			InputStream vInputStream = Config.class.getClassLoader().getResourceAsStream("postprocessing-config.properties");
 			if (vInputStream != null){
 				properties.load(vInputStream);
 				vInputStream.close();

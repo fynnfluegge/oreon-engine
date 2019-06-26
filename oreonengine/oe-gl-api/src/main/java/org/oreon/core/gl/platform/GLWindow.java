@@ -45,11 +45,17 @@ public class GLWindow extends Window{
 		setIcon("textures/logo/oreon_lwjgl_icon32.png");
 		
 		glfwMakeContextCurrent(getId());
-		glfwSwapInterval(1);
+		
+		glfwSwapInterval(0);
+		
+		if (BaseContext.getConfig().isGlfwGLVSync())
+			glfwSwapInterval(1);
+		
 		GL.createCapabilities();
 	}
 	
-	public void show(){
+	public void show()
+	{
 		glfwShowWindow(getId());
 	}
 	

@@ -75,6 +75,8 @@ public class CoreEngine{
 					stop();
 				}
 				
+//				update();
+				
 				if(frameCounter >= Constants.NANOSECOND)
 				{
 					setFps(frames);

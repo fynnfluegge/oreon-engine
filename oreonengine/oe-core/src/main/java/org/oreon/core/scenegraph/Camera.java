@@ -130,10 +130,10 @@ private final Vec3f yAxis = new Vec3f(0,1,0);
 			float dy = input.getLockedCursorPosition().getY() - input.getCursorPosition().getY();
 			float dx = input.getLockedCursorPosition().getX() - input.getCursorPosition().getX();
 			
-//			if (Math.abs(dy) < 2)
-//				dy = 0;
-//			if (Math.abs(dx) < 2)
-//				dx = 0;
+			if (Math.abs(dy) < 1)
+				dy = 0;
+			if (Math.abs(dx) < 1)
+				dx = 0;
 			
 			// y-axxis rotation
 			
@@ -164,7 +164,7 @@ private final Vec3f yAxis = new Vec3f(0,1,0);
 				}
 				// smooth-stop
 				if (getRotYamt() == 0){
-					setRotYstride(getRotYstride() * 0.8f);
+					setRotYstride(getRotYstride() * 0.85f);
 					if (isUpRotation())
 						rotateX(-getRotYstride() * getMouseSensitivity());
 					if (isDownRotation())
@@ -202,7 +202,7 @@ private final Vec3f yAxis = new Vec3f(0,1,0);
 				}
 				// smooth-stop
 				if (getRotXamt() == 0){
-					setRotXstride(getRotXstride() * 0.8f);
+					setRotXstride(getRotXstride() * 0.85f);
 					if (isRightRotation())
 						rotateY(getRotXstride() * getMouseSensitivity());
 					if (isLeftRotation())
