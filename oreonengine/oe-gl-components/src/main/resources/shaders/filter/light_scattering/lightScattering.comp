@@ -13,9 +13,8 @@ uniform vec3 sunWorldPosition;
 
 const int NUM_SAMPLES = 200;
 const float density = 1.2;
-const float decay = 0.9675;
-const float exposure = 0.2;
-const float weight = 0.8;
+const float decay = 0.98;
+const float exposure = 0.04;
 
 void main(void){
 
@@ -44,7 +43,7 @@ void main(void){
 		{
 			vec3 color = imageLoad(lightScatteringMask_in, ivec2(coord.x,coord.y)).rgb;
 			coord -= deltaCoord;
-			color *= illuminationDecay * weight;
+			color *= illuminationDecay;
 			finalColor += color;
 			illuminationDecay *= decay;
 		}

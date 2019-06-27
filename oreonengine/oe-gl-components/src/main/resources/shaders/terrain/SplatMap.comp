@@ -31,10 +31,8 @@ void main(void)
 		green = smoothstep(0,1,-5*(v_heightmap.g-(regions[0]+regions[1])));
 
 	float blue = smoothstep(1,0,-5*(v_heightmap.g-(regions[0]+regions[1])));
-
-	float slopeFactor = 0;
 	
-	float scarpness = smoothstep(0,1,-1*(normal.z-1));
+	float steepness = smoothstep(0,1,-32*(normal.z-1));
 	
 	
 	if (edgeElevation == 1)
@@ -76,7 +74,7 @@ void main(void)
 		blue = slope;
 	}
 
-	blue = max(blue, scarpness);
+	blue = max(blue, steepness);
 	red -= red * blue;
 	green -= green * blue;
 	
