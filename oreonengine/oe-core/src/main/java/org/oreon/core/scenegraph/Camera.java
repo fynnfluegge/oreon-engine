@@ -330,6 +330,12 @@ private final Vec3f yAxis = new Vec3f(0,1,0);
 		forward.rotate(angle, yAxis).normalize();
 		
 		up = forward.cross(hAxis).normalize();
+		
+		// this is for align y-axxis of camera vectors
+		// there is a kind of numeric bug, when camera is rotating very fast, camera vectors skewing
+		hAxis = yAxis.cross(forward).normalize();
+		forward.rotate(0, yAxis).normalize();
+		up = forward.cross(hAxis).normalize();
 	}
 	
 	public void rotateX(float angle)
