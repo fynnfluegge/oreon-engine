@@ -24,7 +24,22 @@ public class Renderable extends Node{
 	
 	public void update()
 	{	
-		components.values().forEach(component -> component.update());
+		for (Map.Entry<NodeComponentType, NodeComponent> entry : components.entrySet()){
+			if (entry.getKey() != NodeComponentType.LIGHT){
+				entry.getValue().update();
+			}
+		}
+		
+		super.update();
+	}
+	
+	public void updateLights()
+	{	
+		for (Map.Entry<NodeComponentType, NodeComponent> entry : components.entrySet()){
+			if (entry.getKey() == NodeComponentType.LIGHT){
+				entry.getValue().update();
+			}
+		}
 		
 		super.update();
 	}

@@ -55,7 +55,7 @@ public class GLDirectionalLight extends DirectionalLight{
 		if (BaseContext.getInput().isKeyHolding(GLFW.GLFW_KEY_I)) {
 			
 			if (getDirection().getY() >= -0.8f) {
-				setDirection(getDirection().add(new Vec3f(0,-0.0005f,0)).normalize());
+				setDirection(getDirection().add(new Vec3f(0,-0.002f,0)).normalize());
 				getFloatBufferLight().clear();
 				getFloatBufferLight().flip();
 				setFloatBufferLight(BufferUtil.createFloatBuffer(getLightBufferSize()));
@@ -74,7 +74,7 @@ public class GLDirectionalLight extends DirectionalLight{
 		if (BaseContext.getInput().isKeyHolding(GLFW.GLFW_KEY_K)) {
 			
 			if (getDirection().getY() <= -0.02f) {
-				setDirection(getDirection().add(new Vec3f(0,0.0005f,0)).normalize());
+				setDirection(getDirection().add(new Vec3f(0,0.002f,0)).normalize());
 				setFloatBufferLight(BufferUtil.createFloatBuffer(getLightBufferSize()));
 				getFloatBufferLight().put(BufferUtil.createFlippedBuffer(getDirection()));
 				getFloatBufferLight().put(intensity);
@@ -90,7 +90,7 @@ public class GLDirectionalLight extends DirectionalLight{
 		}
 		if (BaseContext.getInput().isKeyHolding(GLFW.GLFW_KEY_J)) {
 			
-			setDirection(getDirection().add(new Vec3f(0.00025f,0,-0.00025f)).normalize());
+			setDirection(getDirection().add(new Vec3f(0.001f,0,-0.001f)).normalize());
 			setFloatBufferLight(BufferUtil.createFloatBuffer(getLightBufferSize()));
 			getFloatBufferLight().put(BufferUtil.createFlippedBuffer(getDirection()));
 			getFloatBufferLight().put(intensity);
@@ -105,7 +105,7 @@ public class GLDirectionalLight extends DirectionalLight{
 		}
 		if (BaseContext.getInput().isKeyHolding(GLFW.GLFW_KEY_L)) {
 			
-			setDirection(getDirection().add(new Vec3f(-0.00025f,0,0.00025f)).normalize());
+			setDirection(getDirection().add(new Vec3f(-0.001f,0,0.001f)).normalize());
 			setFloatBufferLight(BufferUtil.createFloatBuffer(getLightBufferSize()));
 			getFloatBufferLight().put(BufferUtil.createFlippedBuffer(getDirection()));
 			getFloatBufferLight().put(intensity);

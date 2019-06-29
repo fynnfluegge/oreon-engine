@@ -12,7 +12,7 @@ import org.oreon.core.util.Constants;
 public class CoreEngine{
 	
 	private static int fps;
-	private static float framerate = 50;
+	private static float framerate = 100;
 	private static float frameTime = 1.0f/framerate;
 	public static float currentFrameTime = 0;
 	private boolean isRunning;
@@ -74,8 +74,6 @@ public class CoreEngine{
 				if(BaseContext.getWindow().isCloseRequested()){
 					stop();
 				}
-				
-//				update();
 				
 				if(frameCounter >= Constants.NANOSECOND)
 				{

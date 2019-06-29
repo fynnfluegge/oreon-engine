@@ -26,8 +26,9 @@ public abstract class RenderEngine {
 	
 	public void update()
 	{
-		sceneGraph.update();
 		camera.update();
+		sceneGraph.update();
+		sceneGraph.updateLights();
 	}
 	
 	public void shutdown(){

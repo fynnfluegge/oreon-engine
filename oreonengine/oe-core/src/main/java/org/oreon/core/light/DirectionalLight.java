@@ -9,9 +9,6 @@ import org.oreon.core.shadow.PssmCamera;
 import org.oreon.core.util.BufferUtil;
 import org.oreon.core.util.Constants;
 
-import lombok.extern.log4j.Log4j;
-
-@Log4j
 public abstract class DirectionalLight extends Light{
 
 	private Vec3f direction;
@@ -97,7 +94,8 @@ public abstract class DirectionalLight extends Light{
 		up.setY(-(up.getX() * direction.getX() + up.getZ() * direction.getZ())/direction.getY());
 		
 		if (direction.dot(up) != 0) 
-			log.warn("DirectionalLight vector up " + up + " and direction " +  direction + " not orthogonal");
+//			log.warn("DirectionalLight vector up " + up + " and direction " +  direction + " not orthogonal");
+			
 		right = up.cross(getDirection()).normalize();
 		m_View = new Matrix4f().View(getDirection(), up);
 		

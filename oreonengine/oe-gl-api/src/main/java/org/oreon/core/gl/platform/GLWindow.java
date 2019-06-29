@@ -17,6 +17,7 @@ import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
 import static org.lwjgl.opengl.GL11.GL_TRUE;
 
 import org.lwjgl.opengl.GL;
+import org.lwjgl.opengl.WGLEXTSwapControl;
 import org.oreon.core.context.BaseContext;
 import org.oreon.core.gl.context.GLContext;
 import org.oreon.core.platform.Window;
@@ -48,8 +49,11 @@ public class GLWindow extends Window{
 		
 		glfwSwapInterval(0);
 		
-		if (BaseContext.getConfig().isGlfwGLVSync())
+		if (BaseContext.getConfig().isGlfwGLVSync()){
+			WGLEXTSwapControl.wglSwapIntervalEXT(1);
 			glfwSwapInterval(1);
+		}
+			
 		
 		GL.createCapabilities();
 	}

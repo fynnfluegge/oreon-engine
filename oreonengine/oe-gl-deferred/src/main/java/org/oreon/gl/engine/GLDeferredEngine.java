@@ -140,7 +140,6 @@ public class GLDeferredEngine extends RenderEngine{
 		glClear(GL_DEPTH_BUFFER_BIT);
 		pssmFbo.getFbo().unbind();
 		
-		
 		//----------------------------------//
 		//        render shadow maps        //
 		//----------------------------------//

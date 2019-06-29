@@ -37,6 +37,12 @@ public class Node {
 			child.update();
 	}
 	
+	public void updateLights(){
+		
+		for(Node child: children)
+			child.updateLights();
+	}
+	
 	public void input()
 	{
 		children.forEach(child -> child.input());

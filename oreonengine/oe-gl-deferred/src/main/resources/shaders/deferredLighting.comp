@@ -100,7 +100,7 @@ float varianceShadow(vec3 projCoords, int split, int kernels){
 		for (int j=-kernels; j<=kernels; j++){
 			float shadowMapDepth = texture(pssm, vec3(projCoords.xy,split)
 													   + vec3(i,j,0) * texelSize).r; 
-			if (currentDepth > shadowMapDepth)
+			if (currentDepth - 0.001 > shadowMapDepth)
 				shadowFactor -= reduceFactor;
 		}
 	}
@@ -120,53 +120,37 @@ float applyShadowMapping(vec3 worldPos)
 	projCoords = lightSpacePos.xyz * 0.5 + 0.5;
 	terrainShadow = varianceShadow(projCoords,6,11);
 	
-	if (linDepth < splitRange[0]){
-		vec4 lightSpacePos = m_lightViewProjection[0] * vec4(worldPos,1.0);
-		projCoords = lightSpacePos.xyz * 0.5 + 0.5;
-		float shadowFactor0 = varianceShadow(projCoords,0,4);
-		
-		lightSpacePos = m_lightViewProjection[1] * vec4(worldPos,1.0);
-		projCoords = lightSpacePos.xyz * 0.5 + 0.5;
-		float shadowFactor1 = varianceShadow(projCoords,1,4);
-		
-		lightSpacePos = m_lightViewProjection[2] * vec4(worldPos,1.0);
-		projCoords = lightSpacePos.xyz * 0.5 + 0.5;
-		float shadowFactor2 = varianceShadow(projCoords,2,2);
-		
-		shadowFactor = min(shadowFactor2, min(shadowFactor0,shadowFactor1));
-	}
-	else if (linDepth < splitRange[1]){
-		vec4 lightSpacePos = m_lightViewProjection[1] * vec4(worldPos,1.0);
-		projCoords = lightSpacePos.xyz * 0.5 + 0.5;
-		float shadowFactor0 = varianceShadow(projCoords,1,4);
-		
-		lightSpacePos = m_lightViewProjection[2] * vec4(worldPos,1.0);
-		projCoords = lightSpacePos.xyz * 0.5 + 0.5;
-		float shadowFactor1 = varianceShadow(projCoords,2,2);
-		
-		shadowFactor = min(shadowFactor0,shadowFactor1);
-	}
-	else if (linDepth < splitRange[2]){
-		vec4 lightSpacePos = m_lightViewProjection[2] * vec4(worldPos,1.0);
-		projCoords = lightSpacePos.xyz * 0.5 + 0.5;
-		shadowFactor = varianceShadow(projCoords,2,2);
-	}
-	else if (linDepth < splitRange[3]){
-		vec4 lightSpacePos = m_lightViewProjection[3] * vec4(worldPos,1.0);
-		projCoords = lightSpacePos.xyz * 0.5 + 0.5;
-		shadowFactor = varianceShadow(projCoords,3,2);
-	}
-	else if (linDepth < splitRange[4]){
-		vec4 lightSpacePos = m_lightViewProjection[4] * vec4(worldPos,1.0);
-		projCoords = lightSpacePos.xyz * 0.5 + 0.5;
-		shadowFactor = varianceShadow(projCoords,4,1); 
-	}
-	else if (linDepth < splitRange[5]){
-		vec4 lightSpacePos = m_lightViewProjection[5] * vec4(worldPos,1.0);
-		projCoords = lightSpacePos.xyz * 0.5 + 0.5;
-		shadowFactor = varianceShadow(projCoords,5,1); 
-	}
-	else return 1;
+	// if (linDepth <= splitRange[0]){
+		// vec4 lightSpacePos = m_lightViewProjection[0] * vec4(worldPos,1.0);
+		// projCoords = lightSpacePos.xyz * 0.5 + 0.5;
+		// shadowFactor = varianceShadow(projCoords,0,4);
+	// }
+	// else if (linDepth <= splitRange[1]){
+		// vec4 lightSpacePos = m_lightViewProjection[1] * vec4(worldPos,1.0);
+		// projCoords = lightSpacePos.xyz * 0.5 + 0.5;
+		// shadowFactor = varianceShadow(projCoords,1,4);
+	// }
+	// else if (linDepth <= splitRange[2]){
+		// vec4 lightSpacePos = m_lightViewProjection[2] * vec4(worldPos,1.0);
+		// projCoords = lightSpacePos.xyz * 0.5 + 0.5;
+		// shadowFactor = varianceShadow(projCoords,2,2);
+	// }
+	// else if (linDepth <= splitRange[3]){
+		// vec4 lightSpacePos = m_lightViewProjection[3] * vec4(worldPos,1.0);
+		// projCoords = lightSpacePos.xyz * 0.5 + 0.5;
+		// shadowFactor = varianceShadow(projCoords,3,2);
+	// }
+	// else if (linDepth <= splitRange[4]){
+		// vec4 lightSpacePos = m_lightViewProjection[4] * vec4(worldPos,1.0);
+		// projCoords = lightSpacePos.xyz * 0.5 + 0.5;
+		// shadowFactor = varianceShadow(projCoords,4,1); 
+	// }
+	// else if (linDepth <= splitRange[5]){
+		// vec4 lightSpacePos = m_lightViewProjection[5] * vec4(worldPos,1.0);
+		// projCoords = lightSpacePos.xyz * 0.5 + 0.5;
+		// shadowFactor = varianceShadow(projCoords,5,1); 
+	// }
+	// else return 1;
 	
 	return terrainShadow;
 }

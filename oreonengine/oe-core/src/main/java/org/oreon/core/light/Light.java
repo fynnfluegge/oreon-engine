@@ -36,10 +36,6 @@ public class Light extends NodeComponent{
 		return windowSpacePos;
 	}
 	
-	public void update(){
-		super.update();
-	}
-	
 	public void occlusionQuery(){
 		occlusionQuery.doQuery(this);
 	}
