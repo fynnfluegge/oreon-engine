@@ -20,12 +20,13 @@ public class Grass01Cluster extends GLInstancedCluster{
 				
 		for (int i=0; i<instances; i++){
 			
-			float s = (float)(Math.random()*2 + 5);
+			float s = (float)(Math.random()*2 + 500);
 			Vec3f translation = new Vec3f((float)(Math.random()*50)-25 + getCenter().getX(), 0, (float)(Math.random()*50)-25 + getCenter().getZ());
 			Vec3f scaling = new Vec3f(s,s,s);
 			Vec3f rotation = new Vec3f(0,(float) Math.random()*360f,0);
 			
 			float terrainHeight = TerrainHelper.getTerrainHeight(translation.getX(),translation.getZ());
+			System.out.println(terrainHeight);
 			terrainHeight -= 1.2f;
 			translation.setY(terrainHeight);
 			

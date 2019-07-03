@@ -48,7 +48,7 @@ public class TerrainConfiguration extends NodeComponent{
 	private FloatBuffer heightmapDataBuffer;
 	private int heightmapResolution;
 	private boolean edgeElevation;
-	private List<Material<GLTexture>> materials = new ArrayList<>();
+	private List<Material> materials = new ArrayList<>();
 	private int fractalMapResolution;
 	private List<FractalMap> fractals = new ArrayList<>();
 	
@@ -87,7 +87,7 @@ public class TerrainConfiguration extends NodeComponent{
 		
 		for (int i=0; i<Integer.valueOf(properties.getProperty("materials.count")); i++){
 			
-			getMaterials().add(new Material<GLTexture>());
+			getMaterials().add(new Material());
 			
 			GLTexture diffusemap = new TextureImage2D(properties.getProperty("materials.material" + i + "_DIF"),
 					SamplerFilter.Trilinear);

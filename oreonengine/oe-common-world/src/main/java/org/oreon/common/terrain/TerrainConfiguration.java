@@ -32,7 +32,7 @@ public class TerrainConfiguration extends NodeComponent{
 	private Image ambientmap;
 	private Image splatmap;
 	private FloatBuffer heightmapDataBuffer;
-	private List<Material<Image>> materials = new ArrayList<>();
+	private List<Material> materials = new ArrayList<>();
 	private int fractalMapResolution;
 	private int lodCount;
 	private int[] lod_range = new int[8];

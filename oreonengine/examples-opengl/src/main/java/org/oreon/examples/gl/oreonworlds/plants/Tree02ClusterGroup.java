@@ -6,7 +6,6 @@ import java.util.List;
 import org.oreon.core.context.BaseContext;
 import org.oreon.core.gl.memory.GLMeshVBO;
 import org.oreon.core.gl.scenegraph.GLRenderInfo;
-import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.gl.util.GLAssimpModelLoader;
 import org.oreon.core.gl.wrapper.parameter.CullFaceDisable;
 import org.oreon.core.instanced.InstancedCluster;
@@ -29,12 +28,12 @@ public class Tree02ClusterGroup extends InstancedObject{
 	
 	public Tree02ClusterGroup(){
 		
-		List<Model<GLTexture>> models = GLAssimpModelLoader.loadModel("oreonworlds/assets/plants/Tree_02","tree02.obj");
-		List<Model<GLTexture>> billboards = GLAssimpModelLoader.loadModel("oreonworlds/assets/plants/Tree_02","billboardmodel.obj");
+		List<Model> models = GLAssimpModelLoader.loadModel("oreonworlds/assets/plants/Tree_02","tree02.obj");
+		List<Model> billboards = GLAssimpModelLoader.loadModel("oreonworlds/assets/plants/Tree_02","billboardmodel.obj");
 		
 		List<Renderable> objects = new ArrayList<>();
 		
-		for (Model<GLTexture> model : models){
+		for (Model model : models){
 			
 			GLMeshVBO meshBuffer = new GLMeshVBO();
 			
@@ -74,7 +73,7 @@ public class Tree02ClusterGroup extends InstancedObject{
 			objects.add(object);
 		}
 		
-		for (Model<GLTexture> billboard : billboards){	
+		for (Model billboard : billboards){	
 
 			GLMeshVBO meshBuffer = new GLMeshVBO();
 			
@@ -117,8 +116,15 @@ public class Tree02ClusterGroup extends InstancedObject{
 		addCluster(new Tree02Cluster(6,new Vec3f(-728,0,654),objects));
 		addCluster(new Tree02Cluster(6,new Vec3f(-706,0,1103),objects));
 		
-		setThread(new Thread(this));
-		getThread().start();
+//		setThread(new Thread(this));
+//		getThread().start();
+		
+		for (InstancedCluster cluster : getClusters()){
+//			if (cluster.getCenter().sub(BaseContext.getCamera().getPosition()).length() < 2000){
+//				cluster.updateUBOs();
+				addChild(cluster);
+//			}
+		}
 	}
 	
 	public void run(){

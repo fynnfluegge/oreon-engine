@@ -6,7 +6,6 @@ import java.util.List;
 import org.oreon.core.context.BaseContext;
 import org.oreon.core.gl.memory.GLMeshVBO;
 import org.oreon.core.gl.scenegraph.GLRenderInfo;
-import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.gl.util.GLAssimpModelLoader;
 import org.oreon.core.gl.wrapper.parameter.CullFaceDisable;
 import org.oreon.core.instanced.InstancedCluster;
@@ -28,12 +27,12 @@ public class Tree01ClusterGroup extends InstancedObject{
 	
 	public Tree01ClusterGroup(){
 		
-		List<Model<GLTexture>> models = GLAssimpModelLoader.loadModel("oreonworlds/assets/plants/Tree_01","tree01.obj");
-		List<Model<GLTexture>> billboards = GLAssimpModelLoader.loadModel("oreonworlds/assets/plants/Tree_01","billboardmodel.obj");
+		List<Model> models = GLAssimpModelLoader.loadModel("oreonworlds/assets/plants/Tree_01","tree01.obj");
+		List<Model> billboards = GLAssimpModelLoader.loadModel("oreonworlds/assets/plants/Tree_01","billboardmodel.obj");
 		
 		List<Renderable> objects = new ArrayList<>();
 		
-		for (Model<GLTexture> model : models){
+		for (Model model : models){
 			
 			GLMeshVBO meshBuffer = new GLMeshVBO();
 			
@@ -71,7 +70,7 @@ public class Tree01ClusterGroup extends InstancedObject{
 			objects.add(object);
 		}
 		
-		for (Model<GLTexture> billboard : billboards){
+		for (Model billboard : billboards){
 			
 			GLMeshVBO meshBuffer = new GLMeshVBO();
 			

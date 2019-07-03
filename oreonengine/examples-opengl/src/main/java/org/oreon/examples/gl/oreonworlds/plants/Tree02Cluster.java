@@ -3,7 +3,6 @@ package org.oreon.examples.gl.oreonworlds.plants;
 import java.nio.FloatBuffer;
 import java.util.List;
 
-import org.oreon.core.context.BaseContext;
 import org.oreon.core.gl.instanced.GLInstancedCluster;
 import org.oreon.core.gl.memory.GLMeshVBO;
 import org.oreon.core.gl.memory.GLUniformBuffer;
@@ -81,18 +80,18 @@ public class Tree02Cluster extends GLInstancedCluster{
 	@Override
 	public void updateUBOs(){
 		
-		getHighPolyIndices().clear();
-		
-		int index = 0;
-		
-		for (Matrix4f transform : getWorldMatrices()){
-			if (transform.getTranslation().sub(BaseContext.getCamera().getPosition()).length() < 220){
-				getHighPolyIndices().add(index);
-			}
-
-			index++;
-		}
-		getHighPolyInstances().setValue(getHighPolyIndices().size());
+//		getHighPolyIndices().clear();
+//		
+//		int index = 0;
+//		
+//		for (Matrix4f transform : getWorldMatrices()){
+//			if (transform.getTranslation().sub(BaseContext.getCamera().getPosition()).length() < 220){
+//				getHighPolyIndices().add(index);
+//			}
+//
+//			index++;
+//		}
+//		getHighPolyInstances().setValue(getHighPolyIndices().size());
 	}
 	
 	public void renderShadows(){

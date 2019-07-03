@@ -6,7 +6,6 @@ import java.util.List;
 import org.oreon.core.context.BaseContext;
 import org.oreon.core.gl.memory.GLMeshVBO;
 import org.oreon.core.gl.scenegraph.GLRenderInfo;
-import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.gl.util.GLAssimpModelLoader;
 import org.oreon.core.gl.wrapper.parameter.CullFaceDisable;
 import org.oreon.core.instanced.InstancedCluster;
@@ -28,10 +27,10 @@ public class Palm01ClusterGroup extends InstancedObject{
 		
 		List<Renderable> objects = new ArrayList<>();
 		
-		List<Model<GLTexture>> models = GLAssimpModelLoader.loadModel("oreonworlds/assets/plants/Palm_01","Palma 001.obj");
-		List<Model<GLTexture>> billboards = GLAssimpModelLoader.loadModel("oreonworlds/assets/plants/Palm_01","billboardmodel.obj");
+		List<Model> models = GLAssimpModelLoader.loadModel("oreonworlds/assets/plants/Palm_01","Palma 001.obj");
+		List<Model> billboards = GLAssimpModelLoader.loadModel("oreonworlds/assets/plants/Palm_01","billboardmodel.obj");
 		
-		for (Model<GLTexture> model : models){
+		for (Model model : models){
 			
 			GLMeshVBO meshBuffer = new GLMeshVBO();
 			model.getMesh().setTangentSpace(false);
@@ -48,7 +47,7 @@ public class Palm01ClusterGroup extends InstancedObject{
 			objects.add(object);
 		}
 		
-		for (Model<GLTexture> billboard : billboards){	
+		for (Model billboard : billboards){	
 
 			GLMeshVBO meshBuffer = new GLMeshVBO();
 			billboard.getMesh().setTangentSpace(false);

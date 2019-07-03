@@ -100,7 +100,7 @@ float varianceShadow(vec3 projCoords, int split, int kernels){
 		for (int j=-kernels; j<=kernels; j++){
 			float shadowMapDepth = texture(pssm, vec3(projCoords.xy,split)
 													   + vec3(i,j,0) * texelSize).r; 
-			if (currentDepth - 0.001 > shadowMapDepth)
+			if (currentDepth > shadowMapDepth)
 				shadowFactor -= reduceFactor;
 		}
 	}
@@ -118,7 +118,7 @@ float applyShadowMapping(vec3 worldPos)
 	
 	vec4 lightSpacePos = m_lightViewProjection[6] * vec4(worldPos,1.0);
 	projCoords = lightSpacePos.xyz * 0.5 + 0.5;
-	terrainShadow = varianceShadow(projCoords,6,11);
+	terrainShadow = varianceShadow(projCoords,6,9);
 	
 	// if (linDepth <= splitRange[0]){
 		// vec4 lightSpacePos = m_lightViewProjection[0] * vec4(worldPos,1.0);

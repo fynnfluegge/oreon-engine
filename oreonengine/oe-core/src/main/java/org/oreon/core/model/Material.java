@@ -1,5 +1,6 @@
 package org.oreon.core.model;
 
+import org.oreon.core.image.Image;
 import org.oreon.core.math.Vec3f;
 import org.oreon.core.scenegraph.NodeComponent;
 
@@ -8,15 +9,15 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class Material<T> extends NodeComponent{
+public class Material extends NodeComponent{
 	
 	private String name;
-	private T diffusemap;
-	private T normalmap;
-	private T heightmap;
-	private T ambientmap;
-	private T specularmap;
-	private T alphamap;
+	private Image diffusemap;
+	private Image normalmap;
+	private Image heightmap;
+	private Image ambientmap;
+	private Image specularmap;
+	private Image alphamap;
 	private Vec3f color;
 	private float heightScaling;
 	private float horizontalScaling;

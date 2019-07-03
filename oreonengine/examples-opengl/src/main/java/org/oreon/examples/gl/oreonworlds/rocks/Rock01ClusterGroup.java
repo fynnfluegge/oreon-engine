@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.oreon.core.gl.memory.GLMeshVBO;
 import org.oreon.core.gl.scenegraph.GLRenderInfo;
-import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.gl.util.GLAssimpModelLoader;
 import org.oreon.core.gl.wrapper.parameter.DefaultRenderParams;
 import org.oreon.core.instanced.InstancedObject;
@@ -21,11 +20,11 @@ public class Rock01ClusterGroup extends InstancedObject{
 	
 	public Rock01ClusterGroup(){
 
-		List<Model<GLTexture>> models = GLAssimpModelLoader.loadModel("oreonworlds/assets/rocks/Rock_01","rock01.obj");
+		List<Model> models = GLAssimpModelLoader.loadModel("oreonworlds/assets/rocks/Rock_01","rock01.obj");
 	
 		List<Renderable> objects = new ArrayList<>();
 		
-		for (Model<GLTexture> model : models){
+		for (Model model : models){
 			
 			GLMeshVBO meshBuffer = new GLMeshVBO();
 			model.getMesh().setTangentSpace(true);

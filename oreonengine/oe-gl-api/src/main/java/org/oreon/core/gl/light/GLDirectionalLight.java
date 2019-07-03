@@ -67,7 +67,7 @@ public class GLDirectionalLight extends DirectionalLight{
 				getFloatBufferLight().put(0);
 				getUbo_light().updateData(getFloatBufferLight(), getLightBufferSize());
 				
-				updateShadowMatrices();
+				updateShadowMatrices(true);
 				getUbo_matrices().updateData(getFloatBufferMatrices(), getMatricesBufferSize());
 			}
 		}
@@ -84,7 +84,7 @@ public class GLDirectionalLight extends DirectionalLight{
 				getFloatBufferLight().put(0);
 				getUbo_light().updateData(getFloatBufferLight(), getLightBufferSize());
 				
-				updateShadowMatrices();
+				updateShadowMatrices(true);
 				getUbo_matrices().updateData(getFloatBufferMatrices(), getMatricesBufferSize());
 			}
 		}
@@ -100,7 +100,7 @@ public class GLDirectionalLight extends DirectionalLight{
 			getFloatBufferLight().put(0);
 			getUbo_light().updateData(getFloatBufferLight(), getLightBufferSize());
 			
-			updateShadowMatrices();
+			updateShadowMatrices(true);
 			getUbo_matrices().updateData(getFloatBufferMatrices(), getMatricesBufferSize());
 		}
 		if (BaseContext.getInput().isKeyHolding(GLFW.GLFW_KEY_L)) {
@@ -115,7 +115,7 @@ public class GLDirectionalLight extends DirectionalLight{
 			getFloatBufferLight().put(0);
 			getUbo_light().updateData(getFloatBufferLight(), getLightBufferSize());
 			
-			updateShadowMatrices();
+			updateShadowMatrices(true);
 			getUbo_matrices().updateData(getFloatBufferMatrices(), getMatricesBufferSize());
 		}
 	}

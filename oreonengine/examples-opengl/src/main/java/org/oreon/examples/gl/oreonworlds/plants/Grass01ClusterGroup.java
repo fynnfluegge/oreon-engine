@@ -6,7 +6,6 @@ import java.util.List;
 import org.oreon.core.context.BaseContext;
 import org.oreon.core.gl.memory.GLMeshVBO;
 import org.oreon.core.gl.scenegraph.GLRenderInfo;
-import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.gl.util.GLAssimpModelLoader;
 import org.oreon.core.gl.wrapper.parameter.CullFaceDisable;
 import org.oreon.core.instanced.InstancedCluster;
@@ -23,11 +22,11 @@ public class Grass01ClusterGroup extends InstancedObject{
 	
 	public Grass01ClusterGroup(){
 		
-		List<Model<GLTexture>> models = GLAssimpModelLoader.loadModel("oreonworlds/assets/plants/Grass_01","grassmodel.obj");
+		List<Model> models = GLAssimpModelLoader.loadModel("oreonworlds/assets/plants/Grass_01","grassmodel.obj");
 	
 		List<Renderable> objects = new ArrayList<>();
 		
-		for (Model<GLTexture> model : models){
+		for (Model model : models){
 			
 			GLMeshVBO meshBuffer = new GLMeshVBO();
 			model.getMesh().setTangentSpace(false);
@@ -90,8 +89,9 @@ public class Grass01ClusterGroup extends InstancedObject{
 		addCluster(new Grass01Cluster(100,new Vec3f(-290,0,-147),objects));
 		addCluster(new Grass01Cluster(100,new Vec3f(-288,0,-118),objects));
 	
-		setThread(new Thread(this));
-		getThread().start();
+		for (InstancedCluster cluster : getClusters()){
+			addChild(cluster);
+		}
 	}
 	
 	public void run(){

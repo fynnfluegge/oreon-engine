@@ -69,17 +69,26 @@ public abstract class DirectionalLight extends Light{
 		
 		if (BaseContext.getCamera().isCameraRotated() || 
 				BaseContext.getCamera().isCameraMoved()){
-			
-			updateShadowMatrices();
+			updateShadowMatrices(false);
 		}
 	}
 	
-	public void updateShadowMatrices() {
+	public void updateShadowMatrices(boolean hasSunPositionChanged) {
 		
 		floatBufferMatrices.clear();
-		for (PssmCamera lightCamera : splitLightCameras){
-			lightCamera.update(m_View, up, right);
-			floatBufferMatrices.put(BufferUtil.createFlippedBuffer(lightCamera.getM_orthographicViewProjection()));
+		
+		for (int i=0; i<splitLightCameras.length; i++){
+			
+			if (i == splitLightCameras.length-1){
+				if (hasSunPositionChanged){
+					splitLightCameras[i].update(m_View, up, right);
+				}
+				floatBufferMatrices.put(BufferUtil.createFlippedBuffer(splitLightCameras[i].getM_orthographicViewProjection()));
+			}
+			else{
+				splitLightCameras[i].update(m_View, up, right);
+				floatBufferMatrices.put(BufferUtil.createFlippedBuffer(splitLightCameras[i].getM_orthographicViewProjection()));
+			}
 		}
 	}
 	
