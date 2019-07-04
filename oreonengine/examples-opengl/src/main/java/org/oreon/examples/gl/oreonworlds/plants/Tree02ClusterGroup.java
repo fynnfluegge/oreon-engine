@@ -29,9 +29,10 @@ public class Tree02ClusterGroup extends InstancedObject{
 	public Tree02ClusterGroup(){
 		
 		List<Model> models = GLAssimpModelLoader.loadModel("oreonworlds/assets/plants/Tree_02","tree02.obj");
+		
 		List<Model> billboards = GLAssimpModelLoader.loadModel("oreonworlds/assets/plants/Tree_02","billboardmodel.obj");
 		
-		List<Renderable> objects = new ArrayList<>();
+		List<Renderable> renderComponents = new ArrayList<>();
 		
 		for (Model model : models){
 			
@@ -70,7 +71,7 @@ public class Tree02ClusterGroup extends InstancedObject{
 			object.addComponent(NodeComponentType.SHADOW_RENDERINFO, shadowRenderInfo);
 			object.addComponent(NodeComponentType.WIREFRAME_RENDERINFO, wireframeRenderInfo);
 			object.addComponent(NodeComponentType.MATERIAL0, model.getMaterial());
-			objects.add(object);
+			renderComponents.add(object);
 		}
 		
 		for (Model billboard : billboards){	
@@ -98,33 +99,26 @@ public class Tree02ClusterGroup extends InstancedObject{
 			object.addComponent(NodeComponentType.SHADOW_RENDERINFO, shadowRenderInfo);
 			object.addComponent(NodeComponentType.WIREFRAME_RENDERINFO, wireframeRenderInfo);
 			object.addComponent(NodeComponentType.MATERIAL0, billboard.getMaterial());
-			objects.add(object);
+			renderComponents.add(object);
 		}
 	
-		addCluster(new Tree02Cluster(6,new Vec3f(-528,0,874),objects));
-		addCluster(new Tree02Cluster(6,new Vec3f(-696,0,932),objects));
-		addCluster(new Tree02Cluster(6,new Vec3f(-765,0,976),objects));
-		addCluster(new Tree02Cluster(6,new Vec3f(-820,0,1035),objects));
-		addCluster(new Tree02Cluster(6,new Vec3f(-595,0,624),objects));
-		addCluster(new Tree02Cluster(6,new Vec3f(-462,0,597),objects));
-		addCluster(new Tree02Cluster(6,new Vec3f(-525,0,704),objects));
-		addCluster(new Tree02Cluster(6,new Vec3f(-552,0,788),objects));
-		addCluster(new Tree02Cluster(6,new Vec3f(-608,0,712),objects));
-		addCluster(new Tree02Cluster(6,new Vec3f(-568,0,894),objects));
-		addCluster(new Tree02Cluster(6,new Vec3f(-593,0,954),objects));
-		addCluster(new Tree02Cluster(6,new Vec3f(-663,0,665),objects));
-		addCluster(new Tree02Cluster(6,new Vec3f(-728,0,654),objects));
-		addCluster(new Tree02Cluster(6,new Vec3f(-706,0,1103),objects));
+		addCluster(new Tree02Cluster(6,new Vec3f(-528,0,874),renderComponents));
+		addCluster(new Tree02Cluster(6,new Vec3f(-696,0,932),renderComponents));
+//		addCluster(new Tree02Cluster(6,new Vec3f(-765,0,976),objects));
+//		addCluster(new Tree02Cluster(6,new Vec3f(-820,0,1035),objects));
+//		addCluster(new Tree02Cluster(6,new Vec3f(-595,0,624),objects));
+//		addCluster(new Tree02Cluster(6,new Vec3f(-462,0,597),objects));
+//		addCluster(new Tree02Cluster(6,new Vec3f(-525,0,704),objects));
+//		addCluster(new Tree02Cluster(6,new Vec3f(-552,0,788),objects));
+//		addCluster(new Tree02Cluster(6,new Vec3f(-608,0,712),objects));
+//		addCluster(new Tree02Cluster(6,new Vec3f(-568,0,894),objects));
+//		addCluster(new Tree02Cluster(6,new Vec3f(-593,0,954),objects));
+//		addCluster(new Tree02Cluster(6,new Vec3f(-663,0,665),objects));
+//		addCluster(new Tree02Cluster(6,new Vec3f(-728,0,654),objects));
+//		addCluster(new Tree02Cluster(6,new Vec3f(-706,0,1103),objects));
 		
-//		setThread(new Thread(this));
-//		getThread().start();
-		
-		for (InstancedCluster cluster : getClusters()){
-//			if (cluster.getCenter().sub(BaseContext.getCamera().getPosition()).length() < 2000){
-//				cluster.updateUBOs();
-				addChild(cluster);
-//			}
-		}
+		setThread(new Thread(this));
+		getThread().start();
 	}
 	
 	public void run(){
@@ -145,16 +139,12 @@ public class Tree02ClusterGroup extends InstancedObject{
 				
 				getChildren().clear();
 				
-//				long time = System.currentTimeMillis();
-				
 				for (InstancedCluster cluster : getClusters()){
 					if (cluster.getCenter().sub(BaseContext.getCamera().getPosition()).length() < 2000){
 						cluster.updateUBOs();
 						addChild(cluster);
 					}
 				}
-				
-//				System.out.println("############## " + (System.currentTimeMillis() - time));
 			}
 		}
 	}

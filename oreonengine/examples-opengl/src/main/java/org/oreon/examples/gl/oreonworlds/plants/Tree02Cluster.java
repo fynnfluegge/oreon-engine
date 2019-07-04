@@ -3,12 +3,14 @@ package org.oreon.examples.gl.oreonworlds.plants;
 import java.nio.FloatBuffer;
 import java.util.List;
 
+import org.oreon.core.context.BaseContext;
 import org.oreon.core.gl.instanced.GLInstancedCluster;
 import org.oreon.core.gl.memory.GLMeshVBO;
 import org.oreon.core.gl.memory.GLUniformBuffer;
 import org.oreon.core.gl.scenegraph.GLRenderInfo;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.math.Vec3f;
+import org.oreon.core.scenegraph.NodeComponent;
 import org.oreon.core.scenegraph.NodeComponentType;
 import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.util.BufferUtil;
@@ -17,7 +19,7 @@ import org.oreon.gl.components.terrain.TerrainHelper;
 
 public class Tree02Cluster extends GLInstancedCluster{
 
-	public Tree02Cluster(int instances, Vec3f pos, List<Renderable> objects){
+	public Tree02Cluster(int instances, Vec3f pos, List<Renderable> renderComponents){
 		
 		setCenter(pos);
 		setHighPolyInstances(new IntegerReference(0));
@@ -68,8 +70,19 @@ public class Tree02Cluster extends GLInstancedCluster{
 		getWorldMatricesBuffer().updateData(worldMatricesFloatBuffer, size);
 		getModelMatricesBuffer().updateData(modelMatricesFloatBuffer, size);
 		
-		for (Renderable object : objects){
-			addChild(object);
+		for (Renderable object : renderComponents){
+			Renderable vRenderable = new Renderable();
+			try {
+				NodeComponent vMainRenderinfo = object.getComponent(NodeComponentType.MAIN_RENDERINFO);
+				vRenderable.addComponent(NodeComponentType.MAIN_RENDERINFO, vMainRenderinfo.clone());
+			} catch (CloneNotSupportedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			vRenderable.addComponent(NodeComponentType.SHADOW_RENDERINFO, object.getComponent(NodeComponentType.SHADOW_RENDERINFO));
+			vRenderable.addComponent(NodeComponentType.WIREFRAME_RENDERINFO, object.getComponent(NodeComponentType.WIREFRAME_RENDERINFO));
+			vRenderable.addComponent(NodeComponentType.MATERIAL0, object.getComponent(NodeComponentType.MATERIAL0));
+			addChild(vRenderable);
 		}
 		
 		((GLMeshVBO) ((GLRenderInfo) ((Renderable) getChildren().get(0)).getComponent(NodeComponentType.MAIN_RENDERINFO)).getVbo()).setInstances(getHighPolyInstances());
@@ -80,18 +93,18 @@ public class Tree02Cluster extends GLInstancedCluster{
 	@Override
 	public void updateUBOs(){
 		
-//		getHighPolyIndices().clear();
-//		
-//		int index = 0;
-//		
-//		for (Matrix4f transform : getWorldMatrices()){
-//			if (transform.getTranslation().sub(BaseContext.getCamera().getPosition()).length() < 220){
-//				getHighPolyIndices().add(index);
-//			}
-//
-//			index++;
-//		}
-//		getHighPolyInstances().setValue(getHighPolyIndices().size());
+		getHighPolyIndices().clear();
+		
+		int index = 0;
+		
+		for (Matrix4f transform : getWorldMatrices()){
+			if (transform.getTranslation().sub(BaseContext.getCamera().getPosition()).length() < 220){
+				getHighPolyIndices().add(index);
+			}
+
+			index++;
+		}
+		getHighPolyInstances().setValue(getHighPolyIndices().size());
 	}
 	
 	public void renderShadows(){

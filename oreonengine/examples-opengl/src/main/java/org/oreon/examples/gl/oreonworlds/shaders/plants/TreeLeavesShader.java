@@ -62,6 +62,8 @@ public class TreeLeavesShader extends GLShaderProgram{
 //		setUniformi("screenHeight", CoreSystem.getInstance().getWindow().getHeight());
 		setUniformi("isReflection", BaseContext.getConfig().isRenderReflection() ? 1 : 0);
 		
+		System.out.println(object.getParentNode().getId());
+		
 		((GLInstancedCluster) object.getParentNode()).getWorldMatricesBuffer().bindBufferBase(0);
 		bindUniformBlock("worldMatrices", 0);
 		((GLInstancedCluster) object.getParentNode()).getModelMatricesBuffer().bindBufferBase(1);
