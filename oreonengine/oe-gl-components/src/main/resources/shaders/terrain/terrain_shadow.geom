@@ -1,7 +1,7 @@
 #version 450
 #extension GL_ARB_separate_shader_objects : enable
 
-layout(triangles, invocations = 7) in;
+layout(triangles, invocations = 1) in;
 layout(triangle_strip, max_vertices = 3) out;
 
 layout (location = 0) in vec2 inUV[];
@@ -25,7 +25,7 @@ layout (std140, row_major) uniform Camera{
 };
 
 layout (std140, row_major) uniform LightViewProjections{
-	mat4 m_lightViewProjection[7];
+	mat4 m_lightViewProjection[5];
 };
 
 uniform sampler2D splatmap;
@@ -69,11 +69,12 @@ void main() {
 		}	
 	}
 	
+	// the terrain shadows are only rendered in the last layer(=4) of the shadow maps array
 	for (int i = 0; i < gl_in.length(); ++i)
 	{
 		vec4 position = gl_in[i].gl_Position + vec4(displacement[i],0);
-		gl_Layer = gl_InvocationID;
-		gl_Position = m_lightViewProjection[ gl_InvocationID ] * position;
+		gl_Layer = 4;
+		gl_Position = m_lightViewProjection[ 4 ] * position;
 		EmitVertex();
 	}
 	

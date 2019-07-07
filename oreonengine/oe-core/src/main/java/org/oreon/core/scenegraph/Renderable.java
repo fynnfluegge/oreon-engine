@@ -3,9 +3,12 @@
 import java.util.HashMap;
 import java.util.Map;
 
+import lombok.Setter;
+
 public class Renderable extends Node{
 
 	private HashMap<NodeComponentType, NodeComponent> components;
+	@Setter
 	protected boolean render;
 	
 	public Renderable()

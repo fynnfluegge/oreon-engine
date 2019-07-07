@@ -164,16 +164,28 @@ public class GLAssimpModelLoader {
 	
 	private static Material processMaterial(AIMaterial aiMaterial, String texturesDir) {
 
-	    AIString path = AIString.calloc();
-	    Assimp.aiGetMaterialTexture(aiMaterial, Assimp.aiTextureType_DIFFUSE, 0, path, (IntBuffer) null, null, null, null, null, null);
-	    String textPath = path.dataString();
-
+		// diffuse Texture
+	    AIString diffPath = AIString.calloc();
+	    Assimp.aiGetMaterialTexture(aiMaterial, Assimp.aiTextureType_DIFFUSE, 0, diffPath, (IntBuffer) null, null, null, null, null, null);
+	    String diffTexPath = diffPath.dataString();
+	    
 	    GLTexture diffuseTexture = null;
-	    if (textPath != null && textPath.length() > 0) {
-	    	diffuseTexture = new TextureImage2D(texturesDir + "/" + textPath, SamplerFilter.Trilinear);
+	    if (diffTexPath != null && diffTexPath.length() > 0) {
+	    	diffuseTexture = new TextureImage2D(texturesDir + "/" + diffTexPath, SamplerFilter.Trilinear);
+	    }
+	    
+	    // normal Texture
+	    AIString normalPath = AIString.calloc();
+	    Assimp.aiGetMaterialTexture(aiMaterial, Assimp.aiTextureType_NORMALS, 0, normalPath, (IntBuffer) null, null, null, null, null, null);
+	    String normalTexPath = normalPath.dataString();
+	    
+	    GLTexture normalTexture = null;
+	    if (normalTexPath != null && normalTexPath.length() > 0) {
+	    	normalTexture = new TextureImage2D(texturesDir + "/" + normalTexPath, SamplerFilter.Trilinear);
 	    }
 
 	    AIColor4D color = AIColor4D.create();
+	    
 	    Vec3f diffuseColor = null;
 	    int result = Assimp.aiGetMaterialColor(aiMaterial, Assimp.AI_MATKEY_COLOR_AMBIENT, Assimp.aiTextureType_NONE, 0, color);
 	    if (result == 0) {
@@ -182,6 +194,7 @@ public class GLAssimpModelLoader {
 
 	    Material material = new Material();
 	    material.setDiffusemap(diffuseTexture);
+	    material.setNormalmap(normalTexture);
 	    material.setColor(diffuseColor);
 	    
 	    return material;

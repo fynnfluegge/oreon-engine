@@ -75,13 +75,15 @@ public class Tree02Cluster extends GLInstancedCluster{
 			try {
 				NodeComponent vMainRenderinfo = object.getComponent(NodeComponentType.MAIN_RENDERINFO);
 				vRenderable.addComponent(NodeComponentType.MAIN_RENDERINFO, vMainRenderinfo.clone());
+				NodeComponent vShadowRenderinfo = object.getComponent(NodeComponentType.SHADOW_RENDERINFO);
+				vRenderable.addComponent(NodeComponentType.SHADOW_RENDERINFO, vShadowRenderinfo.clone());
+				NodeComponent vWireframeRenderinfo = object.getComponent(NodeComponentType.WIREFRAME_RENDERINFO);
+				vRenderable.addComponent(NodeComponentType.WIREFRAME_RENDERINFO, vWireframeRenderinfo.clone());
+				NodeComponent vMaterial = object.getComponent(NodeComponentType.MATERIAL0);
+				vRenderable.addComponent(NodeComponentType.MATERIAL0, vMaterial.clone());
 			} catch (CloneNotSupportedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			vRenderable.addComponent(NodeComponentType.SHADOW_RENDERINFO, object.getComponent(NodeComponentType.SHADOW_RENDERINFO));
-			vRenderable.addComponent(NodeComponentType.WIREFRAME_RENDERINFO, object.getComponent(NodeComponentType.WIREFRAME_RENDERINFO));
-			vRenderable.addComponent(NodeComponentType.MATERIAL0, object.getComponent(NodeComponentType.MATERIAL0));
 			addChild(vRenderable);
 		}
 		
@@ -98,7 +100,7 @@ public class Tree02Cluster extends GLInstancedCluster{
 		int index = 0;
 		
 		for (Matrix4f transform : getWorldMatrices()){
-			if (transform.getTranslation().sub(BaseContext.getCamera().getPosition()).length() < 220){
+			if (transform.getTranslation().sub(BaseContext.getCamera().getPosition()).length() < 1000){
 				getHighPolyIndices().add(index);
 			}
 

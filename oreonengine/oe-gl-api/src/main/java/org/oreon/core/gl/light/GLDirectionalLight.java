@@ -48,6 +48,7 @@ public class GLDirectionalLight extends DirectionalLight{
 		if (BaseContext.getCamera().isCameraRotated() || 
 				BaseContext.getCamera().isCameraMoved()){
 			
+			updateShadowMatrices(false);
 			getUbo_matrices().updateData(getFloatBufferMatrices(), getMatricesBufferSize());
 		}
 	

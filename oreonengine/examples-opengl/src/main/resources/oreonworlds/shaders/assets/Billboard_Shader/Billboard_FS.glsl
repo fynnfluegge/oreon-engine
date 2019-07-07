@@ -24,8 +24,6 @@ layout (std140, row_major) uniform Camera{
 uniform Material material;
 uniform int isReflection;
 uniform int isRefraction;
-uniform int screenWidth;
-uniform int screenHeight;
 
 float alphaDistanceFactor(float dist)
 {

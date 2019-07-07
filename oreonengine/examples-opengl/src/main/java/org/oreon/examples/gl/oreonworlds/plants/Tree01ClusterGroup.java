@@ -3,15 +3,11 @@ package org.oreon.examples.gl.oreonworlds.plants;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.oreon.core.context.BaseContext;
 import org.oreon.core.gl.memory.GLMeshVBO;
 import org.oreon.core.gl.scenegraph.GLRenderInfo;
 import org.oreon.core.gl.util.GLAssimpModelLoader;
 import org.oreon.core.gl.wrapper.parameter.CullFaceDisable;
-import org.oreon.core.instanced.InstancedCluster;
-import org.oreon.core.instanced.InstancedHandler;
 import org.oreon.core.instanced.InstancedObject;
-import org.oreon.core.math.Vec3f;
 import org.oreon.core.model.Model;
 import org.oreon.core.model.Vertex;
 import org.oreon.core.scenegraph.NodeComponentType;
@@ -95,47 +91,47 @@ public class Tree01ClusterGroup extends InstancedObject{
 			objects.add(object);
 		}
 	
-		addCluster(new Tree01Cluster(10,new Vec3f(-1002,0,1550),objects));
-		addCluster(new Tree01Cluster(10,new Vec3f(-1085,0,1536),objects));
-		addCluster(new Tree01Cluster(10,new Vec3f(-1121,0,1473),objects));
-		addCluster(new Tree01Cluster(10,new Vec3f(-1114,0,1423),objects));
-		addCluster(new Tree01Cluster(10,new Vec3f(-1074,0,1378),objects));
-		addCluster(new Tree01Cluster(10,new Vec3f(-1138,0,1345),objects));
-		addCluster(new Tree01Cluster(10,new Vec3f(-1039,0,1129),objects));
-		addCluster(new Tree01Cluster(10,new Vec3f(-1011,0,1042),objects));
-		addCluster(new Tree01Cluster(6,new Vec3f(-1181,0,1346),objects));
-		addCluster(new Tree01Cluster(6,new Vec3f(-1210,0,1348),objects));
-		addCluster(new Tree01Cluster(6,new Vec3f(-1211,0,1392),objects));
-		
-		setThread(new Thread(this));
-		getThread().start();
+//		addCluster(new Tree01Cluster(10,new Vec3f(-1002,0,1550),objects));
+//		addCluster(new Tree01Cluster(10,new Vec3f(-1085,0,1536),objects));
+//		addCluster(new Tree01Cluster(10,new Vec3f(-1121,0,1473),objects));
+//		addCluster(new Tree01Cluster(10,new Vec3f(-1114,0,1423),objects));
+//		addCluster(new Tree01Cluster(10,new Vec3f(-1074,0,1378),objects));
+//		addCluster(new Tree01Cluster(10,new Vec3f(-1138,0,1345),objects));
+//		addCluster(new Tree01Cluster(10,new Vec3f(-1039,0,1129),objects));
+//		addCluster(new Tree01Cluster(10,new Vec3f(-1011,0,1042),objects));
+//		addCluster(new Tree01Cluster(6,new Vec3f(-1181,0,1346),objects));
+//		addCluster(new Tree01Cluster(6,new Vec3f(-1210,0,1348),objects));
+//		addCluster(new Tree01Cluster(6,new Vec3f(-1211,0,1392),objects));
+//		
+//		setThread(new Thread(this));
+//		getThread().start();
 	}
 
-	public void run() {
-		while(isRunning()){
-			
-			InstancedHandler.getInstance().getLock().lock();
-			try {
-				InstancedHandler.getInstance().getCondition().await();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			finally{
-				InstancedHandler.getInstance().getLock().unlock();
-			}
-			
-			synchronized (getChildren()) {
-				
-				getChildren().clear();
-				
-				for (InstancedCluster cluster : getClusters()){
-					if (cluster.getCenter().sub(BaseContext.getCamera().getPosition()).length() < 2000){
-						cluster.updateUBOs();
-						addChild(cluster);
-					}
-				}
-				
-			}
-		}
-	}
+//	public void run() {
+//		while(isRunning()){
+//			
+//			InstancedHandler.getInstance().getLock().lock();
+//			try {
+//				InstancedHandler.getInstance().getCondition().await();
+//			} catch (InterruptedException e) {
+//				e.printStackTrace();
+//			}
+//			finally{
+//				InstancedHandler.getInstance().getLock().unlock();
+//			}
+//			
+//			synchronized (getChildren()) {
+//				
+//				getChildren().clear();
+//				
+//				for (InstancedCluster cluster : getClusters()){
+//					if (cluster.getCenter().sub(BaseContext.getCamera().getPosition()).length() < 2000){
+//						cluster.updateUBOs();
+//						addChild(cluster);
+//					}
+//				}
+//				
+//			}
+//		}
+//	}
 }

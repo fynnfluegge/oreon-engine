@@ -42,6 +42,11 @@ public class RenderList {
 		objectList.remove(object.getId());
 	}
 	
+	public void remove(String key){
+		
+		objectList.remove(key);
+	}
+	
 	public Set<String> getKeySet(){
 		
 		return objectList.keySet();

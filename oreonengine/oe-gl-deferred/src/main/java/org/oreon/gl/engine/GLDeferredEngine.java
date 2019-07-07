@@ -140,6 +140,15 @@ public class GLDeferredEngine extends RenderEngine{
 		glClear(GL_DEPTH_BUFFER_BIT);
 		pssmFbo.getFbo().unbind();
 		
+		
+		//----------------------------------//
+		//      Record Render Objects       //
+		//----------------------------------//
+		
+		sceneGraph.record(opaqueSceneRenderList);
+		
+		
+		
 		//----------------------------------//
 		//        render shadow maps        //
 		//----------------------------------//
@@ -148,19 +157,22 @@ public class GLDeferredEngine extends RenderEngine{
 			pssmFbo.getFbo().bind();
 			pssmFbo.getConfig().enable();
 			glViewport(0,0,BaseContext.getConfig().getShadowMapResolution(),BaseContext.getConfig().getShadowMapResolution());
-			sceneGraph.renderShadows();
+			opaqueSceneRenderList.getValues().forEach(object ->
+			{
+				object.renderShadows();
+			});
 			glViewport(0,0,config.getX_ScreenResolution(),config.getY_ScreenResolution());
 			pssmFbo.getConfig().disable();
 			pssmFbo.getFbo().unbind();
 		}
 		
+
 		
 		//----------------------------------------------//
 		//   render opaque scene into primary gbuffer   //
 		//----------------------------------------------//
 		
 		primarySceneFbo.bind();
-		sceneGraph.record(opaqueSceneRenderList);
 		
 		opaqueSceneRenderList.getValues().forEach(object ->
 			{

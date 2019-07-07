@@ -61,7 +61,7 @@ void main()
 	
 	albedo_out = vec4(albedo.rgb,alpha);
 	worldPosition_out = vec4(position_FS,1);
-	normal_out = vec4(normal_FS.xzy,1);
-	specularEmission_out = vec4(1,0,0,1);
+	normal_out = vec4(0,0,1,1);
+	specularEmission_out = vec4(1,0.0,11,1);
 	lightScattering_out = vec4(0,0,0,1);
 }

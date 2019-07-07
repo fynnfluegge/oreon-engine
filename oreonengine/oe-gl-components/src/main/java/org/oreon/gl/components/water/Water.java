@@ -26,6 +26,7 @@ import org.oreon.core.image.Image.ImageFormat;
 import org.oreon.core.image.Image.SamplerFilter;
 import org.oreon.core.math.Vec4f;
 import org.oreon.core.scenegraph.NodeComponentType;
+import org.oreon.core.scenegraph.RenderList;
 import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.scenegraph.Scenegraph;
 import org.oreon.core.util.BufferUtil;
@@ -49,6 +50,8 @@ public class Water extends Renderable{
 	private GLTexture reflection_texture;
 	private GLFramebuffer refraction_fbo;
 	private GLTexture refraction_texture;
+	private RenderList reflectionRenderList;
+	private RenderList refractionRenderList;
 	
 	@Getter
 	private FFT fft;
@@ -121,6 +124,9 @@ public class Water extends Renderable{
 		refraction_fbo.setDrawBuffers(drawBuffers);
 		refraction_fbo.checkStatus();
 		refraction_fbo.unbind();
+		
+		refractionRenderList = new RenderList();
+		reflectionRenderList = new RenderList();
 	}	
 	
 	public void update()
@@ -186,7 +192,16 @@ public class Water extends Renderable{
 		glFrontFace(GL_CCW);
 		
 		if (!isCameraUnderwater()){
-			scenegraph.getRoot().render();
+			
+			scenegraph.record(reflectionRenderList);
+			
+			reflectionRenderList.remove(this.id);
+			
+			reflectionRenderList.getValues().forEach(object ->
+			{
+				object.render();
+			});
+			
 			if (scenegraph.hasTerrain()){
 				((GLTerrain) scenegraph.getTerrain()).render();
 			}
@@ -222,7 +237,15 @@ public class Water extends Renderable{
 		refraction_fbo.bind();
 		renderConfig.clearScreenDeepOcean();
 	
-		scenegraph.getRoot().render();
+		scenegraph.record(refractionRenderList);
+		
+		refractionRenderList.remove(this.id);
+		
+		refractionRenderList.getValues().forEach(object ->
+		{
+			object.render();
+		});
+		
 		if (scenegraph.hasTerrain()){
 			((GLTerrain) scenegraph.getTerrain()).render();
 		}

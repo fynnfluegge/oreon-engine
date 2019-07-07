@@ -9,7 +9,7 @@ in vec3 bitangent_FS;
 layout(location = 0) out vec4 albedo_out;
 layout(location = 1) out vec4 worldPosition_out;
 layout(location = 2) out vec4 normal_out;
-layout(location = 3) out vec4 specularEmission_out;
+layout(location = 3) out vec4 specular_emission_diffuse_ssao_bloom_out;
 layout(location = 4) out vec4 lightScattering_out;
 
 struct Material
@@ -38,7 +38,7 @@ void main()
 {	
 	float dist = length(eyePosition - position_FS);
 	
-	mat3 TBN = mat3(tangent_FS, normal_FS, bitangent_FS);
+	mat3 TBN = mat3(tangent_FS, bitangent_FS, normal_FS);
 	vec3 normal = normalize(2*(texture(material.normalmap, texCoord_FS * vec2(20,4)).rgb)-1);
 	normal = normalize(TBN * normal);
 	
@@ -50,6 +50,6 @@ void main()
 	albedo_out = vec4(albedo,alpha);
 	worldPosition_out = vec4(position_FS,1);
 	normal_out = vec4(normal.xzy,1);
-	specularEmission_out = vec4(1,0,0,1);
+	specular_emission_diffuse_ssao_bloom_out = vec4(1,0.0,11,1);
 	lightScattering_out = vec4(0,0,0,1);
 }
