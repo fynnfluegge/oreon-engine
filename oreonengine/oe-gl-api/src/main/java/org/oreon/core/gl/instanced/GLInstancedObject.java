@@ -18,9 +18,7 @@ public class GLInstancedObject extends InstancedObject{
 		
 		// only low-poly objects are rendered into shadow maps
 		getWorldMatricesBuffer().bindBufferBase(0);
-		getHighPolyInstanceCount().setValue(0);
 		super.renderShadows();
-		getHighPolyInstanceCount().setValue(getHighPolyIndices().size());
 	}
 	
 	public void render() {
@@ -30,17 +28,18 @@ public class GLInstancedObject extends InstancedObject{
 		
 		// only low-poly objects rendered when reflection or refraction rendering
 		if (BaseContext.getConfig().isRenderRefraction()){
-			getHighPolyInstanceCount().setValue(0);
-			super.render();
-			getHighPolyInstanceCount().setValue(getHighPolyIndices().size());
+			renderLowPoly();
 		}
 		else if (BaseContext.getConfig().isRenderReflection()){
-			getHighPolyInstanceCount().setValue(0);
-			super.render();
-			getHighPolyInstanceCount().setValue(getHighPolyIndices().size());
+			renderLowPoly();
 		}
 		else{
-			super.render();
+			if (getHighPolyInstanceCount().getValue() == 0){
+				renderLowPoly();
+			}
+			else{
+				super.render();
+			}
 		}
 	}
 }

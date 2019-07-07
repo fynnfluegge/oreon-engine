@@ -26,6 +26,9 @@ public abstract class InstancedObject extends Renderable{
 	private List<Integer> highPolyIndices = new ArrayList<Integer>();
 	private List<Integer> lowPolyIndices = new ArrayList<Integer>();
 	
+	private List<Renderable> lowPolyObjects = new ArrayList<Renderable>();
+	private List<Renderable> highPolyObjects = new ArrayList<Renderable>();
+	
 	private IntegerReference highPolyInstanceCount;
 	private IntegerReference lowPolyInstanceCount;
 	private int highPolyRange;
@@ -60,5 +63,23 @@ public abstract class InstancedObject extends Renderable{
 				renderList.setChanged(true);
 			}
 		}
+	}
+	
+	public void renderLowPoly(){
+		lowPolyObjects.forEach(object ->{
+			object.render();
+		});
+	}
+	
+	public void renderHighPoly(){
+		highPolyObjects.forEach(object ->{
+			object.render();
+		});
+	}
+	
+	public void renderShadows(){
+		lowPolyObjects.forEach(object ->{
+			object.renderShadows();
+		});
 	}
 }

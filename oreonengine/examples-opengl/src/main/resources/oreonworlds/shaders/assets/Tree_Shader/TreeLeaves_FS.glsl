@@ -30,7 +30,7 @@ uniform int screenHeight;
 
 float alphaDistanceFactor(float dist)
 {
-	return clamp(0.01f * (-dist+220),0,1);
+	return clamp(0.01f * (-dist+400),0,1);
 }
 
 bool getStippledAlphaLodFactor(vec3 position, float stippleFactor){

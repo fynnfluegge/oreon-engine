@@ -81,6 +81,7 @@ public class Tree02ClusterGroup extends GLInstancedObject{
 			object.addComponent(NodeComponentType.WIREFRAME_RENDERINFO, wireframeRenderInfo);
 			object.addComponent(NodeComponentType.MATERIAL0, model.getMaterial());
 			addChild(object);
+			getHighPolyObjects().add(object);
 		}
 		
 		for (Model billboard : billboards){	
@@ -109,6 +110,7 @@ public class Tree02ClusterGroup extends GLInstancedObject{
 			object.addComponent(NodeComponentType.WIREFRAME_RENDERINFO, wireframeRenderInfo);
 			object.addComponent(NodeComponentType.MATERIAL0, billboard.getMaterial());
 			addChild(object);
+			getLowPolyObjects().add(object);
 		}
 		
 		
