@@ -27,10 +27,12 @@ layout (std140, row_major) uniform Camera{
 uniform Material material;
 uniform int screenWidth;
 uniform int screenHeight;
+uniform int range = 800;
+uniform float alphaDiscardThreshold = 0.5;
 
 float alphaDistanceFactor(float dist)
 {
-	return clamp(0.01f * (-dist+400),0,1);
+	return clamp(0.01f * (-dist+range),0,1);
 }
 
 bool getStippledAlphaLodFactor(vec3 position, float stippleFactor){
@@ -54,12 +56,12 @@ void main()
 	
 	float alpha = albedo.a;
 	
-	if (alpha < 0.01)
+	if (alpha < alphaDiscardThreshold)
 		discard;
 		
-	alpha *= alphaDistanceFactor(dist);
+	// alpha *= alphaDistanceFactor(dist);
 	
-	albedo_out = vec4(albedo.rgb,alpha);
+	albedo_out = vec4(albedo.rgb,1);
 	worldPosition_out = vec4(position_FS,1);
 	normal_out = vec4(0,0,1,1);
 	specularEmission_out = vec4(1,0.0,11,1);

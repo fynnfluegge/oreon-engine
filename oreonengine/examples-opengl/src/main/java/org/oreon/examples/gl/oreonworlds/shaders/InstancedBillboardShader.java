@@ -1,4 +1,4 @@
-package org.oreon.examples.gl.oreonworlds.shaders.plants;
+package org.oreon.examples.gl.oreonworlds.shaders;
 
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
@@ -15,26 +15,26 @@ import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.util.Constants;
 import org.oreon.core.util.ResourceLoader;
 
-public class TreeBillboardShader extends GLShaderProgram{
+public class InstancedBillboardShader extends GLShaderProgram{
 
-private static TreeBillboardShader instance = null;
+private static InstancedBillboardShader instance = null;
 	
-	public static TreeBillboardShader getInstance() 
+	public static InstancedBillboardShader getInstance() 
 	{
 	    if(instance == null) 
 	    {
-	    	instance = new TreeBillboardShader();
+	    	instance = new InstancedBillboardShader();
 	    }
 	      return instance;
 	}
 	
-	protected TreeBillboardShader()
+	protected InstancedBillboardShader()
 	{
 		super();
 		
-		addVertexShader(ResourceLoader.loadShader("oreonworlds/shaders/assets/Billboard_Shader/Billboard_VS.glsl"));
-		addGeometryShader(ResourceLoader.loadShader("oreonworlds/shaders/assets/Billboard_Shader/Billboard_GS.glsl"));
-		addFragmentShader(ResourceLoader.loadShader("oreonworlds/shaders/assets/Billboard_Shader/Billboard_FS.glsl"));
+		addVertexShader(ResourceLoader.loadShader("oreonworlds/shaders/assets/Billboard_Shader/billboard.vert"));
+		addGeometryShader(ResourceLoader.loadShader("oreonworlds/shaders/assets/Billboard_Shader/billboard.geom"));
+		addFragmentShader(ResourceLoader.loadShader("oreonworlds/shaders/assets/Billboard_Shader/billboard.frag"));
 		compileShader();
 		
 		addUniform("clipplane");

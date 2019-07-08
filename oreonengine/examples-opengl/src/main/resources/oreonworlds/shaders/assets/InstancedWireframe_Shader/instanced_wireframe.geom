@@ -23,7 +23,7 @@ layout (std140, row_major) uniform Camera{
 };
 
 uniform vec4 clipplane;
-uniform int matrixIndices[500];
+uniform int matrixIndices[100];
 uniform mat4 scalingMatrix;
 uniform int isReflection;
 

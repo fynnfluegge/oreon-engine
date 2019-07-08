@@ -1,4 +1,4 @@
-package org.oreon.examples.gl.oreonworlds.shaders.plants;
+package org.oreon.examples.gl.oreonworlds.shaders;
 
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
@@ -13,26 +13,26 @@ import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.util.Constants;
 import org.oreon.core.util.ResourceLoader;
 
-public class TreeBillboardShadowShader extends GLShaderProgram{
+public class InstancedBillboardShadowShader extends GLShaderProgram{
 
-	private static TreeBillboardShadowShader instance = null;
+	private static InstancedBillboardShadowShader instance = null;
 	
-	public static TreeBillboardShadowShader getInstance() 
+	public static InstancedBillboardShadowShader getInstance() 
 	{
 	    if(instance == null) 
 	    {
-	    	instance = new TreeBillboardShadowShader();
+	    	instance = new InstancedBillboardShadowShader();
 	    }
 	      return instance;
 	}
 	
-	protected TreeBillboardShadowShader()
+	protected InstancedBillboardShadowShader()
 	{
 		super();
 		
-		addVertexShader(ResourceLoader.loadShader("oreonworlds/shaders/assets/Billboard_Shader/Billboard_VS.glsl"));
-		addGeometryShader(ResourceLoader.loadShader("oreonworlds/shaders/assets/Billboard_Shader/BillboardShadow_GS.glsl"));
-		addFragmentShader(ResourceLoader.loadShader("oreonworlds/shaders/assets/Billboard_Shader/TreeBillboardShadow_FS.glsl"));
+		addVertexShader(ResourceLoader.loadShader("oreonworlds/shaders/assets/Billboard_Shader/billboard.vert"));
+		addGeometryShader(ResourceLoader.loadShader("oreonworlds/shaders/assets/Billboard_Shader/billboard_shadow.geom"));
+		addFragmentShader(ResourceLoader.loadShader("oreonworlds/shaders/assets/Billboard_Shader/billboard_shadow.frag"));
 		compileShader();
 		
 		addUniformBlock("worldMatrices");

@@ -77,4 +77,13 @@ public class GLInstancedObject extends InstancedObject{
 			}
 		}
 	}
+	
+	public void renderWireframe(){
+		
+		// only low-poly objects are rendered into shadow maps
+		getWorldMatricesBuffer().bindBufferBase(0);
+		getWorldMatricesBuffer().bindBufferBase(1);
+
+		super.renderWireframe();
+	}
 }

@@ -27,9 +27,9 @@ private static InstancedWireframeShader instance = null;
 	{
 		super();
 
-		addVertexShader(ResourceLoader.loadShader("oreonworlds/shaders/assets/InstancingGrid_Shader/Grid_VS.glsl"));
-		addGeometryShader(ResourceLoader.loadShader("oreonworlds/shaders/assets/InstancingGrid_Shader/Grid_GS.glsl"));
-		addFragmentShader(ResourceLoader.loadShader("oreonworlds/shaders/assets/InstancingGrid_Shader/Grid_FS.glsl"));
+		addVertexShader(ResourceLoader.loadShader("oreonworlds/shaders/assets/InstancedWireframe_Shader/instanced_wireframe.vert"));
+		addGeometryShader(ResourceLoader.loadShader("oreonworlds/shaders/assets/InstancedWireframe_Shader/instanced_wireframe.geom"));
+		addFragmentShader(ResourceLoader.loadShader("oreonworlds/shaders/assets/InstancedWireframe_Shader/instanced_wireframe.frag"));
 		compileShader();
 		
 		addUniform("clipplane");
@@ -40,7 +40,7 @@ private static InstancedWireframeShader instance = null;
 		addUniformBlock("modelMatrices");
 		addUniformBlock("Camera");
 		
-		for (int i=0; i<500; i++)
+		for (int i=0; i<100; i++)
 		{
 			addUniform("matrixIndices[" + i + "]");
 		}

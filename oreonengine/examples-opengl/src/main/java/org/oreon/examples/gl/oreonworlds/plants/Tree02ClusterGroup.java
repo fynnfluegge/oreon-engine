@@ -16,8 +16,8 @@ import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.util.IntegerReference;
 import org.oreon.core.util.Util;
 import org.oreon.examples.gl.oreonworlds.shaders.InstancedWireframeShader;
-import org.oreon.examples.gl.oreonworlds.shaders.plants.TreeBillboardShader;
-import org.oreon.examples.gl.oreonworlds.shaders.plants.TreeBillboardShadowShader;
+import org.oreon.examples.gl.oreonworlds.shaders.InstancedBillboardShader;
+import org.oreon.examples.gl.oreonworlds.shaders.InstancedBillboardShadowShader;
 import org.oreon.examples.gl.oreonworlds.shaders.plants.TreeLeavesShader;
 import org.oreon.examples.gl.oreonworlds.shaders.plants.TreeShadowShader;
 import org.oreon.examples.gl.oreonworlds.shaders.plants.TreeTrunkShader;
@@ -32,7 +32,7 @@ public class Tree02ClusterGroup extends GLInstancedObject{
 				new Vec3f(-1146.9994f,172.34499f,1202.1444f), new Vec3f(-1084.012f,152.42621f,1090.532f),
 				new Vec3f(-1064.7401f,162.11281f,1188.7057f), new Vec3f(-1178.8174f,199.03467f,1280.8403f) };
 		setPositions(positions);
-		setHighPolyRange(400);
+		setHighPolyRange(800);
 		
 		List<Model> models = GLAssimpModelLoader.loadModel("oreonworlds/assets/plants/Tree_02","tree02.obj");
 		
@@ -91,16 +91,14 @@ public class Tree02ClusterGroup extends GLInstancedObject{
 			
 			for (Vertex vertex : billboard.getMesh().getVertices()){
 				vertex.setPosition(vertex.getPosition().mul(2.4f));
-				vertex.getPosition().setX(vertex.getPosition().getX()*1f);
-				vertex.getPosition().setZ(vertex.getPosition().getZ()*1f);
 			}
 			
 			meshBuffer.addData(billboard.getMesh());
 			meshBuffer.setDrawInstanced(true);
 			meshBuffer.setInstances(getLowPolyInstanceCount());
 	
-			GLRenderInfo renderInfo = new GLRenderInfo(TreeBillboardShader.getInstance(), new CullFaceDisable(), meshBuffer);
-			GLRenderInfo shadowRenderInfo = new GLRenderInfo(TreeBillboardShadowShader.getInstance(), new CullFaceDisable(), meshBuffer);
+			GLRenderInfo renderInfo = new GLRenderInfo(InstancedBillboardShader.getInstance(), new CullFaceDisable(), meshBuffer);
+			GLRenderInfo shadowRenderInfo = new GLRenderInfo(InstancedBillboardShadowShader.getInstance(), new CullFaceDisable(), meshBuffer);
 			GLRenderInfo wireframeRenderInfo = new GLRenderInfo(InstancedWireframeShader.getInstance(), new CullFaceDisable(), meshBuffer);
 			
 			Renderable object = new Renderable();
@@ -114,7 +112,7 @@ public class Tree02ClusterGroup extends GLInstancedObject{
 		
 		for (int i=0; i<getInstanceCount(); i++){
 			
-			float s = (float)(Math.random()*6 + 26);
+			float s = (float)(Math.random()*6 + 50);
 			Vec3f translation = getPositions()[i];
 			Vec3f scaling = new Vec3f(s,s,s);
 			Vec3f rotation = new Vec3f(0,(float) Math.random()*360f,0);

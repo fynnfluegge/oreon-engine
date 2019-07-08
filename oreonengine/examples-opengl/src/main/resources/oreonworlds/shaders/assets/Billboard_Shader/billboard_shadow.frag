@@ -8,11 +8,12 @@ struct Material
 };
 
 uniform Material material;
+uniform float alphaDiscardThreshold = 0.5;
 
 void main()
 {
 	float alpha = texture(material.diffusemap, texCoord_FS).a;
-	if (alpha < 0.2)
+	if (alpha < alphaDiscardThreshold)
 		discard;
-	gl_FragColor = vec4(0.1,0.9,0.1,1.0);
+	gl_FragColor = vec4(1,1,1,1);
 }

@@ -82,4 +82,10 @@ public abstract class InstancedObject extends Renderable{
 			object.renderShadows();
 		});
 	}
+	
+	public void renderHighPolyShadows(){
+		highPolyObjects.forEach(object ->{
+			object.renderShadows();
+		});
+	}
 }
