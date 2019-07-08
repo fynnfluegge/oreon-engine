@@ -18,7 +18,12 @@ public class GLInstancedObject extends InstancedObject{
 		
 		// only low-poly objects are rendered into shadow maps
 		getWorldMatricesBuffer().bindBufferBase(0);
-		super.renderShadows();
+		if (getHighPolyInstanceCount().getValue() == 0){
+			renderLowPolyShadows();
+		}
+		else{
+			super.renderShadows();
+		}
 	}
 	
 	public void render() {

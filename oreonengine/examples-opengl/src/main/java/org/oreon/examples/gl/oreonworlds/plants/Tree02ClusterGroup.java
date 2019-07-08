@@ -30,8 +30,10 @@ public class Tree02ClusterGroup extends GLInstancedObject{
 	
 	public Tree02ClusterGroup(){
 		
-		setInstanceCount(3);
-		Vec3f[] positions = { new Vec3f(-457.16794f,-37.229347f,937.7439f), new Vec3f(-696,0,932), new Vec3f(-765,0,976) };
+		setInstanceCount(5);
+		Vec3f[] positions = { new Vec3f(-1125.7356f,273.31046f,1157.9937f),
+				new Vec3f(-1146.9994f,172.34499f,1202.1444f), new Vec3f(-1084.012f,152.42621f,1090.532f),
+				new Vec3f(-1064.7401f,162.11281f,1188.7057f), new Vec3f(-1178.8174f,199.03467f,1280.8403f) };
 		setPositions(positions);
 		setHighPolyRange(400);
 		

@@ -10,8 +10,8 @@ public class Constants {
 	public static Vec4f ZEROPLANE = new Vec4f(0,0,0,0);
 	public static int CLIPOFFSET;
 	public static final int PSSM_SPLITS = 5;
-	public static final float[] PSSM_SPLIT_SHEME = { -0.01f,0.01f,
-													-0.025f,0.025f, 
+	public static final float[] PSSM_SPLIT_SHEME = { -0.02f,0.02f,
+													-0.04f,0.04f, 
 													-0.1f,0.1f,
 													-0.5f,0.5f,
 													-1f,1f};

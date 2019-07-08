@@ -2,6 +2,7 @@ package org.oreon.core.platform;
 
 import static org.lwjgl.glfw.GLFW.GLFW_CURSOR;
 import static org.lwjgl.glfw.GLFW.GLFW_CURSOR_HIDDEN;
+import static org.lwjgl.glfw.GLFW.GLFW_CURSOR_NORMAL;
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
 import static org.lwjgl.glfw.GLFW.glfwPollEvents;
@@ -92,7 +93,7 @@ public class GLFWInput implements Input{
                 }
 
                 if((button == 2 || button == 0) && action == GLFW_RELEASE) {
-//                	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+                	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
                 }
                 
                 if (action == GLFW_PRESS){
