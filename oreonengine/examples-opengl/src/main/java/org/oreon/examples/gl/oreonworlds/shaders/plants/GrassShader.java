@@ -6,9 +6,8 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 import java.util.List;
 
 import org.oreon.core.context.BaseContext;
-import org.oreon.core.gl.instanced.GLInstancedCluster;
 import org.oreon.core.gl.pipeline.GLShaderProgram;
-import org.oreon.core.instanced.InstancedCluster;
+import org.oreon.core.instanced.InstancedObject;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.model.Material;
 import org.oreon.core.scenegraph.NodeComponentType;
@@ -38,9 +37,7 @@ public class GrassShader extends GLShaderProgram{
 		addFragmentShader(ResourceLoader.loadShader("oreonworlds/shaders/assets/Grass_Shader/Grass_FS.glsl"));
 		compileShader();
 		
-//		addUniform("material.diffusemap");
-//		addUniform("material.shininess");
-//		addUniform("material.emission");
+		addUniform("material.diffusemap");
 		addUniform("clipplane");
 		addUniform("scalingMatrix");
 		addUniform("isReflection");
@@ -49,7 +46,7 @@ public class GrassShader extends GLShaderProgram{
 		addUniformBlock("modelMatrices");
 		addUniformBlock("Camera");
 		
-		for (int i=0; i<500; i++)
+		for (int i=0; i<100; i++)
 		{
 			addUniform("matrixIndices[" + i + "]");
 		}
@@ -58,25 +55,21 @@ public class GrassShader extends GLShaderProgram{
 	public void updateUniforms(Renderable object)
 	{
 		bindUniformBlock("Camera", Constants.CameraUniformBlockBinding);
-		((GLInstancedCluster) object.getParentNode()).getWorldMatricesBuffer().bindBufferBase(0);
 		bindUniformBlock("worldMatrices", 0);
-		((GLInstancedCluster) object.getParentNode()).getModelMatricesBuffer().bindBufferBase(1);
 		bindUniformBlock("modelMatrices", 1);
 		setUniformi("isReflection", BaseContext.getConfig().isRenderReflection() ? 1 : 0);
 		setUniform("scalingMatrix", new Matrix4f().Scaling(object.getWorldTransform().getScaling()));
 		
 		setUniform("clipplane", BaseContext.getConfig().getClipplane());
 		
-		Material material = (Material) object.getComponent(NodeComponentType.MATERIAL0);
+		Material material = object.getComponent(NodeComponentType.MATERIAL0);
 
 		glActiveTexture(GL_TEXTURE0);
 		material.getDiffusemap().bind();
 		setUniformi("material.diffusemap", 0);
 		
-//		setUniformf("material.shininess", material.getShininess());
-//		setUniformf("material.emission", material.getEmission());
-		
-		List<Integer> indices = ((InstancedCluster) object.getParentNode()).getHighPolyIndices();
+		InstancedObject vParentNode = object.getParentObject();
+		List<Integer> indices = vParentNode.getLowPolyIndices();
 		
 		for (int i=0; i<indices.size(); i++)
 		{

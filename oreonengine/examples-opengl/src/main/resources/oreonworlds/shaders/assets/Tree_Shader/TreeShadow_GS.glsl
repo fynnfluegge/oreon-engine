@@ -21,7 +21,7 @@ layout (std140, row_major) uniform worldMatrices{
 };
 
 layout (std140, row_major) uniform LightViewProjections{
-	mat4 m_lightViewProjection[6];
+	mat4 m_lightViewProjection[5];
 };
 
 uniform vec4 clipplane;

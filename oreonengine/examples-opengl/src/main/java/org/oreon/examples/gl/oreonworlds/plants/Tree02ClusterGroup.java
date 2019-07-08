@@ -1,11 +1,9 @@
 package org.oreon.examples.gl.oreonworlds.plants;
 
-import java.nio.FloatBuffer;
 import java.util.List;
 
 import org.oreon.core.gl.instanced.GLInstancedObject;
 import org.oreon.core.gl.memory.GLMeshVBO;
-import org.oreon.core.gl.memory.GLUniformBuffer;
 import org.oreon.core.gl.scenegraph.GLRenderInfo;
 import org.oreon.core.gl.util.GLAssimpModelLoader;
 import org.oreon.core.gl.wrapper.parameter.CullFaceDisable;
@@ -15,7 +13,6 @@ import org.oreon.core.model.Model;
 import org.oreon.core.model.Vertex;
 import org.oreon.core.scenegraph.NodeComponentType;
 import org.oreon.core.scenegraph.Renderable;
-import org.oreon.core.util.BufferUtil;
 import org.oreon.core.util.IntegerReference;
 import org.oreon.core.util.Util;
 import org.oreon.examples.gl.oreonworlds.shaders.InstancedWireframeShader;
@@ -115,11 +112,10 @@ public class Tree02ClusterGroup extends GLInstancedObject{
 			getLowPolyObjects().add(object);
 		}
 		
-		
 		for (int i=0; i<getInstanceCount(); i++){
 			
 			float s = (float)(Math.random()*6 + 26);
-			Vec3f translation = positions[i];
+			Vec3f translation = getPositions()[i];
 			Vec3f scaling = new Vec3f(s,s,s);
 			Vec3f rotation = new Vec3f(0,(float) Math.random()*360f,0);
 			
@@ -136,30 +132,6 @@ public class Tree02ClusterGroup extends GLInstancedObject{
 			getLowPolyIndices().add(i);
 		}
 		
-		int buffersize = Float.BYTES * 16 * getInstanceCount();
-		
-		setModelMatricesBuffer(new GLUniformBuffer());
-		getModelMatricesBuffer().allocate(buffersize);
-		
-		setWorldMatricesBuffer(new GLUniformBuffer());
-		getWorldMatricesBuffer().allocate(buffersize);	
-		
-		/**
-		 * init matrices UBO's
-		 */
-		int size = Float.BYTES * 16 * getInstanceCount();
-		
-		FloatBuffer worldMatricesFloatBuffer = BufferUtil.createFloatBuffer(size);
-		FloatBuffer modelMatricesFloatBuffer = BufferUtil.createFloatBuffer(size);
-		
-		for(Matrix4f matrix : getWorldMatrices()){
-			worldMatricesFloatBuffer.put(BufferUtil.createFlippedBuffer(matrix));
-		}
-		for(Matrix4f matrix : getModelMatrices()){
-			modelMatricesFloatBuffer.put(BufferUtil.createFlippedBuffer(matrix));
-		}
-		
-		getWorldMatricesBuffer().updateData(worldMatricesFloatBuffer, size);
-		getModelMatricesBuffer().updateData(modelMatricesFloatBuffer, size);
+		initMatricesBuffers();
 	}
 }

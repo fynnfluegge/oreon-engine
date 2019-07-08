@@ -5,9 +5,8 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import java.util.List;
 
-import org.oreon.core.gl.instanced.GLInstancedCluster;
 import org.oreon.core.gl.pipeline.GLShaderProgram;
-import org.oreon.core.instanced.InstancedCluster;
+import org.oreon.core.instanced.InstancedObject;
 import org.oreon.core.model.Material;
 import org.oreon.core.scenegraph.NodeComponentType;
 import org.oreon.core.scenegraph.Renderable;
@@ -41,7 +40,7 @@ public class GrassShadowShader extends GLShaderProgram{
 		addUniformBlock("LightViewProjections");
 		addUniform("material.diffusemap");
 		
-		for (int i=0; i<500; i++)
+		for (int i=0; i<100; i++)
 		{
 			addUniform("matrixIndices[" + i + "]");
 		}
@@ -51,16 +50,16 @@ public class GrassShadowShader extends GLShaderProgram{
 		
 		bindUniformBlock("Camera",Constants.CameraUniformBlockBinding);
 		bindUniformBlock("LightViewProjections",Constants.LightMatricesUniformBlockBinding);
-		((GLInstancedCluster) object.getParentNode()).getWorldMatricesBuffer().bindBufferBase(0);
 		bindUniformBlock("worldMatrices", 0);
 		
-		Material material = (Material) object.getComponent(NodeComponentType.MATERIAL0);
+		Material material = object.getComponent(NodeComponentType.MATERIAL0);
 
 		glActiveTexture(GL_TEXTURE0);
 		material.getDiffusemap().bind();
 		setUniformi("material.diffusemap", 0);
 		
-		List<Integer> indices = ((InstancedCluster) object.getParentNode()).getHighPolyIndices();
+		InstancedObject vParentNode = object.getParentObject();
+		List<Integer> indices = vParentNode.getLowPolyIndices();
 		
 		for (int i=0; i<indices.size(); i++)
 		{
