@@ -40,6 +40,8 @@ public class InstancedBillboardShadowShader extends GLShaderProgram{
 		addUniformBlock("LightViewProjections");
 		addUniform("material.diffusemap");
 		
+		addUniformBlock("Camera");
+		
 		for (int i=0; i<100; i++)
 		{
 			addUniform("matrixIndices[" + i + "]");

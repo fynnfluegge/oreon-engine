@@ -30,10 +30,6 @@ layout (std140, row_major) uniform Camera{
 uniform Material material;
 uniform int range = 800;
 
-float alphaDistanceFactor(float dist)
-{
-	return clamp(0.01f * (-dist+range),0,1);
-}
 
 void main()
 {	
@@ -43,12 +39,9 @@ void main()
 	vec3 normal = normalize(2*(texture(material.normalmap, texCoord_FS * vec2(20,4)).rgb)-1);
 	normal = normalize(TBN * normal);
 	
-	vec4 albedo = texture(material.diffusemap, texCoord_FS * vec2(20,4)).rgba;
+	vec3 albedo = texture(material.diffusemap, texCoord_FS * vec2(20,4)).rgb;
 	
-	//float alpha = albedo.a;
-	// alpha *= alphaDistanceFactor(dist);
-	
-	albedo_out = vec4(albedo.rgb,1);
+	albedo_out = vec4(albedo,1);
 	worldPosition_out = vec4(position_FS,1);
 	normal_out = vec4(normal.xzy,1);
 	specular_emission_diffuse_ssao_bloom_out = vec4(1,0.0,11,1);

@@ -15,9 +15,9 @@ import org.oreon.core.scenegraph.NodeComponentType;
 import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.util.IntegerReference;
 import org.oreon.core.util.Util;
-import org.oreon.examples.gl.oreonworlds.shaders.InstancedWireframeShader;
 import org.oreon.examples.gl.oreonworlds.shaders.InstancedBillboardShader;
 import org.oreon.examples.gl.oreonworlds.shaders.InstancedBillboardShadowShader;
+import org.oreon.examples.gl.oreonworlds.shaders.InstancedWireframeShader;
 import org.oreon.examples.gl.oreonworlds.shaders.plants.TreeLeavesShader;
 import org.oreon.examples.gl.oreonworlds.shaders.plants.TreeShadowShader;
 import org.oreon.examples.gl.oreonworlds.shaders.plants.TreeTrunkShader;
@@ -90,7 +90,9 @@ public class Tree02ClusterGroup extends GLInstancedObject{
 			billboard.getMesh().setTangentSpace(false);
 			
 			for (Vertex vertex : billboard.getMesh().getVertices()){
-				vertex.setPosition(vertex.getPosition().mul(2.4f));
+				vertex.setPosition(vertex.getPosition().mul(2.5f));
+				vertex.getPosition().setX(vertex.getPosition().getX()*1.1f);
+				vertex.getPosition().setZ(vertex.getPosition().getZ()*1.1f);
 			}
 			
 			meshBuffer.addData(billboard.getMesh());

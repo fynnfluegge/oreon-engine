@@ -30,10 +30,6 @@ uniform int screenHeight;
 uniform int range = 800;
 uniform float alphaDiscardThreshold = 0.5;
 
-float alphaDistanceFactor(float dist)
-{
-	return clamp(0.01f * (-dist+range),0,1);
-}
 
 bool getStippledAlphaLodFactor(vec3 position, float stippleFactor){
 	
@@ -58,8 +54,6 @@ void main()
 	
 	if (alpha < alphaDiscardThreshold)
 		discard;
-		
-	// alpha *= alphaDistanceFactor(dist);
 	
 	albedo_out = vec4(albedo.rgb,1);
 	worldPosition_out = vec4(position_FS,1);
