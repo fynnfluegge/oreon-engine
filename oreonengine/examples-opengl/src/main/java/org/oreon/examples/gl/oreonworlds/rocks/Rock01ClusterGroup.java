@@ -29,7 +29,7 @@ public class Rock01ClusterGroup extends InstancedObject{
 			GLMeshVBO meshBuffer = new GLMeshVBO();
 			model.getMesh().setTangentSpace(true);
 			Util.generateTangentsBitangents(model.getMesh());
-			model.getMesh().setInstanced(true);
+//			model.getMesh().setInstanced(true);
 			
 			meshBuffer.addData(model.getMesh());
 			

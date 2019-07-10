@@ -30,7 +30,7 @@ public class Palm01ClusterGroup extends InstancedObject{
 			
 			GLMeshVBO meshBuffer = new GLMeshVBO();
 			model.getMesh().setTangentSpace(false);
-			model.getMesh().setInstanced(true);
+//			model.getMesh().setInstanced(true);
 			meshBuffer.addData(model.getMesh());
 
 			GLRenderInfo renderInfo = new GLRenderInfo(PalmShader.getInstance(), new CullFaceDisable(), meshBuffer);
@@ -47,7 +47,7 @@ public class Palm01ClusterGroup extends InstancedObject{
 
 			GLMeshVBO meshBuffer = new GLMeshVBO();
 			billboard.getMesh().setTangentSpace(false);
-			billboard.getMesh().setInstanced(true);
+//			billboard.getMesh().setInstanced(true);
 			
 			for (Vertex vertex : billboard.getMesh().getVertices()){
 				vertex.setPosition(vertex.getPosition().mul(135));

@@ -7,7 +7,7 @@ layout (binding = 0, rgba16f) uniform writeonly image2D splatmap;
 layout (binding = 1, rgba32f) uniform readonly image2D heightmap;
 layout (binding = 2, rgba32f) uniform readonly image2D normalmap;
 
-const float[2] regions = { 0.2 , 0.3 };
+const float[2] regions = { 0.2 , 0.5 };
 
 uniform int edgeElevation = 1;
 uniform float edgeBorder = 2.0f * M_PI / 128.0f;
@@ -30,19 +30,19 @@ void main(void)
 	else if (v_heightmap.g >= regions[1])
 		green = smoothstep(0,1,-5*(v_heightmap.g-(regions[0]+regions[1])));
 
-	float blue = smoothstep(1,0,-5*(v_heightmap.g-(regions[0]+regions[1])));
+	float blue = smoothstep(1,0,-5*(v_heightmap.g-regions[1]));
 	
 	float steepness = smoothstep(0,1,-32*(normal.z-1));
 	
 	
+	float vMinLow = 2.0f * M_PI / 128.0f;
+	float vMaxLow = 1 - 2.0f * M_PI / 128.0f;
+	float slope = blue;
+	float xSlope = 0;
+	float zSlope = 0;
+	
 	if (edgeElevation == 1)
 	{
-		float vMinLow = 2.0f * M_PI / 128.0f;
-		float vMaxLow = 1 - 2.0f * M_PI / 128.0f;
-		float slope = blue;
-		float xSlope = 0;
-		float zSlope = 0;
-		
 		if (uvInv.x < vMinLow)
 		{
 			xSlope = clamp(1 * sin(64*(uvInv.x + M_PI/128.0)) + 1,0,1);
@@ -77,6 +77,38 @@ void main(void)
 	blue = max(blue, steepness);
 	red -= red * blue;
 	green -= green * blue;
+	
+	if (edgeElevation == 1)
+	{
+		if (uvInv.x < vMinLow)
+		{
+			red += green;
+			green = 0;
+		}
+		if (uvInv.x > vMaxLow)
+		{
+			red += green;
+			green = 0;
+		}
+		if (uvInv.y < vMinLow)
+		{
+			red += green;
+			green = 0;
+		}
+		if (uvInv.y > vMaxLow)
+		{
+			red += green;
+			green = 0;
+		}
+		if ((uvInv.x < vMinLow && uvInv.y < vMinLow) ||
+			(uvInv.x < vMinLow && uvInv.y > vMaxLow) ||
+			(uvInv.x > vMaxLow && uvInv.y < vMinLow) ||
+			(uvInv.x > vMaxLow && uvInv.y > vMaxLow))
+		{
+			red += green;
+			green = 0;
+		}
+	}
 	
 	vec4 blendValues = vec4(0,0,0,0);
 	

@@ -27,7 +27,7 @@ public class Plant01ClusterGroup extends InstancedObject{
 			
 			GLMeshVBO meshBuffer = new GLMeshVBO();
 			model.getMesh().setTangentSpace(false);
-			model.getMesh().setInstanced(true);
+//			model.getMesh().setInstanced(true);
 			
 			meshBuffer.addData(model.getMesh());
 			
