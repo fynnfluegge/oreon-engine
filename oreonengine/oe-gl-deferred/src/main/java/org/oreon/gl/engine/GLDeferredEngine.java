@@ -243,7 +243,7 @@ public class GLDeferredEngine extends RenderEngine{
 		}
 		
 		// start Threads to update instancing objects
-		instancingObjectHandler.signalAll();
+//		instancingObjectHandler.signalAll();
 		
 		// update Terrain Quadtree
 		if (camera.isCameraMoved()){
@@ -356,11 +356,11 @@ public class GLDeferredEngine extends RenderEngine{
 		
 //		contrastController.render(displayTexture);
 
-		fullScreenQuadMultisample.setTexture(primarySceneFbo.getAttachmentTexture(Attachment.COLOR));
-		fullScreenQuadMultisample.render();
+//		fullScreenQuadMultisample.setTexture(primarySceneFbo.getAttachmentTexture(Attachment.COLOR));
+//		fullScreenQuadMultisample.render();
 		
-//		fullScreenQuad.setTexture(currentScene);
-//		fullScreenQuad.render();
+		fullScreenQuad.setTexture(currentScene);
+		fullScreenQuad.render();
 		
 		if (BaseContext.getConfig().isLensFlareEnabled()
 			&& !renderDeferredLightingScene && !renderSSAOBuffer
@@ -377,8 +377,6 @@ public class GLDeferredEngine extends RenderEngine{
 		if (gui != null){
 			gui.render();
 		}
-		
-		glFinish();
 	}
 	
 	@Override

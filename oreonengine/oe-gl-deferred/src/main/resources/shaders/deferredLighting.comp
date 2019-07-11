@@ -118,7 +118,7 @@ float applyShadowMapping(vec3 worldPos)
 	
 	vec4 lightSpacePos = m_lightViewProjection[4] * vec4(worldPos,1.0);
 	projCoords = lightSpacePos.xyz * 0.5 + 0.5;
-	terrainShadow = varianceShadow(projCoords,4,9);
+	terrainShadow = varianceShadow(projCoords,4,11);
 	
 	if (linDepth <= splitRange[0]){
 		vec4 lightSpacePos = m_lightViewProjection[0] * vec4(worldPos,1.0);
@@ -132,7 +132,11 @@ float applyShadowMapping(vec3 worldPos)
 	else if (linDepth <= splitRange[1]){
 		vec4 lightSpacePos = m_lightViewProjection[1] * vec4(worldPos,1.0);
 		projCoords = lightSpacePos.xyz * 0.5 + 0.5;
-		shadowFactor = varianceShadow(projCoords,1,4); // TODO immer mit einem split höher min
+		shadowFactor = varianceShadow(projCoords,1,4);
+		
+		lightSpacePos = m_lightViewProjection[2] * vec4(worldPos,1.0);
+		projCoords = lightSpacePos.xyz * 0.5 + 0.5;
+		shadowFactor = min(shadowFactor,varianceShadow(projCoords,2,2));
 	}
 	else if (linDepth <= splitRange[2]){
 		vec4 lightSpacePos = m_lightViewProjection[2] * vec4(worldPos,1.0);
