@@ -168,9 +168,9 @@ public class Water extends Renderable{
 			
 		if (scenegraph.hasTerrain()){
 				
-			GLTerrain.getConfiguration().setScaleY(
-					GLTerrain.getConfiguration().getScaleY() * -1f);
-			GLTerrain.getConfiguration().setReflectionOffset(
+			GLTerrain.getConfig().setVerticalScaling(
+					GLTerrain.getConfig().getVerticalScaling() * -1f);
+			GLTerrain.getConfig().setReflectionOffset(
 					getClip_offset() * 2);
 		}
 		scenegraph.update();
@@ -221,9 +221,9 @@ public class Water extends Renderable{
 		scenegraph.getWorldTransform().setScaling(1,1,1);
 
 		if (scenegraph.hasTerrain()){
-			GLTerrain.getConfiguration().setScaleY(
-					GLTerrain.getConfiguration().getScaleY() / -1f);
-			GLTerrain.getConfiguration().setReflectionOffset(0);
+			GLTerrain.getConfig().setVerticalScaling(
+					GLTerrain.getConfig().getVerticalScaling() / -1f);
+			GLTerrain.getConfig().setReflectionOffset(0);
 		}
 
 		scenegraph.update();

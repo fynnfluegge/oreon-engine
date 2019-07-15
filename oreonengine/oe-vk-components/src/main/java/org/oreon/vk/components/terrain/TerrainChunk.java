@@ -7,11 +7,10 @@ import java.nio.ByteBuffer;
 import java.util.Map;
 
 import org.oreon.common.quadtree.QuadtreeCache;
-import org.oreon.common.quadtree.QuadtreeChunk;
+import org.oreon.common.quadtree.QuadtreeNode;
 import org.oreon.core.context.BaseContext;
 import org.oreon.core.math.Transform;
 import org.oreon.core.math.Vec2f;
-import org.oreon.core.math.Vec4f;
 import org.oreon.core.scenegraph.NodeComponent;
 import org.oreon.core.scenegraph.NodeComponentType;
 import org.oreon.core.util.BufferUtil;
@@ -26,7 +25,7 @@ import org.oreon.core.vk.util.VkUtil;
 import org.oreon.core.vk.wrapper.command.SecondaryDrawCmdBuffer;
 import org.oreon.core.vk.wrapper.pipeline.GraphicsTessellationPipeline;
 
-public class TerrainChunk extends QuadtreeChunk{
+public class TerrainChunk extends QuadtreeNode{
 
 	public TerrainChunk(Map<NodeComponentType, NodeComponent> components, QuadtreeCache quadtreeCache,
 			Transform worldTransform, Vec2f location, int levelOfDetail, Vec2f index) {
@@ -50,20 +49,20 @@ public class TerrainChunk extends QuadtreeChunk{
 		ByteBuffer pushConstants = memAlloc(pushConstantsRange);
 		pushConstants.put(BufferUtil.createByteBuffer(getLocalTransform().getWorldMatrix()));
 		pushConstants.put(BufferUtil.createByteBuffer(getWorldTransform().getWorldMatrixRTS()));
-		pushConstants.putFloat(terrainProperties.getVerticalScaling());
-		pushConstants.putFloat(terrainProperties.getHorizontalScaling());
-		pushConstants.putInt(lod);
-		pushConstants.putFloat(gap);
+		pushConstants.putFloat(quadtreeConfig.getVerticalScaling());
+		pushConstants.putFloat(quadtreeConfig.getHorizontalScaling());
+		pushConstants.putInt(chunkConfig.getLod());
+		pushConstants.putFloat(chunkConfig.getGap());
 		pushConstants.put(BufferUtil.createByteBuffer(location));
 		pushConstants.put(BufferUtil.createByteBuffer(index));
-		for (int morphArea : terrainProperties.getLod_morphing_area()){
+		for (int morphArea : quadtreeConfig.getLod_morphing_area()){
 			pushConstants.putInt(morphArea);
 		}
-		pushConstants.putInt(terrainProperties.getTessellationFactor());
-		pushConstants.putFloat(terrainProperties.getTessellationSlope());
-		pushConstants.putFloat(terrainProperties.getTessellationShift());
-		pushConstants.putFloat(terrainProperties.getUvScaling());
-		pushConstants.putInt(terrainProperties.getHighDetailRange());
+		pushConstants.putInt(quadtreeConfig.getTessellationFactor());
+		pushConstants.putFloat(quadtreeConfig.getTessellationSlope());
+		pushConstants.putFloat(quadtreeConfig.getTessellationShift());
+		pushConstants.putFloat(quadtreeConfig.getUvScaling());
+		pushConstants.putInt(quadtreeConfig.getHighDetailRange());
 		pushConstants.flip();
 		
 		VkPipeline graphicsPipeline = new GraphicsTessellationPipeline(device.getHandle(),
@@ -73,7 +72,7 @@ public class TerrainChunk extends QuadtreeChunk{
 				BaseContext.getConfig().getY_ScreenResolution(),
 				VkContext.getResources().getOffScreenFbo().getRenderPass().getHandle(),
 				VkContext.getResources().getOffScreenFbo().getColorAttachmentCount(),
-				BaseContext.getConfig().getMultisamples(),
+				BaseContext.getConfig().getMultisampling_sampleCount(),
 				pushConstantsRange, VK_SHADER_STAGE_ALL_GRAPHICS,
 				16);
 		
@@ -92,24 +91,10 @@ public class TerrainChunk extends QuadtreeChunk{
 		renderInfo.setCommandBuffer(commandBuffer);
 		renderInfo.setPipeline(graphicsPipeline);
 	}
-	
-	protected void computeWorldPos(){
-		
-		Vec2f chunkCenter = location.add(gap/2f);
-		Vec4f worldPosition = getWorldTransform().getWorldMatrixRTS().mul(
-				new Vec4f(chunkCenter.getX(),0,chunkCenter.getY(),1));
-		worldPosition = worldPosition.normalize();
-		worldPosition = worldPosition.mul(terrainProperties.getHorizontalScaling());
-		// TODO displacment
-		// Vec3f displacement = TerrainHelper.getTerrainHeight(terrainProperties, loc.getX(), loc.getY());
-//		System.out.println(worldPosition);
-		worldPos = worldPosition.xyz();
-	}
 
 	@Override
-	public QuadtreeChunk createChildChunk(Map<NodeComponentType, NodeComponent> components, QuadtreeCache quadtreeCache,
+	public QuadtreeNode createChildChunk(Map<NodeComponentType, NodeComponent> components, QuadtreeCache quadtreeCache,
 			Transform worldTransform, Vec2f location, int levelOfDetail, Vec2f index) {
-
 		return new TerrainChunk(components, quadtreeCache, worldTransform, location, levelOfDetail, index);
 	}
 	

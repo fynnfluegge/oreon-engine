@@ -3,7 +3,8 @@ package org.oreon.common.planet;
 import java.util.Map;
 
 import org.oreon.common.quadtree.Quadtree;
-import org.oreon.common.quadtree.QuadtreeChunk;
+import org.oreon.common.quadtree.QuadtreeConfig;
+import org.oreon.common.quadtree.QuadtreeNode;
 import org.oreon.core.math.Transform;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.scenegraph.NodeComponent;
@@ -12,7 +13,7 @@ import org.oreon.core.scenegraph.NodeComponentType;
 public abstract class SphericalCubeQuadtree extends Quadtree{
 
 	public SphericalCubeQuadtree(Map<NodeComponentType, NodeComponent> components,
-			int rootChunkCount, float horizontalScaling) {
+			QuadtreeConfig quadtreeConfig, int rootChunkCount, float horizontalScaling) {
 
 		super();
 
@@ -26,10 +27,10 @@ public abstract class SphericalCubeQuadtree extends Quadtree{
 
 		for (int i=0; i<rootChunkCount; i++){
 			for (int j=0; j<rootChunkCount; j++){
-				QuadtreeChunk newChunk = createChildChunk(components, quadtreeCache, worldTransformFace0,
+				QuadtreeNode newChunk = createChildChunk(components,
+						quadtreeCache, worldTransformFace0,
 						new Vec2f(1f * i/(float)rootChunkCount,1f * j/(float)rootChunkCount),
 						0, new Vec2f(i,j));
-				leafChunks.put(newChunk.getId(), newChunk);
 				addChild(newChunk);
 			}
 		}
@@ -44,10 +45,10 @@ public abstract class SphericalCubeQuadtree extends Quadtree{
 		
 		for (int i=0; i<rootChunkCount; i++){
 			for (int j=0; j<rootChunkCount; j++){
-				QuadtreeChunk newChunk = createChildChunk(components, quadtreeCache, worldTransformFace1,
+				QuadtreeNode newChunk = createChildChunk(components,
+						quadtreeCache, worldTransformFace1,
 						new Vec2f(1f * i/(float)rootChunkCount,1f * j/(float)rootChunkCount),
 						0, new Vec2f(i,j));
-				leafChunks.put(newChunk.getId(), newChunk);
 				addChild(newChunk);
 			}
 		}
@@ -62,10 +63,10 @@ public abstract class SphericalCubeQuadtree extends Quadtree{
 		
 		for (int i=0; i<rootChunkCount; i++){
 			for (int j=0; j<rootChunkCount; j++){
-				QuadtreeChunk newChunk = createChildChunk(components, quadtreeCache, worldTransformFace2,
+				QuadtreeNode newChunk = createChildChunk(components,
+						quadtreeCache, worldTransformFace2,
 						new Vec2f(1f * i/(float)rootChunkCount,1f * j/(float)rootChunkCount),
 						0, new Vec2f(i,j));
-				leafChunks.put(newChunk.getId(), newChunk);
 				addChild(newChunk);
 			}
 		}
@@ -80,10 +81,10 @@ public abstract class SphericalCubeQuadtree extends Quadtree{
 		
 		for (int i=0; i<rootChunkCount; i++){
 			for (int j=0; j<rootChunkCount; j++){
-				QuadtreeChunk newChunk = createChildChunk(components, quadtreeCache, worldTransformFace3,
+				QuadtreeNode newChunk = createChildChunk(components,
+						quadtreeCache, worldTransformFace3,
 						new Vec2f(1f * i/(float)rootChunkCount,1f * j/(float)rootChunkCount),
 						0, new Vec2f(i,j));
-				leafChunks.put(newChunk.getId(), newChunk);
 				addChild(newChunk);
 			}
 		}
@@ -97,10 +98,10 @@ public abstract class SphericalCubeQuadtree extends Quadtree{
 		
 		for (int i=0; i<rootChunkCount; i++){
 			for (int j=0; j<rootChunkCount; j++){
-				QuadtreeChunk newChunk = createChildChunk(components, quadtreeCache, worldTransformFace4,
+				QuadtreeNode newChunk = createChildChunk(components,
+						quadtreeCache, worldTransformFace4,
 						new Vec2f(1f * i/(float)rootChunkCount,1f * j/(float)rootChunkCount),
 						0, new Vec2f(i,j));
-				leafChunks.put(newChunk.getId(), newChunk);
 				addChild(newChunk);
 			}
 		}
@@ -114,10 +115,10 @@ public abstract class SphericalCubeQuadtree extends Quadtree{
 		
 		for (int i=0; i<rootChunkCount; i++){
 			for (int j=0; j<rootChunkCount; j++){
-				QuadtreeChunk newChunk = createChildChunk(components, quadtreeCache, worldTransformFace5,
+				QuadtreeNode newChunk = createChildChunk(components,
+						quadtreeCache, worldTransformFace5,
 						new Vec2f(1f * i/(float)rootChunkCount,1f * j/(float)rootChunkCount),
 						0, new Vec2f(i,j));
-				leafChunks.put(newChunk.getId(), newChunk);
 				addChild(newChunk);
 			}
 		}

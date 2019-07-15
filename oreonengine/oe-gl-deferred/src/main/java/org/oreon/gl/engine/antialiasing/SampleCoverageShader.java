@@ -30,7 +30,7 @@ public class SampleCoverageShader extends GLShaderProgram{
 	
 	public void updateUniforms(){
 		
-		setUniformi("multisamples", BaseContext.getConfig().getMultisamples());
+		setUniformi("multisamples", BaseContext.getConfig().getMultisampling_sampleCount());
 	}
 
 }

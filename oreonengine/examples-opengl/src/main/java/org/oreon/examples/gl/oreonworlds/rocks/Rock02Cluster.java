@@ -3,6 +3,7 @@ package org.oreon.examples.gl.oreonworlds.rocks;
 import java.nio.FloatBuffer;
 import java.util.List;
 
+import org.oreon.common.terrain.TerrainHelper;
 import org.oreon.core.context.BaseContext;
 import org.oreon.core.gl.instanced.GLInstancedCluster;
 import org.oreon.core.gl.memory.GLUniformBuffer;
@@ -10,7 +11,7 @@ import org.oreon.core.math.Matrix4f;
 import org.oreon.core.math.Vec3f;
 import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.util.BufferUtil;
-import org.oreon.gl.components.terrain.TerrainHelper;
+import org.oreon.gl.components.terrain.GLTerrain;
 
 public class Rock02Cluster extends GLInstancedCluster{
 	
@@ -26,7 +27,7 @@ public class Rock02Cluster extends GLInstancedCluster{
 			Vec3f scaling = new Vec3f(s,s,s);
 			Vec3f rotation = new Vec3f(0,(float) Math.random()*360f,0);
 			
-			float terrainHeight = TerrainHelper.getTerrainHeight(translation.getX(),translation.getZ());
+			float terrainHeight = TerrainHelper.getTerrainHeight(GLTerrain.getConfig(), translation.getX(),translation.getZ());
 			terrainHeight -= 2;
 			translation.setY(terrainHeight);
 			

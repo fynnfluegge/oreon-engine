@@ -3,6 +3,7 @@ package org.oreon.examples.gl.oreonworlds.plants;
 import java.nio.FloatBuffer;
 import java.util.List;
 
+import org.oreon.common.terrain.TerrainHelper;
 import org.oreon.core.context.BaseContext;
 import org.oreon.core.gl.instanced.GLInstancedCluster;
 import org.oreon.core.gl.memory.GLMeshVBO;
@@ -14,7 +15,7 @@ import org.oreon.core.scenegraph.NodeComponentType;
 import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.util.BufferUtil;
 import org.oreon.core.util.IntegerReference;
-import org.oreon.gl.components.terrain.TerrainHelper;
+import org.oreon.gl.components.terrain.GLTerrain;
 
 public class Palm01Cluster extends GLInstancedCluster{
 
@@ -33,7 +34,7 @@ public class Palm01Cluster extends GLInstancedCluster{
 			Vec3f scaling = new Vec3f(s,s,s);
 			Vec3f rotation = new Vec3f(0,(float) Math.random()*360f,0);
 			
-			float terrainHeight = TerrainHelper.getTerrainHeight(translation.getX(),translation.getZ());
+			float terrainHeight = TerrainHelper.getTerrainHeight(GLTerrain.getConfig(), translation.getX(),translation.getZ());
 			terrainHeight -= 3;
 			translation.setY(terrainHeight);
 			

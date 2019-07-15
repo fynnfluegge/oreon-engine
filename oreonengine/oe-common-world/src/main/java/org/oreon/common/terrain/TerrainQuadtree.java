@@ -15,14 +15,14 @@ public abstract class TerrainQuadtree extends Quadtree{
 	
 		super();
 		
-		Transform worldTransformFace0 = new Transform();
-		worldTransformFace0.setTranslation(-0.5f * horizontalScaling,
+		Transform worldTransform = new Transform();
+		worldTransform.setTranslation(-0.5f * horizontalScaling,
 				0, -0.5f * horizontalScaling);
-		worldTransformFace0.setScaling(horizontalScaling);
+		worldTransform.setScaling(horizontalScaling, 0 ,horizontalScaling);
 
 		for (int i=0; i<rootChunkCount; i++){
 			for (int j=0; j<rootChunkCount; j++){
-				addChild(createChildChunk(components, quadtreeCache, worldTransformFace0,
+				addChild(createChildChunk(components, quadtreeCache, worldTransform,
 						new Vec2f(1f * i/(float)rootChunkCount,1f * j/(float)rootChunkCount),
 						0, new Vec2f(i,j)));
 			}

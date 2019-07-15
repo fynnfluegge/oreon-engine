@@ -120,7 +120,7 @@ public class Atmosphere extends Renderable{
 				BaseContext.getConfig().getY_ScreenResolution(),
 				VkContext.getResources().getOffScreenFbo().getRenderPass().getHandle(),
 				VkContext.getResources().getOffScreenFbo().getColorAttachmentCount(),
-				BaseContext.getConfig().getMultisamples(),
+				BaseContext.getConfig().getMultisampling_sampleCount(),
 				pushConstantsRange, VK_SHADER_STAGE_FRAGMENT_BIT);
 		
 		VkPipeline reflectionPipeline = new GraphicsPipeline(device.getHandle(),

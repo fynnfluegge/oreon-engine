@@ -110,7 +110,7 @@ public class DeferredLighting {
 		
 		int pushConstantRange = Float.BYTES * 1 + Integer.BYTES * 1;
 		pushConstants = memAlloc(pushConstantRange);
-		pushConstants.putInt(BaseContext.getConfig().getMultisamples());
+		pushConstants.putInt(BaseContext.getConfig().getMultisampling_sampleCount());
 		pushConstants.putFloat(BaseContext.getConfig().getSightRange());
 		pushConstants.flip();
 		

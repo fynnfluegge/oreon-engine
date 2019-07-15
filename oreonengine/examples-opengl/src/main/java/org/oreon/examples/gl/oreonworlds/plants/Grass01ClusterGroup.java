@@ -3,6 +3,7 @@ package org.oreon.examples.gl.oreonworlds.plants;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.oreon.common.terrain.TerrainHelper;
 import org.oreon.core.gl.instanced.GLInstancedObject;
 import org.oreon.core.gl.memory.GLMeshVBO;
 import org.oreon.core.gl.scenegraph.GLRenderInfo;
@@ -15,7 +16,7 @@ import org.oreon.core.scenegraph.NodeComponentType;
 import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.util.IntegerReference;
 import org.oreon.examples.gl.oreonworlds.shaders.plants.GrassShader;
-import org.oreon.gl.components.terrain.TerrainHelper;
+import org.oreon.gl.components.terrain.GLTerrain;
 
 public class Grass01ClusterGroup extends GLInstancedObject{
 	
@@ -59,7 +60,7 @@ public class Grass01ClusterGroup extends GLInstancedObject{
 			Vec3f scaling = new Vec3f(s,s,s);
 			Vec3f rotation = new Vec3f(0,(float) Math.random()*360f,0);
 			
-			float terrainHeight = TerrainHelper.getTerrainHeight(translation.getX(),translation.getZ());
+			float terrainHeight = TerrainHelper.getTerrainHeight(GLTerrain.getConfig(), translation.getX(),translation.getZ());
 			terrainHeight -= 1;
 			translation.setY(terrainHeight);
 			

@@ -28,7 +28,7 @@ public class Config {
 	private boolean glfwGLVSync;
 	
 	// anitaliasing
-	private final int multisamples;
+	private final int multisampling_sampleCount;
 	private boolean fxaaEnabled;
 	
 	// shadows settings
@@ -67,11 +67,8 @@ public class Config {
 	
 	// postprocessing parameters
 	private int lightscatteringSampleCount;
-	private float lightscatteringDensity;
 	private float lightscatteringDecay;
-	private float lightscatteringExposure;
-	private float lightscatteringWeight;
-	private float motionblurSamples;
+	private float motionblurSampleCount;
 	private int motionblurBlurfactor;
 	private int bloomKernels;
 	private int bloomSigma;
@@ -92,7 +89,7 @@ public class Config {
 		displayTitle = properties.getProperty("display.title");
 		x_ScreenResolution = Integer.valueOf(properties.getProperty("screen.resolution.x"));
 		y_ScreenResolution = Integer.valueOf(properties.getProperty("screen.resolution.y"));
-		multisamples = Integer.valueOf(properties.getProperty("multisamples"));
+		multisampling_sampleCount = Integer.valueOf(properties.getProperty("multisampling.sample.count"));
 		fxaaEnabled = Integer.valueOf(properties.getProperty("fxaa.enable")) == 1 ? true : false;
 		shadowsEnable = Integer.valueOf(properties.getProperty("shadows.enable")) == 1 ? true : false;
 		shadowMapResolution = Integer.valueOf(properties.getProperty("shadows.map.resolution"));
@@ -156,13 +153,10 @@ public class Config {
 				properties.load(vInputStream);
 				vInputStream.close();
 				
-				lightscatteringSampleCount = Integer.valueOf(properties.getProperty("lightscattering.samples"));
-				lightscatteringDensity = Float.valueOf(properties.getProperty("lightscattering.density"));
+				lightscatteringSampleCount = Integer.valueOf(properties.getProperty("lightscattering.samples.count"));
 				lightscatteringDecay = Float.valueOf(properties.getProperty("lightscattering.decay"));
-				lightscatteringExposure = Float.valueOf(properties.getProperty("lightscattering.exposure"));
-				lightscatteringWeight = Float.valueOf(properties.getProperty("lightscattering.weight"));
 				motionblurBlurfactor = Integer.valueOf(properties.getProperty("motionblur.blurfactor"));
-				motionblurSamples = Integer.valueOf(properties.getProperty("motionblur.samples"));
+				motionblurSampleCount = Integer.valueOf(properties.getProperty("motionblur.samples.count"));
 				bloomKernels = Integer.valueOf(properties.getProperty("bloom.kernels"));
 				bloomSigma = Integer.valueOf(properties.getProperty("bloom.sigma"));
 			}

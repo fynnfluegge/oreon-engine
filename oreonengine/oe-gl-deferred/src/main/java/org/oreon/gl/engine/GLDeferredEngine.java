@@ -90,7 +90,7 @@ public class GLDeferredEngine extends RenderEngine{
 		instancingObjectHandler = InstancedHandler.getInstance();
 		
 		primarySceneFbo = new OffScreenFbo(config.getX_ScreenResolution(),
-				config.getY_ScreenResolution(), config.getMultisamples());
+				config.getY_ScreenResolution(), config.getMultisampling_sampleCount());
 		secondarySceneFbo = new TransparencyFbo(config.getX_ScreenResolution(),
 				config.getY_ScreenResolution());
 		GLContext.getResources().setPrimaryFbo(primarySceneFbo);
