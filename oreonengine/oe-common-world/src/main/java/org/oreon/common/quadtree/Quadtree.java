@@ -103,17 +103,17 @@ public abstract class Quadtree extends Node implements Runnable{
 	public void update(){
 		
 		// wait on updateQuadtree() finish
-		synchronized(finishUpdateQuadtreeLock) {
-			while(!updateQuadtreeFinished) {
-				try {
-					finishUpdateQuadtreeLock.wait(1000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-			for(Node child: getChildren())
-				child.update();
-		}
+//		synchronized(finishUpdateQuadtreeLock) {
+//			while(!updateQuadtreeFinished) {
+//				try {
+//					finishUpdateQuadtreeLock.wait(1000);
+//				} catch (InterruptedException e) {
+//					e.printStackTrace();
+//				}
+//			}
+//			for(Node child: getChildren())
+//				child.update();
+//		}
 	}
 	
 	public abstract QuadtreeNode createChildChunk(Map<NodeComponentType, NodeComponent> components,

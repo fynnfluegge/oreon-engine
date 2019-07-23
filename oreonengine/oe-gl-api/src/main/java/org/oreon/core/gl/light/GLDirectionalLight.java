@@ -74,7 +74,7 @@ public class GLDirectionalLight extends DirectionalLight{
 		}
 		if (BaseContext.getInput().isKeyHolding(GLFW.GLFW_KEY_K)) {
 			
-			if (getDirection().getY() <= -0.02f) {
+			if (getDirection().getY() <= 0.00f) {
 				setDirection(getDirection().add(new Vec3f(0,0.001f,0)).normalize());
 				setFloatBufferLight(BufferUtil.createFloatBuffer(getLightBufferSize()));
 				getFloatBufferLight().put(BufferUtil.createFlippedBuffer(getDirection()));
