@@ -1,10 +1,9 @@
 # Oreon Engine (Java - OpenGL/Vulkan)
-Welcome to the Cross-Platform Java 3D Engine.
 
 ![Banner](docs/_images/Banner.png)
 
-As OpenGL and Vulkan Binding for Java the [LWJGL 3](https://www.lwjgl.org/) API is used.
-Both OpenGL and the next generation graphics API Vulkan is supported!
+Welcome to the Cross-Platform Java 3D Engine.
+OpenGL and Vulkan Binding for Java is done  [LWJGL 3](https://www.lwjgl.org/).
 
 <img src="docs/_images/gl_vs_vk.png" width="1000px">
 
@@ -14,42 +13,50 @@ Both OpenGL and the next generation graphics API Vulkan is supported!
 
 * Getting started guide for Eclipse available [here](http://fynnfluegge.github.io/oreon-engine/_navigation/Getting_Started.html).
 
-## Example Open World Ocean OpenGL Demo
+## Example OpenGL Demo (terrain, water, amtosphere, several postprocessing effects)
 * [examples-opengl](https://github.com/fynnfluegge/oreon-engine/tree/master/oreonengine/examples-opengl)
   [GLOreonWorlds](https://github.com/fynnfluegge/oreon-engine/blob/master/oreonengine/examples-opengl/src/main/java/org/oreon/examples/gl/oreonworlds/GLOreonworlds.java)
 
-<img src="docs/_images/thumbnail4.png" width="500px">
-
-## Example Vulkan Ocean Demo
+## Example Vulkan Demo (water, amtosphere, post processing effects)
 * [examples-vulkan](https://github.com/fynnfluegge/oreon-engine/tree/master/oreonengine/examples-vulkan)
   [VkOrenworlds](https://github.com/fynnfluegge/oreon-engine/blob/master/oreonengine/examples-vulkan/src/main/java/org/oreon/examples/vk/oreonworlds/VkOreonworlds.java)
 
-## Camera Control
+## User Input Manual
 * Move: W, A, S, D
-* Rotate: Hold the middle mouse button while moving the mouse
+* Rotate: Hold the middle mouse button while moving the mouse; Alternatively up, down, left, right keys
 * Accelerate Movespeed: Scroll mouse
+* Move sun: I, J, K, L
+* Enable/Disable Wireframe: G
+
+## Gallery of Rendered Images
+* TODO
 
 ## Features
-### Deferred rendering pipeline with up to 8x MSAA and FXAA
+### Deferred rendering pipeline with 2x to 8x MSAA and FXAA
+* hier neue bilder
+
 ### LOD Quadtree 
 #### Terrain
 <img src="docs/_images/Terrain.png" width="400px" align="left">
 <img src="docs/_images/Terrain2.png" width="400px">
 
-#### WIP Planet
+#### Planet (Work In Progress)
 <img src="docs/_images/WIP_Planet.png" width="500px">
 
 ### FFT Water
 <img src="docs/_images/Water.png" width="500px">
 
-### Skydome/Atmosphere and Dynamic Sunlight
-<img src="docs/_images/sun.png" width="500px">
+### Atmosphere Scattering
+* hier neue bilder
 
-### Shadow Mapping
+### Dynamic Sun
+* hier neue bilder
+
+### Parallel Split Shadow Mapping
 #### Parallel Split Shadow Mapping + Variance Shadows
 <img src="docs/_images/Shadow_Mapping.png" width="500px">
 
-### Tessellation with Normal-/Displacement-Mapping
+### Tessellation & Normal-/Displacement-Mapping
 <img src="docs/_images/Normalmapping.png" width="500px">
 
 ### Post-Processing Effects
