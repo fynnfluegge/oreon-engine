@@ -1,40 +1,48 @@
 package org.oreon.examples.gl.oreonworlds.plants;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.oreon.core.context.BaseContext;
+import org.oreon.common.terrain.TerrainHelper;
+import org.oreon.core.gl.instanced.GLInstancedObject;
 import org.oreon.core.gl.memory.GLMeshVBO;
 import org.oreon.core.gl.scenegraph.GLRenderInfo;
-import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.gl.util.GLAssimpModelLoader;
 import org.oreon.core.gl.wrapper.parameter.CullFaceDisable;
-import org.oreon.core.instanced.InstancedCluster;
-import org.oreon.core.instanced.InstancedHandler;
-import org.oreon.core.instanced.InstancedObject;
+import org.oreon.core.math.Matrix4f;
 import org.oreon.core.math.Vec3f;
 import org.oreon.core.model.Model;
 import org.oreon.core.model.Vertex;
 import org.oreon.core.scenegraph.NodeComponentType;
 import org.oreon.core.scenegraph.Renderable;
+import org.oreon.core.util.IntegerReference;
 import org.oreon.core.util.Util;
+import org.oreon.examples.gl.oreonworlds.shaders.InstancedBillboardShader;
+import org.oreon.examples.gl.oreonworlds.shaders.InstancedBillboardShadowShader;
 import org.oreon.examples.gl.oreonworlds.shaders.InstancedWireframeShader;
-import org.oreon.examples.gl.oreonworlds.shaders.plants.TreeBillboardShader;
-import org.oreon.examples.gl.oreonworlds.shaders.plants.TreeBillboardShadowShader;
 import org.oreon.examples.gl.oreonworlds.shaders.plants.TreeLeavesShader;
 import org.oreon.examples.gl.oreonworlds.shaders.plants.TreeShadowShader;
 import org.oreon.examples.gl.oreonworlds.shaders.plants.TreeTrunkShader;
+import org.oreon.gl.components.terrain.GLTerrain;
 
-public class Tree02ClusterGroup extends InstancedObject{
+public class Tree02ClusterGroup extends GLInstancedObject{
 	
 	public Tree02ClusterGroup(){
 		
-		List<Model<GLTexture>> models = GLAssimpModelLoader.loadModel("oreonworlds/assets/plants/Tree_02","tree02.obj");
-		List<Model<GLTexture>> billboards = GLAssimpModelLoader.loadModel("oreonworlds/assets/plants/Tree_02","billboardmodel.obj");
+		setInstanceCount(5);
+		Vec3f[] positions = { new Vec3f(-1125.7356f,273.31046f,1157.9937f),
+				new Vec3f(-1146.9994f,172.34499f,1202.1444f), new Vec3f(-1084.012f,152.42621f,1090.532f),
+				new Vec3f(-1064.7401f,162.11281f,1188.7057f), new Vec3f(-1178.8174f,199.03467f,1280.8403f) };
+		setPositions(positions);
+		setHighPolyRange(800);
 		
-		List<Renderable> objects = new ArrayList<>();
+		List<Model> models = GLAssimpModelLoader.loadModel("oreonworlds/assets/plants/Tree_02","tree02.obj");
 		
-		for (Model<GLTexture> model : models){
+		List<Model> billboards = GLAssimpModelLoader.loadModel("oreonworlds/assets/plants/Tree_02","billboardmodel.obj");
+		
+		setHighPolyInstanceCount(new IntegerReference(0));
+		setLowPolyInstanceCount(new IntegerReference(getInstanceCount()));
+		
+		for (Model model : models){
 			
 			GLMeshVBO meshBuffer = new GLMeshVBO();
 			
@@ -44,7 +52,6 @@ public class Tree02ClusterGroup extends InstancedObject{
 			}
 			else
 				model.getMesh().setTangentSpace(false);
-			model.getMesh().setInstanced(true);
 			
 			for (Vertex vertex : model.getMesh().getVertices()){
 				vertex.getPosition().setX(vertex.getPosition().getX()*1.2f);
@@ -52,6 +59,8 @@ public class Tree02ClusterGroup extends InstancedObject{
 			}
 			
 			meshBuffer.addData(model.getMesh());
+			meshBuffer.setDrawInstanced(true);
+			meshBuffer.setInstances(getHighPolyInstanceCount());
 
 			GLRenderInfo renderInfo;
 			GLRenderInfo shadowRenderInfo;
@@ -71,27 +80,28 @@ public class Tree02ClusterGroup extends InstancedObject{
 			object.addComponent(NodeComponentType.SHADOW_RENDERINFO, shadowRenderInfo);
 			object.addComponent(NodeComponentType.WIREFRAME_RENDERINFO, wireframeRenderInfo);
 			object.addComponent(NodeComponentType.MATERIAL0, model.getMaterial());
-			objects.add(object);
+			addChild(object);
+			getHighPolyObjects().add(object);
 		}
 		
-		for (Model<GLTexture> billboard : billboards){	
-
+		for (Model billboard : billboards){	
+			
 			GLMeshVBO meshBuffer = new GLMeshVBO();
 			
 			billboard.getMesh().setTangentSpace(false);
-			billboard.getMesh().setInstanced(true);
-			billboard.getMesh().setInstances(0);
 			
 			for (Vertex vertex : billboard.getMesh().getVertices()){
-				vertex.setPosition(vertex.getPosition().mul(2.4f));
-				vertex.getPosition().setX(vertex.getPosition().getX()*1f);
-				vertex.getPosition().setZ(vertex.getPosition().getZ()*1f);
+				vertex.setPosition(vertex.getPosition().mul(2.5f));
+				vertex.getPosition().setX(vertex.getPosition().getX()*1.1f);
+				vertex.getPosition().setZ(vertex.getPosition().getZ()*1.1f);
 			}
 			
 			meshBuffer.addData(billboard.getMesh());
+			meshBuffer.setDrawInstanced(true);
+			meshBuffer.setInstances(getLowPolyInstanceCount());
 	
-			GLRenderInfo renderInfo = new GLRenderInfo(TreeBillboardShader.getInstance(), new CullFaceDisable(), meshBuffer);
-			GLRenderInfo shadowRenderInfo = new GLRenderInfo(TreeBillboardShadowShader.getInstance(), new CullFaceDisable(), meshBuffer);
+			GLRenderInfo renderInfo = new GLRenderInfo(InstancedBillboardShader.getInstance(), new CullFaceDisable(), meshBuffer);
+			GLRenderInfo shadowRenderInfo = new GLRenderInfo(InstancedBillboardShadowShader.getInstance(), new CullFaceDisable(), meshBuffer);
 			GLRenderInfo wireframeRenderInfo = new GLRenderInfo(InstancedWireframeShader.getInstance(), new CullFaceDisable(), meshBuffer);
 			
 			Renderable object = new Renderable();
@@ -99,62 +109,30 @@ public class Tree02ClusterGroup extends InstancedObject{
 			object.addComponent(NodeComponentType.SHADOW_RENDERINFO, shadowRenderInfo);
 			object.addComponent(NodeComponentType.WIREFRAME_RENDERINFO, wireframeRenderInfo);
 			object.addComponent(NodeComponentType.MATERIAL0, billboard.getMaterial());
-			objects.add(object);
+			addChild(object);
+			getLowPolyObjects().add(object);
 		}
-	
-		addCluster(new Tree02Cluster(6,new Vec3f(-528,0,874),objects));
-		addCluster(new Tree02Cluster(6,new Vec3f(-696,0,932),objects));
-		addCluster(new Tree02Cluster(6,new Vec3f(-765,0,976),objects));
-		addCluster(new Tree02Cluster(6,new Vec3f(-820,0,1035),objects));
-		addCluster(new Tree02Cluster(6,new Vec3f(-595,0,624),objects));
-		addCluster(new Tree02Cluster(6,new Vec3f(-462,0,597),objects));
-		addCluster(new Tree02Cluster(6,new Vec3f(-525,0,704),objects));
-		addCluster(new Tree02Cluster(6,new Vec3f(-552,0,788),objects));
-		addCluster(new Tree02Cluster(6,new Vec3f(-608,0,712),objects));
-		addCluster(new Tree02Cluster(6,new Vec3f(-568,0,894),objects));
-		addCluster(new Tree02Cluster(6,new Vec3f(-593,0,954),objects));
-		addCluster(new Tree02Cluster(6,new Vec3f(-663,0,665),objects));
-		addCluster(new Tree02Cluster(6,new Vec3f(-728,0,654),objects));
-		addCluster(new Tree02Cluster(6,new Vec3f(-706,0,1103),objects));
 		
-		setThread(new Thread(this));
-		getThread().start();
-	}
-	
-	public void run(){
-		
-		while(isRunning()){
-		
-			InstancedHandler.getInstance().getLock().lock();
-			try {
-				InstancedHandler.getInstance().getCondition().await();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			finally{
-				InstancedHandler.getInstance().getLock().unlock();
-			}
+		for (int i=0; i<getInstanceCount(); i++){
 			
-			synchronized (getChildren()) {
-				
-				getChildren().clear();
-				
-//				long time = System.currentTimeMillis();
-				
-				for (InstancedCluster cluster : getClusters()){
-					if (cluster.getCenter().sub(BaseContext.getCamera().getPosition()).length() < 2000){
-						cluster.updateUBOs();
-						addChild(cluster);
-					}
-				}
-				
-//				System.out.println("############## " + (System.currentTimeMillis() - time));
-			}
+			float s = (float)(Math.random()*6 + 50);
+			Vec3f translation = getPositions()[i];
+			Vec3f scaling = new Vec3f(s,s,s);
+			Vec3f rotation = new Vec3f(0,(float) Math.random()*360f,0);
+			
+			float terrainHeight = TerrainHelper.getTerrainHeight(GLTerrain.getConfig(), translation.getX(),translation.getZ());
+			terrainHeight -= 1;
+			translation.setY(terrainHeight);
+			
+			Matrix4f translationMatrix = new Matrix4f().Translation(translation);
+			Matrix4f rotationMatrix = new Matrix4f().Rotation(rotation);
+			Matrix4f scalingMatrix = new Matrix4f().Scaling(scaling);
+			
+			getWorldMatrices().add(translationMatrix.mul(scalingMatrix.mul(rotationMatrix)));
+			getModelMatrices().add(rotationMatrix);
+			getLowPolyIndices().add(i);
 		}
-	}
-	
-	public void render() {
 		
-		super.render();
+		initMatricesBuffers();
 	}
 }

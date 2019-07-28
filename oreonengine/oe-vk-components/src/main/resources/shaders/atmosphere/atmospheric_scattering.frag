@@ -14,15 +14,24 @@ layout(location = 2) out vec4 normal_out;
 layout(location = 3) out vec4 specular_emission_diffuse_ssao_bloom_out;
 layout(location = 4) out vec4 lightScattering_out;
 
-uniform mat4 m_Projection;
-uniform mat4 m_View;
-uniform vec3 v_Sun;
-uniform float r_Sun;
-uniform int width;
-uniform int height;
-uniform int isReflection;
-uniform float bloom;
-uniform float horizonVerticalShift;
+layout(binding = 0, set = 0, std140, row_major) uniform Camera {
+	vec3 eyePosition;
+	mat4 m_View;
+	mat4 m_ViewProjection;
+	vec4 frustumPlanes[6];
+};
+
+layout (push_constant, std430, row_major) uniform Constants{
+	mat4 m_Projection;
+	vec3 v_Sun;
+	float r_Sun;
+	int width;
+	int height;
+	int isReflection;
+	float bloom;
+	float horizonVerticalShift;
+} constants;
+
 const vec3 sunBaseColor = vec3(1.0f,0.79f,0.43f);
 
 vec2 rsi(vec3 r0, vec3 rd, float sr) {
@@ -133,18 +142,18 @@ vec3 atmosphere(vec3 r, vec3 r0, vec3 pSun, float iSun, float rPlanet, float rAt
 
 void main() {
 
-	vec2 ndc = vec2(gl_FragCoord.x/width * 2 -1,gl_FragCoord.y/height * 2 -1);
-	vec4 ray_clip = vec4(ndc, -1.0, 1.0);
-	vec4 ray_eye = inverse(m_Projection) * ray_clip;
-	ray_eye = vec4(ray_eye.xy, 1.0, 0.0);
+	vec2 ndc = vec2(gl_FragCoord.x/constants.width * 2 - 1, gl_FragCoord.y/constants.height * 2 - 1);
+	vec4 ray_clip = vec4(ndc, 1.0, 1.0);
+	vec4 ray_eye = inverse(constants.m_Projection) * ray_clip;
+	ray_eye = vec4(ray_eye.x, ray_eye.y, 1.0, 0.0);
 	vec3 ray_world = (inverse(m_View) * ray_eye).xyz;
 	
-	if (isReflection == 1){
+	if (constants.isReflection == 1){
 		ray_world.y *= -1;
-		ray_world.y += horizonVerticalShift;
+		ray_world.y += constants.horizonVerticalShift;
 	}
 	else{
-		ray_world.y += horizonVerticalShift;
+		ray_world.y += constants.horizonVerticalShift;
 	}
 	
 	vec3 out_LightScattering = vec3(0);
@@ -152,7 +161,7 @@ void main() {
     vec3 out_Color = atmosphere(
         normalize(ray_world),        	// normalized ray direction
         vec3(0,6372e3,0),              	// ray origin
-        v_Sun,                  		// position of the sun
+        constants.v_Sun,                // position of the sun
         48.0,                           // intensity of the sun
         6371e3,                         // radius of the planet in meters
         6471e3,                         // radius of the atmosphere in meters
@@ -166,12 +175,12 @@ void main() {
 	// Apply exposure.
     out_Color = 1.0 - exp(-1.0 * out_Color);
 	
-	float sunRadius = length(normalize(ray_world)- normalize(v_Sun));
+	float sunRadius = length(normalize(ray_world)- normalize(constants.v_Sun));
 	
 	// no sun rendering when scene reflection
-	if(sunRadius < r_Sun && isReflection == 0)
+	if(sunRadius < constants.r_Sun && constants.isReflection == 0)
 	{
-		sunRadius /= r_Sun;
+		sunRadius /= constants.r_Sun;
 		float smoothRadius = smoothstep(0,1,0.1f/sunRadius-0.1f);
 		out_Color = mix(out_Color, sunBaseColor * 4, smoothRadius);
 		
@@ -182,6 +191,6 @@ void main() {
     albedo_out = vec4(out_Color,1);
 	worldPosition_out = vec4(0,0,0,0);
 	normal_out = vec4(0,0,0,0);
-	specular_emission_diffuse_ssao_bloom_out = vec4(0,0,0,bloom);
+	specular_emission_diffuse_ssao_bloom_out = vec4(0,0,0,constants.bloom);
 	lightScattering_out = vec4(out_LightScattering,0);
 }

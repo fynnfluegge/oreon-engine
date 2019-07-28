@@ -9,7 +9,7 @@ import java.util.List;
 
 import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
 import org.oreon.common.quadtree.Quadtree;
-import org.oreon.common.terrain.TerrainConfiguration;
+import org.oreon.common.quadtree.QuadtreeConfig;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.model.Vertex.VertexLayout;
 import org.oreon.core.scenegraph.Node;
@@ -56,7 +56,7 @@ public class Planet extends Node{
 		HashMap<NodeComponentType, NodeComponent> components =
 				new HashMap<NodeComponentType, NodeComponent>();
 		
-		TerrainConfiguration config = new TerrainConfiguration();
+		QuadtreeConfig config = new QuadtreeConfig();
 		
 		VkVertexInput vertexInput = new VkVertexInput(VertexLayout.POS2D);
 		
@@ -81,7 +81,7 @@ public class Planet extends Node{
 		components.put(NodeComponentType.MAIN_RENDERINFO, renderInfo);
 		components.put(NodeComponentType.MESH_DATA, meshData);
 		
-		PlanetQuadtree planetQuadtree = new PlanetQuadtree(components,
+		PlanetQuadtree planetQuadtree = new PlanetQuadtree(components, config,
 				config.getRootChunkCount(), config.getHorizontalScaling());
 		
 		quadtree = planetQuadtree;

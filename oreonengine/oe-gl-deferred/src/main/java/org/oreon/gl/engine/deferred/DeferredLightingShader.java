@@ -55,6 +55,6 @@ public class DeferredLightingShader extends GLShaderProgram{
 		
 		setUniformi("ssaoEnable", BaseContext.getConfig().isSsaoEnabled() ? 1 : 0);
 		
-		setUniformi("numSamples", BaseContext.getConfig().getMultisamples());
+		setUniformi("numSamples", BaseContext.getConfig().getMultisampling_sampleCount());
 	}
 }

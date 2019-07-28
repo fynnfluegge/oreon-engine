@@ -13,7 +13,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class Configuration {
+public class Config {
 	
 	// screen settings
 	private int x_ScreenResolution;
@@ -24,8 +24,11 @@ public class Configuration {
 	private int windowWidth;
 	private int windowHeight;
 	
+	// glfw opengl vsync
+	private boolean glfwGLVSync;
+	
 	// anitaliasing
-	private final int multisamples;
+	private final int multisampling_sampleCount;
 	private boolean fxaaEnabled;
 	
 	// shadows settings
@@ -64,20 +67,17 @@ public class Configuration {
 	
 	// postprocessing parameters
 	private int lightscatteringSampleCount;
-	private float lightscatteringDensity;
 	private float lightscatteringDecay;
-	private float lightscatteringExposure;
-	private float lightscatteringWeight;
-	private float motionblurSamples;
+	private float motionblurSampleCount;
 	private int motionblurBlurfactor;
 	private int bloomKernels;
 	private int bloomSigma;
 	
-	public Configuration(){
+	public Config(){
 		
 		Properties properties = new Properties();
 		try {
-			InputStream vInputStream = Configuration.class.getClassLoader().getResourceAsStream("oe-config.properties");
+			InputStream vInputStream = Config.class.getClassLoader().getResourceAsStream("oe-config.properties");
 			properties.load(vInputStream);
 			vInputStream.close();
 		} catch (IOException e) {
@@ -89,7 +89,7 @@ public class Configuration {
 		displayTitle = properties.getProperty("display.title");
 		x_ScreenResolution = Integer.valueOf(properties.getProperty("screen.resolution.x"));
 		y_ScreenResolution = Integer.valueOf(properties.getProperty("screen.resolution.y"));
-		multisamples = Integer.valueOf(properties.getProperty("multisamples"));
+		multisampling_sampleCount = Integer.valueOf(properties.getProperty("multisampling.sample.count"));
 		fxaaEnabled = Integer.valueOf(properties.getProperty("fxaa.enable")) == 1 ? true : false;
 		shadowsEnable = Integer.valueOf(properties.getProperty("shadows.enable")) == 1 ? true : false;
 		shadowMapResolution = Integer.valueOf(properties.getProperty("shadows.map.resolution"));
@@ -104,6 +104,10 @@ public class Configuration {
 			vkValidation = Integer.valueOf(properties.getProperty("validation.enable")) == 1 ? true : false;
 		}
 		
+		if (properties.getProperty("glfw.vsync") != null){
+			glfwGLVSync = Integer.valueOf(properties.getProperty("glfw.vsync")) == 1 ? true : false;
+		}
+		
 		renderWireframe = false;
 		renderUnderwater = false;
 		renderReflection = false;
@@ -112,7 +116,7 @@ public class Configuration {
 		
 		
 		try {
-			InputStream vInputStream = Configuration.class.getClassLoader().getResourceAsStream("atmosphere-config.properties");
+			InputStream vInputStream = Config.class.getClassLoader().getResourceAsStream("atmosphere-config.properties");
 			if (vInputStream != null){
 				properties.load(vInputStream);
 				vInputStream.close();
@@ -121,7 +125,7 @@ public class Configuration {
 				sunPosition = new Vec3f(
 						Float.valueOf(properties.getProperty("sun.position.x")),
 						Float.valueOf(properties.getProperty("sun.position.y")),
-						Float.valueOf(properties.getProperty("sun.position.z")));
+						Float.valueOf(properties.getProperty("sun.position.z"))).normalize();
 				sunColor = new Vec3f(
 						Float.valueOf(properties.getProperty("sun.color.r")),
 						Float.valueOf(properties.getProperty("sun.color.g")),
@@ -135,24 +139,24 @@ public class Configuration {
 				fogColor = new Vec3f(Float.valueOf(properties.getProperty("fog.color.r")),
 						Float.valueOf(properties.getProperty("fog.color.g")),
 						Float.valueOf(properties.getProperty("fog.color.b")));
+				float fogBrightness = Float.valueOf(properties.getProperty("fog.brightness"));
+				
+				fogColor = fogColor.mul(fogBrightness);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
 		try {
-			InputStream vInputStream = Configuration.class.getClassLoader().getResourceAsStream("postprocessing-config.properties");
+			InputStream vInputStream = Config.class.getClassLoader().getResourceAsStream("postprocessing-config.properties");
 			if (vInputStream != null){
 				properties.load(vInputStream);
 				vInputStream.close();
 				
-				lightscatteringSampleCount = Integer.valueOf(properties.getProperty("lightscattering.samples"));
-				lightscatteringDensity = Float.valueOf(properties.getProperty("lightscattering.density"));
+				lightscatteringSampleCount = Integer.valueOf(properties.getProperty("lightscattering.samples.count"));
 				lightscatteringDecay = Float.valueOf(properties.getProperty("lightscattering.decay"));
-				lightscatteringExposure = Float.valueOf(properties.getProperty("lightscattering.exposure"));
-				lightscatteringWeight = Float.valueOf(properties.getProperty("lightscattering.weight"));
 				motionblurBlurfactor = Integer.valueOf(properties.getProperty("motionblur.blurfactor"));
-				motionblurSamples = Integer.valueOf(properties.getProperty("motionblur.samples"));
+				motionblurSampleCount = Integer.valueOf(properties.getProperty("motionblur.samples.count"));
 				bloomKernels = Integer.valueOf(properties.getProperty("bloom.kernels"));
 				bloomSigma = Integer.valueOf(properties.getProperty("bloom.sigma"));
 			}

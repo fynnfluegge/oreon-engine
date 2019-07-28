@@ -1,10 +1,11 @@
 package org.oreon.common.terrain;
 
+import org.oreon.common.quadtree.QuadtreeConfig;
 import org.oreon.core.math.Vec2f;
 
 public class TerrainHelper {
 
-	public static float getTerrainHeight(TerrainConfiguration config,
+	public static float getTerrainHeight(QuadtreeConfig config,
 			float x, float z){
 		
 		float h = 0;

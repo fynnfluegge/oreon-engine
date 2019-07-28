@@ -2,9 +2,9 @@ package org.oreon.examples.gl.oreonworlds.ocean;
 
 import org.oreon.core.math.Vec4f;
 import org.oreon.core.util.Constants;
-import org.oreon.examples.gl.oreonworlds.shaders.WaterWireframeShader;
-import org.oreon.examples.gl.oreonworlds.shaders.WaterShader;
 import org.oreon.gl.components.water.Water;
+import org.oreon.gl.components.water.WaterShader;
+import org.oreon.gl.components.water.WaterWireframeShader;
 
 public class Ocean extends Water{
 

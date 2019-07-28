@@ -35,5 +35,7 @@ public class Image {
 		Repeat,
 		MirrorRepeat
 	}
-		
+	
+	public void bind(){};
+	public void unbind(){};
 }

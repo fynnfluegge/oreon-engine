@@ -1,4 +1,4 @@
-package org.oreon.examples.gl.oreonworlds.shaders.plants;
+package org.oreon.examples.gl.oreonworlds.shaders;
 
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
@@ -6,10 +6,8 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 import java.util.List;
 
 import org.oreon.core.context.BaseContext;
-import org.oreon.core.gl.instanced.GLInstancedCluster;
 import org.oreon.core.gl.pipeline.GLShaderProgram;
-import org.oreon.core.gl.texture.GLTexture;
-import org.oreon.core.instanced.InstancedCluster;
+import org.oreon.core.instanced.InstancedObject;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.model.Material;
 import org.oreon.core.scenegraph.NodeComponentType;
@@ -17,26 +15,26 @@ import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.util.Constants;
 import org.oreon.core.util.ResourceLoader;
 
-public class TreeBillboardShader extends GLShaderProgram{
+public class InstancedBillboardShader extends GLShaderProgram{
 
-private static TreeBillboardShader instance = null;
+private static InstancedBillboardShader instance = null;
 	
-	public static TreeBillboardShader getInstance() 
+	public static InstancedBillboardShader getInstance() 
 	{
 	    if(instance == null) 
 	    {
-	    	instance = new TreeBillboardShader();
+	    	instance = new InstancedBillboardShader();
 	    }
 	      return instance;
 	}
 	
-	protected TreeBillboardShader()
+	protected InstancedBillboardShader()
 	{
 		super();
 		
-		addVertexShader(ResourceLoader.loadShader("oreonworlds/shaders/assets/Billboard_Shader/Billboard_VS.glsl"));
-		addGeometryShader(ResourceLoader.loadShader("oreonworlds/shaders/assets/Billboard_Shader/Billboard_GS.glsl"));
-		addFragmentShader(ResourceLoader.loadShader("oreonworlds/shaders/assets/Billboard_Shader/Billboard_FS.glsl"));
+		addVertexShader(ResourceLoader.loadShader("oreonworlds/shaders/assets/Billboard_Shader/billboard.vert"));
+		addGeometryShader(ResourceLoader.loadShader("oreonworlds/shaders/assets/Billboard_Shader/billboard.geom"));
+		addFragmentShader(ResourceLoader.loadShader("oreonworlds/shaders/assets/Billboard_Shader/billboard.frag"));
 		compileShader();
 		
 		addUniform("clipplane");
@@ -63,19 +61,17 @@ private static TreeBillboardShader instance = null;
 		setUniformi("isRefraction", BaseContext.getConfig().isRenderRefraction() ? 1 : 0);
 		setUniform("scalingMatrix", new Matrix4f().Scaling(object.getWorldTransform().getScaling()));
 		
-		((GLInstancedCluster) object.getParentNode()).getWorldMatricesBuffer().bindBufferBase(0);
 		bindUniformBlock("worldMatrices", 0);
-		((GLInstancedCluster) object.getParentNode()).getModelMatricesBuffer().bindBufferBase(1);
 		bindUniformBlock("modelMatrices", 1);
 				
-		@SuppressWarnings("unchecked")
-		Material<GLTexture> material = (Material<GLTexture>) object.getComponent(NodeComponentType.MATERIAL0);
+		Material material = object.getComponent(NodeComponentType.MATERIAL0);
 		
 		glActiveTexture(GL_TEXTURE0);
 		material.getDiffusemap().bind();
 		setUniformi("material.diffusemap", 0);
 		
-		List<Integer> indices = ((InstancedCluster) object.getParentNode()).getLowPolyIndices();
+		InstancedObject vParentNode = object.getParentObject();
+		List<Integer> indices = vParentNode.getLowPolyIndices();
 		
 		for (int i=0; i<indices.size(); i++)
 		{

@@ -2,10 +2,10 @@ package org.oreon.core.model;
 
 import org.oreon.core.scenegraph.NodeComponent;
 
-public class Model<T> extends NodeComponent{
+public class Model extends NodeComponent{
 
 	private Mesh mesh;
-	private Material<T> material;
+	private Material material;
 	
 	public Model() {}
 
@@ -16,11 +16,11 @@ public class Model<T> extends NodeComponent{
 		this.mesh = mesh;
 	}
 
-	public Material<T> getMaterial() {
+	public Material getMaterial() {
 		return material;
 	}
 
-	public void setMaterial(Material<T> material) {
+	public void setMaterial(Material material) {
 		this.material = material;
 	}
 

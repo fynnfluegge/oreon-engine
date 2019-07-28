@@ -1,23 +1,26 @@
 package org.oreon.core.vk.util;
 
-import org.lwjgl.assimp.*;
+import java.nio.IntBuffer;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.lwjgl.assimp.AIFace;
+import org.lwjgl.assimp.AIMesh;
+import org.lwjgl.assimp.AIScene;
+import org.lwjgl.assimp.AIVector3D;
+import org.lwjgl.assimp.Assimp;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.math.Vec3f;
 import org.oreon.core.model.Mesh;
 import org.oreon.core.model.Model;
 import org.oreon.core.model.Vertex;
 import org.oreon.core.util.Util;
-import org.oreon.core.vk.image.VkImage;
-
-import java.nio.IntBuffer;
-import java.util.ArrayList;
-import java.util.List;
 
 public class VkAssimpModelLoader {
 	
-	public static List<Model<VkImage>> loadModel(String path, String file) {
+	public static List<Model> loadModel(String path, String file) {
 		
-		List<Model<VkImage>> models = new ArrayList<>();
+		List<Model> models = new ArrayList<>();
 //		List<Material<VkImage>> materials = new ArrayList<>();
 		
 		path = VkAssimpModelLoader.class.getClassLoader().getResource(path).getPath();
@@ -40,7 +43,7 @@ public class VkAssimpModelLoader {
 		for (int i=0; i<aiScene.mNumMeshes(); i++){
 			AIMesh aiMesh = AIMesh.create(aiScene.mMeshes().get(i));
 			Mesh mesh = processMesh(aiMesh);
-			Model<VkImage> model = new Model<VkImage>();
+			Model model = new Model();
 			model.setMesh(mesh);
 //			int materialIndex = aiMesh.mMaterialIndex();
 //			model.setMaterial(materials.get(materialIndex));

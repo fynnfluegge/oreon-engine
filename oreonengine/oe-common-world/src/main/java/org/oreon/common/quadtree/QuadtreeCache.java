@@ -9,11 +9,11 @@ import lombok.Getter;
 public class QuadtreeCache {
 
 	@Getter
-	private HashMap<String, QuadtreeChunk> chunks;
+	private HashMap<String, QuadtreeNode> chunks;
 	
 	public QuadtreeCache() {
 		
-		chunks = new HashMap<String, QuadtreeChunk>();
+		chunks = new HashMap<String, QuadtreeNode>();
 	}
 	
 	public boolean contains(String key){
@@ -23,15 +23,15 @@ public class QuadtreeCache {
 	
 	public void addChunk(Node chunk){
 		
-		chunks.put(((QuadtreeChunk) chunk).getQuadtreeCacheKey(), (QuadtreeChunk) chunk);
+		chunks.put(((QuadtreeNode) chunk).getQuadtreeCacheKey(), (QuadtreeNode) chunk);
 	}
 	
-	public void addChunk(QuadtreeChunk chunk){
+	public void addChunk(QuadtreeNode chunk){
 	
 		chunks.put(chunk.getQuadtreeCacheKey(), chunk);
 	}
 	
-	public QuadtreeChunk getChunk(String key){
+	public QuadtreeNode getChunk(String key){
 		
 		return chunks.get(key);
 	}
@@ -41,9 +41,9 @@ public class QuadtreeCache {
 		chunks.remove(key);
 	}
 	
-	public QuadtreeChunk getAndRemoveChunk(String key){
+	public QuadtreeNode getAndRemoveChunk(String key){
 		
-		QuadtreeChunk chunk = chunks.get(key);
+		QuadtreeNode chunk = chunks.get(key);
 		chunks.remove(key);
 		return chunk;
 	}

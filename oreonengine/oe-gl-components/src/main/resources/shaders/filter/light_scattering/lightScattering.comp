@@ -10,12 +10,11 @@ uniform mat4 viewProjectionMatrix;
 uniform float windowWidth;
 uniform float windowHeight;
 uniform vec3 sunWorldPosition;
+uniform int num_samples;
+uniform float decay;
 
-const int NUM_SAMPLES = 200;
 const float density = 1.2;
-const float decay = 0.9675;
-const float exposure = 0.2;
-const float weight = 0.8;
+const float exposure = 0.04;
 
 void main(void){
 
@@ -28,7 +27,7 @@ void main(void){
 	vec2 pixelToSun = computeCoord - sunWindowSpacePos;
 	
 	vec2 deltaCoord = pixelToSun;
-	deltaCoord *= 1.0 /  float(NUM_SAMPLES) * density;
+	deltaCoord *= 1.0 /  float(num_samples) * density;
 	
 	vec2 coord = vec2(computeCoord.x, computeCoord.y);
 
@@ -40,11 +39,11 @@ void main(void){
 	
 	// 1 to prevent scattering on atmosphere
 	if (scatteringPreventionFlag == 1.0){
-		for(int i=0; i < NUM_SAMPLES ; i++)
+		for(int i=0; i < num_samples ; i++)
 		{
 			vec3 color = imageLoad(lightScatteringMask_in, ivec2(coord.x,coord.y)).rgb;
 			coord -= deltaCoord;
-			color *= illuminationDecay * weight;
+			color *= illuminationDecay;
 			finalColor += color;
 			illuminationDecay *= decay;
 		}

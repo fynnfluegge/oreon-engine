@@ -9,9 +9,6 @@ import org.oreon.core.shadow.PssmCamera;
 import org.oreon.core.util.BufferUtil;
 import org.oreon.core.util.Constants;
 
-import lombok.extern.log4j.Log4j;
-
-@Log4j
 public abstract class DirectionalLight extends Light{
 
 	private Vec3f direction;
@@ -45,7 +42,8 @@ public abstract class DirectionalLight extends Light{
 		up.setY(-(up.getX() * direction.getX() + up.getZ() * direction.getZ())/direction.getY());
 		
 		if (direction.dot(up) != 0) 
-			log.warn("DirectionalLight vector up " + up + " and direction " +  direction + " not orthogonal");
+//			log.warn("DirectionalLight vector up " + up + " and direction " +  direction + " not orthogonal");
+			
 		right = up.cross(getDirection()).normalize();
 		m_View = new Matrix4f().View(getDirection(), up);	
 		
@@ -71,10 +69,25 @@ public abstract class DirectionalLight extends Light{
 		
 		if (BaseContext.getCamera().isCameraRotated() || 
 				BaseContext.getCamera().isCameraMoved()){
-			floatBufferMatrices.clear();
-			for (PssmCamera lightCamera : splitLightCameras){
-				lightCamera.update(m_View, up, right);
-				floatBufferMatrices.put(BufferUtil.createFlippedBuffer(lightCamera.getM_orthographicViewProjection()));
+			updateShadowMatrices(false);
+		}
+	}
+	
+	public void updateShadowMatrices(boolean hasSunPositionChanged) {
+		
+		floatBufferMatrices.clear();
+		
+		for (int i=0; i<splitLightCameras.length; i++){
+			
+			if (i == splitLightCameras.length-1){
+				if (hasSunPositionChanged){
+					splitLightCameras[i].update(m_View, up, right);
+				}
+				floatBufferMatrices.put(BufferUtil.createFlippedBuffer(splitLightCameras[i].getM_orthographicViewProjection()));
+			}
+			else{
+				splitLightCameras[i].update(m_View, up, right);
+				floatBufferMatrices.put(BufferUtil.createFlippedBuffer(splitLightCameras[i].getM_orthographicViewProjection()));
 			}
 		}
 	}
@@ -84,8 +97,18 @@ public abstract class DirectionalLight extends Light{
 	}
 	
 	public void setDirection(Vec3f direction) {
+		
 		this.direction = direction;
-		// TODO update up, right, m_View;
+		up = new Vec3f(direction.getX(),0,direction.getZ());
+		up.setY(-(up.getX() * direction.getX() + up.getZ() * direction.getZ())/direction.getY());
+		
+		if (direction.dot(up) != 0) 
+//			log.warn("DirectionalLight vector up " + up + " and direction " +  direction + " not orthogonal");
+			
+		right = up.cross(getDirection()).normalize();
+		m_View = new Matrix4f().View(getDirection(), up);
+		
+		BaseContext.getConfig().setSunPosition(getDirection());
 	}
 
 	public Vec3f getUp() {

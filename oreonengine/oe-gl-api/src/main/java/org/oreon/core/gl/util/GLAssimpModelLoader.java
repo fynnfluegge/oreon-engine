@@ -25,10 +25,10 @@ import org.oreon.core.util.Util;
 
 public class GLAssimpModelLoader {
 	
-	public static List<Model<GLTexture>> loadModel(String path, String file) {
+	public static List<Model> loadModel(String path, String file) {
 		
-		List<Model<GLTexture>> models = new ArrayList<>();
-		List<Material<GLTexture>> materials = new ArrayList<>();
+		List<Model> models = new ArrayList<>();
+		List<Material> materials = new ArrayList<>();
 		
 		path = GLAssimpModelLoader.class.getClassLoader().getResource(path).getPath().toString();
 		// For Linux need to keep '/' or else the Assimp.aiImportFile(...) call below returns null!
@@ -42,7 +42,7 @@ public class GLAssimpModelLoader {
 		if (aiScene.mMaterials() != null){
 			for (int i=0; i<aiScene.mNumMaterials(); i++){
 				AIMaterial aiMaterial = AIMaterial.create(aiScene.mMaterials().get(i));
-				Material<GLTexture> material = processMaterial(aiMaterial, path);
+				Material material = processMaterial(aiMaterial, path);
 				materials.add(material);
 			}
 		}
@@ -50,7 +50,7 @@ public class GLAssimpModelLoader {
 		for (int i=0; i<aiScene.mNumMeshes(); i++){
 			AIMesh aiMesh = AIMesh.create(aiScene.mMeshes().get(i));
 			Mesh mesh = processMesh(aiMesh);
-			Model<GLTexture> model = new Model<GLTexture>();
+			Model model = new Model();
 			model.setMesh(mesh);
 			int materialIndex = aiMesh.mMaterialIndex();
 			model.setMaterial(materials.get(materialIndex));
@@ -162,26 +162,39 @@ public class GLAssimpModelLoader {
 		return new Mesh(vertexData, facesData);
 	}
 	
-	private static Material<GLTexture> processMaterial(AIMaterial aiMaterial, String texturesDir) {
+	private static Material processMaterial(AIMaterial aiMaterial, String texturesDir) {
 
-	    AIString path = AIString.calloc();
-	    Assimp.aiGetMaterialTexture(aiMaterial, Assimp.aiTextureType_DIFFUSE, 0, path, (IntBuffer) null, null, null, null, null, null);
-	    String textPath = path.dataString();
-
+		// diffuse Texture
+	    AIString diffPath = AIString.calloc();
+	    Assimp.aiGetMaterialTexture(aiMaterial, Assimp.aiTextureType_DIFFUSE, 0, diffPath, (IntBuffer) null, null, null, null, null, null);
+	    String diffTexPath = diffPath.dataString();
+	    
 	    GLTexture diffuseTexture = null;
-	    if (textPath != null && textPath.length() > 0) {
-	    	diffuseTexture = new TextureImage2D(texturesDir + "/" + textPath, SamplerFilter.Trilinear);
+	    if (diffTexPath != null && diffTexPath.length() > 0) {
+	    	diffuseTexture = new TextureImage2D(texturesDir + "/" + diffTexPath, SamplerFilter.Trilinear);
+	    }
+	    
+	    // normal Texture
+	    AIString normalPath = AIString.calloc();
+	    Assimp.aiGetMaterialTexture(aiMaterial, Assimp.aiTextureType_NORMALS, 0, normalPath, (IntBuffer) null, null, null, null, null, null);
+	    String normalTexPath = normalPath.dataString();
+	    
+	    GLTexture normalTexture = null;
+	    if (normalTexPath != null && normalTexPath.length() > 0) {
+	    	normalTexture = new TextureImage2D(texturesDir + "/" + normalTexPath, SamplerFilter.Trilinear);
 	    }
 
 	    AIColor4D color = AIColor4D.create();
+	    
 	    Vec3f diffuseColor = null;
 	    int result = Assimp.aiGetMaterialColor(aiMaterial, Assimp.AI_MATKEY_COLOR_AMBIENT, Assimp.aiTextureType_NONE, 0, color);
 	    if (result == 0) {
 	    	diffuseColor = new Vec3f(color.r(), color.g(), color.b());
 	    }
 
-	    Material<GLTexture> material = new Material<GLTexture>();
+	    Material material = new Material();
 	    material.setDiffusemap(diffuseTexture);
+	    material.setNormalmap(normalTexture);
 	    material.setColor(diffuseColor);
 	    
 	    return material;

@@ -35,7 +35,7 @@ void main()
 	vec3 bloomColor = vec3(0);
 	
 	if (factor > 0)
-		bloomColor = blur(computeCoord, 5);
+		bloomColor = blur(computeCoord, 0);
 	
 	// additive blending
     hdrColor += bloomColor * factor;

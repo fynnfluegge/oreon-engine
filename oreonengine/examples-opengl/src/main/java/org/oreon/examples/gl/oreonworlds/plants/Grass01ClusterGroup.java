@@ -3,120 +3,76 @@ package org.oreon.examples.gl.oreonworlds.plants;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.oreon.core.context.BaseContext;
+import org.oreon.common.terrain.TerrainHelper;
+import org.oreon.core.gl.instanced.GLInstancedObject;
 import org.oreon.core.gl.memory.GLMeshVBO;
 import org.oreon.core.gl.scenegraph.GLRenderInfo;
-import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.gl.util.GLAssimpModelLoader;
 import org.oreon.core.gl.wrapper.parameter.CullFaceDisable;
-import org.oreon.core.instanced.InstancedCluster;
-import org.oreon.core.instanced.InstancedHandler;
-import org.oreon.core.instanced.InstancedObject;
+import org.oreon.core.math.Matrix4f;
 import org.oreon.core.math.Vec3f;
 import org.oreon.core.model.Model;
 import org.oreon.core.scenegraph.NodeComponentType;
 import org.oreon.core.scenegraph.Renderable;
+import org.oreon.core.util.IntegerReference;
 import org.oreon.examples.gl.oreonworlds.shaders.plants.GrassShader;
-import org.oreon.examples.gl.oreonworlds.shaders.plants.GrassShadowShader;
+import org.oreon.gl.components.terrain.GLTerrain;
 
-public class Grass01ClusterGroup extends InstancedObject{
+public class Grass01ClusterGroup extends GLInstancedObject{
 	
 	public Grass01ClusterGroup(){
 		
-		List<Model<GLTexture>> models = GLAssimpModelLoader.loadModel("oreonworlds/assets/plants/Grass_01","grassmodel.obj");
+		setInstanceCount(1);
+		Vec3f[] positions = { new Vec3f(243.69344f,220.08157f,-2171.1907f) };
+		setPositions(positions);
+		setHighPolyRange(-1);
+		
+		List<Model> models = GLAssimpModelLoader.loadModel("oreonworlds/assets/plants/Grass_01","grassmodel.obj");
 	
 		List<Renderable> objects = new ArrayList<>();
 		
-		for (Model<GLTexture> model : models){
+		setHighPolyInstanceCount(new IntegerReference(0));
+		setLowPolyInstanceCount(new IntegerReference(getInstanceCount()));
+		
+		for (Model model : models){
 			
 			GLMeshVBO meshBuffer = new GLMeshVBO();
 			model.getMesh().setTangentSpace(false);
-			model.getMesh().setInstanced(true);
 			
 			meshBuffer.addData(model.getMesh());
+			meshBuffer.setDrawInstanced(true);
+			meshBuffer.setInstances(getLowPolyInstanceCount());
 
 			GLRenderInfo renderInfo = new GLRenderInfo(GrassShader.getInstance(), new CullFaceDisable(), meshBuffer);
-			GLRenderInfo shadowRenderInfo = new GLRenderInfo(GrassShadowShader.getInstance(), new CullFaceDisable(), meshBuffer);
 			
 			Renderable object = new Renderable();
 			object.addComponent(NodeComponentType.MAIN_RENDERINFO, renderInfo);
-			object.addComponent(NodeComponentType.SHADOW_RENDERINFO, shadowRenderInfo);
 			object.addComponent(NodeComponentType.MATERIAL0, model.getMaterial());
 			objects.add(object);
+			addChild(object);
+			getLowPolyObjects().add(object);
 		}
 		
-		addCluster(new Grass01Cluster(200,new Vec3f(-2039,0,2845),objects));
-		addCluster(new Grass01Cluster(200,new Vec3f(-2054,0,2872),objects));
-		addCluster(new Grass01Cluster(200,new Vec3f(-2160,0,2827),objects));
-		addCluster(new Grass01Cluster(200,new Vec3f(-2134,0,2817),objects));
-		addCluster(new Grass01Cluster(200,new Vec3f(-2172,0,2800),objects));
-		addCluster(new Grass01Cluster(200,new Vec3f(-2191,0,2804),objects));
-		addCluster(new Grass01Cluster(200,new Vec3f(-2194,0,2753),objects));
-		addCluster(new Grass01Cluster(400,new Vec3f(-2176,0,2727),objects));
-		addCluster(new Grass01Cluster(250,new Vec3f(-1447,0,2655),objects));
-		addCluster(new Grass01Cluster(250,new Vec3f(-1479,0,2665),objects));
-		addCluster(new Grass01Cluster(250,new Vec3f(-1435,0,2627),objects));
-		addCluster(new Grass01Cluster(250,new Vec3f(-1418,0,2537),objects));
-		addCluster(new Grass01Cluster(250,new Vec3f(-1398,0,2662),objects));
-		addCluster(new Grass01Cluster(250,new Vec3f(-1441,0,2568),objects));
-		addCluster(new Grass01Cluster(250,new Vec3f(-1445,0,2617),objects));
-		addCluster(new Grass01Cluster(400,new Vec3f(-1151,0,1508),objects));
-		addCluster(new Grass01Cluster(400,new Vec3f(-1141,0,1467),objects));
-		addCluster(new Grass01Cluster(400,new Vec3f(-1119,0,1427),objects));
-		addCluster(new Grass01Cluster(400,new Vec3f(-1099,0,1419),objects));
-		addCluster(new Grass01Cluster(400,new Vec3f(-1144,0,1560),objects));
-		addCluster(new Grass01Cluster(400,new Vec3f(-1158,0,1604),objects));
-		addCluster(new Grass01Cluster(400,new Vec3f(-1181,0,1631),objects));
-		addCluster(new Grass01Cluster(400,new Vec3f(-1221,0,1651),objects));
-		addCluster(new Grass01Cluster(400,new Vec3f(-1177,0,1663),objects));
-		addCluster(new Grass01Cluster(400,new Vec3f(-1221,0,1682),objects));
-		addCluster(new Grass01Cluster(400,new Vec3f(-1243,0,1718),objects));
-		addCluster(new Grass01Cluster(400,new Vec3f(-2147,0,2765),objects));
-		addCluster(new Grass01Cluster(400,new Vec3f(-2229,0,2787),objects));
-		addCluster(new Grass01Cluster(400,new Vec3f(-1207,0,1428),objects));
-		addCluster(new Grass01Cluster(400,new Vec3f(-1222,0,1390),objects));
-		addCluster(new Grass01Cluster(400,new Vec3f(-1241,0,1288),objects));
-		addCluster(new Grass01Cluster(400,new Vec3f(-1229,0,1337),objects));
-		addCluster(new Grass01Cluster(100,new Vec3f(-200,0,-77),objects));
-		addCluster(new Grass01Cluster(100,new Vec3f(-271,0,-64),objects));
-		addCluster(new Grass01Cluster(100,new Vec3f(-235,0,-85),objects));
-		addCluster(new Grass01Cluster(100,new Vec3f(-329,0,-123),objects));
-		addCluster(new Grass01Cluster(100,new Vec3f(-240,0,-149),objects));
-		addCluster(new Grass01Cluster(100,new Vec3f(-199,0,-148),objects));
-		addCluster(new Grass01Cluster(100,new Vec3f(-274,0,-136),objects));
-		addCluster(new Grass01Cluster(100,new Vec3f(-332,0,-60),objects));
-		addCluster(new Grass01Cluster(100,new Vec3f(-210,0,-128),objects));
-		addCluster(new Grass01Cluster(100,new Vec3f(-386,0,-141),objects));
-		addCluster(new Grass01Cluster(100,new Vec3f(-290,0,-147),objects));
-		addCluster(new Grass01Cluster(100,new Vec3f(-288,0,-118),objects));
-	
-		setThread(new Thread(this));
-		getThread().start();
-	}
-	
-	public void run(){
-		while(isRunning()){
+		for (int i=0; i<getInstanceCount(); i++){
 			
-			InstancedHandler.getInstance().getLock().lock();
-			try {
-				InstancedHandler.getInstance().getCondition().await();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			finally{
-				InstancedHandler.getInstance().getLock().unlock();
-			}
-
-			synchronized (getChildren()) {
-				
-				getChildren().clear();
-		
-				for (InstancedCluster cluster : getClusters()){
-					if (cluster.getCenter().sub(BaseContext.getCamera().getPosition()).length() < 600){
-						addChild(cluster);
-					}
-				}
-			}
+			float s = (float)(Math.random()*6 + 20);
+			Vec3f translation = getPositions()[i];
+			Vec3f scaling = new Vec3f(s,s,s);
+			Vec3f rotation = new Vec3f(0,(float) Math.random()*360f,0);
+			
+			float terrainHeight = TerrainHelper.getTerrainHeight(GLTerrain.getConfig(), translation.getX(),translation.getZ());
+			terrainHeight -= 1;
+			translation.setY(terrainHeight);
+			
+			Matrix4f translationMatrix = new Matrix4f().Translation(translation);
+			Matrix4f rotationMatrix = new Matrix4f().Rotation(rotation);
+			Matrix4f scalingMatrix = new Matrix4f().Scaling(scaling);
+			
+			getWorldMatrices().add(translationMatrix.mul(scalingMatrix.mul(rotationMatrix)));
+			getModelMatrices().add(rotationMatrix);
+			getLowPolyIndices().add(i);
 		}
+		
+		initMatricesBuffers();
 	}
 }

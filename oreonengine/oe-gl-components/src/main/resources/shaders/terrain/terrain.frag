@@ -62,7 +62,7 @@ float diffuse(vec3 direction, vec3 normal, float intensity)
 
 float getFogFactor(float dist)
 {
-	return smoothstep(0,1,-0.0002/sightRangeFactor*(dist-(zfar)/10*sightRangeFactor) + 1);
+	return clamp(smoothstep(0.0,1.0,-0.0002/sightRangeFactor*(dist-(zfar)/10*sightRangeFactor) + 1),0.0,1.0);
 }
 
 float distancePointPlane(vec3 point, vec4 plane){
@@ -132,12 +132,12 @@ void main()
 	if (isReflection == 1){
 		float dist = length(eyePosition - inWorldPos);
 		float fogFactor = getFogFactor(dist);
-		fragColor = mix(fogColor, fragColor, clamp(fogFactor,0,1));
+		fragColor = mix(fogColor * 2, fragColor, fogFactor);
 	}
 	
 	albedo_out = vec4(fragColor,1);
 	worldPosition_out = vec4(inWorldPos,1);
 	normal_out = vec4(normal,1);
-	specular_emission_diffuse_ssao_bloom_out = vec4(1,0.1,11,1);
+	specular_emission_diffuse_ssao_bloom_out = vec4(1,0.0,11,1);
 	lightScattering_out = vec4(0,0,0,1);
 }

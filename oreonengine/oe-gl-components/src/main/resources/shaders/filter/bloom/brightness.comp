@@ -12,6 +12,13 @@ void main(void){
 
 	vec3 color = imageLoad(sceneSampler, computeCoord).rgb;
 	
+	if (isnan(color.r))
+		color.r = 0;
+	if (isnan(color.g))
+		color.g = 0;
+	if (isnan(color.b))
+		color.b = 0;
+	
 	float brightness = dot(color, vec3(0.2126, 0.7152, 0.0722));
 
 	vec3 brightColor = color * pow(brightness,1);

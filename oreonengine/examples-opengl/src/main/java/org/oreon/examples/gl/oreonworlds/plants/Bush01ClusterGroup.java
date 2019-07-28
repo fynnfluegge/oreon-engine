@@ -3,16 +3,11 @@ package org.oreon.examples.gl.oreonworlds.plants;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.oreon.core.context.BaseContext;
 import org.oreon.core.gl.memory.GLMeshVBO;
 import org.oreon.core.gl.scenegraph.GLRenderInfo;
-import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.gl.util.GLAssimpModelLoader;
 import org.oreon.core.gl.wrapper.parameter.CullFaceDisable;
-import org.oreon.core.instanced.InstancedCluster;
-import org.oreon.core.instanced.InstancedHandler;
 import org.oreon.core.instanced.InstancedObject;
-import org.oreon.core.math.Vec3f;
 import org.oreon.core.model.Model;
 import org.oreon.core.scenegraph.NodeComponentType;
 import org.oreon.core.scenegraph.Renderable;
@@ -25,13 +20,13 @@ public class Bush01ClusterGroup extends InstancedObject{
 		
 		List<Renderable> objects = new ArrayList<>();
 		
-		List<Model<GLTexture>> models = GLAssimpModelLoader.loadModel("oreonworlds/assets/plants/Bush_01","Bush_01.obj");
+		List<Model> models = GLAssimpModelLoader.loadModel("oreonworlds/assets/plants/Bush_01","Bush_01.obj");
 		
-		for (Model<GLTexture> model : models){
+		for (Model model : models){
 			
 			GLMeshVBO meshBuffer = new GLMeshVBO();
 			model.getMesh().setTangentSpace(false);
-			model.getMesh().setInstanced(true);
+//			model.getMesh().setInstanced(true);
 			meshBuffer.addData(model.getMesh());
 
 			GLRenderInfo renderInfo = new GLRenderInfo(BushShader.getInstance(), new CullFaceDisable(), meshBuffer);
@@ -45,8 +40,8 @@ public class Bush01ClusterGroup extends InstancedObject{
 			objects.add(object);
 		}
 		
-		addCluster(new Bush01Cluster(20,new Vec3f(-2082,0,2881),objects));
-		addCluster(new Bush01Cluster(40,new Vec3f(-2125,0,2891),objects));
+//		addCluster(new Bush01Cluster(20,new Vec3f(-2082,0,2881),objects));
+//		addCluster(new Bush01Cluster(40,new Vec3f(-2125,0,2891),objects));
 //		addCluster(new Bush01Cluster(20,new Vec3f(-2188,0,2894),getChildren()));
 //		addCluster(new Bush01Cluster(10,new Vec3f(-1288,0,1627),getChildren()));
 //		addCluster(new Bush01Cluster(10,new Vec3f(-1319,0,1679),getChildren()));
@@ -74,34 +69,34 @@ public class Bush01ClusterGroup extends InstancedObject{
 //		addCluster(new Bush01Cluster(6,new Vec3f(-1437,0,1823),getChildren()));
 //		addCluster(new Bush01Cluster(8,new Vec3f(-250,0,-96),getChildren()));
 		
-		setThread(new Thread(this));
-		getThread().start();
+//		setThread(new Thread(this));
+//		getThread().start();
 	}
 
-	@Override
-	public void run() {
-		while(isRunning()){
-			
-			InstancedHandler.getInstance().getLock().lock();
-			try {
-				InstancedHandler.getInstance().getCondition().await();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			finally{
-				InstancedHandler.getInstance().getLock().unlock();
-			}
-
-			synchronized (getChildren()) {
-				
-				getChildren().clear();
-		
-				for (InstancedCluster cluster : getClusters()){
-					if (cluster.getCenter().sub(BaseContext.getCamera().getPosition()).length() < 600){
-						addChild(cluster);
-					}
-				}
-			}
-		}
-	}
+//	@Override
+//	public void run() {
+//		while(isRunning()){
+//			
+//			InstancedHandler.getInstance().getLock().lock();
+//			try {
+//				InstancedHandler.getInstance().getCondition().await();
+//			} catch (InterruptedException e) {
+//				e.printStackTrace();
+//			}
+//			finally{
+//				InstancedHandler.getInstance().getLock().unlock();
+//			}
+//
+//			synchronized (getChildren()) {
+//				
+//				getChildren().clear();
+//		
+//				for (InstancedCluster cluster : getClusters()){
+//					if (cluster.getCenter().sub(BaseContext.getCamera().getPosition()).length() < 600){
+//						addChild(cluster);
+//					}
+//				}
+//			}
+//		}
+//	}
 }

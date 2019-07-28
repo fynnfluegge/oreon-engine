@@ -1,7 +1,7 @@
 #version 330
 
-in vec2 texCoord_FS;
 in vec3 position_FS;
+in vec2 texCoord_FS;
 
 struct Material
 {
@@ -16,18 +16,14 @@ layout (std140, row_major) uniform Camera{
 };
 
 uniform Material material;
-
-float alphaDistanceFactor(float dist)
-{
-	return 0.01f * (dist-300);
-}
+uniform float alphaDiscardThreshold = 0.5;
+uniform int range = 700;
 
 void main()
 {
 	float dist = length(eyePosition - position_FS);
 	float alpha = texture(material.diffusemap, texCoord_FS).a;
-	// alpha *= alphaDistanceFactor(dist);
-	if (alpha < 0.2)
+	if (alpha < alphaDiscardThreshold || dist < range)
 		discard;
-	gl_FragColor = vec4(0.1,0.9,0.1,1.0);
+	gl_FragColor = vec4(1,1,1,1);
 }

@@ -1,4 +1,4 @@
-package org.oreon.examples.gl.oreonworlds.shaders;
+package org.oreon.gl.components.terrain.shader;
 
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
@@ -7,6 +7,8 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE3;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE4;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
+import org.oreon.common.quadtree.ChunkConfig;
+import org.oreon.common.quadtree.QuadtreeNode;
 import org.oreon.core.context.BaseContext;
 import org.oreon.core.gl.context.GLContext;
 import org.oreon.core.gl.pipeline.GLShaderProgram;
@@ -15,8 +17,7 @@ import org.oreon.core.scenegraph.NodeComponentType;
 import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.util.Constants;
 import org.oreon.core.util.ResourceLoader;
-import org.oreon.gl.components.terrain.TerrainConfiguration;
-import org.oreon.gl.components.terrain.TerrainNode;
+import org.oreon.gl.components.terrain.GLTerrainConfig;
 
 public class TerrainShader extends GLShaderProgram {
 
@@ -32,11 +33,11 @@ public class TerrainShader extends GLShaderProgram {
 	protected TerrainShader() {
 		super();
 
-		addVertexShader(ResourceLoader.loadShader("oreonworlds/shaders/terrain/terrain.vert"));
-		addTessellationControlShader(ResourceLoader.loadShader("oreonworlds/shaders/terrain/terrain.tesc"));
-		addTessellationEvaluationShader(ResourceLoader.loadShader("oreonworlds/shaders/terrain/terrain.tese"));
-		addGeometryShader(ResourceLoader.loadShader("oreonworlds/shaders/terrain/terrain.geom"));
-		addFragmentShader(ResourceLoader.loadShader("oreonworlds/shaders/terrain/terrain.frag"));
+		addVertexShader(ResourceLoader.loadShader("shaders/terrain/terrain.vert"));
+		addTessellationControlShader(ResourceLoader.loadShader("shaders/terrain/terrain.tesc"));
+		addTessellationEvaluationShader(ResourceLoader.loadShader("shaders/terrain/terrain.tese"));
+		addGeometryShader(ResourceLoader.loadShader("shaders/terrain/terrain.geom"));
+		addFragmentShader(ResourceLoader.loadShader("shaders/terrain/terrain.frag"));
 		compileShader();
 
 		addUniform("localMatrix");
@@ -103,12 +104,13 @@ public class TerrainShader extends GLShaderProgram {
 		setUniformi("isReflection", BaseContext.getConfig().isRenderReflection() ? 1 : 0);
 		setUniformi("isCameraUnderWater", BaseContext.getConfig().isRenderUnderwater() ? 1 : 0);		
 		
-		TerrainConfiguration terrConfig = object.getComponent(NodeComponentType.CONFIGURATION);
+		GLTerrainConfig terrConfig = object.getComponent(NodeComponentType.CONFIGURATION);
+		ChunkConfig vChunkConfig = ((QuadtreeNode) object).getChunkConfig();
 		
-		int lod = ((TerrainNode) object).getLod();
-		Vec2f index = ((TerrainNode) object).getIndex();
-		float gap = ((TerrainNode) object).getGap();
-		Vec2f location = ((TerrainNode) object).getLocation();
+		int lod = vChunkConfig.getLod();
+		Vec2f index = vChunkConfig.getIndex();
+		float gap = vChunkConfig.getGap();
+		Vec2f location = vChunkConfig.getLocation();
 		
 		setUniform("localMatrix", object.getLocalTransform().getWorldMatrix());
 		setUniform("worldMatrix", object.getWorldTransform().getWorldMatrix());
@@ -125,14 +127,14 @@ public class TerrainShader extends GLShaderProgram {
 		terrConfig.getSplatmap().bind();
 		setUniformi("splatmap", 2);
 		
-		setUniformf("scaleXZ", terrConfig.getScaleXZ());
-		setUniformf("scaleY", terrConfig.getScaleY());
+		setUniformf("scaleXZ", terrConfig.getHorizontalScaling());
+		setUniformf("scaleY", terrConfig.getVerticalScaling());
 		setUniformi("bezier", terrConfig.getBezier());
 		setUniformi("tessFactor", terrConfig.getTessellationFactor());
 		setUniformf("tessSlope", terrConfig.getTessellationSlope());
 		setUniformf("tessShift", terrConfig.getTessellationShift());
-		setUniformi("largeDetailRange", terrConfig.getDetailRange());
-		setUniformf("texDetail", terrConfig.getTexDetail());
+		setUniformi("largeDetailRange", terrConfig.getHighDetailRange());
+		setUniformf("texDetail", terrConfig.getUvScaling());
 		setUniformi("lod", lod);
 		setUniform("index", index);
 		setUniformf("gap", gap);

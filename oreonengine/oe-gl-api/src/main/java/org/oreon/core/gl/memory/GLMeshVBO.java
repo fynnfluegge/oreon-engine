@@ -4,13 +4,6 @@ import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
 import static org.lwjgl.opengl.GL11.GL_UNSIGNED_INT;
 import static org.lwjgl.opengl.GL11.glDrawElements;
-import static org.lwjgl.opengl.GL31.glDrawElementsInstanced;
-
-import org.oreon.core.model.Mesh;
-import org.oreon.core.model.Vertex;
-import org.oreon.core.util.BufferUtil;
-import org.oreon.core.util.IntegerReference;
-
 import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
 import static org.lwjgl.opengl.GL15.GL_ELEMENT_ARRAY_BUFFER;
 import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
@@ -24,6 +17,12 @@ import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import static org.lwjgl.opengl.GL30.glDeleteVertexArrays;
 import static org.lwjgl.opengl.GL30.glGenVertexArrays;
+import static org.lwjgl.opengl.GL31.glDrawElementsInstanced;
+
+import org.oreon.core.model.Mesh;
+import org.oreon.core.model.Vertex;
+import org.oreon.core.util.BufferUtil;
+import org.oreon.core.util.IntegerReference;
 
 public class GLMeshVBO implements VBO{
 
@@ -32,8 +31,8 @@ public class GLMeshVBO implements VBO{
 	private int vaoId;
 	private int size;
 	private boolean hasTangentsBitangents;	
-	private boolean isInstanced;
 	private IntegerReference instances;
+	private boolean drawInstanced;
 	
 	public GLMeshVBO()
 	{
@@ -48,8 +47,6 @@ public class GLMeshVBO implements VBO{
 	{
 			size = mesh.getIndices().length;
 			hasTangentsBitangents = mesh.isTangentSpace();
-			isInstanced = mesh.isInstanced();
-			instances.setValue(mesh.getInstances());
 		
 			glBindVertexArray(vaoId);
 			
@@ -88,8 +85,10 @@ public class GLMeshVBO implements VBO{
 				glEnableVertexAttribArray(4);
 			}
 			
-			if (isInstanced)
-				glDrawElementsInstanced(GL_TRIANGLES, size, GL_UNSIGNED_INT, 0, instances.getValue());
+			if (drawInstanced){
+				if (instances.getValue() > 0)
+					glDrawElementsInstanced(GL_TRIANGLES, size, GL_UNSIGNED_INT, 0, instances.getValue());
+			}
 			else
 				glDrawElements(GL_TRIANGLES, size, GL_UNSIGNED_INT, 0);
 			
@@ -113,5 +112,13 @@ public class GLMeshVBO implements VBO{
 	
 	public void setInstances(IntegerReference instances){
 		this.instances = instances;
+	}
+	
+	public void setInstances(int instances){
+		this.instances.setValue(instances);
+	}
+	
+	public void setDrawInstanced(boolean vDrawInstanced){
+		drawInstanced = vDrawInstanced;
 	}
 }

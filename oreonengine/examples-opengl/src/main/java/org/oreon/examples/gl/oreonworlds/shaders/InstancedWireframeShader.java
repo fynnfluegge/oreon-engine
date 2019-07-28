@@ -3,9 +3,8 @@ package org.oreon.examples.gl.oreonworlds.shaders;
 import java.util.List;
 
 import org.oreon.core.context.BaseContext;
-import org.oreon.core.gl.instanced.GLInstancedCluster;
 import org.oreon.core.gl.pipeline.GLShaderProgram;
-import org.oreon.core.instanced.InstancedCluster;
+import org.oreon.core.instanced.InstancedObject;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.scenegraph.Renderable;
 import org.oreon.core.util.Constants;
@@ -28,9 +27,9 @@ private static InstancedWireframeShader instance = null;
 	{
 		super();
 
-		addVertexShader(ResourceLoader.loadShader("oreonworlds/shaders/assets/InstancingGrid_Shader/Grid_VS.glsl"));
-		addGeometryShader(ResourceLoader.loadShader("oreonworlds/shaders/assets/InstancingGrid_Shader/Grid_GS.glsl"));
-		addFragmentShader(ResourceLoader.loadShader("oreonworlds/shaders/assets/InstancingGrid_Shader/Grid_FS.glsl"));
+		addVertexShader(ResourceLoader.loadShader("oreonworlds/shaders/assets/InstancedWireframe_Shader/instanced_wireframe.vert"));
+		addGeometryShader(ResourceLoader.loadShader("oreonworlds/shaders/assets/InstancedWireframe_Shader/instanced_wireframe.geom"));
+		addFragmentShader(ResourceLoader.loadShader("oreonworlds/shaders/assets/InstancedWireframe_Shader/instanced_wireframe.frag"));
 		compileShader();
 		
 		addUniform("clipplane");
@@ -41,7 +40,7 @@ private static InstancedWireframeShader instance = null;
 		addUniformBlock("modelMatrices");
 		addUniformBlock("Camera");
 		
-		for (int i=0; i<500; i++)
+		for (int i=0; i<100; i++)
 		{
 			addUniform("matrixIndices[" + i + "]");
 		}
@@ -52,15 +51,14 @@ private static InstancedWireframeShader instance = null;
 		bindUniformBlock("Camera", Constants.CameraUniformBlockBinding);
 		setUniformi("isReflection", BaseContext.getConfig().isRenderReflection() ? 1 : 0);
 		
-		((GLInstancedCluster) object.getParentNode()).getWorldMatricesBuffer().bindBufferBase(0);
 		bindUniformBlock("worldMatrices", 0);
-		((GLInstancedCluster) object.getParentNode()).getModelMatricesBuffer().bindBufferBase(1);
 		bindUniformBlock("modelMatrices", 1);
 		
 		setUniform("clipplane", BaseContext.getConfig().getClipplane());
 		setUniform("scalingMatrix", new Matrix4f().Scaling(object.getWorldTransform().getScaling()));
 		
-		List<Integer> indices = ((InstancedCluster) object.getParentNode()).getHighPolyIndices();
+		InstancedObject vParentNode = object.getParentObject();
+		List<Integer> indices = vParentNode.getHighPolyIndices();
 		
 		for (int i=0; i<indices.size(); i++)
 		{

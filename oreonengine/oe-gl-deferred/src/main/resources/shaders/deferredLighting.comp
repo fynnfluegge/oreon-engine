@@ -31,8 +31,8 @@ layout (std140) uniform DirectionalLight{
 } directional_light;
 
 layout (std140, row_major) uniform LightViewProjections{
-	mat4 m_lightViewProjection[7];
-	float splitRange[6];
+	mat4 m_lightViewProjection[5];
+	float splitRange[4];
 };
 
 uniform sampler2DArray pssm;
@@ -48,6 +48,11 @@ const float znear = 0.1;
 
 float diffuse(vec3 direction, vec3 normal, float intensity)
 {
+	if (direction.y < -0.33)
+	{
+		direction.y = -0.33;
+		direction = normalize(direction);
+	}
 	return max(0.0, dot(normal, -direction) * intensity);
 }
 
@@ -63,7 +68,7 @@ float specular(vec3 direction, vec3 normal, vec3 eyePosition, vec3 vertexPositio
 
 float getFogFactor(float dist)
 {
-	return smoothstep(0,1,-0.0002/sightRangeFactor*(dist-(zfar)/10*sightRangeFactor) + 1);
+	return clamp(smoothstep(0.0,1.0,-0.0002/sightRangeFactor*(dist-(zfar)/10*sightRangeFactor) + 1),0.0,1.0);
 }
 
 float linearizeDepth(float depth)
@@ -106,64 +111,45 @@ float varianceShadow(vec3 projCoords, int split, int kernels){
 
 float applyShadowMapping(vec3 worldPos)
 {
-	float shadowFactor = 0;
+	float shadowFactor = 1;
 	float terrainShadow = 1;
 	vec3 projCoords = vec3(0,0,0);
 	float linDepth = (m_View * vec4(worldPos,1)).z/zfar;
 	
-	vec4 lightSpacePos = m_lightViewProjection[6] * vec4(worldPos,1.0);
+	vec4 lightSpacePos = m_lightViewProjection[4] * vec4(worldPos,1.0);
 	projCoords = lightSpacePos.xyz * 0.5 + 0.5;
-	terrainShadow = varianceShadow(projCoords,6,11);
+	terrainShadow = varianceShadow(projCoords,4,11);
 	
-	if (linDepth < splitRange[0]){
+	if (linDepth <= splitRange[0]){
 		vec4 lightSpacePos = m_lightViewProjection[0] * vec4(worldPos,1.0);
 		projCoords = lightSpacePos.xyz * 0.5 + 0.5;
-		float shadowFactor0 = varianceShadow(projCoords,0,4);
+		shadowFactor = varianceShadow(projCoords,0,4);
 		
 		lightSpacePos = m_lightViewProjection[1] * vec4(worldPos,1.0);
 		projCoords = lightSpacePos.xyz * 0.5 + 0.5;
-		float shadowFactor1 = varianceShadow(projCoords,1,4);
-		
-		lightSpacePos = m_lightViewProjection[2] * vec4(worldPos,1.0);
-		projCoords = lightSpacePos.xyz * 0.5 + 0.5;
-		float shadowFactor2 = varianceShadow(projCoords,2,2);
-		
-		shadowFactor = min(shadowFactor2, min(shadowFactor0,shadowFactor1));
+		shadowFactor = min(shadowFactor,varianceShadow(projCoords,1,4));
 	}
-	else if (linDepth < splitRange[1]){
+	else if (linDepth <= splitRange[1]){
 		vec4 lightSpacePos = m_lightViewProjection[1] * vec4(worldPos,1.0);
 		projCoords = lightSpacePos.xyz * 0.5 + 0.5;
-		float shadowFactor0 = varianceShadow(projCoords,1,4);
+		shadowFactor = varianceShadow(projCoords,1,4);
 		
 		lightSpacePos = m_lightViewProjection[2] * vec4(worldPos,1.0);
 		projCoords = lightSpacePos.xyz * 0.5 + 0.5;
-		float shadowFactor1 = varianceShadow(projCoords,2,2);
-		
-		shadowFactor = min(shadowFactor0,shadowFactor1);
+		shadowFactor = min(shadowFactor,varianceShadow(projCoords,2,2));
 	}
-	else if (linDepth < splitRange[2]){
+	else if (linDepth <= splitRange[2]){
 		vec4 lightSpacePos = m_lightViewProjection[2] * vec4(worldPos,1.0);
 		projCoords = lightSpacePos.xyz * 0.5 + 0.5;
-		shadowFactor = varianceShadow(projCoords,2,2);
+		shadowFactor = varianceShadow(projCoords,2,2); // TODO immer mit einem split höher min
 	}
-	else if (linDepth < splitRange[3]){
+	else if (linDepth <= splitRange[3]){
 		vec4 lightSpacePos = m_lightViewProjection[3] * vec4(worldPos,1.0);
 		projCoords = lightSpacePos.xyz * 0.5 + 0.5;
-		shadowFactor = varianceShadow(projCoords,3,2);
+		shadowFactor = varianceShadow(projCoords,3,2); // TODO immer mit einem split höher min
 	}
-	else if (linDepth < splitRange[4]){
-		vec4 lightSpacePos = m_lightViewProjection[4] * vec4(worldPos,1.0);
-		projCoords = lightSpacePos.xyz * 0.5 + 0.5;
-		shadowFactor = varianceShadow(projCoords,4,1); 
-	}
-	else if (linDepth < splitRange[5]){
-		vec4 lightSpacePos = m_lightViewProjection[5] * vec4(worldPos,1.0);
-		projCoords = lightSpacePos.xyz * 0.5 + 0.5;
-		shadowFactor = varianceShadow(projCoords,5,1); 
-	}
-	else return 1;
 	
-	return terrainShadow;
+	return min(terrainShadow, shadowFactor);
 }
 
 void main(void){
@@ -221,7 +207,7 @@ void main(void){
 					
 				float dist = length(eyePosition - position);
 				float fogFactor = getFogFactor(dist);
-				finalColor += mix(fogColor, sampleColor, clamp(fogFactor,0,1));
+				finalColor += mix(fogColor, sampleColor, fogFactor);
 			}
 			else{
 				finalColor += albedo;
@@ -266,7 +252,7 @@ void main(void){
 				
 			float dist = length(eyePosition - position);
 			float fogFactor = getFogFactor(dist);
-			finalColor = mix(fogColor, finalColor, clamp(fogFactor,0,1));
+			finalColor = mix(fogColor, finalColor, fogFactor);
 		}
 		else{
 			finalColor = albedo;

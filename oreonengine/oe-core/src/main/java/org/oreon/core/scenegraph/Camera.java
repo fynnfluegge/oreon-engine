@@ -12,6 +12,7 @@ import static org.lwjgl.glfw.GLFW.glfwSetCursorPos;
 
 import java.nio.FloatBuffer;
 
+import org.oreon.core.CoreEngine;
 import org.oreon.core.context.BaseContext;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.math.Vec3f;
@@ -31,8 +32,8 @@ private final Vec3f yAxis = new Vec3f(0,1,0);
 	private Vec3f forward;
 	private Vec3f previousForward;
 	private Vec3f up;
-	private float movAmt = 2.0f;
-	private float rotAmt = 2.0f;
+	private float movAmt = 8.0f;
+	private float rotAmt = 12.0f;
 	private Matrix4f projectionMatrix;
 	private Matrix4f viewMatrix;
 	private Matrix4f viewProjectionMatrix;
@@ -53,7 +54,7 @@ private final Vec3f yAxis = new Vec3f(0,1,0);
 	private float rotYamt = 0;
 	private float rotXstride;
 	private float rotXamt = 0;
-	private float mouseSensitivity = 0.015f;
+	private float mouseSensitivity = 0.04f;
 	private boolean isUpRotation;
 	private boolean isDownRotation;	
 	private boolean isLeftRotation;	
@@ -83,6 +84,7 @@ private final Vec3f yAxis = new Vec3f(0,1,0);
 		initfrustumPlanes();
 		previousViewMatrix = new Matrix4f().Zero();
 		previousViewProjectionMatrix = new Matrix4f().Zero();
+		previousPosition = new Vec3f(0,0,0);
 		floatBuffer = BufferUtil.createFloatBuffer(bufferSize);
 		setViewProjectionMatrix(getProjectionMatrix().mul(getViewMatrix()));
 		setOriginViewProjectionMatrix(getProjectionMatrix().mul(getOriginViewMatrix()));
@@ -101,8 +103,8 @@ private final Vec3f yAxis = new Vec3f(0,1,0);
 		setCameraMoved(false);
 		setCameraRotated(false);
 		
-		setMovAmt(getMovAmt() + (0.04f * input.getScrollOffset()));
-		setMovAmt(Math.max(0.02f, getMovAmt()));
+		setMovAmt(getMovAmt() + (input.getScrollOffset()/2));
+		setMovAmt(Math.max(0.1f, getMovAmt()));
 		
 		if(input.isKeyHolding(GLFW_KEY_W))
 			move(getForward(), getMovAmt());
@@ -128,11 +130,16 @@ private final Vec3f yAxis = new Vec3f(0,1,0);
 			float dy = input.getLockedCursorPosition().getY() - input.getCursorPosition().getY();
 			float dx = input.getLockedCursorPosition().getX() - input.getCursorPosition().getX();
 			
+			if (Math.abs(dy) < 1)
+				dy = 0;
+			if (Math.abs(dx) < 1)
+				dx = 0;
+			
 			// y-axxis rotation
 			
 			if (dy != 0){
 				setRotYamt(getRotYamt() - dy);
-				setRotYstride(Math.abs(getRotYamt() * 0.1f));
+				setRotYstride(Math.abs(getRotYamt() * CoreEngine.currentFrameTime * 10));
 			}
 			
 			if (getRotYamt() != 0 || getRotYstride() != 0){
@@ -157,7 +164,7 @@ private final Vec3f yAxis = new Vec3f(0,1,0);
 				}
 				// smooth-stop
 				if (getRotYamt() == 0){
-					setRotYstride(getRotYstride() * 0.95f);
+					setRotYstride(getRotYstride() * 0.85f);
 					if (isUpRotation())
 						rotateX(-getRotYstride() * getMouseSensitivity());
 					if (isDownRotation())
@@ -170,7 +177,7 @@ private final Vec3f yAxis = new Vec3f(0,1,0);
 			// x-axxis rotation
 			if (dx != 0){
 				setRotXamt(getRotXamt() + dx);
-				setRotXstride(Math.abs(getRotXamt() * 0.1f));
+				setRotXstride(Math.abs(getRotXamt() * CoreEngine.currentFrameTime * 10));
 			}
 			
 			if (getRotXamt() != 0 || getRotXstride() != 0){
@@ -195,7 +202,7 @@ private final Vec3f yAxis = new Vec3f(0,1,0);
 				}
 				// smooth-stop
 				if (getRotXamt() == 0){
-					setRotXstride(getRotXstride() * 0.95f);
+					setRotXstride(getRotXstride() * 0.85f);
 					if (isRightRotation())
 						rotateY(getRotXstride() * getMouseSensitivity());
 					if (isLeftRotation())
@@ -322,6 +329,12 @@ private final Vec3f yAxis = new Vec3f(0,1,0);
 		
 		forward.rotate(angle, yAxis).normalize();
 		
+		up = forward.cross(hAxis).normalize();
+		
+		// this is for align y-axxis of camera vectors
+		// there is a kind of numeric bug, when camera is rotating very fast, camera vectors skewing
+		hAxis = yAxis.cross(forward).normalize();
+		forward.rotate(0, yAxis).normalize();
 		up = forward.cross(hAxis).normalize();
 	}
 	

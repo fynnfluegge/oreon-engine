@@ -11,7 +11,7 @@ layout (binding = 2, rgba32f) uniform readonly image2D velocityMap;
 uniform float windowWidth;
 uniform float windowHeight;
 
-const int windowHeaderWidth = 20;
+const int windowHeaderWidth = 0;
 const float maxSamples = 12;
 
 void main(void)

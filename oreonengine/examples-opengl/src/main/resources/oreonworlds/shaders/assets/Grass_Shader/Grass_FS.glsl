@@ -36,16 +36,16 @@ void main()
 {	
 	float dist = length(eyePosition - position_FS);
 	
-	vec3 albedo = texture(material.diffusemap, texCoord_FS).rgb;
+	vec4 albedo = texture(material.diffusemap, texCoord_FS).rgba;
 	
-	float alpha = texture(material.diffusemap, texCoord_FS).a;
+	float alpha = albedo.a;
 	
 	if (alpha < 0.8)
 		discard;
 	
 	// alpha *= alphaDistanceFactor(dist);
 
-	albedo_out = vec4(albedo,alpha);
+	albedo_out = vec4(albedo.rgb,alpha);
 	worldPosition_out = vec4(position_FS,1);
 	normal_out = vec4(normal_FS.xzy,1);
 	specularEmission_out = vec4(1,0,0,1);

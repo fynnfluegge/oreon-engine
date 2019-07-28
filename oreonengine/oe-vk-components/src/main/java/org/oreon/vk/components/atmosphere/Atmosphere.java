@@ -5,6 +5,7 @@ import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
 import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 import static org.lwjgl.vulkan.VK10.VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_FRAGMENT_BIT;
 import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_VERTEX_BIT;
 
 import java.nio.ByteBuffer;
@@ -66,7 +67,7 @@ public class Atmosphere extends Renderable{
 		
 		ShaderPipeline graphicsShaderPipeline = new ShaderPipeline(device.getHandle());
 	    graphicsShaderPipeline.addShaderModule(vertexShader);
-	    graphicsShaderPipeline.createFragmentShader("shaders/atmosphere/atmosphere.frag.spv");
+	    graphicsShaderPipeline.createFragmentShader("shaders/atmosphere/atmospheric_scattering.frag.spv");
 	    graphicsShaderPipeline.createShaderPipeline();
 	    
 	    ShaderPipeline reflectionShaderPipeline = new ShaderPipeline(device.getHandle());
@@ -97,6 +98,21 @@ public class Atmosphere extends Renderable{
 		ByteBuffer vertexBuffer = BufferUtil.createByteBuffer(mesh.getVertices(), VertexLayout.POS);
 		ByteBuffer indexBuffer = BufferUtil.createByteBuffer(mesh.getIndices());
 		
+		int pushConstantsRange = Float.BYTES * 22 + Integer.BYTES * 3;
+		
+		ByteBuffer pushConstants = memAlloc(pushConstantsRange);
+		pushConstants.put(BufferUtil.createByteBuffer(VkContext.getCamera().getProjectionMatrix()));
+		pushConstants.putFloat(BaseContext.getConfig().getSunPosition().getX()*-1);
+		pushConstants.putFloat(BaseContext.getConfig().getSunPosition().getY()*-1);
+		pushConstants.putFloat(BaseContext.getConfig().getSunPosition().getZ()*-1);
+		pushConstants.putFloat(BaseContext.getConfig().getSunRadius());
+		pushConstants.putInt(BaseContext.getConfig().getX_ScreenResolution());
+		pushConstants.putInt(BaseContext.getConfig().getY_ScreenResolution());
+		pushConstants.putInt(0);
+		pushConstants.putFloat(BaseContext.getConfig().getAtmosphereBloomFactor());
+		pushConstants.putFloat(BaseContext.getConfig().getHorizonVerticalShift());
+		pushConstants.flip();
+		
 		VkPipeline graphicsPipeline = new GraphicsPipeline(device.getHandle(),
 				graphicsShaderPipeline, vertexInput, VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
 				VkUtil.createLongBuffer(descriptorSetLayouts),
@@ -104,7 +120,8 @@ public class Atmosphere extends Renderable{
 				BaseContext.getConfig().getY_ScreenResolution(),
 				VkContext.getResources().getOffScreenFbo().getRenderPass().getHandle(),
 				VkContext.getResources().getOffScreenFbo().getColorAttachmentCount(),
-				BaseContext.getConfig().getMultisamples());
+				BaseContext.getConfig().getMultisampling_sampleCount(),
+				pushConstantsRange, VK_SHADER_STAGE_FRAGMENT_BIT);
 		
 		VkPipeline reflectionPipeline = new GraphicsPipeline(device.getHandle(),
 				reflectionShaderPipeline, vertexInput, VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
@@ -136,7 +153,8 @@ public class Atmosphere extends Renderable{
 	    		VkUtil.createLongArray(descriptorSets),
 	    		vertexBufferObject.getHandle(),
 	    		indexBufferObject.getHandle(),
-	    		mesh.getIndices().length);
+	    		mesh.getIndices().length,
+	    		pushConstants, VK_SHADER_STAGE_FRAGMENT_BIT);
         
         CommandBuffer reflectionCommandBuffer = new SecondaryDrawIndexedCmdBuffer(
 	    		device.getHandle(),

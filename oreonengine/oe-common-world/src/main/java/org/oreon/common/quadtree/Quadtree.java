@@ -1,7 +1,6 @@
 package org.oreon.common.quadtree;
 
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -12,7 +11,6 @@ import org.oreon.core.math.Vec2f;
 import org.oreon.core.scenegraph.Node;
 import org.oreon.core.scenegraph.NodeComponent;
 import org.oreon.core.scenegraph.NodeComponentType;
-import org.oreon.core.scenegraph.RenderList;
 
 import lombok.Getter;
 
@@ -26,8 +24,6 @@ public abstract class Quadtree extends Node implements Runnable{
 	private boolean updateQuadtreeFinished;
 	private int updateCounter;
 	private int updateThreshold = 2;
-	protected ConcurrentHashMap<String, QuadtreeChunk> leafChunks;
-	private ConcurrentHashMap<String, QuadtreeChunk> formerLeafChunks;
 	
 	@Getter
 	protected QuadtreeCache quadtreeCache;
@@ -40,8 +36,6 @@ public abstract class Quadtree extends Node implements Runnable{
 		startUpdateQuadtreeCondition = startUpdateQuadtreeLock.newCondition();
 		thread = new Thread(this);
 		quadtreeCache = new QuadtreeCache();
-		leafChunks = new ConcurrentHashMap<String, QuadtreeChunk>();
-		formerLeafChunks = new ConcurrentHashMap<String, QuadtreeChunk>();
 	}
 	
 	public void updateQuadtree(){
@@ -54,7 +48,7 @@ public abstract class Quadtree extends Node implements Runnable{
 			synchronized(finishUpdateQuadtreeLock) {
 				updateQuadtreeFinished = false;
 				for (Node node : getChildren()){
-					((QuadtreeChunk) node).updateQuadtree(leafChunks, formerLeafChunks);
+					((QuadtreeNode) node).updateQuadtree();
 				}
 				updateCounter = 0;
 				updateQuadtreeFinished = true;
@@ -100,37 +94,6 @@ public abstract class Quadtree extends Node implements Runnable{
 	}
 	
 	@Override
-	public void record(RenderList renderList){
-		
-		// wait on updateQuadtree() finish
-		synchronized(finishUpdateQuadtreeLock) {
-			while(!updateQuadtreeFinished) {
-				try {
-					finishUpdateQuadtreeLock.wait(1000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-			
-			for (Map.Entry<String, QuadtreeChunk> entry : leafChunks.entrySet()){
-				
-				if (!renderList.contains(entry.getKey())){
-					renderList.add(entry.getValue());
-					renderList.setChanged(true);
-				}
-			}
-			for (Map.Entry<String, QuadtreeChunk> entry : formerLeafChunks.entrySet()){
-				
-				if (renderList.contains(entry.getKey())){
-					renderList.remove(entry.getValue());
-					renderList.setChanged(true);
-				}
-			}
-			formerLeafChunks.clear();
-		}
-	}
-	
-	@Override
 	public void shutdown() {
 		
 		isRunning = false;
@@ -140,20 +103,20 @@ public abstract class Quadtree extends Node implements Runnable{
 	public void update(){
 		
 		// wait on updateQuadtree() finish
-		synchronized(finishUpdateQuadtreeLock) {
-			while(!updateQuadtreeFinished) {
-				try {
-					finishUpdateQuadtreeLock.wait(1000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-			for(Node child: getChildren())
-				child.update();
-		}
+//		synchronized(finishUpdateQuadtreeLock) {
+//			while(!updateQuadtreeFinished) {
+//				try {
+//					finishUpdateQuadtreeLock.wait(1000);
+//				} catch (InterruptedException e) {
+//					e.printStackTrace();
+//				}
+//			}
+//			for(Node child: getChildren())
+//				child.update();
+//		}
 	}
 	
-	public abstract QuadtreeChunk createChildChunk(Map<NodeComponentType, NodeComponent> components,
+	public abstract QuadtreeNode createChildChunk(Map<NodeComponentType, NodeComponent> components,
 			QuadtreeCache quadtreeCache, Transform worldTransform,
 			Vec2f location, int levelOfDetail, Vec2f index);
 	

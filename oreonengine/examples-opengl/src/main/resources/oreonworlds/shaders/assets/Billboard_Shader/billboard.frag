@@ -24,14 +24,13 @@ layout (std140, row_major) uniform Camera{
 uniform Material material;
 uniform int isReflection;
 uniform int isRefraction;
-uniform int screenWidth;
-uniform int screenHeight;
+uniform int range = 700;
+uniform float alphaDiscardThreshold = 0.5;
 
 float alphaDistanceFactor(float dist)
 {
-	return 0.01f * (dist-40);
+	return 0.01f * (dist-range);
 }
-
 
 void main()
 {	
@@ -41,7 +40,7 @@ void main()
 	
 	float alpha = albedo.a;
 	
-	if (alpha < 0.8)
+	if (alpha < alphaDiscardThreshold)
 		discard;
 	
 	if (isReflection == 0 && isRefraction == 0){

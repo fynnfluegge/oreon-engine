@@ -12,7 +12,7 @@ import lombok.Setter;
 public abstract class BaseContext {
 
 	@Getter
-	protected static Configuration config;
+	protected static Config config;
 	@Getter
 	protected static GLFWInput input;
 	@Getter
@@ -27,7 +27,7 @@ public abstract class BaseContext {
 	
 	public static void init() {
 		
-		config = new Configuration();
+		config = new Config();
 		input = new GLFWInput();
 		coreEngine = new CoreEngine();
 	}

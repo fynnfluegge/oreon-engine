@@ -1,6 +1,6 @@
 #version 430
 
-layout(triangles, invocations = 6) in;
+layout(triangles, invocations = 5) in;
 
 layout(triangle_strip, max_vertices = 3) out;
 
@@ -21,7 +21,7 @@ layout (std140, row_major) uniform worldMatrices{
 };
 
 layout (std140, row_major) uniform LightViewProjections{
-	mat4 m_lightViewProjection[6];
+	mat4 m_lightViewProjection[5];
 };
 
 uniform vec4 clipplane;

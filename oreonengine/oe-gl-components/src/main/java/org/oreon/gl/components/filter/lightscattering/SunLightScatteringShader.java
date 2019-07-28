@@ -31,6 +31,8 @@ public class SunLightScatteringShader extends GLShaderProgram{
 		addUniform("windowWidth");
 		addUniform("windowHeight");
 		addUniform("viewProjectionMatrix");
+		addUniform("num_samples");
+		addUniform("decay");
 	}
 	
 	public void updateUniforms(int windowWidth, int windowHeight, Matrix4f viewProjectionMatrix) {
@@ -39,5 +41,7 @@ public class SunLightScatteringShader extends GLShaderProgram{
 		setUniformf("windowHeight", windowHeight);
 		setUniform("viewProjectionMatrix", viewProjectionMatrix);
 		setUniform("sunWorldPosition", BaseContext.getConfig().getSunPosition().mul(-Constants.ZFAR));
+		setUniformi("num_samples", BaseContext.getConfig().getLightscatteringSampleCount());
+		setUniformf("decay", BaseContext.getConfig().getLightscatteringDecay());
 	}
 }

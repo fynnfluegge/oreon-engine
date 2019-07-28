@@ -90,7 +90,7 @@ public class GLDeferredEngine extends RenderEngine{
 		instancingObjectHandler = InstancedHandler.getInstance();
 		
 		primarySceneFbo = new OffScreenFbo(config.getX_ScreenResolution(),
-				config.getY_ScreenResolution(), config.getMultisamples());
+				config.getY_ScreenResolution(), config.getMultisampling_sampleCount());
 		secondarySceneFbo = new TransparencyFbo(config.getX_ScreenResolution(),
 				config.getY_ScreenResolution());
 		GLContext.getResources().setPrimaryFbo(primarySceneFbo);
@@ -139,7 +139,14 @@ public class GLDeferredEngine extends RenderEngine{
 		pssmFbo.getFbo().bind();
 		glClear(GL_DEPTH_BUFFER_BIT);
 		pssmFbo.getFbo().unbind();
-		glFinish();
+		
+		
+		//----------------------------------//
+		//      Record Render Objects       //
+		//----------------------------------//
+		
+		sceneGraph.record(opaqueSceneRenderList);
+		
 		
 		
 		//----------------------------------//
@@ -150,19 +157,22 @@ public class GLDeferredEngine extends RenderEngine{
 			pssmFbo.getFbo().bind();
 			pssmFbo.getConfig().enable();
 			glViewport(0,0,BaseContext.getConfig().getShadowMapResolution(),BaseContext.getConfig().getShadowMapResolution());
-			sceneGraph.renderShadows();
+			opaqueSceneRenderList.getValues().forEach(object ->
+			{
+				object.renderShadows();
+			});
 			glViewport(0,0,config.getX_ScreenResolution(),config.getY_ScreenResolution());
 			pssmFbo.getConfig().disable();
 			pssmFbo.getFbo().unbind();
 		}
 		
+
 		
 		//----------------------------------------------//
 		//   render opaque scene into primary gbuffer   //
 		//----------------------------------------------//
 		
 		primarySceneFbo.bind();
-		sceneGraph.record(opaqueSceneRenderList);
 		
 		opaqueSceneRenderList.getValues().forEach(object ->
 			{
@@ -233,7 +243,7 @@ public class GLDeferredEngine extends RenderEngine{
 		}
 		
 		// start Threads to update instancing objects
-		instancingObjectHandler.signalAll();
+//		instancingObjectHandler.signalAll();
 		
 		// update Terrain Quadtree
 		if (camera.isCameraMoved()){
@@ -285,7 +295,7 @@ public class GLDeferredEngine extends RenderEngine{
 			//--------------------------------------------//
 			
 			if (BaseContext.getConfig().isBloomEnabled()){
-				bloom.render(prePostprocessingScene, currentScene, specularEmissionBloomMask);
+				bloom.render(currentScene, currentScene, specularEmissionBloomMask);
 				currentScene = bloom.getBloomSceneTexture();
 			}
 			
@@ -293,7 +303,7 @@ public class GLDeferredEngine extends RenderEngine{
 			//                  Underwater                //
 			//--------------------------------------------//
 			
-			if (BaseContext.getConfig().isRenderUnderwater() ){
+			if (BaseContext.getConfig().isRenderUnderwater()){
 				underWaterRenderer.render(currentScene,
 						primarySceneFbo.getAttachmentTexture(Attachment.DEPTH));
 				currentScene = underWaterRenderer.getUnderwaterSceneTexture();
@@ -349,7 +359,6 @@ public class GLDeferredEngine extends RenderEngine{
 //		fullScreenQuadMultisample.setTexture(primarySceneFbo.getAttachmentTexture(Attachment.COLOR));
 //		fullScreenQuadMultisample.render();
 		
-//		fullScreenQuad.setTexture(sunlightScattering.getSunLightScatteringTexture());
 		fullScreenQuad.setTexture(currentScene);
 		fullScreenQuad.render();
 		
@@ -368,8 +377,6 @@ public class GLDeferredEngine extends RenderEngine{
 		if (gui != null){
 			gui.render();
 		}
-		
-		glFinish();
 	}
 	
 	@Override

@@ -367,7 +367,7 @@ public class Water extends Renderable{
 				BaseContext.getConfig().getY_ScreenResolution(),
 				VkContext.getResources().getOffScreenFbo().getRenderPass().getHandle(),
 				VkContext.getResources().getOffScreenFbo().getColorAttachmentCount(),
-				BaseContext.getConfig().getMultisamples(),
+				BaseContext.getConfig().getMultisampling_sampleCount(),
 				pushConstantsRange, VK_SHADER_STAGE_ALL_GRAPHICS,
 				16);
 		
@@ -388,7 +388,7 @@ public class Water extends Renderable{
 				BaseContext.getConfig().getY_ScreenResolution(),
 				VkContext.getResources().getOffScreenFbo().getRenderPass().getHandle(),
 				VkContext.getResources().getOffScreenFbo().getColorAttachmentCount(),
-				BaseContext.getConfig().getMultisamples(),
+				BaseContext.getConfig().getMultisampling_sampleCount(),
 				pushConstantsRange, VK_SHADER_STAGE_ALL_GRAPHICS,
 				16);
 		
@@ -630,7 +630,7 @@ public class Water extends Renderable{
 					offScreenReflecRefracFbo.getHeight(),
 					offScreenReflecRefracFbo.getColorAttachmentCount(),
 					offScreenReflecRefracFbo.getDepthAttachmentCount(),
-					Constants.DEEPOCEAN_COLOR,
+					waterConfiguration.getBaseColor(),
 					VkUtil.createPointerBuffer(refractionSecondaryCmdBuffers.values()));
 			offScreenRefractionSubmitInfo.submit(
 					graphicsQueue);

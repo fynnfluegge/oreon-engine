@@ -1,6 +1,6 @@
 #version 430
 
-layout(triangles, invocations = 6) in;
+layout(triangles, invocations = 5) in;
 
 layout(triangle_strip, max_vertices = 3) out;
 
@@ -17,13 +17,12 @@ layout (std140, row_major) uniform Camera{
 	vec4 frustumPlanes[6];
 };
 
-layout (std140, row_major) uniform InstancedMatrices{
-	mat4 m_World[512];
-	mat4 m_Model[512];
+layout (std140, row_major) uniform worldMatrices{
+	mat4 m_World[100];
 };
 
 layout (std140, row_major) uniform LightViewProjections{
-	mat4 m_lightViewProjection[6];
+	mat4 m_lightViewProjection[5];
 };
 
 uniform int matrixIndices[100];

@@ -3,16 +3,11 @@ package org.oreon.examples.gl.oreonworlds.plants;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.oreon.core.context.BaseContext;
 import org.oreon.core.gl.memory.GLMeshVBO;
 import org.oreon.core.gl.scenegraph.GLRenderInfo;
-import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.gl.util.GLAssimpModelLoader;
 import org.oreon.core.gl.wrapper.parameter.CullFaceDisable;
-import org.oreon.core.instanced.InstancedCluster;
-import org.oreon.core.instanced.InstancedHandler;
 import org.oreon.core.instanced.InstancedObject;
-import org.oreon.core.math.Vec3f;
 import org.oreon.core.model.Model;
 import org.oreon.core.scenegraph.NodeComponentType;
 import org.oreon.core.scenegraph.Renderable;
@@ -24,15 +19,15 @@ public class Plant01ClusterGroup extends InstancedObject{
 	
 	public Plant01ClusterGroup(){
 		
-		List<Model<GLTexture>> models = GLAssimpModelLoader.loadModel("oreonworlds/assets/plants/Plant_01","billboardmodel.obj");
+		List<Model> models = GLAssimpModelLoader.loadModel("oreonworlds/assets/plants/Plant_01","billboardmodel.obj");
 	
 		List<Renderable> objects = new ArrayList<>();
 		
-		for (Model<GLTexture> model : models){
+		for (Model model : models){
 			
 			GLMeshVBO meshBuffer = new GLMeshVBO();
 			model.getMesh().setTangentSpace(false);
-			model.getMesh().setInstanced(true);
+//			model.getMesh().setInstanced(true);
 			
 			meshBuffer.addData(model.getMesh());
 			
@@ -48,37 +43,37 @@ public class Plant01ClusterGroup extends InstancedObject{
 			objects.add(object);
 		}
 		
-		addCluster(new Plant01Cluster(40,new Vec3f(-2171,0,2776),objects));
-		addCluster(new Plant01Cluster(20,new Vec3f(-1125,0,1448),objects));
-		addCluster(new Plant01Cluster(20,new Vec3f(-1174,0,1612),objects));
-		
-		setThread(new Thread(this));
-		getThread().start();
+//		addCluster(new Plant01Cluster(40,new Vec3f(-2171,0,2776),objects));
+//		addCluster(new Plant01Cluster(20,new Vec3f(-1125,0,1448),objects));
+//		addCluster(new Plant01Cluster(20,new Vec3f(-1174,0,1612),objects));
+//		
+//		setThread(new Thread(this));
+//		getThread().start();
 	}
 
-	public void run() {
-			while(isRunning()){
-			
-			InstancedHandler.getInstance().getLock().lock();
-			try {
-				InstancedHandler.getInstance().getCondition().await();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			finally{
-				InstancedHandler.getInstance().getLock().unlock();
-			}
-			
-			synchronized (getChildren()) {
-				
-				getChildren().clear();
-		
-				for (InstancedCluster cluster : getClusters()){
-					if (cluster.getCenter().sub(BaseContext.getCamera().getPosition()).length() < 600){
-						addChild(cluster);
-					}
-				}
-			}
-		}
-	}
+//	public void run() {
+//			while(isRunning()){
+//			
+//			InstancedHandler.getInstance().getLock().lock();
+//			try {
+//				InstancedHandler.getInstance().getCondition().await();
+//			} catch (InterruptedException e) {
+//				e.printStackTrace();
+//			}
+//			finally{
+//				InstancedHandler.getInstance().getLock().unlock();
+//			}
+//			
+//			synchronized (getChildren()) {
+//				
+//				getChildren().clear();
+//		
+//				for (InstancedCluster cluster : getClusters()){
+//					if (cluster.getCenter().sub(BaseContext.getCamera().getPosition()).length() < 6000){
+//						addChild(cluster);
+//					}
+//				}
+//			}
+//		}
+//	}
 }

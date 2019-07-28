@@ -76,6 +76,11 @@ public class Scenegraph extends Node{
 		transparentObjects.update();
 	}
 	
+	public void updateLights()
+	{
+		root.updateLights();
+	}
+	
 	public void input()
 	{
 		root.input();

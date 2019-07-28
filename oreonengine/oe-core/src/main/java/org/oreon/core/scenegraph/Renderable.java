@@ -3,9 +3,12 @@
 import java.util.HashMap;
 import java.util.Map;
 
+import lombok.Setter;
+
 public class Renderable extends Node{
 
 	private HashMap<NodeComponentType, NodeComponent> components;
+	@Setter
 	protected boolean render;
 	
 	public Renderable()
@@ -24,7 +27,22 @@ public class Renderable extends Node{
 	
 	public void update()
 	{	
-		components.values().forEach(component -> component.update());
+		for (Map.Entry<NodeComponentType, NodeComponent> entry : components.entrySet()){
+			if (entry.getKey() != NodeComponentType.LIGHT){
+				entry.getValue().update();
+			}
+		}
+		
+		super.update();
+	}
+	
+	public void updateLights()
+	{	
+		for (Map.Entry<NodeComponentType, NodeComponent> entry : components.entrySet()){
+			if (entry.getKey() == NodeComponentType.LIGHT){
+				entry.getValue().update();
+			}
+		}
 		
 		super.update();
 	}
