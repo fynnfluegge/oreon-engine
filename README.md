@@ -41,8 +41,7 @@ OpenGL and Vulkan Binding for Java is done  [LWJGL 3](https://www.lwjgl.org/).
   <img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/0015.png" width="290" />
 </p>
 
-### LOD Quadtree 
-#### Terrain
+### Diamnond Square Terrain Quadtree 
 <img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/1005.png" width="400px" align="left">
 <img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/1007.png" width="400px">
 
@@ -74,18 +73,18 @@ OpenGL and Vulkan Binding for Java is done  [LWJGL 3](https://www.lwjgl.org/).
 </p>
 
 ### Tessellation & Normal-/Displacement-Mapping
-<img src="docs/_images/Normalmapping.png" width="500px">
+<img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/1003.png" width="500px">
 
 ### Post-Processing Effects
 #### Motion Blur, Depth of Field Blur, Bloom
-<img src="docs/_images/Blur.png" width="500px">
+<img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/1001.png" width="500px">
 
 #### Light Scattering, Lens Flare
-<img src="docs/_images/LightScattering_LensFlare.png" width="400px" align="left">
-<img src="docs/_images/LightScattering_LensFlare2.png" width="400px">
+<img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/1002.png" width="400px" align="left">
+<img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/1008.png" width="400px" align="left">
 
 #### SSAO
-<img src="docs/_images/ssao.png" width="820px">
+<img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/9001_ssao.png" width="820px">
 
 ### GUI
 ## Credits
