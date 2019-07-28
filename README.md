@@ -1,12 +1,7 @@
 # Oreon Engine (Java - OpenGL/Vulkan)
+
 Welcome to the Cross-Platform Java 3D Engine.
-
-![Banner](docs/_images/Banner.png)
-
-As OpenGL and Vulkan Binding for Java the [LWJGL 3](https://www.lwjgl.org/) API is used.
-Both OpenGL and the next generation graphics API Vulkan is supported!
-
-<img src="docs/_images/gl_vs_vk.png" width="1000px">
+OpenGL and Vulkan Binding for Java is done  [LWJGL 3](https://www.lwjgl.org/).
 
 ## Build Manual
 * Oreon Engine project uses [lombok](https://projectlombok.org/).
@@ -14,56 +9,83 @@ Both OpenGL and the next generation graphics API Vulkan is supported!
 
 * Getting started guide for Eclipse available [here](http://fynnfluegge.github.io/oreon-engine/_navigation/Getting_Started.html).
 
-## Example Open World Ocean OpenGL Demo
+## Example OpenGL Demo
 * [examples-opengl](https://github.com/fynnfluegge/oreon-engine/tree/master/oreonengine/examples-opengl)
   [GLOreonWorlds](https://github.com/fynnfluegge/oreon-engine/blob/master/oreonengine/examples-opengl/src/main/java/org/oreon/examples/gl/oreonworlds/GLOreonworlds.java)
 
-<img src="docs/_images/thumbnail4.png" width="500px">
-
-## Example Vulkan Ocean Demo
+## Example Vulkan Demo
 * [examples-vulkan](https://github.com/fynnfluegge/oreon-engine/tree/master/oreonengine/examples-vulkan)
   [VkOrenworlds](https://github.com/fynnfluegge/oreon-engine/blob/master/oreonengine/examples-vulkan/src/main/java/org/oreon/examples/vk/oreonworlds/VkOreonworlds.java)
 
-## Camera Control
+## User Input Manual
 * Move: W, A, S, D
-* Rotate: Hold the middle mouse button while moving the mouse
+* Rotate: Hold the middle mouse button while moving the mouse; Alternatively up, down, left, right keys
 * Accelerate Movespeed: Scroll mouse
+* Move sun: I, J, K, L
+* Enable/Disable Wireframe: G
+
+## Gallery of Rendered Images
+ 
+* [oreon-engine-creative](https://github.com/fynnfluegge/oreon-engine-creative)
 
 ## Features
-### Deferred rendering pipeline with up to 8x MSAA and FXAA
-### LOD Quadtree 
-#### Terrain
-<img src="docs/_images/Terrain.png" width="400px" align="left">
-<img src="docs/_images/Terrain2.png" width="400px">
+### Deferred rendering pipeline with 2x to 8x MSAA and FXAA
+<p float="left">
+  <img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/0010.png" width="290" />
+  <img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/0011.png" width="290" /> 
+  <img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/0012.png" width="290" />
+</p>
+<p float="left">
+  <img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/0013.png" width="290" />
+  <img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/0014.png" width="290" /> 
+  <img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/0015.png" width="290" />
+</p>
 
-#### WIP Planet
-<img src="docs/_images/WIP_Planet.png" width="500px">
+### Diamnond Square Terrain Quadtree 
+<img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/1005.png" width="400px" align="left">
+<img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/1007.png" width="400px">
+
+#### Planet (Work In Progress)
+<img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/9001_planet.png" width="500px">
 
 ### FFT Water
-<img src="docs/_images/Water.png" width="500px">
+<img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/1006.png" width="500px">
 
-### Skydome/Atmosphere and Dynamic Sunlight
-<img src="docs/_images/sun.png" width="500px">
+### Atmospheric Scattering
+<p float="left">
+  <img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/0005.png" width="290" />
+  <img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/0002.png" width="290" /> 
+  <img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/0003.png" width="290" />
+</p>
 
-### Shadow Mapping
-#### Parallel Split Shadow Mapping + Variance Shadows
-<img src="docs/_images/Shadow_Mapping.png" width="500px">
+### Dynamic Sun
+<p float="left">
+  <img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/0018.png" width="290" />
+  <img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/0019.png" width="290" /> 
+  <img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/0020.png" width="290" />
+</p>
 
-### Tessellation with Normal-/Displacement-Mapping
-<img src="docs/_images/Normalmapping.png" width="500px">
+### Parallel Split Shadow Mapping & Variance Shadows
+<p float="left">
+  <img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/0001.png" width="290" />
+  <img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/0030.png" width="290" /> 
+  <img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/0031.png" width="290" />
+</p>
+
+### Tessellation & Normal-/Displacement-Mapping
+<img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/1003.png" width="500px">
 
 ### Post-Processing Effects
 #### Motion Blur, Depth of Field Blur, Bloom
-<img src="docs/_images/Blur.png" width="500px">
+<img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/1001.png" width="500px">
 
 #### Light Scattering, Lens Flare
-<img src="docs/_images/LightScattering_LensFlare.png" width="400px" align="left">
-<img src="docs/_images/LightScattering_LensFlare2.png" width="400px">
+<img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/1002.png" width="400px" align="left">
+<img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/1008.png" width="400px">
 
 #### SSAO
-<img src="docs/_images/ssao.png" width="820px">
+<img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/9001_ssao.png" width="820px">
 
-### GUI
 ## Credits
 * [Nvidia Corporation](https://developer.nvidia.com/)
 * [World Creator](https://www.world-creator.com/)
