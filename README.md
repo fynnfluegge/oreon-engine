@@ -9,11 +9,11 @@ OpenGL and Vulkan Binding for Java is done  [LWJGL 3](https://www.lwjgl.org/).
 
 * Getting started guide for Eclipse available [here](http://fynnfluegge.github.io/oreon-engine/_navigation/Getting_Started.html).
 
-## Example OpenGL Demo (terrain, water, amtosphere, several postprocessing effects)
+## Example OpenGL Demo
 * [examples-opengl](https://github.com/fynnfluegge/oreon-engine/tree/master/oreonengine/examples-opengl)
   [GLOreonWorlds](https://github.com/fynnfluegge/oreon-engine/blob/master/oreonengine/examples-opengl/src/main/java/org/oreon/examples/gl/oreonworlds/GLOreonworlds.java)
 
-## Example Vulkan Demo (water, amtosphere, post processing effects)
+## Example Vulkan Demo
 * [examples-vulkan](https://github.com/fynnfluegge/oreon-engine/tree/master/oreonengine/examples-vulkan)
   [VkOrenworlds](https://github.com/fynnfluegge/oreon-engine/blob/master/oreonengine/examples-vulkan/src/main/java/org/oreon/examples/vk/oreonworlds/VkOreonworlds.java)
 
