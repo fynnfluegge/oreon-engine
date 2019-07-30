@@ -42,7 +42,7 @@ OpenGL and Vulkan Binding for Java is done  [LWJGL 3](https://www.lwjgl.org/).
 </p>
 
 ### Diamnond Square Terrain Quadtree 
-<img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/1005.png" width="500px" align="left">
+<img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/1005.png" width="500px">
 
 ### FFT Water
 <p float="left">
