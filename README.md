@@ -80,8 +80,11 @@ OpenGL and Vulkan Binding for Java is done  [LWJGL 3](https://www.lwjgl.org/).
 <img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/1001.png" width="500px">
 
 #### Light Scattering, Lens Flare
-<img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/1002.png" width="400px" align="left">
-<img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/1008.png" width="400px">
+<p float="left">
+  <img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/0070.png" width="290" />
+  <img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/1002.png" width="290" />
+  <img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/1008.png" width="290" />
+</p>
 
 #### SSAO
 <img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/9001_ssao.png" width="820px">
