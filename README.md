@@ -41,15 +41,15 @@ OpenGL and Vulkan Binding for Java is done  [LWJGL 3](https://www.lwjgl.org/).
   <img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/0015.png" width="290" />
 </p>
 
-### Diamnond Square Terrain Quadtree 
-<img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/1005.png" width="400px" align="left">
-<img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/1007.png" width="400px">
-
-#### Planet (Work In Progress)
-<img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/9001_planet.png" width="500px">
+### Diamond Square Terrain Quadtree 
+<img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/1005.png" width="500px">
 
 ### FFT Water
-<img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/1006.png" width="500px">
+<p float="left">
+  <img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/0060.png" width="290" />
+  <img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/0061.png" width="290" /> 
+  <img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/0062.png" width="290" />
+</p>
 
 ### Atmospheric Scattering
 <p float="left">
@@ -80,11 +80,17 @@ OpenGL and Vulkan Binding for Java is done  [LWJGL 3](https://www.lwjgl.org/).
 <img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/1001.png" width="500px">
 
 #### Light Scattering, Lens Flare
-<img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/1002.png" width="400px" align="left">
-<img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/1008.png" width="400px">
+<p float="left">
+  <img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/0070.png" width="290" />
+  <img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/1002.png" width="290" />
+  <img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/1008.png" width="290" />
+</p>
 
 #### SSAO
 <img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/9001_ssao.png" width="820px">
+
+#### Planet (Work In Progress)
+<img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/9001_planet.png" width="500px">
 
 ## Credits
 * [Nvidia Corporation](https://developer.nvidia.com/)
