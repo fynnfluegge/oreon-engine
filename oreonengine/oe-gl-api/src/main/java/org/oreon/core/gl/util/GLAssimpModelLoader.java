@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Stream;
 
 import org.lwjgl.assimp.AIColor4D;
 import org.lwjgl.assimp.AIFace;
@@ -41,7 +40,7 @@ import org.oreon.core.util.Util;
 
 public class GLAssimpModelLoader {
 	
-	private static FileSystem tmpFileSystem = null;
+	private static FileSystem tempFileSystem = null;
 	
 	public static List<Model> loadModel(String path, String file) {
 		
@@ -50,67 +49,64 @@ public class GLAssimpModelLoader {
 
         String tmpPath;
         
-        Path currentRelativePath = Paths.get("");
-        String currentAbsolutePath = currentRelativePath.toAbsolutePath().toString();
-        
         boolean fromJar = false;
-        URL res = GLAssimpModelLoader.class.getResource("/" + path);
-        if (res.getProtocol().equals("jar")) {
+        URL vPathUrl = GLAssimpModelLoader.class.getResource("/" + path);
+        
+        if (vPathUrl.getProtocol().equals("jar")) {
         	fromJar = true;
         }
         
-        // create temp directory
-        File directory = new File(currentAbsolutePath + "/temp");
-        if (!directory.exists()){
-            directory.mkdir();
-        }
         
         // if jar, copy directory to temp folder
-        tmpPath = createTempFile(path, file, currentAbsolutePath);
-        
-        //copy all resources to temp folder
-        {
-//        	System.out.println("currentAbsolutePath: " + currentAbsolutePath);
-//        	System.out.println(res.getPath());
-        	
-        	if (fromJar) {
-        		URI uri = null;
-				try {
-					uri = GLAssimpModelLoader.class.getResource("/" + path).toURI();
-				} catch (URISyntaxException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+    	if (fromJar) {
+    		
+    		Path currentRelativePath = Paths.get("");
+            String currentAbsolutePath = currentRelativePath.toAbsolutePath().toString();
+    		
+    		// create temp directory
+            File directory = new File(currentAbsolutePath + "/temp");
+            if (!directory.exists()){
+                directory.mkdir();
+                directory.deleteOnExit();
+            }
+    		
+    		tmpPath = createTempFile(path, file, currentAbsolutePath);
+    		
+    		URI uri = null;
+			try {
+				uri = GLAssimpModelLoader.class.getResource("/" + path).toURI();
+			} catch (URISyntaxException e) {
+				e.printStackTrace();
+			}
 
+			
+			try {
+				if (tempFileSystem == null)
+					tempFileSystem = FileSystems.newFileSystem(uri, Collections.<String, Object>emptyMap());
 				
-				try {
-					if (tmpFileSystem == null)
-						tmpFileSystem = FileSystems.newFileSystem(uri, Collections.<String, Object>emptyMap());
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-                Path myPath = tmpFileSystem.getPath("/" + path);
-                
-                Stream<Path> walk = null;
-				try {
-					walk = Files.walk(myPath, 1);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-                for (Iterator<Path> it = walk.iterator(); it.hasNext();){
-                	Path p = it.next();
-                	if (!Files.isDirectory(p))
-                    	createTempFile(path, p.getFileName().toString(), currentAbsolutePath);
-                }
-        	}
-        	else {
-        		for (File tmpFile : new File(res.getPath()).listFiles()) {
-            		createTempFile(path, tmpFile.getName(), currentAbsolutePath);
-            	}
-        	}
-        }
+				Path myPath = tempFileSystem.getPath("/" + path);
+	            
+	            for (Iterator<Path> it = Files.walk(myPath, 1).iterator(); it.hasNext();){
+	            	Path p = it.next();
+	            	if (!Files.isDirectory(p))
+	                	createTempFile(path, p.getFileName().toString(), currentAbsolutePath);
+	            }
+	            
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+    	}
+    	else {
+    		
+    		tmpPath = GLAssimpModelLoader.class.getClassLoader().getResource(path + "/" + file).getPath().toString();
+    		
+    		// For Linux need to keep '/' or else the Assimp.aiImportFile(...) call below returns null!
+    		if (System.getProperty("os.name").contains("Windows")) {
+    			if (tmpPath.startsWith("/"))
+    				tmpPath = tmpPath.substring(1);
+    		}
+    	}
+    	
 
 		AIScene aiScene = Assimp.aiImportFile(tmpPath, 0);
 
@@ -294,7 +290,7 @@ public class GLAssimpModelLoader {
                 out.write(bytes, 0, read);
             }
             out.close();
-//            tmpFile.deleteOnExit();
+            tmpFile.deleteOnExit();
             
             return tmpFile.getAbsolutePath();
             

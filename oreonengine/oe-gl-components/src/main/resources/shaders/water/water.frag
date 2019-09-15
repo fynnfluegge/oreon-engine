@@ -150,7 +150,7 @@ void main(void)
 	if (diffuseEnable == 0)
 		normal = vec3(0,0,1);
 	
-	albedo_out = vec4(reflection,1);
+	albedo_out = vec4(fragColor,1);
 	worldPosition_out = vec4(inPosition,1);
 	normal_out = vec4(normal,1);
 	specular_emission_diffuse_ssao_bloom_out = vec4(280,2,0,1);
