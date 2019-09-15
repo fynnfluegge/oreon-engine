@@ -2,7 +2,7 @@
 #extension GL_ARB_separate_shader_objects : enable
 #define M_PI 3.1415926535897932384626433832795
 
-layout (location = 0) in vec3 worldPosition;
+layout (location = 0) in vec3 modelPosition;
 
 layout(location = 0) out vec4 albedo_out;
 layout(location = 1) out vec4 worldPosition_out;
@@ -21,9 +21,9 @@ const vec3 sunBaseColor = vec3(1.0f,0.79f,0.43f);
 
 void main()
 {
-	float red = -0.0001*(abs(worldPosition.y)-7500);
-	float green = -0.00012*(abs(worldPosition.y)-8000);
-	float blue = -0.00009*(abs(worldPosition.y)-11000);
+	float red = -1*(modelPosition.y-0.75);
+	float green = -1.2*(modelPosition.y-0.8);
+	float blue = -0.9*(modelPosition.y-1.1);
 	
 	vec3 out_Color = vec3(red, green, blue);
 	vec3 out_LightScattering = vec3(0);

@@ -41,28 +41,17 @@ public class TerrainWireframeShader extends GLShaderProgram{
 		
 		addUniform("localMatrix");
 		addUniform("worldMatrix");
-		addUniform("scaleXZ");
-		addUniform("scaleY");
-		addUniform("diamond_square");
 		
-		addUniform("bezier");
-		addUniform("tessFactor");
-		addUniform("tessSlope");
-		addUniform("tessShift");
-		addUniform("largeDetailRange");
 		addUniform("index");
 		addUniform("gap");
 		addUniform("lod");
 		addUniform("location");
-		addUniform("texDetail");
+		
+		addUniform("yScale");
 		addUniform("reflectionOffset");
 		
 		addUniform("heightmap");
 		addUniform("splatmap");
-		
-		for (int i=0; i<8; i++){
-			addUniform("lod_morph_area[" + i + "]");
-		}
 		
 		for (int i=0; i<4; i++){
 			addUniform("materials[" + i + "].heightmap");
@@ -101,24 +90,13 @@ public class TerrainWireframeShader extends GLShaderProgram{
 		terrConfig.getSplatmap().bind();
 		setUniformi("splatmap", 1);
 		
-		setUniformf("scaleXZ", terrConfig.getHorizontalScaling());
-		setUniformf("scaleY", terrConfig.getVerticalScaling());
-		setUniformi("bezier", terrConfig.getBezier());
-		setUniformi("tessFactor", terrConfig.getTessellationFactor());
-		setUniformf("tessSlope", terrConfig.getTessellationSlope());
-		setUniformf("tessShift", terrConfig.getTessellationShift());
-		setUniformi("largeDetailRange", terrConfig.getHighDetailRange());
-		setUniformf("texDetail", terrConfig.getUvScaling());
 		setUniformi("lod", lod);
 		setUniform("index", index);
 		setUniformf("gap", gap);
 		setUniform("location", location);
-		setUniformi("reflectionOffset", terrConfig.getReflectionOffset());
-		setUniformi("diamond_square", terrConfig.isDiamond_square() ? 1 : 0);
 		
-		for (int i=0; i<8; i++){
-			setUniformi("lod_morph_area[" + i + "]", terrConfig.getLod_morphing_area()[i]);
-		}
+		setUniformf("yScale", terrConfig.getVerticalScaling());
+		setUniformf("reflectionOffset", terrConfig.getReflectionOffset());
 		
 		int texUnit = 4;
 		for (int i=0; i<4; i++){

@@ -18,10 +18,8 @@ public abstract class Quadtree extends Node implements Runnable{
 
 	private Thread thread;
 	private Lock startUpdateQuadtreeLock;
-	private Lock finishUpdateQuadtreeLock;
 	private Condition startUpdateQuadtreeCondition;
 	private boolean isRunning;
-	private boolean updateQuadtreeFinished;
 	private int updateCounter;
 	private int updateThreshold = 2;
 	
@@ -29,10 +27,9 @@ public abstract class Quadtree extends Node implements Runnable{
 	protected QuadtreeCache quadtreeCache;
 	
 	public Quadtree() {
+		
 		isRunning = false;
-		updateQuadtreeFinished = true;
 		startUpdateQuadtreeLock = new ReentrantLock();
-		finishUpdateQuadtreeLock = new ReentrantLock(); 
 		startUpdateQuadtreeCondition = startUpdateQuadtreeLock.newCondition();
 		thread = new Thread(this);
 		quadtreeCache = new QuadtreeCache();
@@ -45,15 +42,10 @@ public abstract class Quadtree extends Node implements Runnable{
 		}
 		
 		if (updateCounter == updateThreshold){
-			synchronized(finishUpdateQuadtreeLock) {
-				updateQuadtreeFinished = false;
 				for (Node node : getChildren()){
 					((QuadtreeNode) node).updateQuadtree();
 				}
 				updateCounter = 0;
-				updateQuadtreeFinished = true;
-				finishUpdateQuadtreeLock.notifyAll();
-			}
 		}
 	}
 	
@@ -101,19 +93,6 @@ public abstract class Quadtree extends Node implements Runnable{
 	
 	@Override
 	public void update(){
-		
-		// wait on updateQuadtree() finish
-//		synchronized(finishUpdateQuadtreeLock) {
-//			while(!updateQuadtreeFinished) {
-//				try {
-//					finishUpdateQuadtreeLock.wait(1000);
-//				} catch (InterruptedException e) {
-//					e.printStackTrace();
-//				}
-//			}
-//			for(Node child: getChildren())
-//				child.update();
-//		}
 	}
 	
 	public abstract QuadtreeNode createChildChunk(Map<NodeComponentType, NodeComponent> components,

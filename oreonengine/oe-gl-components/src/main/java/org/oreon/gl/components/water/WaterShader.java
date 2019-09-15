@@ -9,7 +9,7 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE5;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE6;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
-import org.oreon.common.water.WaterConfiguration;
+import org.oreon.common.water.WaterConfig;
 import org.oreon.core.context.BaseContext;
 import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.scenegraph.Renderable;
@@ -39,37 +39,11 @@ public class WaterShader extends GLShaderProgram{
 		addGeometryShader(ResourceLoader.loadShader("shaders/water/water.geom"));
 		addFragmentShader(ResourceLoader.loadShader("shaders/water/water.frag"));
 		compileShader();
-		
-		addUniform("projectionViewMatrix");
-		addUniform("worldMatrix");
-		addUniform("eyePosition");
-		addUniform("windowWidth");
-		addUniform("windowHeight");
-		
+
 		addUniform("waterReflection");
-		addUniform("kReflection");
 		addUniform("waterRefraction");
-		addUniform("kRefraction");
 		addUniform("dudvMap");
 		addUniform("distortion");
-		addUniform("displacementScale");
-		addUniform("choppiness");
-		addUniform("texDetail");
-		addUniform("tessFactor");
-		addUniform("tessSlope");
-		addUniform("tessShift");
-		addUniform("largeDetailRange");
-		addUniform("fresnelFactor");
-		addUniform("reflectionBlendFactor");
-		addUniform("waterColor");
-		addUniform("capillarStrength");
-		addUniform("capillarDownsampling");
-		addUniform("dudvDownsampling");
-		
-		addUniform("diffuseEnable");
-//		addUniform("emission");
-//		addUniform("specularFactor");
-//		addUniform("specularAmplifier");
 
 		addUniform("isCameraUnderWater");
 		
@@ -81,66 +55,33 @@ public class WaterShader extends GLShaderProgram{
 		addUniform("motion");
 		addUniform("wind");
 		
-		for (int i=0; i<6; i++)
-		{
-			addUniform("frustumPlanes[" + i +"]");
-		}
-		
 		addUniformBlock("DirectionalLight");
+		addUniformBlock("Camera");
 	}
 	
 	public void updateUniforms(Renderable object)
 	{
 		bindUniformBlock("DirectionalLight", Constants.DirectionalLightUniformBlockBinding);	
-		
-		setUniform("projectionViewMatrix", BaseContext.getCamera().getViewProjectionMatrix());
-		setUniform("worldMatrix", object.getWorldTransform().getWorldMatrix());
-				
-		setUniform("eyePosition", BaseContext.getCamera().getPosition());
-		setUniformi("windowWidth", BaseContext.getWindow().getWidth());
-		setUniformi("windowHeight", BaseContext.getWindow().getHeight());
-		
-		for (int i=0; i<6; i++)
-		{
-			setUniform("frustumPlanes[" + i +"]", BaseContext.getCamera().getFrustumPlanes()[i]);
-		}
-		
+		bindUniformBlock("Camera", Constants.CameraUniformBlockBinding);
+			
 		Water ocean = (Water) object;
-		WaterConfiguration configuration = ocean.getWaterConfiguration();
+		WaterConfig configuration = ocean.getConfig();
 		
-		setUniformf("displacementScale", configuration.getDisplacementScale());
-		setUniformf("choppiness", configuration.getChoppiness());
-		setUniformi("texDetail", configuration.getUvScale());
-		setUniformi("tessFactor", configuration.getTessellationFactor());
-		setUniformf("tessSlope", configuration.getTessellationSlope());
-		setUniformf("tessShift", configuration.getTessellationShift());
-		setUniformi("largeDetailRange", configuration.getHighDetailRange());
-		setUniformf("distortion", configuration.getDistortion());
-		setUniformi("diffuseEnable", configuration.isDiffuse() ? 1 : 0);
-//		setUniformf("emission", configuration.getEmission());
-//		setUniformf("specularFactor", configuration.getSpecularFactor());
-//		setUniformf("specularAmplifier", configuration.getSpecularAmplifier());
-		setUniformf("motion", ocean.getMotion());
-		setUniformi("isCameraUnderWater", BaseContext.getConfig().isRenderUnderwater() ? 1 : 0);
-		setUniformf("fresnelFactor", configuration.getFresnelFactor());
-		setUniformf("reflectionBlendFactor", configuration.getReflectionBlendFactor());
-		setUniform("waterColor", configuration.getBaseColor());
-		setUniformf("capillarStrength", configuration.getCapillarStrength());		
-		setUniformf("capillarDownsampling", configuration.getCapillarDownsampling());		
-		setUniformf("dudvDownsampling", configuration.getDudvDownsampling());		
+		setUniformi("isCameraUnderWater", BaseContext.getConfig().isRenderUnderwater() ? 1 : 0);	
 		setUniform("wind", configuration.getWindDirection());
+		
+		setUniformf("motion", ocean.getT_motion());
+		setUniformf("distortion", ocean.getT_distortion());
 		
 		glActiveTexture(GL_TEXTURE0);
 		ocean.getDudv().bind();
 		setUniformi("dudvMap", 0);
 		glActiveTexture(GL_TEXTURE1);
-		ocean.getReflectionTexture().bind();
+		ocean.getReflection_texture().bind();
 		setUniformi("waterReflection", 1);
-		setUniformf("kReflection", configuration.getKReflection());
 		glActiveTexture(GL_TEXTURE2);
-		ocean.getRefractionTexture().bind();
+		ocean.getRefraction_texture().bind();
 		setUniformi("waterRefraction", 2);
-		setUniformf("kRefraction", configuration.getKRefraction());
 		glActiveTexture(GL_TEXTURE3);
 		ocean.getNormalmapRenderer().getNormalmap().bind();
 		setUniformi("normalmap",  3);

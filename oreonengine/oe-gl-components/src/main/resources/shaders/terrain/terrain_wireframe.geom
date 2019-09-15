@@ -24,19 +24,26 @@ layout (std140, row_major) uniform Camera{
 	vec4 frustumPlanes[6];
 };
 
+layout (std430, binding = 1) buffer ssbo0 {
+	vec3 fogColor;
+	float sightRangeFactor;
+	int diamond_square_enable;
+	int tessFactor;
+	float tessSlope;
+	float tessShift;
+	float xzScale;
+	int isBezier;
+	float uvScale;
+	int largeDetailRange;
+};
+
 uniform sampler2D splatmap;
 uniform Material materials[5];
-uniform int largeDetailRange;
 uniform vec4 clipplane;
-uniform float scaleXZ;
-
-vec3 displacement[3];
 
 void main() {	
 
-	for (int i = 0; i < 3; ++i){
-		displacement[i] = vec3(0,0,0);
-	}
+	vec3 displacement[3] = { vec3(0), vec3(0), vec3(0) };
 
 	float dist = (distance(gl_in[0].gl_Position.xyz, eyePosition) + distance(gl_in[1].gl_Position.xyz, eyePosition) + distance(gl_in[2].gl_Position.xyz, eyePosition))/3;
 	
@@ -44,7 +51,7 @@ void main() {
 		
 		for(int k=0; k<gl_in.length(); k++){
 			
-			vec2 mapCoords = (gl_in[k].gl_Position.xz + scaleXZ/2)/scaleXZ; 
+			vec2 mapCoords = (gl_in[k].gl_Position.xz + xzScale/2)/xzScale; 
 			
 			vec4 v_splatmap = texture(splatmap, mapCoords).rgba;
 			float[4] blendValues = float[](v_splatmap.r,v_splatmap.g,v_splatmap.b,v_splatmap.a);

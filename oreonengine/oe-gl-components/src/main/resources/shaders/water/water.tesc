@@ -1,15 +1,47 @@
 #version 430
+#extension GL_ARB_separate_shader_objects : enable
 
 layout(vertices = 16) out;
 
-in vec2 texCoord_TC[];
+layout (location = 0) in vec2 inUV[];
 
-out vec2 texCoord_TE[];
+layout (location = 0) out vec2 outUV[];
 
-uniform vec3 eyePosition;
-uniform int tessFactor;
-uniform float tessSlope;
-uniform float tessShift;
+layout (std140, row_major) uniform Camera{
+	vec3 eyePosition;
+	mat4 m_View;
+	mat4 m_ViewProjection;
+	vec4 frustumPlanes[6];
+};
+
+layout (std430, row_major, binding = 1) buffer ssbo {
+	mat4 worldMatrix;
+	int uvScale;
+	int tessFactor;
+	float tessSlope;
+	float tessShift;
+	float displacementScale;
+	int largeDetailRange;
+	float choppiness;
+	float kReflection;
+	float kRefraction;
+	int windowWidth;
+	int windowHeight;
+	int diffuseEnable;
+	float emission;
+	float specularFactor;
+	float specularAmplifier;
+	float reflectionBlendFactor;
+	vec3 waterColor;
+	float fresnelFactor;
+	float capillarStrength;
+	float capillarDownsampling;
+	float dudvDownsampling;
+};
+
+// uniform int tessFactor;
+// uniform float tessSlope;
+// uniform float tessShift;
 
 const int CD = 0;
 const int AC = 1;
@@ -66,5 +98,5 @@ void main(){
 	
 	gl_out[ gl_InvocationID ].gl_Position = gl_in[ gl_InvocationID ].gl_Position;
 	
-	texCoord_TE[ gl_InvocationID ] = texCoord_TC[ gl_InvocationID ];
+	outUV[ gl_InvocationID ] = inUV[ gl_InvocationID ];
 }

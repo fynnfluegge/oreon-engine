@@ -12,7 +12,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class WaterConfiguration {
+public class WaterConfig {
 
 	private int N;
 	private int L;
@@ -21,7 +21,6 @@ public class WaterConfiguration {
 	private float windSpeed;
 	private float alignment;
 	private float capillarWavesSupression;
-	private float motion;
 	private float displacementScale;
 	private float choppiness;
 	private int tessellationFactor;
@@ -52,7 +51,7 @@ public class WaterConfiguration {
 	{
 		Properties properties = new Properties();
 		try {
-			InputStream stream = WaterConfiguration.class.getClassLoader().getResourceAsStream(file);
+			InputStream stream = WaterConfig.class.getClassLoader().getResourceAsStream(file);
 			properties.load(stream);
 			stream.close();
 		} catch (IOException e) {

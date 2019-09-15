@@ -9,14 +9,17 @@ import static org.lwjgl.opengl.GL11.glFrontFace;
 import static org.lwjgl.opengl.GL11.glViewport;
 import static org.lwjgl.opengl.GL30.GL_CLIP_DISTANCE6;
 import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT0;
+import static org.lwjgl.system.MemoryUtil.memAlloc;
 
+import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
-import org.oreon.common.water.WaterConfiguration;
+import org.oreon.common.water.WaterConfig;
 import org.oreon.core.context.BaseContext;
 import org.oreon.core.gl.context.GLContext;
 import org.oreon.core.gl.framebuffer.GLFramebuffer;
 import org.oreon.core.gl.memory.GLPatchVBO;
+import org.oreon.core.gl.memory.GLShaderStorageBuffer;
 import org.oreon.core.gl.pipeline.GLShaderProgram;
 import org.oreon.core.gl.scenegraph.GLRenderInfo;
 import org.oreon.core.gl.texture.GLTexture;
@@ -37,39 +40,52 @@ import org.oreon.gl.components.terrain.GLTerrain;
 import org.oreon.gl.components.util.NormalRenderer;
 
 import lombok.Getter;
+import lombok.Setter;
 
 public class Water extends Renderable{
 	
+	@Setter
 	private Vec4f clipplane;
+	@Setter
 	private int clip_offset;
+	@Getter
 	private float motion;
-	private float distortion_delta;
+	@Getter
 	private GLTexture dudv;
 	
 	private GLFramebuffer reflection_fbo;
-	private GLTexture reflection_texture;
 	private GLFramebuffer refraction_fbo;
+	@Getter
+	private GLTexture reflection_texture;
+	@Getter
 	private GLTexture refraction_texture;
 	private RenderList reflectionRenderList;
 	private RenderList refractionRenderList;
 	
 	@Getter
 	private FFT fft;
+	@Getter
 	private NormalRenderer normalmapRenderer;
-	private boolean cameraUnderwater;
+	private boolean isCameraUnderwater;
 	
 	private WaterRenderParameter renderConfig;
 	
 	@Getter
-	private WaterConfiguration waterConfiguration;
+	private WaterConfig config;
+	
+	private GLShaderStorageBuffer ssbo;
+	
+	@Getter
+	private float t_motion;
+	@Getter
+	private float t_distortion;
+	private long systemTime = System.currentTimeMillis();
 
 	public Water(int patches, GLShaderProgram shader, GLShaderProgram wireframeShader)
 	{		
-		waterConfiguration = new WaterConfiguration();
-		waterConfiguration.loadFile("water-config.properties");
-		GLContext.getResources().setWaterConfig(waterConfiguration);
-		
-		distortion_delta = waterConfiguration.getDistortion(); 
+		config = new WaterConfig();
+		config.loadFile("water-config.properties");
+		GLContext.getResources().setWaterConfig(config);
 		
 		GLPatchVBO meshBuffer = new GLPatchVBO();
 		meshBuffer.addData(MeshGenerator.generatePatch2D4x4(patches),16);
@@ -84,16 +100,16 @@ public class Water extends Renderable{
 		addComponent(NodeComponentType.MAIN_RENDERINFO, renderInfo);
 		addComponent(NodeComponentType.WIREFRAME_RENDERINFO, wireframeRenderInfo);
 
-		fft = new FFT(waterConfiguration.getN(), waterConfiguration.getL(),
-				waterConfiguration.getAmplitude(), waterConfiguration.getWindDirection(),
-				waterConfiguration.getAlignment(), waterConfiguration.getWindSpeed(),
-				waterConfiguration.getCapillarWavesSupression());
-		fft.setT_delta(waterConfiguration.getT_delta());
-		fft.setChoppy(waterConfiguration.isChoppy());
+		fft = new FFT(config.getN(), config.getL(),
+				config.getAmplitude(), config.getWindDirection(),
+				config.getAlignment(), config.getWindSpeed(),
+				config.getCapillarWavesSupression());
+		fft.setT_delta(config.getT_delta());
+		fft.setChoppy(config.isChoppy());
 		fft.init();
 		
-		normalmapRenderer = new NormalRenderer(waterConfiguration.getN());
-		getNormalmapRenderer().setStrength(waterConfiguration.getNormalStrength());
+		normalmapRenderer = new NormalRenderer(config.getN());
+		getNormalmapRenderer().setStrength(config.getNormalStrength());
 		
 		reflection_texture = new TextureImage2D(BaseContext.getWindow().getWidth()/2,
 				BaseContext.getWindow().getHeight()/2,
@@ -131,12 +147,17 @@ public class Water extends Renderable{
 	
 	public void update()
 	{
-		setCameraUnderwater(BaseContext.getCamera().getPosition().getY() < (getWorldTransform().getTranslation().getY())); 
+		isCameraUnderwater = BaseContext.getCamera().getPosition().getY() < (getWorldTransform().getTranslation().getY());
+		t_motion += (System.currentTimeMillis() - systemTime) * config.getWaveMotion();
+		t_distortion += (System.currentTimeMillis() - systemTime) * config.getDistortion();
+		systemTime = System.currentTimeMillis();
 	}
 	
 	public void renderWireframe(){
 		
 		fft.render();
+		
+		ssbo.bindBufferBase(1);
 		
 		super.renderWireframe();
 		
@@ -145,20 +166,17 @@ public class Water extends Renderable{
 	
 	public void render()
 	{
-		if (!isCameraUnderwater()){
+		if (!isCameraUnderwater){
 			glEnable(GL_CLIP_DISTANCE6);
 			BaseContext.getConfig().setRenderUnderwater(false);
 		}
 		else {
 			BaseContext.getConfig().setRenderUnderwater(true);
 		}
-			
-		waterConfiguration.setDistortion(waterConfiguration.getDistortion() + distortion_delta);
-		motion += waterConfiguration.getWaveMotion();
 		
 		Scenegraph scenegraph = ((Scenegraph) getParentNode());
 		
-		BaseContext.getConfig().setClipplane(getClipplane());
+		BaseContext.getConfig().setClipplane(clipplane);
 			
 		//-----------------------------------//
 		//     mirror scene to clipplane     //
@@ -171,7 +189,7 @@ public class Water extends Renderable{
 			GLTerrain.getConfig().setVerticalScaling(
 					GLTerrain.getConfig().getVerticalScaling() * -1f);
 			GLTerrain.getConfig().setReflectionOffset(
-					getClip_offset() * 2);
+					clip_offset * 2);
 		}
 		scenegraph.update();
 		
@@ -191,7 +209,7 @@ public class Water extends Renderable{
 		renderConfig.clearScreenDeepOcean();
 		glFrontFace(GL_CCW);
 		
-		if (!isCameraUnderwater()){
+		if (!isCameraUnderwater){
 			
 			scenegraph.record(reflectionRenderList);
 			
@@ -201,10 +219,6 @@ public class Water extends Renderable{
 			{
 				object.render();
 			});
-			
-			if (scenegraph.hasTerrain()){
-				((GLTerrain) scenegraph.getTerrain()).render();
-			}
 		}
 		
 		// glFinish() important, to prevent conflicts with following compute shaders
@@ -246,10 +260,6 @@ public class Water extends Renderable{
 			object.render();
 		});
 		
-		if (scenegraph.hasTerrain()){
-			((GLTerrain) scenegraph.getTerrain()).render();
-		}
-		
 		// glFinish() important, to prevent conflicts with following compute shaders
 		glFinish();
 		refraction_fbo.unbind();
@@ -275,63 +285,44 @@ public class Water extends Renderable{
 		fft.render();
 		normalmapRenderer.render(fft.getDy());
 
+		ssbo.bindBufferBase(1);
+		
 		super.render();
 		
 		// glFinish() important, to prevent conflicts with following compute shaders
 		glFinish();
 	}
+	
+	public void initShaderBuffer() {
 		
-	public Vec4f getClipplane() {
-		return clipplane;
-	}
-
-	public void setClipplane(Vec4f clipplane) {
-		this.clipplane = clipplane;
-	}
-
-	public float getMotion() {
-		return motion;
-	}
-
-	public void setMotion(float motion) {
-		this.motion = motion;
-	}
-
-	public int getClip_offset() {
-		return clip_offset;
-	}
-
-	public void setClip_offset(int clip_offset) {
-		this.clip_offset = clip_offset;
-	}
-
-	public NormalRenderer getNormalmapRenderer() {
-		return normalmapRenderer;
-	}
-
-	public void setNormalmapRenderer(NormalRenderer normalmapRenderer) {
-		this.normalmapRenderer = normalmapRenderer;
-	}
-	
-	public void setCameraUnderwater(boolean cameraUnderwater) {
-		this.cameraUnderwater = cameraUnderwater;
-	}
-
-	public boolean isCameraUnderwater() {
-		return cameraUnderwater;
-	}
-
-	
-	public GLTexture getRefractionTexture(){
-		return refraction_texture;
-	}
-	
-	public GLTexture getReflectionTexture(){
-		return reflection_texture;
-	}
-
-	public GLTexture getDudv() {
-		return dudv;
+		ssbo = new GLShaderStorageBuffer();
+		ByteBuffer byteBuffer = memAlloc(Float.BYTES * 33 + Integer.BYTES * 6);
+		byteBuffer.put(BufferUtil.createByteBuffer(getWorldTransform().getWorldMatrix()));
+		byteBuffer.putInt(config.getUvScale());
+		byteBuffer.putInt(config.getTessellationFactor());
+		byteBuffer.putFloat(config.getTessellationSlope());
+		byteBuffer.putFloat(config.getTessellationShift());
+		byteBuffer.putFloat(config.getDisplacementScale());
+		byteBuffer.putInt(config.getHighDetailRange());
+		byteBuffer.putFloat(config.getChoppiness());
+		byteBuffer.putFloat(config.getKReflection());
+		byteBuffer.putFloat(config.getKRefraction());
+		byteBuffer.putInt(BaseContext.getConfig().getX_ScreenResolution());
+		byteBuffer.putInt(BaseContext.getConfig().getY_ScreenResolution());
+		byteBuffer.putInt(config.isDiffuse() ? 1 : 0);
+		byteBuffer.putFloat(config.getEmission());
+		byteBuffer.putFloat(config.getSpecularFactor());
+		byteBuffer.putFloat(config.getSpecularAmplifier());
+		byteBuffer.putFloat(config.getReflectionBlendFactor());
+		byteBuffer.putFloat(config.getBaseColor().getX());
+		byteBuffer.putFloat(config.getBaseColor().getY());
+		byteBuffer.putFloat(config.getBaseColor().getZ());
+		byteBuffer.putFloat(config.getFresnelFactor());
+		byteBuffer.putFloat(config.getCapillarStrength());
+		byteBuffer.putFloat(config.getCapillarDownsampling());
+		byteBuffer.putFloat(config.getDudvDownsampling());
+		byteBuffer.flip();
+		ssbo.addData(byteBuffer);
 	}
 
 }
