@@ -36,7 +36,7 @@ import java.util.List;
 
 import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
 import org.lwjgl.vulkan.VkQueue;
-import org.oreon.common.water.WaterConfiguration;
+import org.oreon.common.water.WaterConfig;
 import org.oreon.core.context.BaseContext;
 import org.oreon.core.math.Vec2f;
 import org.oreon.core.math.Vec4f;
@@ -90,7 +90,7 @@ import lombok.Getter;
 public class Water extends Renderable{
 	
 	@Getter
-	private WaterConfiguration waterConfiguration;
+	private WaterConfig waterConfig;
 
 	private long systemTime = System.currentTimeMillis();
 	private FFT fft;
@@ -171,8 +171,8 @@ public class Water extends Renderable{
 		clip_offset = 4;
 		clipplane = new Vec4f(0,-1,0,getWorldTransform().getTranslation().getY() + clip_offset);
 		
-		waterConfiguration = new WaterConfiguration();
-		waterConfiguration.loadFile("water-config.properties");
+		waterConfig = new WaterConfig();
+		waterConfig.loadFile("water-config.properties");
 		
 		image_dudv = VkImageHelper.loadImageFromFileMipmap(
 				device.getHandle(), memoryProperties,
@@ -223,7 +223,7 @@ public class Water extends Renderable{
 	    		VK_SAMPLER_MIPMAP_MODE_LINEAR, Util.getMipLevelCount(image_dudv.getMetaData()),
 	    		VK_SAMPLER_ADDRESS_MODE_REPEAT);
 	    normalSampler = new VkSampler(device.getHandle(), VK_FILTER_LINEAR, false, 0,
-	    		VK_SAMPLER_MIPMAP_MODE_LINEAR, Util.getLog2N(waterConfiguration.getN()),
+	    		VK_SAMPLER_MIPMAP_MODE_LINEAR, Util.getLog2N(waterConfig.getN()),
 	    		VK_SAMPLER_ADDRESS_MODE_REPEAT);
 	    reflectionSampler = new VkSampler(device.getHandle(), VK_FILTER_LINEAR, false, 0,
 	    		VK_SAMPLER_MIPMAP_MODE_LINEAR, Util.getLog2N(offScreenReflecRefracFbo.getWidth()),
@@ -233,13 +233,13 @@ public class Water extends Renderable{
 	    		VK_SAMPLER_ADDRESS_MODE_REPEAT);
 		
 		fft = new FFT(deviceBundle,
-				waterConfiguration.getN(), waterConfiguration.getL(), waterConfiguration.getT_delta(),
-				waterConfiguration.getAmplitude(), waterConfiguration.getWindDirection(),
-				waterConfiguration.getWindSpeed(), waterConfiguration.getCapillarWavesSupression());
+				waterConfig.getN(), waterConfig.getL(), waterConfig.getT_delta(),
+				waterConfig.getAmplitude(), waterConfig.getWindDirection(),
+				waterConfig.getWindSpeed(), waterConfig.getCapillarWavesSupression());
 		
 		normalRenderer = new NormalRenderer(
 				VkContext.getDeviceManager().getDeviceBundle(DeviceType.MAJOR_GRAPHICS_DEVICE),
-				waterConfiguration.getN(), waterConfiguration.getNormalStrength(),
+				waterConfig.getN(), waterConfig.getNormalStrength(),
 				fft.getDyImageView(), dySampler);
 		
 		normalRenderer.setWaitSemaphores(fft.getFftSignalSemaphore().getHandlePointer());
@@ -344,21 +344,21 @@ public class Water extends Renderable{
 		
 		ByteBuffer pushConstants = memAlloc(pushConstantsRange);
 		pushConstants.put(BufferUtil.createByteBuffer(getWorldTransform().getWorldMatrix()));
-		pushConstants.putFloat(waterConfiguration.getWindDirection().getX());
-		pushConstants.putFloat(waterConfiguration.getWindDirection().getY());
-		pushConstants.putFloat(waterConfiguration.getTessellationSlope());
-		pushConstants.putFloat(waterConfiguration.getTessellationShift());
-		pushConstants.putInt(waterConfiguration.getTessellationFactor());
-		pushConstants.putInt(waterConfiguration.getUvScale());
-		pushConstants.putFloat(waterConfiguration.getDisplacementScale());
-		pushConstants.putFloat(waterConfiguration.getChoppiness());
-		pushConstants.putInt(waterConfiguration.getHighDetailRange());
-		pushConstants.putFloat(waterConfiguration.getKReflection());
-		pushConstants.putFloat(waterConfiguration.getKRefraction());
+		pushConstants.putFloat(waterConfig.getWindDirection().getX());
+		pushConstants.putFloat(waterConfig.getWindDirection().getY());
+		pushConstants.putFloat(waterConfig.getTessellationSlope());
+		pushConstants.putFloat(waterConfig.getTessellationShift());
+		pushConstants.putInt(waterConfig.getTessellationFactor());
+		pushConstants.putInt(waterConfig.getUvScale());
+		pushConstants.putFloat(waterConfig.getDisplacementScale());
+		pushConstants.putFloat(waterConfig.getChoppiness());
+		pushConstants.putInt(waterConfig.getHighDetailRange());
+		pushConstants.putFloat(waterConfig.getKReflection());
+		pushConstants.putFloat(waterConfig.getKRefraction());
 		pushConstants.putInt(BaseContext.getConfig().getWindowWidth());
 		pushConstants.putInt(BaseContext.getConfig().getWindowHeight());
-		pushConstants.putFloat(waterConfiguration.getEmission());
-		pushConstants.putFloat(waterConfiguration.getSpecularFactor());
+		pushConstants.putFloat(waterConfig.getEmission());
+		pushConstants.putFloat(waterConfig.getSpecularFactor());
 		pushConstants.flip();
 		
 		VkPipeline graphicsPipeline = new GraphicsTessellationPipeline(device.getHandle(),
@@ -630,7 +630,7 @@ public class Water extends Renderable{
 					offScreenReflecRefracFbo.getHeight(),
 					offScreenReflecRefracFbo.getColorAttachmentCount(),
 					offScreenReflecRefracFbo.getDepthAttachmentCount(),
-					waterConfiguration.getBaseColor(),
+					waterConfig.getBaseColor(),
 					VkUtil.createPointerBuffer(refractionSecondaryCmdBuffers.values()));
 			offScreenRefractionSubmitInfo.submit(
 					graphicsQueue);
@@ -643,8 +643,8 @@ public class Water extends Renderable{
 		deferredRefractionFence.waitForFence();
 		refractionMipmapSubmitInfo.submit(graphicsQueue);
 		
-		motion += (System.currentTimeMillis() - systemTime) * waterConfiguration.getWaveMotion();
-		distortion += (System.currentTimeMillis() - systemTime) * waterConfiguration.getDistortion();
+		motion += (System.currentTimeMillis() - systemTime) * waterConfig.getWaveMotion();
+		distortion += (System.currentTimeMillis() - systemTime) * waterConfig.getDistortion();
 		float[] v = {motion, distortion};
 		uniformBuffer.mapMemory(BufferUtil.createByteBuffer(v));
 		systemTime = System.currentTimeMillis();

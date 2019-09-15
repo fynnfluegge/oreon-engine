@@ -1,7 +1,8 @@
 package org.oreon.core.gl.context;
 
-import org.oreon.common.water.WaterConfiguration;
+import org.oreon.common.water.WaterConfig;
 import org.oreon.core.gl.framebuffer.GLFrameBufferObject;
+import org.oreon.core.gl.memory.GLUniformBuffer;
 import org.oreon.core.gl.texture.GLTexture;
 
 import lombok.Getter;
@@ -17,5 +18,6 @@ public class GLResources {
 	private GLTexture underwaterDudvMap;
 	private GLTexture underwaterCausticsMap;
 	
-	private WaterConfiguration waterConfig;
+	private WaterConfig waterConfig;
+	private GLUniformBuffer GlobalShaderParameters;
 }

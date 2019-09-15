@@ -24,6 +24,7 @@ public class TerrainShader extends GLShaderProgram {
 	private static TerrainShader instance = null;
 
 	public static TerrainShader getInstance() {
+		
 		if (instance == null) {
 			instance = new TerrainShader();
 		}
@@ -31,6 +32,7 @@ public class TerrainShader extends GLShaderProgram {
 	}
 
 	protected TerrainShader() {
+		
 		super();
 
 		addVertexShader(ResourceLoader.loadShader("shaders/terrain/terrain.vert"));
@@ -42,21 +44,11 @@ public class TerrainShader extends GLShaderProgram {
 
 		addUniform("localMatrix");
 		addUniform("worldMatrix");
-		addUniform("scaleXZ");
-		addUniform("scaleY");
-		addUniform("diamond_square");
 
-		addUniform("bezier");
-		addUniform("tessFactor");
-		addUniform("tessSlope");
-		addUniform("tessShift");
-		addUniform("largeDetailRange");
 		addUniform("index");
 		addUniform("gap");
 		addUniform("lod");
 		addUniform("location");
-		addUniform("texDetail");
-		addUniform("reflectionOffset");
 		addUniform("isRefraction");
 		addUniform("isReflection");
 		addUniform("isCameraUnderWater");
@@ -69,10 +61,8 @@ public class TerrainShader extends GLShaderProgram {
 		addUniform("heightmap");
 		addUniform("normalmap");
 		addUniform("splatmap");
-
-		for (int i = 0; i < 8; i++) {
-			addUniform("lod_morph_area[" + i + "]");
-		}
+		addUniform("yScale");
+		addUniform("reflectionOffset");
 
 		for (int i = 0; i < 3; i++) {
 			addUniform("materials[" + i + "].diffusemap");
@@ -81,10 +71,8 @@ public class TerrainShader extends GLShaderProgram {
 			addUniform("materials[" + i + "].heightScaling");
 			addUniform("materials[" + i + "].uvScaling");
 		}
-
+		
 		addUniform("clipplane");
-		addUniform("sightRangeFactor");
-		addUniform("fogColor");
 
 		addUniformBlock("Camera");
 		addUniformBlock("DirectionalLight");
@@ -96,13 +84,10 @@ public class TerrainShader extends GLShaderProgram {
 		bindUniformBlock("Camera", Constants.CameraUniformBlockBinding);
 		bindUniformBlock("DirectionalLight", Constants.DirectionalLightUniformBlockBinding);
 		
-		setUniformf("sightRangeFactor", BaseContext.getConfig().getSightRange());
-		setUniform("fogColor", BaseContext.getConfig().getFogColor());
-		
 		setUniform("clipplane", BaseContext.getConfig().getClipplane());
 		setUniformi("isRefraction", BaseContext.getConfig().isRenderRefraction() ? 1 : 0);
 		setUniformi("isReflection", BaseContext.getConfig().isRenderReflection() ? 1 : 0);
-		setUniformi("isCameraUnderWater", BaseContext.getConfig().isRenderUnderwater() ? 1 : 0);		
+		setUniformi("isCameraUnderWater", BaseContext.getConfig().isRenderUnderwater() ? 1 : 0);
 		
 		GLTerrainConfig terrConfig = object.getComponent(NodeComponentType.CONFIGURATION);
 		ChunkConfig vChunkConfig = ((QuadtreeNode) object).getChunkConfig();
@@ -127,20 +112,13 @@ public class TerrainShader extends GLShaderProgram {
 		terrConfig.getSplatmap().bind();
 		setUniformi("splatmap", 2);
 		
-		setUniformf("scaleXZ", terrConfig.getHorizontalScaling());
-		setUniformf("scaleY", terrConfig.getVerticalScaling());
-		setUniformi("bezier", terrConfig.getBezier());
-		setUniformi("tessFactor", terrConfig.getTessellationFactor());
-		setUniformf("tessSlope", terrConfig.getTessellationSlope());
-		setUniformf("tessShift", terrConfig.getTessellationShift());
-		setUniformi("largeDetailRange", terrConfig.getHighDetailRange());
-		setUniformf("texDetail", terrConfig.getUvScaling());
 		setUniformi("lod", lod);
 		setUniform("index", index);
 		setUniformf("gap", gap);
 		setUniform("location", location);
-		setUniformi("reflectionOffset", terrConfig.getReflectionOffset());
-		setUniformi("diamond_square", terrConfig.isDiamond_square() ? 1 : 0);
+		
+		setUniformf("yScale", terrConfig.getVerticalScaling());
+		setUniformf("reflectionOffset", terrConfig.getReflectionOffset());
 		
 		glActiveTexture(GL_TEXTURE3);
 		GLContext.getResources().getUnderwaterCausticsMap().bind();
@@ -151,10 +129,6 @@ public class TerrainShader extends GLShaderProgram {
 		if (GLContext.getResources().getWaterConfig() != null){
 			setUniformf("distortionCaustics", GLContext.getResources().getWaterConfig().getDistortion());
 			setUniformf("underwaterBlurFactor", GLContext.getResources().getWaterConfig().getUnderwaterBlur());
-		}
-		
-		for (int i=0; i<8; i++){
-			setUniformi("lod_morph_area[" + i + "]", terrConfig.getLod_morphing_area()[i]);
 		}
 		
 		int texUnit = 5;

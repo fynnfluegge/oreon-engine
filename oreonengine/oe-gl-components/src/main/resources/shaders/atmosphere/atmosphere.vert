@@ -3,15 +3,15 @@
 
 layout (location = 0) in vec3 inPosition;
 
-layout (location = 0) out vec3 worldPosition;
+layout (location = 0) out vec3 modelPosition;
 
 uniform mat4 modelViewProjectionMatrix;
-uniform mat4 worldMatrix;
+uniform mat4 modelMatrix;
 
 void main()
 {
 	gl_Position = modelViewProjectionMatrix * vec4(inPosition,1);
-	worldPosition = (worldMatrix * vec4(inPosition,1)).xyz;
+	modelPosition = (modelMatrix * vec4(inPosition,1)).xyz;
 }
 
 

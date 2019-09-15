@@ -14,9 +14,18 @@ layout (std140, row_major) uniform Camera{
 	vec4 frustumPlanes[6];
 };
 
-uniform int tessFactor;
-uniform float tessSlope;
-uniform float tessShift;
+layout (std430, binding = 1) buffer ssbo0 {
+	vec3 fogColor;
+	float sightRangeFactor;
+	int diamond_square_enable;
+	int tessFactor;
+	float tessSlope;
+	float tessShift;
+	float xzScale;
+	int isBezier;
+	float uvScale;
+	int largeDetailRange;
+};
 
 const int AB = 2;
 const int BC = 3;

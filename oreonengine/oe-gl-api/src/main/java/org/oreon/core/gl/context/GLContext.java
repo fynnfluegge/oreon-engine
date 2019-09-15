@@ -51,5 +51,9 @@ public class GLContext extends BaseContext{
 		
 		return (GLWindow) window;
 	}
+	
+	public static void updateGlobalShaderParameters() {
+		
+	}
 
 }

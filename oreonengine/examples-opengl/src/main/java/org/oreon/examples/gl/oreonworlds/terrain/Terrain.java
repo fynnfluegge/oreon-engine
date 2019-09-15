@@ -16,6 +16,7 @@ public class Terrain extends GLTerrain{
 		
 		super.update();
 		
+		
 		// create new heightmap from random fractals
 		if (BaseContext.getInput().isKeyPushed(GLFW.GLFW_KEY_L)){
 			
@@ -40,6 +41,7 @@ public class Terrain extends GLTerrain{
 //			memFree(getConfiguration().getHeightmapDataBuffer());
 //			getConfiguration().renderFractalMap();
 //			getConfiguration().createHeightmapDataBuffer();
+			
 		}
 	}
 }

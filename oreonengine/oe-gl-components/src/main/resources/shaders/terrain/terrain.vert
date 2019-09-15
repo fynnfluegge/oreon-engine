@@ -5,32 +5,37 @@ layout (location = 0) in vec2 inPosition;
 
 layout (location = 0) out vec2 outUV;
 
-layout (std140, row_major) uniform Camera{
+layout (std140, row_major) uniform Camera {
 	vec3 eyePosition;
 	mat4 m_View;
 	mat4 m_ViewProjection;
 	vec4 frustumPlanes[6];
 };
 
-struct Fractal
-{
-	sampler2D heightmap;
-	int scaling;
-	float strength;
+layout (std430, binding = 1) buffer ssbo0 {
+	vec3 fogColor;
+	float sightRangeFactor;
+	int diamond_square_enable;
+	int tessFactor;
+	float tessSlope;
+	float tessShift;
+	float xzScale;
+	int isBezier;
+	float uvScale;
+	int largeDetailRange;
 };
 
-uniform sampler2D heightmap;
-uniform float scaleY;
-uniform float scaleXZ;
-uniform int lod;
-uniform vec2 index;
+layout (std430, binding = 2) buffer ssbo1 {
+	int lod_morph_area[];
+};
+
 uniform mat4 localMatrix;
 uniform mat4 worldMatrix;
+uniform int lod;
+uniform vec2 index;
 uniform float gap;
 uniform vec2 location;
-uniform int diamond_square;
-
-uniform int lod_morph_area[8];
+uniform sampler2D heightmap;
 
 float morphLatitude(vec2 position)
 {
@@ -131,7 +136,7 @@ void main()
 	
 	float height = texture(heightmap, localPosition).y;
 	
-	if (diamond_square == 1){
+	if (diamond_square_enable == 1){
 		if (lod > 0)
 		localPosition += diamondSquare(localPosition,height,lod_morph_area[lod-1]);
 	}

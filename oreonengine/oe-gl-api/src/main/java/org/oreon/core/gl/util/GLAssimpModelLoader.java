@@ -1,7 +1,22 @@
 package org.oreon.core.gl.util;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.IntBuffer;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import org.lwjgl.assimp.AIColor4D;
@@ -25,19 +40,75 @@ import org.oreon.core.util.Util;
 
 public class GLAssimpModelLoader {
 	
+	private static FileSystem tempFileSystem = null;
+	
 	public static List<Model> loadModel(String path, String file) {
 		
 		List<Model> models = new ArrayList<>();
 		List<Material> materials = new ArrayList<>();
-		
-		path = GLAssimpModelLoader.class.getClassLoader().getResource(path).getPath().toString();
-		// For Linux need to keep '/' or else the Assimp.aiImportFile(...) call below returns null!
-		if (System.getProperty("os.name").contains("Windows")) { // TODO Language/region agnostic value for 'Windows' ?
-			if (path.startsWith("/"))
-				path = path.substring(1);
-		}
 
-		AIScene aiScene = Assimp.aiImportFile(path + "/" + file, 0);
+        String tmpPath;
+        
+        boolean fromJar = false;
+        URL vPathUrl = GLAssimpModelLoader.class.getResource("/" + path);
+        
+        if (vPathUrl.getProtocol().equals("jar")) {
+        	fromJar = true;
+        }
+        
+        
+        // if jar, copy directory to temp folder
+    	if (fromJar) {
+    		
+    		Path currentRelativePath = Paths.get("");
+            String currentAbsolutePath = currentRelativePath.toAbsolutePath().toString();
+    		
+    		// create temp directory
+            File directory = new File(currentAbsolutePath + "/temp");
+            if (!directory.exists()){
+                directory.mkdir();
+                directory.deleteOnExit();
+            }
+    		
+    		tmpPath = createTempFile(path, file, currentAbsolutePath);
+    		
+    		URI uri = null;
+			try {
+				uri = GLAssimpModelLoader.class.getResource("/" + path).toURI();
+			} catch (URISyntaxException e) {
+				e.printStackTrace();
+			}
+
+			
+			try {
+				if (tempFileSystem == null)
+					tempFileSystem = FileSystems.newFileSystem(uri, Collections.<String, Object>emptyMap());
+				
+				Path myPath = tempFileSystem.getPath("/" + path);
+	            
+	            for (Iterator<Path> it = Files.walk(myPath, 1).iterator(); it.hasNext();){
+	            	Path p = it.next();
+	            	if (!Files.isDirectory(p))
+	                	createTempFile(path, p.getFileName().toString(), currentAbsolutePath);
+	            }
+	            
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+    	}
+    	else {
+    		
+    		tmpPath = GLAssimpModelLoader.class.getClassLoader().getResource(path + "/" + file).getPath().toString();
+    		
+    		// For Linux need to keep '/' or else the Assimp.aiImportFile(...) call below returns null!
+    		if (System.getProperty("os.name").contains("Windows")) {
+    			if (tmpPath.startsWith("/"))
+    				tmpPath = tmpPath.substring(1);
+    		}
+    	}
+    	
+
+		AIScene aiScene = Assimp.aiImportFile(tmpPath, 0);
 
 		if (aiScene.mMaterials() != null){
 			for (int i=0; i<aiScene.mNumMaterials(); i++){
@@ -198,6 +269,36 @@ public class GLAssimpModelLoader {
 	    material.setColor(diffuseColor);
 	    
 	    return material;
+	}
+	
+	public static String createTempFile(String path, String file, String p) {
+		
+		System.out.println("Path " + path);
+		System.out.println("File " + file);
+		System.out.println("p " + p);
+		
+		try {
+			InputStream input = GLAssimpModelLoader.class.getResourceAsStream("/" + path + "/" + file);
+        	File tmpFile = new File(p + "/temp/" + file);
+        	
+			OutputStream out = new FileOutputStream(tmpFile);
+			
+            int read;
+            byte[] bytes = new byte[1024];
+
+            while ((read = input.read(bytes)) != -1) {
+                out.write(bytes, 0, read);
+            }
+            out.close();
+            tmpFile.deleteOnExit();
+            
+            return tmpFile.getAbsolutePath();
+            
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return "";
 	}
 	
 }

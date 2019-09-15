@@ -242,9 +242,6 @@ public class GLDeferredEngine extends RenderEngine{
 					secondarySceneFbo.getAttachmentTexture(Attachment.LIGHT_SCATTERING));
 		}
 		
-		// start Threads to update instancing objects
-//		instancingObjectHandler.signalAll();
-		
 		// update Terrain Quadtree
 		if (camera.isCameraMoved()){
 			if (sceneGraph.hasTerrain()){

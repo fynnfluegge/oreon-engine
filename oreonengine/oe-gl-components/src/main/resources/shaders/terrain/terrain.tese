@@ -7,14 +7,22 @@ layout (location = 0) in vec2 inUV[];
 
 layout (location = 0) out vec2 outUV;
 
-uniform sampler2D heightmap;
-uniform float scaleY;
-uniform float scaleXZ;
-uniform int bezier;
-uniform float texDetail;
-uniform mat4 worldMatrix;
-uniform int reflectionOffset;
+layout (std430, binding = 1) buffer ssbo0 {
+	vec3 fogColor;
+	float sightRangeFactor;
+	int diamond_square_enable;
+	int tessFactor;
+	float tessSlope;
+	float tessShift;
+	float xzScale;
+	int isBezier;
+	float uvScale;
+	int largeDetailRange;
+};
 
+uniform sampler2D heightmap;
+uniform float yScale;
+uniform int reflectionOffset;
 
 // 		-1  3 -3  1
 //		 3 -6  3  0
@@ -79,17 +87,17 @@ void main(){
 	(1 - u) * v * inUV[15]);
 				
 	vec4 v_heightmap = texture(heightmap, uv).rgba;
-	float height = v_heightmap.y * scaleY + reflectionOffset;
+	float height = v_heightmap.y * yScale + reflectionOffset;
 	float slope = v_heightmap.z;
 	
 	position.y = height;
-	position.x -= slope * v_heightmap.x * scaleY;
-	position.z -= slope * v_heightmap.z * scaleY;
+	position.x -= slope * v_heightmap.x * yScale;
+	position.z -= slope * v_heightmap.z * yScale;
 
-	if (bezier == 1)
+	if (isBezier == 1)
 		position.xyz = BezierInterpolation();
 		
-	outUV = uv * texDetail;
+	outUV = uv * uvScale;
 	
 	gl_Position = position;
 }

@@ -35,13 +35,22 @@ layout (std140) uniform DirectionalLight{
 	vec3 color;
 } directional_light;
 
+layout (std430, binding = 1) buffer ssbo0 {
+	vec3 fogColor;
+	float sightRangeFactor;
+	int diamond_square_enable;
+	int tessFactor;
+	float tessSlope;
+	float tessShift;
+	float xzScale;
+	int isBezier;
+	float uvScale;
+	int largeDetailRange;
+};
+
 uniform sampler2D normalmap;
 uniform sampler2D splatmap;
-uniform float scaleY;
-uniform float scaleXZ;
 uniform Material materials[3];
-uniform float sightRangeFactor;
-uniform int largeDetailRange;
 uniform int isReflection;
 uniform int isRefraction;
 uniform int isCameraUnderWater;
@@ -49,7 +58,6 @@ uniform vec4 clipplane;
 uniform sampler2D dudvCaustics;
 uniform sampler2D caustics;
 uniform float distortionCaustics;
-uniform vec3 fogColor;
 uniform float underwaterBlurFactor;
 
 const float zfar = 10000;
@@ -76,7 +84,7 @@ void main()
 	float height = inWorldPos.y;
 	
 	// normalmap/occlusionmap/splatmap coords
-	vec2 mapCoords = (inWorldPos.xz + scaleXZ/2)/scaleXZ; 
+	vec2 mapCoords = (inWorldPos.xz + xzScale/2)/xzScale; 
 	vec3 normal = texture(normalmap, mapCoords).rgb;
 	normal = normalize(normal);
 	
@@ -132,7 +140,7 @@ void main()
 	if (isReflection == 1){
 		float dist = length(eyePosition - inWorldPos);
 		float fogFactor = getFogFactor(dist);
-		fragColor = mix(fogColor * 2, fragColor, fogFactor);
+		fragColor = mix(fogColor.rgb * 2, fragColor, fogFactor);
 	}
 	
 	albedo_out = vec4(fragColor,1);

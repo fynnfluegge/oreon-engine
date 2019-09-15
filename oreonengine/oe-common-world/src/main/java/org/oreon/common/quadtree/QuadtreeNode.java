@@ -113,7 +113,6 @@ public abstract class QuadtreeNode extends Renderable{
 	
 	public void record(RenderList renderList){
 
-		// only lod = 0 is recorded
 		if (!renderList.contains(id)){
 			renderList.add(this);
 			renderList.setChanged(true);

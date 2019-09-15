@@ -6,8 +6,6 @@
 
 precision highp float;
 
-layout (location = 0) in vec3 worldPosition;
-
 layout(location = 0) out vec4 albedo_out;
 layout(location = 1) out vec4 worldPosition_out;
 layout(location = 2) out vec4 normal_out;
