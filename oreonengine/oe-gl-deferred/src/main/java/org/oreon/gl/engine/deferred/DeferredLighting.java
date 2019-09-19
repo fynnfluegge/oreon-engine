@@ -15,6 +15,7 @@ import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.gl.wrapper.texture.TextureImage2D;
 import org.oreon.core.image.Image.ImageFormat;
 import org.oreon.core.image.Image.SamplerFilter;
+import org.oreon.core.image.Image.TextureWrapMode;
 
 import lombok.Getter;
 
@@ -28,8 +29,8 @@ public class DeferredLighting {
 		
 		shader = DeferredLightingShader.getInstance();
 
-		deferredLightingSceneTexture = new TextureImage2D(width, height,
-				ImageFormat.RGBA16FLOAT, SamplerFilter.Nearest);
+		deferredLightingSceneTexture = new TextureImage2D(width, height, 
+				ImageFormat.RGBA16FLOAT, SamplerFilter.Nearest, TextureWrapMode.ClampToEdge);
 	}
 	
 	public void render(GLTexture sampleCoverageMask, GLTexture ssaoBlurTexture, GLTexture shadowmap,

@@ -62,7 +62,7 @@ public class GLDeferredEngine extends RenderEngine{
 	
 	// post processing effects
 	private MotionBlur motionBlur;
-	private DepthOfField DepthOfField;
+	private DepthOfField depthOfField;
 	private Bloom bloom;
 	private SunLightScattering sunlightScattering;
 	private LensFlare lensFlare;
@@ -107,7 +107,7 @@ public class GLDeferredEngine extends RenderEngine{
 				config.getY_ScreenResolution());
 		
 		motionBlur = new MotionBlur();
-		DepthOfField = new DepthOfField();
+		depthOfField = new DepthOfField();
 		bloom = new Bloom();
 		sunlightScattering = new SunLightScattering();
 		lensFlare = new LensFlare();
@@ -278,22 +278,29 @@ public class GLDeferredEngine extends RenderEngine{
 		if (renderPostProcessingEffects){
 			
 			//--------------------------------------------//
-			//            depth of field blur             //
-			//--------------------------------------------//
-			
-			if (BaseContext.getConfig().isDepthOfFieldBlurEnabled()){
-				DepthOfField.render(primarySceneFbo.getAttachmentTexture(Attachment.DEPTH),
-						lightScatteringMask, currentScene);
-				currentScene = DepthOfField.getVerticalBlurSceneTexture();
-			}
-			
-			//--------------------------------------------//
 			//                    Bloom                   //
 			//--------------------------------------------//
 			
 			if (BaseContext.getConfig().isBloomEnabled()){
-				bloom.render(currentScene, currentScene, specularEmissionBloomMask);
+				bloom.render(prePostprocessingScene, currentScene, specularEmissionBloomMask);
 				currentScene = bloom.getBloomSceneTexture();
+			}
+			
+			//--------------------------------------------//
+			//             Light Scattering               //
+			//--------------------------------------------//
+			if (BaseContext.getConfig().isLightScatteringEnabled()){
+				sunlightScattering.render(currentScene, lightScatteringMask);
+				currentScene = sunlightScattering.getSunLightScatteringSceneTexture();
+			}
+			
+			//--------------------------------------------//
+			//            depth of field blur             //
+			//--------------------------------------------//
+			
+			if (BaseContext.getConfig().isDepthOfFieldBlurEnabled()){
+				depthOfField.render(primarySceneFbo.getAttachmentTexture(Attachment.DEPTH), currentScene);
+				currentScene = depthOfField.getVerticalBlurSceneTexture();
 			}
 			
 			//--------------------------------------------//
@@ -306,13 +313,6 @@ public class GLDeferredEngine extends RenderEngine{
 				currentScene = underWaterRenderer.getUnderwaterSceneTexture();
 			}
 			
-			//--------------------------------------------//
-			//             Light Scattering               //
-			//--------------------------------------------//
-			if (BaseContext.getConfig().isLightScatteringEnabled()){
-				sunlightScattering.render(currentScene, lightScatteringMask);
-				currentScene = sunlightScattering.getSunLightScatteringSceneTexture();
-			}
 			
 			//--------------------------------------------//
 			//                Motion Blur                 //
@@ -356,6 +356,8 @@ public class GLDeferredEngine extends RenderEngine{
 //		fullScreenQuadMultisample.setTexture(primarySceneFbo.getAttachmentTexture(Attachment.COLOR));
 //		fullScreenQuadMultisample.render();
 		
+//		fullScreenQuad.setTexture(depthOfField.getHorizontalBlurSceneTexture());
+//		fullScreenQuad.setTexture(depthOfField.getVerticalBlurSceneTexture());
 		fullScreenQuad.setTexture(currentScene);
 		fullScreenQuad.render();
 		

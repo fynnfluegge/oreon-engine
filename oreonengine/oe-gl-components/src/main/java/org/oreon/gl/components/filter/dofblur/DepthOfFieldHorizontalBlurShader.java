@@ -1,6 +1,7 @@
 package org.oreon.gl.components.filter.dofblur;
 
-import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE2;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE3;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import org.oreon.core.gl.pipeline.GLShaderProgram;
@@ -29,12 +30,22 @@ public class DepthOfFieldHorizontalBlurShader extends GLShaderProgram{
 		compileShader();
 		
 		addUniform("depthmap");
+		addUniform("sceneSampler");
+//		addUniform("sceneSamplerDownsampled");
 	}
 	
-	public void updateUniforms(GLTexture depthmap){
+	public void updateUniforms(GLTexture depthmap, GLTexture sceneSampler, GLTexture sceneSamplerDownsampled){
 		
-		glActiveTexture(GL_TEXTURE0);
+		glActiveTexture(GL_TEXTURE2);
 		depthmap.bind();
-		setUniformi("depthmap", 0);
+		setUniformi("depthmap", 2);
+		
+		glActiveTexture(GL_TEXTURE3);
+		sceneSampler.bind();
+		setUniformi("sceneSampler", 3);
+		
+//		glActiveTexture(GL_TEXTURE4);
+//		sceneSamplerDownsampled.bind();
+//		setUniformi("sceneSamplerDownsampled", 4);
 	}
 }
