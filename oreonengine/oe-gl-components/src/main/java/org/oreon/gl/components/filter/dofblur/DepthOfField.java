@@ -1,7 +1,6 @@
 package org.oreon.gl.components.filter.dofblur;
 
 import static org.lwjgl.opengl.GL11.glFinish;
-import static org.lwjgl.opengl.GL11.glViewport;
 import static org.lwjgl.opengl.GL15.GL_READ_ONLY;
 import static org.lwjgl.opengl.GL15.GL_WRITE_ONLY;
 import static org.lwjgl.opengl.GL30.GL_RGBA16F;
@@ -22,22 +21,24 @@ import lombok.Getter;
 
 public class DepthOfField {
 	
+	@Getter
 	private GLTexture horizontalBlurSceneTexture;
 	@Getter
 	private GLTexture verticalBlurSceneTexture;
+	
 	private DepthOfFieldHorizontalBlurShader horizontalBlurShader;
 	private DepthOfFieldVerticalBlurShader verticalBlurShader;
 	
 	private GLFramebuffer lowResFbo;
+	@SuppressWarnings("unused")
 	private FullScreenQuad fullScreenQuad;
-	private GLTexture lowResSceneSampler;
+	@Getter
+	private GLTexture downsampledSceneSampler;
 		
 	public DepthOfField() {
 		
 		horizontalBlurShader = DepthOfFieldHorizontalBlurShader.getInstance();
 		verticalBlurShader = DepthOfFieldVerticalBlurShader.getInstance();
-		
-		fullScreenQuad = new FullScreenQuad();
 		
 		horizontalBlurSceneTexture = new TextureImage2D(BaseContext.getWindow().getWidth(),
 				BaseContext.getWindow().getHeight(), ImageFormat.RGBA16FLOAT,
@@ -50,41 +51,39 @@ public class DepthOfField {
 				new TextureStorage2D(BaseContext.getWindow().getWidth(),
 				BaseContext.getWindow().getHeight(), 1, ImageFormat.RGBA16FLOAT);
 		
-		lowResSceneSampler = new TextureImage2D((int)(BaseContext.getWindow().getWidth()/1.2f),
-				(int)(BaseContext.getWindow().getHeight()/1.2f), ImageFormat.RGBA16FLOAT,
+		downsampledSceneSampler = new TextureImage2D((int)(BaseContext.getWindow().getWidth()/2f),
+				(int)(BaseContext.getWindow().getHeight()/2f), ImageFormat.RGBA16FLOAT,
 				SamplerFilter.Bilinear, TextureWrapMode.ClampToEdge);
 		
+		fullScreenQuad = new FullScreenQuad();
 		lowResFbo = new GLFramebuffer();
 		lowResFbo.bind();
-		lowResFbo.createColorTextureAttachment(lowResSceneSampler.getHandle(), 0);
+		lowResFbo.createColorTextureAttachment(downsampledSceneSampler.getHandle(), 0);
 		lowResFbo.checkStatus();
 		lowResFbo.unbind();
 	}
 	
-	public void render(GLTexture depthmap, GLTexture lightScatteringMask, GLTexture sceneSampler) {
+	public void render(GLTexture depthmap, GLTexture sceneSampler) {
 		
+//		glFinish();
+//		lowResFbo.bind();
+//		fullScreenQuad.setTexture(sceneSampler);
+//		glViewport(0,0,(int)(BaseContext.getConfig().getX_ScreenResolution()/2f),
+//				(int)(BaseContext.getConfig().getY_ScreenResolution()/2f));
+//		fullScreenQuad.render();
+//		lowResFbo.unbind();
+//		glViewport(0,0, BaseContext.getConfig().getX_ScreenResolution(), BaseContext.getConfig().getY_ScreenResolution());
 		glFinish();
-		lowResFbo.bind();
-		fullScreenQuad.setTexture(sceneSampler);
-		glViewport(0,0,(int)(BaseContext.getConfig().getX_ScreenResolution()/1.2f),
-				(int)(BaseContext.getConfig().getY_ScreenResolution()/1.2f));
-		fullScreenQuad.render();
-		lowResFbo.unbind();
-		glViewport(0,0, BaseContext.getConfig().getX_ScreenResolution(), BaseContext.getConfig().getY_ScreenResolution());
 		
 		horizontalBlurShader.bind();
-		glBindImageTexture(0, sceneSampler.getHandle(), 0, false, 0, GL_READ_ONLY, GL_RGBA16F);
-		glBindImageTexture(1, lowResSceneSampler.getHandle(), 0, false, 0, GL_READ_ONLY, GL_RGBA16F);
-		glBindImageTexture(2, lightScatteringMask.getHandle(), 0, false, 0, GL_READ_ONLY, GL_RGBA16F);
-		glBindImageTexture(3, horizontalBlurSceneTexture.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
-		horizontalBlurShader.updateUniforms(depthmap);
+		glBindImageTexture(0, horizontalBlurSceneTexture.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
+		horizontalBlurShader.updateUniforms(depthmap, sceneSampler, downsampledSceneSampler);
 		glDispatchCompute(BaseContext.getWindow().getWidth()/8, BaseContext.getWindow().getHeight()/8, 1);	
 		glFinish();
 		
 		verticalBlurShader.bind();
 		glBindImageTexture(0, horizontalBlurSceneTexture.getHandle(), 0, false, 0, GL_READ_ONLY, GL_RGBA16F);
-		glBindImageTexture(1, lightScatteringMask.getHandle(), 0, false, 0, GL_READ_ONLY, GL_RGBA16F);
-		glBindImageTexture(2, verticalBlurSceneTexture.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
+		glBindImageTexture(1, verticalBlurSceneTexture.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
 		verticalBlurShader.updateUniforms(depthmap);
 		glDispatchCompute(BaseContext.getWindow().getWidth()/8, BaseContext.getWindow().getHeight()/8, 1);
 		glFinish();

@@ -35,11 +35,11 @@ public class TerrainShader extends GLShaderProgram {
 		
 		super();
 
-		addVertexShader(ResourceLoader.loadShader("shaders/terrain/terrain.vert"));
-		addTessellationControlShader(ResourceLoader.loadShader("shaders/terrain/terrain.tesc"));
-		addTessellationEvaluationShader(ResourceLoader.loadShader("shaders/terrain/terrain.tese"));
-		addGeometryShader(ResourceLoader.loadShader("shaders/terrain/terrain.geom"));
-		addFragmentShader(ResourceLoader.loadShader("shaders/terrain/terrain.frag"));
+		addVertexShader(ResourceLoader.loadShader("shaders/terrain/terrain.vert", "lib.glsl"));
+		addTessellationControlShader(ResourceLoader.loadShader("shaders/terrain/terrain.tesc", "lib.glsl"));
+		addTessellationEvaluationShader(ResourceLoader.loadShader("shaders/terrain/terrain.tese", "lib.glsl"));
+		addGeometryShader(ResourceLoader.loadShader("shaders/terrain/terrain.geom", "lib.glsl"));
+		addFragmentShader(ResourceLoader.loadShader("shaders/terrain/terrain.frag", "lib.glsl"));
 		compileShader();
 
 		addUniform("localMatrix");

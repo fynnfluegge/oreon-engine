@@ -11,6 +11,7 @@ public class Image {
 	
 	public enum ImageFormat {
 
+		RGBA8_SNORM,
 		RGBA32FLOAT,
 		RGB32FLOAT,
 		RGBA16FLOAT,

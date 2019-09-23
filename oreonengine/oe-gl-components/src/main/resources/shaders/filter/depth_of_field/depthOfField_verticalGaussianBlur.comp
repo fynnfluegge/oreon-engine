@@ -4,15 +4,16 @@ layout (local_size_x = 8, local_size_y = 8) in;
 
 layout (binding = 0, rgba16f) uniform readonly image2D horizontalBlurSceneSampler;
 
-layout (binding = 1, rgba16f) uniform readonly image2D depthOfFieldBlurMask;
-
-layout (binding = 2, rgba16f) uniform writeonly image2D verticalBlurSceneSampler;
+layout (binding = 1, rgba16f) uniform writeonly image2D verticalBlurSceneSampler;
 
 uniform sampler2DMS depthmap;
 
-const float gaussianKernel9_Sigma2[9]   = float[9](0.028532,0.067234,0.124009,0.179044,0.20236,0.179044,0.124009,0.067234,0.028532);
-const float gaussianKernel7_Sigma1_5[7] = float[7](0.038735,0.113085,0.215007,0.266346,0.215007,0.113085,0.038735);
-const float gaussianKernel7_Sigma1[7]   = float[7](0.00598,0.060626,0.241843,0.383103,0.241843,0.060626,0.00598);
+const float gaussianKernel9_sigma8[9] = float[9](0.103201,0.108994,0.11333,0.116014,0.116923,0.116014,0.11333,0.108994,0.103201);
+const float gaussianKernel9_sigma6[9] = float[9](0.097316,0.107228,0.114921,0.119799,0.121471,0.119799,0.114921,0.107228,0.097316);
+const float gaussianKernel9_sigma4[9] = float[9](0.081812,0.101701,0.118804,0.130417,0.134535,0.130417,0.118804,0.101701,0.081812);
+const float gaussianKernel9_sigma3[9] = float[9](0.063327,0.093095,0.122589,0.144599,0.152781,0.144599,0.122589,0.093095,0.063327);
+const float gaussianKernel9_sigma2[9] = float[9](0.028532,0.067234,0.124009,0.179044,0.20236,0.179044,0.124009,0.067234,0.028532);
+const float gaussianKernel9_sigma1[9] = float[9](0.000229,0.005977,0.060598,0.241732,0.382928,0.241732,0.060598,0.005977,0.000229);
 const float zfar = 10000.0f;
 const float znear = 0.1f;
 
@@ -24,6 +25,7 @@ float linearize(float depth)
 void main(void){
 
 	ivec2 computeCoord = ivec2(gl_GlobalInvocationID.x, gl_GlobalInvocationID.y);
+	ivec2 uvOffset = ivec2(0);
 	
 	// Get the depth buffer value at this pixel.  
 	float depth = texelFetch(depthmap, computeCoord, 0).r ; 
@@ -32,48 +34,25 @@ void main(void){
 	
 	vec3 color = imageLoad(horizontalBlurSceneSampler, computeCoord).rgb;  
 	
-	float dofBlurPreventionFlag = imageLoad(depthOfFieldBlurMask, computeCoord).a;  
-	
-	if (dofBlurPreventionFlag == 0.0 || linDepth < 0.01){
-		imageStore(verticalBlurSceneSampler, computeCoord, vec4(color, 1.0));
-		return;
-	}
-	
 	if (linDepth > 0.06) {
 		color = vec3(0,0,0);
-		
 		for (int i=0; i<9; i++){
-			if (linearize(texelFetch(depthmap, computeCoord + ivec2(0,((i-4)*1.4)),0).r) > 0.059)
-				color += imageLoad(horizontalBlurSceneSampler, computeCoord + ivec2(0,(i-4)*1.4)).rgb * gaussianKernel9_Sigma2[i];
-			else
-				color += imageLoad(horizontalBlurSceneSampler, computeCoord).rgb * gaussianKernel9_Sigma2[i];
+			uvOffset = ivec2(0,(i-4));
+			color += imageLoad(horizontalBlurSceneSampler, computeCoord + uvOffset).rgb * gaussianKernel9_sigma8[i];
 		}
 	}
 	else if (linDepth > 0.04) {
 		color = vec3(0,0,0);
-		
 		for (int i=0; i<9; i++){
-			if (linearize(texelFetch(depthmap, computeCoord + ivec2(0,(i-4)),0).r) > 0.039)
-				color += imageLoad(horizontalBlurSceneSampler, computeCoord + ivec2(0,i-4)).rgb * gaussianKernel9_Sigma2[i];
-			else
-				color += imageLoad(horizontalBlurSceneSampler, computeCoord).rgb * gaussianKernel9_Sigma2[i];
+			uvOffset = ivec2(0,(i-4));
+			color += imageLoad(horizontalBlurSceneSampler, computeCoord + uvOffset).rgb * gaussianKernel9_sigma4[i];
 		}
 	}
 	else if (linDepth > 0.02) {
 		color = vec3(0,0,0);
-		
-		for (int i=0; i<7; i++){
-			if (linearize(texelFetch(depthmap, computeCoord + ivec2(0,(i-3)),0).r) > 0.019)
-				color += imageLoad(horizontalBlurSceneSampler, computeCoord + ivec2(0,i-3)).rgb * gaussianKernel7_Sigma1_5[i];
-			else
-				color += imageLoad(horizontalBlurSceneSampler, computeCoord).rgb * gaussianKernel7_Sigma1_5[i];
-		}
-	}
-	else if (linDepth > 0.01){
-		color = vec3(0,0,0);
-		
-		for (int i=0; i<7; i++){
-			color += imageLoad(horizontalBlurSceneSampler, computeCoord + ivec2(0,i-3)).rgb * gaussianKernel7_Sigma1[i];
+		for (int i=0; i<9; i++){
+			uvOffset = ivec2(0,(i-4));
+			color += imageLoad(horizontalBlurSceneSampler, computeCoord + uvOffset).rgb * gaussianKernel9_sigma2[i];
 		}
 	}
 	

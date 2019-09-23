@@ -31,10 +31,10 @@ public class TerrainShadowShader extends GLShaderProgram{
 	{
 		super();
 
-		addVertexShader(ResourceLoader.loadShader("shaders/terrain/terrain.vert"));
-		addTessellationControlShader(ResourceLoader.loadShader("shaders/terrain/terrain.tesc"));
-		addTessellationEvaluationShader(ResourceLoader.loadShader("shaders/terrain/terrain.tese"));
-		addGeometryShader(ResourceLoader.loadShader("shaders/terrain/terrain_shadow.geom"));
+		addVertexShader(ResourceLoader.loadShader("shaders/terrain/terrain.vert", "lib.glsl"));
+		addTessellationControlShader(ResourceLoader.loadShader("shaders/terrain/terrain.tesc", "lib.glsl"));
+		addTessellationEvaluationShader(ResourceLoader.loadShader("shaders/terrain/terrain.tese", "lib.glsl"));
+		addGeometryShader(ResourceLoader.loadShader("shaders/terrain/terrain_shadow.geom", "lib.glsl"));
 		addFragmentShader(ResourceLoader.loadShader("shaders/terrain/terrain_wireframe.frag"));
 		compileShader();
 		
@@ -59,13 +59,13 @@ public class TerrainShadowShader extends GLShaderProgram{
 		}
 		
 		addUniformBlock("Camera");
-		addUniformBlock("LightViewProjections");
+		addUniformBlock("DirectionalLightViewProjections");
 	}
 	
 	public void updateUniforms(Renderable object)
 	{	
 		bindUniformBlock("Camera", Constants.CameraUniformBlockBinding);
-		bindUniformBlock("LightViewProjections",Constants.LightMatricesUniformBlockBinding);
+		bindUniformBlock("DirectionalLightViewProjections",Constants.LightMatricesUniformBlockBinding);
 		
 		GLTerrainConfig terrConfig = object.getComponent(NodeComponentType.CONFIGURATION);
 		

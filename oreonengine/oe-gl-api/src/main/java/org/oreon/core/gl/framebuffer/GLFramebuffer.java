@@ -82,6 +82,11 @@ public class GLFramebuffer {
 		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, texture, 0);
 	}
 	
+	public void createColorTextureAttachment(int texture, int i, boolean isMultisample)
+	{
+		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, isMultisample ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D, texture, 0);
+	}
+	
 	public void createDepthBufferAttachment(int x, int y)
 	{
 		int depthBuffer = glGenRenderbuffers();
@@ -101,6 +106,10 @@ public class GLFramebuffer {
 	
 	public void createDepthTextureMultisampleAttachment(int texture){
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D_MULTISAMPLE, texture, 0 );
+	}
+	
+	public void createDepthTextureAttachment(int texture, boolean isMultisample){
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, isMultisample ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D, texture, 0 );
 	}
 	
 	public void createColorBufferMultisampleAttachment(int samples, int attachment, int width, int height, int internalformat){

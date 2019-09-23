@@ -1,6 +1,8 @@
 #version 450
 #extension GL_ARB_separate_shader_objects : enable
 
+#lib.glsl
+
 layout(triangles) in;
 
 layout(triangle_strip, max_vertices = 3) out;
@@ -21,13 +23,6 @@ struct Material
 	float uvScaling;
 };
 
-layout (std140, row_major) uniform Camera{
-	vec3 eyePosition;
-	mat4 m_View;
-	mat4 m_ViewProjection;
-	vec4 frustumPlanes[6];
-};
-
 layout (std430, binding = 1) buffer ssbo0 {
 	vec3 fogColor;
 	float sightRangeFactor;
@@ -45,40 +40,17 @@ uniform sampler2D splatmap;
 uniform Material materials[3];
 uniform vec4 clipplane;
 
-vec3 calcTangent()
-{	
-	vec3 v0 = gl_in[0].gl_Position.xyz;
-	vec3 v1 = gl_in[1].gl_Position.xyz;
-	vec3 v2 = gl_in[2].gl_Position.xyz;
-
-	// edges of the face/triangle
-    vec3 e1 = v1 - v0;
-    vec3 e2 = v2 - v0;
-	
-	vec2 uv0 = inUV[0];
-	vec2 uv1 = inUV[1];
-	vec2 uv2 = inUV[2];
-
-    vec2 deltaUV1 = uv1 - uv0;
-	vec2 deltaUV2 = uv2 - uv0;
-	
-	float r = 1.0 / (deltaUV1.x * deltaUV2.y - deltaUV1.y * deltaUV2.x);
-	
-	vec3 t = normalize((e1 * deltaUV2.y - e2 * deltaUV1.y)*r);
-	
-	return t;
-}
-
 void main() {	
 
 	vec3 displacement[3] = { vec3(0), vec3(0), vec3(0) };
 	vec3 tangent = vec3(0);
 	
-	float dist = (distance(gl_in[0].gl_Position.xyz, eyePosition) + distance(gl_in[1].gl_Position.xyz, eyePosition) + distance(gl_in[2].gl_Position.xyz, eyePosition))/3;
+	float dist = (distance(gl_in[0].gl_Position.xyz, camera.eyePosition)
+		+ distance(gl_in[1].gl_Position.xyz, camera.eyePosition) + distance(gl_in[2].gl_Position.xyz, camera.eyePosition))/3;
 	
 	if (dist < (largeDetailRange)){
 	
-		tangent = calcTangent();
+		tangent = getTangent(gl_in[0].gl_Position.xyz, gl_in[1].gl_Position.xyz, gl_in[2].gl_Position.xyz, inUV[0], inUV[1], inUV[2]);
 		
 		for(int k=0; k<gl_in.length(); k++){
 			
@@ -96,7 +68,7 @@ void main() {
 				scale += texture(materials[i].heightmap, inUV[k]/materials[i].uvScaling).r * materials[i].heightScaling * blendValues[i];
 			}
 						
-			float attenuation = clamp(- distance(gl_in[k].gl_Position.xyz, eyePosition)/(largeDetailRange-50) + 1,0.0,1.0);
+			float attenuation = clamp(- distance(gl_in[k].gl_Position.xyz, camera.eyePosition)/(largeDetailRange-50) + 1,0.0,1.0);
 			scale *= attenuation;
 
 			displacement[k] *= scale;
@@ -106,16 +78,16 @@ void main() {
 	for (int i = 0; i < gl_in.length(); ++i)
 	{
 		vec4 worldPos = gl_in[i].gl_Position + vec4(displacement[i],0);
-		gl_Position = m_ViewProjection * worldPos;
-		gl_ClipDistance[0] = dot(gl_Position ,frustumPlanes[0]);
-		gl_ClipDistance[1] = dot(gl_Position ,frustumPlanes[1]);
-		gl_ClipDistance[2] = dot(gl_Position ,frustumPlanes[2]);
-		gl_ClipDistance[3] = dot(gl_Position ,frustumPlanes[3]);
-		gl_ClipDistance[4] = dot(gl_Position ,frustumPlanes[4]);
-		gl_ClipDistance[5] = dot(gl_Position ,frustumPlanes[5]);
-		gl_ClipDistance[6] = dot(worldPos ,clipplane);
+		gl_Position = camera.m_ViewProjection * worldPos;
+		gl_ClipDistance[0] = dot(gl_Position, camera.frustumPlanes[0]);
+		gl_ClipDistance[1] = dot(gl_Position, camera.frustumPlanes[1]);
+		gl_ClipDistance[2] = dot(gl_Position, camera.frustumPlanes[2]);
+		gl_ClipDistance[3] = dot(gl_Position, camera.frustumPlanes[3]);
+		gl_ClipDistance[4] = dot(gl_Position, camera.frustumPlanes[4]);
+		gl_ClipDistance[5] = dot(gl_Position, camera.frustumPlanes[5]);
+		gl_ClipDistance[6] = dot(worldPos, clipplane);
 		outUV = inUV[i];
-		outViewPos = m_View * worldPos;
+		outViewPos = camera.m_View * worldPos;
 		outWorldPos = (worldPos).xyz;
 		outTangent = tangent;
 		EmitVertex();

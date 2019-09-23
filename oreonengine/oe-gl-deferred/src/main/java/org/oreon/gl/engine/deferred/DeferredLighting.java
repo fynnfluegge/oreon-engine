@@ -15,6 +15,7 @@ import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.gl.wrapper.texture.TextureImage2D;
 import org.oreon.core.image.Image.ImageFormat;
 import org.oreon.core.image.Image.SamplerFilter;
+import org.oreon.core.image.Image.TextureWrapMode;
 
 import lombok.Getter;
 
@@ -28,8 +29,8 @@ public class DeferredLighting {
 		
 		shader = DeferredLightingShader.getInstance();
 
-		deferredLightingSceneTexture = new TextureImage2D(width, height,
-				ImageFormat.RGBA16FLOAT, SamplerFilter.Nearest);
+		deferredLightingSceneTexture = new TextureImage2D(width, height, 
+				ImageFormat.RGBA16FLOAT, SamplerFilter.Nearest, TextureWrapMode.ClampToEdge);
 	}
 	
 	public void render(GLTexture sampleCoverageMask, GLTexture ssaoBlurTexture, GLTexture shadowmap,
@@ -42,10 +43,11 @@ public class DeferredLighting {
 		glBindImageTexture(0, deferredLightingSceneTexture.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
 		glBindImageTexture(2, albedoTexture.getHandle(), 0, false, 0, GL_READ_ONLY, GL_RGBA16F);
 		glBindImageTexture(3, worldPositionTexture.getHandle(), 0, false, 0, GL_READ_ONLY, GL_RGBA32F);
-		glBindImageTexture(4, normalTexture.getHandle(), 0, false, 0, GL_READ_ONLY, GL_RGBA32F);
+		glBindImageTexture(4, normalTexture.getHandle(), 0, false, 0, GL_READ_ONLY, GL_RGBA16F);
 		glBindImageTexture(5, specularEmissionDiffuseSsaoBloomTexture.getHandle(), 0, false, 0, GL_READ_ONLY, GL_RGBA16F);
 		glBindImageTexture(6, sampleCoverageMask.getHandle(), 0, false, 0, GL_READ_ONLY, GL_R8);
-		glBindImageTexture(7, ssaoBlurTexture.getHandle(), 0, false, 0, GL_READ_ONLY, GL_R16F);
+		if (BaseContext.getConfig().isSsaoEnabled())
+			glBindImageTexture(7, ssaoBlurTexture.getHandle(), 0, false, 0, GL_READ_ONLY, GL_R16F);
 		shader.updateUniforms(shadowmap);
 		glDispatchCompute(BaseContext.getWindow().getWidth()/16, BaseContext.getWindow().getHeight()/16,1);
 	}

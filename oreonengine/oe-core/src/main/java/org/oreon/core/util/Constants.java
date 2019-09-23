@@ -11,10 +11,10 @@ public class Constants {
 	public static int CLIPOFFSET;
 	public static final int PSSM_SPLITS = 5;
 	public static final float[] PSSM_SPLIT_SHEME = { -0.02f,0.02f,
-													-0.04f,0.04f, 
-													-0.1f,0.1f,
-													-0.5f,0.5f,
-													-1f,1f};
+													 -0.04f,0.04f, 
+													 -0.1f,0.1f,
+													 -0.5f,0.5f,
+													 -1f,1f};
 	
 	// Global Uniform Block Bindings
 	public static final int CameraUniformBlockBinding = 51;

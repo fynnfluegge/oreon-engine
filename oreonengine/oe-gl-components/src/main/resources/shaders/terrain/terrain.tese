@@ -24,50 +24,6 @@ uniform sampler2D heightmap;
 uniform float yScale;
 uniform int reflectionOffset;
 
-// 		-1  3 -3  1
-//		 3 -6  3  0
-// MB = -3  3  0  0
-//		 1  0  0  0
-//
-
-const mat4 MB = mat4(vec4(-1.0,3.0,-3.0,1.0), vec4(3.0,-6.0,3.0,0.0), vec4(-3.0,3.0,0.0,0.0), vec4(1.0,0.0,0.0,0.0));
-
-
-vec3 BezierInterpolation()
-{
-	float u = gl_TessCoord.x;
-	float v = gl_TessCoord.y;
-	
-	vec4 U = vec4(u*u*u, u*u, u, 1);
-	vec4 V = vec4(v*v*v, v*v, v, 1); 
-	
-	mat4 GBY = mat4(vec4(gl_in[12].gl_Position.y, gl_in[8].gl_Position.y,  gl_in[4].gl_Position.y, gl_in[0].gl_Position.y),
-					vec4(gl_in[13].gl_Position.y, gl_in[9].gl_Position.y,  gl_in[5].gl_Position.y, gl_in[1].gl_Position.y),
-					vec4(gl_in[14].gl_Position.y, gl_in[10].gl_Position.y, gl_in[6].gl_Position.y, gl_in[2].gl_Position.y),
-					vec4(gl_in[15].gl_Position.y, gl_in[11].gl_Position.y, gl_in[7].gl_Position.y, gl_in[3].gl_Position.y));
-					
-	mat4 GBX = mat4(vec4(gl_in[12].gl_Position.x, gl_in[8].gl_Position.x,  gl_in[4].gl_Position.x, gl_in[0].gl_Position.x),
-					vec4(gl_in[13].gl_Position.x, gl_in[9].gl_Position.x,  gl_in[5].gl_Position.x, gl_in[1].gl_Position.x),
-					vec4(gl_in[14].gl_Position.x, gl_in[10].gl_Position.x, gl_in[6].gl_Position.x, gl_in[2].gl_Position.x),
-					vec4(gl_in[15].gl_Position.x, gl_in[11].gl_Position.x, gl_in[7].gl_Position.x, gl_in[3].gl_Position.x));
-	
-	mat4 GBZ = mat4(vec4(gl_in[12].gl_Position.z, gl_in[8].gl_Position.z,  gl_in[4].gl_Position.z, gl_in[0].gl_Position.z),
-					vec4(gl_in[13].gl_Position.z, gl_in[9].gl_Position.z,  gl_in[5].gl_Position.z, gl_in[1].gl_Position.z),
-					vec4(gl_in[14].gl_Position.z, gl_in[10].gl_Position.z, gl_in[6].gl_Position.z, gl_in[2].gl_Position.z),
-					vec4(gl_in[15].gl_Position.z, gl_in[11].gl_Position.z, gl_in[7].gl_Position.z, gl_in[3].gl_Position.z));
-	
-					 
-	mat4 cx = MB * GBX * transpose(MB);
-	mat4 cy = MB * GBY * transpose(MB);
-	mat4 cz = MB * GBZ * transpose(MB);
-	
-	float x = dot(cx * V, U);
-	float y = dot(cy * V, U);
-	float z = dot(cz * V, U);
-	
-	return vec3(x,y,z);
-}
-
 void main(){
 
     float u = gl_TessCoord.x;
@@ -93,9 +49,6 @@ void main(){
 	position.y = height;
 	position.x -= slope * v_heightmap.x * yScale;
 	position.z -= slope * v_heightmap.z * yScale;
-
-	if (isBezier == 1)
-		position.xyz = BezierInterpolation();
 		
 	outUV = uv * uvScale;
 	
