@@ -6,6 +6,7 @@ import static org.lwjgl.opengl.GL30.GL_R32F;
 import static org.lwjgl.opengl.GL30.GL_RGB32F;
 import static org.lwjgl.opengl.GL30.GL_RGBA16F;
 import static org.lwjgl.opengl.GL30.GL_RGBA32F;
+import static org.lwjgl.opengl.GL31.GL_RGBA8_SNORM;
 import static org.lwjgl.opengl.GL32.GL_TEXTURE_2D_MULTISAMPLE;
 
 import org.oreon.core.gl.texture.GLTexture;
@@ -20,6 +21,8 @@ public class TextureImage2DMultisample extends GLTexture{
 		
 		switch(imageFormat)
 		{
+			case RGBA8_SNORM:
+				allocateImage2DMultisample(samples, GL_RGBA8_SNORM); break;
 			case RGBA16FLOAT:
 				allocateImage2DMultisample(samples, GL_RGBA16F); break;
 			case RGBA32FLOAT:

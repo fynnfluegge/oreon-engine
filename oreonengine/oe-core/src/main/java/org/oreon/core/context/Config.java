@@ -34,6 +34,7 @@ public class Config {
 	// shadows settings
 	private boolean shadowsEnable;
 	private int shadowMapResolution;
+	private int shadowsQuality;
 	
 	// post processing effects
 	private boolean ssaoEnabled;
@@ -93,6 +94,7 @@ public class Config {
 		fxaaEnabled = Integer.valueOf(properties.getProperty("fxaa.enable")) == 1 ? true : false;
 		shadowsEnable = Integer.valueOf(properties.getProperty("shadows.enable")) == 1 ? true : false;
 		shadowMapResolution = Integer.valueOf(properties.getProperty("shadows.map.resolution"));
+		shadowsQuality = Integer.valueOf(properties.getProperty("shadows.quality"));
 		bloomEnabled = Integer.valueOf(properties.getProperty("bloom.enable")) == 1 ? true : false;
 		ssaoEnabled = Integer.valueOf(properties.getProperty("ssao.enable")) == 1 ? true : false;
 		motionBlurEnabled = Integer.valueOf(properties.getProperty("motionBlur.enable")) == 1 ? true : false;

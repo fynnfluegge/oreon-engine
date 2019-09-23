@@ -1,6 +1,8 @@
 #version 450
 #extension GL_ARB_separate_shader_objects : enable
 
+#lib.glsl
+
 layout(triangles) in;
 layout(line_strip, max_vertices = 4) out;
 
@@ -16,13 +18,6 @@ struct Material
 out vec2 texCoordF;
 out vec4 viewSpacePos;
 out vec3 position;
-
-layout (std140, row_major) uniform Camera{
-	vec3 eyePosition;
-	mat4 m_View;
-	mat4 m_ViewProjection;
-	vec4 frustumPlanes[6];
-};
 
 layout (std430, binding = 1) buffer ssbo0 {
 	vec3 fogColor;
@@ -45,7 +40,8 @@ void main() {
 
 	vec3 displacement[3] = { vec3(0), vec3(0), vec3(0) };
 
-	float dist = (distance(gl_in[0].gl_Position.xyz, eyePosition) + distance(gl_in[1].gl_Position.xyz, eyePosition) + distance(gl_in[2].gl_Position.xyz, eyePosition))/3;
+	float dist = (distance(gl_in[0].gl_Position.xyz, camera.eyePosition)
+		+ distance(gl_in[1].gl_Position.xyz, camera.eyePosition) + distance(gl_in[2].gl_Position.xyz, camera.eyePosition))/3;
 	
 	if (dist < (largeDetailRange)){
 		
@@ -65,7 +61,7 @@ void main() {
 				scale += texture(materials[i].heightmap, inUV[k]/materials[i].uvScaling).r * materials[i].heightScaling * blendValues[i];
 			}
 						
-			float attenuation = clamp(- distance(gl_in[k].gl_Position.xyz, eyePosition)/(largeDetailRange-50) + 1,0.0,1.0);
+			float attenuation = clamp(- distance(gl_in[k].gl_Position.xyz, camera.eyePosition)/(largeDetailRange-50) + 1,0.0,1.0);
 			scale *= attenuation;
 
 			displacement[k] *= scale;
@@ -75,25 +71,25 @@ void main() {
 	for (int i = 0; i < gl_in.length(); ++i)
 	{
 		vec4 position = gl_in[i].gl_Position + vec4(displacement[i],0);
-		gl_Position = m_ViewProjection * position;
-		gl_ClipDistance[0] = dot(gl_Position ,frustumPlanes[0]);
-		gl_ClipDistance[1] = dot(gl_Position ,frustumPlanes[1]);
-		gl_ClipDistance[2] = dot(gl_Position ,frustumPlanes[2]);
-		gl_ClipDistance[3] = dot(gl_Position ,frustumPlanes[3]);
-		gl_ClipDistance[4] = dot(gl_Position ,frustumPlanes[4]);
-		gl_ClipDistance[5] = dot(gl_Position ,frustumPlanes[5]);
+		gl_Position = camera.m_ViewProjection * position;
+		gl_ClipDistance[0] = dot(gl_Position, camera.frustumPlanes[0]);
+		gl_ClipDistance[1] = dot(gl_Position, camera.frustumPlanes[1]);
+		gl_ClipDistance[2] = dot(gl_Position, camera.frustumPlanes[2]);
+		gl_ClipDistance[3] = dot(gl_Position, camera.frustumPlanes[3]);
+		gl_ClipDistance[4] = dot(gl_Position, camera.frustumPlanes[4]);
+		gl_ClipDistance[5] = dot(gl_Position, camera.frustumPlanes[5]);
 		gl_ClipDistance[6] = dot(position ,clipplane);
 		EmitVertex();
 	}
 	
 	vec4 vertexPos = gl_in[0].gl_Position + vec4(displacement[0],0);
-	gl_Position = m_ViewProjection * vertexPos;
-	gl_ClipDistance[0] = dot(gl_Position ,frustumPlanes[0]);
-	gl_ClipDistance[1] = dot(gl_Position ,frustumPlanes[1]);
-	gl_ClipDistance[2] = dot(gl_Position ,frustumPlanes[2]);
-	gl_ClipDistance[3] = dot(gl_Position ,frustumPlanes[3]);
-	gl_ClipDistance[4] = dot(gl_Position ,frustumPlanes[4]);
-	gl_ClipDistance[5] = dot(gl_Position ,frustumPlanes[5]);
+	gl_Position = camera.m_ViewProjection * vertexPos;
+	gl_ClipDistance[0] = dot(gl_Position, camera.frustumPlanes[0]);
+	gl_ClipDistance[1] = dot(gl_Position, camera.frustumPlanes[1]);
+	gl_ClipDistance[2] = dot(gl_Position, camera.frustumPlanes[2]);
+	gl_ClipDistance[3] = dot(gl_Position, camera.frustumPlanes[3]);
+	gl_ClipDistance[4] = dot(gl_Position, camera.frustumPlanes[4]);
+	gl_ClipDistance[5] = dot(gl_Position, camera.frustumPlanes[5]);
 	gl_ClipDistance[6] = dot(vertexPos ,clipplane);
     EmitVertex();
 	

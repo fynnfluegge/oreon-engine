@@ -13,10 +13,7 @@ import org.oreon.gl.components.ui.GLStaticTextPanel;
 
 public class GLSystemMonitor extends GLGUI{
 
-	@SuppressWarnings("restriction")
 	private com.sun.management.OperatingSystemMXBean bean;
-	
-	@SuppressWarnings("restriction")
 	
 	public void init() {
 		super.init();
@@ -40,7 +37,6 @@ public class GLSystemMonitor extends GLGUI{
 	public void update(){
 		
 		getScreens().get(0).getElements().get(3).update(Integer.toString(CoreEngine.getFps()));
-		@SuppressWarnings("restriction")
 		String cpuLoad = Double.toString(bean.getSystemCpuLoad());
 		if (cpuLoad.length() == 3){
 			cpuLoad = cpuLoad.substring(2, 3);

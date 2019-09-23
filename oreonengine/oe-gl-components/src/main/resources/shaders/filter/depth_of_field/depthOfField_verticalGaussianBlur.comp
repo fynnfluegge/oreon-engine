@@ -37,21 +37,21 @@ void main(void){
 	if (linDepth > 0.06) {
 		color = vec3(0,0,0);
 		for (int i=0; i<9; i++){
-			uvOffset = ivec2((i-4),0);
+			uvOffset = ivec2(0,(i-4));
 			color += imageLoad(horizontalBlurSceneSampler, computeCoord + uvOffset).rgb * gaussianKernel9_sigma8[i];
 		}
 	}
 	else if (linDepth > 0.04) {
 		color = vec3(0,0,0);
 		for (int i=0; i<9; i++){
-			uvOffset = ivec2((i-4),0);
+			uvOffset = ivec2(0,(i-4));
 			color += imageLoad(horizontalBlurSceneSampler, computeCoord + uvOffset).rgb * gaussianKernel9_sigma4[i];
 		}
 	}
 	else if (linDepth > 0.02) {
 		color = vec3(0,0,0);
 		for (int i=0; i<9; i++){
-			uvOffset = ivec2((i-4),0);
+			uvOffset = ivec2(0,(i-4));
 			color += imageLoad(horizontalBlurSceneSampler, computeCoord + uvOffset).rgb * gaussianKernel9_sigma2[i];
 		}
 	}

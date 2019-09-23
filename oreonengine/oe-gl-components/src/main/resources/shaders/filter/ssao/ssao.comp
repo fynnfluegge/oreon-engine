@@ -6,7 +6,7 @@ layout (binding = 0, r16f) uniform writeonly image2D ssao_out;
 
 layout (binding = 1, rgba32f) uniform readonly image2DMS worldPositionImage;
 
-layout (binding = 2, rgba32f) uniform readonly image2DMS normalImage;
+layout (binding = 2, rgba16f) uniform readonly image2DMS normalImage;
 
 layout (binding = 3, rgba32f) uniform readonly image2D noiseImage;
 

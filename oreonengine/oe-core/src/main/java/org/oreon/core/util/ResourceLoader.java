@@ -1,6 +1,8 @@
 package org.oreon.core.util;
 
-import org.lwjgl.BufferUtils;
+import static org.lwjgl.stb.STBImage.stbi_failure_reason;
+import static org.lwjgl.stb.STBImage.stbi_info_from_memory;
+import static org.lwjgl.stb.STBImage.stbi_load_from_memory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,7 +17,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static org.lwjgl.stb.STBImage.*;
+import org.lwjgl.BufferUtils;
+import org.oreon.core.context.BaseContext;
 
 public class ResourceLoader {
 
@@ -45,6 +48,38 @@ public class ResourceLoader {
 		}
 		
 		return shaderSource.toString();
+	}
+	
+	public static String loadShader(String fileName, String lib)
+	{
+		String shadersource = loadShader(fileName);
+		
+		InputStream is = ResourceLoader.class.getClassLoader().getResourceAsStream("shader/" + lib);
+		StringBuilder shaderlibSource = new StringBuilder();
+		BufferedReader shaderReader = null;
+		
+		try
+		{
+			shaderReader = new BufferedReader(new InputStreamReader(is));
+			String line;
+			while((line = shaderReader.readLine()) != null)
+			{
+				shaderlibSource.append(line).append("\n");
+			}
+			
+			shaderReader.close();
+		}
+		catch(Exception e)
+		{
+			System.err.println("Unable to load file ["+ fileName +"]!");
+			e.printStackTrace();
+			System.exit(1);
+		}
+		
+		// replace const paramter in glsl library
+		String vlib = shaderlibSource.toString().replaceFirst("#var_shadow_map_resolution", Integer.toString(BaseContext.getConfig().getShadowMapResolution())); 
+		
+		return shadersource.replaceFirst("#lib.glsl", vlib);
 	}
 	
 	public static ByteBuffer loadImageToByteBuffer(String file){

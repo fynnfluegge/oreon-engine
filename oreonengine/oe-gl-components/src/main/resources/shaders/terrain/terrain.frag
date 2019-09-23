@@ -1,6 +1,8 @@
 #version 450
 #extension GL_ARB_separate_shader_objects : enable
 
+#lib.glsl
+
 layout (location = 0) in vec2 inUV;
 layout (location = 1) in vec4 inViewPos;
 layout (location = 2) in vec3 inWorldPos;
@@ -20,20 +22,6 @@ struct Material
 	float heightScaling;
 	float uvScaling;
 };
-
-layout (std140, row_major) uniform Camera{
-	vec3 eyePosition;
-	mat4 m_View;
-	mat4 m_ViewProjection;
-	vec4 frustumPlanes[6];
-};
-
-layout (std140) uniform DirectionalLight{
-	vec3 direction;
-	float intensity;
-	vec3 ambient;
-	vec3 color;
-} directional_light;
 
 layout (std430, binding = 1) buffer ssbo0 {
 	vec3 fogColor;
@@ -60,27 +48,9 @@ uniform sampler2D caustics;
 uniform float distortionCaustics;
 uniform float underwaterBlurFactor;
 
-const float zfar = 10000;
-const float znear = 0.1;
-
-float diffuse(vec3 direction, vec3 normal, float intensity)
-{
-	return max(0.0, dot(normal, -direction) * intensity);
-}
-
-float getFogFactor(float dist)
-{
-	return clamp(smoothstep(0.0,1.0,-0.0002/sightRangeFactor*(dist-(zfar)/10*sightRangeFactor) + 1),0.0,1.0);
-}
-
-float distancePointPlane(vec3 point, vec4 plane){
-	return abs(plane.x*point.x + plane.y*point.y + plane.z*point.z + plane.w) / 
-		   abs(sqrt(plane.x * plane.x + plane.y * plane.y + plane.z * plane.z));
-}
-
 void main()
 {		
-	float dist = length(eyePosition - inWorldPos);
+	float dist = length(camera.eyePosition - inWorldPos);
 	float height = inWorldPos.y;
 	
 	// normalmap/occlusionmap/splatmap coords
@@ -138,8 +108,8 @@ void main()
 	}
 	
 	if (isReflection == 1){
-		float dist = length(eyePosition - inWorldPos);
-		float fogFactor = getFogFactor(dist);
+		float dist = length(camera.eyePosition - inWorldPos);
+		float fogFactor = getFogFactor(dist, sightRangeFactor);
 		fragColor = mix(fogColor.rgb * 2, fragColor, fogFactor);
 	}
 	

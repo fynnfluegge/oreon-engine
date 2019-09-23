@@ -32,10 +32,10 @@ public class TerrainWireframeShader extends GLShaderProgram{
 	{
 		super();
 
-		addVertexShader(ResourceLoader.loadShader("shaders/terrain/terrain.vert"));
-		addTessellationControlShader(ResourceLoader.loadShader("shaders/terrain/terrain.tesc"));
-		addTessellationEvaluationShader(ResourceLoader.loadShader("shaders/terrain/terrain.tese"));
-		addGeometryShader(ResourceLoader.loadShader("shaders/terrain/terrain_wireframe.geom"));
+		addVertexShader(ResourceLoader.loadShader("shaders/terrain/terrain.vert", "lib.glsl"));
+		addTessellationControlShader(ResourceLoader.loadShader("shaders/terrain/terrain.tesc", "lib.glsl"));
+		addTessellationEvaluationShader(ResourceLoader.loadShader("shaders/terrain/terrain.tese", "lib.glsl"));
+		addGeometryShader(ResourceLoader.loadShader("shaders/terrain/terrain_wireframe.geom", "lib.glsl"));
 		addFragmentShader(ResourceLoader.loadShader("shaders/terrain/terrain_wireframe.frag"));
 		compileShader();
 		

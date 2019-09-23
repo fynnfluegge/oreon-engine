@@ -209,14 +209,18 @@ public class GLDeferredEngine extends RenderEngine{
 		//         render sample coverage mask buffer        //
 		//---------------------------------------------------//
 		
-		sampleCoverage.render(primarySceneFbo.getAttachmentTexture(Attachment.POSITION),
-				primarySceneFbo.getAttachmentTexture(Attachment.LIGHT_SCATTERING),
-				primarySceneFbo.getAttachmentTexture(Attachment.SPECULAR_EMISSION_DIFFUSE_SSAO_BLOOM));
+		if (BaseContext.getConfig().getMultisampling_sampleCount() > 1){
+			sampleCoverage.render(primarySceneFbo.getAttachmentTexture(Attachment.POSITION),
+					primarySceneFbo.getAttachmentTexture(Attachment.LIGHT_SCATTERING),
+					primarySceneFbo.getAttachmentTexture(Attachment.SPECULAR_EMISSION_DIFFUSE_SSAO_BLOOM));
+		}
 		
 
 		//-----------------------------------------------------//
 		//         render multisample deferred lighting        //
 		//-----------------------------------------------------//
+		
+		
 		
 		deferredLighting.render(sampleCoverage.getSampleCoverageMask(),
 				ssao.getSsaoBlurSceneTexture(),
@@ -232,7 +236,6 @@ public class GLDeferredEngine extends RenderEngine{
 		//-----------------------------------------------//
 		
 		if (transparencySceneRenderList.getObjectList().size() > 0){
-			
 			opaqueTransparencyBlending.render(deferredLighting.getDeferredLightingSceneTexture(),
 					primarySceneFbo.getAttachmentTexture(Attachment.DEPTH),
 					sampleCoverage.getLightScatteringMaskSingleSample(),
@@ -253,8 +256,11 @@ public class GLDeferredEngine extends RenderEngine{
 				opaqueTransparencyBlending.getBlendedSceneTexture() : deferredLighting.getDeferredLightingSceneTexture();
 		GLTexture currentScene = prePostprocessingScene;
 		
-		GLTexture lightScatteringMask = sampleCoverage.getLightScatteringMaskSingleSample();
-		GLTexture specularEmissionBloomMask = sampleCoverage.getSpecularEmissionBloomMaskSingleSample();
+		
+		GLTexture lightScatteringMask = BaseContext.getConfig().getMultisampling_sampleCount() > 1 ?
+				sampleCoverage.getLightScatteringMaskSingleSample() : primarySceneFbo.getAttachmentTexture(Attachment.LIGHT_SCATTERING); 
+		GLTexture specularEmissionDiffuseSsaoBloomMask = BaseContext.getConfig().getMultisampling_sampleCount() > 1 ?
+				sampleCoverage.getSpecularEmissionBloomMaskSingleSample() : primarySceneFbo.getAttachmentTexture(Attachment.SPECULAR_EMISSION_DIFFUSE_SSAO_BLOOM);
 		
 		boolean doMotionBlur = camera.getPreviousPosition().sub(camera.getPosition()).length() > 0.04f
 				|| camera.getForward().sub(camera.getPreviousForward()).length() > 0.01f;
@@ -282,7 +288,7 @@ public class GLDeferredEngine extends RenderEngine{
 			//--------------------------------------------//
 			
 			if (BaseContext.getConfig().isBloomEnabled()){
-				bloom.render(prePostprocessingScene, currentScene, specularEmissionBloomMask);
+				bloom.render(prePostprocessingScene, currentScene, specularEmissionDiffuseSsaoBloomMask);
 				currentScene = bloom.getBloomSceneTexture();
 			}
 			
@@ -327,8 +333,16 @@ public class GLDeferredEngine extends RenderEngine{
 		
 		if (BaseContext.getConfig().isRenderWireframe()
 				|| renderAlbedoBuffer){
-			fullScreenQuadMultisample.setTexture(primarySceneFbo.getAttachmentTexture(Attachment.COLOR));
-			fullScreenQuadMultisample.render();
+			if (BaseContext.getConfig().getMultisampling_sampleCount() > 1)
+			{
+				fullScreenQuadMultisample.setTexture(primarySceneFbo.getAttachmentTexture(Attachment.COLOR));
+				fullScreenQuadMultisample.render();
+			}
+			else
+			{
+				fullScreenQuad.setTexture(primarySceneFbo.getAttachmentTexture(Attachment.COLOR));
+				fullScreenQuad.render();
+			}
 		}
 		if (renderNormalBuffer){
 			fullScreenQuadMultisample.setTexture(primarySceneFbo.getAttachmentTexture(Attachment.NORMAL));
@@ -356,8 +370,6 @@ public class GLDeferredEngine extends RenderEngine{
 //		fullScreenQuadMultisample.setTexture(primarySceneFbo.getAttachmentTexture(Attachment.COLOR));
 //		fullScreenQuadMultisample.render();
 		
-//		fullScreenQuad.setTexture(depthOfField.getHorizontalBlurSceneTexture());
-//		fullScreenQuad.setTexture(depthOfField.getVerticalBlurSceneTexture());
 		fullScreenQuad.setTexture(currentScene);
 		fullScreenQuad.render();
 		

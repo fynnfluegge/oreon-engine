@@ -1,16 +1,11 @@
 #version 450
 #extension GL_ARB_separate_shader_objects : enable
 
+#lib.glsl
+
 layout (location = 0) in vec2 inPosition;
 
 layout (location = 0) out vec2 outUV;
-
-layout (std140, row_major) uniform Camera {
-	vec3 eyePosition;
-	mat4 m_View;
-	mat4 m_ViewProjection;
-	vec4 frustumPlanes[6];
-};
 
 layout (std430, binding = 1) buffer ssbo0 {
 	vec3 fogColor;
@@ -117,9 +112,9 @@ vec2 diamondSquare(vec2 localPosition, float height, int morph_area){
 		fixPointLongitude = location + vec2(gap,0);
 	}
 		
-	distLatitude = length(eyePosition - (worldMatrix * 
+	distLatitude = length(camera.eyePosition - (worldMatrix * 
 					vec4(fixPointLatitude.x,height,fixPointLatitude.y,1)).xyz);
-	distLongitude = length(eyePosition - (worldMatrix * 
+	distLongitude = length(camera.eyePosition - (worldMatrix * 
 					vec4(fixPointLongitude.x,height,fixPointLongitude.y,1)).xyz);
 					
 	if (distLatitude > morph_area)
