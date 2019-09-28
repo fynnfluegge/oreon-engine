@@ -64,7 +64,7 @@ public class SSAO {
 		
 		noiseTexture = new TextureStorage2D(4,4,1,ImageFormat.RGBA16FLOAT);
 		ssaoSceneTexture = new TextureImage2D(width, height,
-				ImageFormat.R16FLOAT, SamplerFilter.Nearest, TextureWrapMode.ClampToEdge);
+				ImageFormat.R16FLOAT, SamplerFilter.Bilinear, TextureWrapMode.ClampToEdge);
 		ssaoBlurSceneTexture = new TextureImage2D(width, height,
 				ImageFormat.R16FLOAT, SamplerFilter.Bilinear, TextureWrapMode.ClampToEdge);
 		

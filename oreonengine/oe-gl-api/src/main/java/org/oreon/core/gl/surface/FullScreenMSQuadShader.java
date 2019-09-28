@@ -41,8 +41,8 @@ public class FullScreenMSQuadShader extends GLShaderProgram{
 		texture.bind();
 		setUniformi("texture", 0);
 		
-		setUniformi("width", BaseContext.getWindow().getWidth());
-		setUniformi("height", BaseContext.getWindow().getHeight());
+		setUniformi("width", BaseContext.getConfig().getFrameWidth());
+		setUniformi("height", BaseContext.getConfig().getFrameHeight());
 		setUniformi("multisamples", BaseContext.getConfig().getMultisampling_sampleCount());		
 	}
 }

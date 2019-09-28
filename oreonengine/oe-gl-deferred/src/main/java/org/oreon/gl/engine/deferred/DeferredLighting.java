@@ -35,7 +35,7 @@ public class DeferredLighting {
 		shader = DeferredLightingShader.getInstance();
 
 		deferredLightingSceneTexture = new TextureImage2D(width, height, 
-				ImageFormat.RGBA16FLOAT, SamplerFilter.Nearest, TextureWrapMode.ClampToEdge);
+				ImageFormat.RGBA16FLOAT, SamplerFilter.Bilinear, TextureWrapMode.ClampToEdge);
 	}
 	
 	public void render(GLTexture sampleCoverageMask, GLTexture ssaoBlurTexture, GLTexture shadowmap,

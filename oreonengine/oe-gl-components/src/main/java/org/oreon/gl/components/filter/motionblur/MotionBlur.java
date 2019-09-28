@@ -10,7 +10,6 @@ import static org.lwjgl.opengl.GL43.glDispatchCompute;
 import org.oreon.core.context.BaseContext;
 import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.gl.wrapper.texture.TextureImage2D;
-import org.oreon.core.gl.wrapper.texture.TextureStorage2D;
 import org.oreon.core.image.Image.ImageFormat;
 import org.oreon.core.image.Image.SamplerFilter;
 import org.oreon.core.image.Image.TextureWrapMode;
@@ -26,11 +25,13 @@ public class MotionBlur {
 	private MotionBlurShader motionBlurShader;
 	
 	public MotionBlur() {
+		
 		pixelVelocityTexture = new TextureImage2D(BaseContext.getConfig().getFrameWidth(),
 				BaseContext.getConfig().getFrameHeight(),
-				ImageFormat.RGBA16FLOAT, SamplerFilter.Nearest, TextureWrapMode.ClampToEdge);
-		motionBlurSceneTexture = new TextureStorage2D(BaseContext.getConfig().getFrameWidth(),
-				BaseContext.getConfig().getFrameHeight(), 1, ImageFormat.RGBA16FLOAT);
+				ImageFormat.RGBA16FLOAT, SamplerFilter.Bilinear, TextureWrapMode.ClampToEdge);
+		motionBlurSceneTexture = new TextureImage2D(BaseContext.getConfig().getFrameWidth(),
+				BaseContext.getConfig().getFrameHeight(),
+				ImageFormat.RGBA16FLOAT, SamplerFilter.Bilinear, TextureWrapMode.ClampToEdge);
 		
 		pixelVelocityShader = PixelVelocityShader.getInstance();
 		motionBlurShader = MotionBlurShader.getInstance();
