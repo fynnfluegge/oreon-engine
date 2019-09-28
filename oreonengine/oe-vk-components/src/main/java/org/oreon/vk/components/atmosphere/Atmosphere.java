@@ -106,8 +106,8 @@ public class Atmosphere extends Renderable{
 		pushConstants.putFloat(BaseContext.getConfig().getSunPosition().getY()*-1);
 		pushConstants.putFloat(BaseContext.getConfig().getSunPosition().getZ()*-1);
 		pushConstants.putFloat(BaseContext.getConfig().getSunRadius());
-		pushConstants.putInt(BaseContext.getConfig().getX_ScreenResolution());
-		pushConstants.putInt(BaseContext.getConfig().getY_ScreenResolution());
+		pushConstants.putInt(BaseContext.getConfig().getFrameWidth());
+		pushConstants.putInt(BaseContext.getConfig().getFrameHeight());
 		pushConstants.putInt(0);
 		pushConstants.putFloat(BaseContext.getConfig().getAtmosphereBloomFactor());
 		pushConstants.putFloat(BaseContext.getConfig().getHorizonVerticalShift());
@@ -116,8 +116,8 @@ public class Atmosphere extends Renderable{
 		VkPipeline graphicsPipeline = new GraphicsPipeline(device.getHandle(),
 				graphicsShaderPipeline, vertexInput, VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
 				VkUtil.createLongBuffer(descriptorSetLayouts),
-				BaseContext.getConfig().getX_ScreenResolution(),
-				BaseContext.getConfig().getY_ScreenResolution(),
+				BaseContext.getConfig().getFrameWidth(),
+				BaseContext.getConfig().getFrameHeight(),
 				VkContext.getResources().getOffScreenFbo().getRenderPass().getHandle(),
 				VkContext.getResources().getOffScreenFbo().getColorAttachmentCount(),
 				BaseContext.getConfig().getMultisampling_sampleCount(),
@@ -126,8 +126,8 @@ public class Atmosphere extends Renderable{
 		VkPipeline reflectionPipeline = new GraphicsPipeline(device.getHandle(),
 				reflectionShaderPipeline, vertexInput, VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
 				VkUtil.createLongBuffer(descriptorSetLayouts),
-				BaseContext.getConfig().getX_ScreenResolution(),
-				BaseContext.getConfig().getY_ScreenResolution(),
+				BaseContext.getConfig().getFrameWidth(),
+				BaseContext.getConfig().getFrameHeight(),
 				VkContext.getResources().getOffScreenReflectionFbo().getRenderPass().getHandle(),
 				VkContext.getResources().getOffScreenReflectionFbo().getColorAttachmentCount(), 1);
 		

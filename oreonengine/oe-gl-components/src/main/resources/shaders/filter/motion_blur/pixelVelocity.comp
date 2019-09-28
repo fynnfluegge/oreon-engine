@@ -2,7 +2,7 @@
 
 layout (local_size_x = 8, local_size_y = 8) in;
 
-layout (binding = 0, rgba32f) uniform writeonly image2D velocitymap;
+layout (binding = 0, rgba16f) uniform writeonly image2D velocitymap;
 
 uniform sampler2DMS depthmap;
 uniform float windowWidth;
@@ -10,10 +10,10 @@ uniform float windowHeight;
 uniform mat4 projectionMatrix;
 uniform mat4 inverseViewProjectionMatrix;
 uniform mat4 previousViewProjectionMatrix;
+uniform int blurFactor = 20;
 
 const float zfar = 10000.0f;
-const float znear = 0.1f;
-const int blurFactor = 100; 
+const float znear = 0.1f; 
 
 float linearize(float depth)
 {
@@ -44,7 +44,7 @@ void main(void){
 	//window space velocity
 	vec2 velocity = (previousPos.xy - N.xy).xy * blurFactor;
 	
-	if (length(velocity) < 0.01){
+	if (length(velocity) < 0.001){
 		velocity = vec2(0,0);
 	}
 	

@@ -68,8 +68,8 @@ private final Vec3f yAxis = new Vec3f(0,1,0);
 	
 	protected Camera(Vec3f position, Vec3f forward, Vec3f up)
 	{
-		width = BaseContext.getConfig().getX_ScreenResolution();
-		height = BaseContext.getConfig().getY_ScreenResolution();
+		width = BaseContext.getConfig().getFrameWidth();
+		height = BaseContext.getConfig().getFrameHeight();
 		setPosition(position);
 		setForward(forward.normalize());
 		setUp(up.normalize());
@@ -264,8 +264,8 @@ private final Vec3f yAxis = new Vec3f(0,1,0);
 		Vec4f leftPlane = new Vec4f(
 				this.projectionMatrix.get(3, 0) + this.projectionMatrix.get(0, 0)
 					* (float) ((Math.tan(Math.toRadians(this.fovY/2))
-					* ((double) BaseContext.getConfig().getX_ScreenResolution()
-					/ (double) BaseContext.getConfig().getY_ScreenResolution()))),
+					* ((double) BaseContext.getConfig().getFrameWidth()
+					/ (double) BaseContext.getConfig().getFrameHeight()))),
 				this.projectionMatrix.get(3, 1) + this.projectionMatrix.get(0, 1),
 				this.projectionMatrix.get(3, 2) + this.projectionMatrix.get(0, 2),
 				this.projectionMatrix.get(3, 3) + this.projectionMatrix.get(0, 3));
@@ -276,8 +276,8 @@ private final Vec3f yAxis = new Vec3f(0,1,0);
 		Vec4f rightPlane = new Vec4f(
 				this.projectionMatrix.get(3, 0) - this.projectionMatrix.get(0, 0)
 					* (float) ((Math.tan(Math.toRadians(this.fovY/2))
-					* ((double) BaseContext.getConfig().getX_ScreenResolution()
-					/ (double) BaseContext.getConfig().getY_ScreenResolution()))),
+					* ((double) BaseContext.getConfig().getFrameWidth()
+					/ (double) BaseContext.getConfig().getFrameHeight()))),
 				this.projectionMatrix.get(3, 1) - this.projectionMatrix.get(0, 1),
 				this.projectionMatrix.get(3, 2) - this.projectionMatrix.get(0, 2),
 				this.projectionMatrix.get(3, 3) - this.projectionMatrix.get(0, 3));

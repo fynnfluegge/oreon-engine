@@ -29,8 +29,8 @@ public class UnderWaterRenderer {
 	public UnderWaterRenderer() {
 		underWaterShader = UnderWaterShader.getInstance();
 		
-		underwaterSceneTexture = new TextureImage2D(BaseContext.getWindow().getWidth(),
-				BaseContext.getWindow().getHeight(),
+		underwaterSceneTexture = new TextureImage2D(BaseContext.getConfig().getFrameWidth(),
+				BaseContext.getConfig().getFrameHeight(),
 				ImageFormat.RGBA16FLOAT, SamplerFilter.Bilinear, TextureWrapMode.ClampToEdge);
 		
 		dudvMap = new TextureImage2D("textures/water/dudv/dudv1.jpg", SamplerFilter.Trilinear);
@@ -46,7 +46,7 @@ public class UnderWaterRenderer {
 		glBindImageTexture(0, sceneTexture.getHandle(), 0, false, 0, GL_READ_ONLY, GL_RGBA16F);
 		glBindImageTexture(1, underwaterSceneTexture.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
 		underWaterShader.updateUniforms(sceneDepthMap);
-		glDispatchCompute(BaseContext.getWindow().getWidth()/8, BaseContext.getWindow().getHeight()/8, 1);	
+		glDispatchCompute(BaseContext.getConfig().getFrameWidth()/8, BaseContext.getConfig().getFrameHeight()/8, 1);	
 		glFinish();
 	}
 

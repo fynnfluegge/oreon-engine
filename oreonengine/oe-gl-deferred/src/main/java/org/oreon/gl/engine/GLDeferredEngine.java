@@ -89,29 +89,29 @@ public class GLDeferredEngine extends RenderEngine{
 		
 		instancingObjectHandler = InstancedHandler.getInstance();
 		
-		primarySceneFbo = new OffScreenFbo(config.getX_ScreenResolution(),
-				config.getY_ScreenResolution(), config.getMultisampling_sampleCount());
-		secondarySceneFbo = new TransparencyFbo(config.getX_ScreenResolution(),
-				config.getY_ScreenResolution());
+		primarySceneFbo = new OffScreenFbo(config.getFrameWidth(),
+				config.getFrameHeight(), config.getMultisampling_sampleCount());
+		secondarySceneFbo = new TransparencyFbo(config.getFrameWidth(),
+				config.getFrameHeight());
 		GLContext.getResources().setPrimaryFbo(primarySceneFbo);
 		
 		fullScreenQuad = new FullScreenQuad();
 		fullScreenQuadMultisample = new FullScreenMultisampleQuad();
 		pssmFbo = new ParallelSplitShadowMapsFbo();
-		sampleCoverage = new SampleCoverage(config.getX_ScreenResolution(), config.getY_ScreenResolution());
+		sampleCoverage = new SampleCoverage(config.getFrameWidth(), config.getFrameHeight());
 		fxaa = new FXAA();
 		
-		deferredLighting = new DeferredLighting(config.getX_ScreenResolution(),
-				config.getY_ScreenResolution());
-		opaqueTransparencyBlending = new OpaqueTransparencyBlending(config.getX_ScreenResolution(),
-				config.getY_ScreenResolution());
+		deferredLighting = new DeferredLighting(config.getFrameWidth(),
+				config.getFrameHeight());
+		opaqueTransparencyBlending = new OpaqueTransparencyBlending(config.getFrameWidth(),
+				config.getFrameHeight());
 		
 		motionBlur = new MotionBlur();
 		depthOfField = new DepthOfField();
 		bloom = new Bloom();
 		sunlightScattering = new SunLightScattering();
 		lensFlare = new LensFlare();
-		ssao = new SSAO(config.getX_ScreenResolution(), config.getY_ScreenResolution());
+		ssao = new SSAO(config.getFrameWidth(), config.getFrameHeight());
 		underWaterRenderer = new UnderWaterRenderer();
 		contrastController = new ContrastController();
 		
@@ -161,7 +161,7 @@ public class GLDeferredEngine extends RenderEngine{
 			{
 				object.renderShadows();
 			});
-			glViewport(0,0,config.getX_ScreenResolution(),config.getY_ScreenResolution());
+			glViewport(0,0,config.getFrameWidth(),config.getFrameHeight());
 			pssmFbo.getConfig().disable();
 			pssmFbo.getFbo().unbind();
 		}
@@ -330,6 +330,8 @@ public class GLDeferredEngine extends RenderEngine{
 				currentScene = motionBlur.getMotionBlurSceneTexture();
 			}
 		}
+
+		glViewport(0,0,BaseContext.getConfig().getWindowWidth(),BaseContext.getConfig().getWindowHeight());
 		
 		if (BaseContext.getConfig().isRenderWireframe()
 				|| renderAlbedoBuffer){
@@ -388,6 +390,8 @@ public class GLDeferredEngine extends RenderEngine{
 		if (gui != null){
 			gui.render();
 		}
+		
+		glViewport(0,0,config.getFrameWidth(),config.getFrameHeight());
 	}
 	
 	@Override

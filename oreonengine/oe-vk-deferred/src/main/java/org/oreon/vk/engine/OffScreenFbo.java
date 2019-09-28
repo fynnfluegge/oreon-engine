@@ -37,8 +37,8 @@ public class OffScreenFbo extends VkFrameBufferObject {
 
 	public OffScreenFbo(VkDevice device, VkPhysicalDeviceMemoryProperties memoryProperties) {
 
-		width = BaseContext.getConfig().getX_ScreenResolution();
-		height = BaseContext.getConfig().getY_ScreenResolution();
+		width = BaseContext.getConfig().getFrameWidth();
+		height = BaseContext.getConfig().getFrameHeight();
 		int samples = BaseContext.getConfig().getMultisampling_sampleCount();
 
 		VkImageBundle albedoAttachment = new FrameBufferColorAttachment(device, memoryProperties,

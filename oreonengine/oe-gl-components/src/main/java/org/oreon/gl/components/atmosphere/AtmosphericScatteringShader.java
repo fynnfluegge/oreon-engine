@@ -46,8 +46,8 @@ public class AtmosphericScatteringShader extends GLShaderProgram{
 		setUniform("v_Sun", BaseContext.getConfig().getSunPosition().mul(-1));
 		setUniformf("horizonVerticalShift", BaseContext.getConfig().getHorizonVerticalShift());
 		setUniformf("r_Sun", BaseContext.getConfig().getSunRadius());
-		setUniformi("width", BaseContext.getConfig().getX_ScreenResolution());
-		setUniformi("height", BaseContext.getConfig().getY_ScreenResolution());
+		setUniformi("width", BaseContext.getConfig().getFrameWidth());
+		setUniformi("height", BaseContext.getConfig().getFrameHeight());
 		setUniformi("isReflection", BaseContext.getConfig().isRenderReflection() ? 1 : 0);
 		setUniformf("bloom", BaseContext.getConfig().getAtmosphereBloomFactor());
 	}

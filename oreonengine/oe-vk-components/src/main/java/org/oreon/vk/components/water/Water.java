@@ -363,8 +363,8 @@ public class Water extends Renderable{
 		
 		VkPipeline graphicsPipeline = new GraphicsTessellationPipeline(device.getHandle(),
 				graphicsShaderPipeline, vertexInput, VkUtil.createLongBuffer(descriptorSetLayouts),
-				BaseContext.getConfig().getX_ScreenResolution(),
-				BaseContext.getConfig().getY_ScreenResolution(),
+				BaseContext.getConfig().getFrameWidth(),
+				BaseContext.getConfig().getFrameHeight(),
 				VkContext.getResources().getOffScreenFbo().getRenderPass().getHandle(),
 				VkContext.getResources().getOffScreenFbo().getColorAttachmentCount(),
 				BaseContext.getConfig().getMultisampling_sampleCount(),
@@ -384,8 +384,8 @@ public class Water extends Renderable{
 		
 		VkPipeline wireframeGraphicsPipeline = new GraphicsTessellationPipeline(device.getHandle(),
 				wireframeShaderPipeline, vertexInput, VkUtil.createLongBuffer(descriptorSetLayouts),
-				BaseContext.getConfig().getX_ScreenResolution(),
-				BaseContext.getConfig().getY_ScreenResolution(),
+				BaseContext.getConfig().getFrameWidth(),
+				BaseContext.getConfig().getFrameHeight(),
 				VkContext.getResources().getOffScreenFbo().getRenderPass().getHandle(),
 				VkContext.getResources().getOffScreenFbo().getColorAttachmentCount(),
 				BaseContext.getConfig().getMultisampling_sampleCount(),

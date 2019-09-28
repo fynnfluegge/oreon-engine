@@ -125,14 +125,14 @@ public class VkDeferredEngine extends RenderEngine {
 	    transparencySubmitInfo.setSignalSemaphores(transparencySemaphore.getHandlePointer());
 	    
 	    sampleCoverage = new SampleCoverage(graphicsDevice,
-	    		BaseContext.getConfig().getX_ScreenResolution(),
-	    		BaseContext.getConfig().getY_ScreenResolution(),
+	    		BaseContext.getConfig().getFrameWidth(),
+	    		BaseContext.getConfig().getFrameHeight(),
 	    		offScreenFbo.getAttachmentImageView(Attachment.POSITION),
 	    		offScreenFbo.getAttachmentImageView(Attachment.LIGHT_SCATTERING));
 	    
 	    deferredLighting = new DeferredLighting(graphicsDevice,
-	    		BaseContext.getConfig().getX_ScreenResolution(),
-	    		BaseContext.getConfig().getY_ScreenResolution(),
+	    		BaseContext.getConfig().getFrameWidth(),
+	    		BaseContext.getConfig().getFrameHeight(),
 	    		offScreenFbo.getAttachmentImageView(Attachment.COLOR),
 	    		offScreenFbo.getAttachmentImageView(Attachment.POSITION),
 	    		offScreenFbo.getAttachmentImageView(Attachment.NORMAL),
@@ -143,8 +143,8 @@ public class VkDeferredEngine extends RenderEngine {
 	    opaqueTransparencyBlendWaitSemaphores.put(0, deferredStageSemaphore.getHandle());
 	    opaqueTransparencyBlendWaitSemaphores.put(1, transparencySemaphore.getHandle());
 	    opaqueTransparencyBlending = new OpaqueTransparencyBlending(graphicsDevice,
-	    		BaseContext.getConfig().getX_ScreenResolution(),
-	    		BaseContext.getConfig().getY_ScreenResolution(),
+	    		BaseContext.getConfig().getFrameWidth(),
+	    		BaseContext.getConfig().getFrameHeight(),
 	    		deferredLighting.getDeferredLightingSceneImageView(),
 	    		offScreenFbo.getAttachmentImageView(Attachment.DEPTH),
 	    		sampleCoverage.getLightScatteringImageView(),
@@ -159,8 +159,8 @@ public class VkDeferredEngine extends RenderEngine {
 
 	    if (BaseContext.getConfig().isFxaaEnabled()){
 		    fxaa = new FXAA(graphicsDevice,
-		    		BaseContext.getConfig().getX_ScreenResolution(),
-		    		BaseContext.getConfig().getY_ScreenResolution(),
+		    		BaseContext.getConfig().getFrameWidth(),
+		    		BaseContext.getConfig().getFrameHeight(),
 		    		displayImageView);
 		    
 		    displayImageView = fxaa.getFxaaImageView();
@@ -168,8 +168,8 @@ public class VkDeferredEngine extends RenderEngine {
 	    
 	    if (BaseContext.getConfig().isBloomEnabled()){
 		    bloom = new Bloom(graphicsDevice,
-		    		BaseContext.getConfig().getX_ScreenResolution(),
-		    		BaseContext.getConfig().getY_ScreenResolution(),
+		    		BaseContext.getConfig().getFrameWidth(),
+		    		BaseContext.getConfig().getFrameHeight(),
 		    		displayImageView);
 		    
 		    displayImageView = bloom.getBloomSceneImageView();

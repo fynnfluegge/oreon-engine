@@ -16,8 +16,8 @@ import lombok.Setter;
 public class Config {
 	
 	// screen settings
-	private int x_ScreenResolution;
-	private int y_ScreenResolution;
+	private int frameWidth;
+	private int frameHeight;
 
 	// window settings
 	private String displayTitle;
@@ -85,11 +85,11 @@ public class Config {
 			e.printStackTrace();
 		}
 		
-		windowWidth = Integer.valueOf(properties.getProperty("display.width"));
-		windowHeight = Integer.valueOf(properties.getProperty("display.height"));
+		windowWidth = Integer.valueOf(properties.getProperty("window.width"));
+		windowHeight = Integer.valueOf(properties.getProperty("window.height"));
 		displayTitle = properties.getProperty("display.title");
-		x_ScreenResolution = Integer.valueOf(properties.getProperty("screen.resolution.x"));
-		y_ScreenResolution = Integer.valueOf(properties.getProperty("screen.resolution.y"));
+		frameWidth = Integer.valueOf(properties.getProperty("frame.width"));
+		frameHeight = Integer.valueOf(properties.getProperty("frame.height"));
 		multisampling_sampleCount = Integer.valueOf(properties.getProperty("multisampling.sample.count"));
 		fxaaEnabled = Integer.valueOf(properties.getProperty("fxaa.enable")) == 1 ? true : false;
 		shadowsEnable = Integer.valueOf(properties.getProperty("shadows.enable")) == 1 ? true : false;
@@ -165,5 +165,13 @@ public class Config {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public int getFrameWidth() {
+		return frameWidth;
+	}
+	
+	public int getFrameHeight() {
+		return frameHeight;
 	}
 }

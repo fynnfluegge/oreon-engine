@@ -24,8 +24,13 @@ public class DeferredLighting {
 	@Getter
 	private GLTexture deferredLightingSceneTexture;
 	private DeferredLightingShader shader;
+	private int width;
+	private int height;
 	
 	public DeferredLighting(int width, int height) {
+		
+		this.width = width;
+		this.height = height;
 		
 		shader = DeferredLightingShader.getInstance();
 
@@ -49,7 +54,7 @@ public class DeferredLighting {
 		if (BaseContext.getConfig().isSsaoEnabled())
 			glBindImageTexture(7, ssaoBlurTexture.getHandle(), 0, false, 0, GL_READ_ONLY, GL_R16F);
 		shader.updateUniforms(shadowmap);
-		glDispatchCompute(BaseContext.getWindow().getWidth()/16, BaseContext.getWindow().getHeight()/16,1);
+		glDispatchCompute(width/16, height/16,1);
 	}
 
 }
