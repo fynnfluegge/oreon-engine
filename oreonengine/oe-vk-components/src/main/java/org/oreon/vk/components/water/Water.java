@@ -355,8 +355,8 @@ public class Water extends Renderable{
 		pushConstants.putInt(waterConfig.getHighDetailRange());
 		pushConstants.putFloat(waterConfig.getKReflection());
 		pushConstants.putFloat(waterConfig.getKRefraction());
-		pushConstants.putInt(BaseContext.getConfig().getWindowWidth());
-		pushConstants.putInt(BaseContext.getConfig().getWindowHeight());
+		pushConstants.putInt(BaseContext.getConfig().getFrameWidth());
+		pushConstants.putInt(BaseContext.getConfig().getFrameHeight());
 		pushConstants.putFloat(waterConfig.getEmission());
 		pushConstants.putFloat(waterConfig.getSpecularFactor());
 		pushConstants.flip();
