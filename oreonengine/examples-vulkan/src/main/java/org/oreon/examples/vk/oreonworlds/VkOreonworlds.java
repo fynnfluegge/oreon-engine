@@ -13,7 +13,7 @@ public class VkOreonworlds {
 		VkContext.create();
 
 		VkDeferredEngine renderEngine = new VkDeferredEngine();
-		renderEngine.setGui(new VkSystemMonitor());
+//		renderEngine.setGui(new VkSystemMonitor());
 		renderEngine.init();
 		
 		renderEngine.getSceneGraph().addObject(new Atmosphere());

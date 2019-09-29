@@ -258,6 +258,15 @@ public class BufferUtil {
 		return byteBuffer;
 	}
 	
+	public static ByteBuffer createByteBuffer(Vec3f vector){
+		
+		ByteBuffer byteBuffer = memAlloc(Float.BYTES * 3);
+		FloatBuffer floatBuffer = byteBuffer.asFloatBuffer();
+		floatBuffer.put(BufferUtil.createFlippedBuffer(vector));
+		
+		return byteBuffer;
+	}
+	
 	public static ByteBuffer createByteBuffer(Vec2f[] vertices){
 		
 		ByteBuffer byteBuffer = memAlloc(Float.BYTES * 2 * vertices.length);

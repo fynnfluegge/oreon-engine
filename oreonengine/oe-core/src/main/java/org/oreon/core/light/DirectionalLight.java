@@ -2,6 +2,7 @@ package org.oreon.core.light;
 
 import java.nio.FloatBuffer;
 
+import org.lwjgl.glfw.GLFW;
 import org.oreon.core.context.BaseContext;
 import org.oreon.core.math.Matrix4f;
 import org.oreon.core.math.Vec3f;
@@ -20,12 +21,13 @@ public abstract class DirectionalLight extends Light{
 	
 	private FloatBuffer floatBufferLight;
 	private FloatBuffer floatBufferMatrices;
-	private final int lightBufferSize = Float.BYTES * 12;
+	protected final int lightBufferSize = Float.BYTES * 12;
 
-	private final int matricesBufferSize = Float.BYTES * 16 * 7 // 6 matrices, 16 floats per matrix 
+	protected final int matricesBufferSize = Float.BYTES * 16 * 7 // 6 matrices, 16 floats per matrix 
 										 + Float.BYTES * 24;	// 6 floats, 3 floats offset each
 	
 	protected DirectionalLight(){
+		
 		this(BaseContext.getConfig().getSunPosition().normalize(),
 			new Vec3f(BaseContext.getConfig().getAmbient()),
 			BaseContext.getConfig().getSunColor(),
@@ -63,6 +65,9 @@ public abstract class DirectionalLight extends Light{
 			floatBufferMatrices.put(0);
 			floatBufferMatrices.put(0);
 		}
+		
+		setFloatBufferLight(BufferUtil.createFloatBuffer(getLightBufferSize()));
+		updateLightBuffer();
 	}
 	
 	public void update(){
@@ -70,7 +75,55 @@ public abstract class DirectionalLight extends Light{
 		if (BaseContext.getCamera().isCameraRotated() || 
 				BaseContext.getCamera().isCameraMoved()){
 			updateShadowMatrices(false);
+			updateMatricesUbo();
 		}
+		
+		
+		// change sun orientation
+		if (BaseContext.getInput().isKeyHolding(GLFW.GLFW_KEY_I)) {
+			if (getDirection().getY() >= -0.8f) {
+				setDirection(getDirection().add(new Vec3f(0,-0.001f,0)).normalize());
+				updateLightBuffer();
+				updateShadowMatrices(true);
+				updateLightUbo();
+				updateMatricesUbo();
+			}
+		}
+		if (BaseContext.getInput().isKeyHolding(GLFW.GLFW_KEY_K)) {
+			if (getDirection().getY() <= 0.00f) {
+				setDirection(getDirection().add(new Vec3f(0,0.001f,0)).normalize());
+				updateLightBuffer();
+				updateShadowMatrices(true);
+				updateLightUbo();
+				updateMatricesUbo();
+			}
+		}
+		if (BaseContext.getInput().isKeyHolding(GLFW.GLFW_KEY_J)) {
+			setDirection(getDirection().add(new Vec3f(0.00075f,0,-0.00075f)).normalize());
+			updateLightBuffer();
+			updateShadowMatrices(true);
+			updateLightUbo();
+			updateMatricesUbo();
+		}
+		if (BaseContext.getInput().isKeyHolding(GLFW.GLFW_KEY_L)) {
+			setDirection(getDirection().add(new Vec3f(-0.00075f,0,0.00075f)).normalize());
+			updateLightBuffer();
+			updateShadowMatrices(true);
+			updateLightUbo();
+			updateMatricesUbo();
+		}
+	}
+	
+	public void updateLightBuffer(){
+		
+		floatBufferLight.clear();
+		floatBufferLight.put(BufferUtil.createFlippedBuffer(getDirection()));
+		floatBufferLight.put(intensity);
+		floatBufferLight.put(BufferUtil.createFlippedBuffer(getAmbient()));
+		floatBufferLight.put(0);
+		floatBufferLight.put(BufferUtil.createFlippedBuffer(getColor()));
+		floatBufferLight.put(0);
+		floatBufferLight.flip();
 	}
 	
 	public void updateShadowMatrices(boolean hasSunPositionChanged) {
@@ -110,6 +163,12 @@ public abstract class DirectionalLight extends Light{
 		
 		BaseContext.getConfig().setSunPosition(getDirection());
 	}
+	
+	
+	public abstract void updateLightUbo();
+	
+	public abstract void updateMatricesUbo();
+	
 
 	public Vec3f getUp() {
 		return up;

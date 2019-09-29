@@ -56,6 +56,8 @@ public class Atmosphere extends Renderable{
 		Mesh mesh = VkAssimpModelLoader.loadModel("models/obj/dome", "dome.obj").get(0).getMesh();
 		ProceduralTexturing.dome(mesh);
 		
+		VkDirectionalLight directionalLight = new VkDirectionalLight();
+		
 		ByteBuffer ubo = memAlloc(Float.BYTES * 16);
 		ubo.put(BufferUtil.createByteBuffer(getWorldTransform().getWorldMatrix()));
 		ubo.flip();
@@ -67,7 +69,8 @@ public class Atmosphere extends Renderable{
 		
 		ShaderPipeline graphicsShaderPipeline = new ShaderPipeline(device.getHandle());
 	    graphicsShaderPipeline.addShaderModule(vertexShader);
-	    graphicsShaderPipeline.createFragmentShader("shaders/atmosphere/atmospheric_scattering.frag.spv");
+	    graphicsShaderPipeline.createFragmentShader(BaseContext.getConfig().isAtmosphericScatteringEnable() ?
+	    		"shaders/atmosphere/atmospheric_scattering.frag.spv" : "shaders/atmosphere/atmosphere.frag.spv");
 	    graphicsShaderPipeline.createShaderPipeline();
 	    
 	    ShaderPipeline reflectionShaderPipeline = new ShaderPipeline(device.getHandle());
@@ -90,21 +93,20 @@ public class Atmosphere extends Renderable{
 	    
 		descriptorSets.add(VkContext.getCamera().getDescriptorSet());
 		descriptorSets.add(descriptorSet);
+		descriptorSets.add(directionalLight.getDescriptorSet());
 		descriptorSetLayouts.add(VkContext.getCamera().getDescriptorSetLayout());
 		descriptorSetLayouts.add(descriptorSetLayout);
+		descriptorSetLayouts.add(directionalLight.getDescriptorSetLayout());
 		
 		VkVertexInput vertexInput = new VkVertexInput(VertexLayout.POS);
 		
 		ByteBuffer vertexBuffer = BufferUtil.createByteBuffer(mesh.getVertices(), VertexLayout.POS);
 		ByteBuffer indexBuffer = BufferUtil.createByteBuffer(mesh.getIndices());
 		
-		int pushConstantsRange = Float.BYTES * 22 + Integer.BYTES * 3;
+		int pushConstantsRange = Float.BYTES * 19 + Integer.BYTES * 3;
 		
 		ByteBuffer pushConstants = memAlloc(pushConstantsRange);
 		pushConstants.put(BufferUtil.createByteBuffer(VkContext.getCamera().getProjectionMatrix()));
-		pushConstants.putFloat(BaseContext.getConfig().getSunPosition().getX()*-1);
-		pushConstants.putFloat(BaseContext.getConfig().getSunPosition().getY()*-1);
-		pushConstants.putFloat(BaseContext.getConfig().getSunPosition().getZ()*-1);
 		pushConstants.putFloat(BaseContext.getConfig().getSunRadius());
 		pushConstants.putInt(BaseContext.getConfig().getFrameWidth());
 		pushConstants.putInt(BaseContext.getConfig().getFrameHeight());
@@ -181,6 +183,7 @@ public class Atmosphere extends Renderable{
 	    addComponent(NodeComponentType.MAIN_RENDERINFO, mainRenderInfo);
 	    addComponent(NodeComponentType.WIREFRAME_RENDERINFO, mainRenderInfo);
 	    addComponent(NodeComponentType.REFLECTION_RENDERINFO, reflectionRenderInfo);
+	    addComponent(NodeComponentType.LIGHT, directionalLight);
 	    
 	    graphicsShaderPipeline.destroy();
 	    reflectionShaderPipeline.destroy();
