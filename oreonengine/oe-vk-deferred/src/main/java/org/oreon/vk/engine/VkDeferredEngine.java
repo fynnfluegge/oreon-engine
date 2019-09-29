@@ -170,7 +170,8 @@ public class VkDeferredEngine extends RenderEngine {
 		    bloom = new Bloom(graphicsDevice,
 		    		BaseContext.getConfig().getFrameWidth(),
 		    		BaseContext.getConfig().getFrameHeight(),
-		    		displayImageView);
+		    		displayImageView,
+		    		offScreenFbo.getAttachmentImageView(Attachment.SPECULAR_EMISSION_DIFFUSE_SSAO_BLOOM));
 		    
 		    displayImageView = bloom.getBloomSceneImageView();
 	    }

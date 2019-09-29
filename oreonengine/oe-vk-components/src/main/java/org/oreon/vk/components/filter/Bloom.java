@@ -137,7 +137,7 @@ public class Bloom {
 	private int height;
 	
 	public Bloom(VkDeviceBundle deviceBundle,
-			int width ,int height, VkImageView sceneImageView) {
+			int width, int height, VkImageView sceneImageView, VkImageView specular_emission_bloom_attachment) {
 		
 		VkDevice device = deviceBundle.getLogicalDevice().getHandle();
 		VkPhysicalDeviceMemoryProperties memoryProperties = deviceBundle.getPhysicalDevice().getMemoryProperties();
@@ -529,12 +529,14 @@ public class Bloom {
 		
 		// final bloom scene
 		
-		bloomSceneDescriptorSetLayout = new DescriptorSetLayout(device, 3);
+		bloomSceneDescriptorSetLayout = new DescriptorSetLayout(device, 4);
 		bloomSceneDescriptorSetLayout.addLayoutBinding(0, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
 	    		VK_SHADER_STAGE_COMPUTE_BIT);
 		bloomSceneDescriptorSetLayout.addLayoutBinding(1, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
 	    		VK_SHADER_STAGE_COMPUTE_BIT);
 		bloomSceneDescriptorSetLayout.addLayoutBinding(2, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
+	    		VK_SHADER_STAGE_COMPUTE_BIT);
+		bloomSceneDescriptorSetLayout.addLayoutBinding(3, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
 	    		VK_SHADER_STAGE_COMPUTE_BIT);
 		bloomSceneDescriptorSetLayout.create();
 		
@@ -549,9 +551,13 @@ public class Bloom {
 				VK_IMAGE_LAYOUT_GENERAL, -1, 1,
 				VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
 		bloomSceneDescriptorSet.updateDescriptorImageBuffer(
-				bloomSceneImageBundle.getImageView().getHandle(),
+				specular_emission_bloom_attachment.getHandle(),
 				VK_IMAGE_LAYOUT_GENERAL, -1, 2,
 				VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
+		bloomSceneDescriptorSet.updateDescriptorImageBuffer(
+				bloomSceneImageBundle.getImageView().getHandle(),
+		    	VK_IMAGE_LAYOUT_GENERAL, -1, 3,
+		    	VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
 		
 		bloomSceneDescriptorSets = new ArrayList<DescriptorSet>();
 		bloomSceneDescriptorSets.add(bloomSceneDescriptorSet);

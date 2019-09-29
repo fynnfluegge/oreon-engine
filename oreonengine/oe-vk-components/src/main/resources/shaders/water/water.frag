@@ -8,7 +8,7 @@ layout (location = 2) in vec3 inTangent;
 layout(location = 0) out vec4 albedo_out;
 layout(location = 1) out vec4 worldPosition_out;
 layout(location = 2) out vec4 normal_out;
-layout(location = 3) out vec4 specularEmission_out;
+layout(location = 3) out vec4 specular_emission_diffuse_ssao_bloom_out;
 layout(location = 4) out vec4 lightScattering_out;
 
 layout(set = 0, binding = 0, std140, row_major) uniform Camera {
@@ -119,7 +119,7 @@ void main(void)
     // Reflection //
 	vec2 reflecCoords = projCoord.xy + dudvCoord.rb * constants.kReflection;
 	reflecCoords = clamp(reflecCoords, constants.kReflection, 1-constants.kReflection);
-    vec3 reflection = mix(texture(waterReflection, reflecCoords).rgb, deepOceanColor,  0.5);
+    vec3 reflection = mix(texture(waterReflection, reflecCoords).rgb, deepOceanColor,  0.0);
     reflection *= fresnel;
  
     // Refraction //
@@ -138,6 +138,6 @@ void main(void)
 	albedo_out = vec4(fragColor,1);
 	worldPosition_out = vec4(inPosition,gl_FragCoord.z);
 	normal_out = vec4(normal,1);
-	specularEmission_out = vec4(1,0,0,1);
+	specular_emission_diffuse_ssao_bloom_out = vec4(1,0,0,1);
 	lightScattering_out = vec4(0,0,0,1);
 }
