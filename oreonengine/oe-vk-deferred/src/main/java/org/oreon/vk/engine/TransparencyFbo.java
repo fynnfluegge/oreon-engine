@@ -31,8 +31,8 @@ public class TransparencyFbo extends VkFrameBufferObject{
 	
 	public TransparencyFbo(VkDevice device, VkPhysicalDeviceMemoryProperties memoryProperties) {
 		
-		width = BaseContext.getConfig().getX_ScreenResolution();
-		height = BaseContext.getConfig().getY_ScreenResolution();
+		width = BaseContext.getConfig().getFrameWidth();
+		height = BaseContext.getConfig().getFrameHeight();
 		
 		VkImageBundle albedoAttachment = new FrameBufferColorAttachment(device, memoryProperties,
 				width, height, VK_FORMAT_R16G16B16A16_SFLOAT, 1);

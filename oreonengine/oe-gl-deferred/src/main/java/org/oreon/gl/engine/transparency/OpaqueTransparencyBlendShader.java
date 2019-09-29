@@ -46,8 +46,8 @@ private static OpaqueTransparencyBlendShader instance = null;
 			GLTexture alphaMap, GLTexture transparencyLayerLightScatteringTexture,
 			GLTexture opaqueDepthMap, GLTexture transparencyLayerDepthMap)
 	{
-		setUniformf("width", BaseContext.getConfig().getX_ScreenResolution());
-		setUniformf("height", BaseContext.getConfig().getY_ScreenResolution());
+		setUniformf("width", BaseContext.getConfig().getFrameWidth());
+		setUniformf("height", BaseContext.getConfig().getFrameHeight());
 
 		glActiveTexture(GL_TEXTURE1);
 		opaqueSceneLightScatteringTexture.bind();

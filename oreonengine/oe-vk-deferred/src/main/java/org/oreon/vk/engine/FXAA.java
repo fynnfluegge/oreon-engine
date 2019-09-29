@@ -72,8 +72,8 @@ public class FXAA {
 		
 		int pushConstantRange = Float.BYTES * 2;
 		pushConstants = memAlloc(pushConstantRange);
-		pushConstants.putFloat(BaseContext.getConfig().getX_ScreenResolution());
-		pushConstants.putFloat(BaseContext.getConfig().getY_ScreenResolution());
+		pushConstants.putFloat(BaseContext.getConfig().getFrameWidth());
+		pushConstants.putFloat(BaseContext.getConfig().getFrameHeight());
 		pushConstants.flip();
 		
 		descriptorSetLayout = new DescriptorSetLayout(device, 3);

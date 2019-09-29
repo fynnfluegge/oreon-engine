@@ -51,7 +51,7 @@ public class SampleCoverage {
 		glBindImageTexture(4, specularEmissionBloomMaskSingleSample.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
 		glBindImageTexture(5, specularEmissionBloomMask.getHandle(), 0, false, 0, GL_READ_ONLY, GL_RGBA16F);
 		shader.updateUniforms();
-		glDispatchCompute(BaseContext.getWindow().getWidth()/16, BaseContext.getWindow().getHeight()/16, 1);	
+		glDispatchCompute(BaseContext.getConfig().getFrameWidth()/16, BaseContext.getConfig().getFrameHeight()/16, 1);	
 	}
 
 }

@@ -26,7 +26,8 @@ public class PixelVelocityShader extends GLShaderProgram{
 	{
 		super();
 		
-		addComputeShader(ResourceLoader.loadShader("shaders/filter/motion_blur/pixelVelocity.comp"));
+		addComputeShader(ResourceLoader.loadShader(BaseContext.getConfig().getMultisampling_sampleCount() > 1 ?
+				"shaders/filter/motion_blur/pixelVelocity.comp" : "shaders/filter/motion_blur/pixelVelocity_singleSample.comp"));
 		
 		compileShader();
 		
@@ -46,8 +47,8 @@ public class PixelVelocityShader extends GLShaderProgram{
 		glActiveTexture(GL_TEXTURE0);
 		depthmap.bind();
 		setUniformi("depthmap", 0);
-		setUniformf("windowWidth", BaseContext.getWindow().getWidth());
-		setUniformf("windowHeight", BaseContext.getWindow().getHeight());
+		setUniformf("windowWidth", BaseContext.getConfig().getFrameWidth());
+		setUniformf("windowHeight", BaseContext.getConfig().getFrameHeight());
 		setUniform("projectionMatrix", projectionMatrix);
 		setUniform("inverseViewProjectionMatrix", inverseViewProjectionMatrix);
 		setUniform("previousViewProjectionMatrix", previousViewProjectionMatrix);

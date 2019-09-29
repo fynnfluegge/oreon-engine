@@ -111,8 +111,8 @@ public class Water extends Renderable{
 		normalmapRenderer = new NormalRenderer(config.getN());
 		getNormalmapRenderer().setStrength(config.getNormalStrength());
 		
-		reflection_texture = new TextureImage2D(BaseContext.getWindow().getWidth()/2,
-				BaseContext.getWindow().getHeight()/2,
+		reflection_texture = new TextureImage2D(BaseContext.getConfig().getFrameWidth()/2,
+				BaseContext.getConfig().getFrameHeight()/2,
 				ImageFormat.RGBA16FLOAT, SamplerFilter.Nearest);
 		
 		IntBuffer drawBuffers = BufferUtil.createIntBuffer(1);
@@ -122,21 +122,21 @@ public class Water extends Renderable{
 		reflection_fbo = new GLFramebuffer();
 		reflection_fbo.bind();
 		reflection_fbo.createColorTextureAttachment(reflection_texture.getHandle(),0);
-		reflection_fbo.createDepthBufferAttachment(BaseContext.getWindow().getWidth()/2,
-				BaseContext.getWindow().getHeight()/2);
+		reflection_fbo.createDepthBufferAttachment(BaseContext.getConfig().getFrameWidth()/2,
+				BaseContext.getConfig().getFrameHeight()/2);
 		reflection_fbo.setDrawBuffers(drawBuffers);
 		reflection_fbo.checkStatus();
 		reflection_fbo.unbind();
 		
-		refraction_texture = new TextureImage2D(BaseContext.getWindow().getWidth()/2,
-				BaseContext.getWindow().getHeight()/2,
+		refraction_texture = new TextureImage2D(BaseContext.getConfig().getFrameWidth()/2,
+				BaseContext.getConfig().getFrameHeight()/2,
 				ImageFormat.RGBA16FLOAT, SamplerFilter.Nearest);
 		
 		refraction_fbo = new GLFramebuffer();
 		refraction_fbo.bind();
 		refraction_fbo.createColorTextureAttachment(refraction_texture.getHandle(),0);
-		refraction_fbo.createDepthBufferAttachment(BaseContext.getWindow().getWidth()/2,
-				BaseContext.getWindow().getHeight()/2);
+		refraction_fbo.createDepthBufferAttachment(BaseContext.getConfig().getFrameWidth()/2,
+				BaseContext.getConfig().getFrameHeight()/2);
 		refraction_fbo.setDrawBuffers(drawBuffers);
 		refraction_fbo.checkStatus();
 		refraction_fbo.unbind();
@@ -197,10 +197,10 @@ public class Water extends Renderable{
 		//    render reflection to texture   //
 		//-----------------------------------//
 
-		int tempScreenResolutionX = BaseContext.getConfig().getX_ScreenResolution(); 
-		int tempScreenResolutionY = BaseContext.getConfig().getY_ScreenResolution(); 
-		BaseContext.getConfig().setX_ScreenResolution(tempScreenResolutionX/2);
-		BaseContext.getConfig().setY_ScreenResolution(tempScreenResolutionY/2);
+		int tempScreenResolutionX = BaseContext.getConfig().getFrameWidth(); 
+		int tempScreenResolutionY = BaseContext.getConfig().getFrameHeight(); 
+		BaseContext.getConfig().setFrameWidth(tempScreenResolutionX/2);
+		BaseContext.getConfig().setFrameHeight(tempScreenResolutionY/2);
 		glViewport(0,0,tempScreenResolutionX/2, tempScreenResolutionY/2);
 		
 		BaseContext.getConfig().setRenderReflection(true);
@@ -274,8 +274,8 @@ public class Water extends Renderable{
 		BaseContext.getConfig().setClipplane(Constants.ZEROPLANE);	
 	
 		glViewport(0,0,tempScreenResolutionX, tempScreenResolutionY);
-		BaseContext.getConfig().setX_ScreenResolution(tempScreenResolutionX);
-		BaseContext.getConfig().setY_ScreenResolution(tempScreenResolutionY);
+		BaseContext.getConfig().setFrameWidth(tempScreenResolutionX);
+		BaseContext.getConfig().setFrameHeight(tempScreenResolutionY);
 		
 		GLContext.getResources().getPrimaryFbo().bind();
 		
@@ -307,8 +307,8 @@ public class Water extends Renderable{
 		byteBuffer.putFloat(config.getChoppiness());
 		byteBuffer.putFloat(config.getKReflection());
 		byteBuffer.putFloat(config.getKRefraction());
-		byteBuffer.putInt(BaseContext.getConfig().getX_ScreenResolution());
-		byteBuffer.putInt(BaseContext.getConfig().getY_ScreenResolution());
+		byteBuffer.putInt(BaseContext.getConfig().getFrameWidth());
+		byteBuffer.putInt(BaseContext.getConfig().getFrameHeight());
 		byteBuffer.putInt(config.isDiffuse() ? 1 : 0);
 		byteBuffer.putFloat(config.getEmission());
 		byteBuffer.putFloat(config.getSpecularFactor());

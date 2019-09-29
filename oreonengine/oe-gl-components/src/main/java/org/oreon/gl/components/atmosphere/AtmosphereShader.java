@@ -45,8 +45,8 @@ public class AtmosphereShader extends GLShaderProgram{
 		setUniform("m_ViewProjection", BaseContext.getCamera().getOriginViewProjectionMatrix());
 		setUniform("v_SunWorld", BaseContext.getConfig().getSunPosition().mul(-Constants.ZFAR));
 		setUniformf("r_Sun", BaseContext.getConfig().getSunRadius());
-		setUniformi("width", BaseContext.getConfig().getX_ScreenResolution());
-		setUniformi("height", BaseContext.getConfig().getY_ScreenResolution());
+		setUniformi("width", BaseContext.getConfig().getFrameWidth());
+		setUniformi("height", BaseContext.getConfig().getFrameHeight());
 		setUniformi("isReflection", BaseContext.getConfig().isRenderReflection() ? 1 : 0);
 		setUniformf("bloom", BaseContext.getConfig().getAtmosphereBloomFactor());
 	}

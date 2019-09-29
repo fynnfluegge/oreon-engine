@@ -256,8 +256,8 @@ public class VkGUI extends GUI{
 		public SingleAttachmentFbo(VkDevice device,
 				VkPhysicalDeviceMemoryProperties memoryProperties) {
 			
-			width = BaseContext.getConfig().getX_ScreenResolution();
-			height = BaseContext.getConfig().getY_ScreenResolution();
+			width = BaseContext.getConfig().getFrameWidth();
+			height = BaseContext.getConfig().getFrameHeight();
 			
 			VkImageBundle colorAttachment = new FrameBufferColorAttachment(device, memoryProperties,
 					width, height, VK_FORMAT_R16G16B16A16_SFLOAT, 1);

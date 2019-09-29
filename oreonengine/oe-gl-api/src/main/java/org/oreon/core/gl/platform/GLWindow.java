@@ -53,7 +53,6 @@ public class GLWindow extends Window{
 			WGLEXTSwapControl.wglSwapIntervalEXT(1);
 			glfwSwapInterval(1);
 		}
-			
 		
 		GL.createCapabilities();
 	}

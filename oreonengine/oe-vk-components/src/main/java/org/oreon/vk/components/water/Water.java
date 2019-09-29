@@ -355,16 +355,16 @@ public class Water extends Renderable{
 		pushConstants.putInt(waterConfig.getHighDetailRange());
 		pushConstants.putFloat(waterConfig.getKReflection());
 		pushConstants.putFloat(waterConfig.getKRefraction());
-		pushConstants.putInt(BaseContext.getConfig().getWindowWidth());
-		pushConstants.putInt(BaseContext.getConfig().getWindowHeight());
+		pushConstants.putInt(BaseContext.getConfig().getFrameWidth());
+		pushConstants.putInt(BaseContext.getConfig().getFrameHeight());
 		pushConstants.putFloat(waterConfig.getEmission());
 		pushConstants.putFloat(waterConfig.getSpecularFactor());
 		pushConstants.flip();
 		
 		VkPipeline graphicsPipeline = new GraphicsTessellationPipeline(device.getHandle(),
 				graphicsShaderPipeline, vertexInput, VkUtil.createLongBuffer(descriptorSetLayouts),
-				BaseContext.getConfig().getX_ScreenResolution(),
-				BaseContext.getConfig().getY_ScreenResolution(),
+				BaseContext.getConfig().getFrameWidth(),
+				BaseContext.getConfig().getFrameHeight(),
 				VkContext.getResources().getOffScreenFbo().getRenderPass().getHandle(),
 				VkContext.getResources().getOffScreenFbo().getColorAttachmentCount(),
 				BaseContext.getConfig().getMultisampling_sampleCount(),
@@ -384,8 +384,8 @@ public class Water extends Renderable{
 		
 		VkPipeline wireframeGraphicsPipeline = new GraphicsTessellationPipeline(device.getHandle(),
 				wireframeShaderPipeline, vertexInput, VkUtil.createLongBuffer(descriptorSetLayouts),
-				BaseContext.getConfig().getX_ScreenResolution(),
-				BaseContext.getConfig().getY_ScreenResolution(),
+				BaseContext.getConfig().getFrameWidth(),
+				BaseContext.getConfig().getFrameHeight(),
 				VkContext.getResources().getOffScreenFbo().getRenderPass().getHandle(),
 				VkContext.getResources().getOffScreenFbo().getColorAttachmentCount(),
 				BaseContext.getConfig().getMultisampling_sampleCount(),

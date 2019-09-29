@@ -62,15 +62,15 @@ public class SSAO {
 		ssaoShader = SSAOShader.getInstance();
 		blurShader = SSAOBlurShader.getInstance();
 		
-		noiseTexture = new TextureStorage2D(4,4,1,ImageFormat.RGBA32FLOAT);
+		noiseTexture = new TextureStorage2D(4,4,1,ImageFormat.RGBA16FLOAT);
 		ssaoSceneTexture = new TextureImage2D(width, height,
-				ImageFormat.R16FLOAT, SamplerFilter.Nearest, TextureWrapMode.ClampToEdge);
+				ImageFormat.R16FLOAT, SamplerFilter.Bilinear, TextureWrapMode.ClampToEdge);
 		ssaoBlurSceneTexture = new TextureImage2D(width, height,
 				ImageFormat.R16FLOAT, SamplerFilter.Bilinear, TextureWrapMode.ClampToEdge);
 		
 		// generate Noise
 		noiseTextureShader.bind();
-		glBindImageTexture(0, noiseTexture.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA32F);
+		glBindImageTexture(0, noiseTexture.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
 		noiseTextureShader.updateUniforms(randomx, randomy);
 		glDispatchCompute(1,1,1);
 	}
@@ -82,7 +82,7 @@ public class SSAO {
 		glBindImageTexture(0, ssaoSceneTexture.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_R16F);
 		glBindImageTexture(1, worldPositionSceneTexture.getHandle(), 0, false, 0, GL_READ_ONLY, GL_RGBA32F);
 		glBindImageTexture(2, normalSceneTexture.getHandle(), 0, false, 0, GL_READ_ONLY, GL_RGBA16F);
-		glBindImageTexture(3, noiseTexture.getHandle(), 0, false, 0, GL_READ_ONLY, GL_RGBA32F);
+		glBindImageTexture(3, noiseTexture.getHandle(), 0, false, 0, GL_READ_ONLY, GL_RGBA16F);
 		ssaoShader.updateUniforms(BaseContext.getCamera().getViewMatrix(),
 								  BaseContext.getCamera().getProjectionMatrix(),
 								  width, height, kernel);

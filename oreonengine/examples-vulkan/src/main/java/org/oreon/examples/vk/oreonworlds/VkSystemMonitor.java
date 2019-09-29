@@ -15,8 +15,10 @@ import org.oreon.vk.components.ui.VkTexturePanel;
 
 public class VkSystemMonitor extends VkGUI {
 	
+	@SuppressWarnings("restriction")
 	private com.sun.management.OperatingSystemMXBean bean;
 	
+	@SuppressWarnings("restriction")
 	@Override
 	public void init(VkImageView imageView, LongBuffer waitSemaphores) {
 		super.init(imageView, waitSemaphores);
@@ -37,6 +39,7 @@ public class VkSystemMonitor extends VkGUI {
 		getScreens().add(screen0);
 	}
 	
+	@SuppressWarnings("restriction")
 	public void update(){
 		
 		getScreens().get(0).getElements().get(3).update(Integer.toString(CoreEngine.getFps()));
