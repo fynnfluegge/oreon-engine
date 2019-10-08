@@ -141,18 +141,13 @@ void main(void)
 	
 	vec3 fragColor = reflection + refraction;
 	
-	float spec = specularReflection(vec3(directional_light.direction.x, directional_light.direction.y/specularAmplifier, directional_light.direction.z),
-		normal.xzy, specularFactor, emission, vertexToEye);
-	vec3 specularLight = directional_light.color * spec;
-	
-	// fragColor += specularLight;
-	
-	if (diffuseEnable == 0)
-		normal = vec3(0,0,1);
+	float diffuseSsao = 0;
+	if (diffuseEnable == 1)
+		diffuseSsao = 10;
 	
 	albedo_out = vec4(fragColor,1);
 	worldPosition_out = vec4(inPosition,1);
 	normal_out = vec4(normal,1);
-	specular_emission_diffuse_ssao_bloom_out = vec4(280,2,0,1);
+	specular_emission_diffuse_ssao_bloom_out = vec4(specularFactor,emission,diffuseSsao,1);
 	lightScattering_out = vec4(0,0,0,1);
 }

@@ -8,10 +8,12 @@ import org.oreon.core.light.DirectionalLight;
 import org.oreon.core.util.BufferUtil;
 import org.oreon.core.vk.context.DeviceManager.DeviceType;
 import org.oreon.core.vk.context.VkContext;
+import org.oreon.core.vk.context.VkResources.VkDescriptorName;
 import org.oreon.core.vk.descriptor.DescriptorSet;
 import org.oreon.core.vk.descriptor.DescriptorSetLayout;
 import org.oreon.core.vk.device.LogicalDevice;
 import org.oreon.core.vk.wrapper.buffer.VkUniformBuffer;
+import org.oreon.core.vk.wrapper.descriptor.VkDescriptor;
 
 import lombok.Getter;
 
@@ -43,6 +45,8 @@ public class VkDirectionalLight extends DirectionalLight{
 	    		descriptorSetLayout.getHandlePointer());
 	    descriptorSet.updateDescriptorBuffer(ubo_light.getHandle(), lightBufferSize, 0, 0,
 	    		VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);
+	    
+	    VkContext.getResources().getDescriptors().put(VkDescriptorName.DIRECTIONAL_LIGHT, new VkDescriptor(descriptorSet, descriptorSetLayout));
 	}
 
 	public void updateLightUbo() {
