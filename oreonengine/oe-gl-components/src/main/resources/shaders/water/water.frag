@@ -23,13 +23,6 @@ layout (std140, row_major) uniform Camera{
 	vec4 frustumPlanes[6];
 };
 
-layout (std140) uniform DirectionalLight{
-	vec3 direction;
-	float intensity;
-	vec3 ambient;
-	vec3 color;
-} directional_light;
-
 layout (std430, row_major, binding = 1) buffer ssbo {
 	mat4 worldMatrix;
 	int uvScale;

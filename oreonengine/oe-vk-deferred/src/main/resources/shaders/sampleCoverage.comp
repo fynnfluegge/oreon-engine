@@ -3,12 +3,11 @@
 layout (local_size_x = 16, local_size_y = 16) in;
 
 layout (binding = 0, r16f) uniform writeonly image2D sampleCoverageMaskImage;
-
 layout (binding = 1, rgba32f) uniform readonly image2DMS worldPositionImage;
-
 layout (binding = 2, rgba16f) uniform writeonly image2D lightScatteringMask_out;
-
 layout (binding = 3, rgba16f) uniform readonly image2DMS lightScatteringMask_in;
+layout (binding = 4, rgba16f) uniform writeonly image2D specularEmissionBloom_out;
+layout (binding = 5, rgba16f) uniform readonly image2DMS specularEmissionBloom_in;
 
 layout (push_constant, std430, row_major) uniform pushConstants{
 	int numSamples;
@@ -37,30 +36,28 @@ void main()
 		coverageValue = 1.0;
 	}
 	
-	vec2 lightScatteringMaskValue = vec2(0,0);
+	vec4 lightScatteringMaskValue = vec4(0);
+	vec4 specularEmissionBloomMaskValue = vec4(0); 
+	bool lightScatteringAlphaFlag = false;
+	
 	if (coverageValue == 1.0){
-		for (int i=0; i<constants.numSamples-1; i++){
-			lightScatteringMaskValue += imageLoad(lightScatteringMask_in, computeCoord, i).ra;
+		for (int i=0; i<constants.numSamples; i++){
+			if (!lightScatteringAlphaFlag){
+				lightScatteringMaskValue = imageLoad(lightScatteringMask_in, computeCoord, i).rgba;
+				if (lightScatteringMaskValue.a == 1.0)
+					lightScatteringAlphaFlag = true;
+			}
+			specularEmissionBloomMaskValue += imageLoad(specularEmissionBloom_in, computeCoord, i).rgba;
 		}
-		lightScatteringMaskValue /= constants.numSamples;
-		
-		if (lightScatteringMaskValue.x > 0.5){
-			lightScatteringMaskValue.x = 1.0;
-		}
-		else{
-			lightScatteringMaskValue.x = 0.0;
-		}
-		if (lightScatteringMaskValue.y > 0.5){
-			lightScatteringMaskValue.y = 1.0;
-		}
-		else{
-			lightScatteringMaskValue.y = 0.0;
-		}
+
+		specularEmissionBloomMaskValue /= constants.numSamples;
 	}
 	else{
-		lightScatteringMaskValue = imageLoad(lightScatteringMask_in, computeCoord, 0).ra;
+		lightScatteringMaskValue = imageLoad(lightScatteringMask_in, computeCoord, 0).rgba;
+		specularEmissionBloomMaskValue = imageLoad(specularEmissionBloom_in, computeCoord, 0).rgba;
 	}
 			  
 	imageStore(sampleCoverageMaskImage, computeCoord, vec4(coverageValue,0,0,1));
-	imageStore(lightScatteringMask_out, computeCoord, vec4(lightScatteringMaskValue.xxxy));
+	imageStore(lightScatteringMask_out, computeCoord, lightScatteringMaskValue);
+	imageStore(specularEmissionBloom_out, computeCoord, specularEmissionBloomMaskValue);
 }

@@ -55,13 +55,11 @@ public class WaterShader extends GLShaderProgram{
 		addUniform("motion");
 		addUniform("wind");
 		
-		addUniformBlock("DirectionalLight");
 		addUniformBlock("Camera");
 	}
 	
 	public void updateUniforms(Renderable object)
 	{
-		bindUniformBlock("DirectionalLight", Constants.DirectionalLightUniformBlockBinding);	
 		bindUniformBlock("Camera", Constants.CameraUniformBlockBinding);
 			
 		Water ocean = (Water) object;

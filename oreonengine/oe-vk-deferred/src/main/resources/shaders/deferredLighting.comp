@@ -15,14 +15,14 @@ layout (set = 0, binding = 0, std140, row_major) uniform Camera{
 	mat4 m_View;
 	mat4 m_ViewProjection;
 	vec4 frustumPlanes[6];
-};
+} camera;
 
-// layout (std140) uniform DirectionalLight{
-	// vec3 direction;
-	// float intensity;
-	// vec3 ambient;
-	// vec3 color;
-// } directional_light;
+layout (set = 2, binding = 0, std140, row_major) uniform DirectionalLight{
+	vec3 direction;
+	float intensity;
+	vec3 ambient;
+	vec3 color;
+} directional_light;
 
 layout (push_constant, std430, row_major) uniform pushConstants{
 	int numSamples;
@@ -32,6 +32,7 @@ layout (push_constant, std430, row_major) uniform pushConstants{
 const float zfar = 10000;
 const float znear = 0.1;
 const vec3 fogColor = vec3(0.65,0.85,0.9);
+const int shadowsEnable = 0;
 
 float diffuse(vec3 direction, vec3 normal, float intensity)
 {
@@ -61,12 +62,12 @@ void main(void){
 	vec3 albedo = vec3(0,0,0);
 	vec3 position = vec3(0,0,0);
 	vec3 normal = vec3(0,0,0);
-	vec2 specular_emission = vec2(0,0);
+	vec4 sspecular_emission_diffuse_ssao_bloom = vec4(0);
 	vec3 depth = vec3(0,0,0);
 	
-	vec3 sunLightDirection = normalize(vec3(-1,-1,-1));
-	float diff = 0;
-	float spec = 0;
+	float diff = 1;
+	float shadow = 1;
+	float spec = 1;
 	
 	if(imageLoad(sampleCoverageMask, computeCoord).r == 1.0){
 		
@@ -78,21 +79,35 @@ void main(void){
 			// prevent lighting atmosphere
 			if (normal != vec3(0,0,0)){
 				position = imageLoad(worldPositionImage, computeCoord,i).rgb; 
-				specular_emission = imageLoad(specularEmissionImage, computeCoord,i).rg; 
+				sspecular_emission_diffuse_ssao_bloom = imageLoad(specular_emission_diffuse_ssao_bloom_Image, computeCoord,i).rgba; 
 				
-				diff = diffuse(sunLightDirection, normal, 1);
-				spec = specular(sunLightDirection, normal, eyePosition, position, specular_emission.r, specular_emission.g);
+				spec = specular(directional_light.direction, normal.xyz, camera.eyePosition, position, sspecular_emission_diffuse_ssao_bloom.r,
+					sspecular_emission_diffuse_ssao_bloom.g);
 				
-				vec3 diffuseLight = vec3(0.02,0.02,0.02) + vec3(1,1,1) * diff;
-				vec3 specularLight = (vec3(1,1,1)) * spec;
-
-				// diff = diffuse(directional_light.direction, normal, directional_light.intensity);
-				// spec = specular(directional_light.direction, normal, eyePosition, position, specular_emission.r, specular_emission.g);
+				// if (shadowsEnable == 1)
+					// shadow = applyShadowMapping(position);
 				
-				// vec3 diffuseLight = directional_light.ambient + directional_light.color * diff;
-				// vec3 specularLight = directional_light.color * spec;
+				int diffuseEnable = int(sspecular_emission_diffuse_ssao_bloom.z/10.0);
+				float ssao = 1;
+				// float ssao = sspecular_emission_diffuse_ssao_bloom.z - (diffuseEnable * 10);
 				
-				finalColor += albedo * diffuseLight + specularLight;
+				// if (ssao == 1 && ssaoEnable == 1)
+					// ssao = imageLoad(ssaoBlurImage, computeCoord).r;
+				// else
+					// ssao = 1;
+				
+				if (diffuseEnable == 0)
+					normal.xyz = vec3(0,1,0);
+				
+				diff = diffuse(directional_light.direction, normal.xyz, directional_light.intensity);
+				vec3 diffuseLight = directional_light.ambient + directional_light.color * diff * shadow;
+				vec3 specularLight = directional_light.color * spec;
+				
+				vec3 sampleColor = albedo * diffuseLight * ssao + specularLight;
+					
+				float dist = length(camera.eyePosition - position);
+				float fogFactor = getFogFactor(dist);
+				finalColor += mix(fogColor, sampleColor, fogFactor);
 			}
 			else{
 				finalColor += albedo;
@@ -107,31 +122,40 @@ void main(void){
 		
 		if (normal != vec3(0,0,0)){
 			position = imageLoad(worldPositionImage, computeCoord,0).rgb;
-			specular_emission = imageLoad(specularEmissionImage, computeCoord,0).rg;
+			sspecular_emission_diffuse_ssao_bloom = imageLoad(specular_emission_diffuse_ssao_bloom_Image, computeCoord,0).rgba;
 		
-			diff = diffuse(sunLightDirection, normal, 1);
-			spec = specular(sunLightDirection, normal, eyePosition, position, specular_emission.r, specular_emission.g);
-				
-			vec3 diffuseLight = vec3(0.02,0.02,0.02) + vec3(1,1,1) * diff;
-			vec3 specularLight = (vec3(1,1,1)) * spec;
-				
-			// diff = diffuse(directional_light.direction, normal, directional_light.intensity);
-			// spec = specular(directional_light.direction, normal, eyePosition, position, specular_emission.r, specular_emission.g);
-			// vec3 ssao = imageLoad(ssaoBlurImage, computeCoord).rgb;
+			spec = specular(directional_light.direction, normal.xyz, camera.eyePosition, position, sspecular_emission_diffuse_ssao_bloom.r,
+				sspecular_emission_diffuse_ssao_bloom.g);
 			
-			// vec3 diffuseLight = directional_light.ambient + directional_light.color * diff;;
-			// vec3 specularLight = directional_light.color * spec;
+			// if (shadowsEnable == 1)
+				// shadow = applyShadowMapping(position);
 			
-			finalColor += albedo * diffuseLight + specularLight;
+			int diffuseEnable = int(sspecular_emission_diffuse_ssao_bloom.z/10.0);
+			float ssao = 1;
+			// float ssao = sspecular_emission_diffuse_ssao_bloom.z - (diffuseEnable * 10);
+			
+			// if (ssao == 1 && ssaoEnable == 1)
+				// ssao = imageLoad(ssaoBlurImage, computeCoord).r;
+			// else
+				// ssao = 1;
+			
+			if (diffuseEnable == 0)
+				normal.xyz = vec3(0,1,0);
+				
+			diff = diffuse(directional_light.direction, normal.xyz, directional_light.intensity);
+			vec3 diffuseLight = directional_light.ambient + directional_light.color * diff * shadow;
+			vec3 specularLight = directional_light.color * spec;
+			
+			finalColor = albedo * diffuseLight * ssao + specularLight;
+				
+			float dist = length(camera.eyePosition - position);
+			float fogFactor = getFogFactor(dist);
+			finalColor = mix(fogColor, finalColor, fogFactor);
 		}
 		else{
 			finalColor = albedo;
 		}
 	}
-	
-	float dist = length(eyePosition - position);
-	float fogFactor = getFogFactor(dist);
-	finalColor = mix(fogColor, finalColor, clamp(fogFactor,0,1));
 	
 	imageStore(defferedSceneImage, computeCoord, vec4(finalColor,1.0));
 }

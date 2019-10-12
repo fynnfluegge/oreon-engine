@@ -30,6 +30,7 @@ import org.oreon.core.vk.swapchain.SwapChain;
 import org.oreon.core.vk.synchronization.VkSemaphore;
 import org.oreon.core.vk.util.VkUtil;
 import org.oreon.core.vk.wrapper.command.PrimaryCmdBuffer;
+import org.oreon.vk.components.atmosphere.VkDirectionalLight;
 import org.oreon.vk.components.filter.Bloom;
 import org.oreon.vk.components.planet.Planet;
 import org.oreon.vk.components.ui.VkGUI;
@@ -85,6 +86,8 @@ public class VkDeferredEngine extends RenderEngine {
 	public void init() {
 		
 		super.init();
+
+		sceneGraph.addObject(new VkDirectionalLight());
 		
 		offScreenRenderList = new RenderList();
 		transparencyRenderList = new RenderList();
@@ -95,13 +98,10 @@ public class VkDeferredEngine extends RenderEngine {
 	    
 	    offScreenFbo = new OffScreenFbo(graphicsDevice.getLogicalDevice().getHandle(),
 	    		graphicsDevice.getPhysicalDevice().getMemoryProperties());
-	    reflectionFbo = new ReflectionFbo(graphicsDevice.getLogicalDevice().getHandle(),
-	    		graphicsDevice.getPhysicalDevice().getMemoryProperties());
 	    transparencyFbo = new TransparencyFbo(graphicsDevice.getLogicalDevice().getHandle(),
 	    		graphicsDevice.getPhysicalDevice().getMemoryProperties());
 	    
 	    VkContext.getResources().setOffScreenFbo(offScreenFbo);
-	    VkContext.getResources().setOffScreenReflectionFbo(reflectionFbo);
 	    VkContext.getResources().setTransparencyFbo(transparencyFbo);
 	    
 	    // Semaphore creations
@@ -128,7 +128,8 @@ public class VkDeferredEngine extends RenderEngine {
 	    		BaseContext.getConfig().getFrameWidth(),
 	    		BaseContext.getConfig().getFrameHeight(),
 	    		offScreenFbo.getAttachmentImageView(Attachment.POSITION),
-	    		offScreenFbo.getAttachmentImageView(Attachment.LIGHT_SCATTERING));
+	    		offScreenFbo.getAttachmentImageView(Attachment.LIGHT_SCATTERING),
+	    		offScreenFbo.getAttachmentImageView(Attachment.SPECULAR_EMISSION_DIFFUSE_SSAO_BLOOM));
 	    
 	    deferredLighting = new DeferredLighting(graphicsDevice,
 	    		BaseContext.getConfig().getFrameWidth(),
@@ -155,6 +156,7 @@ public class VkDeferredEngine extends RenderEngine {
 	    		opaqueTransparencyBlendWaitSemaphores);
 	    
 //	    VkImageView displayImageView = opaqueTransparencyBlending.getBlendedSceneImageView();
+//	    VkImageView displayImageView = offScreenFbo.getAttachmentImageView(Attachment.COLOR);
 	    VkImageView displayImageView = deferredLighting.getDeferredLightingSceneImageView();
 
 	    if (BaseContext.getConfig().isFxaaEnabled()){
@@ -171,7 +173,7 @@ public class VkDeferredEngine extends RenderEngine {
 		    		BaseContext.getConfig().getFrameWidth(),
 		    		BaseContext.getConfig().getFrameHeight(),
 		    		displayImageView,
-		    		offScreenFbo.getAttachmentImageView(Attachment.SPECULAR_EMISSION_DIFFUSE_SSAO_BLOOM));
+		    		sampleCoverage.getSpecularEmissionDiffuseSsaoBloomImageView());
 		    
 		    displayImageView = bloom.getBloomSceneImageView();
 	    }

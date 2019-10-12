@@ -1,39 +1,45 @@
 package org.oreon.vk.components.water;
 
 import static org.lwjgl.system.MemoryUtil.memAlloc;
-import static org.lwjgl.system.MemoryUtil.memAllocInt;
+import static org.lwjgl.system.MemoryUtil.memAllocLong;
+import static org.lwjgl.vulkan.VK10.VK_ACCESS_COLOR_ATTACHMENT_READ_BIT;
+import static org.lwjgl.vulkan.VK10.VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+import static org.lwjgl.vulkan.VK10.VK_ACCESS_MEMORY_READ_BIT;
 import static org.lwjgl.vulkan.VK10.VK_ACCESS_SHADER_READ_BIT;
 import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
+import static org.lwjgl.vulkan.VK10.VK_DEPENDENCY_BY_REGION_BIT;
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_STORAGE_IMAGE;
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 import static org.lwjgl.vulkan.VK10.VK_FILTER_LINEAR;
+import static org.lwjgl.vulkan.VK10.VK_FORMAT_D16_UNORM;
+import static org.lwjgl.vulkan.VK10.VK_FORMAT_R16G16B16A16_UNORM;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_R8G8B8A8_UNORM;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_ASPECT_COLOR_BIT;
+import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_GENERAL;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_UNDEFINED;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_SAMPLED_BIT;
-import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_STORAGE_BIT;
-import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_TRANSFER_DST_BIT;
-import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
-import static org.lwjgl.vulkan.VK10.VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT;
+import static org.lwjgl.vulkan.VK10.VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT;
+import static org.lwjgl.vulkan.VK10.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
 import static org.lwjgl.vulkan.VK10.VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
 import static org.lwjgl.vulkan.VK10.VK_QUEUE_FAMILY_IGNORED;
 import static org.lwjgl.vulkan.VK10.VK_SAMPLER_ADDRESS_MODE_REPEAT;
 import static org.lwjgl.vulkan.VK10.VK_SAMPLER_MIPMAP_MODE_LINEAR;
 import static org.lwjgl.vulkan.VK10.VK_SAMPLER_MIPMAP_MODE_NEAREST;
 import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_ALL_GRAPHICS;
-import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_COMPUTE_BIT;
 import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_FRAGMENT_BIT;
 import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_GEOMETRY_BIT;
+import static org.lwjgl.vulkan.VK10.VK_SUBPASS_EXTERNAL;
 
 import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
+import java.nio.LongBuffer;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
 import org.lwjgl.vulkan.VkQueue;
 import org.oreon.common.water.WaterConfig;
@@ -59,27 +65,27 @@ import org.oreon.core.vk.descriptor.DescriptorSet;
 import org.oreon.core.vk.descriptor.DescriptorSetLayout;
 import org.oreon.core.vk.device.LogicalDevice;
 import org.oreon.core.vk.device.VkDeviceBundle;
+import org.oreon.core.vk.framebuffer.FrameBufferColorAttachment;
+import org.oreon.core.vk.framebuffer.FrameBufferDepthAttachment;
+import org.oreon.core.vk.framebuffer.VkFrameBuffer;
 import org.oreon.core.vk.framebuffer.VkFrameBufferObject;
 import org.oreon.core.vk.image.VkImage;
 import org.oreon.core.vk.image.VkImageView;
 import org.oreon.core.vk.image.VkSampler;
 import org.oreon.core.vk.memory.VkBuffer;
-import org.oreon.core.vk.pipeline.ShaderModule;
+import org.oreon.core.vk.pipeline.RenderPass;
 import org.oreon.core.vk.pipeline.ShaderPipeline;
 import org.oreon.core.vk.pipeline.VkPipeline;
 import org.oreon.core.vk.pipeline.VkVertexInput;
 import org.oreon.core.vk.scenegraph.VkMeshData;
 import org.oreon.core.vk.scenegraph.VkRenderInfo;
 import org.oreon.core.vk.synchronization.Fence;
-import org.oreon.core.vk.synchronization.VkSemaphore;
 import org.oreon.core.vk.util.VkUtil;
 import org.oreon.core.vk.wrapper.buffer.VkBufferHelper;
 import org.oreon.core.vk.wrapper.buffer.VkUniformBuffer;
-import org.oreon.core.vk.wrapper.command.ComputeCmdBuffer;
-import org.oreon.core.vk.wrapper.command.MipMapGenerationCmdBuffer;
 import org.oreon.core.vk.wrapper.command.PrimaryCmdBuffer;
 import org.oreon.core.vk.wrapper.command.SecondaryDrawCmdBuffer;
-import org.oreon.core.vk.wrapper.image.Image2DDeviceLocal;
+import org.oreon.core.vk.wrapper.image.VkImageBundle;
 import org.oreon.core.vk.wrapper.image.VkImageHelper;
 import org.oreon.core.vk.wrapper.pipeline.GraphicsTessellationPipeline;
 import org.oreon.vk.components.fft.FFT;
@@ -113,41 +119,23 @@ public class Water extends Renderable{
 	private VkSampler refractionSampler;
 	
 	// Reflection/Refraction Resources
-	private VkFrameBufferObject offScreenReflecRefracFbo;
+	private VkFrameBufferObject reflectionFbo;
+	private VkFrameBufferObject refractionFbo;
 	
-	// Reflection Resources
 	private RenderList offScreenReflectionRenderList;
 	private LinkedHashMap<String, CommandBuffer> reflectionSecondaryCmdBuffers;
 	private PrimaryCmdBuffer offscreenReflectionCmdBuffer;
 	private SubmitInfo offScreenReflectionSubmitInfo;
-	private VkPipeline deferredReflectionPipeline;
-	private CommandBuffer deferredReflectionCmdBuffer;
-	private SubmitInfo deferredReflectionSubmitInfo;
-	private VkImage deferredReflectionImage;
-	private VkImageView deferredReflectionImageView;
-	private CommandBuffer reflectionMipmapGenerationCmd;
-	private SubmitInfo reflectionMipmapSubmitInfo;
-	private VkSemaphore offscreenReflectionSignalSemaphore;
-	private Fence deferredReflectionFence;
+	private Fence reflectionFence;
 	
-	// Refraction Resources
 	private RenderList offScreenRefractionRenderList;
 	private LinkedHashMap<String, CommandBuffer> refractionSecondaryCmdBuffers;
 	private PrimaryCmdBuffer offscreenRefractionCmdBuffer;
 	private SubmitInfo offScreenRefractionSubmitInfo;
-	private VkPipeline deferredRefractionPipeline;
-	private CommandBuffer deferredRefractionCmdBuffer;
-	private SubmitInfo deferredRefractionSubmitInfo;
-	private VkImage deferredRefractionImage;
-	private VkImageView deferredRefractionImageView;
-	private CommandBuffer refractionMipmapGenerationCmd;
-	private SubmitInfo refractionMipmapSubmitInfo;
-	private VkSemaphore offscreenRefractionSignalSemaphore;
-	private Fence deferredRefractionFence;
+	private Fence refractionFence;
 	
 	// queues for render reflection/refraction
 	private VkQueue graphicsQueue;
-	private VkQueue computeQueue;
 	
 	public Water() {
 		
@@ -157,13 +145,15 @@ public class Water extends Renderable{
 		VkPhysicalDeviceMemoryProperties memoryProperties = 
 				VkContext.getDeviceManager().getPhysicalDevice(DeviceType.MAJOR_GRAPHICS_DEVICE).getMemoryProperties();
 		graphicsQueue = device.getGraphicsQueue();
-		computeQueue = device.getComputeQueue();
 		
 		offScreenReflectionRenderList = new RenderList();
 		offScreenRefractionRenderList = new RenderList();
 		reflectionSecondaryCmdBuffers = new LinkedHashMap<String, CommandBuffer>();
 		refractionSecondaryCmdBuffers = new LinkedHashMap<String, CommandBuffer>();
-		offScreenReflecRefracFbo = VkContext.getResources().getOffScreenReflectionFbo();
+		reflectionFbo = new ReflectionRefractionFbo(device.getHandle(), memoryProperties);
+		refractionFbo = new ReflectionRefractionFbo(device.getHandle(), memoryProperties);
+	    VkContext.getResources().setReflectionFbo(reflectionFbo);
+	    VkContext.getResources().setRefractionFbo(refractionFbo);
 		
 		getWorldTransform().setScaling(Constants.ZFAR,1,Constants.ZFAR);
 		getWorldTransform().setTranslation(-Constants.ZFAR/2,0,-Constants.ZFAR/2);
@@ -189,30 +179,6 @@ public class Water extends Renderable{
 				VK_FORMAT_R8G8B8A8_UNORM, image_dudv.getHandle(), 
 				VK_IMAGE_ASPECT_COLOR_BIT, Util.getMipLevelCount(image_dudv.getMetaData()));
 		
-		deferredReflectionImage = new Image2DDeviceLocal(device.getHandle(), memoryProperties,
-				offScreenReflecRefracFbo.getWidth(), offScreenReflecRefracFbo.getHeight(),
-				VK_FORMAT_R8G8B8A8_UNORM,
-				VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_STORAGE_BIT |
-				VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT,
-				1, Util.getLog2N(offScreenReflecRefracFbo.getWidth()));
-		
-		deferredReflectionImageView = new VkImageView(device.getHandle(),
-				VK_FORMAT_R8G8B8A8_UNORM, deferredReflectionImage.getHandle(),
-				VK_IMAGE_ASPECT_COLOR_BIT,
-				Util.getLog2N(offScreenReflecRefracFbo.getWidth()));
-		
-		deferredRefractionImage = new Image2DDeviceLocal(device.getHandle(), memoryProperties,
-				offScreenReflecRefracFbo.getWidth(), offScreenReflecRefracFbo.getHeight(),
-				VK_FORMAT_R8G8B8A8_UNORM,
-				VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_STORAGE_BIT |
-				VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT,
-				1, Util.getLog2N(offScreenReflecRefracFbo.getWidth()));
-		
-		deferredRefractionImageView = new VkImageView(device.getHandle(),
-				VK_FORMAT_R8G8B8A8_UNORM, deferredRefractionImage.getHandle(),
-				VK_IMAGE_ASPECT_COLOR_BIT,
-				Util.getLog2N(offScreenReflecRefracFbo.getWidth()));
-		
 		dySampler = new VkSampler(device.getHandle(), VK_FILTER_LINEAR, false, 0,
 				VK_SAMPLER_MIPMAP_MODE_NEAREST, 0, VK_SAMPLER_ADDRESS_MODE_REPEAT);
 		dxSampler = new VkSampler(device.getHandle(), VK_FILTER_LINEAR, false, 0,
@@ -226,10 +192,10 @@ public class Water extends Renderable{
 	    		VK_SAMPLER_MIPMAP_MODE_LINEAR, Util.getLog2N(waterConfig.getN()),
 	    		VK_SAMPLER_ADDRESS_MODE_REPEAT);
 	    reflectionSampler = new VkSampler(device.getHandle(), VK_FILTER_LINEAR, false, 0,
-	    		VK_SAMPLER_MIPMAP_MODE_LINEAR, Util.getLog2N(offScreenReflecRefracFbo.getWidth()),
+	    		VK_SAMPLER_MIPMAP_MODE_LINEAR, Util.getLog2N(reflectionFbo.getWidth()),
 	    		VK_SAMPLER_ADDRESS_MODE_REPEAT);
 	    refractionSampler = new VkSampler(device.getHandle(), VK_FILTER_LINEAR, false, 0,
-	    		VK_SAMPLER_MIPMAP_MODE_LINEAR, Util.getLog2N(offScreenReflecRefracFbo.getWidth()),
+	    		VK_SAMPLER_MIPMAP_MODE_LINEAR, Util.getLog2N(refractionFbo.getWidth()),
 	    		VK_SAMPLER_ADDRESS_MODE_REPEAT);
 		
 		fft = new FFT(deviceBundle,
@@ -310,11 +276,11 @@ public class Water extends Renderable{
 	    		VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
 	    		normalSampler.getHandle(), 4, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
 	    descriptorSet.updateDescriptorImageBuffer(
-	    		deferredReflectionImageView.getHandle(),
+	    		reflectionFbo.getAttachmentImageView(Attachment.COLOR).getHandle(),
 	    		VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
 	    		reflectionSampler.getHandle(), 5, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
 	    descriptorSet.updateDescriptorImageBuffer(
-	    		deferredRefractionImageView.getHandle(),
+	    		refractionFbo.getAttachmentImageView(Attachment.COLOR).getHandle(),
 	    		VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
 	    		refractionSampler.getHandle(), 6, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
 	    descriptorSet.updateDescriptorBuffer(uniformBuffer.getHandle(),
@@ -402,7 +368,24 @@ public class Water extends Renderable{
 	    		vertexBufferObject.getHandle(),
 	    		vertices.length,
 	    		pushConstants, VK_SHADER_STAGE_ALL_GRAPHICS);
-	    
+		
+		offscreenReflectionCmdBuffer = new PrimaryCmdBuffer(device.getHandle(), 
+				device.getComputeCommandPool(Thread.currentThread().getId()).getHandle());
+		
+		offscreenRefractionCmdBuffer = new PrimaryCmdBuffer(device.getHandle(), 
+				device.getComputeCommandPool(Thread.currentThread().getId()).getHandle());
+
+		reflectionFence = new Fence(device.getHandle());
+		refractionFence = new Fence(device.getHandle());
+		
+		offScreenReflectionSubmitInfo = new SubmitInfo();
+		offScreenReflectionSubmitInfo.setCommandBuffers(offscreenReflectionCmdBuffer.getHandlePointer());
+		offScreenReflectionSubmitInfo.setFence(reflectionFence);
+		
+		offScreenRefractionSubmitInfo = new SubmitInfo();
+		offScreenRefractionSubmitInfo.setCommandBuffers(offscreenRefractionCmdBuffer.getHandlePointer());
+		offScreenRefractionSubmitInfo.setFence(refractionFence);
+		
 		VkMeshData meshData = VkMeshData.builder().vertexBufferObject(vertexBufferObject)
 		    		.vertexBuffer(vertexBuffer).build();
 		VkRenderInfo mainRenderInfo = VkRenderInfo.builder().commandBuffer(graphicsCommandBuffer)
@@ -411,152 +394,26 @@ public class Water extends Renderable{
 		VkRenderInfo wireframeRenderInfo = VkRenderInfo.builder().commandBuffer(wireframeCommandBuffer)
 				.descriptorSets(descriptorSets).descriptorSetLayouts(descriptorSetLayouts)
 				.pipeline(wireframeGraphicsPipeline).build();
-	    
+		
 	    addComponent(NodeComponentType.MESH_DATA, meshData);
 	    addComponent(NodeComponentType.MAIN_RENDERINFO, mainRenderInfo);
 	    addComponent(NodeComponentType.WIREFRAME_RENDERINFO, wireframeRenderInfo);
 	    
-	    createReflectionRefractionResources(device, memoryProperties, descriptorPool);
-	}
-	
-	public void createReflectionRefractionResources(LogicalDevice device,
-			VkPhysicalDeviceMemoryProperties memoryProperties,
-			DescriptorPool descriptorPool){
-		
-		List<DescriptorSet> descriptorSets = new ArrayList<DescriptorSet>();
-		List<DescriptorSetLayout> descriptorSetLayouts = new ArrayList<DescriptorSetLayout>();
-		
-		DescriptorSetLayout descriptorSetLayout = new DescriptorSetLayout(device.getHandle(), 3);
-		descriptorSetLayout.addLayoutBinding(0, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
-				VK_SHADER_STAGE_COMPUTE_BIT);
-		descriptorSetLayout.addLayoutBinding(1, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
-				VK_SHADER_STAGE_COMPUTE_BIT);
-		descriptorSetLayout.addLayoutBinding(2, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
-				VK_SHADER_STAGE_COMPUTE_BIT);
-	    descriptorSetLayout.create();
 	    
-	    DescriptorSet descriptorSetReflection = new DescriptorSet(device.getHandle(),
-	    		descriptorPool.getHandle(),
-	    		descriptorSetLayout.getHandlePointer());
-	    descriptorSetReflection.updateDescriptorImageBuffer(
-	    		deferredReflectionImageView.getHandle(),
-	    		VK_IMAGE_LAYOUT_GENERAL, -1,
-	    		0, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
-	    descriptorSetReflection.updateDescriptorImageBuffer(
-	    		offScreenReflecRefracFbo.getAttachmentImageView(Attachment.COLOR).getHandle(),
-	    		VK_IMAGE_LAYOUT_GENERAL, -1,
-	    		1, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
-	    descriptorSetReflection.updateDescriptorImageBuffer(
-	    		offScreenReflecRefracFbo.getAttachmentImageView(Attachment.NORMAL).getHandle(),
-	    		VK_IMAGE_LAYOUT_GENERAL, -1,
-	    		2, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
-		
-		descriptorSets.add(VkContext.getCamera().getDescriptorSet());
-		descriptorSets.add(descriptorSetReflection);
-		descriptorSetLayouts.add(VkContext.getCamera().getDescriptorSetLayout());
-		descriptorSetLayouts.add(descriptorSetLayout);
-		
-		DescriptorSet descriptorSetRefraction = new DescriptorSet(device.getHandle(),
-				descriptorPool.getHandle(),
-	    		descriptorSetLayout.getHandlePointer());
-		descriptorSetRefraction.updateDescriptorImageBuffer(
-				deferredRefractionImageView.getHandle(),
-	    		VK_IMAGE_LAYOUT_GENERAL, -1,
-	    		0, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
-		descriptorSetRefraction.updateDescriptorImageBuffer(
-				offScreenReflecRefracFbo.getAttachmentImageView(Attachment.COLOR).getHandle(),
-	    		VK_IMAGE_LAYOUT_GENERAL, -1,
-	    		1, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
-		descriptorSetRefraction.updateDescriptorImageBuffer(
-				offScreenReflecRefracFbo.getAttachmentImageView(Attachment.NORMAL).getHandle(),
-	    		VK_IMAGE_LAYOUT_GENERAL, -1,
-	    		2, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
-
-		deferredReflectionPipeline = new VkPipeline(device.getHandle());
-		deferredReflectionPipeline.setLayout(VkUtil.createLongBuffer(descriptorSetLayouts));
-		deferredReflectionPipeline.createComputePipeline(
-				new ShaderModule(device.getHandle(), "shaders/water/waterDeferredReflecRefrac.comp.spv",
-						VK_SHADER_STAGE_COMPUTE_BIT));
-		
-		deferredReflectionCmdBuffer = new ComputeCmdBuffer(device.getHandle(),
-				device.getComputeCommandPool(Thread.currentThread().getId()).getHandle(),
-				deferredReflectionPipeline.getHandle(),
-				deferredReflectionPipeline.getLayoutHandle(),
-				VkUtil.createLongArray(descriptorSets),
-				offScreenReflecRefracFbo.getWidth()/8, offScreenReflecRefracFbo.getHeight()/8, 1);
-		
-		deferredRefractionPipeline = new VkPipeline(device.getHandle());
-		descriptorSets.set(1, descriptorSetRefraction);
-		deferredRefractionPipeline.setLayout(VkUtil.createLongBuffer(descriptorSetLayouts));
-		deferredRefractionPipeline.createComputePipeline(
-				new ShaderModule(device.getHandle(), "shaders/water/waterDeferredReflecRefrac.comp.spv",
-						VK_SHADER_STAGE_COMPUTE_BIT));
-		
-		descriptorSets.set(1, descriptorSetRefraction);
-		
-		deferredRefractionCmdBuffer = new ComputeCmdBuffer(device.getHandle(),
-				device.getComputeCommandPool(Thread.currentThread().getId()).getHandle(),
-				deferredRefractionPipeline.getHandle(),
-				deferredRefractionPipeline.getLayoutHandle(),
-				VkUtil.createLongArray(descriptorSets),
-				offScreenReflecRefracFbo.getWidth()/8, offScreenReflecRefracFbo.getHeight()/8, 1);
-		
-		offscreenReflectionCmdBuffer = new PrimaryCmdBuffer(device.getHandle(), 
-				device.getComputeCommandPool(Thread.currentThread().getId()).getHandle());
-		
-		offscreenRefractionCmdBuffer = new PrimaryCmdBuffer(device.getHandle(), 
-				device.getComputeCommandPool(Thread.currentThread().getId()).getHandle());
-		
-		deferredReflectionFence = new Fence(device.getHandle());
-		deferredRefractionFence = new Fence(device.getHandle());
-		
-		offscreenReflectionSignalSemaphore = new VkSemaphore(device.getHandle());
-		offscreenRefractionSignalSemaphore = new VkSemaphore(device.getHandle());
-		
-		offScreenReflectionSubmitInfo = new SubmitInfo();
-		offScreenReflectionSubmitInfo.setCommandBuffers(offscreenReflectionCmdBuffer.getHandlePointer());
-		offScreenReflectionSubmitInfo.setSignalSemaphores(offscreenReflectionSignalSemaphore.getHandlePointer());
-		
-		IntBuffer pWaitDstStageMask = memAllocInt(1);
-		pWaitDstStageMask.put(0, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT);
-		
-		offScreenRefractionSubmitInfo = new SubmitInfo();
-		offScreenRefractionSubmitInfo.setCommandBuffers(offscreenRefractionCmdBuffer.getHandlePointer());
-		offScreenRefractionSubmitInfo.setSignalSemaphores(offscreenRefractionSignalSemaphore.getHandlePointer());
-		
-		deferredReflectionSubmitInfo = new SubmitInfo();
-		deferredReflectionSubmitInfo.setCommandBuffers(deferredReflectionCmdBuffer.getHandlePointer());
-		deferredReflectionSubmitInfo.setWaitSemaphores(offscreenReflectionSignalSemaphore.getHandlePointer());
-		deferredReflectionSubmitInfo.setWaitDstStageMask(pWaitDstStageMask);
-		deferredReflectionSubmitInfo.setFence(deferredReflectionFence);
-		
-		deferredRefractionSubmitInfo = new SubmitInfo();
-		deferredRefractionSubmitInfo.setCommandBuffers(deferredRefractionCmdBuffer.getHandlePointer());
-		deferredRefractionSubmitInfo.setWaitSemaphores(offscreenRefractionSignalSemaphore.getHandlePointer());
-		deferredRefractionSubmitInfo.setWaitDstStageMask(pWaitDstStageMask);
-		deferredRefractionSubmitInfo.setFence(deferredRefractionFence);
-		
-		reflectionMipmapGenerationCmd = new MipMapGenerationCmdBuffer(device.getHandle(),
-				device.getGraphicsCommandPool(Thread.currentThread().getId()).getHandle(),
-				deferredReflectionImage.getHandle(),
-				offScreenReflecRefracFbo.getWidth(), offScreenReflecRefracFbo.getHeight(),
-				Util.getLog2N(offScreenReflecRefracFbo.getWidth()),
-				VK_IMAGE_LAYOUT_UNDEFINED, 0, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
-				VK_IMAGE_LAYOUT_GENERAL, VK_ACCESS_SHADER_READ_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT);
-		
-		reflectionMipmapSubmitInfo = new SubmitInfo();
-		reflectionMipmapSubmitInfo.setCommandBuffers(reflectionMipmapGenerationCmd.getHandlePointer());
-		
-		refractionMipmapGenerationCmd = new MipMapGenerationCmdBuffer(device.getHandle(),
-				device.getGraphicsCommandPool(Thread.currentThread().getId()).getHandle(),
-				deferredRefractionImage.getHandle(),
-				offScreenReflecRefracFbo.getWidth(), offScreenReflecRefracFbo.getHeight(),
-				Util.getLog2N(offScreenReflecRefracFbo.getWidth()),
-				VK_IMAGE_LAYOUT_UNDEFINED, 0, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
-				VK_IMAGE_LAYOUT_GENERAL, VK_ACCESS_SHADER_READ_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT);
-		
-		refractionMipmapSubmitInfo = new SubmitInfo();
-		refractionMipmapSubmitInfo.setCommandBuffers(refractionMipmapGenerationCmd.getHandlePointer());
+	    // initially render to refraction fbo due to attachment clear color
+	    offscreenRefractionCmdBuffer.reset();
+		offscreenRefractionCmdBuffer.record(
+				refractionFbo.getRenderPass().getHandle(),
+				refractionFbo.getFrameBuffer().getHandle(),
+				refractionFbo.getWidth(),
+				refractionFbo.getHeight(),
+				refractionFbo.getColorAttachmentCount(),
+				refractionFbo.getDepthAttachmentCount(),
+				waterConfig.getBaseColor().mul(2.5f),
+				null);
+		offScreenRefractionSubmitInfo.submit(
+				graphicsQueue);
+		refractionFence.waitForFence();
 	}
 	
 	public void render(){
@@ -586,22 +443,21 @@ public class Water extends Renderable{
 		}
 		
 		// render reflection scene
-		if (!offScreenReflectionRenderList.getObjectList().isEmpty()){
+		if (!reflectionSecondaryCmdBuffers.isEmpty()){
 			offscreenReflectionCmdBuffer.reset();
 			offscreenReflectionCmdBuffer.record(
-					offScreenReflecRefracFbo.getRenderPass().getHandle(),
-					offScreenReflecRefracFbo.getFrameBuffer().getHandle(),
-					offScreenReflecRefracFbo.getWidth(),
-					offScreenReflecRefracFbo.getHeight(),
-					offScreenReflecRefracFbo.getColorAttachmentCount(),
-					offScreenReflecRefracFbo.getDepthAttachmentCount(),
+					reflectionFbo.getRenderPass().getHandle(),
+					reflectionFbo.getFrameBuffer().getHandle(),
+					reflectionFbo.getWidth(),
+					reflectionFbo.getHeight(),
+					reflectionFbo.getColorAttachmentCount(),
+					reflectionFbo.getDepthAttachmentCount(),
 					VkUtil.createPointerBuffer(reflectionSecondaryCmdBuffers.values()));
 			offScreenReflectionSubmitInfo.submit(
 					graphicsQueue);
 		}
 		
-		deferredReflectionSubmitInfo.submit(computeQueue);
-		deferredReflectionFence.waitForFence();
+		reflectionFence.waitForFence();
 		
 		// antimirror scene to clipplane
 		sceneGraph.getWorldTransform().setScaling(1,1,1);
@@ -612,36 +468,31 @@ public class Water extends Renderable{
 			
 			if(!refractionSecondaryCmdBuffers.containsKey(key)){
 				if (offScreenRefractionRenderList.get(key).getComponents()
-						.containsKey(NodeComponentType.REFLECTION_RENDERINFO)){
+						.containsKey(NodeComponentType.REFRACTION_RENDERINFO)){
 					VkRenderInfo renderInfo = offScreenRefractionRenderList.get(key)
-							.getComponent(NodeComponentType.REFLECTION_RENDERINFO);
+							.getComponent(NodeComponentType.REFRACTION_RENDERINFO);
 					refractionSecondaryCmdBuffers.put(key,renderInfo.getCommandBuffer());
 				}
 			}
 		}
 		
 		// render refraction scene
-		if (!offScreenRefractionRenderList.getObjectList().isEmpty()){
+		if (!refractionSecondaryCmdBuffers.isEmpty()){
 			offscreenRefractionCmdBuffer.reset();
 			offscreenRefractionCmdBuffer.record(
-					offScreenReflecRefracFbo.getRenderPass().getHandle(),
-					offScreenReflecRefracFbo.getFrameBuffer().getHandle(),
-					offScreenReflecRefracFbo.getWidth(),
-					offScreenReflecRefracFbo.getHeight(),
-					offScreenReflecRefracFbo.getColorAttachmentCount(),
-					offScreenReflecRefracFbo.getDepthAttachmentCount(),
-					waterConfig.getBaseColor(),
+					refractionFbo.getRenderPass().getHandle(),
+					refractionFbo.getFrameBuffer().getHandle(),
+					refractionFbo.getWidth(),
+					refractionFbo.getHeight(),
+					refractionFbo.getColorAttachmentCount(),
+					refractionFbo.getDepthAttachmentCount(),
+					waterConfig.getBaseColor().mul(2.5f),
 					VkUtil.createPointerBuffer(refractionSecondaryCmdBuffers.values()));
 			offScreenRefractionSubmitInfo.submit(
 					graphicsQueue);
 		}
 		
-		deferredRefractionSubmitInfo.submit(computeQueue);
-		
-		reflectionMipmapSubmitInfo.submit(graphicsQueue);
-		
-		deferredRefractionFence.waitForFence();
-		refractionMipmapSubmitInfo.submit(graphicsQueue);
+		refractionFence.waitForFence();
 		
 		motion += (System.currentTimeMillis() - systemTime) * waterConfig.getWaveMotion();
 		distortion += (System.currentTimeMillis() - systemTime) * waterConfig.getDistortion();
@@ -668,20 +519,70 @@ public class Water extends Renderable{
 		reflectionSampler.destroy();
 		refractionSampler.destroy();
 		offscreenReflectionCmdBuffer.destroy();
-		deferredReflectionPipeline.destroy();
-		deferredReflectionCmdBuffer.destroy();
-		deferredReflectionImage.destroy();
-		deferredReflectionImageView.destroy();
-		reflectionMipmapGenerationCmd.destroy();
-		offscreenReflectionSignalSemaphore.destroy();
-		deferredReflectionFence.destroy();
 		offscreenRefractionCmdBuffer.destroy();
-		deferredRefractionPipeline.destroy();
-		deferredRefractionCmdBuffer.destroy();
-		deferredRefractionImage.destroy();
-		deferredRefractionImageView.destroy();
-		refractionMipmapGenerationCmd.destroy();
-		offscreenRefractionSignalSemaphore.destroy();
-		deferredRefractionFence.destroy();
+		refractionFence.destroy();
+		reflectionFence.destroy();
+		reflectionFbo.destroy();
+		refractionFbo.destroy();
+	}
+	
+	
+	public class ReflectionRefractionFbo extends VkFrameBufferObject{
+
+		public ReflectionRefractionFbo(VkDevice device,
+				VkPhysicalDeviceMemoryProperties memoryProperties) {
+			
+			width = BaseContext.getConfig().getFrameWidth()/2;
+			height = BaseContext.getConfig().getFrameHeight()/2;
+			
+			VkImageBundle albedoBuffer = new FrameBufferColorAttachment(device, memoryProperties, width, height,
+					VK_FORMAT_R8G8B8A8_UNORM, 1);
+			VkImageBundle normalBuffer = new FrameBufferColorAttachment(device, memoryProperties, width, height, 
+					VK_FORMAT_R16G16B16A16_UNORM, 1);
+			VkImageBundle depthBuffer = new FrameBufferDepthAttachment(device, memoryProperties, width, height,
+					VK_FORMAT_D16_UNORM, 1);
+			
+			attachments.put(Attachment.COLOR, albedoBuffer);
+			attachments.put(Attachment.NORMAL, normalBuffer);
+			attachments.put(Attachment.DEPTH, depthBuffer);
+			
+			renderPass = new RenderPass(device);
+			renderPass.addColorAttachment(0, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
+					VK_FORMAT_R8G8B8A8_UNORM, 1, VK_IMAGE_LAYOUT_UNDEFINED,
+					VK_IMAGE_LAYOUT_GENERAL);
+			renderPass.addColorAttachment(1, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
+					VK_FORMAT_R16G16B16A16_UNORM, 1, VK_IMAGE_LAYOUT_UNDEFINED,
+					VK_IMAGE_LAYOUT_GENERAL);
+			renderPass.addDepthAttachment(2, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL,
+					VK_FORMAT_D16_UNORM, 1, VK_IMAGE_LAYOUT_UNDEFINED,
+					VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
+			
+			renderPass.addSubpassDependency(VK_SUBPASS_EXTERNAL, 0,
+					VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
+		    		VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+		    		VK_ACCESS_MEMORY_READ_BIT,
+		    		VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
+		    		VK_DEPENDENCY_BY_REGION_BIT);
+			renderPass.addSubpassDependency(0, VK_SUBPASS_EXTERNAL,
+					VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+					VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
+		    		VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
+		    		VK_ACCESS_MEMORY_READ_BIT,
+		    		VK_DEPENDENCY_BY_REGION_BIT);
+			
+			renderPass.createSubpass();
+			renderPass.createRenderPass();
+			
+			depthAttachmentCount = 1;
+			colorAttachmentCount = renderPass.getAttachmentCount()-depthAttachmentCount;
+			
+			LongBuffer pImageViews = memAllocLong(renderPass.getAttachmentCount());
+			pImageViews.put(0, attachments.get(Attachment.COLOR).getImageView().getHandle());
+			pImageViews.put(1, attachments.get(Attachment.NORMAL).getImageView().getHandle());
+			pImageViews.put(2, attachments.get(Attachment.DEPTH).getImageView().getHandle());
+			
+			frameBuffer = new VkFrameBuffer(device, width, height, 1,
+					pImageViews, renderPass.getHandle());
+		}
 	}
 }

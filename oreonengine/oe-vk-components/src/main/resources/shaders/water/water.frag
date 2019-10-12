@@ -18,13 +18,6 @@ layout(set = 0, binding = 0, std140, row_major) uniform Camera {
 	vec4 frustumPlanes[6];
 };
 
-// layout (binding = 1, set = 0, std140) uniform DirectionalLight{
-	// vec3 direction;
-	// float intensity;
-	// vec3 ambient;
-	// vec3 color;
-// } directional_light;
-
 layout(set = 1, binding = 0) uniform sampler2D Dy;
 layout(set = 1, binding = 1) uniform sampler2D Dx;
 layout(set = 1, binding = 2) uniform sampler2D Dz;
@@ -130,14 +123,9 @@ void main(void)
 	
 	vec3 fragColor = (reflection + refraction);
 	
-	float spec = specularReflection(normalize(vec3(-1,-0.1,-1)), normal.xzy, eyePosition, inPosition, constants.specular, constants.emission);
-	vec3 specularLight = (vec3(1,1,1)) * spec;
-	
-	fragColor += specularLight;
-	
 	albedo_out = vec4(fragColor,1);
 	worldPosition_out = vec4(inPosition,gl_FragCoord.z);
 	normal_out = vec4(normal,1);
-	specular_emission_diffuse_ssao_bloom_out = vec4(1,0,0,1);
+	specular_emission_diffuse_ssao_bloom_out = vec4(280,2,0,1);
 	lightScattering_out = vec4(0,0,0,1);
 }

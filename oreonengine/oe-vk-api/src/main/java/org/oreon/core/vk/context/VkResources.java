@@ -14,7 +14,8 @@ import lombok.Setter;
 public class VkResources {
 
 	private VkFrameBufferObject offScreenFbo;
-	private VkFrameBufferObject offScreenReflectionFbo;
+	private VkFrameBufferObject reflectionFbo;
+	private VkFrameBufferObject refractionFbo;
 	private VkFrameBufferObject transparencyFbo;
 
 	private Map<VkDescriptorName, VkDescriptor> descriptors = new HashMap<VkDescriptorName, VkDescriptor>();

@@ -24,6 +24,7 @@ import org.oreon.core.util.ProceduralTexturing;
 import org.oreon.core.vk.command.CommandBuffer;
 import org.oreon.core.vk.context.DeviceManager.DeviceType;
 import org.oreon.core.vk.context.VkContext;
+import org.oreon.core.vk.context.VkResources.VkDescriptorName;
 import org.oreon.core.vk.descriptor.DescriptorSet;
 import org.oreon.core.vk.descriptor.DescriptorSetLayout;
 import org.oreon.core.vk.device.LogicalDevice;
@@ -55,8 +56,6 @@ public class Atmosphere extends Renderable{
 		
 		Mesh mesh = VkAssimpModelLoader.loadModel("models/obj/dome", "dome.obj").get(0).getMesh();
 		ProceduralTexturing.dome(mesh);
-		
-		VkDirectionalLight directionalLight = new VkDirectionalLight();
 		
 		ByteBuffer ubo = memAlloc(Float.BYTES * 16);
 		ubo.put(BufferUtil.createByteBuffer(getWorldTransform().getWorldMatrix()));
@@ -93,10 +92,10 @@ public class Atmosphere extends Renderable{
 	    
 		descriptorSets.add(VkContext.getCamera().getDescriptorSet());
 		descriptorSets.add(descriptorSet);
-		descriptorSets.add(directionalLight.getDescriptorSet());
+		descriptorSets.add(VkContext.getResources().getDescriptors().get(VkDescriptorName.DIRECTIONAL_LIGHT).getDescriptorSet());
 		descriptorSetLayouts.add(VkContext.getCamera().getDescriptorSetLayout());
 		descriptorSetLayouts.add(descriptorSetLayout);
-		descriptorSetLayouts.add(directionalLight.getDescriptorSetLayout());
+		descriptorSetLayouts.add(VkContext.getResources().getDescriptors().get(VkDescriptorName.DIRECTIONAL_LIGHT).getDescriptorSetLayout());
 		
 		VkVertexInput vertexInput = new VkVertexInput(VertexLayout.POS);
 		
@@ -128,10 +127,10 @@ public class Atmosphere extends Renderable{
 		VkPipeline reflectionPipeline = new GraphicsPipeline(device.getHandle(),
 				reflectionShaderPipeline, vertexInput, VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
 				VkUtil.createLongBuffer(descriptorSetLayouts),
-				BaseContext.getConfig().getFrameWidth(),
-				BaseContext.getConfig().getFrameHeight(),
-				VkContext.getResources().getOffScreenReflectionFbo().getRenderPass().getHandle(),
-				VkContext.getResources().getOffScreenReflectionFbo().getColorAttachmentCount(), 1);
+				VkContext.getResources().getReflectionFbo().getWidth(),
+				VkContext.getResources().getReflectionFbo().getHeight(),
+				VkContext.getResources().getReflectionFbo().getRenderPass().getHandle(),
+				VkContext.getResources().getReflectionFbo().getColorAttachmentCount(), 1);
 		
 		VkBuffer vertexBufferObject = VkBufferHelper.createDeviceLocalBuffer(
 				device.getHandle(), memoryProperties,
@@ -162,8 +161,8 @@ public class Atmosphere extends Renderable{
 	    		device.getHandle(),
 	    		device.getGraphicsCommandPool(Thread.currentThread().getId()).getHandle(), 
 	    		reflectionPipeline.getHandle(), reflectionPipeline.getLayoutHandle(),
-	    		VkContext.getResources().getOffScreenReflectionFbo().getFrameBuffer().getHandle(),
-	    		VkContext.getResources().getOffScreenReflectionFbo().getRenderPass().getHandle(),
+	    		VkContext.getResources().getReflectionFbo().getFrameBuffer().getHandle(),
+	    		VkContext.getResources().getReflectionFbo().getRenderPass().getHandle(),
 	    		0,
 	    		VkUtil.createLongArray(descriptorSets),
 	    		vertexBufferObject.getHandle(),
@@ -183,7 +182,6 @@ public class Atmosphere extends Renderable{
 	    addComponent(NodeComponentType.MAIN_RENDERINFO, mainRenderInfo);
 	    addComponent(NodeComponentType.WIREFRAME_RENDERINFO, mainRenderInfo);
 	    addComponent(NodeComponentType.REFLECTION_RENDERINFO, reflectionRenderInfo);
-	    addComponent(NodeComponentType.LIGHT, directionalLight);
 	    
 	    graphicsShaderPipeline.destroy();
 	    reflectionShaderPipeline.destroy();

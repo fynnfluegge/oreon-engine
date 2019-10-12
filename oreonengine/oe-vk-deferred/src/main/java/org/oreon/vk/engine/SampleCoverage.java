@@ -35,11 +35,16 @@ import lombok.Getter;
 public class SampleCoverage {
 	
 	private VkImage sampleCoverageImage;
+	private VkImage lightScatteringImage;
+	private VkImage specularEmissionDiffuseSsaoBloomImage;
+	
 	@Getter
 	private VkImageView sampleCoverageImageView;
-	private VkImage lightScatteringImage;
 	@Getter
 	private VkImageView lightScatteringImageView;
+	@Getter
+	private VkImageView specularEmissionDiffuseSsaoBloomImageView;
+	
 	private VkPipeline computePipeline;
 	private DescriptorSet descriptorSet;
 	private DescriptorSetLayout descriptorSetLayout;
@@ -49,11 +54,11 @@ public class SampleCoverage {
 	private int width;
 	private int height;
 	
-	private final float discontinuitiestThreshold = 4f;
+	private final float discontinuitiestThreshold = 1f;
 
 	public SampleCoverage(VkDeviceBundle deviceBundle,
 			int width, int height, VkImageView worldPositionImageView,
-			VkImageView lightScatteringMask) {
+			VkImageView lightScatteringMask, VkImageView specularEmissionDiffuseSsaoBloomMask) {
 		
 		VkDevice device = deviceBundle.getLogicalDevice().getHandle();
 		VkPhysicalDeviceMemoryProperties memoryProperties = deviceBundle.getPhysicalDevice().getMemoryProperties();
@@ -73,7 +78,13 @@ public class SampleCoverage {
 		lightScatteringImageView = new VkImageView(device,
 				VK_FORMAT_R16G16B16A16_SFLOAT, lightScatteringImage.getHandle(), VK_IMAGE_ASPECT_COLOR_BIT);
 		
-		descriptorSetLayout = new DescriptorSetLayout(device, 4);
+		specularEmissionDiffuseSsaoBloomImage = new Image2DDeviceLocal(device, memoryProperties, 
+				width, height, VK_FORMAT_R16G16B16A16_SFLOAT, VK_IMAGE_USAGE_STORAGE_BIT
+				| VK_IMAGE_USAGE_SAMPLED_BIT);
+		specularEmissionDiffuseSsaoBloomImageView = new VkImageView(device,
+				VK_FORMAT_R16G16B16A16_SFLOAT, specularEmissionDiffuseSsaoBloomImage.getHandle(), VK_IMAGE_ASPECT_COLOR_BIT);
+		
+		descriptorSetLayout = new DescriptorSetLayout(device, 6);
 		descriptorSetLayout.addLayoutBinding(0, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
 	    		VK_SHADER_STAGE_COMPUTE_BIT);
 		descriptorSetLayout.addLayoutBinding(1, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
@@ -81,6 +92,10 @@ public class SampleCoverage {
 		descriptorSetLayout.addLayoutBinding(2, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
 	    		VK_SHADER_STAGE_COMPUTE_BIT);
 		descriptorSetLayout.addLayoutBinding(3, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
+	    		VK_SHADER_STAGE_COMPUTE_BIT);
+		descriptorSetLayout.addLayoutBinding(4, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
+	    		VK_SHADER_STAGE_COMPUTE_BIT);
+		descriptorSetLayout.addLayoutBinding(5, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
 	    		VK_SHADER_STAGE_COMPUTE_BIT);
 		descriptorSetLayout.create();
 
@@ -97,6 +112,12 @@ public class SampleCoverage {
 	    		VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
 		descriptorSet.updateDescriptorImageBuffer(lightScatteringMask.getHandle(),
 	    		VK_IMAGE_LAYOUT_GENERAL, -1, 3,
+	    		VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
+		descriptorSet.updateDescriptorImageBuffer(specularEmissionDiffuseSsaoBloomImageView.getHandle(),
+	    		VK_IMAGE_LAYOUT_GENERAL, -1, 4,
+	    		VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
+		descriptorSet.updateDescriptorImageBuffer(specularEmissionDiffuseSsaoBloomMask.getHandle(),
+	    		VK_IMAGE_LAYOUT_GENERAL, -1, 5,
 	    		VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
 		
 		descriptorSets = new ArrayList<DescriptorSet>();

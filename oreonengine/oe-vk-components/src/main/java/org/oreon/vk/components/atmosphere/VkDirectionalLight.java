@@ -1,6 +1,7 @@
 package org.oreon.vk.components.atmosphere;
 
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_COMPUTE_BIT;
 import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_FRAGMENT_BIT;
 
 import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
@@ -36,7 +37,7 @@ public class VkDirectionalLight extends DirectionalLight{
 		
 		descriptorSetLayout = new DescriptorSetLayout(device.getHandle(), 1);
 	    descriptorSetLayout.addLayoutBinding(0,VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
-	    		VK_SHADER_STAGE_FRAGMENT_BIT);
+	    		VK_SHADER_STAGE_FRAGMENT_BIT | VK_SHADER_STAGE_COMPUTE_BIT);
 	    descriptorSetLayout.create();
 		
 	    descriptorSet = new DescriptorSet(device.getHandle(),
