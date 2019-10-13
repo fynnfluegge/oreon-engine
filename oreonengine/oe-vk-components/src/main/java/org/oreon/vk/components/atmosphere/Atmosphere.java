@@ -124,14 +124,6 @@ public class Atmosphere extends Renderable{
 				BaseContext.getConfig().getMultisampling_sampleCount(),
 				pushConstantsRange, VK_SHADER_STAGE_FRAGMENT_BIT);
 		
-		VkPipeline reflectionPipeline = new GraphicsPipeline(device.getHandle(),
-				reflectionShaderPipeline, vertexInput, VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
-				VkUtil.createLongBuffer(descriptorSetLayouts),
-				VkContext.getResources().getReflectionFbo().getWidth(),
-				VkContext.getResources().getReflectionFbo().getHeight(),
-				VkContext.getResources().getReflectionFbo().getRenderPass().getHandle(),
-				VkContext.getResources().getReflectionFbo().getColorAttachmentCount(), 1);
-		
 		VkBuffer vertexBufferObject = VkBufferHelper.createDeviceLocalBuffer(
 				device.getHandle(), memoryProperties,
 				device.getTransferCommandPool(Thread.currentThread().getId()).getHandle(),
@@ -156,18 +148,6 @@ public class Atmosphere extends Renderable{
 	    		indexBufferObject.getHandle(),
 	    		mesh.getIndices().length,
 	    		pushConstants, VK_SHADER_STAGE_FRAGMENT_BIT);
-        
-        CommandBuffer reflectionCommandBuffer = new SecondaryDrawIndexedCmdBuffer(
-	    		device.getHandle(),
-	    		device.getGraphicsCommandPool(Thread.currentThread().getId()).getHandle(), 
-	    		reflectionPipeline.getHandle(), reflectionPipeline.getLayoutHandle(),
-	    		VkContext.getResources().getReflectionFbo().getFrameBuffer().getHandle(),
-	    		VkContext.getResources().getReflectionFbo().getRenderPass().getHandle(),
-	    		0,
-	    		VkUtil.createLongArray(descriptorSets),
-	    		vertexBufferObject.getHandle(),
-	    		indexBufferObject.getHandle(),
-	    		mesh.getIndices().length);
 	    
         VkMeshData meshData = VkMeshData.builder().vertexBufferObject(vertexBufferObject)
 	    		.vertexBuffer(vertexBuffer).indexBufferObject(indexBufferObject).indexBuffer(indexBuffer)
@@ -175,13 +155,38 @@ public class Atmosphere extends Renderable{
 	    VkRenderInfo mainRenderInfo = VkRenderInfo.builder().commandBuffer(mainCommandBuffer)
 	    		.pipeline(graphicsPipeline).descriptorSets(descriptorSets)
 	    		.descriptorSetLayouts(descriptorSetLayouts).build();
-	    VkRenderInfo reflectionRenderInfo = VkRenderInfo.builder().commandBuffer(reflectionCommandBuffer)
-	    		.pipeline(reflectionPipeline).build();
+	    
 	    
 	    addComponent(NodeComponentType.MESH_DATA, meshData);
 	    addComponent(NodeComponentType.MAIN_RENDERINFO, mainRenderInfo);
 	    addComponent(NodeComponentType.WIREFRAME_RENDERINFO, mainRenderInfo);
-	    addComponent(NodeComponentType.REFLECTION_RENDERINFO, reflectionRenderInfo);
+	    
+	    if (VkContext.getResources().getReflectionFbo() != null){
+	    	VkPipeline reflectionPipeline = new GraphicsPipeline(device.getHandle(),
+					reflectionShaderPipeline, vertexInput, VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
+					VkUtil.createLongBuffer(descriptorSetLayouts),
+					VkContext.getResources().getReflectionFbo().getWidth(),
+					VkContext.getResources().getReflectionFbo().getHeight(),
+					VkContext.getResources().getReflectionFbo().getRenderPass().getHandle(),
+					VkContext.getResources().getReflectionFbo().getColorAttachmentCount(), 1);
+	    	
+	    	CommandBuffer reflectionCommandBuffer = new SecondaryDrawIndexedCmdBuffer(
+		    		device.getHandle(),
+		    		device.getGraphicsCommandPool(Thread.currentThread().getId()).getHandle(), 
+		    		reflectionPipeline.getHandle(), reflectionPipeline.getLayoutHandle(),
+		    		VkContext.getResources().getReflectionFbo().getFrameBuffer().getHandle(),
+		    		VkContext.getResources().getReflectionFbo().getRenderPass().getHandle(),
+		    		0,
+		    		VkUtil.createLongArray(descriptorSets),
+		    		vertexBufferObject.getHandle(),
+		    		indexBufferObject.getHandle(),
+		    		mesh.getIndices().length);
+	    	
+	    	VkRenderInfo reflectionRenderInfo = VkRenderInfo.builder().commandBuffer(reflectionCommandBuffer)
+		    		.pipeline(reflectionPipeline).build();
+	    	
+	    	addComponent(NodeComponentType.REFLECTION_RENDERINFO, reflectionRenderInfo);
+	    }
 	    
 	    graphicsShaderPipeline.destroy();
 	    reflectionShaderPipeline.destroy();

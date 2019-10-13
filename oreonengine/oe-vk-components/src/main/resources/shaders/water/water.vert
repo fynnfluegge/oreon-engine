@@ -6,21 +6,29 @@ layout (location = 0) in vec2 inPosition;
 layout (location = 0) out vec2 outUV;
 
 layout (push_constant, std430, row_major) uniform Constants{
-	mat4 m_World;
-	vec2 windDirection;
+	mat4 worldMatrix;
+	int uvScale;
+	int tessFactor;
 	float tessSlope;
 	float tessShift;
-	int tessFactor;
-	int uvScale;
 	float displacementScale;
-	float choppiness;
 	int highDetailRange;
+	float choppiness;
 	float kReflection;
 	float kRefraction;
 	int windowWidth;
 	int windowHeight;
+	int diffuseEnable;
 	float emission;
-	float specular;
+	float specularFactor;
+	float specularAmplifier;
+	float reflectionBlendFactor;
+	vec3 waterColor;
+	float fresnelFactor;
+	float capillarStrength;
+	float capillarDownsampling;
+	float dudvDownsampling;
+	vec2 windDirection;
 } constants;
 
 out gl_PerVertex {
@@ -29,6 +37,6 @@ out gl_PerVertex {
 
 void main()
 {
-		gl_Position = constants.m_World * vec4(inPosition.x,0,inPosition.y,1);
+		gl_Position = constants.worldMatrix * vec4(inPosition.x,0,inPosition.y,1);
 		outUV = inPosition.xy;
 }

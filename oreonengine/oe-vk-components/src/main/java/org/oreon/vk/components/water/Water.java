@@ -306,25 +306,35 @@ public class Water extends Renderable{
 				device.getTransferQueue(),
 				vertexBuffer, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
 		
-		int pushConstantsRange = Float.BYTES * 26 + Integer.BYTES * 5;
+		int pushConstantsRange = Float.BYTES * 35 + Integer.BYTES * 6;
 		
 		ByteBuffer pushConstants = memAlloc(pushConstantsRange);
 		pushConstants.put(BufferUtil.createByteBuffer(getWorldTransform().getWorldMatrix()));
-		pushConstants.putFloat(waterConfig.getWindDirection().getX());
-		pushConstants.putFloat(waterConfig.getWindDirection().getY());
+		pushConstants.putInt(waterConfig.getUvScale());
+		pushConstants.putInt(waterConfig.getTessellationFactor());
 		pushConstants.putFloat(waterConfig.getTessellationSlope());
 		pushConstants.putFloat(waterConfig.getTessellationShift());
-		pushConstants.putInt(waterConfig.getTessellationFactor());
-		pushConstants.putInt(waterConfig.getUvScale());
 		pushConstants.putFloat(waterConfig.getDisplacementScale());
-		pushConstants.putFloat(waterConfig.getChoppiness());
 		pushConstants.putInt(waterConfig.getHighDetailRange());
+		pushConstants.putFloat(waterConfig.getChoppiness());
 		pushConstants.putFloat(waterConfig.getKReflection());
 		pushConstants.putFloat(waterConfig.getKRefraction());
 		pushConstants.putInt(BaseContext.getConfig().getFrameWidth());
 		pushConstants.putInt(BaseContext.getConfig().getFrameHeight());
+		pushConstants.putInt(waterConfig.isDiffuse() ? 1 : 0);
 		pushConstants.putFloat(waterConfig.getEmission());
 		pushConstants.putFloat(waterConfig.getSpecularFactor());
+		pushConstants.putFloat(waterConfig.getSpecularAmplifier());
+		pushConstants.putFloat(waterConfig.getReflectionBlendFactor());
+		pushConstants.putFloat(waterConfig.getBaseColor().getX());
+		pushConstants.putFloat(waterConfig.getBaseColor().getY());
+		pushConstants.putFloat(waterConfig.getBaseColor().getZ());
+		pushConstants.putFloat(waterConfig.getFresnelFactor());
+		pushConstants.putFloat(waterConfig.getCapillarStrength());
+		pushConstants.putFloat(waterConfig.getCapillarDownsampling());
+		pushConstants.putFloat(waterConfig.getDudvDownsampling());
+		pushConstants.putFloat(waterConfig.getWindDirection().getX());
+		pushConstants.putFloat(waterConfig.getWindDirection().getY());
 		pushConstants.flip();
 		
 		VkPipeline graphicsPipeline = new GraphicsTessellationPipeline(device.getHandle(),
@@ -400,7 +410,7 @@ public class Water extends Renderable{
 	    addComponent(NodeComponentType.WIREFRAME_RENDERINFO, wireframeRenderInfo);
 	    
 	    
-	    // initially render to refraction fbo due to attachment clear color
+	    // initially render to refraction fbo due to attachment deep ocean clear color
 	    offscreenRefractionCmdBuffer.reset();
 		offscreenRefractionCmdBuffer.record(
 				refractionFbo.getRenderPass().getHandle(),
@@ -409,7 +419,7 @@ public class Water extends Renderable{
 				refractionFbo.getHeight(),
 				refractionFbo.getColorAttachmentCount(),
 				refractionFbo.getDepthAttachmentCount(),
-				waterConfig.getBaseColor().mul(2.5f),
+				waterConfig.getBaseColor().mul(1.5f),
 				null);
 		offScreenRefractionSubmitInfo.submit(
 				graphicsQueue);

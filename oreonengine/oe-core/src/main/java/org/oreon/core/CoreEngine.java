@@ -12,7 +12,7 @@ import org.oreon.core.util.Constants;
 public class CoreEngine{
 	
 	private static int fps;
-	private static float framerate = 100;
+	private static float framerate = 1000;
 	private static float frameTime = 1.0f/framerate;
 	public static float currentFrameTime = 0;
 	private boolean isRunning;

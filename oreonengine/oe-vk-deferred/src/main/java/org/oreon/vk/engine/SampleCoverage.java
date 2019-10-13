@@ -54,7 +54,7 @@ public class SampleCoverage {
 	private int width;
 	private int height;
 	
-	private final float discontinuitiestThreshold = 1f;
+	private final float discontinuitiestThreshold = 2f;
 
 	public SampleCoverage(VkDeviceBundle deviceBundle,
 			int width, int height, VkImageView worldPositionImageView,
