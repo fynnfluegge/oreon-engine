@@ -1,11 +1,7 @@
 package org.oreon.core.gl.light;
 
-import org.lwjgl.glfw.GLFW;
-import org.oreon.core.context.BaseContext;
 import org.oreon.core.gl.memory.GLUniformBuffer;
 import org.oreon.core.light.DirectionalLight;
-import org.oreon.core.math.Vec3f;
-import org.oreon.core.util.BufferUtil;
 import org.oreon.core.util.Constants;
 
 import lombok.Getter;
@@ -24,13 +20,6 @@ public class GLDirectionalLight extends DirectionalLight{
 		getUbo_light().setBinding_point_index(Constants.DirectionalLightUniformBlockBinding);
 		getUbo_light().bindBufferBase();
 		getUbo_light().allocate(getLightBufferSize());
-		setFloatBufferLight(BufferUtil.createFloatBuffer(getLightBufferSize()));
-		getFloatBufferLight().put(BufferUtil.createFlippedBuffer(getDirection()));
-		getFloatBufferLight().put(intensity);
-		getFloatBufferLight().put(BufferUtil.createFlippedBuffer(getAmbient()));
-		getFloatBufferLight().put(0);
-		getFloatBufferLight().put(BufferUtil.createFlippedBuffer(getColor()));
-		getFloatBufferLight().put(0);
 		getUbo_light().updateData(getFloatBufferLight(), getLightBufferSize());
 		
 		ubo_matrices = new GLUniformBuffer();
@@ -41,83 +30,13 @@ public class GLDirectionalLight extends DirectionalLight{
 		getUbo_matrices().updateData(getFloatBufferMatrices(), getMatricesBufferSize());
 	}
 	
-	public void update(){
+	public void updateLightUbo(){
 		
-		super.update();
-		
-		if (BaseContext.getCamera().isCameraRotated() || 
-				BaseContext.getCamera().isCameraMoved()){
-			
-			updateShadowMatrices(false);
-			getUbo_matrices().updateData(getFloatBufferMatrices(), getMatricesBufferSize());
-		}
-	
-		// change sun orientation
-		if (BaseContext.getInput().isKeyHolding(GLFW.GLFW_KEY_I)) {
-			
-			if (getDirection().getY() >= -0.8f) {
-				setDirection(getDirection().add(new Vec3f(0,-0.001f,0)).normalize());
-				getFloatBufferLight().clear();
-				getFloatBufferLight().flip();
-				setFloatBufferLight(BufferUtil.createFloatBuffer(getLightBufferSize()));
-				getFloatBufferLight().put(BufferUtil.createFlippedBuffer(getDirection()));
-				getFloatBufferLight().put(intensity);
-				getFloatBufferLight().put(BufferUtil.createFlippedBuffer(getAmbient()));
-				getFloatBufferLight().put(0);
-				getFloatBufferLight().put(BufferUtil.createFlippedBuffer(getColor()));
-				getFloatBufferLight().put(0);
-				getUbo_light().updateData(getFloatBufferLight(), getLightBufferSize());
-				
-				updateShadowMatrices(true);
-				getUbo_matrices().updateData(getFloatBufferMatrices(), getMatricesBufferSize());
-			}
-		}
-		if (BaseContext.getInput().isKeyHolding(GLFW.GLFW_KEY_K)) {
-			
-			if (getDirection().getY() <= 0.00f) {
-				setDirection(getDirection().add(new Vec3f(0,0.001f,0)).normalize());
-				setFloatBufferLight(BufferUtil.createFloatBuffer(getLightBufferSize()));
-				getFloatBufferLight().put(BufferUtil.createFlippedBuffer(getDirection()));
-				getFloatBufferLight().put(intensity);
-				getFloatBufferLight().put(BufferUtil.createFlippedBuffer(getAmbient()));
-				getFloatBufferLight().put(0);
-				getFloatBufferLight().put(BufferUtil.createFlippedBuffer(getColor()));
-				getFloatBufferLight().put(0);
-				getUbo_light().updateData(getFloatBufferLight(), getLightBufferSize());
-				
-				updateShadowMatrices(true);
-				getUbo_matrices().updateData(getFloatBufferMatrices(), getMatricesBufferSize());
-			}
-		}
-		if (BaseContext.getInput().isKeyHolding(GLFW.GLFW_KEY_J)) {
-			
-			setDirection(getDirection().add(new Vec3f(0.00075f,0,-0.00075f)).normalize());
-			setFloatBufferLight(BufferUtil.createFloatBuffer(getLightBufferSize()));
-			getFloatBufferLight().put(BufferUtil.createFlippedBuffer(getDirection()));
-			getFloatBufferLight().put(intensity);
-			getFloatBufferLight().put(BufferUtil.createFlippedBuffer(getAmbient()));
-			getFloatBufferLight().put(0);
-			getFloatBufferLight().put(BufferUtil.createFlippedBuffer(getColor()));
-			getFloatBufferLight().put(0);
-			getUbo_light().updateData(getFloatBufferLight(), getLightBufferSize());
-			
-			updateShadowMatrices(true);
-			getUbo_matrices().updateData(getFloatBufferMatrices(), getMatricesBufferSize());
-		}
-		if (BaseContext.getInput().isKeyHolding(GLFW.GLFW_KEY_L)) {
-			
-			setDirection(getDirection().add(new Vec3f(-0.00075f,0,0.00075f)).normalize());
-			setFloatBufferLight(BufferUtil.createFloatBuffer(getLightBufferSize()));
-			getFloatBufferLight().put(BufferUtil.createFlippedBuffer(getDirection()));
-			getFloatBufferLight().put(intensity);
-			getFloatBufferLight().put(BufferUtil.createFlippedBuffer(getAmbient()));
-			getFloatBufferLight().put(0);
-			getFloatBufferLight().put(BufferUtil.createFlippedBuffer(getColor()));
-			getFloatBufferLight().put(0);
-			getUbo_light().updateData(getFloatBufferLight(), getLightBufferSize());
-			
-			updateShadowMatrices(true);
-			getUbo_matrices().updateData(getFloatBufferMatrices(), getMatricesBufferSize());
-		}
+		getUbo_light().updateData(getFloatBufferLight(), getLightBufferSize());
 	}
+	
+	public void updateMatricesUbo(){
+		getUbo_matrices().updateData(getFloatBufferMatrices(), getMatricesBufferSize());
+	}
+	
 }

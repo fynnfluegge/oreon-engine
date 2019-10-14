@@ -8,6 +8,7 @@ import static org.lwjgl.vulkan.VK10.VK_ACCESS_SHADER_READ_BIT;
 import static org.lwjgl.vulkan.VK10.VK_DEPENDENCY_BY_REGION_BIT;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_D32_SFLOAT;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_R16G16B16A16_SFLOAT;
+import static org.lwjgl.vulkan.VK10.VK_FORMAT_R16G16B16A16_SNORM;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_R32G32B32A32_SFLOAT;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
@@ -42,7 +43,7 @@ public class OffScreenFbo extends VkFrameBufferObject {
 		int samples = BaseContext.getConfig().getMultisampling_sampleCount();
 
 		VkImageBundle albedoAttachment = new FrameBufferColorAttachment(device, memoryProperties,
-				width, height, VK_FORMAT_R16G16B16A16_SFLOAT, samples);
+				width, height, VK_FORMAT_R16G16B16A16_SNORM, samples);
 		
 		VkImageBundle worldPositionAttachment = new FrameBufferColorAttachment(device, memoryProperties,
 				width, height, VK_FORMAT_R32G32B32A32_SFLOAT, samples);

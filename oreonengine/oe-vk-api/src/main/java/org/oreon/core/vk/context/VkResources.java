@@ -1,10 +1,10 @@
 package org.oreon.core.vk.context;
 
 import java.util.HashMap;
-
-import javax.management.Descriptor;
+import java.util.Map;
 
 import org.oreon.core.vk.framebuffer.VkFrameBufferObject;
+import org.oreon.core.vk.wrapper.descriptor.VkDescriptor;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -14,8 +14,14 @@ import lombok.Setter;
 public class VkResources {
 
 	private VkFrameBufferObject offScreenFbo;
-	private VkFrameBufferObject offScreenReflectionFbo;
+	private VkFrameBufferObject reflectionFbo;
+	private VkFrameBufferObject refractionFbo;
 	private VkFrameBufferObject transparencyFbo;
 
-	private HashMap<String, Descriptor> descriptors;
+	private Map<VkDescriptorName, VkDescriptor> descriptors = new HashMap<VkDescriptorName, VkDescriptor>();
+	
+	public enum VkDescriptorName{
+		CAMERA,
+		DIRECTIONAL_LIGHT
+	}
 }

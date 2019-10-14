@@ -21,7 +21,7 @@ import org.oreon.core.vk.util.VkUtil;
 import lombok.Getter;
 
 public class DescriptorSet {
-	
+
 	@Getter
 	private long handle;
 	

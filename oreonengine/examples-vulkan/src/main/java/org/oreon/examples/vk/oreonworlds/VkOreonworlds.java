@@ -15,9 +15,9 @@ public class VkOreonworlds {
 		VkDeferredEngine renderEngine = new VkDeferredEngine();
 		renderEngine.setGui(new VkSystemMonitor());
 		renderEngine.init();
-		
-		renderEngine.getSceneGraph().addObject(new Atmosphere());
+
 		renderEngine.getSceneGraph().setWater(new Water());
+		renderEngine.getSceneGraph().addObject(new Atmosphere());
 //		renderEngine.getSceneGraph().setTerrain(new Planet());
 		
 		VkContext.setRenderEngine(renderEngine);

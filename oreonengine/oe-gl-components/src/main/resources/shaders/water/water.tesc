@@ -21,7 +21,7 @@ layout (std430, row_major, binding = 1) buffer ssbo {
 	float tessSlope;
 	float tessShift;
 	float displacementScale;
-	int largeDetailRange;
+	int highDetailRange;
 	float choppiness;
 	float kReflection;
 	float kRefraction;
@@ -38,10 +38,6 @@ layout (std430, row_major, binding = 1) buffer ssbo {
 	float capillarDownsampling;
 	float dudvDownsampling;
 };
-
-// uniform int tessFactor;
-// uniform float tessSlope;
-// uniform float tessShift;
 
 const int CD = 0;
 const int AC = 1;

@@ -25,7 +25,7 @@ layout (std430, row_major, binding = 1) buffer ssbo {
 	float tessSlope;
 	float tessShift;
 	float displacementScale;
-	int largeDetailRange;
+	int highDetailRange;
 	float choppiness;
 	float kReflection;
 	float kRefraction;
@@ -86,7 +86,7 @@ void main()
 	float dist = (distance(gl_in[0].gl_Position.xyz, eyePosition) + distance(gl_in[1].gl_Position.xyz, eyePosition) + distance(gl_in[0].gl_Position.xyz, eyePosition))/3;
 	if (dist < displacementRange+100)
 	{	
-		if (dist < largeDetailRange){
+		if (dist < highDetailRange){
 			tangent = calcTangent();
 		}
 		

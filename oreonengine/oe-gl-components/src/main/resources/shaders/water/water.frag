@@ -23,13 +23,6 @@ layout (std140, row_major) uniform Camera{
 	vec4 frustumPlanes[6];
 };
 
-layout (std140) uniform DirectionalLight{
-	vec3 direction;
-	float intensity;
-	vec3 ambient;
-	vec3 color;
-} directional_light;
-
 layout (std430, row_major, binding = 1) buffer ssbo {
 	mat4 worldMatrix;
 	int uvScale;
@@ -37,7 +30,7 @@ layout (std430, row_major, binding = 1) buffer ssbo {
 	float tessSlope;
 	float tessShift;
 	float displacementScale;
-	int largeDetailRange;
+	int highDetailRange;
 	float choppiness;
 	float kReflection;
 	float kRefraction;
@@ -102,8 +95,8 @@ void main(void)
 	
 	float fresnel = fresnelApproximated(normal.xzy, vertexToEye);
 	
-	if (dist < largeDetailRange-50.0){
-		float attenuation = clamp(-dist/(largeDetailRange-50) + 1,0.0,1.0);
+	if (dist < highDetailRange-50.0){
+		float attenuation = clamp(-dist/(highDetailRange-50) + 1,0.0,1.0);
 		vec3 bitangent = normalize(cross(inTangent, normal));
 		mat3 TBN = mat3(inTangent,bitangent,normal);
 		vec3 bumpNormal = texture(normalmap, inUV * capillarDownsampling + waveMotion).rgb;
@@ -141,18 +134,13 @@ void main(void)
 	
 	vec3 fragColor = reflection + refraction;
 	
-	float spec = specularReflection(vec3(directional_light.direction.x, directional_light.direction.y/specularAmplifier, directional_light.direction.z),
-		normal.xzy, specularFactor, emission, vertexToEye);
-	vec3 specularLight = directional_light.color * spec;
-	
-	// fragColor += specularLight;
-	
-	if (diffuseEnable == 0)
-		normal = vec3(0,0,1);
+	float diffuseSsao = 0;
+	if (diffuseEnable == 1)
+		diffuseSsao = 10;
 	
 	albedo_out = vec4(fragColor,1);
 	worldPosition_out = vec4(inPosition,1);
 	normal_out = vec4(normal,1);
-	specular_emission_diffuse_ssao_bloom_out = vec4(280,2,0,1);
+	specular_emission_diffuse_ssao_bloom_out = vec4(specularFactor,emission,diffuseSsao,1);
 	lightScattering_out = vec4(0,0,0,1);
 }

@@ -44,8 +44,8 @@ public class VkContext extends BaseContext{
 		init();
 		
 		window = new VkWindow();
-		camera = new VkCamera();
 		resources = new VkResources();
+		camera = new VkCamera();
 		deviceManager = new DeviceManager();
 		
 		if (!glfwInit())

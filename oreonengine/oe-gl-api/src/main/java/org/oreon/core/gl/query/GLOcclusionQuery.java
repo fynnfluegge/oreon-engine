@@ -61,7 +61,7 @@ public class GLOcclusionQuery extends OcclusionQuery{
 		glBeginQuery(GL_SAMPLES_PASSED, getId());
         // Every pixel that passes the depth test now gets added to the result
 
-        light.getParent().render();
+        light.render();
         glFinish();
         glEndQuery(GL_SAMPLES_PASSED);
         

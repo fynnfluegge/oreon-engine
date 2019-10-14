@@ -30,6 +30,7 @@ import org.oreon.core.vk.swapchain.SwapChain;
 import org.oreon.core.vk.synchronization.VkSemaphore;
 import org.oreon.core.vk.util.VkUtil;
 import org.oreon.core.vk.wrapper.command.PrimaryCmdBuffer;
+import org.oreon.vk.components.atmosphere.VkDirectionalLight;
 import org.oreon.vk.components.filter.Bloom;
 import org.oreon.vk.components.planet.Planet;
 import org.oreon.vk.components.ui.VkGUI;
@@ -42,7 +43,6 @@ public class VkDeferredEngine extends RenderEngine {
 	private VkDeviceBundle graphicsDevice;
 	
 	private VkFrameBufferObject offScreenFbo;
-	private VkFrameBufferObject reflectionFbo;
 	private VkFrameBufferObject transparencyFbo;
 	
 	private VkSemaphore offScreenSemaphore;
@@ -85,6 +85,8 @@ public class VkDeferredEngine extends RenderEngine {
 	public void init() {
 		
 		super.init();
+
+		sceneGraph.addObject(new VkDirectionalLight());
 		
 		offScreenRenderList = new RenderList();
 		transparencyRenderList = new RenderList();
@@ -95,13 +97,10 @@ public class VkDeferredEngine extends RenderEngine {
 	    
 	    offScreenFbo = new OffScreenFbo(graphicsDevice.getLogicalDevice().getHandle(),
 	    		graphicsDevice.getPhysicalDevice().getMemoryProperties());
-	    reflectionFbo = new ReflectionFbo(graphicsDevice.getLogicalDevice().getHandle(),
-	    		graphicsDevice.getPhysicalDevice().getMemoryProperties());
 	    transparencyFbo = new TransparencyFbo(graphicsDevice.getLogicalDevice().getHandle(),
 	    		graphicsDevice.getPhysicalDevice().getMemoryProperties());
 	    
 	    VkContext.getResources().setOffScreenFbo(offScreenFbo);
-	    VkContext.getResources().setOffScreenReflectionFbo(reflectionFbo);
 	    VkContext.getResources().setTransparencyFbo(transparencyFbo);
 	    
 	    // Semaphore creations
@@ -128,7 +127,8 @@ public class VkDeferredEngine extends RenderEngine {
 	    		BaseContext.getConfig().getFrameWidth(),
 	    		BaseContext.getConfig().getFrameHeight(),
 	    		offScreenFbo.getAttachmentImageView(Attachment.POSITION),
-	    		offScreenFbo.getAttachmentImageView(Attachment.LIGHT_SCATTERING));
+	    		offScreenFbo.getAttachmentImageView(Attachment.LIGHT_SCATTERING),
+	    		offScreenFbo.getAttachmentImageView(Attachment.SPECULAR_EMISSION_DIFFUSE_SSAO_BLOOM));
 	    
 	    deferredLighting = new DeferredLighting(graphicsDevice,
 	    		BaseContext.getConfig().getFrameWidth(),
@@ -154,7 +154,6 @@ public class VkDeferredEngine extends RenderEngine {
 	    		transparencyFbo.getAttachmentImageView(Attachment.LIGHT_SCATTERING),
 	    		opaqueTransparencyBlendWaitSemaphores);
 	    
-//	    VkImageView displayImageView = opaqueTransparencyBlending.getBlendedSceneImageView();
 	    VkImageView displayImageView = deferredLighting.getDeferredLightingSceneImageView();
 
 	    if (BaseContext.getConfig().isFxaaEnabled()){
@@ -170,21 +169,16 @@ public class VkDeferredEngine extends RenderEngine {
 		    bloom = new Bloom(graphicsDevice,
 		    		BaseContext.getConfig().getFrameWidth(),
 		    		BaseContext.getConfig().getFrameHeight(),
-		    		displayImageView);
+		    		displayImageView,
+		    		sampleCoverage.getSpecularEmissionDiffuseSsaoBloomImageView());
 		    
 		    displayImageView = bloom.getBloomSceneImageView();
 	    }
 	    
 	    if (gui != null){
 	    	// all post procssing effects and FXAA disabled
-	    	if (!BaseContext.getConfig().isFxaaEnabled() && !BaseContext.getConfig().isBloomEnabled()){
-	    		gui.init(displayImageView, opaqueTransparencyBlending.getSignalSemaphore().getHandlePointer());
-				displayImageView = gui.getImageView();
-	    	}
-	    	else{
-	    		gui.init(displayImageView, postProcessingSemaphore.getHandlePointer());
-				displayImageView = gui.getImageView();
-	    	}
+    		gui.init(displayImageView, postProcessingSemaphore.getHandlePointer());
+			displayImageView = gui.getImageView();
 		}
 	    
 	    swapChain = new SwapChain(graphicsDevice.getLogicalDevice(), graphicsDevice.getPhysicalDevice(),
@@ -228,7 +222,7 @@ public class VkDeferredEngine extends RenderEngine {
 	    postProcessingCmdBuffer.finishRecord();
 	
 	    postProcessingSubmitInfo = new SubmitInfo(postProcessingCmdBuffer.getHandlePointer());
-//	    postProcessingSubmitInfo.setWaitSemaphores(opaqueTransparencyBlending.getSignalSemaphore().getHandlePointer());
+	    postProcessingSubmitInfo.setWaitSemaphores(opaqueTransparencyBlending.getSignalSemaphore().getHandlePointer());
 	    postProcessingSubmitInfo.setWaitSemaphores(deferredStageSemaphore.getHandlePointer());
 	    postProcessingSubmitInfo.setWaitDstStageMask(pComputeShaderWaitDstStageMask);
 	    postProcessingSubmitInfo.setSignalSemaphores(postProcessingSemaphore.getHandlePointer());
@@ -265,7 +259,7 @@ public class VkDeferredEngine extends RenderEngine {
 				}
 			});
 
-			// primary render command buffer
+			// Offscreen primary render command buffer
 			offScreenPrimaryCmdBuffer.reset();
 			offScreenPrimaryCmdBuffer.record(offScreenFbo.getRenderPass().getHandle(),
 					offScreenFbo.getFrameBuffer().getHandle(),
@@ -298,7 +292,7 @@ public class VkDeferredEngine extends RenderEngine {
 				}
 			});
 		
-			// primary render command buffer
+			// Tranparency primary render command buffer
 			transparencyPrimaryCmdBuffer.reset();
 			transparencyPrimaryCmdBuffer.record(transparencyFbo.getRenderPass().getHandle(),
 					transparencyFbo.getFrameBuffer().getHandle(),
@@ -343,7 +337,6 @@ public class VkDeferredEngine extends RenderEngine {
 		super.shutdown();
 		
 		offScreenFbo.destroy();
-		reflectionFbo.destroy();
 		transparencyFbo.destroy();
 		offScreenSemaphore.destroy();
 		deferredStageSemaphore.destroy();

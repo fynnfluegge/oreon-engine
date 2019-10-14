@@ -1,7 +1,6 @@
 package org.oreon.gl.components.atmosphere;
 
 import org.oreon.core.context.BaseContext;
-import org.oreon.core.gl.light.GLDirectionalLight;
 import org.oreon.core.gl.memory.GLMeshVBO;
 import org.oreon.core.gl.scenegraph.GLRenderInfo;
 import org.oreon.core.gl.util.GLAssimpModelLoader;
@@ -28,11 +27,8 @@ public class Atmosphere extends Renderable{
 				? AtmosphericScatteringShader.getInstance() : AtmosphereShader.getInstance(),
 				new CullFaceDisable(), meshBuffer);
 		
-		GLDirectionalLight sunLight = new GLDirectionalLight();
-		
 		addComponent(NodeComponentType.MAIN_RENDERINFO, renderInfo);
 		addComponent(NodeComponentType.WIREFRAME_RENDERINFO, renderInfo);
-		addComponent(NodeComponentType.LIGHT, sunLight);
 	}
 	
 	public void render() {

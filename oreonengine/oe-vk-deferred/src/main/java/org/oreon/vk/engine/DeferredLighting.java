@@ -18,6 +18,7 @@ import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
 import org.oreon.core.context.BaseContext;
 import org.oreon.core.vk.command.CommandBuffer;
 import org.oreon.core.vk.context.VkContext;
+import org.oreon.core.vk.context.VkResources.VkDescriptorName;
 import org.oreon.core.vk.descriptor.DescriptorPool;
 import org.oreon.core.vk.descriptor.DescriptorSet;
 import org.oreon.core.vk.descriptor.DescriptorSetLayout;
@@ -105,8 +106,10 @@ public class DeferredLighting {
 		
 		descriptorSets.add(VkContext.getCamera().getDescriptorSet());
 		descriptorSets.add(descriptorSet);
+		descriptorSets.add(VkContext.getResources().getDescriptors().get(VkDescriptorName.DIRECTIONAL_LIGHT).getDescriptorSet());
 		descriptorSetLayouts.add(VkContext.getCamera().getDescriptorSetLayout());
 		descriptorSetLayouts.add(descriptorSetLayout);
+		descriptorSetLayouts.add(VkContext.getResources().getDescriptors().get(VkDescriptorName.DIRECTIONAL_LIGHT).getDescriptorSetLayout());
 		
 		int pushConstantRange = Float.BYTES * 1 + Integer.BYTES * 1;
 		pushConstants = memAlloc(pushConstantRange);

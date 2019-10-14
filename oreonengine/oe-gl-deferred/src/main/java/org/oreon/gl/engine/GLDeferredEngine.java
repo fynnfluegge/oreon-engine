@@ -10,6 +10,7 @@ import org.oreon.core.RenderEngine;
 import org.oreon.core.context.BaseContext;
 import org.oreon.core.gl.context.GLContext;
 import org.oreon.core.gl.framebuffer.GLFrameBufferObject;
+import org.oreon.core.gl.light.GLDirectionalLight;
 import org.oreon.core.gl.picking.TerrainPicking;
 import org.oreon.core.gl.shadow.ParallelSplitShadowMapsFbo;
 import org.oreon.core.gl.surface.FullScreenMultisampleQuad;
@@ -83,6 +84,8 @@ public class GLDeferredEngine extends RenderEngine{
 	public void init() {
 		
 		super.init();
+		
+		sceneGraph.addObject(new GLDirectionalLight());
 		
 		opaqueSceneRenderList = new RenderList();
 		transparencySceneRenderList = new RenderList();

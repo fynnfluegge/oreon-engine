@@ -21,9 +21,15 @@ layout(binding = 0, set = 0, std140, row_major) uniform Camera {
 	vec4 frustumPlanes[6];
 };
 
+layout (binding = 0, set = 2, std140, row_major) uniform DirectionalLight{
+	vec3 direction;
+	float intensity;
+	vec3 ambient;
+	vec3 color;
+} directional_light;
+
 layout (push_constant, std430, row_major) uniform Constants{
 	mat4 m_Projection;
-	vec3 v_Sun;
 	float r_Sun;
 	int width;
 	int height;
@@ -159,23 +165,23 @@ void main() {
 	vec3 out_LightScattering = vec3(0);
 	
     vec3 out_Color = atmosphere(
-        normalize(ray_world),        	// normalized ray direction
-        vec3(0,6372e3,0),              	// ray origin
-        constants.v_Sun,                // position of the sun
-        48.0,                           // intensity of the sun
-        6371e3,                         // radius of the planet in meters
-        6471e3,                         // radius of the atmosphere in meters
-        vec3(5.5e-6, 13.0e-6, 22.4e-6), // Rayleigh scattering coefficient
-        21e-6,                          // Mie scattering coefficient
-        8e3,                            // Rayleigh scale height
-        1.2e3,                          // Mie scale height
-        0.758                           // Mie preferred scattering direction
+        normalize(ray_world),        		// normalized ray direction
+        vec3(0,6372e3,0),              		// ray origin
+        directional_light.direction*(-1),	// position of the sun
+        48.0,                           	// intensity of the sun
+        6371e3,                         	// radius of the planet in meters
+        6471e3,                         	// radius of the atmosphere in meters
+        vec3(5.5e-6, 13.0e-6, 22.4e-6), 	// Rayleigh scattering coefficient
+        21e-6,                          	// Mie scattering coefficient
+        8e3,                            	// Rayleigh scale height
+        1.2e3,                          	// Mie scale height
+        0.758                           	// Mie preferred scattering direction
     );
 	
 	// Apply exposure.
     out_Color = 1.0 - exp(-1.0 * out_Color);
 	
-	float sunRadius = length(normalize(ray_world)- normalize(constants.v_Sun));
+	float sunRadius = length(normalize(ray_world)- normalize(directional_light.direction*(-1)));
 	
 	// no sun rendering when scene reflection
 	if(sunRadius < constants.r_Sun && constants.isReflection == 0)

@@ -10,9 +10,11 @@ import org.oreon.core.scenegraph.Camera;
 import org.oreon.core.util.BufferUtil;
 import org.oreon.core.vk.context.DeviceManager.DeviceType;
 import org.oreon.core.vk.context.VkContext;
+import org.oreon.core.vk.context.VkResources.VkDescriptorName;
 import org.oreon.core.vk.descriptor.DescriptorSet;
 import org.oreon.core.vk.descriptor.DescriptorSetLayout;
 import org.oreon.core.vk.wrapper.buffer.VkUniformBuffer;
+import org.oreon.core.vk.wrapper.descriptor.VkDescriptor;
 
 import lombok.Getter;
 
@@ -52,6 +54,8 @@ public class VkCamera extends Camera{
 	    		descriptorSetLayout.getHandlePointer());
 	    descriptorSet.updateDescriptorBuffer(uniformBuffer.getHandle(), bufferSize, 0, 0,
 	    		VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);
+	    
+	    VkContext.getResources().getDescriptors().put(VkDescriptorName.CAMERA, new VkDescriptor(descriptorSet, descriptorSetLayout));
 	}
 	
 	@Override

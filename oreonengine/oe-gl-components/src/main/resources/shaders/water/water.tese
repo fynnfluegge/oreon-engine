@@ -16,7 +16,7 @@ layout (std430, row_major, binding = 1) buffer ssbo {
 	float tessSlope;
 	float tessShift;
 	float displacementScale;
-	int largeDetailRange;
+	int highDetailRange;
 	float choppiness;
 	float kReflection;
 	float kRefraction;
