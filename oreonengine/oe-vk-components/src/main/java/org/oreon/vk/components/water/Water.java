@@ -12,7 +12,7 @@ import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 import static org.lwjgl.vulkan.VK10.VK_FILTER_LINEAR;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_D16_UNORM;
-import static org.lwjgl.vulkan.VK10.VK_FORMAT_R16G16B16A16_UNORM;
+import static org.lwjgl.vulkan.VK10.VK_FORMAT_R16G16B16A16_SFLOAT;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_R8G8B8A8_UNORM;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_ASPECT_COLOR_BIT;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
@@ -547,7 +547,7 @@ public class Water extends Renderable{
 			height = BaseContext.getConfig().getFrameHeight()/2;
 			
 			VkImageBundle albedoBuffer = new FrameBufferColorAttachment(device, memoryProperties, width, height,
-					VK_FORMAT_R16G16B16A16_UNORM, 1);
+					VK_FORMAT_R16G16B16A16_SFLOAT, 1);
 			VkImageBundle depthBuffer = new FrameBufferDepthAttachment(device, memoryProperties, width, height,
 					VK_FORMAT_D16_UNORM, 1);
 			
@@ -556,7 +556,7 @@ public class Water extends Renderable{
 			
 			renderPass = new RenderPass(device);
 			renderPass.addColorAttachment(0, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
-					VK_FORMAT_R16G16B16A16_UNORM, 1, VK_IMAGE_LAYOUT_UNDEFINED,
+					VK_FORMAT_R16G16B16A16_SFLOAT, 1, VK_IMAGE_LAYOUT_UNDEFINED,
 					VK_IMAGE_LAYOUT_GENERAL);
 			renderPass.addDepthAttachment(1, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL,
 					VK_FORMAT_D16_UNORM, 1, VK_IMAGE_LAYOUT_UNDEFINED,
