@@ -7,21 +7,32 @@ layout (binding = 1, rgba16f) uniform writeonly image2D horizontalBloomBlurImage
 layout (binding = 2, rgba16f) uniform writeonly image2D horizontalBloomBlurImage2;
 layout (binding = 3, rgba16f) uniform writeonly image2D horizontalBloomBlurImage3;
 
-uniform sampler2D sceneBrightnessSampler;
-uniform float width0;
-uniform float height0;
-uniform float width1;
-uniform float height1;
-uniform float width2;
-uniform float height2;
-uniform float width3;
-uniform float height3;
+uniform sampler2D sceneBrightnessSampler0;
+uniform sampler2D sceneBrightnessSampler1;
+uniform sampler2D sceneBrightnessSampler2;
+uniform sampler2D sceneBrightnessSampler3;
+
+layout (std430, binding = 1) buffer indices {
+	float widthDiv0;
+	float heightDiv0;
+	float widthDiv1;
+	float heightDiv1;
+	float widthDiv2;
+	float heightDiv2;
+	float widthDiv3;
+	float heightDiv3;
+	float div0;
+	float div1;
+	float div2;
+	float div3;
+} ssbo;
 
 const float gaussianKernel7_sigma2[7] = float[7](0.071303,0.131514,0.189879,0.214607,0.189879,0.131514,0.071303);
 const float gaussianKernel9_sigma3[9] = float[9](0.063327,0.093095,0.122589,0.144599,0.152781,0.144599,0.122589,0.093095,0.063327);
 const float gaussianKernel9_sigma4[9] = float[9](0.081812,0.101701,0.118804,0.130417,0.134535,0.130417,0.118804,0.101701,0.081812);
 const float gaussianKernel9_sigma2[9] = float[9](0.028532,0.067234,0.124009,0.179044,0.20236,0.179044,0.124009,0.067234,0.028532);
 const float gaussianKernel9_sigma1[9] = float[9](0.000229,0.005977,0.060598,0.241732,0.382928,0.241732,0.060598,0.005977,0.000229);
+
 
 void main(void){
 
@@ -36,25 +47,38 @@ void main(void){
 	vec3 color3 = vec3(0);
 	
 	for (int i=0; i<9; i++){
-		uvOffset = vec2((i-3.5),0.5);
-		tmpUv = uv + uvOffset;
-		color0 += texture(sceneBrightnessSampler, vec2(tmpUv.x/width0, tmpUv.y/height0)).rgb * gaussianKernel9_sigma2[i];
 		
-		uvOffset = vec2((i-3.5),0.5);
-		tmpUv = uv + uvOffset;
-		color1 += texture(sceneBrightnessSampler, vec2(tmpUv.x/width1, tmpUv.y/height1)).rgb * gaussianKernel9_sigma2[i];
+		if (computeCoord.x <= ssbo.widthDiv0 && computeCoord.y <= ssbo.heightDiv0){
+			uvOffset = vec2((i-3.5),0.5);
+			tmpUv = uv + uvOffset;
+			color0 += texture(sceneBrightnessSampler0, vec2(tmpUv.x/ssbo.widthDiv0, tmpUv.y/ssbo.heightDiv0)).rgb * gaussianKernel9_sigma2[i];
+		}
 		
-		uvOffset = vec2((i-3.5),0.5);
-		tmpUv = uv + uvOffset;
-		color2 += texture(sceneBrightnessSampler, vec2(tmpUv.x/width2, tmpUv.y/height2)).rgb * gaussianKernel9_sigma2[i];
+		if (computeCoord.x <= ssbo.widthDiv1 && computeCoord.y <= ssbo.heightDiv1){
+			uvOffset = vec2((i-3.5),0.5);
+			tmpUv = uv + uvOffset;
+			color1 += texture(sceneBrightnessSampler1, vec2(tmpUv.x/ssbo.widthDiv1, tmpUv.y/ssbo.heightDiv1)).rgb * gaussianKernel9_sigma2[i];
+		}
 		
-		uvOffset = vec2((i-3.5),0.5);
-		tmpUv = uv + uvOffset;
-		color3 += texture(sceneBrightnessSampler, vec2(tmpUv.x/width3, tmpUv.y/height3)).rgb * gaussianKernel9_sigma2[i];
+		if (computeCoord.x <= ssbo.widthDiv2 && computeCoord.y <= ssbo.heightDiv2){
+			uvOffset = vec2((i-3.5),0.5);
+			tmpUv = uv + uvOffset;
+			color2 += texture(sceneBrightnessSampler2, vec2(tmpUv.x/ssbo.widthDiv2, tmpUv.y/ssbo.heightDiv2)).rgb * gaussianKernel9_sigma2[i];
+		}
+		
+		if (computeCoord.x <= ssbo.widthDiv3 && computeCoord.y <= ssbo.heightDiv3){
+			uvOffset = vec2((i-3.5),0.5);
+			tmpUv = uv + uvOffset;
+			color3 += texture(sceneBrightnessSampler3, vec2(tmpUv.x/ssbo.widthDiv3, tmpUv.y/ssbo.heightDiv3)).rgb * gaussianKernel9_sigma2[i];
+		}
 	}
 
-	imageStore(horizontalBloomBlurImage0, computeCoord, vec4(color0, 1.0));
-	imageStore(horizontalBloomBlurImage1, computeCoord, vec4(color1, 1.0));
-	imageStore(horizontalBloomBlurImage2, computeCoord, vec4(color2, 1.0));
-	imageStore(horizontalBloomBlurImage3, computeCoord, vec4(color3, 1.0));
+	if (computeCoord.x <= ssbo.widthDiv0 && computeCoord.y <= ssbo.heightDiv0)
+		imageStore(horizontalBloomBlurImage0, computeCoord, vec4(color0, 1.0));
+	if (computeCoord.x <= ssbo.widthDiv1 && computeCoord.y <= ssbo.heightDiv1)
+		imageStore(horizontalBloomBlurImage1, computeCoord, vec4(color1, 1.0));
+	if (computeCoord.x <= ssbo.widthDiv2 && computeCoord.y <= ssbo.heightDiv2)
+		imageStore(horizontalBloomBlurImage2, computeCoord, vec4(color2, 1.0));
+	if (computeCoord.x <= ssbo.widthDiv3 && computeCoord.y <= ssbo.heightDiv3)
+		imageStore(horizontalBloomBlurImage3, computeCoord, vec4(color3, 1.0));
 }

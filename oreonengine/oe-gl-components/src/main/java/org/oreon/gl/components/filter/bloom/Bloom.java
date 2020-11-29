@@ -8,6 +8,7 @@ import static org.lwjgl.opengl.GL42.glBindImageTexture;
 import static org.lwjgl.opengl.GL43.glDispatchCompute;
 
 import org.oreon.core.context.BaseContext;
+import org.oreon.core.gl.memory.GLShaderStorageBuffer;
 import org.oreon.core.gl.texture.GLTexture;
 import org.oreon.core.gl.wrapper.texture.TextureImage2D;
 import org.oreon.core.image.Image.ImageFormat;
@@ -19,18 +20,25 @@ import lombok.Getter;
 @Getter
 public class Bloom {
 
-	@Getter
 	private GLTexture bloomSceneTexture;
 	
-	private GLTexture sceneBrightnessTexture;
+	private GLTexture sceneBrightnessTextureDownsampled0;
+	private GLTexture sceneBrightnessTextureDownsampled1;
+	private GLTexture sceneBrightnessTextureDownsampled2;
+	private GLTexture sceneBrightnessTextureDownsampled3;
+	
 	private GLTexture horizontalBloomBlurDownsampling0;
 	private GLTexture verticalBloomBlurDownsampling0;
+	
 	private GLTexture horizontalBloomBlurDownsampling1;
 	private GLTexture verticalBloomBlurDownsampling1;
+	
 	private GLTexture horizontalBloomBlurDownsampling2;
 	private GLTexture verticalBloomBlurDownsampling2;
+	
 	private GLTexture horizontalBloomBlurDownsampling3;
 	private GLTexture verticalBloomBlurDownsampling3;
+	
 	private GLTexture additiveBlendBloomTexture;
 	
 	private SceneBrightnessShader sceneBrightnessShader;
@@ -38,6 +46,8 @@ public class Bloom {
 	private BloomVerticalBlurShader verticalBlurShader;
 	private BloomSceneBlendingShader bloomSceneShader;
 	private BloomAdditiveBlendShader additiveBlendShader;
+	
+	private GLShaderStorageBuffer ssbo;
 	
 	private final int[] downsamplingFactors = {2,4,8,12};
 	
@@ -49,8 +59,23 @@ public class Bloom {
 		verticalBlurShader = BloomVerticalBlurShader.getInstance();
 		bloomSceneShader = BloomSceneBlendingShader.getInstance();
 		
-		sceneBrightnessTexture = new TextureImage2D(BaseContext.getConfig().getFrameWidth(),
+		ssbo = new GLShaderStorageBuffer();
+		ssbo.addData(initSsbo());
+		
+		sceneBrightnessTextureDownsampled0 = new TextureImage2D(BaseContext.getConfig().getFrameWidth(),
 				BaseContext.getConfig().getFrameHeight(), ImageFormat.RGBA16FLOAT,
+				SamplerFilter.Bilinear, TextureWrapMode.ClampToEdge);
+		
+		sceneBrightnessTextureDownsampled1 = new TextureImage2D(BaseContext.getConfig().getFrameWidth()/downsamplingFactors[1],
+				BaseContext.getConfig().getFrameHeight()/downsamplingFactors[1], ImageFormat.RGBA16FLOAT,
+				SamplerFilter.Bilinear, TextureWrapMode.ClampToEdge); 
+		
+		sceneBrightnessTextureDownsampled2 = new TextureImage2D(BaseContext.getConfig().getFrameWidth()/downsamplingFactors[2],
+				BaseContext.getConfig().getFrameHeight()/downsamplingFactors[2], ImageFormat.RGBA16FLOAT,
+				SamplerFilter.Bilinear, TextureWrapMode.ClampToEdge); 
+		
+		sceneBrightnessTextureDownsampled3 = new TextureImage2D(BaseContext.getConfig().getFrameWidth()/downsamplingFactors[3],
+				BaseContext.getConfig().getFrameHeight()/downsamplingFactors[3], ImageFormat.RGBA16FLOAT,
 				SamplerFilter.Bilinear, TextureWrapMode.ClampToEdge); 
 		
 		additiveBlendBloomTexture = new TextureImage2D(BaseContext.getConfig().getFrameWidth(),
@@ -87,7 +112,7 @@ public class Bloom {
 		
 		horizontalBloomBlurDownsampling3 = new TextureImage2D(BaseContext.getConfig().getFrameWidth()/downsamplingFactors[3],
 				BaseContext.getConfig().getFrameHeight()/downsamplingFactors[3], ImageFormat.RGBA16FLOAT,
-				SamplerFilter.Nearest, TextureWrapMode.ClampToEdge);
+				SamplerFilter.Bilinear, TextureWrapMode.ClampToEdge);
 		
 		verticalBloomBlurDownsampling3 = new TextureImage2D(BaseContext.getConfig().getFrameWidth()/downsamplingFactors[3],
 				BaseContext.getConfig().getFrameHeight()/downsamplingFactors[3], ImageFormat.RGBA16FLOAT,
@@ -96,10 +121,15 @@ public class Bloom {
 	
 	public void render(GLTexture sceneSamplerPrePostprocessing, GLTexture sceneSampler, GLTexture specular_emission_bloom_attachment) {
 		
+		ssbo.bindBufferBase(1);
+		
 		glFinish();
 		sceneBrightnessShader.bind();
 		glBindImageTexture(0, sceneSamplerPrePostprocessing.getHandle(), 0, false, 0, GL_READ_ONLY, GL_RGBA16F);
-		glBindImageTexture(1, sceneBrightnessTexture.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
+		glBindImageTexture(1, sceneBrightnessTextureDownsampled0.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
+		glBindImageTexture(2, sceneBrightnessTextureDownsampled1.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
+		glBindImageTexture(3, sceneBrightnessTextureDownsampled2.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
+		glBindImageTexture(4, sceneBrightnessTextureDownsampled3.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
 		glDispatchCompute(BaseContext.getConfig().getFrameWidth()/8, BaseContext.getConfig().getFrameHeight()/8, 1);	
 		glFinish();
 		
@@ -108,11 +138,11 @@ public class Bloom {
 		glBindImageTexture(1, horizontalBloomBlurDownsampling1.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
 		glBindImageTexture(2, horizontalBloomBlurDownsampling2.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
 		glBindImageTexture(3, horizontalBloomBlurDownsampling3.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
-		horizontalBlurShader.updateUniforms(sceneBrightnessTexture,
-				BaseContext.getConfig().getFrameWidth()/downsamplingFactors[0], BaseContext.getConfig().getFrameHeight()/downsamplingFactors[0],
-				BaseContext.getConfig().getFrameWidth()/downsamplingFactors[1], BaseContext.getConfig().getFrameHeight()/downsamplingFactors[1],
-				BaseContext.getConfig().getFrameWidth()/downsamplingFactors[2], BaseContext.getConfig().getFrameHeight()/downsamplingFactors[2],
-				BaseContext.getConfig().getFrameWidth()/downsamplingFactors[3], BaseContext.getConfig().getFrameHeight()/downsamplingFactors[3]);
+		glBindImageTexture(4, sceneBrightnessTextureDownsampled0.getHandle(), 0, false, 0, GL_READ_ONLY, GL_RGBA16F);
+		horizontalBlurShader.updateUniforms(sceneBrightnessTextureDownsampled0,
+				sceneBrightnessTextureDownsampled1,
+				sceneBrightnessTextureDownsampled2,
+				sceneBrightnessTextureDownsampled3);
 		glDispatchCompute(BaseContext.getConfig().getFrameWidth()/16, BaseContext.getConfig().getFrameHeight()/16, 1);	
 		glFinish();
 		
@@ -142,6 +172,26 @@ public class Bloom {
 		glBindImageTexture(3, bloomSceneTexture.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
 		glDispatchCompute(BaseContext.getConfig().getFrameWidth()/8, BaseContext.getConfig().getFrameHeight()/8, 1);	
 		glFinish();
+	}
+	
+	private float[] initSsbo()
+	{
+		float[] buffer = new float[12];
+		
+		buffer[0] = BaseContext.getConfig().getFrameWidth()/downsamplingFactors[0];
+		buffer[1] = BaseContext.getConfig().getFrameHeight()/downsamplingFactors[0];
+		buffer[2] = BaseContext.getConfig().getFrameWidth()/downsamplingFactors[1];
+		buffer[3] = BaseContext.getConfig().getFrameHeight()/downsamplingFactors[1];
+		buffer[4] = BaseContext.getConfig().getFrameWidth()/downsamplingFactors[2];
+		buffer[5] = BaseContext.getConfig().getFrameHeight()/downsamplingFactors[2];
+		buffer[6] = BaseContext.getConfig().getFrameWidth()/downsamplingFactors[3];
+		buffer[7] = BaseContext.getConfig().getFrameHeight()/downsamplingFactors[3];
+		buffer[8] = downsamplingFactors[0];
+		buffer[9] = downsamplingFactors[1];
+		buffer[10] = downsamplingFactors[2];
+		buffer[11] = downsamplingFactors[3];
+		
+		return buffer;
 	}
 	
 }

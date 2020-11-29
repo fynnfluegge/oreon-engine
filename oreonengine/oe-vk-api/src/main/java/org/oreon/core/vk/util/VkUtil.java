@@ -50,9 +50,9 @@ import org.oreon.core.vk.command.CommandBuffer;
 import org.oreon.core.vk.descriptor.DescriptorSet;
 import org.oreon.core.vk.descriptor.DescriptorSetLayout;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
-@Log4j
+@Log4j2
 public class VkUtil {
 	
 	public static void vkCheckResult(int err){

@@ -37,6 +37,12 @@ public class GLShaderStorageBuffer {
 		glBufferData(GL_SHADER_STORAGE_BUFFER, BufferUtil.createFlippedBuffer(data), GL_STATIC_READ);
 	}
 	
+	public void addData(float[] data)
+	{
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
+		glBufferData(GL_SHADER_STORAGE_BUFFER, BufferUtil.createFlippedBuffer(data), GL_STATIC_READ);
+	}
+	
 	public void addData(ByteBuffer data)
 	{
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);

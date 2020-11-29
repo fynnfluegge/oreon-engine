@@ -1,6 +1,9 @@
 package org.oreon.gl.components.filter.bloom;
 
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE2;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE3;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import org.oreon.core.gl.pipeline.GLShaderProgram;
@@ -28,30 +31,26 @@ public class BloomHorizontalBlurShader extends GLShaderProgram{
 		
 		compileShader();
 		
-		addUniform("sceneBrightnessSampler");
-		addUniform("width0");
-		addUniform("height0");
-		addUniform("width1");
-		addUniform("height1");
-		addUniform("width2");
-		addUniform("height2");
-		addUniform("width3");
-		addUniform("height3");
+		addUniform("sceneBrightnessSampler0");
+		addUniform("sceneBrightnessSampler1");
+		addUniform("sceneBrightnessSampler2");
+		addUniform("sceneBrightnessSampler3");
 	}
 	
-	public void updateUniforms(GLTexture sceneBrightnessSampler, 
-			int width0, int height0, int width1, int height1, int width2, int height2, int width3, int height3)
+	public void updateUniforms(GLTexture sceneBrightnessSampler0, GLTexture sceneBrightnessSampler1,
+			GLTexture sceneBrightnessSampler2, GLTexture sceneBrightnessSampler3)
 	{
 		glActiveTexture(GL_TEXTURE0);
-		sceneBrightnessSampler.bind();
-		setUniformi("sceneBrightnessSampler", 0);
-		setUniformf("width0", width0);
-		setUniformf("height0", height0);
-		setUniformf("width1", width1);
-		setUniformf("height1", height1);
-		setUniformf("width2", width2);
-		setUniformf("height2", height2);
-		setUniformf("width3", width3);
-		setUniformf("height3", height3);
+		sceneBrightnessSampler0.bind();
+		setUniformi("sceneBrightnessSampler0", 0);
+		glActiveTexture(GL_TEXTURE1);
+		sceneBrightnessSampler1.bind();
+		setUniformi("sceneBrightnessSampler1", 1);
+		glActiveTexture(GL_TEXTURE2);
+		sceneBrightnessSampler2.bind();
+		setUniformi("sceneBrightnessSampler2", 2);
+		glActiveTexture(GL_TEXTURE3);
+		sceneBrightnessSampler3.bind();
+		setUniformi("sceneBrightnessSampler3", 3);
 	}
 }
