@@ -22,7 +22,7 @@ public class Bloom {
 
 	private GLTexture bloomSceneTexture;
 	
-	private GLTexture sceneBrightnessTextureDownsampled0;
+	private GLTexture sceneBrightnessTexture;
 	private GLTexture sceneBrightnessTextureDownsampled1;
 	private GLTexture sceneBrightnessTextureDownsampled2;
 	private GLTexture sceneBrightnessTextureDownsampled3;
@@ -62,7 +62,7 @@ public class Bloom {
 		ssbo = new GLShaderStorageBuffer();
 		ssbo.addData(initSsbo());
 		
-		sceneBrightnessTextureDownsampled0 = new TextureImage2D(BaseContext.getConfig().getFrameWidth(),
+		sceneBrightnessTexture = new TextureImage2D(BaseContext.getConfig().getFrameWidth(),
 				BaseContext.getConfig().getFrameHeight(), ImageFormat.RGBA16FLOAT,
 				SamplerFilter.Bilinear, TextureWrapMode.ClampToEdge);
 		
@@ -126,7 +126,7 @@ public class Bloom {
 		glFinish();
 		sceneBrightnessShader.bind();
 		glBindImageTexture(0, sceneSamplerPrePostprocessing.getHandle(), 0, false, 0, GL_READ_ONLY, GL_RGBA16F);
-		glBindImageTexture(1, sceneBrightnessTextureDownsampled0.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
+		glBindImageTexture(1, sceneBrightnessTexture.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
 		glBindImageTexture(2, sceneBrightnessTextureDownsampled1.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
 		glBindImageTexture(3, sceneBrightnessTextureDownsampled2.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
 		glBindImageTexture(4, sceneBrightnessTextureDownsampled3.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
@@ -138,8 +138,8 @@ public class Bloom {
 		glBindImageTexture(1, horizontalBloomBlurDownsampling1.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
 		glBindImageTexture(2, horizontalBloomBlurDownsampling2.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
 		glBindImageTexture(3, horizontalBloomBlurDownsampling3.getHandle(), 0, false, 0, GL_WRITE_ONLY, GL_RGBA16F);
-		glBindImageTexture(4, sceneBrightnessTextureDownsampled0.getHandle(), 0, false, 0, GL_READ_ONLY, GL_RGBA16F);
-		horizontalBlurShader.updateUniforms(sceneBrightnessTextureDownsampled0,
+		glBindImageTexture(4, sceneBrightnessTexture.getHandle(), 0, false, 0, GL_READ_ONLY, GL_RGBA16F);
+		horizontalBlurShader.updateUniforms(sceneBrightnessTexture,
 				sceneBrightnessTextureDownsampled1,
 				sceneBrightnessTextureDownsampled2,
 				sceneBrightnessTextureDownsampled3);

@@ -48,6 +48,9 @@ public class Bloom {
 	private VkImageBundle bloomSceneImageBundle;
 	private VkImageBundle additiveBlendImageBundle;
 	private VkImageBundle sceneBrightnessImageBundle;
+	private VkImageBundle sceneBrightnessImageBundle_div4;
+	private VkImageBundle sceneBrightnessImageBundle_div8;
+	private VkImageBundle sceneBrightnessImageBundle_div16;
 	private VkImageBundle horizontalBloomBlurImageBundle_div2;
 	private VkImageBundle horizontalBloomBlurImageBundle_div4;
 	private VkImageBundle horizontalBloomBlurImageBundle_div8;
@@ -127,6 +130,7 @@ public class Bloom {
 	private DescriptorSetLayout bloomSceneDescriptorSetLayout;
 	private List<DescriptorSet> bloomSceneDescriptorSets;
 	
+	private ByteBuffer pushConstants_brightness;
 	private ByteBuffer pushConstants_blend;
 	private ByteBuffer pushConstants_div2;
 	private ByteBuffer pushConstants_div4;
@@ -161,6 +165,21 @@ public class Bloom {
 		ShaderModule bloomSceneShader = new ComputeShader(device,
 				"shaders/filter/bloom/bloomScene.comp.spv");
 		
+		pushConstants_brightness = pushConstants_blend = memAlloc(Float.BYTES * 12);
+		pushConstants_brightness.putFloat(width);
+		pushConstants_brightness.putFloat(height);
+		pushConstants_brightness.putFloat(width/4.0f);
+		pushConstants_brightness.putFloat(height/4.0f);
+		pushConstants_brightness.putFloat(width/8.0f);
+		pushConstants_brightness.putFloat(height/8.0f);
+		pushConstants_brightness.putFloat(width/16.0f);
+		pushConstants_brightness.putFloat(height/16.0f);
+		pushConstants_brightness.putFloat(2);
+		pushConstants_brightness.putFloat(4);
+		pushConstants_brightness.putFloat(8);
+		pushConstants_brightness.putFloat(16);
+		pushConstants_brightness.flip();
+		
 		int pushConstantRange = Float.BYTES * 2;
 		pushConstants_blend = memAlloc(pushConstantRange);
 		pushConstants_blend.putFloat(width);
@@ -189,10 +208,16 @@ public class Bloom {
 		
 		// scene brightness
 		
-		sceneBrightnessDescriptorSetLayout = new DescriptorSetLayout(device, 2);
+		sceneBrightnessDescriptorSetLayout = new DescriptorSetLayout(device, 5);
 		sceneBrightnessDescriptorSetLayout.addLayoutBinding(0, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
 	    		VK_SHADER_STAGE_COMPUTE_BIT);
 		sceneBrightnessDescriptorSetLayout.addLayoutBinding(1, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
+	    		VK_SHADER_STAGE_COMPUTE_BIT);
+		sceneBrightnessDescriptorSetLayout.addLayoutBinding(2, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
+	    		VK_SHADER_STAGE_COMPUTE_BIT);
+		sceneBrightnessDescriptorSetLayout.addLayoutBinding(3, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
+	    		VK_SHADER_STAGE_COMPUTE_BIT);
+		sceneBrightnessDescriptorSetLayout.addLayoutBinding(4, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
 	    		VK_SHADER_STAGE_COMPUTE_BIT);
 		sceneBrightnessDescriptorSetLayout.create();
 		
@@ -205,6 +230,18 @@ public class Bloom {
 		sceneBrightnessDescriptorSet.updateDescriptorImageBuffer(
 				sceneBrightnessImageBundle.getImageView().getHandle(),
 				VK_IMAGE_LAYOUT_GENERAL, -1, 1,
+				VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
+		sceneBrightnessDescriptorSet.updateDescriptorImageBuffer(
+				sceneBrightnessImageBundle_div4.getImageView().getHandle(),
+				VK_IMAGE_LAYOUT_GENERAL, -1, 2,
+				VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
+		sceneBrightnessDescriptorSet.updateDescriptorImageBuffer(
+				sceneBrightnessImageBundle_div8.getImageView().getHandle(),
+				VK_IMAGE_LAYOUT_GENERAL, -1, 3,
+				VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
+		sceneBrightnessDescriptorSet.updateDescriptorImageBuffer(
+				sceneBrightnessImageBundle_div16.getImageView().getHandle(),
+				VK_IMAGE_LAYOUT_GENERAL, -1, 4,
 				VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
 		
 		sceneBrightnessDescriptorSets = new ArrayList<DescriptorSet>();
@@ -266,8 +303,8 @@ public class Bloom {
 		    	VK_IMAGE_LAYOUT_GENERAL, -1, 0,
 		    	VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
 		horizontalBlurDescriptorSet_div4.updateDescriptorImageBuffer(
-				sceneBrightnessImageBundle.getImageView().getHandle(),
-				VK_IMAGE_LAYOUT_GENERAL, sceneBrightnessImageBundle.getSampler().getHandle(), 1,
+				sceneBrightnessImageBundle_div4.getImageView().getHandle(),
+				VK_IMAGE_LAYOUT_GENERAL, sceneBrightnessImageBundle_div4.getSampler().getHandle(), 1,
 				VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
 		
 		horizontalBlurDescriptorSets_div4 = new ArrayList<DescriptorSet>();
@@ -297,8 +334,8 @@ public class Bloom {
 		    	VK_IMAGE_LAYOUT_GENERAL, -1, 0,
 		    	VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
 		horizontalBlurDescriptorSet_div8.updateDescriptorImageBuffer(
-				sceneBrightnessImageBundle.getImageView().getHandle(),
-				VK_IMAGE_LAYOUT_GENERAL, sceneBrightnessImageBundle.getSampler().getHandle(), 1,
+				sceneBrightnessImageBundle_div8.getImageView().getHandle(),
+				VK_IMAGE_LAYOUT_GENERAL, sceneBrightnessImageBundle_div8.getSampler().getHandle(), 1,
 				VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
 		
 		horizontalBlurDescriptorSets_div8 = new ArrayList<DescriptorSet>();
@@ -328,8 +365,8 @@ public class Bloom {
 		    	VK_IMAGE_LAYOUT_GENERAL, -1, 0,
 		    	VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
 		horizontalBlurDescriptorSet_div16.updateDescriptorImageBuffer(
-				sceneBrightnessImageBundle.getImageView().getHandle(),
-				VK_IMAGE_LAYOUT_GENERAL, sceneBrightnessImageBundle.getSampler().getHandle(), 1,
+				sceneBrightnessImageBundle_div16.getImageView().getHandle(),
+				VK_IMAGE_LAYOUT_GENERAL, sceneBrightnessImageBundle_div16.getSampler().getHandle(), 1,
 				VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
 		
 		horizontalBlurDescriptorSets_div16 = new ArrayList<DescriptorSet>();
@@ -577,6 +614,8 @@ public class Bloom {
 	public void record(CommandBuffer commandBuffer){
 		
 		// scene luminance
+		commandBuffer.pushConstantsCmd(sceneBrightnessPipeline.getLayoutHandle(),
+				VK_SHADER_STAGE_COMPUTE_BIT, pushConstants_brightness);
 		commandBuffer.bindComputePipelineCmd(sceneBrightnessPipeline.getHandle());
 		commandBuffer.bindComputeDescriptorSetsCmd(sceneBrightnessPipeline.getLayoutHandle(),
 				VkUtil.createLongArray(sceneBrightnessDescriptorSets));
@@ -690,6 +729,16 @@ public class Bloom {
 		
 		bloomSceneImageBundle = new VkImageBundle(bloomSceneImage, bloomSceneImageView);
 		
+		VkImage additiveBlendImage = new Image2DDeviceLocal(device, memoryProperties, 
+				width, height, VK_FORMAT_R16G16B16A16_SFLOAT, VK_IMAGE_USAGE_STORAGE_BIT
+				| VK_IMAGE_USAGE_SAMPLED_BIT);
+		VkImageView additiveBlendImageView = new VkImageView(device,
+				VK_FORMAT_R16G16B16A16_SFLOAT, additiveBlendImage.getHandle(), VK_IMAGE_ASPECT_COLOR_BIT);
+		
+		additiveBlendImageBundle = new VkImageBundle(additiveBlendImage, additiveBlendImageView);
+		
+		// brightness images
+		
 		VkImage sceneBrightnessImage = new Image2DDeviceLocal(device, memoryProperties, 
 				width, height, VK_FORMAT_R16G16B16A16_SFLOAT, VK_IMAGE_USAGE_STORAGE_BIT
 				| VK_IMAGE_USAGE_SAMPLED_BIT);
@@ -702,13 +751,42 @@ public class Bloom {
 		sceneBrightnessImageBundle = new VkImageBundle(sceneBrightnessImage, sceneBrightnessImageView,
 				brightnessSampler);
 		
-		VkImage additiveBlendImage = new Image2DDeviceLocal(device, memoryProperties, 
-				width, height, VK_FORMAT_R16G16B16A16_SFLOAT, VK_IMAGE_USAGE_STORAGE_BIT
+		VkImage sceneBrightnessImage_div4 = new Image2DDeviceLocal(device, memoryProperties, 
+				(int) (width/4.0f), (int) (height/4.0f), VK_FORMAT_R16G16B16A16_SFLOAT, VK_IMAGE_USAGE_STORAGE_BIT
 				| VK_IMAGE_USAGE_SAMPLED_BIT);
-		VkImageView additiveBlendImageView = new VkImageView(device,
-				VK_FORMAT_R16G16B16A16_SFLOAT, additiveBlendImage.getHandle(), VK_IMAGE_ASPECT_COLOR_BIT);
+		VkImageView sceneBrightnessImageView_div4 = new VkImageView(device,
+				VK_FORMAT_R16G16B16A16_SFLOAT, sceneBrightnessImage_div4.getHandle(), VK_IMAGE_ASPECT_COLOR_BIT);
 		
-		additiveBlendImageBundle = new VkImageBundle(additiveBlendImage, additiveBlendImageView);
+		VkSampler brightnessSampler_div4 = new VkSampler(device, VK_FILTER_LINEAR,
+				false, 0, VK_SAMPLER_MIPMAP_MODE_LINEAR, 0, VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE);
+		
+		sceneBrightnessImageBundle_div4 = new VkImageBundle(sceneBrightnessImage_div4, sceneBrightnessImageView_div4,
+				brightnessSampler_div4);
+		
+		VkImage sceneBrightnessImage_div8 = new Image2DDeviceLocal(device, memoryProperties, 
+				(int) (width/8.0f), (int) (height/8.0f), VK_FORMAT_R16G16B16A16_SFLOAT, VK_IMAGE_USAGE_STORAGE_BIT
+				| VK_IMAGE_USAGE_SAMPLED_BIT);
+		VkImageView sceneBrightnessImageView_div8 = new VkImageView(device,
+				VK_FORMAT_R16G16B16A16_SFLOAT, sceneBrightnessImage_div8.getHandle(), VK_IMAGE_ASPECT_COLOR_BIT);
+		
+		VkSampler brightnessSampler_div8 = new VkSampler(device, VK_FILTER_LINEAR,
+				false, 0, VK_SAMPLER_MIPMAP_MODE_LINEAR, 0, VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE);
+		
+		sceneBrightnessImageBundle_div8 = new VkImageBundle(sceneBrightnessImage_div8, sceneBrightnessImageView_div8,
+				brightnessSampler_div8);
+		
+		VkImage sceneBrightnessImage_div16 = new Image2DDeviceLocal(device, memoryProperties, 
+				(int) (width/16.0f), (int) (height/16.0f), VK_FORMAT_R16G16B16A16_SFLOAT, VK_IMAGE_USAGE_STORAGE_BIT
+				| VK_IMAGE_USAGE_SAMPLED_BIT);
+		VkImageView sceneBrightnessImageView_div16 = new VkImageView(device,
+				VK_FORMAT_R16G16B16A16_SFLOAT, sceneBrightnessImage_div16.getHandle(), VK_IMAGE_ASPECT_COLOR_BIT);
+		
+		VkSampler brightnessSampler_div16 = new VkSampler(device, VK_FILTER_LINEAR,
+				false, 0, VK_SAMPLER_MIPMAP_MODE_LINEAR, 0, VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE);
+		
+		sceneBrightnessImageBundle_div16 = new VkImageBundle(sceneBrightnessImage_div16, sceneBrightnessImageView_div16,
+				brightnessSampler_div16);
+		
 		
 		// horizontal Bloom Blur images
 		
