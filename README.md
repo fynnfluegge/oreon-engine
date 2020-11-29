@@ -31,14 +31,14 @@ OpenGL and Vulkan Binding for Java is done  [LWJGL 3](https://www.lwjgl.org/).
 ## Features
 ### Deferred rendering pipeline with 2x to 8x MSAA and FXAA
 <p float="left">
-  <img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/0010.png" width="290" />
-  <img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/0011.png" width="290" /> 
-  <img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/0012.png" width="290" />
+  <img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/0010.png" width="250" />
+  <img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/0011.png" width="250" /> 
+  <img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/0012.png" width="250" />
 </p>
 <p float="left">
-  <img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/0013.png" width="290" />
-  <img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/0014.png" width="290" /> 
-  <img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/0015.png" width="290" />
+  <img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/0013.png" width="250" />
+  <img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/0014.png" width="250" /> 
+  <img src="https://github.com/fynnfluegge/oreon-engine-creative/blob/master/images/0015.png" width="250" />
 </p>
 
 ### Diamond Square Terrain Quadtree 
