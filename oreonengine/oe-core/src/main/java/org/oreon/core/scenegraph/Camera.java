@@ -33,7 +33,7 @@ private final Vec3f yAxis = new Vec3f(0,1,0);
 	private Vec3f previousForward;
 	private Vec3f up;
 	private float movAmt = 8.0f;
-	private float rotAmt = 12.0f;
+	private float rotAmt = 1.0f;
 	private Matrix4f projectionMatrix;
 	private Matrix4f viewMatrix;
 	private Matrix4f viewProjectionMatrix;

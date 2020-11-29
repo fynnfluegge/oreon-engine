@@ -9,9 +9,9 @@ import org.oreon.core.gl.scenegraph.GLCamera;
 import org.oreon.core.gl.util.GLUtil;
 
 import lombok.Getter;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
-@Log4j
+@Log4j2
 public class GLContext extends BaseContext{
 	
 	@Getter

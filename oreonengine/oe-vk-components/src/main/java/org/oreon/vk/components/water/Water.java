@@ -12,7 +12,7 @@ import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 import static org.lwjgl.vulkan.VK10.VK_FILTER_LINEAR;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_D16_UNORM;
-import static org.lwjgl.vulkan.VK10.VK_FORMAT_R16G16B16A16_UNORM;
+import static org.lwjgl.vulkan.VK10.VK_FORMAT_R16G16B16A16_SFLOAT;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_R8G8B8A8_UNORM;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_ASPECT_COLOR_BIT;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
@@ -306,7 +306,8 @@ public class Water extends Renderable{
 				device.getTransferQueue(),
 				vertexBuffer, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
 		
-		int pushConstantsRange = Float.BYTES * 35 + Integer.BYTES * 6;
+		int pushConstantsRange = Float.BYTES * 35 + Integer.BYTES * 6
+				+ /*offset, since some devices casuing errors*/ + Float.BYTES;
 		
 		ByteBuffer pushConstants = memAlloc(pushConstantsRange);
 		pushConstants.put(BufferUtil.createByteBuffer(getWorldTransform().getWorldMatrix()));
@@ -380,10 +381,10 @@ public class Water extends Renderable{
 	    		pushConstants, VK_SHADER_STAGE_ALL_GRAPHICS);
 		
 		offscreenReflectionCmdBuffer = new PrimaryCmdBuffer(device.getHandle(), 
-				device.getComputeCommandPool(Thread.currentThread().getId()).getHandle());
+				device.getGraphicsCommandPool(Thread.currentThread().getId()).getHandle());
 		
 		offscreenRefractionCmdBuffer = new PrimaryCmdBuffer(device.getHandle(), 
-				device.getComputeCommandPool(Thread.currentThread().getId()).getHandle());
+				device.getGraphicsCommandPool(Thread.currentThread().getId()).getHandle());
 
 		reflectionFence = new Fence(device.getHandle());
 		refractionFence = new Fence(device.getHandle());
@@ -546,24 +547,18 @@ public class Water extends Renderable{
 			height = BaseContext.getConfig().getFrameHeight()/2;
 			
 			VkImageBundle albedoBuffer = new FrameBufferColorAttachment(device, memoryProperties, width, height,
-					VK_FORMAT_R8G8B8A8_UNORM, 1);
-			VkImageBundle normalBuffer = new FrameBufferColorAttachment(device, memoryProperties, width, height, 
-					VK_FORMAT_R16G16B16A16_UNORM, 1);
+					VK_FORMAT_R16G16B16A16_SFLOAT, 1);
 			VkImageBundle depthBuffer = new FrameBufferDepthAttachment(device, memoryProperties, width, height,
 					VK_FORMAT_D16_UNORM, 1);
 			
 			attachments.put(Attachment.COLOR, albedoBuffer);
-			attachments.put(Attachment.NORMAL, normalBuffer);
 			attachments.put(Attachment.DEPTH, depthBuffer);
 			
 			renderPass = new RenderPass(device);
 			renderPass.addColorAttachment(0, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
-					VK_FORMAT_R8G8B8A8_UNORM, 1, VK_IMAGE_LAYOUT_UNDEFINED,
+					VK_FORMAT_R16G16B16A16_SFLOAT, 1, VK_IMAGE_LAYOUT_UNDEFINED,
 					VK_IMAGE_LAYOUT_GENERAL);
-			renderPass.addColorAttachment(1, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
-					VK_FORMAT_R16G16B16A16_UNORM, 1, VK_IMAGE_LAYOUT_UNDEFINED,
-					VK_IMAGE_LAYOUT_GENERAL);
-			renderPass.addDepthAttachment(2, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL,
+			renderPass.addDepthAttachment(1, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL,
 					VK_FORMAT_D16_UNORM, 1, VK_IMAGE_LAYOUT_UNDEFINED,
 					VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
 			
@@ -588,8 +583,7 @@ public class Water extends Renderable{
 			
 			LongBuffer pImageViews = memAllocLong(renderPass.getAttachmentCount());
 			pImageViews.put(0, attachments.get(Attachment.COLOR).getImageView().getHandle());
-			pImageViews.put(1, attachments.get(Attachment.NORMAL).getImageView().getHandle());
-			pImageViews.put(2, attachments.get(Attachment.DEPTH).getImageView().getHandle());
+			pImageViews.put(1, attachments.get(Attachment.DEPTH).getImageView().getHandle());
 			
 			frameBuffer = new VkFrameBuffer(device, width, height, 1,
 					pImageViews, renderPass.getHandle());

@@ -375,7 +375,7 @@ public class GLDeferredEngine extends RenderEngine{
 //		fullScreenQuadMultisample.setTexture(primarySceneFbo.getAttachmentTexture(Attachment.COLOR));
 //		fullScreenQuadMultisample.render();
 		
-		fullScreenQuad.setTexture(currentScene);
+		fullScreenQuad.setTexture(bloom.getBloomSceneTexture());
 		fullScreenQuad.render();
 		
 		if (BaseContext.getConfig().isLensFlareEnabled()

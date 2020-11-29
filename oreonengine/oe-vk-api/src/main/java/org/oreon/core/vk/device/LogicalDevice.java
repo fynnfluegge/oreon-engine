@@ -29,9 +29,9 @@ import org.oreon.core.vk.descriptor.DescriptorPool;
 import org.oreon.core.vk.util.VkUtil;
 
 import lombok.Getter;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
-@Log4j
+@Log4j2
 @Getter
 public class LogicalDevice {
 	

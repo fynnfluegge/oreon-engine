@@ -12,6 +12,21 @@ layout (binding = 5, rgba16f) uniform readonly image2D horizontalBloomBlurSample
 layout (binding = 6, rgba16f) uniform readonly image2D horizontalBloomBlurSampler2Image;
 layout (binding = 7, rgba16f) uniform readonly image2D horizontalBloomBlurSampler3Image;
 
+layout (std430, binding = 1) buffer indices {
+	float widthDiv0;
+	float heightDiv0;
+	float widthDiv1;
+	float heightDiv1;
+	float widthDiv2;
+	float heightDiv2;
+	float widthDiv3;
+	float heightDiv3;
+	float div0;
+	float div1;
+	float div2;
+	float div3;
+} ssbo;
+
 const float gaussianKernel7_sigma2[7] = float[7](0.071303,0.131514,0.189879,0.214607,0.189879,0.131514,0.071303);
 const float gaussianKernel9_sigma3[9] = float[9](0.063327,0.093095,0.122589,0.144599,0.152781,0.144599,0.122589,0.093095,0.063327);
 const float gaussianKernel9_sigma4[9] = float[9](0.081812,0.101701,0.118804,0.130417,0.134535,0.130417,0.118804,0.101701,0.081812);
@@ -31,14 +46,22 @@ void main(void){
 
 		ivec2 uvOffset = ivec2(0,i-4);
 		ivec2 uv = computeCoord + uvOffset;
-		color0 += imageLoad(horizontalBloomBlurSampler0Image, uv).rgb * gaussianKernel9_sigma2[i];
-		color1 += imageLoad(horizontalBloomBlurSampler1Image, uv).rgb * gaussianKernel9_sigma2[i];
-		color2 += imageLoad(horizontalBloomBlurSampler2Image, uv).rgb * gaussianKernel9_sigma2[i];
-		color3 += imageLoad(horizontalBloomBlurSampler3Image, uv).rgb * gaussianKernel9_sigma2[i];
+		if (computeCoord.x <= ssbo.widthDiv0 && computeCoord.y <= ssbo.heightDiv0)
+			color0 += imageLoad(horizontalBloomBlurSampler0Image, uv).rgb * gaussianKernel9_sigma2[i];
+		if (computeCoord.x <= ssbo.widthDiv1 && computeCoord.y <= ssbo.heightDiv1)
+			color1 += imageLoad(horizontalBloomBlurSampler1Image, uv).rgb * gaussianKernel9_sigma2[i];
+		if (computeCoord.x <= ssbo.widthDiv2 && computeCoord.y <= ssbo.heightDiv2)
+			color2 += imageLoad(horizontalBloomBlurSampler2Image, uv).rgb * gaussianKernel9_sigma2[i];
+		if (computeCoord.x <= ssbo.widthDiv3 && computeCoord.y <= ssbo.heightDiv3)
+			color3 += imageLoad(horizontalBloomBlurSampler3Image, uv).rgb * gaussianKernel9_sigma2[i];
 	}
 
-	imageStore(verticalBloomBlurSampler0, computeCoord, vec4(color0, 1.0));
-	imageStore(verticalBloomBlurSampler1, computeCoord, vec4(color1, 1.0));
-	imageStore(verticalBloomBlurSampler2, computeCoord, vec4(color2, 1.0));
-	imageStore(verticalBloomBlurSampler3, computeCoord, vec4(color3, 1.0));
+	if (computeCoord.x <= ssbo.widthDiv0 && computeCoord.y <= ssbo.heightDiv0)
+		imageStore(verticalBloomBlurSampler0, computeCoord, vec4(color0, 1.0));
+	if (computeCoord.x <= ssbo.widthDiv1 && computeCoord.y <= ssbo.heightDiv1)
+		imageStore(verticalBloomBlurSampler1, computeCoord, vec4(color1, 1.0));
+	if (computeCoord.x <= ssbo.widthDiv2 && computeCoord.y <= ssbo.heightDiv2)
+		imageStore(verticalBloomBlurSampler2, computeCoord, vec4(color2, 1.0));
+	if (computeCoord.x <= ssbo.widthDiv3 && computeCoord.y <= ssbo.heightDiv3)
+		imageStore(verticalBloomBlurSampler3, computeCoord, vec4(color3, 1.0));
 }

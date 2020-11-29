@@ -8,9 +8,9 @@ import org.oreon.core.model.Mesh;
 import org.oreon.core.model.Vertex;
 import org.oreon.core.util.Util;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
-@Log4j
+@Log4j2
 public abstract class UITextPanel extends UIElement{
 	
 	protected Mesh panel;
