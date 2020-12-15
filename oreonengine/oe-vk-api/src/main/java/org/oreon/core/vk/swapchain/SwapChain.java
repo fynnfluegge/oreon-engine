@@ -23,7 +23,7 @@ import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
 import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 import static org.lwjgl.vulkan.VK10.VK_FILTER_NEAREST;
-import static org.lwjgl.vulkan.VK10.VK_FORMAT_B8G8R8A8_UNORM;
+import static org.lwjgl.vulkan.VK10.VK_FORMAT_B8G8R8A8_SRGB;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_ASPECT_COLOR_BIT;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
@@ -120,7 +120,7 @@ public class SwapChain {
 	    extent.width(BaseContext.getWindow().getWidth());
 	    extent.height(BaseContext.getWindow().getHeight());
 		
-		int imageFormat = VK_FORMAT_B8G8R8A8_UNORM;
+		int imageFormat = VK_FORMAT_B8G8R8A8_SRGB;
 	    int colorSpace = VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
 	    
 	    physicalDevice.checkDeviceFormatAndColorSpaceSupport(imageFormat, colorSpace);

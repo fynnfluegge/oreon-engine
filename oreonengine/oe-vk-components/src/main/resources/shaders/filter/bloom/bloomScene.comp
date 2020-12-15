@@ -4,8 +4,8 @@ layout (local_size_x = 8, local_size_y = 8) in;
 
 layout (set = 0, binding = 0, rgba16f) uniform readonly image2D sceneImage;
 layout (set = 0, binding = 1, rgba16f) uniform readonly image2D bloomImage;
-layout (set = 0, binding = 2, rgba16f) uniform readonly image2DMS specular_emission_bloom_attachment;
-layout (set = 0, binding = 3, rgba16f) uniform writeonly image2D bloomSceneImage;
+layout (set = 0, binding = 2, rgba16f) uniform readonly image2D specular_emission_bloom_attachment;
+layout (set = 0, binding = 3, rgba8) uniform writeonly image2D bloomSceneImage;
 
 vec3 blur(ivec2 computeCoord, int kernels){
 	
@@ -22,19 +22,46 @@ vec3 blur(ivec2 computeCoord, int kernels){
 	return rgb;
 }
 
+// Converts a color from linear light gamma to sRGB gamma
+vec4 fromLinear(vec4 linearRGB)
+{
+    bvec4 cutoff = lessThan(linearRGB, vec4(0.0031308));
+    vec4 higher = vec4(1.055)*pow(linearRGB, vec4(1.0/2.4)) - vec4(0.055);
+    vec4 lower = linearRGB * vec4(12.92);
+
+    return mix(higher, lower, cutoff);
+}
+
+// Converts a color from sRGB gamma to linear light gamma
+vec4 toLinear(vec4 sRGB)
+{
+    bvec4 cutoff = lessThan(sRGB, vec4(0.04045));
+    vec4 higher = pow((sRGB + vec4(0.055))/vec4(1.055), vec4(2.4));
+    vec4 lower = sRGB/vec4(12.92);
+
+    return mix(higher, lower, cutoff);
+}
+
 void main()
 {          
 	ivec2 computeCoord = ivec2(gl_GlobalInvocationID.x, gl_GlobalInvocationID.y);
 
     vec3 hdrColor = imageLoad(sceneImage, computeCoord).rgb;    
-    float factor = imageLoad(specular_emission_bloom_attachment, computeCoord,0).a;
+    float factor = imageLoad(specular_emission_bloom_attachment, computeCoord).a;
 	vec3 bloomColor = vec3(0);
 	
 	if (factor > 0)
-		bloomColor = blur(computeCoord, 1);
+		bloomColor = blur(computeCoord, 0);
 	
 	// additive blending
-    hdrColor += bloomColor * factor;
+	hdrColor += bloomColor * factor;
 	
-    imageStore(bloomSceneImage, computeCoord, vec4(hdrColor, 1.0));
+	// if (factor > 0){
+		// const float gamma = 2.2;
+		// float exposure = 1.0;
+		// vec3 mapped = vec3(1.0) - exp(-hdrColor * exposure);
+		// hdrColor = pow(mapped, vec3(1.0 / gamma));
+	// }
+	
+    imageStore(bloomSceneImage, computeCoord, fromLinear(vec4(hdrColor, 1.0)));
 } 

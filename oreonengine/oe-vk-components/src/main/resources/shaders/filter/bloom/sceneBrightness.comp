@@ -57,7 +57,7 @@ vec3 blur(ivec2 computeCoord, int kernels){
 
 vec3 brightColor(vec3 color) {
 
-	float brightness = clamp(dot(color, vec3(0.2126, 0.7152, 0.0722)),0.0f,2.0f);
+	float brightness = dot(color, vec3(0.2126, 0.7152, 0.0722));
 
 	return color * pow(brightness,1);
 }
@@ -69,10 +69,10 @@ void main(void){
 	vec3 color = imageLoad(sceneImage, computeCoord).rgb;  
 		
 	imageStore(brightnessImageDiv0, computeCoord, vec4(brightColor(color), 1.0));
-	if (computeCoord.x < constants.widthDiv1 && computeCoord.y < constants.heightDiv1)
+	if (computeCoord.x <= constants.widthDiv1 && computeCoord.y <= constants.heightDiv1)
 		imageStore(brightnessImageDiv1, computeCoord, vec4(brightColor(blur(computeCoord*int(constants.div1), 2)), 1.0));
-	if (computeCoord.x < constants.widthDiv2 && computeCoord.y < constants.heightDiv2)
+	if (computeCoord.x <= constants.widthDiv2 && computeCoord.y <= constants.heightDiv2)
 		imageStore(brightnessImageDiv2, computeCoord, vec4(brightColor(blur(computeCoord*int(constants.div2), 3)), 1.0));
-	if (computeCoord.x < constants.widthDiv3 && computeCoord.y < constants.heightDiv3)
-		imageStore(brightnessImageDiv3, computeCoord, vec4(brightColor(blur(computeCoord*int(constants.div3), 7)), 1.0));
+	if (computeCoord.x <= constants.widthDiv3 && computeCoord.y <= constants.heightDiv3)
+		imageStore(brightnessImageDiv3, computeCoord, vec4(brightColor(blur(computeCoord*int(constants.div3), 5)), 1.0));
 }

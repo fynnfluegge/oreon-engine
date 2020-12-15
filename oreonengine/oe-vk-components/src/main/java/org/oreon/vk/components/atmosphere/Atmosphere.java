@@ -74,7 +74,7 @@ public class Atmosphere extends Renderable{
 	    
 	    ShaderPipeline reflectionShaderPipeline = new ShaderPipeline(device.getHandle());
 	    reflectionShaderPipeline.addShaderModule(vertexShader);
-	    reflectionShaderPipeline.createFragmentShader("shaders/atmosphere/atmosphere_reflection.frag.spv");
+	    reflectionShaderPipeline.createFragmentShader("shaders/atmosphere/atmospheric_scattering_reflection.frag.spv");
 	    reflectionShaderPipeline.createShaderPipeline();
 	    
 	    List<DescriptorSet> descriptorSets = new ArrayList<DescriptorSet>();
@@ -102,7 +102,7 @@ public class Atmosphere extends Renderable{
 		ByteBuffer vertexBuffer = BufferUtil.createByteBuffer(mesh.getVertices(), VertexLayout.POS);
 		ByteBuffer indexBuffer = BufferUtil.createByteBuffer(mesh.getIndices());
 		
-		int pushConstantsRange = Float.BYTES * 19 + Integer.BYTES * 3;
+		int pushConstantsRange = Float.BYTES * 20 + Integer.BYTES * 3;
 		
 		ByteBuffer pushConstants = memAlloc(pushConstantsRange);
 		pushConstants.put(BufferUtil.createByteBuffer(VkContext.getCamera().getProjectionMatrix()));
@@ -112,6 +112,7 @@ public class Atmosphere extends Renderable{
 		pushConstants.putInt(0);
 		pushConstants.putFloat(BaseContext.getConfig().getAtmosphereBloomFactor());
 		pushConstants.putFloat(BaseContext.getConfig().getHorizonVerticalShift());
+		pushConstants.putFloat(BaseContext.getConfig().getHorizonReflectionVerticalShift());
 		pushConstants.flip();
 		
 		VkPipeline graphicsPipeline = new GraphicsPipeline(device.getHandle(),
@@ -168,7 +169,8 @@ public class Atmosphere extends Renderable{
 					VkContext.getResources().getReflectionFbo().getWidth(),
 					VkContext.getResources().getReflectionFbo().getHeight(),
 					VkContext.getResources().getReflectionFbo().getRenderPass().getHandle(),
-					VkContext.getResources().getReflectionFbo().getColorAttachmentCount(), 1);
+					VkContext.getResources().getReflectionFbo().getColorAttachmentCount(), 1,
+					pushConstantsRange, VK_SHADER_STAGE_FRAGMENT_BIT);
 	    	
 	    	CommandBuffer reflectionCommandBuffer = new SecondaryDrawIndexedCmdBuffer(
 		    		device.getHandle(),
@@ -180,7 +182,8 @@ public class Atmosphere extends Renderable{
 		    		VkUtil.createLongArray(descriptorSets),
 		    		vertexBufferObject.getHandle(),
 		    		indexBufferObject.getHandle(),
-		    		mesh.getIndices().length);
+		    		mesh.getIndices().length,
+		    		pushConstants, VK_SHADER_STAGE_FRAGMENT_BIT);
 	    	
 	    	VkRenderInfo reflectionRenderInfo = VkRenderInfo.builder().commandBuffer(reflectionCommandBuffer)
 		    		.pipeline(reflectionPipeline).build();

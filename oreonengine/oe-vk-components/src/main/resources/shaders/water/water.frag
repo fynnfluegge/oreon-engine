@@ -105,8 +105,7 @@ void main(void)
     // Reflection //
 	vec2 reflecCoords = projCoord.xy + dudvCoord.rb * constants.kReflection;
 	reflecCoords = clamp(reflecCoords, constants.kReflection, 1-constants.kReflection);
-    float reflectionDistanceBlending = smoothstep(0.0f,1.0f,1.0f/2000.0f * dist) * (0.75f-constants.reflectionBlendFactor) + constants.reflectionBlendFactor;
-    vec3 reflection = mix(texture(waterReflection, reflecCoords).rgb, constants.waterColor, reflectionDistanceBlending);
+    vec3 reflection = texture(waterReflection, reflecCoords).rgb;
     reflection *= fresnel;
  
     // Refraction //

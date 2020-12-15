@@ -36,6 +36,7 @@ layout (push_constant, std430, row_major) uniform Constants{
 	int isReflection;
 	float bloom;
 	float horizonVerticalShift;
+	float horizonReflectionVerticalShift;
 } constants;
 
 const vec3 sunBaseColor = vec3(1.0f,0.79f,0.43f);
@@ -154,13 +155,7 @@ void main() {
 	ray_eye = vec4(ray_eye.x, ray_eye.y, 1.0, 0.0);
 	vec3 ray_world = (inverse(m_View) * ray_eye).xyz;
 	
-	if (constants.isReflection == 1){
-		ray_world.y *= -1;
-		ray_world.y += constants.horizonVerticalShift;
-	}
-	else{
-		ray_world.y += constants.horizonVerticalShift;
-	}
+	ray_world.y += constants.horizonVerticalShift;
 	
 	vec3 out_LightScattering = vec3(0);
 	

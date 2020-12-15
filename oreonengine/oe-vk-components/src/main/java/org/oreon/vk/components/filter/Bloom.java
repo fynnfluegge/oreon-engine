@@ -6,6 +6,7 @@ import static org.lwjgl.vulkan.VK10.VK_ACCESS_SHADER_WRITE_BIT;
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_STORAGE_IMAGE;
 import static org.lwjgl.vulkan.VK10.VK_FILTER_LINEAR;
+import static org.lwjgl.vulkan.VK10.VK_FORMAT_B8G8R8A8_SRGB;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_R16G16B16A16_SFLOAT;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_ASPECT_COLOR_BIT;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_GENERAL;
@@ -66,53 +67,17 @@ public class Bloom {
 	private DescriptorSetLayout sceneBrightnessDescriptorSetLayout;
 	private List<DescriptorSet> sceneBrightnessDescriptorSets;
 	
-	// horizontal DIV 2 blur resources
-	private VkPipeline horizontalBlurPipeline_div2;
-	private DescriptorSet horizontalBlurDescriptorSet_div2;
-	private DescriptorSetLayout horizontalBlurDescriptorSetLayout_div2;
-	private List<DescriptorSet> horizontalBlurDescriptorSets_div2;
+	// horizontal blur resources
+	private DescriptorSetLayout horizontalBlurDescriptorSetLayout;
+	private List<DescriptorSet> horizontalBlurDescriptorSets;
+	private VkPipeline horizontalBlurPipeline;
+	private DescriptorSet horizontalBlurDescriptorSet;
 	
-	// horizontal DIV 4 blur resources
-	private VkPipeline horizontalBlurPipeline_div4;
-	private DescriptorSet horizontalBlurDescriptorSet_div4;
-	private DescriptorSetLayout horizontalBlurDescriptorSetLayout_div4;
-	private List<DescriptorSet> horizontalBlurDescriptorSets_div4;
-	
-	// horizontal DIV 8 blur resources
-	private VkPipeline horizontalBlurPipeline_div8;
-	private DescriptorSet horizontalBlurDescriptorSet_div8;
-	private DescriptorSetLayout horizontalBlurDescriptorSetLayout_div8;
-	private List<DescriptorSet> horizontalBlurDescriptorSets_div8;
-	
-	// horizontal DIV 16 blur resources
-	private VkPipeline horizontalBlurPipeline_div16;
-	private DescriptorSet horizontalBlurDescriptorSet_div16;
-	private DescriptorSetLayout horizontalBlurDescriptorSetLayout_div16;
-	private List<DescriptorSet> horizontalBlurDescriptorSets_div16;
-	
-	// vertical DIV 2 blur resources
-	private VkPipeline verticalBlurPipeline_div2;
-	private DescriptorSet verticalBlurDescriptorSet_div2;
-	private DescriptorSetLayout verticalBlurDescriptorSetLayout_div2;
-	private List<DescriptorSet> verticalBlurDescriptorSets_div2;
-	
-	// vertical DIV 4 blur resources
-	private VkPipeline verticalBlurPipeline_div4;
-	private DescriptorSet verticalBlurDescriptorSet_div4;
-	private DescriptorSetLayout verticalBlurDescriptorSetLayout_div4;
-	private List<DescriptorSet> verticalBlurDescriptorSets_div4;
-	
-	// vertical DIV 8 blur resources
-	private VkPipeline verticalBlurPipeline_div8;
-	private DescriptorSet verticalBlurDescriptorSet_div8;
-	private DescriptorSetLayout verticalBlurDescriptorSetLayout_div8;
-	private List<DescriptorSet> verticalBlurDescriptorSets_div8;
-	
-	// vertical DIV 16 blur resources
-	private VkPipeline verticalBlurPipeline_div16;
-	private DescriptorSet verticalBlurDescriptorSet_div16;
-	private DescriptorSetLayout verticalBlurDescriptorSetLayout_div16;
-	private List<DescriptorSet> verticalBlurDescriptorSets_div16;
+	// vertical blur resources
+	private VkPipeline verticalBlurPipeline;
+	private DescriptorSet verticalBlurDescriptorSet;
+	private DescriptorSetLayout verticalBlurDescriptorSetLayout;
+	private List<DescriptorSet> verticalBlurDescriptorSets;
 	
 	// blend resources
 	private VkPipeline blendPipeline;
@@ -130,12 +95,8 @@ public class Bloom {
 	private DescriptorSetLayout bloomSceneDescriptorSetLayout;
 	private List<DescriptorSet> bloomSceneDescriptorSets;
 	
-	private ByteBuffer pushConstants_brightness;
+	private ByteBuffer pushConstants;
 	private ByteBuffer pushConstants_blend;
-	private ByteBuffer pushConstants_div2;
-	private ByteBuffer pushConstants_div4;
-	private ByteBuffer pushConstants_div8;
-	private ByteBuffer pushConstants_div16;
 	
 	private int width;
 	private int height;
@@ -165,20 +126,20 @@ public class Bloom {
 		ShaderModule bloomSceneShader = new ComputeShader(device,
 				"shaders/filter/bloom/bloomScene.comp.spv");
 		
-		pushConstants_brightness = pushConstants_blend = memAlloc(Float.BYTES * 12);
-		pushConstants_brightness.putFloat(width);
-		pushConstants_brightness.putFloat(height);
-		pushConstants_brightness.putFloat(width/4.0f);
-		pushConstants_brightness.putFloat(height/4.0f);
-		pushConstants_brightness.putFloat(width/8.0f);
-		pushConstants_brightness.putFloat(height/8.0f);
-		pushConstants_brightness.putFloat(width/16.0f);
-		pushConstants_brightness.putFloat(height/16.0f);
-		pushConstants_brightness.putFloat(2);
-		pushConstants_brightness.putFloat(4);
-		pushConstants_brightness.putFloat(8);
-		pushConstants_brightness.putFloat(16);
-		pushConstants_brightness.flip();
+		pushConstants = memAlloc(Float.BYTES * 12);
+		pushConstants.putFloat(width/2.0f);
+		pushConstants.putFloat(height/2.0f);
+		pushConstants.putFloat(width/4.0f);
+		pushConstants.putFloat(height/4.0f);
+		pushConstants.putFloat(width/8.0f);
+		pushConstants.putFloat(height/8.0f);
+		pushConstants.putFloat(width/12.0f);
+		pushConstants.putFloat(height/12.0f);
+		pushConstants.putFloat(2);
+		pushConstants.putFloat(4);
+		pushConstants.putFloat(8);
+		pushConstants.putFloat(12);
+		pushConstants.flip();
 		
 		int pushConstantRange = Float.BYTES * 2;
 		pushConstants_blend = memAlloc(pushConstantRange);
@@ -186,25 +147,6 @@ public class Bloom {
 		pushConstants_blend.putFloat(height);
 		pushConstants_blend.flip();
 		
-		pushConstants_div2 = memAlloc(pushConstantRange);
-		pushConstants_div2.putFloat(width/2.0f);
-		pushConstants_div2.putFloat(height/2.0f);
-		pushConstants_div2.flip();
-		
-		pushConstants_div4 = memAlloc(pushConstantRange);
-		pushConstants_div4.putFloat(width/4.0f);
-		pushConstants_div4.putFloat(height/4.0f);
-		pushConstants_div4.flip();
-		
-		pushConstants_div8 = memAlloc(pushConstantRange);
-		pushConstants_div8.putFloat(width/8.0f);
-		pushConstants_div8.putFloat(height/8.0f);
-		pushConstants_div8.flip();
-		
-		pushConstants_div16 = memAlloc(pushConstantRange);
-		pushConstants_div16.putFloat(width/16.0f);
-		pushConstants_div16.putFloat(height/16.0f);
-		pushConstants_div16.flip();
 		
 		// scene brightness
 		
@@ -249,262 +191,141 @@ public class Bloom {
 		descriptorSetLayouts.add(sceneBrightnessDescriptorSetLayout);
 		
 		sceneBrightnessPipeline = new VkPipeline(device);
+		sceneBrightnessPipeline.setPushConstantsRange(VK_SHADER_STAGE_COMPUTE_BIT, Float.BYTES * 12);
 		sceneBrightnessPipeline.setLayout(VkUtil.createLongBuffer(descriptorSetLayouts));
 		sceneBrightnessPipeline.createComputePipeline(sceneBrightnessShader);
 		
-		descriptorSetLayouts = new ArrayList<DescriptorSetLayout>();
-		
 		// horizontal blur
 		
-		// DIV 2
-		
-		horizontalBlurDescriptorSetLayout_div2 = new DescriptorSetLayout(device, 2);
-		horizontalBlurDescriptorSetLayout_div2.addLayoutBinding(0, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
+		horizontalBlurDescriptorSetLayout = new DescriptorSetLayout(device, 8);
+		horizontalBlurDescriptorSetLayout.addLayoutBinding(0, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
 	    		VK_SHADER_STAGE_COMPUTE_BIT);
-		horizontalBlurDescriptorSetLayout_div2.addLayoutBinding(1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+		horizontalBlurDescriptorSetLayout.addLayoutBinding(1, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
 	    		VK_SHADER_STAGE_COMPUTE_BIT);
-		horizontalBlurDescriptorSetLayout_div2.create();
+		horizontalBlurDescriptorSetLayout.addLayoutBinding(2, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
+	    		VK_SHADER_STAGE_COMPUTE_BIT);
+		horizontalBlurDescriptorSetLayout.addLayoutBinding(3, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
+	    		VK_SHADER_STAGE_COMPUTE_BIT);
+		horizontalBlurDescriptorSetLayout.addLayoutBinding(4, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+	    		VK_SHADER_STAGE_COMPUTE_BIT);
+		horizontalBlurDescriptorSetLayout.addLayoutBinding(5, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+	    		VK_SHADER_STAGE_COMPUTE_BIT);
+		horizontalBlurDescriptorSetLayout.addLayoutBinding(6, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+	    		VK_SHADER_STAGE_COMPUTE_BIT);
+		horizontalBlurDescriptorSetLayout.addLayoutBinding(7, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+	    		VK_SHADER_STAGE_COMPUTE_BIT);
+		horizontalBlurDescriptorSetLayout.create();
 		
-		horizontalBlurDescriptorSet_div2 = new DescriptorSet(device, descriptorPool.getHandle(),
-	    		horizontalBlurDescriptorSetLayout_div2.getHandlePointer());
-		horizontalBlurDescriptorSet_div2.updateDescriptorImageBuffer(
+		horizontalBlurDescriptorSet = new DescriptorSet(device, descriptorPool.getHandle(),
+	    		horizontalBlurDescriptorSetLayout.getHandlePointer());
+		horizontalBlurDescriptorSet.updateDescriptorImageBuffer(
 				horizontalBloomBlurImageBundle_div2.getImageView().getHandle(),
 		    	VK_IMAGE_LAYOUT_GENERAL, -1, 0,
 		    	VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
-		horizontalBlurDescriptorSet_div2.updateDescriptorImageBuffer(
-				sceneBrightnessImageBundle.getImageView().getHandle(),
-				VK_IMAGE_LAYOUT_GENERAL, sceneBrightnessImageBundle.getSampler().getHandle(), 1,
-				VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
-		
-		horizontalBlurDescriptorSets_div2 = new ArrayList<DescriptorSet>();
-		horizontalBlurDescriptorSets_div2.add(horizontalBlurDescriptorSet_div2);
-		descriptorSetLayouts.add(horizontalBlurDescriptorSetLayout_div2);
-		
-		horizontalBlurPipeline_div2 = new VkPipeline(device);
-		horizontalBlurPipeline_div2.setPushConstantsRange(VK_SHADER_STAGE_COMPUTE_BIT, pushConstantRange);
-		horizontalBlurPipeline_div2.setLayout(VkUtil.createLongBuffer(descriptorSetLayouts));
-		horizontalBlurPipeline_div2.createComputePipeline(horizontalBlurShader);
-		
-		descriptorSetLayouts = new ArrayList<DescriptorSetLayout>();
-		
-		// DIV 4
-		
-		horizontalBlurDescriptorSetLayout_div4 = new DescriptorSetLayout(device, 2);
-		horizontalBlurDescriptorSetLayout_div4.addLayoutBinding(0, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
-	    		VK_SHADER_STAGE_COMPUTE_BIT);
-		horizontalBlurDescriptorSetLayout_div4.addLayoutBinding(1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
-	    		VK_SHADER_STAGE_COMPUTE_BIT);
-		horizontalBlurDescriptorSetLayout_div4.create();
-		
-		horizontalBlurDescriptorSet_div4 = new DescriptorSet(device, descriptorPool.getHandle(),
-	    		horizontalBlurDescriptorSetLayout_div4.getHandlePointer());
-		horizontalBlurDescriptorSet_div4.updateDescriptorImageBuffer(
+		horizontalBlurDescriptorSet.updateDescriptorImageBuffer(
 				horizontalBloomBlurImageBundle_div4.getImageView().getHandle(),
-		    	VK_IMAGE_LAYOUT_GENERAL, -1, 0,
+		    	VK_IMAGE_LAYOUT_GENERAL, -1, 1,
 		    	VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
-		horizontalBlurDescriptorSet_div4.updateDescriptorImageBuffer(
-				sceneBrightnessImageBundle_div4.getImageView().getHandle(),
-				VK_IMAGE_LAYOUT_GENERAL, sceneBrightnessImageBundle_div4.getSampler().getHandle(), 1,
-				VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
-		
-		horizontalBlurDescriptorSets_div4 = new ArrayList<DescriptorSet>();
-		horizontalBlurDescriptorSets_div4.add(horizontalBlurDescriptorSet_div4);
-		descriptorSetLayouts.add(horizontalBlurDescriptorSetLayout_div4);
-		
-		horizontalBlurPipeline_div4 = new VkPipeline(device);
-		horizontalBlurPipeline_div4.setPushConstantsRange(VK_SHADER_STAGE_COMPUTE_BIT, pushConstantRange);
-		horizontalBlurPipeline_div4.setLayout(VkUtil.createLongBuffer(descriptorSetLayouts));
-		horizontalBlurPipeline_div4.createComputePipeline(horizontalBlurShader);
-		
-		descriptorSetLayouts = new ArrayList<DescriptorSetLayout>();
-		
-		// DIV 8
-		
-		horizontalBlurDescriptorSetLayout_div8 = new DescriptorSetLayout(device, 2);
-		horizontalBlurDescriptorSetLayout_div8.addLayoutBinding(0, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
-	    		VK_SHADER_STAGE_COMPUTE_BIT);
-		horizontalBlurDescriptorSetLayout_div8.addLayoutBinding(1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
-	    		VK_SHADER_STAGE_COMPUTE_BIT);
-		horizontalBlurDescriptorSetLayout_div8.create();
-		
-		horizontalBlurDescriptorSet_div8 = new DescriptorSet(device, descriptorPool.getHandle(),
-	    		horizontalBlurDescriptorSetLayout_div8.getHandlePointer());
-		horizontalBlurDescriptorSet_div8.updateDescriptorImageBuffer(
+		horizontalBlurDescriptorSet.updateDescriptorImageBuffer(
 				horizontalBloomBlurImageBundle_div8.getImageView().getHandle(),
-		    	VK_IMAGE_LAYOUT_GENERAL, -1, 0,
+		    	VK_IMAGE_LAYOUT_GENERAL, -1, 2,
 		    	VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
-		horizontalBlurDescriptorSet_div8.updateDescriptorImageBuffer(
-				sceneBrightnessImageBundle_div8.getImageView().getHandle(),
-				VK_IMAGE_LAYOUT_GENERAL, sceneBrightnessImageBundle_div8.getSampler().getHandle(), 1,
-				VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
-		
-		horizontalBlurDescriptorSets_div8 = new ArrayList<DescriptorSet>();
-		horizontalBlurDescriptorSets_div8.add(horizontalBlurDescriptorSet_div8);
-		descriptorSetLayouts.add(horizontalBlurDescriptorSetLayout_div8);
-		
-		horizontalBlurPipeline_div8 = new VkPipeline(device);
-		horizontalBlurPipeline_div8.setPushConstantsRange(VK_SHADER_STAGE_COMPUTE_BIT, pushConstantRange);
-		horizontalBlurPipeline_div8.setLayout(VkUtil.createLongBuffer(descriptorSetLayouts));
-		horizontalBlurPipeline_div8.createComputePipeline(horizontalBlurShader);
-		
-		descriptorSetLayouts = new ArrayList<DescriptorSetLayout>();
-		
-		// DIV 16
-		
-		horizontalBlurDescriptorSetLayout_div16 = new DescriptorSetLayout(device, 2);
-		horizontalBlurDescriptorSetLayout_div16.addLayoutBinding(0, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
-	    		VK_SHADER_STAGE_COMPUTE_BIT);
-		horizontalBlurDescriptorSetLayout_div16.addLayoutBinding(1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
-	    		VK_SHADER_STAGE_COMPUTE_BIT);
-		horizontalBlurDescriptorSetLayout_div16.create();
-		
-		horizontalBlurDescriptorSet_div16 = new DescriptorSet(device, descriptorPool.getHandle(),
-	    		horizontalBlurDescriptorSetLayout_div16.getHandlePointer());
-		horizontalBlurDescriptorSet_div16.updateDescriptorImageBuffer(
+		horizontalBlurDescriptorSet.updateDescriptorImageBuffer(
 				horizontalBloomBlurImageBundle_div16.getImageView().getHandle(),
-		    	VK_IMAGE_LAYOUT_GENERAL, -1, 0,
+		    	VK_IMAGE_LAYOUT_GENERAL, -1, 3,
 		    	VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
-		horizontalBlurDescriptorSet_div16.updateDescriptorImageBuffer(
+		horizontalBlurDescriptorSet.updateDescriptorImageBuffer(
+				sceneBrightnessImageBundle.getImageView().getHandle(),
+				VK_IMAGE_LAYOUT_GENERAL, sceneBrightnessImageBundle.getSampler().getHandle(), 4,
+				VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
+		horizontalBlurDescriptorSet.updateDescriptorImageBuffer(
+				sceneBrightnessImageBundle_div4.getImageView().getHandle(),
+				VK_IMAGE_LAYOUT_GENERAL, sceneBrightnessImageBundle.getSampler().getHandle(), 5,
+				VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
+		horizontalBlurDescriptorSet.updateDescriptorImageBuffer(
+				sceneBrightnessImageBundle_div8.getImageView().getHandle(),
+				VK_IMAGE_LAYOUT_GENERAL, sceneBrightnessImageBundle.getSampler().getHandle(), 6,
+				VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
+		horizontalBlurDescriptorSet.updateDescriptorImageBuffer(
 				sceneBrightnessImageBundle_div16.getImageView().getHandle(),
-				VK_IMAGE_LAYOUT_GENERAL, sceneBrightnessImageBundle_div16.getSampler().getHandle(), 1,
+				VK_IMAGE_LAYOUT_GENERAL, sceneBrightnessImageBundle.getSampler().getHandle(), 7,
 				VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
 		
-		horizontalBlurDescriptorSets_div16 = new ArrayList<DescriptorSet>();
-		horizontalBlurDescriptorSets_div16.add(horizontalBlurDescriptorSet_div16);
-		descriptorSetLayouts.add(horizontalBlurDescriptorSetLayout_div16);
-		
-		horizontalBlurPipeline_div16 = new VkPipeline(device);
-		horizontalBlurPipeline_div16.setPushConstantsRange(VK_SHADER_STAGE_COMPUTE_BIT, pushConstantRange);
-		horizontalBlurPipeline_div16.setLayout(VkUtil.createLongBuffer(descriptorSetLayouts));
-		horizontalBlurPipeline_div16.createComputePipeline(horizontalBlurShader);
-		
 		descriptorSetLayouts = new ArrayList<DescriptorSetLayout>();
+		horizontalBlurDescriptorSets = new ArrayList<DescriptorSet>();
+		horizontalBlurDescriptorSets.add(horizontalBlurDescriptorSet);
+		descriptorSetLayouts.add(horizontalBlurDescriptorSetLayout);
+		
+		horizontalBlurPipeline = new VkPipeline(device);
+		horizontalBlurPipeline.setPushConstantsRange(VK_SHADER_STAGE_COMPUTE_BIT, Float.BYTES * 12);
+		horizontalBlurPipeline.setLayout(VkUtil.createLongBuffer(descriptorSetLayouts));
+		horizontalBlurPipeline.createComputePipeline(horizontalBlurShader);
 		
 		// vertical blur
 		
-		// DIV 2
-		
-		verticalBlurDescriptorSetLayout_div2 = new DescriptorSetLayout(device, 2);
-		verticalBlurDescriptorSetLayout_div2.addLayoutBinding(0, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
+		verticalBlurDescriptorSetLayout = new DescriptorSetLayout(device, 8);
+		verticalBlurDescriptorSetLayout.addLayoutBinding(0, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
 	    		VK_SHADER_STAGE_COMPUTE_BIT);
-		verticalBlurDescriptorSetLayout_div2.addLayoutBinding(1, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
+		verticalBlurDescriptorSetLayout.addLayoutBinding(1, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
 	    		VK_SHADER_STAGE_COMPUTE_BIT);
-		verticalBlurDescriptorSetLayout_div2.create();
+		verticalBlurDescriptorSetLayout.addLayoutBinding(2, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
+	    		VK_SHADER_STAGE_COMPUTE_BIT);
+		verticalBlurDescriptorSetLayout.addLayoutBinding(3, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
+	    		VK_SHADER_STAGE_COMPUTE_BIT);
+		verticalBlurDescriptorSetLayout.addLayoutBinding(4, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
+	    		VK_SHADER_STAGE_COMPUTE_BIT);
+		verticalBlurDescriptorSetLayout.addLayoutBinding(5, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
+	    		VK_SHADER_STAGE_COMPUTE_BIT);
+		verticalBlurDescriptorSetLayout.addLayoutBinding(6, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
+	    		VK_SHADER_STAGE_COMPUTE_BIT);
+		verticalBlurDescriptorSetLayout.addLayoutBinding(7, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
+	    		VK_SHADER_STAGE_COMPUTE_BIT);
+		verticalBlurDescriptorSetLayout.create();
 		
-		verticalBlurDescriptorSet_div2 = new DescriptorSet(device, descriptorPool.getHandle(),
-	    		verticalBlurDescriptorSetLayout_div2.getHandlePointer());
-		verticalBlurDescriptorSet_div2.updateDescriptorImageBuffer(
-				horizontalBloomBlurImageBundle_div2.getImageView().getHandle(),
-		    	VK_IMAGE_LAYOUT_GENERAL, -1, 0,
-		    	VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
-		verticalBlurDescriptorSet_div2.updateDescriptorImageBuffer(
+		verticalBlurDescriptorSet = new DescriptorSet(device, descriptorPool.getHandle(),
+	    		verticalBlurDescriptorSetLayout.getHandlePointer());
+		verticalBlurDescriptorSet.updateDescriptorImageBuffer(
 				verticalBloomBlurImageBundle_div2.getImageView().getHandle(),
-				VK_IMAGE_LAYOUT_GENERAL, -1, 1,
-				VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
-		
-		verticalBlurDescriptorSets_div2 = new ArrayList<DescriptorSet>();
-		verticalBlurDescriptorSets_div2.add(verticalBlurDescriptorSet_div2);
-		descriptorSetLayouts.add(verticalBlurDescriptorSetLayout_div2);
-		
-		verticalBlurPipeline_div2 = new VkPipeline(device);
-		verticalBlurPipeline_div2.setPushConstantsRange(VK_SHADER_STAGE_COMPUTE_BIT, pushConstantRange);
-		verticalBlurPipeline_div2.setLayout(VkUtil.createLongBuffer(descriptorSetLayouts));
-		verticalBlurPipeline_div2.createComputePipeline(verticalBlurShader);
-		
-		descriptorSetLayouts = new ArrayList<DescriptorSetLayout>();
-		
-		// DIV 4
-		
-		verticalBlurDescriptorSetLayout_div4 = new DescriptorSetLayout(device, 2);
-		verticalBlurDescriptorSetLayout_div4.addLayoutBinding(0, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
-	    		VK_SHADER_STAGE_COMPUTE_BIT);
-		verticalBlurDescriptorSetLayout_div4.addLayoutBinding(1, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
-	    		VK_SHADER_STAGE_COMPUTE_BIT);
-		verticalBlurDescriptorSetLayout_div4.create();
-		
-		verticalBlurDescriptorSet_div4 = new DescriptorSet(device, descriptorPool.getHandle(),
-	    		verticalBlurDescriptorSetLayout_div4.getHandlePointer());
-		verticalBlurDescriptorSet_div4.updateDescriptorImageBuffer(
-				horizontalBloomBlurImageBundle_div4.getImageView().getHandle(),
 		    	VK_IMAGE_LAYOUT_GENERAL, -1, 0,
 		    	VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
-		verticalBlurDescriptorSet_div4.updateDescriptorImageBuffer(
+		verticalBlurDescriptorSet.updateDescriptorImageBuffer(
 				verticalBloomBlurImageBundle_div4.getImageView().getHandle(),
 				VK_IMAGE_LAYOUT_GENERAL, -1, 1,
 				VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
-		
-		verticalBlurDescriptorSets_div4 = new ArrayList<DescriptorSet>();
-		verticalBlurDescriptorSets_div4.add(verticalBlurDescriptorSet_div4);
-		descriptorSetLayouts.add(verticalBlurDescriptorSetLayout_div4);
-		
-		verticalBlurPipeline_div4 = new VkPipeline(device);
-		verticalBlurPipeline_div4.setPushConstantsRange(VK_SHADER_STAGE_COMPUTE_BIT, pushConstantRange);
-		verticalBlurPipeline_div4.setLayout(VkUtil.createLongBuffer(descriptorSetLayouts));
-		verticalBlurPipeline_div4.createComputePipeline(verticalBlurShader);
-		
-		descriptorSetLayouts = new ArrayList<DescriptorSetLayout>();
-		
-		// DIV 8
-		
-		verticalBlurDescriptorSetLayout_div8 = new DescriptorSetLayout(device, 2);
-		verticalBlurDescriptorSetLayout_div8.addLayoutBinding(0, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
-	    		VK_SHADER_STAGE_COMPUTE_BIT);
-		verticalBlurDescriptorSetLayout_div8.addLayoutBinding(1, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
-	    		VK_SHADER_STAGE_COMPUTE_BIT);
-		verticalBlurDescriptorSetLayout_div8.create();
-		
-		verticalBlurDescriptorSet_div8 = new DescriptorSet(device, descriptorPool.getHandle(),
-	    		verticalBlurDescriptorSetLayout_div8.getHandlePointer());
-		verticalBlurDescriptorSet_div8.updateDescriptorImageBuffer(
-				horizontalBloomBlurImageBundle_div8.getImageView().getHandle(),
-		    	VK_IMAGE_LAYOUT_GENERAL, -1, 0,
-		    	VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
-		verticalBlurDescriptorSet_div8.updateDescriptorImageBuffer(
+		verticalBlurDescriptorSet.updateDescriptorImageBuffer(
 				verticalBloomBlurImageBundle_div8.getImageView().getHandle(),
-				VK_IMAGE_LAYOUT_GENERAL, -1, 1,
+				VK_IMAGE_LAYOUT_GENERAL, -1, 2,
 				VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
-		
-		verticalBlurDescriptorSets_div8 = new ArrayList<DescriptorSet>();
-		verticalBlurDescriptorSets_div8.add(verticalBlurDescriptorSet_div8);
-		descriptorSetLayouts.add(verticalBlurDescriptorSetLayout_div8);
-		
-		verticalBlurPipeline_div8 = new VkPipeline(device);
-		verticalBlurPipeline_div8.setPushConstantsRange(VK_SHADER_STAGE_COMPUTE_BIT, pushConstantRange);
-		verticalBlurPipeline_div8.setLayout(VkUtil.createLongBuffer(descriptorSetLayouts));
-		verticalBlurPipeline_div8.createComputePipeline(verticalBlurShader);
-		
-		descriptorSetLayouts = new ArrayList<DescriptorSetLayout>();
-		
-		// DIV 16
-		
-		verticalBlurDescriptorSetLayout_div16 = new DescriptorSetLayout(device, 2);
-		verticalBlurDescriptorSetLayout_div16.addLayoutBinding(0, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
-	    		VK_SHADER_STAGE_COMPUTE_BIT);
-		verticalBlurDescriptorSetLayout_div16.addLayoutBinding(1, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
-	    		VK_SHADER_STAGE_COMPUTE_BIT);
-		verticalBlurDescriptorSetLayout_div16.create();
-		
-		verticalBlurDescriptorSet_div16 = new DescriptorSet(device, descriptorPool.getHandle(),
-	    		verticalBlurDescriptorSetLayout_div16.getHandlePointer());
-		verticalBlurDescriptorSet_div16.updateDescriptorImageBuffer(
-				horizontalBloomBlurImageBundle_div16.getImageView().getHandle(),
-		    	VK_IMAGE_LAYOUT_GENERAL, -1, 0,
-		    	VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
-		verticalBlurDescriptorSet_div16.updateDescriptorImageBuffer(
+		verticalBlurDescriptorSet.updateDescriptorImageBuffer(
 				verticalBloomBlurImageBundle_div16.getImageView().getHandle(),
-				VK_IMAGE_LAYOUT_GENERAL, -1, 1,
+				VK_IMAGE_LAYOUT_GENERAL, -1, 3,
+				VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
+		verticalBlurDescriptorSet.updateDescriptorImageBuffer(
+				horizontalBloomBlurImageBundle_div2.getImageView().getHandle(),
+				VK_IMAGE_LAYOUT_GENERAL, -1, 4,
+				VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
+		verticalBlurDescriptorSet.updateDescriptorImageBuffer(
+				horizontalBloomBlurImageBundle_div4.getImageView().getHandle(),
+				VK_IMAGE_LAYOUT_GENERAL, -1, 5,
+				VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
+		verticalBlurDescriptorSet.updateDescriptorImageBuffer(
+				horizontalBloomBlurImageBundle_div8.getImageView().getHandle(),
+				VK_IMAGE_LAYOUT_GENERAL, -1, 6,
+				VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
+		verticalBlurDescriptorSet.updateDescriptorImageBuffer(
+				horizontalBloomBlurImageBundle_div16.getImageView().getHandle(),
+				VK_IMAGE_LAYOUT_GENERAL, -1, 7,
 				VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
 		
-		verticalBlurDescriptorSets_div16 = new ArrayList<DescriptorSet>();
-		verticalBlurDescriptorSets_div16.add(verticalBlurDescriptorSet_div16);
-		descriptorSetLayouts.add(verticalBlurDescriptorSetLayout_div16);
-		
-		verticalBlurPipeline_div16 = new VkPipeline(device);
-		verticalBlurPipeline_div16.setPushConstantsRange(VK_SHADER_STAGE_COMPUTE_BIT, pushConstantRange);
-		verticalBlurPipeline_div16.setLayout(VkUtil.createLongBuffer(descriptorSetLayouts));
-		verticalBlurPipeline_div16.createComputePipeline(verticalBlurShader);
-		
 		descriptorSetLayouts = new ArrayList<DescriptorSetLayout>();
+		verticalBlurDescriptorSets = new ArrayList<DescriptorSet>();
+		verticalBlurDescriptorSets.add(verticalBlurDescriptorSet);
+		descriptorSetLayouts.add(verticalBlurDescriptorSetLayout);
+		
+		verticalBlurPipeline = new VkPipeline(device);
+		verticalBlurPipeline.setPushConstantsRange(VK_SHADER_STAGE_COMPUTE_BIT, Float.BYTES * 12);
+		verticalBlurPipeline.setLayout(VkUtil.createLongBuffer(descriptorSetLayouts));
+		verticalBlurPipeline.createComputePipeline(verticalBlurShader);
 		
 		// aditive Blend
 		
@@ -553,6 +374,7 @@ public class Bloom {
 				VK_IMAGE_LAYOUT_GENERAL, bloomBlurSampler_div16.getHandle(), 4,
 				VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
 		
+		descriptorSetLayouts = new ArrayList<DescriptorSetLayout>();
 		blendDescriptorSets = new ArrayList<DescriptorSet>();
 		blendDescriptorSets.add(blendDescriptorSet);
 		descriptorSetLayouts.add(blendDescriptorSetLayout);
@@ -561,8 +383,6 @@ public class Bloom {
 		blendPipeline.setPushConstantsRange(VK_SHADER_STAGE_COMPUTE_BIT, pushConstantRange);
 		blendPipeline.setLayout(VkUtil.createLongBuffer(descriptorSetLayouts));
 		blendPipeline.createComputePipeline(additiveBlendShader);
-		
-		descriptorSetLayouts = new ArrayList<DescriptorSetLayout>();
 		
 		// final bloom scene
 		
@@ -596,6 +416,7 @@ public class Bloom {
 		    	VK_IMAGE_LAYOUT_GENERAL, -1, 3,
 		    	VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
 		
+		descriptorSetLayouts = new ArrayList<DescriptorSetLayout>();
 		bloomSceneDescriptorSets = new ArrayList<DescriptorSet>();
 		bloomSceneDescriptorSets.add(bloomSceneDescriptorSet);
 		descriptorSetLayouts.add(bloomSceneDescriptorSetLayout);
@@ -615,7 +436,7 @@ public class Bloom {
 		
 		// scene luminance
 		commandBuffer.pushConstantsCmd(sceneBrightnessPipeline.getLayoutHandle(),
-				VK_SHADER_STAGE_COMPUTE_BIT, pushConstants_brightness);
+				VK_SHADER_STAGE_COMPUTE_BIT, pushConstants);
 		commandBuffer.bindComputePipelineCmd(sceneBrightnessPipeline.getHandle());
 		commandBuffer.bindComputeDescriptorSetsCmd(sceneBrightnessPipeline.getLayoutHandle(),
 				VkUtil.createLongArray(sceneBrightnessDescriptorSets));
@@ -627,34 +448,13 @@ public class Bloom {
 	    		VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
 	    		VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT);
 		
-		// div2 horizontal blur
-		commandBuffer.pushConstantsCmd(horizontalBlurPipeline_div2.getLayoutHandle(),
-				VK_SHADER_STAGE_COMPUTE_BIT, pushConstants_div2);
-		commandBuffer.bindComputePipelineCmd(horizontalBlurPipeline_div2.getHandle());
-		commandBuffer.bindComputeDescriptorSetsCmd(horizontalBlurPipeline_div2.getLayoutHandle(),
-				VkUtil.createLongArray(horizontalBlurDescriptorSets_div2));
+		// horizontal blur
+		commandBuffer.pushConstantsCmd(horizontalBlurPipeline.getLayoutHandle(),
+				VK_SHADER_STAGE_COMPUTE_BIT, pushConstants);
+		commandBuffer.bindComputePipelineCmd(horizontalBlurPipeline.getHandle());
+		commandBuffer.bindComputeDescriptorSetsCmd(horizontalBlurPipeline.getLayoutHandle(),
+				VkUtil.createLongArray(horizontalBlurDescriptorSets));
 		commandBuffer.dispatchCmd(width/16, height/16, 1);
-		// div4 horizontal blur
-		commandBuffer.pushConstantsCmd(horizontalBlurPipeline_div4.getLayoutHandle(),
-				VK_SHADER_STAGE_COMPUTE_BIT, pushConstants_div4);
-		commandBuffer.bindComputePipelineCmd(horizontalBlurPipeline_div4.getHandle());
-		commandBuffer.bindComputeDescriptorSetsCmd(horizontalBlurPipeline_div4.getLayoutHandle(),
-				VkUtil.createLongArray(horizontalBlurDescriptorSets_div4));
-		commandBuffer.dispatchCmd(width/32, height/32, 1);
-		// div8 horizontal blur
-		commandBuffer.pushConstantsCmd(horizontalBlurPipeline_div8.getLayoutHandle(),
-				VK_SHADER_STAGE_COMPUTE_BIT, pushConstants_div8);
-		commandBuffer.bindComputePipelineCmd(horizontalBlurPipeline_div8.getHandle());
-		commandBuffer.bindComputeDescriptorSetsCmd(horizontalBlurPipeline_div8.getLayoutHandle(),
-				VkUtil.createLongArray(horizontalBlurDescriptorSets_div8));
-		commandBuffer.dispatchCmd(width/64, height/64, 1);
-		// div16 horizontal blur
-		commandBuffer.pushConstantsCmd(horizontalBlurPipeline_div16.getLayoutHandle(),
-				VK_SHADER_STAGE_COMPUTE_BIT, pushConstants_div16);
-		commandBuffer.bindComputePipelineCmd(horizontalBlurPipeline_div16.getHandle());
-		commandBuffer.bindComputeDescriptorSetsCmd(horizontalBlurPipeline_div16.getLayoutHandle(),
-				VkUtil.createLongArray(horizontalBlurDescriptorSets_div16));
-		commandBuffer.dispatchCmd(width/128, height/128, 1);
 		
 		// barrier
 		commandBuffer.pipelineMemoryBarrierCmd(
@@ -662,34 +462,13 @@ public class Bloom {
 	    		VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
 	    		VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT);
 		
-		// div2 vertical blur
-		commandBuffer.pushConstantsCmd(verticalBlurPipeline_div2.getLayoutHandle(),
-				VK_SHADER_STAGE_COMPUTE_BIT, pushConstants_div2);
-		commandBuffer.bindComputePipelineCmd(verticalBlurPipeline_div2.getHandle());
-		commandBuffer.bindComputeDescriptorSetsCmd(verticalBlurPipeline_div2.getLayoutHandle(),
-				VkUtil.createLongArray(verticalBlurDescriptorSets_div2));
+		// vertical blur
+		commandBuffer.pushConstantsCmd(verticalBlurPipeline.getLayoutHandle(),
+				VK_SHADER_STAGE_COMPUTE_BIT, pushConstants);
+		commandBuffer.bindComputePipelineCmd(verticalBlurPipeline.getHandle());
+		commandBuffer.bindComputeDescriptorSetsCmd(verticalBlurPipeline.getLayoutHandle(),
+				VkUtil.createLongArray(verticalBlurDescriptorSets));
 		commandBuffer.dispatchCmd(width/16, height/16, 1);
-		// div4 horizontal blur
-		commandBuffer.pushConstantsCmd(verticalBlurPipeline_div4.getLayoutHandle(),
-				VK_SHADER_STAGE_COMPUTE_BIT, pushConstants_div4);
-		commandBuffer.bindComputePipelineCmd(verticalBlurPipeline_div4.getHandle());
-		commandBuffer.bindComputeDescriptorSetsCmd(verticalBlurPipeline_div4.getLayoutHandle(),
-				VkUtil.createLongArray(verticalBlurDescriptorSets_div4));
-		commandBuffer.dispatchCmd(width/32, height/32, 1);
-		// div8 horizontal blur
-		commandBuffer.pushConstantsCmd(verticalBlurPipeline_div8.getLayoutHandle(),
-				VK_SHADER_STAGE_COMPUTE_BIT, pushConstants_div8);
-		commandBuffer.bindComputePipelineCmd(verticalBlurPipeline_div8.getHandle());
-		commandBuffer.bindComputeDescriptorSetsCmd(verticalBlurPipeline_div8.getLayoutHandle(),
-				VkUtil.createLongArray(verticalBlurDescriptorSets_div8));
-		commandBuffer.dispatchCmd(width/64, height/64, 1);
-		// div16 horizontal blur
-		commandBuffer.pushConstantsCmd(verticalBlurPipeline_div16.getLayoutHandle(),
-				VK_SHADER_STAGE_COMPUTE_BIT, pushConstants_div16);
-		commandBuffer.bindComputePipelineCmd(verticalBlurPipeline_div16.getHandle());
-		commandBuffer.bindComputeDescriptorSetsCmd(verticalBlurPipeline_div16.getLayoutHandle(),
-				VkUtil.createLongArray(verticalBlurDescriptorSets_div16));
-		commandBuffer.dispatchCmd(width/128, height/128, 1);
 		
 		// barrier
 		commandBuffer.pipelineMemoryBarrierCmd(
@@ -722,10 +501,10 @@ public class Bloom {
 			VkPhysicalDeviceMemoryProperties memoryProperties, int width, int height){
 		
 		VkImage bloomSceneImage = new Image2DDeviceLocal(device, memoryProperties, 
-				width, height, VK_FORMAT_R16G16B16A16_SFLOAT, VK_IMAGE_USAGE_STORAGE_BIT
+				width, height, VK_FORMAT_B8G8R8A8_SRGB, VK_IMAGE_USAGE_STORAGE_BIT
 				| VK_IMAGE_USAGE_SAMPLED_BIT);
 		VkImageView bloomSceneImageView = new VkImageView(device,
-				VK_FORMAT_R16G16B16A16_SFLOAT, bloomSceneImage.getHandle(), VK_IMAGE_ASPECT_COLOR_BIT);
+				VK_FORMAT_B8G8R8A8_SRGB, bloomSceneImage.getHandle(), VK_IMAGE_ASPECT_COLOR_BIT);
 		
 		bloomSceneImageBundle = new VkImageBundle(bloomSceneImage, bloomSceneImageView);
 		
@@ -776,7 +555,7 @@ public class Bloom {
 				brightnessSampler_div8);
 		
 		VkImage sceneBrightnessImage_div16 = new Image2DDeviceLocal(device, memoryProperties, 
-				(int) (width/16.0f), (int) (height/16.0f), VK_FORMAT_R16G16B16A16_SFLOAT, VK_IMAGE_USAGE_STORAGE_BIT
+				(int) (width/12.0f), (int) (height/12.0f), VK_FORMAT_R16G16B16A16_SFLOAT, VK_IMAGE_USAGE_STORAGE_BIT
 				| VK_IMAGE_USAGE_SAMPLED_BIT);
 		VkImageView sceneBrightnessImageView_div16 = new VkImageView(device,
 				VK_FORMAT_R16G16B16A16_SFLOAT, sceneBrightnessImage_div16.getHandle(), VK_IMAGE_ASPECT_COLOR_BIT);
@@ -818,7 +597,7 @@ public class Bloom {
 				horizontalBloomBlurImageView_div8);
 		
 		VkImage horizontalBloomBlurImage_div16 = new Image2DDeviceLocal(device, memoryProperties, 
-				(int) (width/16.0f), (int) (height/16.0f), VK_FORMAT_R16G16B16A16_SFLOAT,
+				(int) (width/12.0f), (int) (height/12.0f), VK_FORMAT_R16G16B16A16_SFLOAT,
 				VK_IMAGE_USAGE_STORAGE_BIT | VK_IMAGE_USAGE_SAMPLED_BIT);
 		VkImageView horizontalBloomBlurImageView_div16 = new VkImageView(device,
 				VK_FORMAT_R16G16B16A16_SFLOAT, horizontalBloomBlurImage_div16.getHandle(), VK_IMAGE_ASPECT_COLOR_BIT);
@@ -856,7 +635,7 @@ public class Bloom {
 				verticalBloomBlurImageView_div8);
 		
 		VkImage verticalBloomBlurImage_div16 = new Image2DDeviceLocal(device, memoryProperties, 
-				(int) (width/16.0f), (int) (height/16.0f), VK_FORMAT_R16G16B16A16_SFLOAT,
+				(int) (width/12.0f), (int) (height/12.0f), VK_FORMAT_R16G16B16A16_SFLOAT,
 				VK_IMAGE_USAGE_STORAGE_BIT | VK_IMAGE_USAGE_SAMPLED_BIT);
 		VkImageView verticalBloomBlurImageView_div16 = new VkImageView(device,
 				VK_FORMAT_R16G16B16A16_SFLOAT, verticalBloomBlurImage_div16.getHandle(), VK_IMAGE_ASPECT_COLOR_BIT);
@@ -880,30 +659,12 @@ public class Bloom {
 		sceneBrightnessPipeline.destroy();
 		sceneBrightnessDescriptorSet.destroy();
 		sceneBrightnessDescriptorSetLayout.destroy();
-		horizontalBlurPipeline_div2.destroy();
-		horizontalBlurDescriptorSet_div2.destroy();
-		horizontalBlurDescriptorSetLayout_div2.destroy();
-		horizontalBlurPipeline_div4.destroy();
-		horizontalBlurDescriptorSet_div4.destroy();
-		horizontalBlurDescriptorSetLayout_div4.destroy();
-		horizontalBlurPipeline_div8.destroy();
-		horizontalBlurDescriptorSet_div8.destroy();
-		horizontalBlurDescriptorSetLayout_div8.destroy();
-		horizontalBlurPipeline_div16.destroy();
-		horizontalBlurDescriptorSet_div16.destroy();
-		horizontalBlurDescriptorSetLayout_div16.destroy();
-		verticalBlurPipeline_div2.destroy();
-		verticalBlurDescriptorSet_div2.destroy();
-		verticalBlurDescriptorSetLayout_div2.destroy();
-		verticalBlurPipeline_div4.destroy();
-		verticalBlurDescriptorSet_div4.destroy();
-		verticalBlurDescriptorSetLayout_div4.destroy();
-		verticalBlurPipeline_div8.destroy();
-		verticalBlurDescriptorSet_div8.destroy();
-		verticalBlurDescriptorSetLayout_div8.destroy();
-		verticalBlurPipeline_div16.destroy();
-		verticalBlurDescriptorSet_div16.destroy();
-		verticalBlurDescriptorSetLayout_div16.destroy();
+		horizontalBlurPipeline.destroy();
+		horizontalBlurDescriptorSet.destroy();
+		horizontalBlurDescriptorSetLayout.destroy();
+		verticalBlurPipeline.destroy();
+		verticalBlurDescriptorSet.destroy();
+		verticalBlurDescriptorSetLayout.destroy();
 		blendPipeline.destroy();
 		blendDescriptorSet.destroy();
 		blendDescriptorSetLayout.destroy();

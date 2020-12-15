@@ -64,6 +64,7 @@ public class Config {
 	private float atmosphereBloomFactor;
 	private Vec3f fogColor;
 	private float horizonVerticalShift;
+	private float horizonReflectionVerticalShift;
 	private float sightRange;
 	
 	// postprocessing parameters
@@ -136,6 +137,7 @@ public class Config {
 				ambient = Float.valueOf(properties.getProperty("ambient"));
 				AtmosphericScatteringEnable = Integer.valueOf(properties.getProperty("atmosphere.scattering.enable")) == 1 ? true : false;
 				horizonVerticalShift = Float.valueOf(properties.getProperty("horizon.verticalShift"));
+				horizonReflectionVerticalShift = Float.valueOf(properties.getProperty("horizon.reflection.verticalShift"));
 				atmosphereBloomFactor = Float.valueOf(properties.getProperty("atmosphere.bloom.factor"));
 				sightRange = Float.valueOf(properties.getProperty("sightRange"));
 				fogColor = new Vec3f(Float.valueOf(properties.getProperty("fog.color.r")),
