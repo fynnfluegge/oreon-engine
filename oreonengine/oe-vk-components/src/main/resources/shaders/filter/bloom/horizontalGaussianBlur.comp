@@ -3,29 +3,82 @@
 
 layout (local_size_x = 8, local_size_y = 8) in;
 
-layout (binding = 0, rgba16f) uniform writeonly image2D horizontalBloomBlurSampler;
+layout (binding = 0, rgba16f) uniform writeonly image2D horizontalBloomBlurImage0;
+layout (binding = 1, rgba16f) uniform writeonly image2D horizontalBloomBlurImage1;
+layout (binding = 2, rgba16f) uniform writeonly image2D horizontalBloomBlurImage2;
+layout (binding = 3, rgba16f) uniform writeonly image2D horizontalBloomBlurImage3;
 
-layout (binding = 1) uniform sampler2D brightnessSampler;
+layout (binding = 4) uniform sampler2D sceneBrightnessSampler0;
+layout (binding = 5) uniform sampler2D sceneBrightnessSampler1;
+layout (binding = 6) uniform sampler2D sceneBrightnessSampler2;
+layout (binding = 7) uniform sampler2D sceneBrightnessSampler3;
 
-layout (push_constant, std430, row_major) uniform pushConstants{
-	float width;
-	float height;
+layout (push_constant) uniform pushConstants{
+	float widthDiv0;
+	float heightDiv0;
+	float widthDiv1;
+	float heightDiv1;
+	float widthDiv2;
+	float heightDiv2;
+	float widthDiv3;
+	float heightDiv3;
+	float div0;
+	float div1;
+	float div2;
+	float div3;
 } constants;
 
 const float gaussianKernel7_sigma2[7] = float[7](0.071303,0.131514,0.189879,0.214607,0.189879,0.131514,0.071303);
 const float gaussianKernel9_sigma3[9] = float[9](0.063327,0.093095,0.122589,0.144599,0.152781,0.144599,0.122589,0.093095,0.063327);
 const float gaussianKernel9_sigma4[9] = float[9](0.081812,0.101701,0.118804,0.130417,0.134535,0.130417,0.118804,0.101701,0.081812);
 const float gaussianKernel9_sigma1[9] = float[9](0.000229,0.005977,0.060598,0.241732,0.382928,0.241732,0.060598,0.005977,0.000229);
+const float gaussianKernel9_sigma2[9] = float[9](0.028532,0.067234,0.124009,0.179044,0.20236,0.179044,0.124009,0.067234,0.028532);
 
 void main(void){
 
 	ivec2 computeCoord = ivec2(gl_GlobalInvocationID.x, gl_GlobalInvocationID.y);
-	vec2 texCoord = vec2(gl_GlobalInvocationID.x/constants.width,gl_GlobalInvocationID.y/constants.height);
+	vec2 uv = vec2(gl_GlobalInvocationID.x,gl_GlobalInvocationID.y);
+	vec2 tmpUv = vec2(0);
+	vec2 uvOffset = vec2(0);
 	
-	vec3 color = vec3(0,0,0);
+	vec3 color0 = vec3(0);
+	vec3 color1 = vec3(0);
+	vec3 color2 = vec3(0);
+	vec3 color3 = vec3(0);
+	
 	for (int i=0; i<9; i++){
-		color += texture(brightnessSampler, texCoord + vec2((i-4)/constants.width,0)).rgb * gaussianKernel9_sigma1[i];
+		
+		if (computeCoord.x <= constants.widthDiv0 && computeCoord.y <= constants.heightDiv0){
+			uvOffset = vec2((i-3.5),0.5);
+			tmpUv = uv + uvOffset;
+			color0 += texture(sceneBrightnessSampler0, vec2(tmpUv.x/constants.widthDiv0, tmpUv.y/constants.heightDiv0)).rgb * gaussianKernel9_sigma2[i];
+		}
+		
+		if (computeCoord.x <= constants.widthDiv1 && computeCoord.y <= constants.heightDiv1){
+			uvOffset = vec2((i-3.5),0.5);
+			tmpUv = uv + uvOffset;
+			color1 += texture(sceneBrightnessSampler1, vec2(tmpUv.x/constants.widthDiv1, tmpUv.y/constants.heightDiv1)).rgb * gaussianKernel9_sigma2[i];
+		}
+		
+		if (computeCoord.x <= constants.widthDiv2 && computeCoord.y <= constants.heightDiv2){
+			uvOffset = vec2((i-3.5),0.5);
+			tmpUv = uv + uvOffset;
+			color2 += texture(sceneBrightnessSampler2, vec2(tmpUv.x/constants.widthDiv2, tmpUv.y/constants.heightDiv2)).rgb * gaussianKernel9_sigma2[i];
+		}
+		
+		if (computeCoord.x <= constants.widthDiv3 && computeCoord.y <= constants.heightDiv3){
+			uvOffset = vec2((i-3.5),0.5);
+			tmpUv = uv + uvOffset;
+			color3 += texture(sceneBrightnessSampler3, vec2(tmpUv.x/constants.widthDiv3, tmpUv.y/constants.heightDiv3)).rgb * gaussianKernel9_sigma2[i];
+		}
 	}
 
-	imageStore(horizontalBloomBlurSampler, computeCoord, vec4(color, 1.0));
+	if (computeCoord.x <= constants.widthDiv0 && computeCoord.y <= constants.heightDiv0)
+		imageStore(horizontalBloomBlurImage0, computeCoord, vec4(color0, 1.0));
+	if (computeCoord.x <= constants.widthDiv1 && computeCoord.y <= constants.heightDiv1)
+		imageStore(horizontalBloomBlurImage1, computeCoord, vec4(color1, 1.0));
+	if (computeCoord.x <= constants.widthDiv2 && computeCoord.y <= constants.heightDiv2)
+		imageStore(horizontalBloomBlurImage2, computeCoord, vec4(color2, 1.0));
+	if (computeCoord.x <= constants.widthDiv3 && computeCoord.y <= constants.heightDiv3)
+		imageStore(horizontalBloomBlurImage3, computeCoord, vec4(color3, 1.0));
 }

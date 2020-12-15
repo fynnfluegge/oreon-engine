@@ -5,18 +5,74 @@ layout (local_size_x = 8, local_size_y = 8) in;
 
 layout (binding = 0, rgba16f) uniform readonly image2D sceneImage;
 
-layout (binding = 1, rgba16f) uniform writeonly image2D brightnessImage;
+layout (binding = 1, rgba16f) uniform writeonly image2D brightnessImageDiv0;
+layout (binding = 2, rgba16f) uniform writeonly image2D brightnessImageDiv1;
+layout (binding = 3, rgba16f) uniform writeonly image2D brightnessImageDiv2;
+layout (binding = 4, rgba16f) uniform writeonly image2D brightnessImageDiv3;
+
+layout (push_constant) uniform pushConstants{
+	float widthDiv0;
+	float heightDiv0;
+	float widthDiv1;
+	float heightDiv1;
+	float widthDiv2;
+	float heightDiv2;
+	float widthDiv3;
+	float heightDiv3;
+	float div0;
+	float div1;
+	float div2;
+	float div3;
+} constants;
+
+vec3 blur(ivec2 computeCoord, int kernels){
+	
+	vec3 rgb = vec3(0,0,0);
+	vec3 tmpSample = vec3(0);
+	float divisor = pow(kernels*2+1,2);
+
+	for (int i=-kernels; i<=kernels; i++){
+		for (int j=-kernels; j<=kernels; j++){
+		
+			tmpSample = imageLoad(sceneImage, computeCoord + ivec2(i,j)).rgb;
+			
+			if (isnan(tmpSample.r))
+				tmpSample.r = 0;
+			if (isnan(tmpSample.g))
+				tmpSample.g = 0;
+			if (isnan(tmpSample.b))
+				tmpSample.b = 0;
+			
+			if (tmpSample != vec3(0))
+				rgb += tmpSample;
+			else
+				divisor--;
+		}
+	}
+
+	rgb *= 1/ divisor;
+	
+	return rgb;
+}
+
+vec3 brightColor(vec3 color) {
+
+	float brightness = dot(color, vec3(0.2126, 0.7152, 0.0722));
+
+	return color * pow(brightness,1);
+}
 
 void main(void){
 
 	ivec2 computeCoord = ivec2(gl_GlobalInvocationID.x, gl_GlobalInvocationID.y);
 
 	vec3 color = imageLoad(sceneImage, computeCoord).rgb;  
-	
-	float brightness = clamp(dot(color, vec3(0.2126, 0.7152, 0.0722)),0.0f,2.0f);
-	
-	float bloomAttenuation = 2.8;
-	vec3 brightColor = color * pow(brightness,1);
 		
-	imageStore(brightnessImage, computeCoord, vec4(brightColor, 1.0));
+	imageStore(brightnessImageDiv0, computeCoord, vec4(brightColor(color), 1.0));
+	if (computeCoord.x <= constants.widthDiv1 && computeCoord.y <= constants.heightDiv1)
+		imageStore(brightnessImageDiv1, computeCoord, vec4(brightColor(blur(computeCoord*int(constants.div1), 2)), 1.0));
+	if (computeCoord.x <= constants.widthDiv2 && computeCoord.y <= constants.heightDiv2)
+		imageStore(brightnessImageDiv2, computeCoord, vec4(brightColor(blur(computeCoord*int(constants.div2), 3)), 1.0));
+	if (computeCoord.x <= constants.widthDiv3 && computeCoord.y <= constants.heightDiv3)
+		imageStore(brightnessImageDiv3, computeCoord, vec4(brightColor(blur(computeCoord*int(constants.div3), 5)), 1.0));
 }

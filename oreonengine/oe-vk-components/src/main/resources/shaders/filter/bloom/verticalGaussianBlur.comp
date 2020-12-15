@@ -3,24 +3,66 @@
 
 layout (local_size_x = 8, local_size_y = 8) in;
 
-layout (binding = 0, rgba16f) uniform readonly image2D horizontalBloomBlurSampler;
+layout (binding = 0, rgba16f) uniform writeonly image2D verticalBloomBlurSampler0;
+layout (binding = 1, rgba16f) uniform writeonly image2D verticalBloomBlurSampler1;
+layout (binding = 2, rgba16f) uniform writeonly image2D verticalBloomBlurSampler2;
+layout (binding = 3, rgba16f) uniform writeonly image2D verticalBloomBlurSampler3;
 
-layout (binding = 1, rgba16f) uniform writeonly image2D verticalBloomBlurSampler;
+layout (binding = 4, rgba16f) uniform readonly image2D horizontalBloomBlurSampler0Image;
+layout (binding = 5, rgba16f) uniform readonly image2D horizontalBloomBlurSampler1Image;
+layout (binding = 6, rgba16f) uniform readonly image2D horizontalBloomBlurSampler2Image;
+layout (binding = 7, rgba16f) uniform readonly image2D horizontalBloomBlurSampler3Image;
+
+layout (push_constant) uniform pushConstants{
+	float widthDiv0;
+	float heightDiv0;
+	float widthDiv1;
+	float heightDiv1;
+	float widthDiv2;
+	float heightDiv2;
+	float widthDiv3;
+	float heightDiv3;
+	float div0;
+	float div1;
+	float div2;
+	float div3;
+} constants;
 
 const float gaussianKernel7_sigma2[7] = float[7](0.071303,0.131514,0.189879,0.214607,0.189879,0.131514,0.071303);
 const float gaussianKernel9_sigma3[9] = float[9](0.063327,0.093095,0.122589,0.144599,0.152781,0.144599,0.122589,0.093095,0.063327);
 const float gaussianKernel9_sigma4[9] = float[9](0.081812,0.101701,0.118804,0.130417,0.134535,0.130417,0.118804,0.101701,0.081812);
+const float gaussianKernel9_sigma2[9] = float[9](0.028532,0.067234,0.124009,0.179044,0.20236,0.179044,0.124009,0.067234,0.028532);
 const float gaussianKernel9_sigma1[9] = float[9](0.000229,0.005977,0.060598,0.241732,0.382928,0.241732,0.060598,0.005977,0.000229);
 
 void main(void){
 
 	ivec2 computeCoord = ivec2(gl_GlobalInvocationID.x, gl_GlobalInvocationID.y);
 	
-	vec3 color = vec3(0,0,0);
+	vec3 color0 = vec3(0,0,0);
+	vec3 color1 = vec3(0,0,0);
+	vec3 color2 = vec3(0,0,0);
+	vec3 color3 = vec3(0,0,0);
+	
 	for (int i=0; i<9; i++){
-		
-		color += imageLoad(horizontalBloomBlurSampler, computeCoord + ivec2(0,i-4)).rgb * gaussianKernel9_sigma1[i];
+
+		ivec2 uvOffset = ivec2(0,i-4);
+		ivec2 uv = computeCoord + uvOffset;
+		if (computeCoord.x <= constants.widthDiv0 && computeCoord.y <= constants.heightDiv0)
+			color0 += imageLoad(horizontalBloomBlurSampler0Image, uv).rgb * gaussianKernel9_sigma2[i];
+		if (computeCoord.x <= constants.widthDiv1 && computeCoord.y <= constants.heightDiv1)
+			color1 += imageLoad(horizontalBloomBlurSampler1Image, uv).rgb * gaussianKernel9_sigma2[i];
+		if (computeCoord.x <= constants.widthDiv2 && computeCoord.y <= constants.heightDiv2)
+			color2 += imageLoad(horizontalBloomBlurSampler2Image, uv).rgb * gaussianKernel9_sigma2[i];
+		if (computeCoord.x <= constants.widthDiv3 && computeCoord.y <= constants.heightDiv3)
+			color3 += imageLoad(horizontalBloomBlurSampler3Image, uv).rgb * gaussianKernel9_sigma2[i];
 	}
 
-	imageStore(verticalBloomBlurSampler, computeCoord, vec4(color, 1.0));
+	if (computeCoord.x <= constants.widthDiv0 && computeCoord.y <= constants.heightDiv0)
+		imageStore(verticalBloomBlurSampler0, computeCoord, vec4(color0, 1.0));
+	if (computeCoord.x <= constants.widthDiv1 && computeCoord.y <= constants.heightDiv1)
+		imageStore(verticalBloomBlurSampler1, computeCoord, vec4(color1, 1.0));
+	if (computeCoord.x <= constants.widthDiv2 && computeCoord.y <= constants.heightDiv2)
+		imageStore(verticalBloomBlurSampler2, computeCoord, vec4(color2, 1.0));
+	if (computeCoord.x <= constants.widthDiv3 && computeCoord.y <= constants.heightDiv3)
+		imageStore(verticalBloomBlurSampler3, computeCoord, vec4(color3, 1.0));
 }

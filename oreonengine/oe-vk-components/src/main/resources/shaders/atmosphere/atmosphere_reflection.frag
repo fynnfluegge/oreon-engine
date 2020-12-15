@@ -10,9 +10,9 @@ const vec3 baseColor = vec3(0.18,0.27,0.47);
 
 void main()
 {
-	float red = -0.00022*(abs(worldPosition.y)-2800) + 0.18;
-	float green = -0.00025*(abs(worldPosition.y)-2800) + 0.27;
-	float blue = -0.00019*(abs(worldPosition.y)-2800) + 0.47;
+	float red = (-0.00022*(abs(worldPosition.y)-2800) + 0.18 * 0.5);
+	float green = (-0.00025*(abs(worldPosition.y)-2800) + 0.27 * 0.5);
+	float blue = (-0.00019*(abs(worldPosition.y)-2800) + 0.47 * 0.5);
 	
 	albedo_out = vec4(red,green,blue,1);
 	normal_out = vec4(0.0,0.0,0.0,1.0);

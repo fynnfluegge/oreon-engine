@@ -7,10 +7,10 @@ layout (location = 0) out vec3 modelPosition;
 
 uniform mat4 modelViewProjectionMatrix;
 uniform mat4 modelMatrix;
-
 void main()
 {
 	gl_Position = modelViewProjectionMatrix * vec4(inPosition,1);
+
 	modelPosition = (modelMatrix * vec4(inPosition,1)).xyz;
 }
 

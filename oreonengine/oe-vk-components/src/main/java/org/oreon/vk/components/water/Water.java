@@ -45,6 +45,7 @@ import org.lwjgl.vulkan.VkQueue;
 import org.oreon.common.water.WaterConfig;
 import org.oreon.core.context.BaseContext;
 import org.oreon.core.math.Vec2f;
+import org.oreon.core.math.Vec3f;
 import org.oreon.core.math.Vec4f;
 import org.oreon.core.model.Vertex.VertexLayout;
 import org.oreon.core.scenegraph.NodeComponentType;
@@ -420,7 +421,7 @@ public class Water extends Renderable{
 				refractionFbo.getHeight(),
 				refractionFbo.getColorAttachmentCount(),
 				refractionFbo.getDepthAttachmentCount(),
-				waterConfig.getBaseColor().mul(1.5f),
+				new Vec3f(0.1f,0.14f,0.15f).mul(1.4f),
 				null);
 		offScreenRefractionSubmitInfo.submit(
 				graphicsQueue);

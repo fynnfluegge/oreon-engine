@@ -41,7 +41,7 @@ public class AtmosphereShader extends GLShaderProgram{
 	public void updateUniforms(Renderable object)
 	{
 		setUniform("modelViewProjectionMatrix", object.getWorldTransform().getModelViewProjectionMatrix());
-		setUniform("modelMatrix", object.getWorldTransform().getModelMatrix());
+		setUniform("modelMatrix", object.getWorldTransform().getWorldMatrix());
 		setUniform("m_ViewProjection", BaseContext.getCamera().getOriginViewProjectionMatrix());
 		setUniform("v_SunWorld", BaseContext.getConfig().getSunPosition().mul(-Constants.ZFAR));
 		setUniformf("r_Sun", BaseContext.getConfig().getSunRadius());
