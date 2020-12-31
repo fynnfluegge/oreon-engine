@@ -24,7 +24,7 @@ public class VkSystemMonitor extends VkGUI {
 		super.init(imageView, waitSemaphores);
 		bean = (com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
 		UIScreen screen0 = new UIScreen();
-		screen0.getElements().add(new VkColorPanel(new Vec4f(0,0,0,0.5f), 0, 215, 325, 225,
+		screen0.getElements().add(new VkColorPanel(new Vec4f(0,0,0,0.5f), 0, 160, 220, 160,
 				panelMeshBuffer, guiOverlayFbo));
 		screen0.getElements().add(new VkStaticTextPanel("FPS:", 20, 45, 40, 40,
 				fontsImageBundle.getImageView(), fontsImageBundle.getSampler(), guiOverlayFbo));
@@ -34,7 +34,7 @@ public class VkSystemMonitor extends VkGUI {
 				fontsImageBundle.getImageView(), fontsImageBundle.getSampler(), guiOverlayFbo));
 		screen0.getElements().add(new VkDynamicTextPanel("000", 120, 90, 40, 40,
 				fontsImageBundle.getImageView(), fontsImageBundle.getSampler(), guiOverlayFbo));
-		screen0.getElements().add(new VkTexturePanel("textures/logo/Vulkan_Logo.png", 0, 220, 310, 130,
+		screen0.getElements().add(new VkTexturePanel("textures/logo/Vulkan_Logo.png", 0, 160, 200, 75,
 				panelMeshBuffer, guiOverlayFbo));
 		getScreens().add(screen0);
 	}

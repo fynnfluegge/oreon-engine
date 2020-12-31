@@ -15,7 +15,7 @@ public class PointLight extends Light{
 	private float SpotExponent;
 	
 	public PointLight(Vec3f position, Vec3f color, float intensity) {
-		super(color, intensity);
+		super(position, color, intensity);
 		this.position = position;
 	}
 

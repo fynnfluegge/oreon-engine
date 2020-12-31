@@ -13,10 +13,11 @@ public class Light extends Node{
 	protected float intensity;
 	private OcclusionQuery occlusionQuery;
 	
-	public Light(Vec3f color, float intensity)
+	public Light(Vec3f position, Vec3f color, float intensity)
 	{
 		this.color = color;
 		this.intensity = intensity;
+		getLocalTransform().setTranslation(position);
 	}
 	
 	public Light() {}
@@ -31,7 +32,7 @@ public class Light extends Node{
 		}
 		
 		Vec2f windowSpacePos = (new Vec2f(ndcSpacePos.getX(), ndcSpacePos.getY()).add(1.0f)).div(2.0f).mul(
-									new Vec2f(BaseContext.getWindow().getWidth(),BaseContext.getWindow().getHeight()));
+									new Vec2f(BaseContext.getConfig().getFrameWidth(),BaseContext.getConfig().getFrameHeight()));
 		
 		return windowSpacePos;
 	}

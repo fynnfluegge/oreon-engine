@@ -240,15 +240,15 @@ public class Bloom {
 				VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
 		horizontalBlurDescriptorSet.updateDescriptorImageBuffer(
 				sceneBrightnessImageBundle_div4.getImageView().getHandle(),
-				VK_IMAGE_LAYOUT_GENERAL, sceneBrightnessImageBundle.getSampler().getHandle(), 5,
+				VK_IMAGE_LAYOUT_GENERAL, sceneBrightnessImageBundle_div4.getSampler().getHandle(), 5,
 				VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
 		horizontalBlurDescriptorSet.updateDescriptorImageBuffer(
 				sceneBrightnessImageBundle_div8.getImageView().getHandle(),
-				VK_IMAGE_LAYOUT_GENERAL, sceneBrightnessImageBundle.getSampler().getHandle(), 6,
+				VK_IMAGE_LAYOUT_GENERAL, sceneBrightnessImageBundle_div8.getSampler().getHandle(), 6,
 				VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
 		horizontalBlurDescriptorSet.updateDescriptorImageBuffer(
 				sceneBrightnessImageBundle_div16.getImageView().getHandle(),
-				VK_IMAGE_LAYOUT_GENERAL, sceneBrightnessImageBundle.getSampler().getHandle(), 7,
+				VK_IMAGE_LAYOUT_GENERAL, sceneBrightnessImageBundle_div16.getSampler().getHandle(), 7,
 				VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
 		
 		descriptorSetLayouts = new ArrayList<DescriptorSetLayout>();
