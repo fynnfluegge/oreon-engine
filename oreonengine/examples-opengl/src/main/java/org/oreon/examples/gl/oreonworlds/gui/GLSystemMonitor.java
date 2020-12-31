@@ -10,6 +10,7 @@ import org.oreon.gl.components.ui.GLColorPanel;
 import org.oreon.gl.components.ui.GLDynamicTextPanel;
 import org.oreon.gl.components.ui.GLGUI;
 import org.oreon.gl.components.ui.GLStaticTextPanel;
+import org.oreon.gl.components.ui.GLTexturePanel;
 
 public class GLSystemMonitor extends GLGUI{
 
@@ -25,7 +26,7 @@ public class GLSystemMonitor extends GLGUI{
 		
 		UIScreen screen0 = new UIScreen();
 		screen0.getElements().add(new GLColorPanel(new Vec4f(0,0,0,0.5f), 0,
-				BaseContext.getConfig().getWindowHeight() - ((int) (85 * vHeaderOffset)), 220, 250, panelMeshBuffer));
+				BaseContext.getConfig().getWindowHeight() - ((int) (180 * vHeaderOffset)), 240, 260, panelMeshBuffer));
 		screen0.getElements().add(new GLStaticTextPanel("FPS:", 10,
 				BaseContext.getConfig().getWindowHeight() - ((int) (40 * vHeaderOffset)), 40, 40, fontsTexture));
 		screen0.getElements().add(new GLStaticTextPanel("CPU:", 10,
@@ -34,8 +35,8 @@ public class GLSystemMonitor extends GLGUI{
 				BaseContext.getConfig().getWindowHeight() - ((int) (40 * vHeaderOffset)), 40, 40, fontsTexture));
 		screen0.getElements().add(new GLDynamicTextPanel("000", 110,
 				BaseContext.getConfig().getWindowHeight() - ((int) (80 * vHeaderOffset)), 40, 40, fontsTexture));
-//		screen0.getElements().add(new GLTexturePanel("textures/logo/OpenGL_Logo.png", 0,
-//				BaseContext.getConfig().getWindowHeight()-240, 360, 160, panelMeshBuffer));
+		screen0.getElements().add(new GLTexturePanel("textures/logo/OpenGL_Logo.png", 0,
+				BaseContext.getConfig().getWindowHeight()-175, 240, 100, panelMeshBuffer));
 		getScreens().add(screen0);
 	}
 	

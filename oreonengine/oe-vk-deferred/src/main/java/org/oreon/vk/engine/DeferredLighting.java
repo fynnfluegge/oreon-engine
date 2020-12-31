@@ -134,7 +134,7 @@ public class DeferredLighting {
 		commandBuffer.bindComputePipelineCmd(computePipeline.getHandle());
 		commandBuffer.bindComputeDescriptorSetsCmd(computePipeline.getLayoutHandle(),
 				VkUtil.createLongArray(descriptorSets));
-		commandBuffer.dispatchCmd(width/16, height/16, 1);
+		commandBuffer.dispatchCmd(width/2, height/2, 1);
 	}
 	
 	

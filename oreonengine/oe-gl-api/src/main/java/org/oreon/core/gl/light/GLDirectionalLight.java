@@ -1,7 +1,9 @@
 package org.oreon.core.gl.light;
 
 import org.oreon.core.gl.memory.GLUniformBuffer;
+import org.oreon.core.gl.query.GLOcclusionQuery;
 import org.oreon.core.light.DirectionalLight;
+import org.oreon.core.light.LightHandler;
 import org.oreon.core.util.Constants;
 
 import lombok.Getter;
@@ -28,6 +30,10 @@ public class GLDirectionalLight extends DirectionalLight{
 		getUbo_matrices().allocate(getMatricesBufferSize());
 	
 		getUbo_matrices().updateData(getFloatBufferMatrices(), getMatricesBufferSize());
+		
+		setOcclusionQuery(new GLOcclusionQuery());
+		
+		LightHandler.getLights().add(this);
 	}
 	
 	public void updateLightUbo(){

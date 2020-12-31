@@ -36,15 +36,17 @@ public abstract class DirectionalLight extends Light{
 	
 	private DirectionalLight(Vec3f direction, Vec3f ambient, Vec3f color, float intensity) {
 		
-		super(color, intensity);
+		super(direction, color, intensity);
 		this.direction = direction;
 		this.setAmbient(ambient);
+		
+		getLocalTransform().setTranslation(direction.add(new Vec3f(0,BaseContext.getConfig().getHorizonVerticalShift(),0)).mul(Constants.ZFAR * 100));
 		
 		up = new Vec3f(direction.getX(),0,direction.getZ());
 		up.setY(-(up.getX() * direction.getX() + up.getZ() * direction.getZ())/direction.getY());
 		
 		if (direction.dot(up) != 0) 
-//			log.warn("DirectionalLight vector up " + up + " and direction " +  direction + " not orthogonal");
+		// log.warn("DirectionalLight vector up " + up + " and direction " +  direction + " not orthogonal");
 			
 		right = up.cross(getDirection()).normalize();
 		m_View = new Matrix4f().View(getDirection(), up);	
@@ -162,6 +164,8 @@ public abstract class DirectionalLight extends Light{
 		m_View = new Matrix4f().View(getDirection(), up);
 		
 		BaseContext.getConfig().setSunPosition(getDirection());
+		
+		getLocalTransform().setTranslation(getDirection().add(new Vec3f(0,BaseContext.getConfig().getHorizonVerticalShift(),0)).mul(Constants.ZFAR * 100));
 	}
 	
 	

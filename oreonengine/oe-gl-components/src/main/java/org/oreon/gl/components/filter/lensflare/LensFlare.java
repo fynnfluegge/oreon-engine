@@ -14,9 +14,9 @@ import org.oreon.core.math.Vec2f;
 public class LensFlare {
 	
 	private List<LensFlareTexturePanel> lensFlareTexturePanels = new ArrayList<LensFlareTexturePanel>();
-	private Vec2f windowMidPos = new Vec2f(BaseContext.getWindow().getWidth()/2f, BaseContext.getWindow().getHeight()/2f);
+	private Vec2f windowMidPos = new Vec2f(BaseContext.getConfig().getFrameWidth()/2f, BaseContext.getConfig().getFrameHeight()/2f);
 	
-	private float occlusionThreshold = 80000f;
+//	private float occlusionThreshold = 80000f;
 	
 	public LensFlare(){
 		
@@ -116,7 +116,7 @@ public class LensFlare {
 			
 			Vec2f sunToWindowCenter = windowMidPos.sub(lightScreenSpacePos);
 			
-			float brightness = 1 - sunToWindowCenter.div(new Vec2f(BaseContext.getWindow().getWidth(), BaseContext.getWindow().getHeight())).length();
+//			float brightness = 1 - sunToWindowCenter.div(new Vec2f(BaseContext.getConfig().getFrameWidth(), BaseContext.getConfig().getFrameHeight())).length();
 			
 			for (LensFlareTexturePanel lensFlareTexture : lensFlareTexturePanels){
 				
@@ -130,7 +130,9 @@ public class LensFlare {
 					new Matrix4f().Orthographic2D().mul(lensFlareTexture.getOrthoTransform().getWorldMatrix()));
 			
 				
-				lensFlareTexture.setTransparency((light.getOcclusionQuery().getOcclusionFactor()/occlusionThreshold) * brightness);
+				// TODO occlusion needs a rework due to atmospheric scattering of the sun
+//				float transparency = (light.getOcclusionQuery().getOcclusionFactor()/occlusionThreshold) * brightness;
+				lensFlareTexture.setTransparency(0.75f);
 				lensFlareTexture.render();
 			}
 		}

@@ -370,11 +370,6 @@ public class GLDeferredEngine extends RenderEngine{
 			fullScreenQuad.render();
 		}
 		
-//		contrastController.render(displayTexture);
-
-//		fullScreenQuadMultisample.setTexture(primarySceneFbo.getAttachmentTexture(Attachment.COLOR));
-//		fullScreenQuadMultisample.render();
-		
 		fullScreenQuad.setTexture(currentScene);
 		fullScreenQuad.render();
 		
@@ -386,7 +381,6 @@ public class GLDeferredEngine extends RenderEngine{
 			primarySceneFbo.bind();
 			LightHandler.doOcclusionQueries();
 			primarySceneFbo.unbind();
-			
 			lensFlare.render();
 		}
 		
@@ -488,11 +482,11 @@ public class GLDeferredEngine extends RenderEngine{
 			}
 		}
 		if (BaseContext.getInput().isKeyPushed(GLFW.GLFW_KEY_KP_7)){
-			if (BaseContext.getConfig().isFxaaEnabled()){
-				BaseContext.getConfig().setFxaaEnabled(false);
+			if (BaseContext.getConfig().isLensFlareEnabled()){
+				BaseContext.getConfig().setLensFlareEnabled(false);
 			}
 			else{
-				BaseContext.getConfig().setFxaaEnabled(true);
+				BaseContext.getConfig().setLensFlareEnabled(true);
 			}
 		}
 		if (BaseContext.getInput().isKeyPushed(GLFW.GLFW_KEY_KP_8)){
