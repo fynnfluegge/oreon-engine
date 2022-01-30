@@ -7,7 +7,7 @@ OpenGL and Vulkan Binding for Java is used [LWJGL 3](https://www.lwjgl.org/).
 
 ## Build Manual
 * Oreon Engine project uses [lombok](https://projectlombok.org/).
-  Please download the latest [release](https://projectlombok.org/download) of lombok and run the .jar to install lombok plugin into Eclipse.
+  Please use this [guide](https://projectlombok.org/setup/intellij) for adding lombok support to IntelliJ Idea or download the latest [release](https://projectlombok.org/download) of lombok and run the .jar to install lombok plugin into Eclipse
 
 * Getting started guide for Eclipse available [here](http://fynnfluegge.github.io/oreon-engine/_navigation/Getting_Started.html).
 
