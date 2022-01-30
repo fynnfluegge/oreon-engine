@@ -11,6 +11,9 @@ OpenGL and Vulkan Binding for Java is used [LWJGL 3](https://www.lwjgl.org/).
 
 * Getting started guide for Eclipse available [here](http://fynnfluegge.github.io/oreon-engine/_navigation/Getting_Started.html).
 
+## Developer Guide
+* [wiki](https://github.com/fynnfluegge/oreon-engine/wiki)
+
 ## Example OpenGL Demo
 * [examples-opengl](https://github.com/fynnfluegge/oreon-engine/tree/master/oreonengine/examples-opengl)
   [GLOreonWorlds](https://github.com/fynnfluegge/oreon-engine/blob/master/oreonengine/examples-opengl/src/main/java/org/oreon/examples/gl/oreonworlds/GLOreonworlds.java)
