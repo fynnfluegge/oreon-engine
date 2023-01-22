@@ -1,8 +1,4 @@
-<div align="center">
-	<img src="docs/_images/welcome_image.png" width="400" height="200"/>
-</div>
-
----
+![Banner](docs/_images/welcome_image.png)
 
 <h1 align="center">Oreon Engine (Java - OpenGL/Vulkan)</h1>
 
