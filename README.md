@@ -1,4 +1,4 @@
-<img src="docs/_images/welcome_image.png" width="320" style="float:left;margin-right:12px;"/>
+<img src="docs/_images/welcome_image.png" width="800" style="float:left;margin-right:12px;" align="left"/>
 
 # Oreon Engine (Java - OpenGL/Vulkan)
 
