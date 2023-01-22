@@ -1,15 +1,13 @@
 # Oreon Engine (Java - OpenGL/Vulkan)
 
 Welcome to the Cross-Platform Java 3D Engine.
-OpenGL and Vulkan Binding for Java is used [LWJGL 3](https://www.lwjgl.org/).
+[LWJGL 3](https://www.lwjgl.org/) is used as OpenGL and Vulkan Binding for Java. 
 
 **UPDATE: Checkout Kotlin implementation of Oreon Engine [oreon-engine-kotlin](https://github.com/fynnfluegge/oreon-engine-vk-kt)**
 
 ## Build Manual
 * Oreon Engine project uses [lombok](https://projectlombok.org/).
-  Please use this [guide](https://projectlombok.org/setup/intellij) for adding lombok support to IntelliJ Idea or download the latest [release](https://projectlombok.org/download) of lombok and run the .jar to install lombok plugin into Eclipse
-
-* Getting started guide for Eclipse available [here](http://fynnfluegge.github.io/oreon-engine/_navigation/Getting_Started.html).
+  Please use this [guide](https://projectlombok.org/setup/intellij) for adding lombok support to IntelliJ Idea
 
 ## Developer Guide
 * [wiki](https://github.com/fynnfluegge/oreon-engine/wiki)
