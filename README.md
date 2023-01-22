@@ -1,4 +1,9 @@
-<img src="docs/_images/welcome_image.png" width="400" align="center"/>
+<p align="center">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="docs/_images/welcome_image.png">
+      <img src="docs/_images/welcome_image.png" height="240">
+    </picture>
+</p>
 
 # Oreon Engine (Java - OpenGL/Vulkan)
 
