@@ -2,9 +2,9 @@
 	<img src="docs/_images/welcome_image.png" width="280" height="132"/>
 </div>
 
-&nbsp;
+---
 
-# Oreon Engine (Java - OpenGL/Vulkan)
+<h1 align="center">Oreon Engine (Java - OpenGL/Vulkan)</h1>
 
 Welcome to the Cross-Platform Java 3D Engine.
 [LWJGL 3](https://www.lwjgl.org/) is used as OpenGL and Vulkan Binding for Java. 
