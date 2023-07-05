@@ -2,36 +2,23 @@
 
 <h1 align="center">Oreon Engine (Java - OpenGL/Vulkan)</h1>
 
-Welcome to the Cross-Platform Java 3D Engine.
-[LWJGL 3](https://www.lwjgl.org/) is used as OpenGL and Vulkan Binding for Java. 
-
 **UPDATE: Checkout Kotlin implementation of Oreon Engine [oreon-engine-kotlin](https://github.com/fynnfluegge/oreon-engine-vk-kt)**
 
 ## Build Manual
-* Oreon Engine project uses [lombok](https://projectlombok.org/).
+* Install the official Vulkan SDK from [LunarG](https://vulkan.lunarg.com/sdk/home).
+* This project uses [lombok](https://projectlombok.org/).
   Please use this [guide](https://projectlombok.org/setup/intellij) for adding lombok support to IntelliJ Idea
+* Visit the [wiki](https://github.com/fynnfluegge/oreon-engine/wiki) for further information.
 
-## Developer Guide
-* [wiki](https://github.com/fynnfluegge/oreon-engine/wiki)
-
-## Example OpenGL Demo
-* [examples-opengl](https://github.com/fynnfluegge/oreon-engine/tree/master/oreonengine/examples-opengl)
-  [GLOreonWorlds](https://github.com/fynnfluegge/oreon-engine/blob/master/oreonengine/examples-opengl/src/main/java/org/oreon/examples/gl/oreonworlds/GLOreonworlds.java)
-
-## Example Vulkan Demo
-* [examples-vulkan](https://github.com/fynnfluegge/oreon-engine/tree/master/oreonengine/examples-vulkan)
-  [VkOrenworlds](https://github.com/fynnfluegge/oreon-engine/blob/master/oreonengine/examples-vulkan/src/main/java/org/oreon/examples/vk/oreonworlds/VkOreonworlds.java)
-
-## User Input Manual
+## Keymappings
 * Move: W, A, S, D
 * Rotate: Hold the middle mouse button while moving the mouse; Alternatively up, down, left, right keys
 * Accelerate Movespeed: Scroll mouse
 * Move sun: I, J, K, L
 * Enable/Disable Wireframe: G
 
-## Gallery of Rendered Images
- 
-* [oreon-engine-creative](https://github.com/fynnfluegge/oreon-engine-creative)
+## Demo
+https://github.com/fynnfluegge/oreon-engine-creative/assets/16321871/bf06e085-fb40-4d3f-ac14-9eb8c1fd196c
 
 ## Features
 ### Deferred rendering pipeline with 2x to 8x MSAA and FXAA
